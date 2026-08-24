@@ -1,0 +1,19 @@
+{
+  "name": "sapling-global-verification-platform",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "build": "npm --prefix frontend run build",
+    "build:backend": "npm --prefix backend run build",
+    "test:backend": "npm --prefix backend test",
+    "test:e2e": "npm --prefix frontend run test:e2e",
+    "audit:development": "node scripts/audit-development.mjs",
+    "audit:production": "npm audit --omit=dev --omit=optional"
+  }
+}

@@ -1,0 +1,62 @@
+import { apiRequest } from "./client";
+
+export interface FieldPolicy {
+  publicId: string;
+  defaultRadiusMeters: number;
+  maxAccuracyMeters: number;
+  minimumPhotos: number;
+  retentionDays: number;
+  requireCheckout: boolean;
+  outsideGeofencePolicy: "BLOCK" | "SUPERVISOR_APPROVAL" | "ALLOW_AND_FLAG";
+  version: number;
+  updatedAt: string;
+}
+export interface Branch {
+  id: string;
+  code: string;
+  name: string;
+  city?: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+export interface ServicePackage {
+  id: string;
+  code: string;
+  name: string;
+  checks: string[];
+  price?: string | number | null;
+  tatHours: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export function getFieldPolicy() {
+  return apiRequest<FieldPolicy>("/settings/field-policy");
+}
+export function updateFieldPolicy(input: Omit<FieldPolicy, "publicId" | "updatedAt">) {
+  return apiRequest<FieldPolicy>("/settings/field-policy", {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+export function listBranches() {
+  return apiRequest<{ items: Branch[] }>("/settings/branches");
+}
+export function createBranch(input: { code: string; name: string; city?: string }) {
+  return apiRequest<Branch>("/settings/branches", { method: "POST", body: JSON.stringify(input) });
+}
+export function listServicePackages() {
+  return apiRequest<{ items: ServicePackage[] }>("/settings/service-packages");
+}
+export function createServicePackage(input: {
+  code: string;
+  name: string;
+  checks: string[];
+  price?: number;
+  tatHours: number;
+}) {
+  return apiRequest<ServicePackage>("/settings/service-packages", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}

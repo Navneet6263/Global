@@ -1,0 +1,124 @@
+name: Sapling Global CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Code, tests and supply chain
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: "sqlserver://localhost:1433;database=Sapling Global;user=ci;password=ci-build-only;encrypt=true;trustServerCertificate=true"
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Generate and validate Prisma client
+        run: |
+          npm run --workspace backend prisma:generate
+          npm run --workspace backend prisma:validate
+
+      - name: Check backend
+        run: |
+          npm run --workspace backend lint
+          npm run --workspace backend build
+          npm run --workspace backend test
+
+      - name: Check frontend
+        run: |
+          npm run --workspace frontend lint
+          npm run --workspace frontend typecheck
+          npm run --workspace frontend build
+
+      - name: Audit production dependencies
+        run: npm run audit:production
+
+      - name: Enforce reviewed development advisory allowlist
+        run: npm run audit:development
+
+      - name: Generate runtime SBOM
+        run: npm sbom --omit=dev --omit=optional --sbom-format=cyclonedx > sapling-global-runtime.cdx.json
+
+      - name: Upload build and SBOM evidence
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: build-and-sbom
+          if-no-files-found: error
+          retention-days: 14
+          path: |
+            backend/dist/
+            frontend/dist/
+            sapling-global-runtime.cdx.json
+
+  public-browser:
+    name: Public browser and accessibility
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install Chromium with system dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Run public accessibility and responsive checks
+        run: npm run --workspace frontend test:e2e -- e2e/public-accessibility.spec.ts
+
+      - name: Upload browser report
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: public-playwright-report
+          if-no-files-found: ignore
+          retention-days: 14
+          path: frontend/playwright-report/
+
+  container:
+    name: Reproducible runtime image
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Build production API image
+        run: docker build --pull -f backend/Dockerfile -t sapling-global-verification-api:ci .
+
+      - name: Verify unprivileged runtime user
+        run: docker image inspect sapling-global-verification-api:ci --format '{{.Config.User}}' | grep -Fx node
+
+      - name: Verify embedded health check
+        run: docker image inspect sapling-global-verification-api:ci --format '{{json .Config.Healthcheck.Test}}' | grep -F health/ready

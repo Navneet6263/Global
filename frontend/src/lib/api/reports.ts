@@ -1,0 +1,45 @@
+import { apiDownload, apiRequest, saveBlob } from "./client";
+
+export interface ReportSummary {
+  id: string;
+  status: string;
+  currentVersion: number;
+  publishedAt?: string | null;
+  createdAt: string;
+  versions: Array<{
+    version: number;
+    sha256: string;
+    authenticityCode: string;
+    generatedAt: string;
+  }>;
+}
+
+export function listReports(caseId: string) {
+  return apiRequest<{ items: ReportSummary[] }>(`/cases/${caseId}/reports`);
+}
+
+export function generateReport(caseId: string) {
+  return apiRequest<{
+    id: string;
+    status: string;
+    version: number;
+    authenticityCode: string;
+    generatedAt: string;
+  }>(`/cases/${caseId}/reports/generate`, { method: "POST" });
+}
+
+export async function downloadReport(reportId: string, caseNumber: string) {
+  const blob = await apiDownload(`/reports/${reportId}/content`);
+  saveBlob(blob, `Sapling-Global-${caseNumber}.pdf`);
+}
+
+export function verifyReport(authenticityCode: string) {
+  return apiRequest<{
+    valid: boolean;
+    caseNumber: string;
+    reportVersion: number;
+    sha256: string;
+    generatedAt: string;
+    completedAt?: string | null;
+  }>(`/public/reports/verify/${encodeURIComponent(authenticityCode)}`);
+}
