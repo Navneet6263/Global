@@ -16,6 +16,7 @@ import { NewCaseDialog } from "./NewCaseDialog";
 
 interface TopbarProps {
   search?: string;
+  searchPlaceholder?: string;
   onSearchChange?: (value: string) => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
@@ -23,6 +24,7 @@ interface TopbarProps {
 
 export function Topbar({
   search = "",
+  searchPlaceholder = "Search cases, candidates and clients…",
   onSearchChange,
   onRefresh,
   isRefreshing = false,
@@ -55,7 +57,7 @@ export function Topbar({
           <input
             value={search}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Search cases, candidates and clients…"
+            placeholder={searchPlaceholder}
             className="surface h-10 w-full rounded-full pl-10 pr-4 text-base outline-none transition-shadow placeholder:text-muted-foreground focus:shadow-[var(--shadow-float)] focus:ring-2 focus:ring-ring/25 sm:text-sm"
           />
         </label>

@@ -3,6 +3,7 @@
 ## Implemented in code
 
 - Live role-filtered workspaces for Operations, Exceptions, Client, Candidate, Verifier, QA, Field, Executive, Sales, Finance, Settings and Account Security.
+- Executive portfolio intelligence with access-scoped client/branch/check filters, SLA and ageing analytics, attention prioritisation, team capacity, CRM/finance health, case drill-down, audited CSV/PDF exports and encrypted scheduled email delivery through the retrying outbox.
 - Case 360 with consent, candidate access, documents, verification assignment, findings, clarifications, field visits, QA history and versioned reports.
 - SQL Server persistence for clients, cases, users/roles, settings, CRM opportunities, invoices/payments, notifications and audit events.
 - Secure public flows using expiring hashed tokens or OTPs for candidate access, clarifications, consent and report authenticity.
@@ -30,7 +31,7 @@
 - Backend Nest build and ESLint: passed.
 - Compiled NestJS/Fastify API boot: passed against the configured Sapling Global SQL Server with background workers disabled for the release check; `/api/v1/health/ready` returned HTTP 200 with `database: up`.
 - Prisma schema validation and client generation: passed.
-- Backend unit/security tests: 22/22 passing, including production environment gates, bounded database transaction settings, retry policy, forced-password authorization, immutable local object storage and cryptographic encoding checks.
+- Backend unit/security tests: 24/24 passing, including production environment gates, bounded database transaction settings, retry policy, forced-password authorization, immutable local object storage, cryptographic encoding checks and executive SLA/attention rules.
 - Rollback-based live SQL integration: passed for tenant isolation, client-bound access, candidate-link token binding and clarification-link token binding; no fixture rows remained.
 - Production-runtime dependency audit: zero known vulnerabilities. The full development-tool audit currently reports three high findings from one upstream `deepmerge-ts` advisory pinned by the latest Prisma 7.9.1 CLI; the affected Prisma CLI/config packages are excluded from the runtime image. The audit-recommended forced downgrade to Prisma 6.12 is incompatible and was not applied.
 - Playwright Chromium coverage passed for all 11 authenticated workspaces against real APIs with zero 5xx responses and zero serious/critical WCAG violations; session refresh/logout revocation, forced first-login password replacement, public-page security headers, keyboard order and 360px mobile overflow also passed.

@@ -266,7 +266,7 @@ function Status({ value }: { value: string }) {
   const complete = ["COMPLETED", "CLOSED", "ACCEPTED", "AVAILABLE"].includes(value);
   return (
     <span
-      className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${complete ? "bg-accent/20 text-accent-foreground" : "bg-warning/20 text-warning-foreground"}`}
+      className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${complete ? "bg-success text-success-foreground" : "bg-warning/20 text-warning-foreground"}`}
     >
       {humanize(value)}
     </span>

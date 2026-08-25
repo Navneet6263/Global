@@ -472,7 +472,7 @@ function InvoiceTable({
                 <td className="py-3">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.status === "PAID" ? "bg-accent/20 text-accent-foreground" : item.status === "OVERDUE" ? "bg-destructive/10 text-destructive" : "bg-warning/20 text-warning-foreground"}`}
+                      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.status === "PAID" ? "bg-success text-success-foreground" : item.status === "OVERDUE" ? "bg-destructive/10 text-destructive" : "bg-warning/20 text-warning-foreground"}`}
                     >
                       {humanize(item.status)}
                     </span>

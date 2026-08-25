@@ -237,8 +237,21 @@ function OutcomeMix({ values }: { values: Record<string, number> }) {
 }
 
 function Status({ value }: { value: string }) {
+  const success = ["COMPLETED", "CLOSED", "APPROVED", "PUBLISHED"].includes(value);
+  const danger = ["REJECTED", "FAILED", "CANCELLED", "OVERDUE"].includes(value);
+  const progress = ["IN_PROGRESS", "ASSIGNED", "UNDER_REVIEW"].includes(value);
   return (
-    <span className="rounded-full bg-secondary px-2.5 py-1 text-[11px] font-semibold">
+    <span
+      className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${
+        success
+          ? "bg-success text-success-foreground"
+          : danger
+            ? "bg-destructive/10 text-destructive"
+            : progress
+              ? "bg-info/10 text-info"
+              : "bg-warning/20 text-warning-foreground"
+      }`}
+    >
       {humanize(value)}
     </span>
   );

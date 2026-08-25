@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService, type JwtSignOptions } from "@nestjs/jwt";
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { LoginDto } from "./dto/login.dto";
@@ -45,7 +45,11 @@ export class AuthService {
             status: "ACTIVE",
           },
         },
-        include: { tenant: true },
+        include: {
+          tenant: true,
+          client: true,
+          userRoles: { include: { role: true } },
+        },
       }),
     );
     if (
@@ -72,18 +76,47 @@ export class AuthService {
       throw new UnauthorizedException("Account is temporarily locked");
     }
 
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { failedLoginCount: 0, lockedUntil: null, lastLoginAt: new Date() },
-    });
-    return this.issueTokens(
-      user.id,
-      user.publicId,
-      user.tenantId,
-      user.tenant.publicId,
-      user.email,
-      meta,
-    );
+    const [, tokens] = await Promise.all([
+      this.prisma.user.update({
+        where: { id: user.id },
+        data: { failedLoginCount: 0, lockedUntil: null, lastLoginAt: new Date() },
+      }),
+      this.issueTokens(
+        user.id,
+        user.publicId,
+        user.tenantId,
+        user.tenant.publicId,
+        user.email,
+        meta,
+      ),
+    ]);
+    const roles = user.userRoles.map(({ role }) => role.code);
+    const permissions = [
+      ...new Set(
+        user.userRoles.flatMap(({ role }) => {
+          try {
+            return JSON.parse(role.permissionsJson) as string[];
+          } catch {
+            return [];
+          }
+        }),
+      ),
+    ];
+    return {
+      tokens,
+      session: {
+        id: user.publicId,
+        tenantId: user.tenant.publicId,
+        tenantName: user.tenant.name,
+        clientId: user.client?.publicId,
+        clientName: user.client?.displayName,
+        email: user.email,
+        displayName: user.displayName,
+        mustChangePassword: user.mustChangePassword,
+        roles,
+        permissions,
+      },
+    };
   }
 
   async refresh(refreshToken: string, meta: RequestMeta): Promise<TokenPair> {
@@ -334,22 +367,14 @@ export class AuthService {
   ): Promise<TokenPair> {
     const refreshTtl = this.config.get<string>("JWT_REFRESH_TTL", "7d");
     const refreshExpiresAt = new Date(Date.now() + this.ttlMs(refreshTtl));
-    const session = await this.prisma.refreshSession.create({
-      data: {
-        userId,
-        ...(familyId ? { familyId } : {}),
-        tokenHash: randomBytes(32).toString("hex"),
-        userAgent: meta.userAgent?.slice(0, 500),
-        ipAddress: meta.ipAddress?.slice(0, 64),
-        expiresAt: refreshExpiresAt,
-      },
-    });
+    const sessionPublicId = randomUUID();
+    const resolvedFamilyId = familyId ?? randomUUID();
     const accessToken = await this.jwt.signAsync(
       {
         sub: userPublicId,
         tenantId: tenantPublicId,
         email,
-        sessionId: session.publicId,
+        sessionId: sessionPublicId,
         type: "access",
       },
       {
@@ -361,7 +386,7 @@ export class AuthService {
       {
         sub: userPublicId,
         tenantId: tenantPublicId,
-        sessionId: session.publicId,
+        sessionId: sessionPublicId,
         type: "refresh",
       },
       {
@@ -369,9 +394,16 @@ export class AuthService {
         expiresIn: refreshTtl as JwtSignOptions["expiresIn"],
       },
     );
-    await this.prisma.refreshSession.update({
-      where: { id: session.id },
-      data: { tokenHash: this.digest(refreshToken) },
+    await this.prisma.refreshSession.create({
+      data: {
+        publicId: sessionPublicId,
+        userId,
+        familyId: resolvedFamilyId,
+        tokenHash: this.digest(refreshToken),
+        userAgent: meta.userAgent?.slice(0, 500),
+        ipAddress: meta.ipAddress?.slice(0, 64),
+        expiresAt: refreshExpiresAt,
+      },
     });
     return { accessToken, refreshToken, refreshExpiresAt };
   }

@@ -3,14 +3,14 @@ import type { ReactNode } from "react";
 export type Tone = "success" | "warning" | "destructive" | "info";
 
 export const tonePill: Record<Tone, string> = {
-  success: "bg-accent text-accent-foreground",
+  success: "bg-success text-success-foreground",
   warning: "bg-warning/25 text-warning-foreground",
   destructive: "bg-destructive/12 text-destructive",
   info: "bg-info/12 text-info",
 };
 
 export const barTone: Record<Tone, string> = {
-  success: "bg-accent",
+  success: "bg-success",
   warning: "bg-warning",
   destructive: "bg-destructive",
   info: "bg-info",

@@ -27,7 +27,7 @@ export function getSession() {
 }
 
 export function login(input: { tenantCode: string; email: string; password: string }) {
-  return apiRequest<{ authenticated: true }>("/auth/login", {
+  return apiRequest<{ authenticated: true; session: Session }>("/auth/login", {
     method: "POST",
     body: JSON.stringify(input),
   });

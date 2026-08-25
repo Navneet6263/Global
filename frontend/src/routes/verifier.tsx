@@ -496,7 +496,7 @@ function Status({ status }: { status: string }) {
   const done = status === "COMPLETED";
   return (
     <span
-      className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${done ? "bg-accent/25 text-accent-foreground" : status === "IN_PROGRESS" ? "bg-info/10 text-info" : "bg-warning/20 text-warning-foreground"}`}
+      className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${done ? "bg-success text-success-foreground" : status === "IN_PROGRESS" ? "bg-info/10 text-info" : "bg-warning/20 text-warning-foreground"}`}
     >
       {humanize(status)}
     </span>

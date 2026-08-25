@@ -1232,7 +1232,7 @@ function Status({ status }: { status: string }) {
   const danger = ["REJECTED", "FAILED", "CANCELLED", "EXPIRED"].includes(status);
   return (
     <span
-      className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${success ? "bg-accent/25 text-accent-foreground" : danger ? "bg-destructive/10 text-destructive" : "bg-warning/20 text-warning-foreground"}`}
+      className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${success ? "bg-success text-success-foreground" : danger ? "bg-destructive/10 text-destructive" : "bg-warning/20 text-warning-foreground"}`}
     >
       {humanize(status)}
     </span>

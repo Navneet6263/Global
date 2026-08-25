@@ -212,7 +212,7 @@ function ReviewPanel({ item, onComplete }: { item: QaQueueItem; onComplete: () =
                 </p>
               </div>
               <span
-                className={`rounded-full px-2 py-1 text-[10px] font-semibold ${check.riskLevel === "HIGH" || check.riskLevel === "CRITICAL" ? "bg-destructive/10 text-destructive" : "bg-accent/20 text-accent-foreground"}`}
+                className={`rounded-full px-2 py-1 text-[10px] font-semibold ${check.riskLevel === "HIGH" || check.riskLevel === "CRITICAL" ? "bg-destructive/10 text-destructive" : "bg-success text-success-foreground"}`}
               >
                 {humanize(check.riskLevel ?? "unclassified")}
               </span>

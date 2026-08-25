@@ -1357,7 +1357,7 @@ function UserRow({ user, canWrite }: { user: DirectoryUser; canWrite: boolean })
         />
         <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           <span
-            className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${user.status === "ACTIVE" ? "bg-accent/20 text-accent-foreground" : "bg-destructive/10 text-destructive"}`}
+            className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${user.status === "ACTIVE" ? "bg-success text-success-foreground" : "bg-destructive/10 text-destructive"}`}
           >
             {humanize(user.status)}
           </span>

@@ -34,9 +34,9 @@ export class AuthController {
     @Req() request: FastifyRequest,
     @Res({ passthrough: true }) response: FastifyReply,
   ) {
-    const tokens = await this.auth.login(input, this.meta(request));
-    this.setCookies(response, tokens);
-    return { authenticated: true };
+    const result = await this.auth.login(input, this.meta(request));
+    this.setCookies(response, result.tokens);
+    return { authenticated: true, session: result.session };
   }
 
   @Public()

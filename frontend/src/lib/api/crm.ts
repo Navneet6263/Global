@@ -31,8 +31,21 @@ export interface Opportunity {
 }
 
 export interface CrmOverview {
-  summary: { openCount: number; openValue: number; weightedValue: number; wonValue: number };
+  summary: {
+    openCount: number;
+    openValue: number;
+    weightedValue: number;
+    wonValue: number;
+    activeOwners: number;
+  };
   stages: Array<{ stage: string; count: number; value: number }>;
+  trend: Array<{
+    month: string;
+    pipelineValue: number;
+    weightedValue: number;
+    wonValue: number;
+    activeOwners: number;
+  }>;
   activities: Array<{
     id: string;
     type: string;

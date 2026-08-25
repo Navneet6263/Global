@@ -19,6 +19,14 @@ type ConsentDelivery = {
   expiresAt: string;
 };
 
+type ExecutiveDelivery = {
+  recipientEmail: string;
+  format: "pdf" | "csv";
+  dashboardUrl: string;
+  exportUrl: string;
+  deliveryAt: string;
+};
+
 const NOOP_TOPICS = new Set([
   "case.created",
   "case.status.changed",
@@ -116,6 +124,12 @@ export class OutboxWorkerService
         );
       } else if (event.topic === "object.delete.requested") {
         await this.storage.delete(this.requiredString(payload, "objectKey"));
+      } else if (event.topic === "dashboard.executive.delivery") {
+        const secret = this.requiredString(payload, "secret");
+        await this.deliverExecutive(
+          this.secretBox.open<ExecutiveDelivery>(secret),
+          event.id.toString(),
+        );
       } else if (!NOOP_TOPICS.has(event.topic)) {
         throw new Error(`Unsupported outbox topic: ${event.topic}`);
       }
@@ -164,6 +178,35 @@ export class OutboxWorkerService
           otp: delivery.otp,
           consentUrl: delivery.consentUrl,
           expiresAt: delivery.expiresAt,
+        },
+      }),
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok)
+      throw new Error(`Notification provider returned HTTP ${response.status}`);
+  }
+
+  private async deliverExecutive(
+    delivery: ExecutiveDelivery,
+    idempotencyKey: string,
+  ) {
+    const webhook = this.config.get<string>("NOTIFICATION_WEBHOOK_URL");
+    if (!webhook) throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
+    const response = await fetch(webhook, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "idempotency-key": `sapling-executive-${idempotencyKey}`,
+      },
+      body: JSON.stringify({
+        channel: "EMAIL",
+        destination: delivery.recipientEmail,
+        template: "executive-portfolio-brief",
+        variables: {
+          format: delivery.format,
+          dashboardUrl: delivery.dashboardUrl,
+          exportUrl: delivery.exportUrl,
+          scheduledFor: delivery.deliveryAt,
         },
       }),
       signal: AbortSignal.timeout(10_000),

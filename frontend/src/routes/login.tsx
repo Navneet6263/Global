@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, ShieldCheck } from "lucide-react";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 
 import { login } from "@/lib/api/auth";
+import { homeForSession } from "@/lib/auth/workspace-access";
 
 export const Route = createFileRoute("/login")({
   head: () => ({ meta: [{ title: "Sign in — Sapling Global" }] }),
@@ -12,16 +13,19 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [hydrated, setHydrated] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
   useEffect(() => setHydrated(true), []);
   const mutation = useMutation({
     mutationFn: (credentials: typeof form) => login({ tenantCode: "SAPLING", ...credentials }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["session"] });
-      const returnTo = new URLSearchParams(window.location.search).get("returnTo");
-      window.location.assign(returnTo?.startsWith("/") ? returnTo : "/");
+    onSuccess: (result) => {
+      queryClient.setQueryData(["session"], result.session);
+      const target = result.session.mustChangePassword
+        ? "/change-password"
+        : homeForSession(result.session);
+      void navigate({ to: target, replace: true });
     },
   });
 

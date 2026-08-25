@@ -166,7 +166,7 @@ function SessionRow({
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm font-semibold">{device.label}</p>
           {item.current ? (
-            <span className="rounded-full bg-accent/20 px-2 py-0.5 text-[10px] font-semibold text-accent-foreground">
+            <span className="rounded-full bg-info/10 px-2 py-0.5 text-[10px] font-semibold text-info">
               Current
             </span>
           ) : null}

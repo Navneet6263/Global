@@ -90,51 +90,6 @@ export class DashboardsService {
     };
   }
 
-  async executive(actor: Actor) {
-    const scope = caseAccessScope(actor);
-    const [operations, risks, completed] = await Promise.all([
-      this.operations(actor),
-      this.prisma.verificationCase.groupBy({
-        by: ["riskLevel"],
-        where: scope,
-        _count: { _all: true },
-      }),
-      this.prisma.verificationCase.findMany({
-        where: { ...scope, completedAt: { not: null } },
-        select: { createdAt: true, completedAt: true, dueAt: true },
-        orderBy: { completedAt: "desc" },
-        take: 5000,
-      }),
-    ]);
-    const durations = completed.map(
-      (item) => item.completedAt!.getTime() - item.createdAt.getTime(),
-    );
-    const averageTatHours = durations.length
-      ? durations.reduce((sum, value) => sum + value, 0) /
-        durations.length /
-        3_600_000
-      : 0;
-    const withinSla = completed.filter(
-      (item) => item.dueAt && item.completedAt! <= item.dueAt,
-    ).length;
-    return {
-      ...operations,
-      performance: {
-        averageTatHours: Math.round(averageTatHours * 10) / 10,
-        slaPercentage: completed.length
-          ? Math.round((withinSla / completed.length) * 1000) / 10
-          : 100,
-        completedCases: completed.length,
-      },
-      riskMix: Object.fromEntries(
-        risks.map((item) => [
-          item.riskLevel ?? "UNCLASSIFIED",
-          item._count._all,
-        ]),
-      ),
-    };
-  }
-
   async exceptions(actor: Actor) {
     const scope = caseAccessScope(actor);
     const now = new Date();
@@ -244,19 +199,7 @@ export class DashboardsService {
   }
 
   private async trend(actor: Actor, now: Date) {
-    const months = Array.from({ length: 6 }, (_, index) => {
-      const start = new Date(
-        Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (5 - index), 1),
-      );
-      const end = new Date(
-        Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1),
-      );
-      return {
-        start,
-        end,
-        label: start.toLocaleString("en", { month: "short", timeZone: "UTC" }),
-      };
-    });
+    const months = this.monthWindows(now);
     return Promise.all(
       months.map(async ({ start, end, label }) => {
         const scope = caseAccessScope(actor);
@@ -271,5 +214,23 @@ export class DashboardsService {
         return { month: label, created, completed };
       }),
     );
+  }
+
+  private monthWindows(now: Date) {
+    return Array.from({ length: 6 }, (_, index) => {
+      const start = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (5 - index), 1),
+      );
+      return {
+        start,
+        end: new Date(
+          Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1),
+        ),
+        label: start.toLocaleString("en", {
+          month: "short",
+          timeZone: "UTC",
+        }),
+      };
+    });
   }
 }

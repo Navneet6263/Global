@@ -34,7 +34,10 @@ export class CrmService {
   constructor(private readonly prisma: PrismaService) {}
 
   async overview(actor: Actor) {
-    const [stages, total, weighted, activities] = await Promise.all([
+    const now = new Date();
+    const months = this.monthWindows(now);
+    const trendStart = months[0]!.start;
+    const [stages, total, weighted, activities, trendRows] = await Promise.all([
       this.prisma.salesOpportunity.groupBy({
         by: ["stage"],
         where: { tenantId: actor.tenantId },
@@ -48,7 +51,7 @@ export class CrmService {
       }),
       this.prisma.salesOpportunity.findMany({
         where: { tenantId: actor.tenantId, stage: { notIn: ["WON", "LOST"] } },
-        select: { estimatedValue: true, probability: true },
+        select: { estimatedValue: true, probability: true, ownerId: true },
       }),
       this.prisma.salesActivity.findMany({
         where: { tenantId: actor.tenantId },
@@ -63,6 +66,24 @@ export class CrmService {
         orderBy: { occurredAt: "desc" },
         take: 20,
       }),
+      this.prisma.salesOpportunity.findMany({
+        where: {
+          tenantId: actor.tenantId,
+          OR: [
+            { createdAt: { gte: trendStart } },
+            { closedAt: { gte: trendStart } },
+          ],
+        },
+        select: {
+          createdAt: true,
+          closedAt: true,
+          stage: true,
+          estimatedValue: true,
+          probability: true,
+          ownerId: true,
+        },
+        take: 5000,
+      }),
     ]);
     const weightedValue = weighted.reduce(
       (sum, item) =>
@@ -74,6 +95,11 @@ export class CrmService {
         openCount: total._count._all,
         openValue: Number(total._sum.estimatedValue ?? 0),
         weightedValue: Math.round(weightedValue * 100) / 100,
+        activeOwners: new Set(
+          weighted.flatMap((item) =>
+            item.ownerId === null ? [] : [item.ownerId.toString()],
+          ),
+        ).size,
         wonValue: Number(
           stages.find((item) => item.stage === "WON")?._sum.estimatedValue ?? 0,
         ),
@@ -87,8 +113,59 @@ export class CrmService {
         id: publicId,
         ...activity,
       })),
-      generatedAt: new Date(),
+      trend: months.map(({ start, end, label }) => {
+        const created = trendRows.filter(
+          (item) => item.createdAt >= start && item.createdAt < end,
+        );
+        const won = trendRows.filter(
+          (item) =>
+            item.stage === "WON" &&
+            item.closedAt &&
+            item.closedAt >= start &&
+            item.closedAt < end,
+        );
+        return {
+          month: label,
+          pipelineValue: created.reduce(
+            (sum, item) => sum + Number(item.estimatedValue),
+            0,
+          ),
+          weightedValue: created.reduce(
+            (sum, item) =>
+              sum + Number(item.estimatedValue) * (item.probability / 100),
+            0,
+          ),
+          wonValue: won.reduce(
+            (sum, item) => sum + Number(item.estimatedValue),
+            0,
+          ),
+          activeOwners: new Set(
+            created.flatMap((item) =>
+              item.ownerId === null ? [] : [item.ownerId.toString()],
+            ),
+          ).size,
+        };
+      }),
+      generatedAt: now,
     };
+  }
+
+  private monthWindows(now: Date) {
+    return Array.from({ length: 6 }, (_, index) => {
+      const start = new Date(
+        Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (5 - index), 1),
+      );
+      return {
+        start,
+        end: new Date(
+          Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 1),
+        ),
+        label: start.toLocaleString("en", {
+          month: "short",
+          timeZone: "UTC",
+        }),
+      };
+    });
   }
 
   async list(actor: Actor, query: ListOpportunitiesDto) {
