@@ -141,13 +141,23 @@ type ExceptionCase = {
 };
 
 export interface ExceptionsDashboard {
-  summary: { overdue: number; clarifications: number; fieldExceptions: number; total: number };
+  summary: {
+    overdue: number;
+    clarifications: number;
+    fieldExceptions: number;
+    total: number;
+    uniqueCases: number;
+    critical: number;
+    resolvedToday: number;
+    averageAgeHours: number;
+  };
   overdue: Array<{
     id: string;
     caseNumber: string;
     status: string;
     priority: string;
     dueAt: string;
+    createdAt: string;
     subject: { fullName: string };
     client: { displayName: string };
   }>;
@@ -157,6 +167,7 @@ export interface ExceptionsDashboard {
     subject: string;
     dueAt?: string | null;
     updatedAt: string;
+    createdAt: string;
     case: ExceptionCase;
   }>;
   fieldVisits: Array<{
@@ -165,6 +176,8 @@ export interface ExceptionsDashboard {
     distanceMeters?: number | null;
     geofenceMeters: number;
     capturedAt?: string | null;
+    createdAt: string;
+    version: number;
     case: ExceptionCase;
     assignee?: { displayName: string } | null;
   }>;

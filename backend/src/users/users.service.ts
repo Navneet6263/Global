@@ -294,6 +294,36 @@ export class UsersService {
     return { reset: true };
   }
 
+  async activity(actor: Actor, publicId: string) {
+    const user = await this.prisma.user.findFirst({
+      where: { tenantId: actor.tenantId, publicId },
+      select: { id: true },
+    });
+    if (!user) throw new NotFoundException("User not found");
+    const rows = await this.prisma.auditEvent.findMany({
+      where: {
+        tenantId: actor.tenantId,
+        OR: [
+          { resourceType: "user", resourcePublicId: publicId },
+          { actorUserId: user.id, action: { startsWith: "auth." } },
+        ],
+      },
+      select: {
+        publicId: true,
+        action: true,
+        ipAddress: true,
+        afterJson: true,
+        createdAt: true,
+        actor: { select: { displayName: true } },
+      },
+      orderBy: [{ createdAt: "desc" }, { publicId: "desc" }],
+      take: 30,
+    });
+    return {
+      items: rows.map(({ publicId: id, ...event }) => ({ id, ...event })),
+    };
+  }
+
   private parsePermissions(value: string): string[] {
     try {
       const parsed = JSON.parse(value) as unknown;

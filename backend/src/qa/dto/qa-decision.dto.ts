@@ -1,5 +1,6 @@
 import {
   ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsIn,
   IsInt,
@@ -19,14 +20,14 @@ export class QaDecisionDto {
   caseVersion!: number;
 
   @IsArray()
+  @ArrayMinSize(5)
   @ArrayMaxSize(50)
   @IsString({ each: true })
   checklist!: string[];
 
-  @IsOptional()
   @IsString()
-  @Length(3, 2000)
-  notes?: string;
+  @Length(10, 2000)
+  notes!: string;
 
   @IsOptional()
   @IsArray()

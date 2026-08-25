@@ -51,6 +51,15 @@ export class UsersController {
     return this.users.roles(actor);
   }
 
+  @Get(":userId/activity")
+  @RequirePermissions(Permission.UserRead)
+  activity(
+    @CurrentActor() actor: Actor,
+    @Param("userId", ParseUUIDPipe) userId: string,
+  ) {
+    return this.users.activity(actor, userId);
+  }
+
   @Post()
   @RequirePermissions(Permission.UserWrite)
   create(@CurrentActor() actor: Actor, @Body() input: CreateUserDto) {

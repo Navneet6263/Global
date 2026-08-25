@@ -25,6 +25,18 @@ export const caseDetailSelect = {
   checks: {
     select: {
       ...checkPublicSelect,
+      findings: {
+        select: {
+          publicId: true,
+          kind: true,
+          severity: true,
+          title: true,
+          description: true,
+          source: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "asc" as const },
+      },
       tasks: {
         select: {
           publicId: true,
@@ -119,8 +131,21 @@ export const caseDetailSelect = {
       distanceMeters: true,
       capturedAt: true,
       completedAt: true,
+      checkedInAt: true,
+      checkInAccuracy: true,
       assignee: {
         select: { publicId: true, displayName: true, email: true },
+      },
+      evidence: {
+        select: {
+          publicId: true,
+          type: true,
+          contentType: true,
+          sha256: true,
+          capturedAt: true,
+          createdAt: true,
+        },
+        orderBy: { capturedAt: "asc" as const },
       },
     },
     orderBy: { createdAt: "desc" as const },

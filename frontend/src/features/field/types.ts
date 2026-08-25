@@ -8,6 +8,10 @@ export type ApiFieldVisit = {
   targetLongitude: string | number | null;
   geofenceMeters: number;
   capturedAt: string | null;
+  checkedInAt: string | null;
+  checkInLatitude: string | number | null;
+  checkInLongitude: string | number | null;
+  checkInAccuracy: string | number | null;
   distanceMeters: string | number | null;
   version: number;
   case: {
@@ -44,6 +48,8 @@ export type FieldDraft = {
   checklist: string[];
   remarks: string;
   synced: boolean;
+  checkInSynced?: boolean;
+  serverVersion?: number;
 };
 
 export const emptyFieldDraft = (visitId: string): FieldDraft => ({
@@ -52,4 +58,5 @@ export const emptyFieldDraft = (visitId: string): FieldDraft => ({
   checklist: [],
   remarks: "",
   synced: true,
+  checkInSynced: false,
 });

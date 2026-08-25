@@ -53,6 +53,8 @@ export type CheckTaskMinAggregateOutputType = {
   completedById: bigint | null
   status: string | null
   instructions: string | null
+  blockerReason: string | null
+  blockedAt: Date | null
   dueAt: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -70,6 +72,8 @@ export type CheckTaskMaxAggregateOutputType = {
   completedById: bigint | null
   status: string | null
   instructions: string | null
+  blockerReason: string | null
+  blockedAt: Date | null
   dueAt: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -87,6 +91,8 @@ export type CheckTaskCountAggregateOutputType = {
   completedById: number
   status: number
   instructions: number
+  blockerReason: number
+  blockedAt: number
   dueAt: number
   startedAt: number
   completedAt: number
@@ -124,6 +130,8 @@ export type CheckTaskMinAggregateInputType = {
   completedById?: true
   status?: true
   instructions?: true
+  blockerReason?: true
+  blockedAt?: true
   dueAt?: true
   startedAt?: true
   completedAt?: true
@@ -141,6 +149,8 @@ export type CheckTaskMaxAggregateInputType = {
   completedById?: true
   status?: true
   instructions?: true
+  blockerReason?: true
+  blockedAt?: true
   dueAt?: true
   startedAt?: true
   completedAt?: true
@@ -158,6 +168,8 @@ export type CheckTaskCountAggregateInputType = {
   completedById?: true
   status?: true
   instructions?: true
+  blockerReason?: true
+  blockedAt?: true
   dueAt?: true
   startedAt?: true
   completedAt?: true
@@ -262,6 +274,8 @@ export type CheckTaskGroupByOutputType = {
   completedById: bigint | null
   status: string
   instructions: string | null
+  blockerReason: string | null
+  blockedAt: Date | null
   dueAt: Date | null
   startedAt: Date | null
   completedAt: Date | null
@@ -302,6 +316,8 @@ export type CheckTaskWhereInput = {
   completedById?: Prisma.BigIntNullableFilter<"CheckTask"> | bigint | number | null
   status?: Prisma.StringFilter<"CheckTask"> | string
   instructions?: Prisma.StringNullableFilter<"CheckTask"> | string | null
+  blockerReason?: Prisma.StringNullableFilter<"CheckTask"> | string | null
+  blockedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   dueAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   startedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
@@ -323,6 +339,8 @@ export type CheckTaskOrderByWithRelationInput = {
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   instructions?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockerReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -347,6 +365,8 @@ export type CheckTaskWhereUniqueInput = Prisma.AtLeast<{
   completedById?: Prisma.BigIntNullableFilter<"CheckTask"> | bigint | number | null
   status?: Prisma.StringFilter<"CheckTask"> | string
   instructions?: Prisma.StringNullableFilter<"CheckTask"> | string | null
+  blockerReason?: Prisma.StringNullableFilter<"CheckTask"> | string | null
+  blockedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   dueAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   startedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
@@ -368,6 +388,8 @@ export type CheckTaskOrderByWithAggregationInput = {
   completedById?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   instructions?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockerReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  blockedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -393,6 +415,8 @@ export type CheckTaskScalarWhereWithAggregatesInput = {
   completedById?: Prisma.BigIntNullableWithAggregatesFilter<"CheckTask"> | bigint | number | null
   status?: Prisma.StringWithAggregatesFilter<"CheckTask"> | string
   instructions?: Prisma.StringNullableWithAggregatesFilter<"CheckTask"> | string | null
+  blockerReason?: Prisma.StringNullableWithAggregatesFilter<"CheckTask"> | string | null
+  blockedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CheckTask"> | Date | string | null
   dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CheckTask"> | Date | string | null
   startedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CheckTask"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CheckTask"> | Date | string | null
@@ -406,6 +430,8 @@ export type CheckTaskCreateInput = {
   publicId?: string
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -427,6 +453,8 @@ export type CheckTaskUncheckedCreateInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -440,6 +468,8 @@ export type CheckTaskUpdateInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -461,6 +491,8 @@ export type CheckTaskUncheckedUpdateInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -477,6 +509,8 @@ export type CheckTaskCreateManyInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -490,6 +524,8 @@ export type CheckTaskUpdateManyMutationInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -507,6 +543,8 @@ export type CheckTaskUncheckedUpdateManyInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -534,6 +572,8 @@ export type CheckTaskCountOrderByAggregateInput = {
   completedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
   instructions?: Prisma.SortOrder
+  blockerReason?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -560,6 +600,8 @@ export type CheckTaskMaxOrderByAggregateInput = {
   completedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
   instructions?: Prisma.SortOrder
+  blockerReason?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -577,6 +619,8 @@ export type CheckTaskMinOrderByAggregateInput = {
   completedById?: Prisma.SortOrder
   status?: Prisma.SortOrder
   instructions?: Prisma.SortOrder
+  blockerReason?: Prisma.SortOrder
+  blockedAt?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
   startedAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
@@ -767,6 +811,8 @@ export type CheckTaskCreateWithoutTenantInput = {
   publicId?: string
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -786,6 +832,8 @@ export type CheckTaskUncheckedCreateWithoutTenantInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -831,6 +879,8 @@ export type CheckTaskScalarWhereInput = {
   completedById?: Prisma.BigIntNullableFilter<"CheckTask"> | bigint | number | null
   status?: Prisma.StringFilter<"CheckTask"> | string
   instructions?: Prisma.StringNullableFilter<"CheckTask"> | string | null
+  blockerReason?: Prisma.StringNullableFilter<"CheckTask"> | string | null
+  blockedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   dueAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   startedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"CheckTask"> | Date | string | null
@@ -844,6 +894,8 @@ export type CheckTaskCreateWithoutAssigneeInput = {
   publicId?: string
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -863,6 +915,8 @@ export type CheckTaskUncheckedCreateWithoutAssigneeInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -885,6 +939,8 @@ export type CheckTaskCreateWithoutCompletedByInput = {
   publicId?: string
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -904,6 +960,8 @@ export type CheckTaskUncheckedCreateWithoutCompletedByInput = {
   assigneeId?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -958,6 +1016,8 @@ export type CheckTaskCreateWithoutCheckInput = {
   publicId?: string
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -977,6 +1037,8 @@ export type CheckTaskUncheckedCreateWithoutCheckInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1017,6 +1079,8 @@ export type CheckTaskCreateManyTenantInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1030,6 +1094,8 @@ export type CheckTaskUpdateWithoutTenantInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1049,6 +1115,8 @@ export type CheckTaskUncheckedUpdateWithoutTenantInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1065,6 +1133,8 @@ export type CheckTaskUncheckedUpdateManyWithoutTenantInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1080,6 +1150,8 @@ export type CheckTaskCreateManyAssigneeInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1095,6 +1167,8 @@ export type CheckTaskCreateManyCompletedByInput = {
   assigneeId?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1108,6 +1182,8 @@ export type CheckTaskUpdateWithoutAssigneeInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1127,6 +1203,8 @@ export type CheckTaskUncheckedUpdateWithoutAssigneeInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1143,6 +1221,8 @@ export type CheckTaskUncheckedUpdateManyWithoutAssigneeInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1156,6 +1236,8 @@ export type CheckTaskUpdateWithoutCompletedByInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1175,6 +1257,8 @@ export type CheckTaskUncheckedUpdateWithoutCompletedByInput = {
   assigneeId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1191,6 +1275,8 @@ export type CheckTaskUncheckedUpdateManyWithoutCompletedByInput = {
   assigneeId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1206,6 +1292,8 @@ export type CheckTaskCreateManyCheckInput = {
   completedById?: bigint | number | null
   status?: string
   instructions?: string | null
+  blockerReason?: string | null
+  blockedAt?: Date | string | null
   dueAt?: Date | string | null
   startedAt?: Date | string | null
   completedAt?: Date | string | null
@@ -1219,6 +1307,8 @@ export type CheckTaskUpdateWithoutCheckInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1238,6 +1328,8 @@ export type CheckTaskUncheckedUpdateWithoutCheckInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1254,6 +1346,8 @@ export type CheckTaskUncheckedUpdateManyWithoutCheckInput = {
   completedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   instructions?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockerReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  blockedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1273,6 +1367,8 @@ export type CheckTaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   completedById?: boolean
   status?: boolean
   instructions?: boolean
+  blockerReason?: boolean
+  blockedAt?: boolean
   dueAt?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -1296,6 +1392,8 @@ export type CheckTaskSelectScalar = {
   completedById?: boolean
   status?: boolean
   instructions?: boolean
+  blockerReason?: boolean
+  blockedAt?: boolean
   dueAt?: boolean
   startedAt?: boolean
   completedAt?: boolean
@@ -1304,7 +1402,7 @@ export type CheckTaskSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CheckTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "checkId" | "assigneeId" | "completedById" | "status" | "instructions" | "dueAt" | "startedAt" | "completedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["checkTask"]>
+export type CheckTaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "checkId" | "assigneeId" | "completedById" | "status" | "instructions" | "blockerReason" | "blockedAt" | "dueAt" | "startedAt" | "completedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["checkTask"]>
 export type CheckTaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   check?: boolean | Prisma.CaseCheckDefaultArgs<ExtArgs>
@@ -1329,6 +1427,8 @@ export type $CheckTaskPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     completedById: bigint | null
     status: string
     instructions: string | null
+    blockerReason: string | null
+    blockedAt: Date | null
     dueAt: Date | null
     startedAt: Date | null
     completedAt: Date | null
@@ -1716,6 +1816,8 @@ export interface CheckTaskFieldRefs {
   readonly completedById: Prisma.FieldRef<"CheckTask", 'BigInt'>
   readonly status: Prisma.FieldRef<"CheckTask", 'String'>
   readonly instructions: Prisma.FieldRef<"CheckTask", 'String'>
+  readonly blockerReason: Prisma.FieldRef<"CheckTask", 'String'>
+  readonly blockedAt: Prisma.FieldRef<"CheckTask", 'DateTime'>
   readonly dueAt: Prisma.FieldRef<"CheckTask", 'DateTime'>
   readonly startedAt: Prisma.FieldRef<"CheckTask", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"CheckTask", 'DateTime'>

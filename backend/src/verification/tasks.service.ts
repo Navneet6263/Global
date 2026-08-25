@@ -9,13 +9,45 @@ import { PrismaService } from "../database/prisma.service";
 import type { CreateTaskDto } from "./dto/create-task.dto";
 import type { UpdateTaskDto } from "./dto/update-task.dto";
 
+type MineTaskQuery = {
+  status?: string;
+  view?: string;
+  search?: string;
+  cursor?: string;
+  limit: number;
+};
+
 @Injectable()
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async mine(actor: Actor, status?: string) {
+  async mine(actor: Actor, query: MineTaskQuery) {
+    const search = query.search?.trim();
+    const access = {
+      tenantId: actor.tenantId,
+      OR: [{ assigneeId: actor.userId }, { assigneeId: null }],
+    };
+    const where = {
+      ...access,
+      status:
+        query.view === "ACTIVE"
+          ? { in: ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"] }
+          : query.status,
+      ...(search
+        ? {
+            check: {
+              OR: [
+                { type: { contains: search } },
+                { case: { caseNumber: { contains: search } } },
+                { case: { subject: { fullName: { contains: search } } } },
+                { case: { client: { displayName: { contains: search } } } },
+              ],
+            },
+          }
+        : {}),
+    };
     const rows = await this.prisma.checkTask.findMany({
-      where: { tenantId: actor.tenantId, assigneeId: actor.userId, status },
+      where,
       select: {
         publicId: true,
         status: true,
@@ -23,13 +55,28 @@ export class TasksService {
         dueAt: true,
         startedAt: true,
         completedAt: true,
+        blockerReason: true,
+        blockedAt: true,
         version: true,
         check: {
           select: {
             publicId: true,
             type: true,
             status: true,
+            result: true,
+            riskLevel: true,
             sourceSummary: true,
+            findings: {
+              select: {
+                publicId: true,
+                kind: true,
+                severity: true,
+                title: true,
+                description: true,
+                source: true,
+              },
+              orderBy: { createdAt: "asc" },
+            },
             case: {
               select: {
                 publicId: true,
@@ -42,11 +89,39 @@ export class TasksService {
           },
         },
       },
-      orderBy: [{ dueAt: "asc" }, { createdAt: "asc" }],
-      take: 100,
+      orderBy: [{ dueAt: "asc" }, { createdAt: "asc" }, { publicId: "asc" }],
+      take: query.limit + 1,
+      ...(query.cursor ? { cursor: { publicId: query.cursor }, skip: 1 } : {}),
     });
+    const hasMore = rows.length > query.limit;
+    const page = hasMore ? rows.slice(0, query.limit) : rows;
+    const [active, overdue, blocked, completedToday] = await Promise.all([
+      this.prisma.checkTask.count({
+        where: {
+          ...access,
+          status: { in: ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"] },
+        },
+      }),
+      this.prisma.checkTask.count({
+        where: {
+          ...access,
+          status: { not: "COMPLETED" },
+          dueAt: { lt: new Date() },
+        },
+      }),
+      this.prisma.checkTask.count({ where: { ...access, status: "BLOCKED" } }),
+      this.prisma.checkTask.count({
+        where: {
+          ...access,
+          status: "COMPLETED",
+          completedAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+        },
+      }),
+    ]);
     return {
-      items: rows.map(({ publicId, ...row }) => ({ id: publicId, ...row })),
+      items: page.map(({ publicId, ...row }) => ({ id: publicId, ...row })),
+      nextCursor: hasMore ? page.at(-1)?.publicId : null,
+      summary: { active, overdue, blocked, completedToday },
     };
   }
 
@@ -210,6 +285,18 @@ export class TasksService {
           completedAt: input.status === "COMPLETED" ? new Date() : undefined,
           completedById:
             input.status === "COMPLETED" ? actor.userId : undefined,
+          blockerReason:
+            input.status === "BLOCKED"
+              ? input.sourceSummary?.trim()
+              : input.status === "IN_PROGRESS"
+                ? null
+                : undefined,
+          blockedAt:
+            input.status === "BLOCKED"
+              ? new Date()
+              : input.status === "IN_PROGRESS"
+                ? null
+                : undefined,
           version: { increment: 1 },
         },
       });
@@ -220,12 +307,18 @@ export class TasksService {
         data: {
           status: input.status === "COMPLETED" ? "COMPLETED" : input.status,
           result: input.result,
-          sourceSummary: input.sourceSummary?.trim(),
+          sourceSummary:
+            input.status === "COMPLETED"
+              ? input.sourceSummary?.trim()
+              : undefined,
           completedAt: input.status === "COMPLETED" ? new Date() : undefined,
           riskLevel: this.risk(input.findings),
           version: { increment: 1 },
         },
       });
+      if (input.status === "COMPLETED") {
+        await tx.finding.deleteMany({ where: { checkId: task.check.id } });
+      }
       if (input.findings.length) {
         await tx.finding.createMany({
           data: input.findings.map((finding) => ({

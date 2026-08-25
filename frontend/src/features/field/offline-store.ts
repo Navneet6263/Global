@@ -40,3 +40,7 @@ export function saveFieldDraft(draft: FieldDraft): Promise<IDBValidKey> {
 export function removeFieldDraft(visitId: string): Promise<undefined> {
   return transaction("readwrite", (store) => store.delete(visitId));
 }
+
+export function clearFieldDrafts(): Promise<undefined> {
+  return transaction("readwrite", (store) => store.clear());
+}

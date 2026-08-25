@@ -39,6 +39,9 @@ export type FieldVisitAvgAggregateOutputType = {
   capturedLongitude: runtime.Decimal | null
   accuracyMeters: runtime.Decimal | null
   distanceMeters: runtime.Decimal | null
+  checkInLatitude: runtime.Decimal | null
+  checkInLongitude: runtime.Decimal | null
+  checkInAccuracy: runtime.Decimal | null
   version: number | null
 }
 
@@ -55,6 +58,9 @@ export type FieldVisitSumAggregateOutputType = {
   capturedLongitude: runtime.Decimal | null
   accuracyMeters: runtime.Decimal | null
   distanceMeters: runtime.Decimal | null
+  checkInLatitude: runtime.Decimal | null
+  checkInLongitude: runtime.Decimal | null
+  checkInAccuracy: runtime.Decimal | null
   version: number | null
 }
 
@@ -75,6 +81,10 @@ export type FieldVisitMinAggregateOutputType = {
   accuracyMeters: runtime.Decimal | null
   distanceMeters: runtime.Decimal | null
   capturedAt: Date | null
+  checkInLatitude: runtime.Decimal | null
+  checkInLongitude: runtime.Decimal | null
+  checkInAccuracy: runtime.Decimal | null
+  checkedInAt: Date | null
   completedAt: Date | null
   checklistJson: string | null
   remarks: string | null
@@ -101,6 +111,10 @@ export type FieldVisitMaxAggregateOutputType = {
   accuracyMeters: runtime.Decimal | null
   distanceMeters: runtime.Decimal | null
   capturedAt: Date | null
+  checkInLatitude: runtime.Decimal | null
+  checkInLongitude: runtime.Decimal | null
+  checkInAccuracy: runtime.Decimal | null
+  checkedInAt: Date | null
   completedAt: Date | null
   checklistJson: string | null
   remarks: string | null
@@ -127,6 +141,10 @@ export type FieldVisitCountAggregateOutputType = {
   accuracyMeters: number
   distanceMeters: number
   capturedAt: number
+  checkInLatitude: number
+  checkInLongitude: number
+  checkInAccuracy: number
+  checkedInAt: number
   completedAt: number
   checklistJson: number
   remarks: number
@@ -151,6 +169,9 @@ export type FieldVisitAvgAggregateInputType = {
   capturedLongitude?: true
   accuracyMeters?: true
   distanceMeters?: true
+  checkInLatitude?: true
+  checkInLongitude?: true
+  checkInAccuracy?: true
   version?: true
 }
 
@@ -167,6 +188,9 @@ export type FieldVisitSumAggregateInputType = {
   capturedLongitude?: true
   accuracyMeters?: true
   distanceMeters?: true
+  checkInLatitude?: true
+  checkInLongitude?: true
+  checkInAccuracy?: true
   version?: true
 }
 
@@ -187,6 +211,10 @@ export type FieldVisitMinAggregateInputType = {
   accuracyMeters?: true
   distanceMeters?: true
   capturedAt?: true
+  checkInLatitude?: true
+  checkInLongitude?: true
+  checkInAccuracy?: true
+  checkedInAt?: true
   completedAt?: true
   checklistJson?: true
   remarks?: true
@@ -213,6 +241,10 @@ export type FieldVisitMaxAggregateInputType = {
   accuracyMeters?: true
   distanceMeters?: true
   capturedAt?: true
+  checkInLatitude?: true
+  checkInLongitude?: true
+  checkInAccuracy?: true
+  checkedInAt?: true
   completedAt?: true
   checklistJson?: true
   remarks?: true
@@ -239,6 +271,10 @@ export type FieldVisitCountAggregateInputType = {
   accuracyMeters?: true
   distanceMeters?: true
   capturedAt?: true
+  checkInLatitude?: true
+  checkInLongitude?: true
+  checkInAccuracy?: true
+  checkedInAt?: true
   completedAt?: true
   checklistJson?: true
   remarks?: true
@@ -352,6 +388,10 @@ export type FieldVisitGroupByOutputType = {
   accuracyMeters: runtime.Decimal | null
   distanceMeters: runtime.Decimal | null
   capturedAt: Date | null
+  checkInLatitude: runtime.Decimal | null
+  checkInLongitude: runtime.Decimal | null
+  checkInAccuracy: runtime.Decimal | null
+  checkedInAt: Date | null
   completedAt: Date | null
   checklistJson: string | null
   remarks: string | null
@@ -401,6 +441,10 @@ export type FieldVisitWhereInput = {
   accuracyMeters?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
+  checkInLatitude?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
   checklistJson?: Prisma.StringNullableFilter<"FieldVisit"> | string | null
   remarks?: Prisma.StringNullableFilter<"FieldVisit"> | string | null
@@ -432,6 +476,10 @@ export type FieldVisitOrderByWithRelationInput = {
   accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   distanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   capturedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistJson?: Prisma.SortOrderInput | Prisma.SortOrder
   remarks?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -466,6 +514,10 @@ export type FieldVisitWhereUniqueInput = Prisma.AtLeast<{
   accuracyMeters?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
+  checkInLatitude?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
   checklistJson?: Prisma.StringNullableFilter<"FieldVisit"> | string | null
   remarks?: Prisma.StringNullableFilter<"FieldVisit"> | string | null
@@ -497,6 +549,10 @@ export type FieldVisitOrderByWithAggregationInput = {
   accuracyMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   distanceMeters?: Prisma.SortOrderInput | Prisma.SortOrder
   capturedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   checklistJson?: Prisma.SortOrderInput | Prisma.SortOrder
   remarks?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -531,6 +587,10 @@ export type FieldVisitScalarWhereWithAggregatesInput = {
   accuracyMeters?: Prisma.DecimalNullableWithAggregatesFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.DecimalNullableWithAggregatesFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FieldVisit"> | Date | string | null
+  checkInLatitude?: Prisma.DecimalNullableWithAggregatesFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.DecimalNullableWithAggregatesFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.DecimalNullableWithAggregatesFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FieldVisit"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"FieldVisit"> | Date | string | null
   checklistJson?: Prisma.StringNullableWithAggregatesFilter<"FieldVisit"> | string | null
   remarks?: Prisma.StringNullableWithAggregatesFilter<"FieldVisit"> | string | null
@@ -553,6 +613,10 @@ export type FieldVisitCreateInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -584,6 +648,10 @@ export type FieldVisitUncheckedCreateInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -607,6 +675,10 @@ export type FieldVisitUpdateInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -638,6 +710,10 @@ export type FieldVisitUncheckedUpdateInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -664,6 +740,10 @@ export type FieldVisitCreateManyInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -686,6 +766,10 @@ export type FieldVisitUpdateManyMutationInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -712,6 +796,10 @@ export type FieldVisitUncheckedUpdateManyInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -748,6 +836,10 @@ export type FieldVisitCountOrderByAggregateInput = {
   accuracyMeters?: Prisma.SortOrder
   distanceMeters?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   checklistJson?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
@@ -770,6 +862,9 @@ export type FieldVisitAvgOrderByAggregateInput = {
   capturedLongitude?: Prisma.SortOrder
   accuracyMeters?: Prisma.SortOrder
   distanceMeters?: Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -790,6 +885,10 @@ export type FieldVisitMaxOrderByAggregateInput = {
   accuracyMeters?: Prisma.SortOrder
   distanceMeters?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   checklistJson?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
@@ -816,6 +915,10 @@ export type FieldVisitMinOrderByAggregateInput = {
   accuracyMeters?: Prisma.SortOrder
   distanceMeters?: Prisma.SortOrder
   capturedAt?: Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrder
+  checkedInAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   checklistJson?: Prisma.SortOrder
   remarks?: Prisma.SortOrder
@@ -838,6 +941,9 @@ export type FieldVisitSumOrderByAggregateInput = {
   capturedLongitude?: Prisma.SortOrder
   accuracyMeters?: Prisma.SortOrder
   distanceMeters?: Prisma.SortOrder
+  checkInLatitude?: Prisma.SortOrder
+  checkInLongitude?: Prisma.SortOrder
+  checkInAccuracy?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -1041,6 +1147,10 @@ export type FieldVisitCreateWithoutTenantInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1070,6 +1180,10 @@ export type FieldVisitUncheckedCreateWithoutTenantInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1125,6 +1239,10 @@ export type FieldVisitScalarWhereInput = {
   accuracyMeters?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
+  checkInLatitude?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.DecimalNullableFilter<"FieldVisit"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"FieldVisit"> | Date | string | null
   checklistJson?: Prisma.StringNullableFilter<"FieldVisit"> | string | null
   remarks?: Prisma.StringNullableFilter<"FieldVisit"> | string | null
@@ -1147,6 +1265,10 @@ export type FieldVisitCreateWithoutAssigneeInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1176,6 +1298,10 @@ export type FieldVisitUncheckedCreateWithoutAssigneeInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1208,6 +1334,10 @@ export type FieldVisitCreateWithoutCompletedByInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1237,6 +1367,10 @@ export type FieldVisitUncheckedCreateWithoutCompletedByInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1301,6 +1435,10 @@ export type FieldVisitCreateWithoutCaseInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1330,6 +1468,10 @@ export type FieldVisitUncheckedCreateWithoutCaseInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1378,6 +1520,10 @@ export type FieldVisitCreateWithoutEvidenceInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1408,6 +1554,10 @@ export type FieldVisitUncheckedCreateWithoutEvidenceInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1446,6 +1596,10 @@ export type FieldVisitUpdateWithoutEvidenceInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1476,6 +1630,10 @@ export type FieldVisitUncheckedUpdateWithoutEvidenceInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1500,6 +1658,10 @@ export type FieldVisitCreateManyTenantInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1522,6 +1684,10 @@ export type FieldVisitUpdateWithoutTenantInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1551,6 +1717,10 @@ export type FieldVisitUncheckedUpdateWithoutTenantInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1577,6 +1747,10 @@ export type FieldVisitUncheckedUpdateManyWithoutTenantInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1601,6 +1775,10 @@ export type FieldVisitCreateManyAssigneeInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1625,6 +1803,10 @@ export type FieldVisitCreateManyCompletedByInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1647,6 +1829,10 @@ export type FieldVisitUpdateWithoutAssigneeInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1676,6 +1862,10 @@ export type FieldVisitUncheckedUpdateWithoutAssigneeInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1702,6 +1892,10 @@ export type FieldVisitUncheckedUpdateManyWithoutAssigneeInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1724,6 +1918,10 @@ export type FieldVisitUpdateWithoutCompletedByInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1753,6 +1951,10 @@ export type FieldVisitUncheckedUpdateWithoutCompletedByInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1779,6 +1981,10 @@ export type FieldVisitUncheckedUpdateManyWithoutCompletedByInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1803,6 +2009,10 @@ export type FieldVisitCreateManyCaseInput = {
   accuracyMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Date | string | null
+  checkInLatitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Date | string | null
   completedAt?: Date | string | null
   checklistJson?: string | null
   remarks?: string | null
@@ -1825,6 +2035,10 @@ export type FieldVisitUpdateWithoutCaseInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1854,6 +2068,10 @@ export type FieldVisitUncheckedUpdateWithoutCaseInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1880,6 +2098,10 @@ export type FieldVisitUncheckedUpdateManyWithoutCaseInput = {
   accuracyMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   distanceMeters?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   capturedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  checkInLatitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInLongitude?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkInAccuracy?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  checkedInAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   checklistJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   remarks?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1937,6 +2159,10 @@ export type FieldVisitSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   accuracyMeters?: boolean
   distanceMeters?: boolean
   capturedAt?: boolean
+  checkInLatitude?: boolean
+  checkInLongitude?: boolean
+  checkInAccuracy?: boolean
+  checkedInAt?: boolean
   completedAt?: boolean
   checklistJson?: boolean
   remarks?: boolean
@@ -1971,6 +2197,10 @@ export type FieldVisitSelectScalar = {
   accuracyMeters?: boolean
   distanceMeters?: boolean
   capturedAt?: boolean
+  checkInLatitude?: boolean
+  checkInLongitude?: boolean
+  checkInAccuracy?: boolean
+  checkedInAt?: boolean
   completedAt?: boolean
   checklistJson?: boolean
   remarks?: boolean
@@ -1980,7 +2210,7 @@ export type FieldVisitSelectScalar = {
   updatedAt?: boolean
 }
 
-export type FieldVisitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "assigneeId" | "completedById" | "status" | "address" | "targetLatitude" | "targetLongitude" | "geofenceMeters" | "capturedLatitude" | "capturedLongitude" | "accuracyMeters" | "distanceMeters" | "capturedAt" | "completedAt" | "checklistJson" | "remarks" | "evidenceSince" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["fieldVisit"]>
+export type FieldVisitOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "assigneeId" | "completedById" | "status" | "address" | "targetLatitude" | "targetLongitude" | "geofenceMeters" | "capturedLatitude" | "capturedLongitude" | "accuracyMeters" | "distanceMeters" | "capturedAt" | "checkInLatitude" | "checkInLongitude" | "checkInAccuracy" | "checkedInAt" | "completedAt" | "checklistJson" | "remarks" | "evidenceSince" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["fieldVisit"]>
 export type FieldVisitInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
@@ -2016,6 +2246,10 @@ export type $FieldVisitPayload<ExtArgs extends runtime.Types.Extensions.Internal
     accuracyMeters: runtime.Decimal | null
     distanceMeters: runtime.Decimal | null
     capturedAt: Date | null
+    checkInLatitude: runtime.Decimal | null
+    checkInLongitude: runtime.Decimal | null
+    checkInAccuracy: runtime.Decimal | null
+    checkedInAt: Date | null
     completedAt: Date | null
     checklistJson: string | null
     remarks: string | null
@@ -2413,6 +2647,10 @@ export interface FieldVisitFieldRefs {
   readonly accuracyMeters: Prisma.FieldRef<"FieldVisit", 'Decimal'>
   readonly distanceMeters: Prisma.FieldRef<"FieldVisit", 'Decimal'>
   readonly capturedAt: Prisma.FieldRef<"FieldVisit", 'DateTime'>
+  readonly checkInLatitude: Prisma.FieldRef<"FieldVisit", 'Decimal'>
+  readonly checkInLongitude: Prisma.FieldRef<"FieldVisit", 'Decimal'>
+  readonly checkInAccuracy: Prisma.FieldRef<"FieldVisit", 'Decimal'>
+  readonly checkedInAt: Prisma.FieldRef<"FieldVisit", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"FieldVisit", 'DateTime'>
   readonly checklistJson: Prisma.FieldRef<"FieldVisit", 'String'>
   readonly remarks: Prisma.FieldRef<"FieldVisit", 'String'>

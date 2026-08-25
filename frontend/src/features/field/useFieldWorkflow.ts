@@ -2,11 +2,17 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { stamp, type GeoFix } from "@/components/field/geo";
+import type { GeoFix } from "@/components/field/geo";
 import { geoPolicy } from "@/components/field/geo";
-import { completeFieldVisit, getMyFieldVisits, uploadVisitEvidence } from "@/lib/api/field-visits";
+import {
+  checkInFieldVisit,
+  completeFieldVisit,
+  getMyFieldVisits,
+  uploadVisitEvidence,
+} from "@/lib/api/field-visits";
 import { loadFieldDrafts, removeFieldDraft, saveFieldDraft } from "./offline-store";
 import { emptyFieldDraft, type ApiFieldVisit, type FieldDraft } from "./types";
+import { capturePreciseFix } from "./field-geo-capture";
 
 export function useFieldWorkflow() {
   const queryClient = useQueryClient();
@@ -44,7 +50,8 @@ export function useFieldWorkflow() {
   }, []);
 
   useEffect(() => {
-    if (!activeId && visits[0]) setActiveId(visits[0].id);
+    const preferred = visits.find((visit) => ["ASSIGNED", "IN_PROGRESS"].includes(visit.status));
+    if (!activeId && (preferred ?? visits[0])) setActiveId((preferred ?? visits[0])!.id);
   }, [activeId, visits]);
 
   const active = visits.find((visit) => visit.id === activeId) ?? visits[0];
@@ -52,45 +59,23 @@ export function useFieldWorkflow() {
     ? (drafts[active.id] ?? emptyFieldDraft(active.id))
     : emptyFieldDraft("pending");
 
-  const persist = useCallback((next: FieldDraft) => {
+  const persist = useCallback(async (next: FieldDraft) => {
     setDrafts((current) => ({ ...current, [next.visitId]: next }));
-    void saveFieldDraft(next).catch(() => toast.error("Draft could not be saved on this device"));
+    await saveFieldDraft(next).catch(() => {
+      toast.error("Draft could not be saved on this device");
+      throw new Error("Offline draft could not be saved");
+    });
   }, []);
 
   const update = useCallback(
     (patch: Partial<FieldDraft>) => {
       if (!active) return;
-      persist({ ...draft, ...patch, visitId: active.id, synced: false });
+      void persist({ ...draft, ...patch, visitId: active.id, synced: false });
     },
     [active, draft, persist],
   );
 
-  const captureFix = useCallback(async (): Promise<GeoFix> => {
-    if (!navigator.geolocation) throw new Error("Location is not supported on this device.");
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const capturedAt = new Date().toISOString();
-          resolve({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-            accuracy: Math.round(position.coords.accuracy),
-            time: stamp(new Date(capturedAt)),
-            capturedAt,
-          });
-        },
-        (error) =>
-          reject(
-            new Error(
-              error.code === error.PERMISSION_DENIED
-                ? "Location permission denied — allow precise location to continue."
-                : "Could not get a fresh GPS fix. Enable location services and retry.",
-            ),
-          ),
-        { enableHighAccuracy: true, timeout: 15_000, maximumAge: 0 },
-      );
-    });
-  }, []);
+  const captureFix = useCallback(() => capturePreciseFix(), []);
 
   const capture = useCallback(
     async (kind: "checkIn" | "refresh") => {
@@ -98,15 +83,34 @@ export function useFieldWorkflow() {
       setGeoError(null);
       try {
         const captured = await captureFix();
+        if (captured.accuracy > policy.maxAccuracyMeters) {
+          throw new Error(`GPS accuracy must be ${policy.maxAccuracyMeters} metres or better.`);
+        }
         setFix(captured);
-        if (kind === "checkIn") update({ checkIn: captured });
+        if (kind === "checkIn" && active) {
+          let next: FieldDraft = {
+            ...draft,
+            visitId: active.id,
+            checkIn: captured,
+            checkInSynced: false,
+            synced: false,
+          };
+          if (online) {
+            const result = await checkInFieldVisit(active, captured, draft.serverVersion);
+            next = { ...next, checkInSynced: true, serverVersion: result.version };
+          }
+          await persist(next);
+          if (online) {
+            await queryClient.invalidateQueries({ queryKey: ["field-visits", "mine"] });
+          }
+        }
       } catch (error) {
         setGeoError(error instanceof Error ? error.message : "Location error");
       } finally {
         setLocating(false);
       }
     },
-    [captureFix, update],
+    [active, captureFix, draft, online, persist, policy.maxAccuracyMeters, queryClient],
   );
 
   const addPhotos = useCallback(
@@ -126,10 +130,26 @@ export function useFieldWorkflow() {
 
   const syncOne = useCallback(
     async (visit: ApiFieldVisit, value: FieldDraft) => {
-      for (const photo of value.photos) await uploadVisitEvidence(visit.id, photo);
-      const withoutPhotos = { ...value, photos: [], synced: !value.checkOut };
-      if (value.checkOut) {
-        const result = await completeFieldVisit(visit, value);
+      let working = value;
+      let serverVersion = value.serverVersion ?? visit.version;
+      if (working.checkIn && !working.checkInSynced) {
+        const result = await checkInFieldVisit(visit, working.checkIn, serverVersion);
+        serverVersion = result.version;
+        working = { ...working, checkInSynced: true, serverVersion };
+        await persist(working);
+      }
+      for (const photo of [...working.photos]) {
+        await uploadVisitEvidence(visit.id, photo);
+        working = {
+          ...working,
+          photos: working.photos.filter((item) => item.id !== photo.id),
+          serverVersion,
+        };
+        await persist(working);
+      }
+      const withoutPhotos = { ...working, photos: [], synced: !working.checkOut };
+      if (working.checkOut) {
+        const result = await completeFieldVisit(visit, working, serverVersion);
         await removeFieldDraft(visit.id);
         setDrafts((current) => {
           const next = { ...current };
@@ -141,7 +161,7 @@ export function useFieldWorkflow() {
           { description: `${result.distanceMeters} m from target` },
         );
       } else {
-        persist(withoutPhotos);
+        await persist(withoutPhotos);
       }
       await queryClient.invalidateQueries({ queryKey: ["field-visits", "mine"] });
     },
@@ -155,9 +175,12 @@ export function useFieldWorkflow() {
     try {
       const checkOut = policy.requireCheckout ? await captureFix() : draft.checkIn;
       if (!checkOut) throw new Error("GPS check-in is required before completion");
+      if (checkOut.accuracy > policy.maxAccuracyMeters) {
+        throw new Error(`GPS accuracy must be ${policy.maxAccuracyMeters} metres or better.`);
+      }
       setFix(checkOut);
       const next = { ...draft, checkOut, synced: false };
-      persist(next);
+      await persist(next);
       if (online) {
         setSyncing(true);
         await syncOne(active, next);
@@ -170,26 +193,42 @@ export function useFieldWorkflow() {
       setLocating(false);
       setSyncing(false);
     }
-  }, [active, captureFix, draft, online, persist, policy.requireCheckout, syncOne]);
+  }, [
+    active,
+    captureFix,
+    draft,
+    online,
+    persist,
+    policy.maxAccuracyMeters,
+    policy.requireCheckout,
+    syncOne,
+  ]);
 
   const syncAll = useCallback(async () => {
     if (!online) return;
     setSyncing(true);
     try {
+      let failed = 0;
       for (const value of Object.values(drafts).filter((item) => !item.synced)) {
         const visit = visits.find((item) => item.id === value.visitId);
-        if (visit) await syncOne(visit, value);
+        if (!visit) continue;
+        try {
+          await syncOne(visit, value);
+        } catch {
+          failed += 1;
+        }
       }
-    } catch (error) {
-      toast.error("Sync paused", {
-        description: error instanceof Error ? error.message : "Try again",
-      });
+      if (failed) toast.error(`${failed} visit${failed === 1 ? "" : "s"} need retry`);
     } finally {
       setSyncing(false);
     }
   }, [drafts, online, syncOne, visits]);
 
   const photoCount = (active?.evidence.length ?? 0) + draft.photos.length;
+  const removePhoto = useCallback(
+    (photoId: string) => update({ photos: draft.photos.filter((photo) => photo.id !== photoId) }),
+    [draft.photos, update],
+  );
   const pendingSync = useMemo(
     () => Object.values(drafts).filter((item) => !item.synced).length,
     [drafts],
@@ -214,6 +253,7 @@ export function useFieldWorkflow() {
     capture,
     checkout,
     addPhotos,
+    removePhoto,
     syncAll,
   };
 }

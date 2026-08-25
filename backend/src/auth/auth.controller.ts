@@ -5,7 +5,9 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -18,9 +20,11 @@ import {
   Public,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
+import { PageQueryDto } from "../common/dto/page-query.dto";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { ChangePasswordDto } from "./dto/change-password.dto";
+import { RenameSessionDto } from "./dto/rename-session.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -77,6 +81,20 @@ export class AuthController {
   @Get("sessions")
   sessions(@CurrentActor() actor: Actor) {
     return this.auth.sessions(actor);
+  }
+
+  @Get("security-events")
+  securityEvents(@CurrentActor() actor: Actor, @Query() query: PageQueryDto) {
+    return this.auth.securityEvents(actor, query);
+  }
+
+  @Patch("sessions/:sessionId")
+  renameSession(
+    @CurrentActor() actor: Actor,
+    @Param("sessionId", ParseUUIDPipe) sessionId: string,
+    @Body() input: RenameSessionDto,
+  ) {
+    return this.auth.renameSession(actor, sessionId, input.name);
   }
 
   @Delete("sessions/others")

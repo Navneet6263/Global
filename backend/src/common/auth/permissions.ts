@@ -17,6 +17,7 @@ export const Permission = {
   ReportGenerate: "report:generate",
   FieldVisitRead: "field-visit:read",
   FieldVisitWrite: "field-visit:write",
+  FieldEvidenceRead: "field-evidence:read",
   AuditRead: "audit:read",
   SettingsManage: "settings:manage",
   CrmRead: "crm:read",

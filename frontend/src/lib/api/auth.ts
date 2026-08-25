@@ -17,6 +17,7 @@ export type ActiveSession = {
   id: string;
   userAgent?: string | null;
   ipAddress?: string | null;
+  deviceName?: string | null;
   createdAt: string;
   expiresAt: string;
   current: boolean;
@@ -37,6 +38,10 @@ export async function logout() {
   try {
     return await apiRequest<{ authenticated: false }>("/auth/logout", { method: "POST" }, false);
   } finally {
+    if (typeof indexedDB !== "undefined") {
+      const { clearFieldDrafts } = await import("@/features/field/offline-store");
+      await clearFieldDrafts().catch(() => undefined);
+    }
     if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
       navigator.serviceWorker.controller?.postMessage({ type: "PURGE_PRIVATE_CACHE" });
     }
@@ -62,4 +67,31 @@ export function revokeActiveSession(sessionId: string) {
 
 export function revokeOtherSessions() {
   return apiRequest<{ revoked: number }>("/auth/sessions/others", { method: "DELETE" });
+}
+
+export function renameActiveSession(sessionId: string, name: string) {
+  return apiRequest<{ id: string; name: string }>(`/auth/sessions/${sessionId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ name }),
+  });
+}
+
+export type SecurityEvent = {
+  id: string;
+  action: string;
+  ipAddress?: string | null;
+  afterJson?: string | null;
+  createdAt: string;
+  risk: "NORMAL" | "ATTENTION";
+};
+
+export function listSecurityEvents(input: { cursor?: string; limit?: number } = {}) {
+  const query = new URLSearchParams();
+  if (input.cursor) query.set("cursor", input.cursor);
+  query.set("limit", String(input.limit ?? 8));
+  return apiRequest<{
+    items: SecurityEvent[];
+    nextCursor: string | null;
+    summary: { total: number; attention: number };
+  }>(`/auth/security-events?${query.toString()}`);
 }

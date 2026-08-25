@@ -7,6 +7,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CompleteFieldVisitDto } from "./dto/complete-field-visit.dto";
+import type { CheckInFieldVisitDto } from "./dto/check-in-field-visit.dto";
 import type { CreateFieldVisitDto } from "./dto/create-field-visit.dto";
 import type { ReviewFieldExceptionDto } from "./dto/review-field-exception.dto";
 import { haversineMeters } from "./geo";
@@ -33,6 +34,10 @@ export class FieldVisitsService {
           targetLongitude: true,
           geofenceMeters: true,
           capturedAt: true,
+          checkedInAt: true,
+          checkInLatitude: true,
+          checkInLongitude: true,
+          checkInAccuracy: true,
           distanceMeters: true,
           version: true,
           case: {
@@ -80,6 +85,98 @@ export class FieldVisitsService {
         requireCheckout: true,
         outsideGeofencePolicy: "SUPERVISOR_APPROVAL",
       },
+    };
+  }
+
+  async checkIn(
+    actor: Actor,
+    visitPublicId: string,
+    input: CheckInFieldVisitDto,
+  ) {
+    const visit = await this.prisma.fieldVisit.findFirst({
+      where: {
+        tenantId: actor.tenantId,
+        publicId: visitPublicId,
+        assigneeId: actor.userId,
+      },
+      select: {
+        id: true,
+        status: true,
+        version: true,
+        checkedInAt: true,
+        evidenceSince: true,
+      },
+    });
+    if (!visit) throw new NotFoundException("Assigned field visit not found");
+    if (!["ASSIGNED", "IN_PROGRESS"].includes(visit.status)) {
+      throw new ConflictException(
+        "This visit is no longer accepting a check-in",
+      );
+    }
+    if (visit.checkedInAt) {
+      return {
+        id: visitPublicId,
+        status: visit.status,
+        checkedInAt: visit.checkedInAt,
+        version: visit.version,
+      };
+    }
+    if (visit.version !== input.version) {
+      throw new ConflictException("Visit changed; refresh and try again");
+    }
+    const capturedAt = new Date(input.capturedAt);
+    if (capturedAt < new Date(visit.evidenceSince.getTime() - 5 * 60_000)) {
+      throw new BadRequestException("Check-in predates this visit attempt");
+    }
+    if (capturedAt > new Date(Date.now() + 5 * 60_000)) {
+      throw new BadRequestException("Check-in time cannot be in the future");
+    }
+    const policy = await this.prisma.tenantFieldPolicy.findUnique({
+      where: { tenantId: actor.tenantId },
+      select: { maxAccuracyMeters: true },
+    });
+    const maxAccuracy = policy?.maxAccuracyMeters ?? 50;
+    if (input.accuracyMeters > maxAccuracy) {
+      throw new BadRequestException(
+        `GPS accuracy must be ${maxAccuracy} metres or better`,
+      );
+    }
+    await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.fieldVisit.updateMany({
+        where: { id: visit.id, version: input.version },
+        data: {
+          status: "IN_PROGRESS",
+          checkInLatitude: input.latitude,
+          checkInLongitude: input.longitude,
+          checkInAccuracy: input.accuracyMeters,
+          checkedInAt: capturedAt,
+          version: { increment: 1 },
+        },
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException("Visit was updated concurrently");
+      }
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "field_visit.checked-in",
+          resourceType: "field_visit",
+          resourcePublicId: visitPublicId,
+          afterJson: JSON.stringify({
+            latitude: input.latitude,
+            longitude: input.longitude,
+            accuracyMeters: input.accuracyMeters,
+            capturedAt,
+          }),
+        },
+      });
+    });
+    return {
+      id: visitPublicId,
+      status: "IN_PROGRESS",
+      checkedInAt: capturedAt,
+      version: visit.version + 1,
     };
   }
 
@@ -184,6 +281,12 @@ export class FieldVisitsService {
       },
     });
     if (!visit) throw new NotFoundException("Assigned field visit not found");
+    if (!["ASSIGNED", "IN_PROGRESS"].includes(visit.status)) {
+      throw new ConflictException("This visit cannot be completed again");
+    }
+    if (!visit.checkedInAt) {
+      throw new BadRequestException("Check in before completing the visit");
+    }
     if (visit.version !== input.version)
       throw new ConflictException("Visit changed; refresh and try again");
     const policy = await this.prisma.tenantFieldPolicy.findUnique({
@@ -348,6 +451,10 @@ export class FieldVisitsService {
               completedById: null,
               checklistJson: null,
               evidenceSince: new Date(),
+              checkInLatitude: null,
+              checkInLongitude: null,
+              checkInAccuracy: null,
+              checkedInAt: null,
               remarks:
                 input.note?.trim() ||
                 "Supervisor requested a new field capture",

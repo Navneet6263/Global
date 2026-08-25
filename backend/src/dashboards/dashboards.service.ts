@@ -115,6 +115,7 @@ export class DashboardsService {
       overdue,
       clarifications,
       fieldVisits,
+      resolvedToday,
     ] = await Promise.all([
       this.prisma.verificationCase.count({ where: overdueWhere }),
       this.prisma.clarification.count({ where: clarificationWhere }),
@@ -127,6 +128,7 @@ export class DashboardsService {
           status: true,
           priority: true,
           dueAt: true,
+          createdAt: true,
           subject: { select: { fullName: true } },
           client: { select: { displayName: true } },
         },
@@ -141,6 +143,7 @@ export class DashboardsService {
           subject: true,
           dueAt: true,
           updatedAt: true,
+          createdAt: true,
           case: {
             select: {
               publicId: true,
@@ -161,6 +164,8 @@ export class DashboardsService {
           distanceMeters: true,
           geofenceMeters: true,
           capturedAt: true,
+          createdAt: true,
+          version: true,
           case: {
             select: {
               publicId: true,
@@ -174,13 +179,54 @@ export class DashboardsService {
         orderBy: { capturedAt: "asc" },
         take: 100,
       }),
+      this.prisma.auditEvent.count({
+        where: {
+          tenantId: actor.tenantId,
+          action: {
+            in: [
+              "clarification.resolved",
+              "field_visit.exception-approved",
+              "field_visit.retry-requested",
+            ],
+          },
+          createdAt: {
+            gte: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
+          },
+        },
+      }),
     ]);
+    const affectedCaseIds = new Set([
+      ...overdue.map((item) => item.publicId),
+      ...clarifications.map((item) => item.case.publicId),
+      ...fieldVisits.map((item) => item.case.publicId),
+    ]);
+    const ages = [
+      ...overdue.map(
+        (item) => (now.getTime() - item.createdAt.getTime()) / 3_600_000,
+      ),
+      ...clarifications.map(
+        (item) => (now.getTime() - item.createdAt.getTime()) / 3_600_000,
+      ),
+      ...fieldVisits.map(
+        (item) => (now.getTime() - item.createdAt.getTime()) / 3_600_000,
+      ),
+    ];
     return {
       summary: {
         overdue: overdueCount,
         clarifications: clarificationCount,
         fieldExceptions: fieldCount,
         total: overdueCount + clarificationCount + fieldCount,
+        uniqueCases: affectedCaseIds.size,
+        critical:
+          overdue.filter((item) => item.priority === "URGENT").length +
+          fieldCount,
+        resolvedToday,
+        averageAgeHours: ages.length
+          ? Math.round(
+              ages.reduce((total, age) => total + age, 0) / ages.length,
+            )
+          : 0,
       },
       overdue: overdue.map(({ publicId, ...item }) => ({
         id: publicId,

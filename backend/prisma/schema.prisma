@@ -101,6 +101,7 @@ model User {
   salesActivities     SalesActivity[]
   recordedPayments    Payment[]
   notifications       Notification[]
+  qaClaimedCases      VerificationCase[]     @relation("CaseQaReviewer")
 
   @@unique([tenantId, normalizedEmail])
   @@index([tenantId, status])
@@ -144,6 +145,7 @@ model RefreshSession {
   tokenHash String    @unique @db.Char(64)
   userAgent String?   @db.NVarChar(500)
   ipAddress String?   @db.VarChar(64)
+  deviceName String?  @db.NVarChar(80)
   expiresAt DateTime  @db.DateTime2
   revokedAt DateTime? @db.DateTime2
   createdAt DateTime  @default(now()) @db.DateTime2
@@ -228,6 +230,8 @@ model VerificationCase {
   clientId          BigInt
   subjectId         BigInt
   assignedOpsUserId BigInt?
+  qaReviewerId      BigInt?
+  qaClaimedAt       DateTime? @db.DateTime2
   caseNumber        String    @db.VarChar(32)
   externalRef       String?   @db.VarChar(80)
   status            String    @default("DRAFT") @db.VarChar(32)
@@ -244,6 +248,7 @@ model VerificationCase {
   client          Client                  @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   subject         Subject                 @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   assignedOpsUser User?                   @relation("CaseOpsAssignee", fields: [assignedOpsUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  qaReviewer       User?                   @relation("CaseQaReviewer", fields: [qaReviewerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   checks          CaseCheck[]
   statusHistory   CaseStatusHistory[]
   consents        Consent[]
@@ -259,6 +264,7 @@ model VerificationCase {
   @@index([tenantId, status, dueAt])
   @@index([tenantId, clientId, createdAt])
   @@index([tenantId, assignedOpsUserId, status])
+  @@index([tenantId, qaReviewerId, status])
   @@index([tenantId, subjectId])
 }
 
@@ -384,6 +390,8 @@ model CheckTask {
   completedById BigInt?
   status        String    @default("OPEN") @db.VarChar(24)
   instructions  String?   @db.NVarChar(1000)
+  blockerReason String?   @db.NVarChar(1000)
+  blockedAt     DateTime? @db.DateTime2
   dueAt         DateTime? @db.DateTime2
   startedAt     DateTime? @db.DateTime2
   completedAt   DateTime? @db.DateTime2
@@ -520,6 +528,10 @@ model FieldVisit {
   accuracyMeters    Decimal?  @db.Decimal(9, 2)
   distanceMeters    Decimal?  @db.Decimal(10, 2)
   capturedAt        DateTime? @db.DateTime2
+  checkInLatitude   Decimal?  @db.Decimal(9, 6)
+  checkInLongitude  Decimal?  @db.Decimal(9, 6)
+  checkInAccuracy   Decimal?  @db.Decimal(9, 2)
+  checkedInAt       DateTime? @db.DateTime2
   completedAt       DateTime? @db.DateTime2
   checklistJson     String?   @db.NVarChar(Max)
   remarks           String?   @db.NVarChar(2000)

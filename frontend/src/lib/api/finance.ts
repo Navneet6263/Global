@@ -2,6 +2,8 @@ import { apiDownload, apiRequest, saveBlob } from "./client";
 
 export interface FinanceOverview {
   summary: {
+    invoiceCount: number;
+    openInvoiceCount: number;
     billed: number;
     collected: number;
     outstanding: number;
@@ -48,11 +50,24 @@ export interface Invoice {
 export function getFinanceOverview() {
   return apiRequest<FinanceOverview>("/finance/overview");
 }
-export function listInvoices(input: { status?: string; search?: string } = {}) {
+export function listInvoices(
+  input: { status?: string; search?: string; cursor?: string; limit?: number } = {},
+) {
   const query = new URLSearchParams();
   if (input.status) query.set("status", input.status);
   if (input.search) query.set("search", input.search);
-  return apiRequest<{ items: Invoice[] }>(`/finance/invoices?${query.toString()}`);
+  if (input.cursor) query.set("cursor", input.cursor);
+  query.set("limit", String(input.limit ?? 25));
+  return apiRequest<{ items: Invoice[]; nextCursor: string | null }>(
+    `/finance/invoices?${query.toString()}`,
+  );
+}
+
+export function cancelInvoice(invoiceId: string, input: { version: number; reason: string }) {
+  return apiRequest<{ id: string; status: "CANCELLED"; version: number }>(
+    `/finance/invoices/${invoiceId}/cancel`,
+    { method: "PATCH", body: JSON.stringify(input) },
+  );
 }
 export function createInvoice(input: {
   clientId: string;

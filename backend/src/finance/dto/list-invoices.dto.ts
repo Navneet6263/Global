@@ -1,12 +1,8 @@
-import { IsIn, IsOptional, IsString, Length } from "class-validator";
+import { IsIn, IsOptional } from "class-validator";
+import { PageQueryDto } from "../../common/dto/page-query.dto";
 
-export class ListInvoicesDto {
+export class ListInvoicesDto extends PageQueryDto {
   @IsOptional()
   @IsIn(["ISSUED", "PARTIALLY_PAID", "PAID", "CANCELLED", "OVERDUE"])
   status?: string;
-
-  @IsOptional()
-  @IsString()
-  @Length(1, 120)
-  search?: string;
 }

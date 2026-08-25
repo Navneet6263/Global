@@ -367,6 +367,7 @@ export type UserWhereInput = {
   salesActivities?: Prisma.SalesActivityListRelationFilter
   recordedPayments?: Prisma.PaymentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  qaClaimedCases?: Prisma.VerificationCaseListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -408,6 +409,7 @@ export type UserOrderByWithRelationInput = {
   salesActivities?: Prisma.SalesActivityOrderByRelationAggregateInput
   recordedPayments?: Prisma.PaymentOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
+  qaClaimedCases?: Prisma.VerificationCaseOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -453,6 +455,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   salesActivities?: Prisma.SalesActivityListRelationFilter
   recordedPayments?: Prisma.PaymentListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
+  qaClaimedCases?: Prisma.VerificationCaseListRelationFilter
 }, "id" | "publicId" | "tenantId_normalizedEmail">
 
 export type UserOrderByWithAggregationInput = {
@@ -543,6 +546,7 @@ export type UserCreateInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -581,6 +585,7 @@ export type UserUncheckedCreateInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUpdateInput = {
@@ -619,6 +624,7 @@ export type UserUpdateInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -657,6 +663,7 @@ export type UserUncheckedUpdateInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1010,6 +1017,12 @@ export type UserCreateNestedOneWithoutAssignedCasesInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedOneWithoutQaClaimedCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutQaClaimedCasesInput, Prisma.UserUncheckedCreateWithoutQaClaimedCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQaClaimedCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserUpdateOneWithoutAssignedCasesNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedCasesInput, Prisma.UserUncheckedCreateWithoutAssignedCasesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedCasesInput
@@ -1018,6 +1031,16 @@ export type UserUpdateOneWithoutAssignedCasesNestedInput = {
   delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAssignedCasesInput, Prisma.UserUpdateWithoutAssignedCasesInput>, Prisma.UserUncheckedUpdateWithoutAssignedCasesInput>
+}
+
+export type UserUpdateOneWithoutQaClaimedCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutQaClaimedCasesInput, Prisma.UserUncheckedCreateWithoutQaClaimedCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutQaClaimedCasesInput
+  upsert?: Prisma.UserUpsertWithoutQaClaimedCasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutQaClaimedCasesInput, Prisma.UserUpdateWithoutQaClaimedCasesInput>, Prisma.UserUncheckedUpdateWithoutQaClaimedCasesInput>
 }
 
 export type UserCreateNestedOneWithoutAssignedTasksInput = {
@@ -1253,6 +1276,7 @@ export type UserCreateWithoutTenantInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutTenantInput = {
@@ -1290,6 +1314,7 @@ export type UserUncheckedCreateWithoutTenantInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutTenantInput = {
@@ -1377,6 +1402,7 @@ export type UserCreateWithoutBranchInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutBranchInput = {
@@ -1414,6 +1440,7 @@ export type UserUncheckedCreateWithoutBranchInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutBranchInput = {
@@ -1476,6 +1503,7 @@ export type UserCreateWithoutUserRolesInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -1513,6 +1541,7 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -1566,6 +1595,7 @@ export type UserUpdateWithoutUserRolesInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -1603,6 +1633,7 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -1640,6 +1671,7 @@ export type UserCreateWithoutSessionsInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -1677,6 +1709,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -1730,6 +1763,7 @@ export type UserUpdateWithoutSessionsInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -1767,6 +1801,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutClientInput = {
@@ -1804,6 +1839,7 @@ export type UserCreateWithoutClientInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutClientInput = {
@@ -1841,6 +1877,7 @@ export type UserUncheckedCreateWithoutClientInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutClientInput = {
@@ -1903,6 +1940,7 @@ export type UserCreateWithoutAssignedCasesInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutAssignedCasesInput = {
@@ -1940,11 +1978,93 @@ export type UserUncheckedCreateWithoutAssignedCasesInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutAssignedCasesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutAssignedCasesInput, Prisma.UserUncheckedCreateWithoutAssignedCasesInput>
+}
+
+export type UserCreateWithoutQaClaimedCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutQaClaimedCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutQaClaimedCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutQaClaimedCasesInput, Prisma.UserUncheckedCreateWithoutQaClaimedCasesInput>
 }
 
 export type UserUpsertWithoutAssignedCasesInput = {
@@ -1993,6 +2113,7 @@ export type UserUpdateWithoutAssignedCasesInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedCasesInput = {
@@ -2017,6 +2138,94 @@ export type UserUncheckedUpdateWithoutAssignedCasesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+}
+
+export type UserUpsertWithoutQaClaimedCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutQaClaimedCasesInput, Prisma.UserUncheckedUpdateWithoutQaClaimedCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutQaClaimedCasesInput, Prisma.UserUncheckedCreateWithoutQaClaimedCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutQaClaimedCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutQaClaimedCasesInput, Prisma.UserUncheckedUpdateWithoutQaClaimedCasesInput>
+}
+
+export type UserUpdateWithoutQaClaimedCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutQaClaimedCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
   assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
   completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
   clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
@@ -2067,6 +2276,7 @@ export type UserCreateWithoutAssignedTasksInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -2104,6 +2314,7 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -2146,6 +2357,7 @@ export type UserCreateWithoutCompletedTasksInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutCompletedTasksInput = {
@@ -2183,6 +2395,7 @@ export type UserUncheckedCreateWithoutCompletedTasksInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutCompletedTasksInput = {
@@ -2236,6 +2449,7 @@ export type UserUpdateWithoutAssignedTasksInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -2273,6 +2487,7 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUpsertWithoutCompletedTasksInput = {
@@ -2321,6 +2536,7 @@ export type UserUpdateWithoutCompletedTasksInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompletedTasksInput = {
@@ -2358,6 +2574,7 @@ export type UserUncheckedUpdateWithoutCompletedTasksInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutClarificationSenderInput = {
@@ -2395,6 +2612,7 @@ export type UserCreateWithoutClarificationSenderInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutClarificationSenderInput = {
@@ -2432,6 +2650,7 @@ export type UserUncheckedCreateWithoutClarificationSenderInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutClarificationSenderInput = {
@@ -2485,6 +2704,7 @@ export type UserUpdateWithoutClarificationSenderInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClarificationSenderInput = {
@@ -2522,6 +2742,7 @@ export type UserUncheckedUpdateWithoutClarificationSenderInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutQaReviewsInput = {
@@ -2559,6 +2780,7 @@ export type UserCreateWithoutQaReviewsInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutQaReviewsInput = {
@@ -2596,6 +2818,7 @@ export type UserUncheckedCreateWithoutQaReviewsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutQaReviewsInput = {
@@ -2649,6 +2872,7 @@ export type UserUpdateWithoutQaReviewsInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQaReviewsInput = {
@@ -2686,6 +2910,7 @@ export type UserUncheckedUpdateWithoutQaReviewsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutGeneratedReportsInput = {
@@ -2723,6 +2948,7 @@ export type UserCreateWithoutGeneratedReportsInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutGeneratedReportsInput = {
@@ -2760,6 +2986,7 @@ export type UserUncheckedCreateWithoutGeneratedReportsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutGeneratedReportsInput = {
@@ -2813,6 +3040,7 @@ export type UserUpdateWithoutGeneratedReportsInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGeneratedReportsInput = {
@@ -2850,6 +3078,7 @@ export type UserUncheckedUpdateWithoutGeneratedReportsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutAssignedVisitsInput = {
@@ -2887,6 +3116,7 @@ export type UserCreateWithoutAssignedVisitsInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutAssignedVisitsInput = {
@@ -2924,6 +3154,7 @@ export type UserUncheckedCreateWithoutAssignedVisitsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutAssignedVisitsInput = {
@@ -2966,6 +3197,7 @@ export type UserCreateWithoutCompletedVisitsInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutCompletedVisitsInput = {
@@ -3003,6 +3235,7 @@ export type UserUncheckedCreateWithoutCompletedVisitsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutCompletedVisitsInput = {
@@ -3056,6 +3289,7 @@ export type UserUpdateWithoutAssignedVisitsInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedVisitsInput = {
@@ -3093,6 +3327,7 @@ export type UserUncheckedUpdateWithoutAssignedVisitsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUpsertWithoutCompletedVisitsInput = {
@@ -3141,6 +3376,7 @@ export type UserUpdateWithoutCompletedVisitsInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompletedVisitsInput = {
@@ -3178,6 +3414,7 @@ export type UserUncheckedUpdateWithoutCompletedVisitsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutUploadedEvidenceInput = {
@@ -3215,6 +3452,7 @@ export type UserCreateWithoutUploadedEvidenceInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
@@ -3252,6 +3490,7 @@ export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutUploadedEvidenceInput = {
@@ -3305,6 +3544,7 @@ export type UserUpdateWithoutUploadedEvidenceInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
@@ -3342,6 +3582,7 @@ export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutAuditEventsInput = {
@@ -3379,6 +3620,7 @@ export type UserCreateWithoutAuditEventsInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutAuditEventsInput = {
@@ -3416,6 +3658,7 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutAuditEventsInput = {
@@ -3469,6 +3712,7 @@ export type UserUpdateWithoutAuditEventsInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditEventsInput = {
@@ -3506,6 +3750,7 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutOwnedOpportunitiesInput = {
@@ -3543,6 +3788,7 @@ export type UserCreateWithoutOwnedOpportunitiesInput = {
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
@@ -3580,6 +3826,7 @@ export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutOwnedOpportunitiesInput = {
@@ -3633,6 +3880,7 @@ export type UserUpdateWithoutOwnedOpportunitiesInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
@@ -3670,6 +3918,7 @@ export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutSalesActivitiesInput = {
@@ -3707,6 +3956,7 @@ export type UserCreateWithoutSalesActivitiesInput = {
   ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutSalesActivitiesInput = {
@@ -3744,6 +3994,7 @@ export type UserUncheckedCreateWithoutSalesActivitiesInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutSalesActivitiesInput = {
@@ -3797,6 +4048,7 @@ export type UserUpdateWithoutSalesActivitiesInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSalesActivitiesInput = {
@@ -3834,6 +4086,7 @@ export type UserUncheckedUpdateWithoutSalesActivitiesInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutRecordedPaymentsInput = {
@@ -3871,6 +4124,7 @@ export type UserCreateWithoutRecordedPaymentsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutRecordedPaymentsInput = {
@@ -3908,6 +4162,7 @@ export type UserUncheckedCreateWithoutRecordedPaymentsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutRecordedPaymentsInput = {
@@ -3961,6 +4216,7 @@ export type UserUpdateWithoutRecordedPaymentsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecordedPaymentsInput = {
@@ -3998,6 +4254,7 @@ export type UserUncheckedUpdateWithoutRecordedPaymentsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -4035,6 +4292,7 @@ export type UserCreateWithoutNotificationsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -4072,6 +4330,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
   recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -4125,6 +4384,7 @@ export type UserUpdateWithoutNotificationsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -4162,6 +4422,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserCreateManyTenantInput = {
@@ -4219,6 +4480,7 @@ export type UserUpdateWithoutTenantInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTenantInput = {
@@ -4256,6 +4518,7 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutTenantInput = {
@@ -4334,6 +4597,7 @@ export type UserUpdateWithoutBranchInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBranchInput = {
@@ -4371,6 +4635,7 @@ export type UserUncheckedUpdateWithoutBranchInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutBranchInput = {
@@ -4449,6 +4714,7 @@ export type UserUpdateWithoutClientInput = {
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientInput = {
@@ -4486,6 +4752,7 @@ export type UserUncheckedUpdateWithoutClientInput = {
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
   recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutClientInput = {
@@ -4531,6 +4798,7 @@ export type UserCountOutputType = {
   salesActivities: number
   recordedPayments: number
   notifications: number
+  qaClaimedCases: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4550,6 +4818,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   salesActivities?: boolean | UserCountOutputTypeCountSalesActivitiesArgs
   recordedPayments?: boolean | UserCountOutputTypeCountRecordedPaymentsArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
+  qaClaimedCases?: boolean | UserCountOutputTypeCountQaClaimedCasesArgs
 }
 
 /**
@@ -4674,6 +4943,13 @@ export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.NotificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountQaClaimedCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationCaseWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4714,6 +4990,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   salesActivities?: boolean | Prisma.User$salesActivitiesArgs<ExtArgs>
   recordedPayments?: boolean | Prisma.User$recordedPaymentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  qaClaimedCases?: boolean | Prisma.User$qaClaimedCasesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4762,6 +5039,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   salesActivities?: boolean | Prisma.User$salesActivitiesArgs<ExtArgs>
   recordedPayments?: boolean | Prisma.User$recordedPaymentsArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
+  qaClaimedCases?: boolean | Prisma.User$qaClaimedCasesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -4787,6 +5065,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     salesActivities: Prisma.$SalesActivityPayload<ExtArgs>[]
     recordedPayments: Prisma.$PaymentPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
+    qaClaimedCases: Prisma.$VerificationCasePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -5167,6 +5446,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   salesActivities<T extends Prisma.User$salesActivitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$salesActivitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   recordedPayments<T extends Prisma.User$recordedPaymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$recordedPaymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  qaClaimedCases<T extends Prisma.User$qaClaimedCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$qaClaimedCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5981,6 +6261,30 @@ export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
+}
+
+/**
+ * User.qaClaimedCases
+ */
+export type User$qaClaimedCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationCase
+   */
+  select?: Prisma.VerificationCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationCase
+   */
+  omit?: Prisma.VerificationCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationCaseInclude<ExtArgs> | null
+  where?: Prisma.VerificationCaseWhereInput
+  orderBy?: Prisma.VerificationCaseOrderByWithRelationInput | Prisma.VerificationCaseOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationCaseScalarFieldEnum | Prisma.VerificationCaseScalarFieldEnum[]
 }
 
 /**

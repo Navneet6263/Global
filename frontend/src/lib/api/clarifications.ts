@@ -63,3 +63,14 @@ export function respondToClarification(clarificationId: string, token: string, m
     },
   );
 }
+
+export function respondToClarificationAsClient(
+  caseId: string,
+  clarificationId: string,
+  message: string,
+) {
+  return apiRequest<{ received: boolean; respondedAt: string }>(
+    `/cases/${caseId}/clarifications/${clarificationId}/respond`,
+    { method: "POST", body: JSON.stringify({ message }) },
+  );
+}

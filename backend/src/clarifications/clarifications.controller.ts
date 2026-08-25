@@ -60,6 +60,22 @@ export class ClarificationsController {
     );
   }
 
+  @Post("cases/:caseId/clarifications/:clarificationId/respond")
+  @RequirePermissions(Permission.ClarificationRead)
+  respondAsClient(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
+    @Body() input: RespondClarificationDto,
+  ) {
+    return this.clarifications.respondAsClient(
+      actor,
+      caseId,
+      clarificationId,
+      input.message,
+    );
+  }
+
   @Get("public/clarifications/:clarificationId")
   @Public()
   @Throttle({ default: { limit: 20, ttl: 60_000 } })

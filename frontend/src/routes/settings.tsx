@@ -27,6 +27,8 @@ import { toast } from "sonner";
 import { PageHeader, Panel } from "@/components/dashboards/ui";
 import { Sidebar } from "@/components/ops/Sidebar";
 import { Topbar } from "@/components/ops/Topbar";
+import { RolePermissionPreview } from "@/features/stakeholders/settings/RolePermissionPreview";
+import { UserAccessDrawer } from "@/features/stakeholders/settings/UserAccessDrawer";
 import { listAuditEvents, type AuditEvent } from "@/lib/api/audit";
 import { getSession } from "@/lib/api/auth";
 import { createClient, listClients, updateClient, type ClientOption } from "@/lib/api/cases";
@@ -996,6 +998,7 @@ function UserPanel({
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [page, setPage] = useState(1);
+  const [selectedUser, setSelectedUser] = useState<DirectoryUser | null>(null);
   const [createdCredential, setCreatedCredential] = useState<{
     email: string;
     temporaryPassword: string;
@@ -1057,7 +1060,7 @@ function UserPanel({
 
   return (
     <div className="space-y-4">
-      <Panel title="User IDs & access" subtitle="Create an account and assign its access scope">
+      <section className="surface rounded-3xl p-5">
         {createdCredential ? (
           <div className="mb-5 rounded-3xl border border-accent/45 bg-gradient-to-br from-accent/20 via-card to-card p-5 shadow-[0_22px_50px_-30px_var(--accent),inset_0_1px_0_color-mix(in_oklab,white_72%,transparent)]">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -1115,9 +1118,15 @@ function UserPanel({
               )
                 mutation.mutate(generateTemporaryPassword());
             }}
-            className="grid gap-7 lg:grid-cols-[24rem_minmax(0,1fr)]"
+            className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_24rem]"
           >
-            <div className="space-y-5">
+            <div className="order-2 space-y-5 lg:col-start-2 lg:row-start-1">
+              <div>
+                <h2 className="text-sm font-semibold">User IDs & access</h2>
+                <p className="text-xs text-muted-foreground">
+                  Create an account and assign its access scope
+                </p>
+              </div>
               <FieldLabel label="Full name" hint="Shown across assignments and audit history">
                 <input
                   value={displayName}
@@ -1176,9 +1185,27 @@ function UserPanel({
                   ) : null}
                 </FieldLabel>
               ) : null}
+              <div className="flex flex-col gap-3">
+                <button
+                  disabled={
+                    mutation.isPending ||
+                    displayName.trim().length < 2 ||
+                    !email.includes("@") ||
+                    !roleCodes.length ||
+                    (requiresClient && !clientId)
+                  }
+                  className="h-12 shrink-0 rounded-full bg-primary px-7 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-float)] disabled:bg-muted-foreground/55 disabled:shadow-none"
+                >
+                  {mutation.isPending ? "Creating…" : "Create user ID"}
+                </button>
+                <p className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <ShieldCheck className="h-4 w-4" /> A temporary password is generated once, after
+                  the account is created.
+                </p>
+              </div>
             </div>
 
-            <div className="-mt-0.5 self-start">
+            <div className="order-1 self-start lg:col-start-1 lg:row-start-1">
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold">Choose role</p>
@@ -1223,29 +1250,13 @@ function UserPanel({
                   </button>
                 ))}
               </div>
-
-              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <button
-                  disabled={
-                    mutation.isPending ||
-                    displayName.trim().length < 2 ||
-                    !email.includes("@") ||
-                    !roleCodes.length ||
-                    (requiresClient && !clientId)
-                  }
-                  className="h-12 shrink-0 rounded-full bg-primary px-7 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-float)] disabled:bg-muted-foreground/55 disabled:shadow-none"
-                >
-                  {mutation.isPending ? "Creating…" : "Create user ID"}
-                </button>
-                <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <ShieldCheck className="h-4 w-4" /> A temporary password is generated once, after
-                  the account is created.
-                </p>
-              </div>
+              <RolePermissionPreview
+                roles={roles.filter((role) => roleCodes.includes(role.code))}
+              />
             </div>
           </form>
         ) : null}
-      </Panel>
+      </section>
 
       <Panel
         title="User directory"
@@ -1292,7 +1303,12 @@ function UserPanel({
           {visibleUsers.length ? (
             <div className="space-y-2">
               {visibleUsers.map((user) => (
-                <UserRow key={user.id} user={user} canWrite={canWrite} />
+                <UserRow
+                  key={user.id}
+                  user={user}
+                  canWrite={canWrite}
+                  onManage={() => setSelectedUser(user)}
+                />
               ))}
             </div>
           ) : (
@@ -1307,11 +1323,22 @@ function UserPanel({
           />
         </div>
       </Panel>
+      {selectedUser ? (
+        <UserAccessDrawer user={selectedUser} roles={roles} onClose={() => setSelectedUser(null)} />
+      ) : null}
     </div>
   );
 }
 
-function UserRow({ user, canWrite }: { user: DirectoryUser; canWrite: boolean }) {
+function UserRow({
+  user,
+  canWrite,
+  onManage,
+}: {
+  user: DirectoryUser;
+  canWrite: boolean;
+  onManage: () => void;
+}) {
   const queryClient = useQueryClient();
   const [revealedPassword, setRevealedPassword] = useState("");
   const status = useMutation({
@@ -1387,6 +1414,13 @@ function UserRow({ user, canWrite }: { user: DirectoryUser; canWrite: boolean })
               </button>
             </>
           ) : null}
+          <button
+            type="button"
+            onClick={onManage}
+            className="h-9 rounded-full border border-border bg-card px-3 text-[10px] font-semibold shadow-sm"
+          >
+            Details
+          </button>
         </div>
       </div>
       {revealedPassword ? (

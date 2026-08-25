@@ -4,7 +4,9 @@ import type {
   FieldExecutionPolicy,
   OfflinePhoto,
 } from "@/features/field/types";
+import type { GeoFix } from "@/components/field/geo";
 import { apiRequest } from "./client";
+import { apiDownload } from "./client";
 
 export function getMyFieldVisits() {
   return apiRequest<{ items: ApiFieldVisit[]; policy: FieldExecutionPolicy }>("/field-visits/mine");
@@ -43,17 +45,50 @@ export function reviewFieldException(
   );
 }
 
+export async function viewFieldEvidence(evidenceId: string) {
+  const blob = await apiDownload(`/field-evidence/${evidenceId}/content`);
+  const url = URL.createObjectURL(blob);
+  const opened = window.open(url, "_blank", "noopener,noreferrer");
+  if (!opened) {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `field-evidence-${evidenceId}.jpg`;
+    link.click();
+  }
+  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+}
+
 export function uploadVisitEvidence(visitId: string, photo: OfflinePhoto) {
   const body = new FormData();
   body.append("file", photo.blob, photo.name);
   return apiRequest<{ id: string }>(`/field-visits/${visitId}/evidence`, {
     method: "POST",
-    headers: { "x-captured-at": photo.capturedAt },
+    headers: { "x-captured-at": photo.capturedAt, "x-evidence-id": photo.id },
     body,
   });
 }
 
-export function completeFieldVisit(visit: ApiFieldVisit, draft: FieldDraft) {
+export function checkInFieldVisit(visit: ApiFieldVisit, fix: GeoFix, version = visit.version) {
+  return apiRequest<{ id: string; status: string; checkedInAt: string; version: number }>(
+    `/field-visits/${visit.id}/check-in`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        latitude: fix.lat,
+        longitude: fix.lng,
+        accuracyMeters: fix.accuracy,
+        capturedAt: fix.capturedAt,
+        version,
+      }),
+    },
+  );
+}
+
+export function completeFieldVisit(
+  visit: ApiFieldVisit,
+  draft: FieldDraft,
+  version = visit.version,
+) {
   if (!draft.checkOut) throw new Error("GPS check-out is required");
   return apiRequest<{
     id: string;
@@ -69,7 +104,7 @@ export function completeFieldVisit(visit: ApiFieldVisit, draft: FieldDraft) {
       longitude: draft.checkOut.lng,
       accuracyMeters: draft.checkOut.accuracy,
       capturedAt: draft.checkOut.capturedAt,
-      version: visit.version,
+      version,
       checklist: draft.checklist,
       remarks: draft.remarks || undefined,
     }),

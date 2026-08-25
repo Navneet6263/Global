@@ -7,12 +7,17 @@ export interface VerificationTask {
   dueAt?: string | null;
   startedAt?: string | null;
   completedAt?: string | null;
+  blockerReason?: string | null;
+  blockedAt?: string | null;
   version: number;
   check: {
     publicId: string;
     type: string;
     status: string;
+    result?: string | null;
+    riskLevel?: string | null;
     sourceSummary?: string | null;
+    findings: Array<FindingInput & { publicId: string }>;
     case: {
       publicId: string;
       caseNumber: string;
@@ -31,9 +36,25 @@ export interface FindingInput {
   source?: string;
 }
 
-export function getMyTasks(status?: string) {
-  const query = status ? `?status=${encodeURIComponent(status)}` : "";
-  return apiRequest<{ items: VerificationTask[] }>(`/tasks/mine${query}`);
+export function getMyTasks(
+  input: {
+    status?: string;
+    view?: "ACTIVE";
+    search?: string;
+    cursor?: string;
+    limit?: number;
+  } = {},
+) {
+  const params = new URLSearchParams();
+  Object.entries(input).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") params.set(key, String(value));
+  });
+  const query = params.toString();
+  return apiRequest<{
+    items: VerificationTask[];
+    nextCursor?: string | null;
+    summary: { active: number; overdue: number; blocked: number; completedToday: number };
+  }>(`/tasks/mine${query ? `?${query}` : ""}`);
 }
 
 export function updateTask(

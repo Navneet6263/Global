@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   BarChart3,
@@ -8,13 +8,14 @@ import {
   CircleDollarSign,
   ClipboardCheck,
   LayoutDashboard,
+  LogOut,
   MapPinCheck,
   Menu,
   ShieldCheck,
   UserRoundCog,
   UsersRound,
 } from "lucide-react";
-import { getSession } from "@/lib/api/auth";
+import { getSession, logout } from "@/lib/api/auth";
 import { canAccessWorkspace } from "@/lib/auth/workspace-access";
 
 import {
@@ -43,7 +44,15 @@ const items = [
 
 export function MobileWorkspaceNav() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const queryClient = useQueryClient();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSettled: () => {
+      queryClient.clear();
+      window.location.assign("/login");
+    },
+  });
 
   return (
     <Sheet>
@@ -58,9 +67,9 @@ export function MobileWorkspaceNav() {
       </SheetTrigger>
       <SheetContent
         side="left"
-        className="w-[88vw] max-w-sm overflow-y-auto border-0 bg-background p-4"
+        className="flex h-full w-[88vw] max-w-sm flex-col overflow-hidden border-0 bg-background p-4"
       >
-        <SheetHeader className="border-b border-border/60 px-1 pb-4 text-left">
+        <SheetHeader className="shrink-0 border-b border-border/60 px-1 pb-4 text-left">
           <SheetTitle className="flex items-center gap-2">
             <span className="grid h-9 w-9 place-items-center rounded-2xl bg-primary text-primary-foreground">
               <ShieldCheck className="h-4 w-4" />
@@ -70,7 +79,7 @@ export function MobileWorkspaceNav() {
           <SheetDescription>Choose an authorized workspace</SheetDescription>
         </SheetHeader>
 
-        <nav className="mt-4 space-y-1">
+        <nav className="mt-4 min-h-0 flex-1 space-y-1 overflow-y-auto">
           {items
             .filter((item) => !session.data || canAccessWorkspace(session.data, item.to))
             .map((item) => {
@@ -93,13 +102,21 @@ export function MobileWorkspaceNav() {
             })}
         </nav>
 
-        <div className="mt-6 rounded-3xl bg-secondary/70 p-4">
+        <div className="mt-4 shrink-0 rounded-2xl bg-secondary/70 p-3">
           <p className="text-xs font-semibold">Secure operations</p>
           <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">
             Navigation is filtered by your signed-in role; every API action is checked again by the
             backend.
           </p>
         </div>
+        <button
+          type="button"
+          onClick={() => logoutMutation.mutate()}
+          disabled={logoutMutation.isPending}
+          className="mt-3 flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+        >
+          <LogOut className="h-4 w-4" /> {logoutMutation.isPending ? "Signing out…" : "Logout"}
+        </button>
       </SheetContent>
     </Sheet>
   );

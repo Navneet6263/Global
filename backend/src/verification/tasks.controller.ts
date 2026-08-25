@@ -9,6 +9,7 @@ import {
   Query,
 } from "@nestjs/common";
 import { IsIn, IsOptional } from "class-validator";
+import { PageQueryDto } from "../common/dto/page-query.dto";
 import {
   CurrentActor,
   RequirePermissions,
@@ -19,10 +20,14 @@ import { CreateTaskDto } from "./dto/create-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { TasksService } from "./tasks.service";
 
-class TaskQueryDto {
+class TaskQueryDto extends PageQueryDto {
   @IsOptional()
   @IsIn(["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED", "COMPLETED"])
   status?: string;
+
+  @IsOptional()
+  @IsIn(["ACTIVE"])
+  view?: string;
 }
 
 @Controller()
@@ -32,7 +37,7 @@ export class TasksController {
   @Get("tasks/mine")
   @RequirePermissions(Permission.TaskRead)
   mine(@CurrentActor() actor: Actor, @Query() query: TaskQueryDto) {
-    return this.tasks.mine(actor, query.status);
+    return this.tasks.mine(actor, query);
   }
 
   @Post("checks/:checkId/tasks")

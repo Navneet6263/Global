@@ -13,6 +13,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { QaDecisionDto } from "./dto/qa-decision.dto";
+import { ClaimQaCaseDto } from "./dto/claim-qa-case.dto";
 import { QaService } from "./qa.service";
 
 @Controller("qa")
@@ -23,6 +24,15 @@ export class QaController {
   @Get("queue")
   queue(@CurrentActor() actor: Actor) {
     return this.qa.queue(actor);
+  }
+
+  @Post("cases/:caseId/claim")
+  claim(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Body() input: ClaimQaCaseDto,
+  ) {
+    return this.qa.claim(actor, caseId, input.caseVersion);
   }
 
   @Post("cases/:caseId/decision")

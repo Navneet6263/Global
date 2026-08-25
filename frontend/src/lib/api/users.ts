@@ -62,3 +62,16 @@ export function listUsers(role?: string) {
   const query = role ? `?role=${encodeURIComponent(role)}` : "";
   return apiRequest<{ items: DirectoryUser[] }>(`/users${query}`);
 }
+
+export function getUserActivity(userId: string) {
+  return apiRequest<{
+    items: Array<{
+      id: string;
+      action: string;
+      ipAddress?: string | null;
+      afterJson?: string | null;
+      createdAt: string;
+      actor?: { displayName: string } | null;
+    }>;
+  }>(`/users/${userId}/activity`);
+}

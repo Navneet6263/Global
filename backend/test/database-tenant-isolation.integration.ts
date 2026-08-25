@@ -40,10 +40,10 @@ void test(
         prisma.$transaction(
           async (tx) => {
             const tenantA = await tx.tenant.create({
-              data: { code: tenantCodes[0], name: "Integration tenant A" },
+              data: { code: tenantCodes[0]!, name: "Integration tenant A" },
             });
             const tenantB = await tx.tenant.create({
-              data: { code: tenantCodes[1], name: "Integration tenant B" },
+              data: { code: tenantCodes[1]!, name: "Integration tenant B" },
             });
 
             const [clientA1, clientA2, clientB] = await Promise.all([

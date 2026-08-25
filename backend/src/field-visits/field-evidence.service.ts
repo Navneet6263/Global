@@ -3,6 +3,7 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  StreamableFile,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createHash, randomUUID } from "node:crypto";
@@ -28,8 +29,17 @@ export class FieldEvidenceService {
     visitPublicId: string,
     file: UploadedBinary,
     capturedAt?: string,
+    clientEvidenceId?: string,
   ) {
     if (!file) throw new BadRequestException("An evidence image is required");
+    if (
+      clientEvidenceId &&
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        clientEvidenceId,
+      )
+    ) {
+      throw new BadRequestException("Evidence identifier is invalid");
+    }
     const evidenceCapturedAt = capturedAt ? new Date(capturedAt) : new Date();
     if (Number.isNaN(evidenceCapturedAt.getTime())) {
       throw new BadRequestException("Evidence capture time is invalid");
@@ -46,6 +56,25 @@ export class FieldEvidenceService {
       },
     });
     if (!visit) throw new NotFoundException("Assigned field visit not found");
+    if (clientEvidenceId) {
+      const existing = await this.prisma.evidenceItem.findFirst({
+        where: {
+          publicId: clientEvidenceId,
+          fieldVisitId: visit.id,
+          uploadedById: actor.userId,
+        },
+        select: {
+          publicId: true,
+          type: true,
+          sha256: true,
+          capturedAt: true,
+          createdAt: true,
+        },
+      });
+      if (existing) {
+        return { id: existing.publicId, ...existing, publicId: undefined };
+      }
+    }
     if (!["ASSIGNED", "IN_PROGRESS"].includes(visit.status)) {
       throw new BadRequestException("This visit is not accepting new evidence");
     }
@@ -69,7 +98,7 @@ export class FieldEvidenceService {
       this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
     );
 
-    const publicId = randomUUID();
+    const publicId = clientEvidenceId ?? randomUUID();
     const objectKey = `${visit.tenant.publicId}/${visit.case.publicId}/visits/${visit.publicId}/${publicId}`;
     const sha256 = createHash("sha256").update(file.buffer).digest("hex");
     await this.storage.put(objectKey, file.buffer);
@@ -121,6 +150,43 @@ export class FieldEvidenceService {
       throw error;
     }
     return { id: evidence.publicId, ...evidence, publicId: undefined };
+  }
+
+  async download(actor: Actor, evidencePublicId: string) {
+    const fieldExecutive = actor.roles.includes("FIELD_EXECUTIVE");
+    const evidence = await this.prisma.evidenceItem.findFirst({
+      where: {
+        publicId: evidencePublicId,
+        fieldVisit: {
+          tenantId: actor.tenantId,
+          ...(fieldExecutive ? { assigneeId: actor.userId } : {}),
+        },
+      },
+      select: {
+        objectKey: true,
+        contentType: true,
+        type: true,
+        fieldVisit: { select: { publicId: true } },
+      },
+    });
+    if (!evidence) throw new NotFoundException("Field evidence not found");
+    const contents = await this.storage.get(evidence.objectKey);
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        action: "field_evidence.viewed",
+        resourceType: "field_evidence",
+        resourcePublicId: evidencePublicId,
+        afterJson: JSON.stringify({
+          fieldVisitId: evidence.fieldVisit.publicId,
+        }),
+      },
+    });
+    return new StreamableFile(contents, {
+      type: evidence.contentType,
+      disposition: `inline; filename="field-${evidence.type.toLowerCase()}-${evidencePublicId}.jpg"`,
+    });
   }
 
   private async deleteIfUnreferenced(objectKey: string): Promise<void> {

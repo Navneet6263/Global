@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
 } from "@nestjs/common";
@@ -14,6 +15,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
+import { CancelInvoiceDto } from "./dto/cancel-invoice.dto";
 import { ListInvoicesDto } from "./dto/list-invoices.dto";
 import { RecordPaymentDto } from "./dto/record-payment.dto";
 import { FinanceService } from "./finance.service";
@@ -57,5 +59,15 @@ export class FinanceController {
     @Body() input: RecordPaymentDto,
   ) {
     return this.finance.recordPayment(actor, invoiceId, input);
+  }
+
+  @Patch("invoices/:invoiceId/cancel")
+  @RequirePermissions(Permission.FinanceWrite)
+  cancelInvoice(
+    @CurrentActor() actor: Actor,
+    @Param("invoiceId", ParseUUIDPipe) invoiceId: string,
+    @Body() input: CancelInvoiceDto,
+  ) {
+    return this.finance.cancelInvoice(actor, invoiceId, input);
   }
 }

@@ -8,6 +8,9 @@ void test("terminal case states cannot transition", () => {
 });
 
 void test("QA cannot be bypassed on the normal completion path", () => {
-  assert.equal(caseTransitions.IN_PROGRESS.includes("COMPLETED"), false);
-  assert.equal(caseTransitions.QA_REVIEW.includes("COMPLETED"), true);
+  assert.equal(
+    (caseTransitions.IN_PROGRESS ?? []).includes("COMPLETED"),
+    false,
+  );
+  assert.equal((caseTransitions.QA_REVIEW ?? []).includes("COMPLETED"), true);
 });

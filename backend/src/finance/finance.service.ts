@@ -9,6 +9,7 @@ import { randomBytes } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CreateInvoiceDto } from "./dto/create-invoice.dto";
+import type { CancelInvoiceDto } from "./dto/cancel-invoice.dto";
 import type { ListInvoicesDto } from "./dto/list-invoices.dto";
 import type { RecordPaymentDto } from "./dto/record-payment.dto";
 import { InvoicePdfService } from "./invoice-pdf.service";
@@ -119,6 +120,10 @@ export class FinanceService {
     }));
     return {
       summary: {
+        invoiceCount: invoices.length,
+        openInvoiceCount: invoices.filter(
+          (item) => !["PAID", "CANCELLED"].includes(item.status),
+        ).length,
         billed,
         collected,
         outstanding,
@@ -157,9 +162,15 @@ export class FinanceService {
       },
       select: invoiceSelect,
       orderBy: [{ dueAt: "asc" }, { createdAt: "desc" }],
-      take: 500,
+      take: query.limit + 1,
+      ...(query.cursor ? { cursor: { publicId: query.cursor }, skip: 1 } : {}),
     });
-    return { items: rows.map((row) => this.present(row, now)) };
+    const hasMore = rows.length > query.limit;
+    const page = hasMore ? rows.slice(0, query.limit) : rows;
+    return {
+      items: page.map((row) => this.present(row, now)),
+      nextCursor: hasMore ? page.at(-1)?.publicId : null,
+    };
   }
 
   async create(actor: Actor, input: CreateInvoiceDto) {
@@ -398,6 +409,57 @@ export class FinanceService {
         invoiceVersion: input.version + 1,
         paidAmount: nextPaid,
       };
+    });
+  }
+
+  async cancelInvoice(actor: Actor, publicId: string, input: CancelInvoiceDto) {
+    const invoice = await this.prisma.invoice.findFirst({
+      where: { tenantId: actor.tenantId, publicId },
+      select: {
+        id: true,
+        invoiceNumber: true,
+        status: true,
+        paidAmount: true,
+        version: true,
+      },
+    });
+    if (!invoice) throw new NotFoundException("Invoice not found");
+    if (invoice.version !== input.version)
+      throw new ConflictException("Invoice changed; refresh and try again");
+    if (invoice.status === "CANCELLED")
+      return { id: publicId, status: "CANCELLED", version: invoice.version };
+    if (invoice.status === "PAID" || Number(invoice.paidAmount) > 0) {
+      throw new ConflictException(
+        "An invoice with recorded payments cannot be cancelled; reconcile it with a credit entry",
+      );
+    }
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.invoice.updateMany({
+        where: {
+          id: invoice.id,
+          version: input.version,
+          status: { not: "CANCELLED" },
+        },
+        data: { status: "CANCELLED", version: { increment: 1 } },
+      });
+      if (updated.count !== 1)
+        throw new ConflictException("Invoice was updated concurrently");
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "finance.invoice.cancelled",
+          resourceType: "invoice",
+          resourcePublicId: publicId,
+          beforeJson: JSON.stringify({ status: invoice.status }),
+          afterJson: JSON.stringify({
+            status: "CANCELLED",
+            reason: input.reason.trim(),
+            version: input.version + 1,
+          }),
+        },
+      });
+      return { id: publicId, status: "CANCELLED", version: input.version + 1 };
     });
   }
 

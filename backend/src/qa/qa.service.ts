@@ -12,6 +12,14 @@ import type { QaDecisionDto } from "./dto/qa-decision.dto";
 export class QaService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private readonly requiredChecklist = [
+    "Candidate identity and case scope verified",
+    "All check results and source summaries reviewed",
+    "Supporting evidence is complete and readable",
+    "Discrepancies and risk ratings are consistent",
+    "Report language is factual and non-discriminatory",
+  ];
+
   async queue(actor: Actor) {
     const rows = await this.prisma.verificationCase.findMany({
       where: { tenantId: actor.tenantId, status: "QA_REVIEW" },
@@ -21,6 +29,9 @@ export class QaService {
         priority: true,
         dueAt: true,
         version: true,
+        createdAt: true,
+        qaClaimedAt: true,
+        qaReviewer: { select: { publicId: true, displayName: true } },
         subject: { select: { publicId: true, fullName: true } },
         client: { select: { publicId: true, displayName: true } },
         checks: {
@@ -30,14 +41,146 @@ export class QaService {
             result: true,
             riskLevel: true,
             status: true,
+            sourceSummary: true,
+            updatedAt: true,
+            findings: {
+              select: {
+                publicId: true,
+                kind: true,
+                severity: true,
+                title: true,
+                description: true,
+                source: true,
+              },
+              orderBy: { createdAt: "asc" },
+            },
+            tasks: {
+              where: { status: "COMPLETED" },
+              select: {
+                completedAt: true,
+                completedBy: { select: { publicId: true, displayName: true } },
+              },
+              orderBy: { completedAt: "desc" },
+              take: 1,
+            },
           },
+        },
+        documents: {
+          select: {
+            publicId: true,
+            type: true,
+            status: true,
+            currentVersion: true,
+            versions: {
+              select: {
+                originalName: true,
+                contentType: true,
+                sha256: true,
+                malwareState: true,
+                createdAt: true,
+              },
+              orderBy: { version: "desc" },
+              take: 1,
+            },
+          },
+          orderBy: { createdAt: "asc" },
+        },
+        fieldVisits: {
+          select: {
+            publicId: true,
+            status: true,
+            address: true,
+            distanceMeters: true,
+            capturedAt: true,
+            evidence: {
+              select: {
+                publicId: true,
+                type: true,
+                sha256: true,
+                capturedAt: true,
+              },
+              orderBy: { capturedAt: "asc" },
+            },
+          },
+          orderBy: { createdAt: "desc" },
         },
       },
       orderBy: [{ dueAt: "asc" }, { createdAt: "asc" }],
       take: 100,
     });
+    const now = Date.now();
+    const items = rows.map(({ publicId, ...row }) => ({
+      id: publicId,
+      ...row,
+    }));
     return {
-      items: rows.map(({ publicId, ...row }) => ({ id: publicId, ...row })),
+      items,
+      summary: {
+        awaiting: items.length,
+        overdue: items.filter(
+          (item) => item.dueAt && new Date(item.dueAt).getTime() < now,
+        ).length,
+        highRisk: items.filter((item) =>
+          item.checks.some((check) =>
+            ["HIGH", "CRITICAL"].includes(check.riskLevel ?? ""),
+          ),
+        ).length,
+        claimed: items.filter((item) => item.qaReviewer !== null).length,
+      },
+    };
+  }
+
+  async claim(actor: Actor, casePublicId: string, caseVersion: number) {
+    const record = await this.prisma.verificationCase.findFirst({
+      where: { tenantId: actor.tenantId, publicId: casePublicId },
+      select: {
+        id: true,
+        status: true,
+        version: true,
+        qaReviewerId: true,
+        qaClaimedAt: true,
+      },
+    });
+    if (!record) throw new NotFoundException("Case not found");
+    if (record.status !== "QA_REVIEW")
+      throw new ConflictException("Case is not awaiting QA review");
+    if (record.version !== caseVersion)
+      throw new ConflictException("Case changed; refresh and try again");
+    const expired =
+      !record.qaClaimedAt ||
+      record.qaClaimedAt < new Date(Date.now() - 30 * 60_000);
+    if (
+      record.qaReviewerId &&
+      record.qaReviewerId !== actor.userId &&
+      !expired
+    ) {
+      throw new ConflictException(
+        "Another reviewer is currently working on this case",
+      );
+    }
+    const updated = await this.prisma.verificationCase.updateMany({
+      where: { id: record.id, version: caseVersion },
+      data: {
+        qaReviewerId: actor.userId,
+        qaClaimedAt: new Date(),
+        version: { increment: 1 },
+      },
+    });
+    if (updated.count !== 1)
+      throw new ConflictException("Case was claimed by another reviewer");
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        action: "qa.case-claimed",
+        resourceType: "case",
+        resourcePublicId: casePublicId,
+      },
+    });
+    return {
+      id: casePublicId,
+      claimedBy: actor.userPublicId,
+      caseVersion: caseVersion + 1,
     };
   }
 
@@ -45,7 +188,34 @@ export class QaService {
     const verificationCase = await this.prisma.verificationCase.findFirst({
       where: { tenantId: actor.tenantId, publicId: casePublicId },
       include: {
-        checks: { select: { id: true, publicId: true, status: true } },
+        checks: {
+          select: {
+            id: true,
+            publicId: true,
+            status: true,
+            dueAt: true,
+            findings: {
+              select: {
+                kind: true,
+                severity: true,
+                title: true,
+                description: true,
+                source: true,
+              },
+            },
+            tasks: {
+              where: { status: "COMPLETED" },
+              select: {
+                assigneeId: true,
+                completedById: true,
+                dueAt: true,
+                instructions: true,
+              },
+              orderBy: { completedAt: "desc" },
+              take: 1,
+            },
+          },
+        },
       },
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
@@ -53,6 +223,28 @@ export class QaService {
       throw new ConflictException("Case is not awaiting QA review");
     if (verificationCase.version !== input.caseVersion)
       throw new ConflictException("Case changed; refresh and try again");
+    if (verificationCase.qaReviewerId !== actor.userId) {
+      throw new ConflictException(
+        "Claim this case before submitting a QA decision",
+      );
+    }
+    if (
+      verificationCase.checks.some((check) =>
+        check.tasks.some((task) => task.completedById === actor.userId),
+      )
+    ) {
+      throw new BadRequestException(
+        "A verifier cannot independently QA their own completed work",
+      );
+    }
+    if (
+      input.checklist.length !== this.requiredChecklist.length ||
+      this.requiredChecklist.some((item) => !input.checklist.includes(item))
+    ) {
+      throw new BadRequestException(
+        "Complete the full controlled QA checklist",
+      );
+    }
     if (verificationCase.checks.some((check) => check.status !== "COMPLETED")) {
       throw new BadRequestException(
         "All checks must be completed before QA decision",
@@ -95,6 +287,8 @@ export class QaService {
         data: {
           status: nextStatus,
           completedAt: input.decision === "APPROVED" ? new Date() : null,
+          qaReviewerId: null,
+          qaClaimedAt: null,
           version: { increment: 1 },
         },
       });
@@ -110,14 +304,62 @@ export class QaService {
         },
       });
       if (input.decision === "REWORK") {
-        await tx.caseCheck.updateMany({
-          where: { caseId: verificationCase.id, publicId: { in: [...rework] } },
-          data: {
-            status: "IN_PROGRESS",
-            completedAt: null,
-            version: { increment: 1 },
-          },
-        });
+        for (const check of verificationCase.checks.filter((item) =>
+          rework.has(item.publicId),
+        )) {
+          const previousTask = check.tasks[0];
+          await tx.caseCheck.update({
+            where: { id: check.id },
+            data: {
+              status: previousTask?.assigneeId ? "ASSIGNED" : "PENDING",
+              result: null,
+              riskLevel: null,
+              sourceSummary: null,
+              completedAt: null,
+              version: { increment: 1 },
+            },
+          });
+          const task = await tx.checkTask.create({
+            data: {
+              tenantId: actor.tenantId,
+              checkId: check.id,
+              assigneeId: previousTask?.assigneeId,
+              status: previousTask?.assigneeId ? "OPEN" : "UNASSIGNED",
+              instructions: `QA rework required: ${input.notes.trim()}`.slice(
+                0,
+                1000,
+              ),
+              dueAt: check.dueAt ?? previousTask?.dueAt,
+            },
+            select: { publicId: true },
+          });
+          if (previousTask?.assigneeId) {
+            await tx.notification.create({
+              data: {
+                tenantId: actor.tenantId,
+                userId: previousTask.assigneeId,
+                type: "QA_REWORK",
+                title: "Verification rework required",
+                body: input.notes.trim(),
+                href: "/verifier",
+              },
+            });
+          }
+          await tx.auditEvent.create({
+            data: {
+              tenantId: actor.tenantId,
+              actorUserId: actor.userId,
+              action: "qa.rework-task-created",
+              resourceType: "task",
+              resourcePublicId: task.publicId,
+              beforeJson: JSON.stringify({ findings: check.findings }),
+              afterJson: JSON.stringify({
+                checkId: check.publicId,
+                assigneeId: previousTask?.assigneeId?.toString(),
+              }),
+            },
+          });
+        }
       } else {
         const report = await tx.report.create({
           data: { tenantId: actor.tenantId, caseId: verificationCase.id },

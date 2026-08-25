@@ -7,6 +7,7 @@ import { ConfigService } from "@nestjs/config";
 import { JwtService, type JwtSignOptions } from "@nestjs/jwt";
 import { createHash, randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import type { PageQueryDto } from "../common/dto/page-query.dto";
 import { PrismaService } from "../database/prisma.service";
 import type { LoginDto } from "./dto/login.dto";
 import { hashPassword, verifyPassword } from "./password";
@@ -59,15 +60,31 @@ export class AuthService {
     ) {
       if (user) {
         const failedLoginCount = user.failedLoginCount + 1;
-        await this.prisma.user.update({
-          where: { id: user.id },
-          data: {
-            failedLoginCount,
-            lockedUntil:
-              failedLoginCount >= MAX_FAILED_LOGINS
-                ? new Date(Date.now() + LOCKOUT_MS)
-                : user.lockedUntil,
-          },
+        await this.prisma.$transaction(async (tx) => {
+          await tx.user.update({
+            where: { id: user.id },
+            data: {
+              failedLoginCount,
+              lockedUntil:
+                failedLoginCount >= MAX_FAILED_LOGINS
+                  ? new Date(Date.now() + LOCKOUT_MS)
+                  : user.lockedUntil,
+            },
+          });
+          await tx.auditEvent.create({
+            data: {
+              tenantId: user.tenantId,
+              actorUserId: user.id,
+              action: "auth.login.failed",
+              resourceType: "user",
+              resourcePublicId: user.publicId,
+              ipAddress: meta.ipAddress,
+              afterJson: JSON.stringify({
+                failedLoginCount,
+                locked: failedLoginCount >= MAX_FAILED_LOGINS,
+              }),
+            },
+          });
         });
       }
       throw new UnauthorizedException("Invalid workspace, email, or password");
@@ -79,7 +96,11 @@ export class AuthService {
     const [, tokens] = await Promise.all([
       this.prisma.user.update({
         where: { id: user.id },
-        data: { failedLoginCount: 0, lockedUntil: null, lastLoginAt: new Date() },
+        data: {
+          failedLoginCount: 0,
+          lockedUntil: null,
+          lastLoginAt: new Date(),
+        },
       }),
       this.issueTokens(
         user.id,
@@ -91,6 +112,17 @@ export class AuthService {
       ),
     ]);
     const roles = user.userRoles.map(({ role }) => role.code);
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: user.tenantId,
+        actorUserId: user.id,
+        action: "auth.login.succeeded",
+        resourceType: "user",
+        resourcePublicId: user.publicId,
+        ipAddress: meta.ipAddress,
+        afterJson: JSON.stringify({ userAgent: meta.userAgent?.slice(0, 300) }),
+      },
+    });
     const permissions = [
       ...new Set(
         user.userRoles.flatMap(({ role }) => {
@@ -221,6 +253,7 @@ export class AuthService {
         publicId: true,
         userAgent: true,
         ipAddress: true,
+        deviceName: true,
         createdAt: true,
         expiresAt: true,
       },
@@ -234,6 +267,82 @@ export class AuthService {
         current: publicId === currentSessionId,
       })),
     };
+  }
+
+  async securityEvents(actor: Actor, query: PageQueryDto) {
+    const where = {
+      tenantId: actor.tenantId,
+      actorUserId: actor.userId,
+      action: { startsWith: "auth." },
+    } as const;
+    const [rows, total, attention] = await Promise.all([
+      this.prisma.auditEvent.findMany({
+        where,
+        select: {
+          publicId: true,
+          action: true,
+          ipAddress: true,
+          afterJson: true,
+          createdAt: true,
+        },
+        orderBy: [{ createdAt: "desc" }, { publicId: "desc" }],
+        take: query.limit + 1,
+        ...(query.cursor
+          ? { cursor: { publicId: query.cursor }, skip: 1 }
+          : {}),
+      }),
+      this.prisma.auditEvent.count({ where }),
+      this.prisma.auditEvent.count({
+        where: {
+          ...where,
+          OR: [
+            { action: { contains: "failed" } },
+            { action: { contains: "reuse" } },
+          ],
+        },
+      }),
+    ]);
+    const hasMore = rows.length > query.limit;
+    const page = hasMore ? rows.slice(0, query.limit) : rows;
+    return {
+      items: page.map(({ publicId: id, ...event }) => ({
+        id,
+        ...event,
+        risk:
+          event.action.includes("failed") || event.action.includes("reuse")
+            ? "ATTENTION"
+            : "NORMAL",
+      })),
+      nextCursor: hasMore ? page.at(-1)?.publicId : null,
+      summary: { total, attention },
+    };
+  }
+
+  async renameSession(actor: Actor, sessionPublicId: string, name: string) {
+    const updated = await this.prisma.refreshSession.updateMany({
+      where: {
+        userId: actor.userId,
+        publicId: sessionPublicId,
+        revokedAt: null,
+      },
+      data: { deviceName: name.trim() },
+    });
+    if (updated.count !== 1)
+      throw new NotFoundException("Active session not found");
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        action: "auth.session.renamed",
+        resourceType: "user",
+        resourcePublicId: actor.userPublicId,
+        afterJson: JSON.stringify({
+          sessionId: sessionPublicId,
+          name: name.trim(),
+        }),
+      },
+    });
+    return { id: sessionPublicId, name: name.trim() };
   }
 
   async revokeOtherSessions(actor: Actor) {

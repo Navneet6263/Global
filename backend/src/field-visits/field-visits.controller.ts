@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Req,
+  StreamableFile,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import type { FastifyRequest } from "fastify";
@@ -19,6 +20,7 @@ import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { readUploadedBinary } from "../common/http/uploaded-binary";
 import { CompleteFieldVisitDto } from "./dto/complete-field-visit.dto";
+import { CheckInFieldVisitDto } from "./dto/check-in-field-visit.dto";
 import { CreateFieldVisitDto } from "./dto/create-field-visit.dto";
 import { ReviewFieldExceptionDto } from "./dto/review-field-exception.dto";
 import { FieldEvidenceService } from "./field-evidence.service";
@@ -38,6 +40,15 @@ export class FieldVisitsController {
     return this.visits.mine(actor);
   }
 
+  @Get("field-evidence/:evidenceId/content")
+  @RequirePermissions(Permission.FieldEvidenceRead)
+  async downloadEvidence(
+    @CurrentActor() actor: Actor,
+    @Param("evidenceId", ParseUUIDPipe) evidenceId: string,
+  ): Promise<StreamableFile> {
+    return this.evidence.download(actor, evidenceId);
+  }
+
   @Post("cases/:caseId/field-visits")
   @RequirePermissions(Permission.FieldVisitWrite)
   create(
@@ -54,13 +65,24 @@ export class FieldVisitsController {
     @CurrentActor() actor: Actor,
     @Param("visitId", ParseUUIDPipe) visitId: string,
     @Headers("x-captured-at") capturedAt: string | undefined,
+    @Headers("x-evidence-id") evidenceId: string | undefined,
     @Req() request: FastifyRequest,
   ) {
     const file = await readUploadedBinary(
       request,
       this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
     );
-    return this.evidence.add(actor, visitId, file, capturedAt);
+    return this.evidence.add(actor, visitId, file, capturedAt, evidenceId);
+  }
+
+  @Post("field-visits/:visitId/check-in")
+  @RequirePermissions(Permission.FieldVisitWrite)
+  checkIn(
+    @CurrentActor() actor: Actor,
+    @Param("visitId", ParseUUIDPipe) visitId: string,
+    @Body() input: CheckInFieldVisitDto,
+  ) {
+    return this.visits.checkIn(actor, visitId, input);
   }
 
   @Patch("field-visits/:visitId/complete")

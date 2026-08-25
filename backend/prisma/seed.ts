@@ -36,6 +36,7 @@ const rolePermissions: Record<string, string[]> = {
     Permission.ReportRead,
     Permission.FieldVisitRead,
     Permission.FieldVisitWrite,
+    Permission.FieldEvidenceRead,
     Permission.AuditRead,
     Permission.UserRead,
     Permission.NotificationRead,
@@ -59,6 +60,7 @@ const rolePermissions: Record<string, string[]> = {
     Permission.QaReview,
     Permission.ReportRead,
     Permission.ReportGenerate,
+    Permission.FieldEvidenceRead,
     Permission.NotificationRead,
   ],
   CLIENT_ADMIN: [
@@ -75,6 +77,7 @@ const rolePermissions: Record<string, string[]> = {
     Permission.CaseRead,
     Permission.FieldVisitRead,
     Permission.FieldVisitWrite,
+    Permission.FieldEvidenceRead,
     Permission.NotificationRead,
   ],
   SALES_MANAGER: [
@@ -121,7 +124,7 @@ async function main(): Promise<void> {
       orderBy: { id: "asc" },
     });
     if (tenants.length === 1) {
-      existingTenant = tenants[0];
+      existingTenant = tenants[0]!;
     } else if (tenants.length > 1) {
       throw new Error(
         "Multiple tenants exist; set SEED_TENANT_CODE to the tenant being rebranded",
