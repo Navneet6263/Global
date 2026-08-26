@@ -1,6 +1,10 @@
 import "dotenv/config";
 import { PrismaMssql } from "@prisma/adapter-mssql";
 import { hashPassword } from "../src/auth/password";
+import {
+  isValidUserPassword,
+  USER_PASSWORD_REQUIREMENTS,
+} from "../src/auth/password-policy";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 const action = required("E2E_FIXTURE_ACTION");
@@ -62,8 +66,8 @@ async function main(): Promise<void> {
 
   if (existing) throw new Error("The E2E fixture user already exists");
   const password = required("E2E_ADMIN_PASSWORD");
-  if (password.length < 14) {
-    throw new Error("E2E_ADMIN_PASSWORD must contain at least 14 characters");
+  if (!isValidUserPassword(password)) {
+    throw new Error(`E2E_ADMIN_PASSWORD ${USER_PASSWORD_REQUIREMENTS}`);
   }
   const [branch, role] = await Promise.all([
     prisma.branch.findUnique({

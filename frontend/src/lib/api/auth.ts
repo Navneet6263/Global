@@ -41,6 +41,8 @@ export async function logout() {
     if (typeof indexedDB !== "undefined") {
       const { clearFieldDrafts } = await import("@/features/field/offline-store");
       await clearFieldDrafts().catch(() => undefined);
+      const { clearVerifierDrafts } = await import("@/features/delivery/verifier/verifier-draft");
+      await clearVerifierDrafts().catch(() => undefined);
     }
     if (typeof navigator !== "undefined" && "serviceWorker" in navigator) {
       navigator.serviceWorker.controller?.postMessage({ type: "PURGE_PRIVATE_CACHE" });

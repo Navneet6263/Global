@@ -17,6 +17,7 @@ interface InvoicePdfData {
   taxAmount: unknown;
   totalAmount: unknown;
   paidAmount: unknown;
+  creditedAmount: unknown;
   notes: string | null;
   createdAt: Date;
   client: {
@@ -34,6 +35,12 @@ interface InvoicePdfData {
     case: { caseNumber: string } | null;
   }>;
   payments: Array<{ amount: unknown; method: string; receivedAt: Date }>;
+  creditNotes: Array<{
+    noteNumber: string;
+    amount: unknown;
+    reason: string;
+    createdAt: Date;
+  }>;
 }
 
 @Injectable()
@@ -150,12 +157,16 @@ export class InvoicePdfService {
       page = document.addPage([595, 842]);
       y = this.continuedHeader(page, bold, data.invoiceNumber);
     }
-    const balance = Number(data.totalAmount) - Number(data.paidAmount);
+    const balance =
+      Number(data.totalAmount) -
+      Number(data.paidAmount) -
+      Number(data.creditedAmount);
     const totals: Array<[string, string, boolean?]> = [
       ["Subtotal", this.money(data.currency, data.subtotal)],
       ["Tax", this.money(data.currency, data.taxAmount)],
       ["Total", this.money(data.currency, data.totalAmount), true],
       ["Paid", this.money(data.currency, data.paidAmount)],
+      ["Credits", this.money(data.currency, data.creditedAmount)],
       ["Balance due", this.money(data.currency, balance), true],
     ];
     y -= 10;

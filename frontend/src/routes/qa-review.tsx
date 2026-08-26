@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Clock3, LockKeyhole, ShieldCheck } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { DeliveryHeader, DeliveryKpis, DeliveryShell } from "@/features/delivery/DeliveryShell";
 import { QaQueue } from "@/features/delivery/qa/QaQueue";
@@ -22,18 +22,30 @@ export const Route = createFileRoute("/qa-review")({
 function QaWorkspace() {
   const queryClient = useQueryClient();
   const [selectedId, setSelectedId] = useState<string>();
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
+  const [cursor, setCursor] = useState<string>();
+  const [cursorHistory, setCursorHistory] = useState<Array<string | undefined>>([]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setSearch(searchInput.trim());
+      setCursor(undefined);
+      setCursorHistory([]);
+      setSelectedId(undefined);
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
-  const queue = useQuery({ queryKey: ["qa", "queue"], queryFn: getQaQueue });
-  const items = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) return queue.data?.items ?? [];
-    return (queue.data?.items ?? []).filter((item) =>
-      `${item.subject.fullName} ${item.caseNumber} ${item.client.displayName}`
-        .toLowerCase()
-        .includes(term),
-    );
-  }, [queue.data?.items, search]);
+  const queue = useQuery({
+    queryKey: ["qa", "queue", search, cursor],
+    queryFn: () =>
+      getQaQueue({
+        limit: 25,
+        ...(search ? { search } : {}),
+        ...(cursor ? { cursor } : {}),
+      }),
+  });
+  const items = queue.data?.items ?? [];
   const selected = items.find((item) => item.id === selectedId) ?? items[0];
   useEffect(() => {
     if (selected && selected.id !== selectedId) setSelectedId(selected.id);
@@ -100,8 +112,24 @@ function QaWorkspace() {
           <QaQueue
             items={items}
             selectedId={selected?.id}
-            search={search}
-            onSearch={setSearch}
+            search={searchInput}
+            page={cursorHistory.length + 1}
+            hasPrevious={cursorHistory.length > 0}
+            hasNext={Boolean(queue.data?.nextCursor)}
+            onSearch={setSearchInput}
+            onPrevious={() => {
+              const history = [...cursorHistory];
+              setCursor(history.pop());
+              setCursorHistory(history);
+              setSelectedId(undefined);
+            }}
+            onNext={() => {
+              const next = queue.data?.nextCursor;
+              if (!next) return;
+              setCursorHistory((current) => [...current, cursor]);
+              setCursor(next);
+              setSelectedId(undefined);
+            }}
             onSelect={setSelectedId}
           />
           {selected ? (

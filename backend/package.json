@@ -7,7 +7,9 @@
   "scripts": {
     "build": "nest build",
     "start": "node dist/main.js",
+    "start:e2e": "nest start",
     "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
     "lint": "eslint \"{src,test,prisma}/**/*.ts\" prisma.config.ts",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"prisma/**/*.ts\"",
     "test": "tsx --test test/**/*.test.ts",
@@ -17,6 +19,7 @@
     "prisma:preflight": "tsx prisma/preflight.ts",
     "prisma:verify": "tsx prisma/verify-deployment.ts",
     "prisma:e2e-fixture": "tsx prisma/e2e-fixture.ts",
+    "prisma:dashboard-users": "tsx prisma/provision-dashboard-users.ts",
     "prisma:golden-cleanup": "tsx prisma/golden-flow-cleanup.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",

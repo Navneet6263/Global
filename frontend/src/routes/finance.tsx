@@ -4,6 +4,7 @@ import { AlertTriangle, CircleDollarSign, FilePlus2, Landmark, WalletCards } fro
 import { useEffect, useState } from "react";
 
 import { FinanceInsights } from "@/features/stakeholders/finance/FinanceInsights";
+import { CreditNoteForm } from "@/features/stakeholders/finance/CreditNoteForm";
 import { InvoiceDetailDrawer } from "@/features/stakeholders/finance/InvoiceDetailDrawer";
 import { InvoiceForm } from "@/features/stakeholders/finance/InvoiceForm";
 import { InvoiceRegister } from "@/features/stakeholders/finance/InvoiceRegister";
@@ -30,6 +31,7 @@ function FinancePage() {
   const [cursorHistory, setCursorHistory] = useState<Array<string | undefined>>([]);
   const [showCreate, setShowCreate] = useState(false);
   const [paymentFor, setPaymentFor] = useState<Invoice | null>(null);
+  const [creditFor, setCreditFor] = useState<Invoice | null>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   useEffect(() => {
     const timer = window.setTimeout(() => {
@@ -78,6 +80,7 @@ function FinancePage() {
       ) : null}
       {showCreate ? <InvoiceForm onClose={() => setShowCreate(false)} /> : null}
       {paymentFor ? <PaymentForm invoice={paymentFor} onClose={() => setPaymentFor(null)} /> : null}
+      {creditFor ? <CreditNoteForm invoice={creditFor} onClose={() => setCreditFor(null)} /> : null}
       {selectedInvoice ? (
         <InvoiceDetailDrawer
           invoice={selectedInvoice}
@@ -88,6 +91,10 @@ function FinancePage() {
           onClose={() => setSelectedInvoice(null)}
           onPayment={() => {
             setPaymentFor(selectedInvoice);
+            setSelectedInvoice(null);
+          }}
+          onCredit={() => {
+            setCreditFor(selectedInvoice);
             setSelectedInvoice(null);
           }}
         />
@@ -106,7 +113,7 @@ function FinancePage() {
             label: "Collected",
             value: money(collected),
             detail: billed
-              ? `${Math.round((collected / billed) * 100)}% revenue realised`
+              ? `${Math.round((collected / billed) * 100)}% realised · ${money(data?.summary.credited ?? 0)} credited`
               : "No collections recorded",
             icon: Landmark,
             tone: "emerald",

@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Headers,
@@ -18,6 +19,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { readUploadedBinary } from "../common/http/uploaded-binary";
+import { RespondClarificationDto } from "../clarifications/dto/respond-clarification.dto";
 import { CandidatePortalService } from "./candidate-portal.service";
 
 @Controller()
@@ -60,5 +62,24 @@ export class CandidatePortalController {
       this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
     );
     return this.portal.upload(accessId, token ?? "", type ?? "", file);
+  }
+
+  @Post(
+    "public/candidate-access/:accessId/clarifications/:clarificationId/respond",
+  )
+  @Public()
+  @Throttle({ default: { limit: 8, ttl: 60_000 } })
+  respond(
+    @Param("accessId", ParseUUIDPipe) accessId: string,
+    @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
+    @Headers("x-portal-token") token: string,
+    @Body() input: RespondClarificationDto,
+  ) {
+    return this.portal.respondToClarification(
+      accessId,
+      token ?? "",
+      clarificationId,
+      input.message,
+    );
   }
 }

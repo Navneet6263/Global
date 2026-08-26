@@ -126,12 +126,12 @@ async function main(): Promise<void> {
           key: { startsWith: `gf:${runId}:` },
         },
       });
-      if (managedUser) await deleteManagedUser(tx, managedUser);
       if (caseIds.length) {
         await tx.verificationCase.deleteMany({
           where: { id: { in: caseIds } },
         });
       }
+      if (managedUser) await deleteManagedUser(tx, managedUser);
       if (subjectIds.length) {
         await tx.subject.deleteMany({ where: { id: { in: subjectIds } } });
       }

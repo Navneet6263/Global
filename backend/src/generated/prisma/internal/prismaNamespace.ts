@@ -431,6 +431,7 @@ export const ModelName = {
   Invoice: 'Invoice',
   InvoiceLine: 'InvoiceLine',
   Payment: 'Payment',
+  CreditNote: 'CreditNote',
   Notification: 'Notification',
   CandidatePortalAccess: 'CandidatePortalAccess'
 } as const
@@ -448,7 +449,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "salesOpportunity" | "salesActivity" | "invoice" | "invoiceLine" | "payment" | "notification" | "candidatePortalAccess"
+    modelProps: "tenant" | "branch" | "user" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "salesOpportunity" | "salesActivity" | "invoice" | "invoiceLine" | "payment" | "creditNote" | "notification" | "candidatePortalAccess"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2696,6 +2697,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CreditNote: {
+      payload: Prisma.$CreditNotePayload<ExtArgs>
+      fields: Prisma.CreditNoteFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CreditNoteFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CreditNoteFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>
+        }
+        findFirst: {
+          args: Prisma.CreditNoteFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CreditNoteFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>
+        }
+        findMany: {
+          args: Prisma.CreditNoteFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>[]
+        }
+        create: {
+          args: Prisma.CreditNoteCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>
+        }
+        createMany: {
+          args: Prisma.CreditNoteCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CreditNoteDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>
+        }
+        update: {
+          args: Prisma.CreditNoteUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>
+        }
+        deleteMany: {
+          args: Prisma.CreditNoteDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CreditNoteUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CreditNoteUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CreditNotePayload>
+        }
+        aggregate: {
+          args: Prisma.CreditNoteAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCreditNote>
+        }
+        groupBy: {
+          args: Prisma.CreditNoteGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CreditNoteGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CreditNoteCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CreditNoteCountAggregateOutputType> | number
+        }
+      }
+    }
     Notification: {
       payload: Prisma.$NotificationPayload<ExtArgs>
       fields: Prisma.NotificationFieldRefs
@@ -3387,7 +3454,9 @@ export const SalesOpportunityScalarFieldEnum = {
   estimatedValue: 'estimatedValue',
   probability: 'probability',
   expectedCloseDate: 'expectedCloseDate',
+  nextFollowUpAt: 'nextFollowUpAt',
   notes: 'notes',
+  lostReason: 'lostReason',
   closedAt: 'closedAt',
   version: 'version',
   createdAt: 'createdAt',
@@ -3426,6 +3495,7 @@ export const InvoiceScalarFieldEnum = {
   taxAmount: 'taxAmount',
   totalAmount: 'totalAmount',
   paidAmount: 'paidAmount',
+  creditedAmount: 'creditedAmount',
   notes: 'notes',
   version: 'version',
   createdAt: 'createdAt',
@@ -3463,6 +3533,21 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const CreditNoteScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  invoiceId: 'invoiceId',
+  createdById: 'createdById',
+  noteNumber: 'noteNumber',
+  amount: 'amount',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type CreditNoteScalarFieldEnum = (typeof CreditNoteScalarFieldEnum)[keyof typeof CreditNoteScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {
@@ -3751,6 +3836,7 @@ export type GlobalOmitConfig = {
   invoice?: Prisma.InvoiceOmit
   invoiceLine?: Prisma.InvoiceLineOmit
   payment?: Prisma.PaymentOmit
+  creditNote?: Prisma.CreditNoteOmit
   notification?: Prisma.NotificationOmit
   candidatePortalAccess?: Prisma.CandidatePortalAccessOmit
 }

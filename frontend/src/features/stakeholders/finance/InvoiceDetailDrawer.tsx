@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Download, ReceiptText, X } from "lucide-react";
+import { BadgeIndianRupee, Download, ReceiptText, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { cancelInvoice, downloadInvoice, type Invoice } from "@/lib/api/finance";
+import { CreditNoteHistory } from "./CreditNoteHistory";
 import { formatDate, humanize, money } from "./finance-utils";
 
 export function InvoiceDetailDrawer({
@@ -11,15 +12,18 @@ export function InvoiceDetailDrawer({
   canWrite,
   onClose,
   onPayment,
+  onCredit,
 }: {
   invoice: Invoice;
   canWrite: boolean;
   onClose: () => void;
   onPayment: () => void;
+  onCredit: () => void;
 }) {
   const queryClient = useQueryClient();
   const [reason, setReason] = useState("");
-  const balance = Number(invoice.totalAmount) - Number(invoice.paidAmount);
+  const balance =
+    Number(invoice.totalAmount) - Number(invoice.paidAmount) - Number(invoice.creditedAmount);
   const cancel = useMutation({
     mutationFn: () =>
       cancelInvoice(invoice.id, { version: invoice.version, reason: reason.trim() }),
@@ -34,7 +38,10 @@ export function InvoiceDetailDrawer({
     onError: (error: Error) => toast.error(error.message),
   });
   const cancellable =
-    canWrite && Number(invoice.paidAmount) === 0 && !["PAID", "CANCELLED"].includes(invoice.status);
+    canWrite &&
+    Number(invoice.paidAmount) === 0 &&
+    Number(invoice.creditedAmount) === 0 &&
+    !["PAID", "CANCELLED", "CREDITED", "SETTLED"].includes(invoice.status);
   return (
     <div
       className="fixed inset-0 z-50 flex justify-end bg-slate-950/25 backdrop-blur-[2px]"
@@ -65,12 +72,14 @@ export function InvoiceDetailDrawer({
           </button>
         </header>
         <div className="space-y-5 p-5">
-          <section className="grid gap-3 sm:grid-cols-4">
+          <section className="grid gap-3 sm:grid-cols-5">
             <Fact label="Status" value={humanize(invoice.status)} />
             <Fact label="Subtotal" value={money(Number(invoice.subtotal))} />
             <Fact label="Tax" value={money(Number(invoice.taxAmount))} />
+            <Fact label="Credits" value={money(Number(invoice.creditedAmount))} />
             <Fact label="Balance" value={money(balance)} />
           </section>
+          <CreditNoteHistory items={invoice.creditNotes} />
           <section className="overflow-hidden rounded-2xl border border-slate-200">
             <Heading
               title="Tax and service breakdown"
@@ -143,6 +152,15 @@ export function InvoiceDetailDrawer({
                 className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-semibold text-white"
               >
                 <ReceiptText className="h-4 w-4" /> Record payment
+              </button>
+            ) : null}
+            {canWrite && balance > 0 && invoice.status !== "CANCELLED" ? (
+              <button
+                type="button"
+                onClick={onCredit}
+                className="inline-flex h-10 items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-4 text-xs font-semibold text-violet-800"
+              >
+                <BadgeIndianRupee className="h-4 w-4" /> Issue credit note
               </button>
             ) : null}
           </div>

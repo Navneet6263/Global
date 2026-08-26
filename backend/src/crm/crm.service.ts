@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,7 @@ import { PrismaService } from "../database/prisma.service";
 import type { CreateOpportunityDto } from "./dto/create-opportunity.dto";
 import type { ListOpportunitiesDto } from "./dto/list-opportunities.dto";
 import type { UpdateOpportunityDto } from "./dto/update-opportunity.dto";
+import type { CreateSalesActivityDto } from "./dto/create-sales-activity.dto";
 
 const opportunitySelect = {
   publicId: true,
@@ -20,7 +22,9 @@ const opportunitySelect = {
   estimatedValue: true,
   probability: true,
   expectedCloseDate: true,
+  nextFollowUpAt: true,
   notes: true,
+  lostReason: true,
   closedAt: true,
   version: true,
   createdAt: true,
@@ -186,14 +190,69 @@ export class CrmService {
       },
       select: opportunitySelect,
       orderBy: [{ updatedAt: "desc" }, { publicId: "asc" }],
-      take: 250,
+      take: query.limit + 1,
+      ...(query.cursor ? { cursor: { publicId: query.cursor }, skip: 1 } : {}),
+    });
+    const hasMore = rows.length > query.limit;
+    const page = hasMore ? rows.slice(0, query.limit) : rows;
+    return {
+      items: page.map(({ publicId, ...item }) => ({ id: publicId, ...item })),
+      nextCursor: hasMore ? page.at(-1)?.publicId : null,
+    };
+  }
+
+  async owners(actor: Actor) {
+    const rows = await this.prisma.user.findMany({
+      where: {
+        tenantId: actor.tenantId,
+        status: "ACTIVE",
+        userRoles: { some: { role: { code: "SALES_MANAGER" } } },
+      },
+      select: { publicId: true, displayName: true, email: true },
+      orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
+      take: 500,
     });
     return {
-      items: rows.map(({ publicId, ...item }) => ({ id: publicId, ...item })),
+      items: rows.map(({ publicId: id, ...owner }) => ({ id, ...owner })),
+    };
+  }
+
+  async detail(actor: Actor, publicId: string) {
+    const row = await this.prisma.salesOpportunity.findFirst({
+      where: { tenantId: actor.tenantId, publicId },
+      select: {
+        ...opportunitySelect,
+        activities: {
+          select: {
+            publicId: true,
+            type: true,
+            summary: true,
+            occurredAt: true,
+            actor: { select: { displayName: true } },
+          },
+          orderBy: [{ occurredAt: "desc" }, { publicId: "desc" }],
+          take: 100,
+        },
+      },
+    });
+    if (!row) throw new NotFoundException("Opportunity not found");
+    const { publicId: id, activities, ...item } = row;
+    return {
+      id,
+      ...item,
+      activities: activities.map(({ publicId: activityId, ...activity }) => ({
+        id: activityId,
+        ...activity,
+      })),
     };
   }
 
   async create(actor: Actor, input: CreateOpportunityDto) {
+    if (["WON", "LOST"].includes(input.stage)) {
+      throw new BadRequestException(
+        "A new opportunity must begin in an open pipeline stage",
+      );
+    }
     const [client, owner] = await Promise.all([
       input.clientId
         ? this.prisma.client.findFirst({
@@ -207,6 +266,7 @@ export class CrmService {
               tenantId: actor.tenantId,
               publicId: input.ownerId,
               status: "ACTIVE",
+              userRoles: { some: { role: { code: "SALES_MANAGER" } } },
             },
             select: { id: true },
           })
@@ -231,6 +291,9 @@ export class CrmService {
           probability: input.probability,
           expectedCloseDate: input.expectedCloseDate
             ? new Date(input.expectedCloseDate)
+            : undefined,
+          nextFollowUpAt: input.nextFollowUpAt
+            ? new Date(input.nextFollowUpAt)
             : undefined,
           notes: input.notes?.trim(),
           closedAt: ["WON", "LOST"].includes(input.stage)
@@ -275,12 +338,18 @@ export class CrmService {
     if (!existing) throw new NotFoundException("Opportunity not found");
     if (existing.version !== input.version)
       throw new ConflictException("Opportunity changed; refresh and try again");
+    if (input.stage === "LOST" && !input.lostReason?.trim()) {
+      throw new BadRequestException(
+        "A lost reason is required before closing an opportunity",
+      );
+    }
     const owner = input.ownerId
       ? await this.prisma.user.findFirst({
           where: {
             tenantId: actor.tenantId,
             publicId: input.ownerId,
             status: "ACTIVE",
+            userRoles: { some: { role: { code: "SALES_MANAGER" } } },
           },
           select: { id: true },
         })
@@ -290,14 +359,31 @@ export class CrmService {
       const updated = await tx.salesOpportunity.updateMany({
         where: { id: existing.id, version: input.version },
         data: {
+          companyName: input.companyName?.trim(),
+          contactName: input.contactName?.trim(),
+          contactEmail: input.contactEmail?.trim().toLowerCase(),
+          contactPhone: input.contactPhone?.trim(),
+          source: input.source?.trim().toUpperCase(),
           stage: input.stage,
-          ownerId: owner?.id,
+          ...(input.ownerId ? { ownerId: owner!.id } : {}),
           estimatedValue: input.estimatedValue,
           probability: input.probability,
           expectedCloseDate: input.expectedCloseDate
             ? new Date(input.expectedCloseDate)
             : undefined,
+          nextFollowUpAt:
+            input.stage && ["WON", "LOST"].includes(input.stage)
+              ? null
+              : input.nextFollowUpAt
+                ? new Date(input.nextFollowUpAt)
+                : undefined,
           notes: input.notes?.trim(),
+          lostReason:
+            input.stage === "LOST"
+              ? input.lostReason!.trim()
+              : input.stage
+                ? null
+                : input.lostReason?.trim(),
           closedAt:
             input.stage && ["WON", "LOST"].includes(input.stage)
               ? new Date()
@@ -348,6 +434,60 @@ export class CrmService {
       });
       const { publicId: id, ...item } = row;
       return { id, ...item };
+    });
+  }
+
+  async addActivity(
+    actor: Actor,
+    publicId: string,
+    input: CreateSalesActivityDto,
+  ) {
+    const opportunity = await this.prisma.salesOpportunity.findFirst({
+      where: { tenantId: actor.tenantId, publicId },
+      select: { id: true, stage: true },
+    });
+    if (!opportunity) throw new NotFoundException("Opportunity not found");
+    if (["WON", "LOST"].includes(opportunity.stage) && input.nextFollowUpAt) {
+      throw new BadRequestException(
+        "A closed opportunity cannot receive a new follow-up date",
+      );
+    }
+    return this.prisma.$transaction(async (tx) => {
+      const created = await tx.salesActivity.create({
+        data: {
+          tenantId: actor.tenantId,
+          opportunityId: opportunity.id,
+          actorUserId: actor.userId,
+          type: input.type,
+          summary: input.summary.trim(),
+          occurredAt: input.occurredAt ? new Date(input.occurredAt) : undefined,
+        },
+        select: { publicId: true, type: true, summary: true, occurredAt: true },
+      });
+      if (input.nextFollowUpAt) {
+        await tx.salesOpportunity.update({
+          where: { id: opportunity.id },
+          data: {
+            nextFollowUpAt: new Date(input.nextFollowUpAt),
+            version: { increment: 1 },
+          },
+        });
+      }
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "crm.activity.created",
+          resourceType: "sales-opportunity",
+          resourcePublicId: publicId,
+          afterJson: JSON.stringify({
+            type: input.type,
+            nextFollowUpAt: input.nextFollowUpAt ?? null,
+          }),
+        },
+      });
+      const { publicId: id, ...activity } = created;
+      return { id, ...activity };
     });
   }
 }

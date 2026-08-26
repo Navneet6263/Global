@@ -1,15 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
-import { useDeferredValue, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 
 import { CrmHeader, CrmKpis } from "@/components/crm/CrmHeader";
-import { CrmActivity, OpportunityRegister } from "@/components/crm/CrmInsights";
+import { CrmActivity } from "@/components/crm/CrmInsights";
 import { CrmPipeline } from "@/components/crm/CrmPipeline";
 import { OpportunityDrawer } from "@/components/crm/OpportunityDrawer";
+import { OpportunityDetailDrawer } from "@/components/crm/OpportunityDetailDrawer";
+import { OpportunityRegisterV2 } from "@/components/crm/OpportunityRegisterV2";
 import { Sidebar } from "@/components/ops/Sidebar";
 import { Topbar } from "@/components/ops/Topbar";
-import { getCrmOverview, listOpportunities } from "@/lib/api/crm";
+import { getCrmOverview, listOpportunities, type OpportunityStage } from "@/lib/api/crm";
 
 export const Route = createFileRoute("/sales-crm")({
   head: () => ({ meta: [{ title: "Revenue workspace — Sapling Global" }] }),
@@ -19,15 +21,29 @@ export const Route = createFileRoute("/sales-crm")({
 function SalesCrm() {
   const [search, setSearch] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState<string>();
+  const [stage, setStage] = useState<OpportunityStage | "ALL">("ALL");
+  const [cursor, setCursor] = useState<string>();
+  const [cursorHistory, setCursorHistory] = useState<Array<string | undefined>>([]);
   const deferredSearch = useDeferredValue(search.trim());
+  useEffect(() => {
+    setCursor(undefined);
+    setCursorHistory([]);
+  }, [deferredSearch]);
   const overview = useQuery({
     queryKey: ["crm", "overview"],
     queryFn: getCrmOverview,
     refetchInterval: 60_000,
   });
   const opportunities = useQuery({
-    queryKey: ["crm", "opportunities", deferredSearch],
-    queryFn: () => listOpportunities(deferredSearch ? { search: deferredSearch } : {}),
+    queryKey: ["crm", "opportunities", deferredSearch, stage, cursor],
+    queryFn: () =>
+      listOpportunities({
+        limit: 25,
+        ...(deferredSearch ? { search: deferredSearch } : {}),
+        ...(stage !== "ALL" ? { stage } : {}),
+        ...(cursor ? { cursor } : {}),
+      }),
   });
   const rows = opportunities.data?.items ?? [];
   const refresh = () => {
@@ -62,15 +78,41 @@ function SalesCrm() {
             <>
               <CrmKpis data={overview.data} />
               <div className="grid gap-4 2xl:grid-cols-[minmax(0,1.6fr)_minmax(18rem,.55fr)]">
-                <CrmPipeline items={rows} />
+                <CrmPipeline items={rows} onOpen={setSelectedId} />
                 <CrmActivity activities={overview.data.activities} />
               </div>
-              <OpportunityRegister items={rows} />
+              <OpportunityRegisterV2
+                items={rows}
+                stage={stage}
+                page={cursorHistory.length + 1}
+                hasPrevious={cursorHistory.length > 0}
+                hasNext={Boolean(opportunities.data?.nextCursor)}
+                onStage={(value) => {
+                  setStage(value);
+                  setCursor(undefined);
+                  setCursorHistory([]);
+                }}
+                onPrevious={() => {
+                  const history = [...cursorHistory];
+                  setCursor(history.pop());
+                  setCursorHistory(history);
+                }}
+                onNext={() => {
+                  const next = opportunities.data?.nextCursor;
+                  if (!next) return;
+                  setCursorHistory((current) => [...current, cursor]);
+                  setCursor(next);
+                }}
+                onOpen={setSelectedId}
+              />
             </>
           ) : null}
         </main>
       </div>
       <OpportunityDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />
+      {selectedId ? (
+        <OpportunityDetailDrawer id={selectedId} onClose={() => setSelectedId(undefined)} />
+      ) : null}
     </div>
   );
 }

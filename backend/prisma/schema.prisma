@@ -38,6 +38,7 @@ model Tenant {
   opportunities   SalesOpportunity[]
   salesActivities SalesActivity[]
   invoices        Invoice[]
+  creditNotes     CreditNote[]
   notifications   Notification[]
   candidateAccess CandidatePortalAccess[]
 }
@@ -100,6 +101,7 @@ model User {
   ownedOpportunities  SalesOpportunity[]     @relation("OpportunityOwner")
   salesActivities     SalesActivity[]
   recordedPayments    Payment[]
+  createdCreditNotes  CreditNote[]
   notifications       Notification[]
   qaClaimedCases      VerificationCase[]     @relation("CaseQaReviewer")
 
@@ -658,7 +660,9 @@ model SalesOpportunity {
   estimatedValue    Decimal   @default(0) @db.Decimal(18, 2)
   probability       Int       @default(10)
   expectedCloseDate DateTime? @db.Date
+  nextFollowUpAt    DateTime? @db.DateTime2
   notes             String?   @db.NVarChar(2000)
+  lostReason        String?   @db.NVarChar(500)
   closedAt          DateTime? @db.DateTime2
   version           Int       @default(1)
   createdAt         DateTime  @default(now()) @db.DateTime2
@@ -671,6 +675,7 @@ model SalesOpportunity {
 
   @@index([tenantId, stage, updatedAt])
   @@index([tenantId, ownerId, stage])
+  @@index([tenantId, ownerId, nextFollowUpAt])
 }
 
 model SalesActivity {
@@ -706,6 +711,7 @@ model Invoice {
   taxAmount     Decimal   @default(0) @db.Decimal(18, 2)
   totalAmount   Decimal   @default(0) @db.Decimal(18, 2)
   paidAmount    Decimal   @default(0) @db.Decimal(18, 2)
+  creditedAmount Decimal @default(0) @db.Decimal(18, 2)
   notes         String?   @db.NVarChar(1000)
   version       Int       @default(1)
   createdAt     DateTime  @default(now()) @db.DateTime2
@@ -715,6 +721,7 @@ model Invoice {
   client   Client        @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   lines    InvoiceLine[]
   payments Payment[]
+  creditNotes CreditNote[]
 
   @@unique([tenantId, invoiceNumber])
   @@index([tenantId, status, dueAt])
@@ -754,6 +761,26 @@ model Payment {
   recordedBy User    @relation(fields: [recordedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([invoiceId, receivedAt])
+}
+
+model CreditNote {
+  id          BigInt   @id @default(autoincrement())
+  publicId    String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId    BigInt
+  invoiceId   BigInt
+  createdById BigInt
+  noteNumber  String   @db.VarChar(40)
+  amount      Decimal  @db.Decimal(18, 2)
+  reason      String   @db.NVarChar(500)
+  createdAt   DateTime @default(now()) @db.DateTime2
+
+  tenant    Tenant  @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdBy User    @relation(fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([tenantId, noteNumber])
+  @@index([invoiceId, createdAt])
+  @@index([tenantId, createdAt])
 }
 
 model Notification {

@@ -61,7 +61,9 @@ export type SalesOpportunityMinAggregateOutputType = {
   estimatedValue: runtime.Decimal | null
   probability: number | null
   expectedCloseDate: Date | null
+  nextFollowUpAt: Date | null
   notes: string | null
+  lostReason: string | null
   closedAt: Date | null
   version: number | null
   createdAt: Date | null
@@ -83,7 +85,9 @@ export type SalesOpportunityMaxAggregateOutputType = {
   estimatedValue: runtime.Decimal | null
   probability: number | null
   expectedCloseDate: Date | null
+  nextFollowUpAt: Date | null
   notes: string | null
+  lostReason: string | null
   closedAt: Date | null
   version: number | null
   createdAt: Date | null
@@ -105,7 +109,9 @@ export type SalesOpportunityCountAggregateOutputType = {
   estimatedValue: number
   probability: number
   expectedCloseDate: number
+  nextFollowUpAt: number
   notes: number
+  lostReason: number
   closedAt: number
   version: number
   createdAt: number
@@ -149,7 +155,9 @@ export type SalesOpportunityMinAggregateInputType = {
   estimatedValue?: true
   probability?: true
   expectedCloseDate?: true
+  nextFollowUpAt?: true
   notes?: true
+  lostReason?: true
   closedAt?: true
   version?: true
   createdAt?: true
@@ -171,7 +179,9 @@ export type SalesOpportunityMaxAggregateInputType = {
   estimatedValue?: true
   probability?: true
   expectedCloseDate?: true
+  nextFollowUpAt?: true
   notes?: true
+  lostReason?: true
   closedAt?: true
   version?: true
   createdAt?: true
@@ -193,7 +203,9 @@ export type SalesOpportunityCountAggregateInputType = {
   estimatedValue?: true
   probability?: true
   expectedCloseDate?: true
+  nextFollowUpAt?: true
   notes?: true
+  lostReason?: true
   closedAt?: true
   version?: true
   createdAt?: true
@@ -302,7 +314,9 @@ export type SalesOpportunityGroupByOutputType = {
   estimatedValue: runtime.Decimal
   probability: number
   expectedCloseDate: Date | null
+  nextFollowUpAt: Date | null
   notes: string | null
+  lostReason: string | null
   closedAt: Date | null
   version: number
   createdAt: Date
@@ -347,7 +361,9 @@ export type SalesOpportunityWhereInput = {
   estimatedValue?: Prisma.DecimalFilter<"SalesOpportunity"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFilter<"SalesOpportunity"> | number
   expectedCloseDate?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
+  nextFollowUpAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
+  lostReason?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
@@ -373,7 +389,9 @@ export type SalesOpportunityOrderByWithRelationInput = {
   estimatedValue?: Prisma.SortOrder
   probability?: Prisma.SortOrder
   expectedCloseDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  nextFollowUpAt?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  lostReason?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -402,7 +420,9 @@ export type SalesOpportunityWhereUniqueInput = Prisma.AtLeast<{
   estimatedValue?: Prisma.DecimalFilter<"SalesOpportunity"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFilter<"SalesOpportunity"> | number
   expectedCloseDate?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
+  nextFollowUpAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
+  lostReason?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
@@ -428,7 +448,9 @@ export type SalesOpportunityOrderByWithAggregationInput = {
   estimatedValue?: Prisma.SortOrder
   probability?: Prisma.SortOrder
   expectedCloseDate?: Prisma.SortOrderInput | Prisma.SortOrder
+  nextFollowUpAt?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  lostReason?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -458,7 +480,9 @@ export type SalesOpportunityScalarWhereWithAggregatesInput = {
   estimatedValue?: Prisma.DecimalWithAggregatesFilter<"SalesOpportunity"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntWithAggregatesFilter<"SalesOpportunity"> | number
   expectedCloseDate?: Prisma.DateTimeNullableWithAggregatesFilter<"SalesOpportunity"> | Date | string | null
+  nextFollowUpAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SalesOpportunity"> | Date | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
+  lostReason?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntWithAggregatesFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SalesOpportunity"> | Date | string
@@ -477,7 +501,9 @@ export type SalesOpportunityCreateInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -503,7 +529,9 @@ export type SalesOpportunityUncheckedCreateInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -523,7 +551,9 @@ export type SalesOpportunityUpdateInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -549,7 +579,9 @@ export type SalesOpportunityUncheckedUpdateInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -571,7 +603,9 @@ export type SalesOpportunityCreateManyInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -590,7 +624,9 @@ export type SalesOpportunityUpdateManyMutationInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -612,7 +648,9 @@ export type SalesOpportunityUncheckedUpdateManyInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -644,7 +682,9 @@ export type SalesOpportunityCountOrderByAggregateInput = {
   estimatedValue?: Prisma.SortOrder
   probability?: Prisma.SortOrder
   expectedCloseDate?: Prisma.SortOrder
+  nextFollowUpAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  lostReason?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -676,7 +716,9 @@ export type SalesOpportunityMaxOrderByAggregateInput = {
   estimatedValue?: Prisma.SortOrder
   probability?: Prisma.SortOrder
   expectedCloseDate?: Prisma.SortOrder
+  nextFollowUpAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  lostReason?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -698,7 +740,9 @@ export type SalesOpportunityMinOrderByAggregateInput = {
   estimatedValue?: Prisma.SortOrder
   probability?: Prisma.SortOrder
   expectedCloseDate?: Prisma.SortOrder
+  nextFollowUpAt?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  lostReason?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -880,7 +924,9 @@ export type SalesOpportunityCreateWithoutTenantInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -904,7 +950,9 @@ export type SalesOpportunityUncheckedCreateWithoutTenantInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -955,7 +1003,9 @@ export type SalesOpportunityScalarWhereInput = {
   estimatedValue?: Prisma.DecimalFilter<"SalesOpportunity"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFilter<"SalesOpportunity"> | number
   expectedCloseDate?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
+  nextFollowUpAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   notes?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
+  lostReason?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
@@ -974,7 +1024,9 @@ export type SalesOpportunityCreateWithoutOwnerInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -998,7 +1050,9 @@ export type SalesOpportunityUncheckedCreateWithoutOwnerInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1043,7 +1097,9 @@ export type SalesOpportunityCreateWithoutClientInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1067,7 +1123,9 @@ export type SalesOpportunityUncheckedCreateWithoutClientInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1112,7 +1170,9 @@ export type SalesOpportunityCreateWithoutActivitiesInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1137,7 +1197,9 @@ export type SalesOpportunityUncheckedCreateWithoutActivitiesInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1172,7 +1234,9 @@ export type SalesOpportunityUpdateWithoutActivitiesInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1197,7 +1261,9 @@ export type SalesOpportunityUncheckedUpdateWithoutActivitiesInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1217,7 +1283,9 @@ export type SalesOpportunityCreateManyTenantInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1236,7 +1304,9 @@ export type SalesOpportunityUpdateWithoutTenantInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1260,7 +1330,9 @@ export type SalesOpportunityUncheckedUpdateWithoutTenantInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1282,7 +1354,9 @@ export type SalesOpportunityUncheckedUpdateManyWithoutTenantInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1302,7 +1376,9 @@ export type SalesOpportunityCreateManyOwnerInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1321,7 +1397,9 @@ export type SalesOpportunityUpdateWithoutOwnerInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1345,7 +1423,9 @@ export type SalesOpportunityUncheckedUpdateWithoutOwnerInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1367,7 +1447,9 @@ export type SalesOpportunityUncheckedUpdateManyWithoutOwnerInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1387,7 +1469,9 @@ export type SalesOpportunityCreateManyClientInput = {
   estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
+  nextFollowUpAt?: Date | string | null
   notes?: string | null
+  lostReason?: string | null
   closedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
@@ -1406,7 +1490,9 @@ export type SalesOpportunityUpdateWithoutClientInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1430,7 +1516,9 @@ export type SalesOpportunityUncheckedUpdateWithoutClientInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1452,7 +1540,9 @@ export type SalesOpportunityUncheckedUpdateManyWithoutClientInput = {
   estimatedValue?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: Prisma.IntFieldUpdateOperationsInput | number
   expectedCloseDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  nextFollowUpAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1505,7 +1595,9 @@ export type SalesOpportunitySelect<ExtArgs extends runtime.Types.Extensions.Inte
   estimatedValue?: boolean
   probability?: boolean
   expectedCloseDate?: boolean
+  nextFollowUpAt?: boolean
   notes?: boolean
+  lostReason?: boolean
   closedAt?: boolean
   version?: boolean
   createdAt?: boolean
@@ -1534,14 +1626,16 @@ export type SalesOpportunitySelectScalar = {
   estimatedValue?: boolean
   probability?: boolean
   expectedCloseDate?: boolean
+  nextFollowUpAt?: boolean
   notes?: boolean
+  lostReason?: boolean
   closedAt?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SalesOpportunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "ownerId" | "companyName" | "contactName" | "contactEmail" | "contactPhone" | "stage" | "source" | "estimatedValue" | "probability" | "expectedCloseDate" | "notes" | "closedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["salesOpportunity"]>
+export type SalesOpportunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "ownerId" | "companyName" | "contactName" | "contactEmail" | "contactPhone" | "stage" | "source" | "estimatedValue" | "probability" | "expectedCloseDate" | "nextFollowUpAt" | "notes" | "lostReason" | "closedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["salesOpportunity"]>
 export type SalesOpportunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   client?: boolean | Prisma.SalesOpportunity$clientArgs<ExtArgs>
@@ -1573,7 +1667,9 @@ export type $SalesOpportunityPayload<ExtArgs extends runtime.Types.Extensions.In
     estimatedValue: runtime.Decimal
     probability: number
     expectedCloseDate: Date | null
+    nextFollowUpAt: Date | null
     notes: string | null
+    lostReason: string | null
     closedAt: Date | null
     version: number
     createdAt: Date
@@ -1965,7 +2061,9 @@ export interface SalesOpportunityFieldRefs {
   readonly estimatedValue: Prisma.FieldRef<"SalesOpportunity", 'Decimal'>
   readonly probability: Prisma.FieldRef<"SalesOpportunity", 'Int'>
   readonly expectedCloseDate: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>
+  readonly nextFollowUpAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>
   readonly notes: Prisma.FieldRef<"SalesOpportunity", 'String'>
+  readonly lostReason: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly closedAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>
   readonly version: Prisma.FieldRef<"SalesOpportunity", 'Int'>
   readonly createdAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>

@@ -8,17 +8,17 @@ const credentials = {
 };
 
 const workspaces: Array<{ path: string; name: string; heading: RegExp }> = [
-  { path: "/", name: "operations", heading: /Verification control tower/i },
-  { path: "/exceptions", name: "exceptions", heading: /Exception command centre/i },
-  { path: "/verifier", name: "verifier", heading: /Verifier/i },
-  { path: "/qa-review", name: "qa-review", heading: /QA/i },
-  { path: "/field-executive", name: "field", heading: /My verification visits/i },
-  { path: "/client-portal", name: "client-portal", heading: /Verification workspace/i },
-  { path: "/executive", name: "executive", heading: /Executive/i },
-  { path: "/sales-crm", name: "sales", heading: /Sales/i },
-  { path: "/finance", name: "finance", heading: /Finance/i },
-  { path: "/settings", name: "settings", heading: /Platform settings/i },
-  { path: "/security", name: "security", heading: /Account security/i },
+  { path: "/", name: "operations", heading: /Operations command center/i },
+  { path: "/exceptions", name: "exceptions", heading: /Exception triage/i },
+  { path: "/verifier", name: "verifier", heading: /Verification workbench/i },
+  { path: "/qa-review", name: "qa-review", heading: /Independent QA review/i },
+  { path: "/field-executive", name: "field", heading: /My field route/i },
+  { path: "/client-portal", name: "client-portal", heading: /Verification portfolio/i },
+  { path: "/executive", name: "executive", heading: /Portfolio intelligence/i },
+  { path: "/sales-crm", name: "sales", heading: /Revenue command/i },
+  { path: "/finance", name: "finance", heading: /Revenue control/i },
+  { path: "/settings", name: "settings", heading: /^Settings$/i },
+  { path: "/security", name: "security", heading: /Account protection/i },
 ];
 
 test("all authenticated workspaces render cleanly on desktop and mobile", async ({
@@ -64,7 +64,6 @@ test("all authenticated workspaces render cleanly on desktop and mobile", async 
 
 async function login(page: Page): Promise<void> {
   await page.goto("/login");
-  await page.getByLabel("Workspace code").fill(credentials.tenantCode!);
   await page.getByLabel("Work email").fill(credentials.email!);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password!);
   const response = page.waitForResponse(

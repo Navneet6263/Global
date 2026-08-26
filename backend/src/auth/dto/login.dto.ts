@@ -1,4 +1,5 @@
 import { IsEmail, IsString, Length, Matches, MinLength } from "class-validator";
+import { MIN_USER_PASSWORD_LENGTH } from "../password-policy";
 
 export class LoginDto {
   @IsString()
@@ -10,6 +11,6 @@ export class LoginDto {
   email!: string;
 
   @IsString()
-  @MinLength(8)
+  @MinLength(MIN_USER_PASSWORD_LENGTH)
   password!: string;
 }

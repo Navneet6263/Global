@@ -8,7 +8,6 @@ import {
   MapPin,
   Navigation,
   ShieldAlert,
-  Trash2,
 } from "lucide-react";
 import { useRef } from "react";
 
@@ -21,6 +20,7 @@ import {
   type GeoFix,
 } from "@/components/field/geo";
 import type { ApiFieldVisit, FieldDraft, FieldExecutionPolicy } from "./types";
+import { EvidencePreview } from "./EvidencePreview";
 import { FieldControl, FieldStepStrip, FieldVisitStatus } from "./FieldVisitParts";
 
 export function FieldVisitCard({
@@ -216,22 +216,11 @@ export function FieldVisitCard({
             {draft.photos.length ? (
               <div className="mt-2 space-y-2">
                 {draft.photos.map((photo) => (
-                  <div key={photo.id} className="flex items-center gap-2 rounded-lg bg-white p-2">
-                    <Camera className="h-3.5 w-3.5 text-slate-400" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[10px] font-semibold">{photo.name}</p>
-                      <p className="text-[9px] text-slate-400">
-                        {Math.max(1, Math.round(photo.blob.size / 1024))} KB · pending sync
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => onRemovePhoto(photo.id)}
-                      className="rounded-md p-1.5 text-red-600"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
+                  <EvidencePreview
+                    key={photo.id}
+                    photo={photo}
+                    onRemove={() => onRemovePhoto(photo.id)}
+                  />
                 ))}
               </div>
             ) : (

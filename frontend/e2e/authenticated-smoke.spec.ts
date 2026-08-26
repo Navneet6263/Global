@@ -24,17 +24,17 @@ test("administrator can open every operational workspace without server failures
     if (response.status() >= 500) failures.push(`${response.status()} ${response.url()}`);
   });
   const workspaces: Array<[string, RegExp]> = [
-    ["/", /Verification control tower/i],
-    ["/exceptions", /Exception command centre/i],
-    ["/verifier", /Verifier/i],
-    ["/qa-review", /QA/i],
-    ["/field-executive", /My verification visits/i],
-    ["/client-portal", /Verification workspace/i],
-    ["/executive", /Executive/i],
-    ["/sales-crm", /Sales/i],
-    ["/finance", /Finance/i],
-    ["/settings", /Platform settings/i],
-    ["/security", /Account security/i],
+    ["/", /Operations command center/i],
+    ["/exceptions", /Exception triage/i],
+    ["/verifier", /Verification workbench/i],
+    ["/qa-review", /Independent QA review/i],
+    ["/field-executive", /My field route/i],
+    ["/client-portal", /Verification portfolio/i],
+    ["/executive", /Portfolio intelligence/i],
+    ["/sales-crm", /Revenue command/i],
+    ["/finance", /Revenue control/i],
+    ["/settings", /^Settings$/i],
+    ["/security", /Account protection/i],
   ];
   for (const [path, heading] of workspaces) {
     await page.goto(path);
@@ -67,7 +67,6 @@ test("session survives refresh and logout revokes the browser session", async ({
 
 async function login(page: Page) {
   await page.goto("/login");
-  await page.getByLabel("Workspace code").fill(credentials.tenantCode!);
   await page.getByLabel("Work email").fill(credentials.email!);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password!);
   const loginResponse = page.waitForResponse(

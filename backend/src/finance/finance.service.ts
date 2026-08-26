@@ -9,6 +9,7 @@ import { randomBytes } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CreateInvoiceDto } from "./dto/create-invoice.dto";
+import type { CreateCreditNoteDto } from "./dto/create-credit-note.dto";
 import type { CancelInvoiceDto } from "./dto/cancel-invoice.dto";
 import type { ListInvoicesDto } from "./dto/list-invoices.dto";
 import type { RecordPaymentDto } from "./dto/record-payment.dto";
@@ -25,6 +26,7 @@ const invoiceSelect = {
   taxAmount: true,
   totalAmount: true,
   paidAmount: true,
+  creditedAmount: true,
   notes: true,
   version: true,
   createdAt: true,
@@ -52,7 +54,20 @@ const invoiceSelect = {
     },
     orderBy: { receivedAt: "desc" as const },
   },
+  creditNotes: {
+    select: {
+      publicId: true,
+      noteNumber: true,
+      amount: true,
+      reason: true,
+      createdAt: true,
+      createdBy: { select: { displayName: true } },
+    },
+    orderBy: { createdAt: "desc" as const },
+  },
 } as const;
+
+const settledStatuses = ["PAID", "CANCELLED", "CREDITED", "SETTLED"];
 
 @Injectable()
 export class FinanceService {
@@ -68,6 +83,7 @@ export class FinanceService {
         status: true,
         totalAmount: true,
         paidAmount: true,
+        creditedAmount: true,
         dueAt: true,
         issuedAt: true,
       },
@@ -78,13 +94,16 @@ export class FinanceService {
     const outstanding = invoices
       .filter((item) => item.status !== "CANCELLED")
       .reduce(
-        (sum, item) => sum + Number(item.totalAmount) - Number(item.paidAmount),
+        (sum, item) =>
+          sum +
+          Number(item.totalAmount) -
+          Number(item.paidAmount) -
+          Number(item.creditedAmount),
         0,
       );
     const overdue = invoices.filter(
       (item) =>
-        item.status !== "PAID" &&
-        item.status !== "CANCELLED" &&
+        !settledStatuses.includes(item.status) &&
         item.dueAt &&
         item.dueAt < now,
     );
@@ -93,6 +112,10 @@ export class FinanceService {
       .reduce((sum, item) => sum + Number(item.totalAmount), 0);
     const collected = invoices.reduce(
       (sum, item) => sum + Number(item.paidAmount),
+      0,
+    );
+    const credited = invoices.reduce(
+      (sum, item) => sum + Number(item.creditedAmount),
       0,
     );
     const ageing = [
@@ -104,7 +127,7 @@ export class FinanceService {
       label,
       value: invoices
         .filter((item) => {
-          if (["PAID", "CANCELLED"].includes(item.status) || !item.dueAt)
+          if (settledStatuses.includes(item.status) || !item.dueAt)
             return false;
           const days = Math.max(
             0,
@@ -114,7 +137,10 @@ export class FinanceService {
         })
         .reduce(
           (sum, item) =>
-            sum + Number(item.totalAmount) - Number(item.paidAmount),
+            sum +
+            Number(item.totalAmount) -
+            Number(item.paidAmount) -
+            Number(item.creditedAmount),
           0,
         ),
     }));
@@ -122,14 +148,18 @@ export class FinanceService {
       summary: {
         invoiceCount: invoices.length,
         openInvoiceCount: invoices.filter(
-          (item) => !["PAID", "CANCELLED"].includes(item.status),
+          (item) => !settledStatuses.includes(item.status),
         ).length,
         billed,
         collected,
+        credited,
         outstanding,
         overdueAmount: overdue.reduce(
           (sum, item) =>
-            sum + Number(item.totalAmount) - Number(item.paidAmount),
+            sum +
+            Number(item.totalAmount) -
+            Number(item.paidAmount) -
+            Number(item.creditedAmount),
           0,
         ),
         overdueCount: overdue.length,
@@ -149,7 +179,7 @@ export class FinanceService {
           ? { status: query.status }
           : {}),
         ...(query.status === "OVERDUE"
-          ? { status: { notIn: ["PAID", "CANCELLED"] }, dueAt: { lt: now } }
+          ? { status: { notIn: settledStatuses }, dueAt: { lt: now } }
           : {}),
         ...(search
           ? {
@@ -171,6 +201,100 @@ export class FinanceService {
       items: page.map((row) => this.present(row, now)),
       nextCursor: hasMore ? page.at(-1)?.publicId : null,
     };
+  }
+
+  async exportLedger(actor: Actor, query: ListInvoicesDto) {
+    const search = query.search?.trim();
+    const now = new Date();
+    const rows = await this.prisma.invoice.findMany({
+      where: {
+        tenantId: actor.tenantId,
+        ...(query.status && query.status !== "OVERDUE"
+          ? { status: query.status }
+          : {}),
+        ...(query.status === "OVERDUE"
+          ? { status: { notIn: settledStatuses }, dueAt: { lt: now } }
+          : {}),
+        ...(search
+          ? {
+              OR: [
+                { invoiceNumber: { contains: search } },
+                { client: { displayName: { contains: search } } },
+              ],
+            }
+          : {}),
+      },
+      select: {
+        invoiceNumber: true,
+        status: true,
+        currency: true,
+        subtotal: true,
+        taxAmount: true,
+        totalAmount: true,
+        paidAmount: true,
+        creditedAmount: true,
+        issuedAt: true,
+        dueAt: true,
+        createdAt: true,
+        client: { select: { code: true, displayName: true } },
+      },
+      orderBy: [{ dueAt: "asc" }, { createdAt: "desc" }],
+      take: 10_000,
+    });
+    const csv = [
+      [
+        "Invoice",
+        "Client code",
+        "Client",
+        "Status",
+        "Currency",
+        "Subtotal",
+        "Tax",
+        "Gross total",
+        "Paid",
+        "Credited",
+        "Balance",
+        "Issued",
+        "Due",
+      ],
+      ...rows.map((row) => [
+        row.invoiceNumber,
+        row.client.code,
+        row.client.displayName,
+        !settledStatuses.includes(row.status) && row.dueAt && row.dueAt < now
+          ? "OVERDUE"
+          : row.status,
+        row.currency,
+        Number(row.subtotal),
+        Number(row.taxAmount),
+        Number(row.totalAmount),
+        Number(row.paidAmount),
+        Number(row.creditedAmount),
+        Number(row.totalAmount) -
+          Number(row.paidAmount) -
+          Number(row.creditedAmount),
+        row.issuedAt?.toISOString().slice(0, 10) ?? "",
+        row.dueAt?.toISOString().slice(0, 10) ?? "",
+      ]),
+    ]
+      .map((row) => row.map(csvCell).join(","))
+      .join("\r\n");
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        action: "finance.ledger.exported",
+        resourceType: "invoice-ledger",
+        afterJson: JSON.stringify({
+          count: rows.length,
+          status: query.status ?? null,
+        }),
+      },
+    });
+    return new StreamableFile(Buffer.from(`\uFEFF${csv}`, "utf8"), {
+      type: "text/csv; charset=utf-8",
+      disposition: `attachment; filename="sapling-global-ledger-${now.toISOString().slice(0, 10)}.csv"`,
+    });
   }
 
   async create(actor: Actor, input: CreateInvoiceDto) {
@@ -281,6 +405,7 @@ export class FinanceService {
         taxAmount: true,
         totalAmount: true,
         paidAmount: true,
+        creditedAmount: true,
         notes: true,
         createdAt: true,
         client: {
@@ -306,6 +431,15 @@ export class FinanceService {
           select: { amount: true, method: true, receivedAt: true },
           orderBy: { receivedAt: "asc" },
         },
+        creditNotes: {
+          select: {
+            noteNumber: true,
+            amount: true,
+            reason: true,
+            createdAt: true,
+          },
+          orderBy: { createdAt: "asc" },
+        },
       },
     });
     if (!invoice) throw new NotFoundException("Invoice not found");
@@ -313,7 +447,7 @@ export class FinanceService {
     const contents = await this.invoicePdf.render({
       ...invoice,
       status:
-        !["PAID", "CANCELLED"].includes(invoice.status) &&
+        !settledStatuses.includes(invoice.status) &&
         invoice.dueAt &&
         invoice.dueAt < new Date()
           ? "OVERDUE"
@@ -343,22 +477,27 @@ export class FinanceService {
         status: true,
         totalAmount: true,
         paidAmount: true,
+        creditedAmount: true,
         version: true,
       },
     });
     if (!invoice) throw new NotFoundException("Invoice not found");
     if (invoice.version !== input.version)
       throw new ConflictException("Invoice changed; refresh and try again");
-    if (["PAID", "CANCELLED"].includes(invoice.status))
+    if (settledStatuses.includes(invoice.status))
       throw new ConflictException(
         `Payment cannot be recorded against a ${invoice.status.toLowerCase()} invoice`,
       );
     const nextPaid =
       Math.round((Number(invoice.paidAmount) + input.amount) * 100) / 100;
-    if (nextPaid > Number(invoice.totalAmount))
+    if (nextPaid + Number(invoice.creditedAmount) > Number(invoice.totalAmount))
       throw new BadRequestException("Payment exceeds the invoice balance");
     const nextStatus =
-      nextPaid === Number(invoice.totalAmount) ? "PAID" : "PARTIALLY_PAID";
+      nextPaid + Number(invoice.creditedAmount) === Number(invoice.totalAmount)
+        ? Number(invoice.creditedAmount) > 0
+          ? "SETTLED"
+          : "PAID"
+        : "PARTIALLY_PAID";
     return this.prisma.$transaction(async (tx) => {
       const updated = await tx.invoice.updateMany({
         where: { id: invoice.id, version: input.version },
@@ -412,6 +551,106 @@ export class FinanceService {
     });
   }
 
+  async createCreditNote(
+    actor: Actor,
+    publicId: string,
+    input: CreateCreditNoteDto,
+  ) {
+    const invoice = await this.prisma.invoice.findFirst({
+      where: { tenantId: actor.tenantId, publicId },
+      select: {
+        id: true,
+        invoiceNumber: true,
+        status: true,
+        totalAmount: true,
+        paidAmount: true,
+        creditedAmount: true,
+        version: true,
+      },
+    });
+    if (!invoice) throw new NotFoundException("Invoice not found");
+    if (invoice.version !== input.version) {
+      throw new ConflictException("Invoice changed; refresh and try again");
+    }
+    if (settledStatuses.includes(invoice.status)) {
+      throw new ConflictException(
+        `A credit note cannot be added to a ${invoice.status.toLowerCase()} invoice`,
+      );
+    }
+    const nextCredit =
+      Math.round((Number(invoice.creditedAmount) + input.amount) * 100) / 100;
+    if (nextCredit + Number(invoice.paidAmount) > Number(invoice.totalAmount)) {
+      throw new BadRequestException("Credit note exceeds the invoice balance");
+    }
+    const settled =
+      nextCredit + Number(invoice.paidAmount) === Number(invoice.totalAmount);
+    const nextStatus = settled
+      ? Number(invoice.paidAmount) > 0
+        ? "SETTLED"
+        : "CREDITED"
+      : "PARTIALLY_CREDITED";
+    const noteNumber = `CN-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${randomBytes(3).toString("hex").toUpperCase()}`;
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.invoice.updateMany({
+        where: { id: invoice.id, version: input.version },
+        data: {
+          creditedAmount: nextCredit,
+          status: nextStatus,
+          version: { increment: 1 },
+        },
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException("Invoice was updated concurrently");
+      }
+      const credit = await tx.creditNote.create({
+        data: {
+          tenantId: actor.tenantId,
+          invoiceId: invoice.id,
+          createdById: actor.userId,
+          noteNumber,
+          amount: input.amount,
+          reason: input.reason.trim(),
+        },
+        select: {
+          publicId: true,
+          noteNumber: true,
+          amount: true,
+          reason: true,
+          createdAt: true,
+        },
+      });
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "finance.credit-note.created",
+          resourceType: "invoice",
+          resourcePublicId: publicId,
+          beforeJson: JSON.stringify({
+            status: invoice.status,
+            creditedAmount: Number(invoice.creditedAmount),
+          }),
+          afterJson: JSON.stringify({
+            noteNumber,
+            amount: input.amount,
+            status: nextStatus,
+            creditedAmount: nextCredit,
+          }),
+        },
+      });
+      return {
+        id: credit.publicId,
+        noteNumber: credit.noteNumber,
+        amount: credit.amount,
+        reason: credit.reason,
+        createdAt: credit.createdAt,
+        invoiceStatus: nextStatus,
+        invoiceVersion: input.version + 1,
+        creditedAmount: nextCredit,
+      };
+    });
+  }
+
   async cancelInvoice(actor: Actor, publicId: string, input: CancelInvoiceDto) {
     const invoice = await this.prisma.invoice.findFirst({
       where: { tenantId: actor.tenantId, publicId },
@@ -420,6 +659,7 @@ export class FinanceService {
         invoiceNumber: true,
         status: true,
         paidAmount: true,
+        creditedAmount: true,
         version: true,
       },
     });
@@ -428,9 +668,13 @@ export class FinanceService {
       throw new ConflictException("Invoice changed; refresh and try again");
     if (invoice.status === "CANCELLED")
       return { id: publicId, status: "CANCELLED", version: invoice.version };
-    if (invoice.status === "PAID" || Number(invoice.paidAmount) > 0) {
+    if (
+      settledStatuses.includes(invoice.status) ||
+      Number(invoice.paidAmount) > 0 ||
+      Number(invoice.creditedAmount) > 0
+    ) {
       throw new ConflictException(
-        "An invoice with recorded payments cannot be cancelled; reconcile it with a credit entry",
+        "An invoice with financial entries cannot be cancelled; reconcile the remaining balance instead",
       );
     }
     return this.prisma.$transaction(async (tx) => {
@@ -468,11 +712,17 @@ export class FinanceService {
   >(row: T, now: Date) {
     const { publicId, ...invoice } = row;
     const status =
-      !["PAID", "CANCELLED"].includes(invoice.status) &&
+      !settledStatuses.includes(invoice.status) &&
       invoice.dueAt &&
       invoice.dueAt < now
         ? "OVERDUE"
         : invoice.status;
     return { id: publicId, ...invoice, status };
   }
+}
+
+function csvCell(value: string | number | null | undefined) {
+  const text = String(value ?? "");
+  const safe = /^[=+\-@]/.test(text) ? `'${text}` : text;
+  return `"${safe.replaceAll('"', '""')}"`;
 }

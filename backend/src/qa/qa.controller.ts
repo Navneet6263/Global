@@ -5,6 +5,7 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
 } from "@nestjs/common";
 import {
   CurrentActor,
@@ -13,6 +14,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { QaDecisionDto } from "./dto/qa-decision.dto";
+import { QaQueryDto } from "./dto/qa-query.dto";
 import { ClaimQaCaseDto } from "./dto/claim-qa-case.dto";
 import { QaService } from "./qa.service";
 
@@ -22,8 +24,8 @@ export class QaController {
   constructor(private readonly qa: QaService) {}
 
   @Get("queue")
-  queue(@CurrentActor() actor: Actor) {
-    return this.qa.queue(actor);
+  queue(@CurrentActor() actor: Actor, @Query() query: QaQueryDto) {
+    return this.qa.queue(actor, query);
   }
 
   @Post("cases/:caseId/claim")

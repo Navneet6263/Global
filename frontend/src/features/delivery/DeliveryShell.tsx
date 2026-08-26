@@ -39,7 +39,7 @@ export function DeliveryHeader({
   return (
     <header className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-orange-600">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-orange-700">
           {eyebrow}
         </p>
         <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">

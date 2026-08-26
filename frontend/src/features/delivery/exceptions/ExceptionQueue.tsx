@@ -9,6 +9,7 @@ import { reviewFieldException } from "@/lib/api/field-visits";
 import { resolveClarification } from "@/lib/api/clarifications";
 import { humanize } from "../utils";
 import { ExceptionAction } from "./ExceptionAction";
+import { ExceptionDecisionDialog, type ExceptionDecision } from "./ExceptionDecisionDialog";
 import {
   ageLabel,
   buildExceptionItems,
@@ -26,6 +27,10 @@ export function ExceptionQueue({
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("ALL");
   const [page, setPage] = useState(1);
+  const [pending, setPending] = useState<{
+    item: ExceptionQueueItem;
+    decision: ExceptionDecision;
+  }>();
   const items = useMemo(() => buildExceptionItems(data), [data]);
   const filtered = items.filter(
     (item) =>
@@ -39,29 +44,32 @@ export function ExceptionQueue({
     Math.min(page, pages) * pageSize,
   );
   const fieldAction = useMutation({
-    mutationFn: ({ item, decision }: { item: ExceptionQueueItem; decision: "APPROVE" | "RETRY" }) =>
+    mutationFn: ({
+      item,
+      decision,
+      note,
+    }: {
+      item: ExceptionQueueItem;
+      decision: "APPROVE" | "RETRY";
+      note: string;
+    }) =>
       reviewFieldException(item.id, {
         decision,
         version: item.version!,
-        note:
-          decision === "APPROVE"
-            ? "Approved from exception triage"
-            : "Fresh field capture requested from exception triage",
+        note,
       }),
     onSuccess: async () => {
+      setPending(undefined);
       toast.success("Field exception updated");
       await onRefresh();
     },
     onError: (error: Error) => toast.error(error.message),
   });
   const clarify = useMutation({
-    mutationFn: (item: ExceptionQueueItem) =>
-      resolveClarification(
-        item.caseId,
-        item.id,
-        "Candidate response reviewed from exception triage",
-      ),
+    mutationFn: ({ item, note }: { item: ExceptionQueueItem; note: string }) =>
+      resolveClarification(item.caseId, item.id, note),
     onSuccess: async () => {
+      setPending(undefined);
       toast.success("Clarification resolved");
       await onRefresh();
     },
@@ -136,13 +144,13 @@ export function ExceptionQueue({
                       <>
                         <ExceptionAction
                           title="Approve exception"
-                          onClick={() => fieldAction.mutate({ item, decision: "APPROVE" })}
+                          onClick={() => setPending({ item, decision: "APPROVE" })}
                         >
                           <Check className="h-3.5 w-3.5" />
                         </ExceptionAction>
                         <ExceptionAction
                           title="Request retry"
-                          onClick={() => fieldAction.mutate({ item, decision: "RETRY" })}
+                          onClick={() => setPending({ item, decision: "RETRY" })}
                         >
                           <RotateCcw className="h-3.5 w-3.5" />
                         </ExceptionAction>
@@ -150,7 +158,7 @@ export function ExceptionQueue({
                     ) : null}
                     {item.category === "CLARIFICATION" && item.status === "RESPONDED" ? (
                       <button
-                        onClick={() => clarify.mutate(item)}
+                        onClick={() => setPending({ item, decision: "RESOLVE" })}
                         className="rounded-lg bg-emerald-600 px-3 py-2 text-[10px] font-semibold text-white"
                       >
                         Resolve
@@ -201,6 +209,21 @@ export function ExceptionQueue({
           </button>
         </div>
       </footer>
+      {pending ? (
+        <ExceptionDecisionDialog
+          item={pending.item}
+          decision={pending.decision}
+          busy={fieldAction.isPending || clarify.isPending}
+          onClose={() => setPending(undefined)}
+          onConfirm={(note) => {
+            if (pending.decision === "RESOLVE") {
+              clarify.mutate({ item: pending.item, note });
+              return;
+            }
+            fieldAction.mutate({ item: pending.item, decision: pending.decision, note });
+          }}
+        />
+      ) : null}
     </section>
   );
 }

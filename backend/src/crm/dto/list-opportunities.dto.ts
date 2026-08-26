@@ -1,13 +1,9 @@
-import { IsIn, IsOptional, IsString, Length } from "class-validator";
+import { IsIn, IsOptional } from "class-validator";
 import { OpportunityStages } from "./create-opportunity.dto";
+import { PageQueryDto } from "../../common/dto/page-query.dto";
 
-export class ListOpportunitiesDto {
+export class ListOpportunitiesDto extends PageQueryDto {
   @IsOptional()
   @IsIn(OpportunityStages)
   stage?: string;
-
-  @IsOptional()
-  @IsString()
-  @Length(1, 120)
-  search?: string;
 }

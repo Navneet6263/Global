@@ -50,6 +50,7 @@ import {
   type DirectoryRole,
   type DirectoryUser,
 } from "@/lib/api/users";
+import { generateTemporaryPassword } from "@/lib/password-policy";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "Platform settings — Sapling Global" }] }),
@@ -251,7 +252,7 @@ function SettingsSectionNav({
             aria-current={active === section.key ? "page" : undefined}
             className={`inline-flex h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-xs font-semibold transition-all ${
               active === section.key
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-slate-950 text-white shadow-sm"
                 : "text-muted-foreground hover:bg-background/80 hover:text-foreground"
             }`}
           >
@@ -1622,13 +1623,6 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(
     new Date(value),
   );
-}
-
-function generateTemporaryPassword() {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%*+-_";
-  const bytes = crypto.getRandomValues(new Uint8Array(20));
-  const password = Array.from(bytes, (value) => alphabet[value % alphabet.length]).join("");
-  return `Aa1!${password.slice(4)}`;
 }
 
 function CredentialItem({

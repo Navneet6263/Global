@@ -1,7 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Download, Eye, Search } from "lucide-react";
+import { toast } from "sonner";
 
-import type { CaseListItem } from "@/lib/api/cases";
-import { saveBlob } from "@/lib/api/client";
+import { exportCases, type CaseListItem } from "@/lib/api/cases";
 import { StakeholderPanel } from "../StakeholderShell";
 
 export function ClientPortfolio({
@@ -29,6 +30,10 @@ export function ClientPortfolio({
   onNext: () => void;
   onOpen: (id: string) => void;
 }) {
+  const exportMutation = useMutation({
+    mutationFn: () => exportCases({ search: search.trim(), status }),
+    onError: (error) => toast.error("Portfolio export failed", { description: error.message }),
+  });
   return (
     <StakeholderPanel
       title="Candidate portfolio"
@@ -36,11 +41,12 @@ export function ClientPortfolio({
       action={
         <button
           type="button"
-          onClick={() => exportCases(items)}
-          disabled={!items.length}
+          onClick={() => exportMutation.mutate()}
+          disabled={!items.length || exportMutation.isPending}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40"
         >
-          <Download className="h-3.5 w-3.5" /> Export page
+          <Download className="h-3.5 w-3.5" />
+          {exportMutation.isPending ? "Preparing…" : "Export portfolio"}
         </button>
       }
     >
@@ -55,6 +61,7 @@ export function ClientPortfolio({
           />
         </label>
         <select
+          aria-label="Filter cases by status"
           value={status}
           onChange={(event) => onStatus(event.target.value)}
           className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold"
@@ -193,22 +200,6 @@ function PageButton({
       <Icon className="h-4 w-4" />
     </button>
   );
-}
-function exportCases(rows: CaseListItem[]) {
-  const escape = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""')}"`;
-  const csv = [
-    ["Case number", "Candidate", "Status", "Priority", "Due date"],
-    ...rows.map((item) => [
-      item.caseNumber,
-      item.subject.fullName,
-      item.status,
-      item.priority,
-      item.dueAt ?? "",
-    ]),
-  ]
-    .map((row) => row.map(escape).join(","))
-    .join("\r\n");
-  saveBlob(new Blob([csv], { type: "text/csv;charset=utf-8" }), "sapling-global-cases-page.csv");
 }
 function humanize(value: string) {
   return value

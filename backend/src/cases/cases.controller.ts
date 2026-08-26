@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  StreamableFile,
 } from "@nestjs/common";
 import {
   CurrentActor,
@@ -31,6 +32,15 @@ export class CasesController {
   @RequirePermissions(Permission.CaseRead)
   list(@CurrentActor() actor: Actor, @Query() query: CaseQueryDto) {
     return this.reader.list(actor, query);
+  }
+
+  @Get("export")
+  @RequirePermissions(Permission.CaseRead)
+  export(
+    @CurrentActor() actor: Actor,
+    @Query() query: CaseQueryDto,
+  ): Promise<StreamableFile> {
+    return this.reader.exportCsv(actor, query);
   }
 
   @Get(":caseId")

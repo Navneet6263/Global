@@ -21,13 +21,31 @@ export interface Opportunity {
   estimatedValue: string | number;
   probability: number;
   expectedCloseDate?: string | null;
+  nextFollowUpAt?: string | null;
   notes?: string | null;
+  lostReason?: string | null;
   closedAt?: string | null;
   version: number;
   createdAt: string;
   updatedAt: string;
   owner?: { publicId: string; displayName: string; email: string } | null;
   client?: { publicId: string; displayName: string } | null;
+}
+
+export interface SalesActivity {
+  id: string;
+  type: string;
+  summary: string;
+  occurredAt: string;
+  actor: { displayName: string };
+}
+
+export type OpportunityDetail = Opportunity & { activities: SalesActivity[] };
+
+export interface SalesOwner {
+  id: string;
+  displayName: string;
+  email: string;
 }
 
 export interface CrmOverview {
@@ -60,11 +78,25 @@ export interface CrmOverview {
 export function getCrmOverview() {
   return apiRequest<CrmOverview>("/crm/overview");
 }
-export function listOpportunities(input: { stage?: string; search?: string } = {}) {
+export function listOpportunities(
+  input: { stage?: string; search?: string; cursor?: string; limit?: number } = {},
+) {
   const query = new URLSearchParams();
   if (input.stage) query.set("stage", input.stage);
   if (input.search) query.set("search", input.search);
-  return apiRequest<{ items: Opportunity[] }>(`/crm/opportunities?${query.toString()}`);
+  if (input.cursor) query.set("cursor", input.cursor);
+  query.set("limit", String(input.limit ?? 25));
+  return apiRequest<{ items: Opportunity[]; nextCursor: string | null }>(
+    `/crm/opportunities?${query.toString()}`,
+  );
+}
+
+export function getOpportunity(id: string) {
+  return apiRequest<OpportunityDetail>(`/crm/opportunities/${id}`);
+}
+
+export function listSalesOwners() {
+  return apiRequest<{ items: SalesOwner[] }>("/crm/owners");
 }
 export function createOpportunity(input: {
   companyName: string;
@@ -76,6 +108,7 @@ export function createOpportunity(input: {
   estimatedValue: number;
   probability: number;
   expectedCloseDate?: string;
+  nextFollowUpAt?: string;
   notes?: string;
 }) {
   return apiRequest<Opportunity>("/crm/opportunities", {
@@ -92,12 +125,34 @@ export function updateOpportunity(
     ownerId?: string;
     estimatedValue?: number;
     expectedCloseDate?: string;
+    nextFollowUpAt?: string;
     notes?: string;
+    lostReason?: string;
+    companyName?: string;
+    contactName?: string;
+    contactEmail?: string;
+    contactPhone?: string;
+    source?: string;
     activitySummary?: string;
   },
 ) {
   return apiRequest<Opportunity>(`/crm/opportunities/${id}`, {
     method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
+export function addSalesActivity(
+  id: string,
+  input: {
+    type: "CALL" | "EMAIL" | "MEETING" | "NOTE" | "FOLLOW_UP";
+    summary: string;
+    occurredAt?: string;
+    nextFollowUpAt?: string;
+  },
+) {
+  return apiRequest<SalesActivity>(`/crm/opportunities/${id}/activities`, {
+    method: "POST",
     body: JSON.stringify(input),
   });
 }

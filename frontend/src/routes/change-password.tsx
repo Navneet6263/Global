@@ -13,6 +13,7 @@ import {
 import { useState, type ReactNode } from "react";
 
 import { changePassword } from "@/lib/api/auth";
+import { getPasswordRequirements } from "@/lib/password-policy";
 
 export const Route = createFileRoute("/change-password")({
   component: ChangePasswordPage,
@@ -24,15 +25,7 @@ function ChangePasswordPage() {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmation, setConfirmation] = useState("");
-  const rules = [
-    { text: "At least 14 characters", ok: newPassword.length >= 14 },
-    {
-      text: "Upper and lowercase letters",
-      ok: /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword),
-    },
-    { text: "At least one number", ok: /\d/.test(newPassword) },
-    { text: "At least one symbol", ok: /[^A-Za-z0-9]/.test(newPassword) },
-  ];
+  const rules = getPasswordRequirements(newPassword);
   const valid = rules.every((rule) => rule.ok) && newPassword === confirmation;
   const mutation = useMutation({
     mutationFn: () => changePassword({ currentPassword, newPassword }),

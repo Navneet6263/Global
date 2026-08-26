@@ -11,11 +11,19 @@ export interface CandidatePortalData {
     dueAt?: string | null;
     checks: Array<{ type: string; status: string }>;
     documents: Array<{ type: string; status: string; currentVersion: number }>;
-    clarifications: Array<{ subject: string; status: string; dueAt?: string | null }>;
+    clarifications: Array<{
+      id: string;
+      subject: string;
+      status: string;
+      dueAt?: string | null;
+      messages: Array<{ sender: string; body: string; createdAt: string }>;
+    }>;
     consentStatus: string;
     reportAvailable: boolean;
   };
 }
+
+export type CandidateCase = CandidatePortalData["case"];
 
 export function issueCandidateAccess(caseId: string) {
   return apiRequest<{ id: string; token: string; expiresAt: string }>(
@@ -36,5 +44,21 @@ export function uploadCandidateDocument(accessId: string, token: string, type: s
   return apiRequest<{ id: string; type: string; version: number; sha256: string }>(
     `/public/candidate-access/${accessId}/documents`,
     { method: "POST", headers: { "x-portal-token": token, "x-document-type": type }, body },
+  );
+}
+
+export function respondToCandidateClarification(
+  accessId: string,
+  token: string,
+  clarificationId: string,
+  message: string,
+) {
+  return apiRequest<{ received: true; respondedAt: string }>(
+    `/public/candidate-access/${accessId}/clarifications/${clarificationId}/respond`,
+    {
+      method: "POST",
+      headers: { "x-portal-token": token },
+      body: JSON.stringify({ message }),
+    },
   );
 }

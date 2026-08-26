@@ -18,6 +18,7 @@ import { CrmService } from "./crm.service";
 import { CreateOpportunityDto } from "./dto/create-opportunity.dto";
 import { ListOpportunitiesDto } from "./dto/list-opportunities.dto";
 import { UpdateOpportunityDto } from "./dto/update-opportunity.dto";
+import { CreateSalesActivityDto } from "./dto/create-sales-activity.dto";
 
 @Controller("crm")
 export class CrmController {
@@ -35,6 +36,21 @@ export class CrmController {
     return this.crm.list(actor, query);
   }
 
+  @Get("owners")
+  @RequirePermissions(Permission.CrmRead)
+  owners(@CurrentActor() actor: Actor) {
+    return this.crm.owners(actor);
+  }
+
+  @Get("opportunities/:opportunityId")
+  @RequirePermissions(Permission.CrmRead)
+  detail(
+    @CurrentActor() actor: Actor,
+    @Param("opportunityId", ParseUUIDPipe) opportunityId: string,
+  ) {
+    return this.crm.detail(actor, opportunityId);
+  }
+
   @Post("opportunities")
   @RequirePermissions(Permission.CrmWrite)
   create(@CurrentActor() actor: Actor, @Body() input: CreateOpportunityDto) {
@@ -49,5 +65,15 @@ export class CrmController {
     @Body() input: UpdateOpportunityDto,
   ) {
     return this.crm.update(actor, opportunityId, input);
+  }
+
+  @Post("opportunities/:opportunityId/activities")
+  @RequirePermissions(Permission.CrmWrite)
+  addActivity(
+    @CurrentActor() actor: Actor,
+    @Param("opportunityId", ParseUUIDPipe) opportunityId: string,
+    @Body() input: CreateSalesActivityDto,
+  ) {
+    return this.crm.addActivity(actor, opportunityId, input);
   }
 }

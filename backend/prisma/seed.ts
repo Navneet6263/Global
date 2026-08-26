@@ -3,6 +3,10 @@ import { PrismaMssql } from "@prisma/adapter-mssql";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { Permission } from "../src/common/auth/permissions";
 import { hashPassword } from "../src/auth/password";
+import {
+  isValidUserPassword,
+  USER_PASSWORD_REQUIREMENTS,
+} from "../src/auth/password-policy";
 
 const adapter = new PrismaMssql({
   server: process.env.DB_HOST ?? "localhost",
@@ -192,10 +196,8 @@ async function main(): Promise<void> {
     let passwordHash: string | undefined;
     if (!existingAdmin || resetPassword) {
       const adminPassword = required("SEED_ADMIN_PASSWORD");
-      if (adminPassword.length < 14) {
-        throw new Error(
-          "SEED_ADMIN_PASSWORD must contain at least 14 characters",
-        );
+      if (!isValidUserPassword(adminPassword)) {
+        throw new Error(`SEED_ADMIN_PASSWORD ${USER_PASSWORD_REQUIREMENTS}`);
       }
       passwordHash = await hashPassword(adminPassword);
     }

@@ -210,6 +210,11 @@ export type InvoiceLine = Prisma.InvoiceLineModel
  */
 export type Payment = Prisma.PaymentModel
 /**
+ * Model CreditNote
+ *
+ */
+export type CreditNote = Prisma.CreditNoteModel
+/**
  * Model Notification
  * 
  */

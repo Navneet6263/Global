@@ -1,14 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, Ban, CheckCircle2, ExternalLink, Loader2, Play } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { updateTask, type FindingInput, type VerificationTask } from "@/lib/api/tasks";
 import { formatDate, humanize } from "../utils";
 import { FindingEditor } from "./FindingEditor";
 import { Status } from "./VerifierQueue";
-import { readVerifierDraft, type VerifierResult } from "./verifier-draft";
+import {
+  loadVerifierDraft,
+  removeVerifierDraft,
+  saveVerifierDraft,
+  type VerifierResult,
+} from "./verifier-draft";
 import {
   BlockerEditor,
   CompletedTask,
@@ -26,20 +31,45 @@ export function VerifierTaskWorkspace({
   onUpdated: () => Promise<void>;
 }) {
   const draftKey = `verifier-draft:${task.id}`;
-  const stored = useMemo(() => readVerifierDraft(draftKey), [draftKey]);
-  const [result, setResult] = useState<VerifierResult>(stored?.result ?? "CLEAR");
-  const [sourceSummary, setSourceSummary] = useState(stored?.sourceSummary ?? "");
-  const [findings, setFindings] = useState<FindingInput[]>(stored?.findings ?? []);
+  const [result, setResult] = useState<VerifierResult>("CLEAR");
+  const [sourceSummary, setSourceSummary] = useState("");
+  const [findings, setFindings] = useState<FindingInput[]>([]);
+  const [draftReady, setDraftReady] = useState(false);
   const [blockReason, setBlockReason] = useState("");
   const [showBlock, setShowBlock] = useState(false);
   useEffect(() => {
-    if (task.status === "IN_PROGRESS")
-      sessionStorage.setItem(draftKey, JSON.stringify({ result, sourceSummary, findings }));
-  }, [draftKey, findings, result, sourceSummary, task.status]);
+    let active = true;
+    void loadVerifierDraft(draftKey)
+      .then((stored) => {
+        if (!active || !stored) return;
+        setResult(stored.result);
+        setSourceSummary(stored.sourceSummary);
+        setFindings(stored.findings);
+      })
+      .finally(() => {
+        if (active) setDraftReady(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [draftKey]);
+  useEffect(() => {
+    if (!draftReady || task.status !== "IN_PROGRESS") return;
+    const timer = window.setTimeout(() => {
+      void saveVerifierDraft({
+        key: draftKey,
+        result,
+        sourceSummary,
+        findings,
+        savedAt: new Date().toISOString(),
+      });
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [draftKey, draftReady, findings, result, sourceSummary, task.status]);
   const mutation = useMutation({
     mutationFn: (input: Parameters<typeof updateTask>[1]) => updateTask(task.id, input),
     onSuccess: async (_, input) => {
-      if (input.status === "COMPLETED") sessionStorage.removeItem(draftKey);
+      if (input.status === "COMPLETED") void removeVerifierDraft(draftKey);
       toast.success(
         input.status === "COMPLETED"
           ? "Check completed and sent forward"
@@ -169,7 +199,7 @@ export function VerifierTaskWorkspace({
             <SecondaryButton onClick={() => setShowBlock(true)}>
               <Ban className="h-4 w-4" /> Block
             </SecondaryButton>
-            <span className="text-[10px] text-slate-400">Draft saved for this browser session</span>
+            <span className="text-[10px] text-slate-400">Draft saved on this device</span>
           </div>
         </form>
       ) : null}

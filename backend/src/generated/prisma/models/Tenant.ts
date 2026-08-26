@@ -260,6 +260,7 @@ export type TenantWhereInput = {
   opportunities?: Prisma.SalesOpportunityListRelationFilter
   salesActivities?: Prisma.SalesActivityListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  creditNotes?: Prisma.CreditNoteListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
 }
@@ -293,6 +294,7 @@ export type TenantOrderByWithRelationInput = {
   opportunities?: Prisma.SalesOpportunityOrderByRelationAggregateInput
   salesActivities?: Prisma.SalesActivityOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  creditNotes?: Prisma.CreditNoteOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   candidateAccess?: Prisma.CandidatePortalAccessOrderByRelationAggregateInput
 }
@@ -329,6 +331,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   opportunities?: Prisma.SalesOpportunityListRelationFilter
   salesActivities?: Prisma.SalesActivityListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  creditNotes?: Prisma.CreditNoteListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
 }, "id" | "publicId" | "code">
@@ -392,6 +395,7 @@ export type TenantCreateInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -425,6 +429,7 @@ export type TenantUncheckedCreateInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -458,6 +463,7 @@ export type TenantUpdateInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -491,6 +497,7 @@ export type TenantUncheckedUpdateInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -869,6 +876,20 @@ export type TenantUpdateOneRequiredWithoutInvoicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutInvoicesInput, Prisma.TenantUpdateWithoutInvoicesInput>, Prisma.TenantUncheckedUpdateWithoutInvoicesInput>
 }
 
+export type TenantCreateNestedOneWithoutCreditNotesInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutCreditNotesInput, Prisma.TenantUncheckedCreateWithoutCreditNotesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutCreditNotesInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutCreditNotesNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutCreditNotesInput, Prisma.TenantUncheckedCreateWithoutCreditNotesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutCreditNotesInput
+  upsert?: Prisma.TenantUpsertWithoutCreditNotesInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutCreditNotesInput, Prisma.TenantUpdateWithoutCreditNotesInput>, Prisma.TenantUncheckedUpdateWithoutCreditNotesInput>
+}
+
 export type TenantCreateNestedOneWithoutNotificationsInput = {
   create?: Prisma.XOR<Prisma.TenantCreateWithoutNotificationsInput, Prisma.TenantUncheckedCreateWithoutNotificationsInput>
   connectOrCreate?: Prisma.TenantCreateOrConnectWithoutNotificationsInput
@@ -925,6 +946,7 @@ export type TenantCreateWithoutBranchesInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -957,6 +979,7 @@ export type TenantUncheckedCreateWithoutBranchesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1005,6 +1028,7 @@ export type TenantUpdateWithoutBranchesInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1037,6 +1061,7 @@ export type TenantUncheckedUpdateWithoutBranchesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1069,6 +1094,7 @@ export type TenantCreateWithoutUsersInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1101,6 +1127,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1149,6 +1176,7 @@ export type TenantUpdateWithoutUsersInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1181,6 +1209,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1213,6 +1242,7 @@ export type TenantCreateWithoutRolesInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1245,6 +1275,7 @@ export type TenantUncheckedCreateWithoutRolesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1293,6 +1324,7 @@ export type TenantUpdateWithoutRolesInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1325,6 +1357,7 @@ export type TenantUncheckedUpdateWithoutRolesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1357,6 +1390,7 @@ export type TenantCreateWithoutClientsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1389,6 +1423,7 @@ export type TenantUncheckedCreateWithoutClientsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1437,6 +1472,7 @@ export type TenantUpdateWithoutClientsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1469,6 +1505,7 @@ export type TenantUncheckedUpdateWithoutClientsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1501,6 +1538,7 @@ export type TenantCreateWithoutServicePackagesInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1533,6 +1571,7 @@ export type TenantUncheckedCreateWithoutServicePackagesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1581,6 +1620,7 @@ export type TenantUpdateWithoutServicePackagesInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1613,6 +1653,7 @@ export type TenantUncheckedUpdateWithoutServicePackagesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1645,6 +1686,7 @@ export type TenantCreateWithoutSubjectsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1677,6 +1719,7 @@ export type TenantUncheckedCreateWithoutSubjectsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1725,6 +1768,7 @@ export type TenantUpdateWithoutSubjectsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1757,6 +1801,7 @@ export type TenantUncheckedUpdateWithoutSubjectsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1789,6 +1834,7 @@ export type TenantCreateWithoutCasesInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1821,6 +1867,7 @@ export type TenantUncheckedCreateWithoutCasesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -1869,6 +1916,7 @@ export type TenantUpdateWithoutCasesInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -1901,6 +1949,7 @@ export type TenantUncheckedUpdateWithoutCasesInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -1933,6 +1982,7 @@ export type TenantCreateWithoutChecksInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -1965,6 +2015,7 @@ export type TenantUncheckedCreateWithoutChecksInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2013,6 +2064,7 @@ export type TenantUpdateWithoutChecksInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2045,6 +2097,7 @@ export type TenantUncheckedUpdateWithoutChecksInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2077,6 +2130,7 @@ export type TenantCreateWithoutDocumentsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2109,6 +2163,7 @@ export type TenantUncheckedCreateWithoutDocumentsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2157,6 +2212,7 @@ export type TenantUpdateWithoutDocumentsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2189,6 +2245,7 @@ export type TenantUncheckedUpdateWithoutDocumentsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2221,6 +2278,7 @@ export type TenantCreateWithoutTasksInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2253,6 +2311,7 @@ export type TenantUncheckedCreateWithoutTasksInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2301,6 +2360,7 @@ export type TenantUpdateWithoutTasksInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2333,6 +2393,7 @@ export type TenantUncheckedUpdateWithoutTasksInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2365,6 +2426,7 @@ export type TenantCreateWithoutClarificationsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2397,6 +2459,7 @@ export type TenantUncheckedCreateWithoutClarificationsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2445,6 +2508,7 @@ export type TenantUpdateWithoutClarificationsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2477,6 +2541,7 @@ export type TenantUncheckedUpdateWithoutClarificationsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2509,6 +2574,7 @@ export type TenantCreateWithoutReportsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2541,6 +2607,7 @@ export type TenantUncheckedCreateWithoutReportsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2589,6 +2656,7 @@ export type TenantUpdateWithoutReportsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2621,6 +2689,7 @@ export type TenantUncheckedUpdateWithoutReportsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2653,6 +2722,7 @@ export type TenantCreateWithoutFieldVisitsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2685,6 +2755,7 @@ export type TenantUncheckedCreateWithoutFieldVisitsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2733,6 +2804,7 @@ export type TenantUpdateWithoutFieldVisitsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2765,6 +2837,7 @@ export type TenantUncheckedUpdateWithoutFieldVisitsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2797,6 +2870,7 @@ export type TenantCreateWithoutAuditEventsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2829,6 +2903,7 @@ export type TenantUncheckedCreateWithoutAuditEventsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -2877,6 +2952,7 @@ export type TenantUpdateWithoutAuditEventsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -2909,6 +2985,7 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -2941,6 +3018,7 @@ export type TenantCreateWithoutOutboxEventsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -2973,6 +3051,7 @@ export type TenantUncheckedCreateWithoutOutboxEventsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -3021,6 +3100,7 @@ export type TenantUpdateWithoutOutboxEventsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -3053,6 +3133,7 @@ export type TenantUncheckedUpdateWithoutOutboxEventsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -3085,6 +3166,7 @@ export type TenantCreateWithoutIdempotencyKeysInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -3117,6 +3199,7 @@ export type TenantUncheckedCreateWithoutIdempotencyKeysInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -3165,6 +3248,7 @@ export type TenantUpdateWithoutIdempotencyKeysInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -3197,6 +3281,7 @@ export type TenantUncheckedUpdateWithoutIdempotencyKeysInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -3229,6 +3314,7 @@ export type TenantCreateWithoutFieldPolicyInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -3261,6 +3347,7 @@ export type TenantUncheckedCreateWithoutFieldPolicyInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -3309,6 +3396,7 @@ export type TenantUpdateWithoutFieldPolicyInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -3341,6 +3429,7 @@ export type TenantUncheckedUpdateWithoutFieldPolicyInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -3373,6 +3462,7 @@ export type TenantCreateWithoutOpportunitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -3405,6 +3495,7 @@ export type TenantUncheckedCreateWithoutOpportunitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -3453,6 +3544,7 @@ export type TenantUpdateWithoutOpportunitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -3485,6 +3577,7 @@ export type TenantUncheckedUpdateWithoutOpportunitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -3517,6 +3610,7 @@ export type TenantCreateWithoutSalesActivitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -3549,6 +3643,7 @@ export type TenantUncheckedCreateWithoutSalesActivitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -3597,6 +3692,7 @@ export type TenantUpdateWithoutSalesActivitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -3629,6 +3725,7 @@ export type TenantUncheckedUpdateWithoutSalesActivitiesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -3661,6 +3758,7 @@ export type TenantCreateWithoutInvoicesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
@@ -3693,6 +3791,7 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -3741,6 +3840,7 @@ export type TenantUpdateWithoutInvoicesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
@@ -3773,6 +3873,155 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutCreditNotesInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutCreditNotesInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectUncheckedCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutCreditNotesInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutCreditNotesInput, Prisma.TenantUncheckedCreateWithoutCreditNotesInput>
+}
+
+export type TenantUpsertWithoutCreditNotesInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutCreditNotesInput, Prisma.TenantUncheckedUpdateWithoutCreditNotesInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutCreditNotesInput, Prisma.TenantUncheckedCreateWithoutCreditNotesInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutCreditNotesInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutCreditNotesInput, Prisma.TenantUncheckedUpdateWithoutCreditNotesInput>
+}
+
+export type TenantUpdateWithoutCreditNotesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutCreditNotesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUncheckedUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -3806,6 +4055,7 @@ export type TenantCreateWithoutNotificationsInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
 }
 
@@ -3838,6 +4088,7 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3886,6 +4137,7 @@ export type TenantUpdateWithoutNotificationsInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
 }
 
@@ -3918,6 +4170,7 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3950,6 +4203,7 @@ export type TenantCreateWithoutCandidateAccessInput = {
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
 }
 
@@ -3982,6 +4236,7 @@ export type TenantUncheckedCreateWithoutCandidateAccessInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4030,6 +4285,7 @@ export type TenantUpdateWithoutCandidateAccessInput = {
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
 }
 
@@ -4062,6 +4318,7 @@ export type TenantUncheckedUpdateWithoutCandidateAccessInput = {
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4090,6 +4347,7 @@ export type TenantCountOutputType = {
   opportunities: number
   salesActivities: number
   invoices: number
+  creditNotes: number
   notifications: number
   candidateAccess: number
 }
@@ -4114,6 +4372,7 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   opportunities?: boolean | TenantCountOutputTypeCountOpportunitiesArgs
   salesActivities?: boolean | TenantCountOutputTypeCountSalesActivitiesArgs
   invoices?: boolean | TenantCountOutputTypeCountInvoicesArgs
+  creditNotes?: boolean | TenantCountOutputTypeCountCreditNotesArgs
   notifications?: boolean | TenantCountOutputTypeCountNotificationsArgs
   candidateAccess?: boolean | TenantCountOutputTypeCountCandidateAccessArgs
 }
@@ -4264,6 +4523,13 @@ export type TenantCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types
 /**
  * TenantCountOutputType without action
  */
+export type TenantCountOutputTypeCountCreditNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CreditNoteWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
 export type TenantCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.NotificationWhereInput
 }
@@ -4305,6 +4571,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   opportunities?: boolean | Prisma.Tenant$opportunitiesArgs<ExtArgs>
   salesActivities?: boolean | Prisma.Tenant$salesActivitiesArgs<ExtArgs>
   invoices?: boolean | Prisma.Tenant$invoicesArgs<ExtArgs>
+  creditNotes?: boolean | Prisma.Tenant$creditNotesArgs<ExtArgs>
   notifications?: boolean | Prisma.Tenant$notificationsArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.Tenant$candidateAccessArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
@@ -4345,6 +4612,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   opportunities?: boolean | Prisma.Tenant$opportunitiesArgs<ExtArgs>
   salesActivities?: boolean | Prisma.Tenant$salesActivitiesArgs<ExtArgs>
   invoices?: boolean | Prisma.Tenant$invoicesArgs<ExtArgs>
+  creditNotes?: boolean | Prisma.Tenant$creditNotesArgs<ExtArgs>
   notifications?: boolean | Prisma.Tenant$notificationsArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.Tenant$candidateAccessArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
@@ -4373,6 +4641,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     opportunities: Prisma.$SalesOpportunityPayload<ExtArgs>[]
     salesActivities: Prisma.$SalesActivityPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    creditNotes: Prisma.$CreditNotePayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     candidateAccess: Prisma.$CandidatePortalAccessPayload<ExtArgs>[]
   }
@@ -4745,6 +5014,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   opportunities<T extends Prisma.Tenant$opportunitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$opportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesOpportunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   salesActivities<T extends Prisma.Tenant$salesActivitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$salesActivitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Tenant$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  creditNotes<T extends Prisma.Tenant$creditNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$creditNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Tenant$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   candidateAccess<T extends Prisma.Tenant$candidateAccessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$candidateAccessArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePortalAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -5603,6 +5873,30 @@ export type Tenant$invoicesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * Tenant.creditNotes
+ */
+export type Tenant$creditNotesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CreditNote
+   */
+  select?: Prisma.CreditNoteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CreditNote
+   */
+  omit?: Prisma.CreditNoteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CreditNoteInclude<ExtArgs> | null
+  where?: Prisma.CreditNoteWhereInput
+  orderBy?: Prisma.CreditNoteOrderByWithRelationInput | Prisma.CreditNoteOrderByWithRelationInput[]
+  cursor?: Prisma.CreditNoteWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CreditNoteScalarFieldEnum | Prisma.CreditNoteScalarFieldEnum[]
 }
 
 /**

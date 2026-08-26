@@ -60,7 +60,7 @@ function FieldExecutivePage() {
       <div className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-12 pt-5 sm:px-5">
         <header className="flex items-center justify-between border-b border-slate-200 pb-4">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-orange-600">
+            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-orange-700">
               Delivery / Field
             </p>
             <h1 className="mt-1 text-2xl font-bold tracking-tight">My field route</h1>
@@ -120,7 +120,7 @@ function FieldExecutivePage() {
             <button
               key={value}
               onClick={() => setTab(value)}
-              className={`shrink-0 rounded-xl px-3 py-2 text-[10px] font-bold ${tab === value ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-500"}`}
+              className={`shrink-0 rounded-xl px-3 py-2 text-[10px] font-bold ${tab === value ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-700"}`}
             >
               {value === "EXCEPTION"
                 ? "Exceptions"
@@ -129,7 +129,7 @@ function FieldExecutivePage() {
           ))}
         </div>
         {workflow.visitsQuery.isLoading ? (
-          <div className="animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center text-xs text-slate-500">
+          <div className="animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center text-xs text-slate-700">
             Loading assigned visits…
           </div>
         ) : null}
@@ -178,7 +178,7 @@ function FieldExecutivePage() {
             <FieldDayPlan visits={visible} activeId={active.id} onSelect={workflow.setActiveId} />
           </>
         ) : null}
-        <p className="px-2 text-center text-[10px] leading-5 text-slate-400">
+        <p className="px-2 text-center text-[10px] leading-5 text-slate-600">
           <CheckCircle2 className="mr-1 inline h-3 w-3" />
           Location is captured only on check-in, refresh and completion. Local drafts are cleared on
           logout.

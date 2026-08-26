@@ -7,6 +7,7 @@ import {
   Patch,
   Post,
   Query,
+  StreamableFile,
 } from "@nestjs/common";
 import {
   CurrentActor,
@@ -15,6 +16,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { CreateInvoiceDto } from "./dto/create-invoice.dto";
+import { CreateCreditNoteDto } from "./dto/create-credit-note.dto";
 import { CancelInvoiceDto } from "./dto/cancel-invoice.dto";
 import { ListInvoicesDto } from "./dto/list-invoices.dto";
 import { RecordPaymentDto } from "./dto/record-payment.dto";
@@ -34,6 +36,15 @@ export class FinanceController {
   @RequirePermissions(Permission.FinanceRead)
   list(@CurrentActor() actor: Actor, @Query() query: ListInvoicesDto) {
     return this.finance.list(actor, query);
+  }
+
+  @Get("invoices/export")
+  @RequirePermissions(Permission.FinanceRead)
+  exportLedger(
+    @CurrentActor() actor: Actor,
+    @Query() query: ListInvoicesDto,
+  ): Promise<StreamableFile> {
+    return this.finance.exportLedger(actor, query);
   }
 
   @Get("invoices/:invoiceId/pdf")
@@ -59,6 +70,16 @@ export class FinanceController {
     @Body() input: RecordPaymentDto,
   ) {
     return this.finance.recordPayment(actor, invoiceId, input);
+  }
+
+  @Post("invoices/:invoiceId/credit-notes")
+  @RequirePermissions(Permission.FinanceWrite)
+  createCreditNote(
+    @CurrentActor() actor: Actor,
+    @Param("invoiceId", ParseUUIDPipe) invoiceId: string,
+    @Body() input: CreateCreditNoteDto,
+  ) {
+    return this.finance.createCreditNote(actor, invoiceId, input);
   }
 
   @Patch("invoices/:invoiceId/cancel")

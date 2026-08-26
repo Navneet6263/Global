@@ -6,6 +6,7 @@ export interface FinanceOverview {
     openInvoiceCount: number;
     billed: number;
     collected: number;
+    credited: number;
     outstanding: number;
     overdueAmount: number;
     overdueCount: number;
@@ -24,6 +25,7 @@ export interface Invoice {
   taxAmount: string | number;
   totalAmount: string | number;
   paidAmount: string | number;
+  creditedAmount: string | number;
   notes?: string | null;
   version: number;
   createdAt: string;
@@ -44,6 +46,14 @@ export interface Invoice {
     method: string;
     reference?: string | null;
     receivedAt: string;
+  }>;
+  creditNotes: Array<{
+    publicId: string;
+    noteNumber: string;
+    amount: string | number;
+    reason: string;
+    createdAt: string;
+    createdBy: { displayName: string };
   }>;
 }
 
@@ -99,6 +109,33 @@ export function recordPayment(
     invoiceVersion: number;
     paidAmount: number;
   }>(`/finance/invoices/${invoiceId}/payments`, { method: "POST", body: JSON.stringify(input) });
+}
+
+export function createCreditNote(
+  invoiceId: string,
+  input: { amount: number; reason: string; version: number },
+) {
+  return apiRequest<{
+    id: string;
+    noteNumber: string;
+    amount: string | number;
+    reason: string;
+    createdAt: string;
+    invoiceStatus: string;
+    invoiceVersion: number;
+    creditedAmount: number;
+  }>(`/finance/invoices/${invoiceId}/credit-notes`, {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export async function exportFinanceLedger(input: { search?: string; status?: string } = {}) {
+  const query = new URLSearchParams();
+  if (input.search) query.set("search", input.search);
+  if (input.status) query.set("status", input.status);
+  const blob = await apiDownload(`/finance/invoices/export?${query.toString()}`);
+  saveBlob(blob, `sapling-global-ledger-${new Date().toISOString().slice(0, 10)}.csv`);
 }
 
 export async function downloadInvoice(invoiceId: string, invoiceNumber: string) {

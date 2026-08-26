@@ -1,5 +1,4 @@
 import { ChevronLeft, ChevronRight, Search, ShieldCheck } from "lucide-react";
-import { useState } from "react";
 
 import type { QaQueueItem } from "@/lib/api/qa";
 import { formatDate } from "../utils";
@@ -8,26 +7,25 @@ export function QaQueue({
   items,
   selectedId,
   search,
+  page,
+  hasPrevious,
+  hasNext,
   onSearch,
+  onPrevious,
+  onNext,
   onSelect,
 }: {
   items: QaQueueItem[];
   selectedId?: string | undefined;
   search: string;
+  page: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
   onSearch: (value: string) => void;
+  onPrevious: () => void;
+  onNext: () => void;
   onSelect: (id: string) => void;
 }) {
-  const [page, setPage] = useState(1);
-  const pageSize = 10;
-  const pages = Math.max(1, Math.ceil(items.length / pageSize));
-  const safePage = Math.min(page, pages);
-  const visibleItems = items.slice((safePage - 1) * pageSize, safePage * pageSize);
-  const goToPage = (target: number) => {
-    const nextPage = Math.max(1, Math.min(pages, target));
-    setPage(nextPage);
-    const firstItem = items[(nextPage - 1) * pageSize];
-    if (firstItem) onSelect(firstItem.id);
-  };
   return (
     <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="border-b border-slate-200 p-4">
@@ -35,17 +33,14 @@ export function QaQueue({
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             value={search}
-            onChange={(event) => {
-              onSearch(event.target.value);
-              setPage(1);
-            }}
+            onChange={(event) => onSearch(event.target.value)}
             placeholder="Search candidate, case or client"
             className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none focus:border-orange-300"
           />
         </div>
       </div>
       <div className="max-h-[720px] divide-y divide-slate-100 overflow-y-auto">
-        {visibleItems.map((item) => {
+        {items.map((item) => {
           const highRisk = item.checks.some((check) =>
             ["HIGH", "CRITICAL"].includes(check.riskLevel ?? ""),
           );
@@ -91,13 +86,13 @@ export function QaQueue({
       </div>
       <footer className="flex items-center justify-between border-t border-slate-200 px-4 py-3">
         <span className="text-[11px] font-medium text-slate-500">
-          Page {safePage} of {pages} Â· {items.length} cases
+          Server page {page} · {items.length} cases
         </span>
         <div className="flex gap-2">
           <button
             type="button"
-            onClick={() => goToPage(safePage - 1)}
-            disabled={safePage === 1}
+            onClick={onPrevious}
+            disabled={!hasPrevious}
             aria-label="Previous review page"
             className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35"
           >
@@ -105,8 +100,8 @@ export function QaQueue({
           </button>
           <button
             type="button"
-            onClick={() => goToPage(safePage + 1)}
-            disabled={safePage === pages}
+            onClick={onNext}
+            disabled={!hasNext}
             aria-label="Next review page"
             className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35"
           >

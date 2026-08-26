@@ -9,6 +9,11 @@ import {
   Length,
   Matches,
 } from "class-validator";
+import {
+  MIN_USER_PASSWORD_LENGTH,
+  USER_PASSWORD_PATTERN,
+  USER_PASSWORD_REQUIREMENTS,
+} from "../../auth/password-policy";
 
 export class CreateUserDto {
   @IsEmail() email!: string;
@@ -22,7 +27,9 @@ export class CreateUserDto {
   @IsString({ each: true })
   roleCodes!: string[];
   @IsString()
-  @Length(14, 200)
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/)
+  @Length(MIN_USER_PASSWORD_LENGTH, 200)
+  @Matches(USER_PASSWORD_PATTERN, {
+    message: `temporaryPassword ${USER_PASSWORD_REQUIREMENTS}`,
+  })
   temporaryPassword!: string;
 }

@@ -5,10 +5,12 @@ import {
   BriefcaseBusiness,
   CheckCircle2,
   MessageCircleQuestion,
+  Plus,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { ClientCaseDrawer } from "@/features/stakeholders/client/ClientCaseDrawer";
+import { NewCaseDialog } from "@/components/ops/NewCaseDialog";
 import { ClientInsights } from "@/features/stakeholders/client/ClientInsights";
 import { ClientPortfolio } from "@/features/stakeholders/client/ClientPortfolio";
 import {
@@ -72,8 +74,23 @@ function ClientPortalPage() {
         title="Verification portfolio"
         description="Track every authorised candidate, turnaround commitment and verification outcome from one clear workspace."
         action={
-          <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-            {session.data?.displayName ?? "Authorised client user"}
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
+              {session.data?.displayName ?? "Authorised client user"}
+            </div>
+            {session.data?.permissions.includes("*") ||
+            session.data?.permissions.includes("case:create") ? (
+              <NewCaseDialog
+                trigger={
+                  <button
+                    type="button"
+                    className="inline-flex h-9 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-semibold text-white hover:bg-slate-800"
+                  >
+                    <Plus className="h-3.5 w-3.5" /> New verification
+                  </button>
+                }
+              />
+            ) : null}
           </div>
         }
       />

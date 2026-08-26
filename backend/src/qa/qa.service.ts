@@ -7,6 +7,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { QaDecisionDto } from "./dto/qa-decision.dto";
+import type { QaQueryDto } from "./dto/qa-query.dto";
 
 @Injectable()
 export class QaService {
@@ -20,112 +21,145 @@ export class QaService {
     "Report language is factual and non-discriminatory",
   ];
 
-  async queue(actor: Actor) {
-    const rows = await this.prisma.verificationCase.findMany({
-      where: { tenantId: actor.tenantId, status: "QA_REVIEW" },
-      select: {
-        publicId: true,
-        caseNumber: true,
-        priority: true,
-        dueAt: true,
-        version: true,
-        createdAt: true,
-        qaClaimedAt: true,
-        qaReviewer: { select: { publicId: true, displayName: true } },
-        subject: { select: { publicId: true, fullName: true } },
-        client: { select: { publicId: true, displayName: true } },
-        checks: {
-          select: {
-            publicId: true,
-            type: true,
-            result: true,
-            riskLevel: true,
-            status: true,
-            sourceSummary: true,
-            updatedAt: true,
-            findings: {
-              select: {
-                publicId: true,
-                kind: true,
-                severity: true,
-                title: true,
-                description: true,
-                source: true,
+  async queue(actor: Actor, query: QaQueryDto) {
+    const now = new Date();
+    const baseWhere = {
+      tenantId: actor.tenantId,
+      status: "QA_REVIEW",
+    } as const;
+    const search = query.search?.trim();
+    const [rows, awaiting, overdue, highRisk, claimed] = await Promise.all([
+      this.prisma.verificationCase.findMany({
+        where: {
+          ...baseWhere,
+          ...(search
+            ? {
+                OR: [
+                  { caseNumber: { contains: search } },
+                  { subject: { fullName: { contains: search } } },
+                  { client: { displayName: { contains: search } } },
+                ],
+              }
+            : {}),
+        },
+        select: {
+          publicId: true,
+          caseNumber: true,
+          priority: true,
+          dueAt: true,
+          version: true,
+          createdAt: true,
+          qaClaimedAt: true,
+          qaReviewer: { select: { publicId: true, displayName: true } },
+          subject: { select: { publicId: true, fullName: true } },
+          client: { select: { publicId: true, displayName: true } },
+          checks: {
+            select: {
+              publicId: true,
+              type: true,
+              result: true,
+              riskLevel: true,
+              status: true,
+              sourceSummary: true,
+              updatedAt: true,
+              findings: {
+                select: {
+                  publicId: true,
+                  kind: true,
+                  severity: true,
+                  title: true,
+                  description: true,
+                  source: true,
+                },
+                orderBy: { createdAt: "asc" },
               },
-              orderBy: { createdAt: "asc" },
-            },
-            tasks: {
-              where: { status: "COMPLETED" },
-              select: {
-                completedAt: true,
-                completedBy: { select: { publicId: true, displayName: true } },
+              tasks: {
+                where: { status: "COMPLETED" },
+                select: {
+                  completedAt: true,
+                  completedBy: {
+                    select: { publicId: true, displayName: true },
+                  },
+                },
+                orderBy: { completedAt: "desc" },
+                take: 1,
               },
-              orderBy: { completedAt: "desc" },
-              take: 1,
             },
           },
-        },
-        documents: {
-          select: {
-            publicId: true,
-            type: true,
-            status: true,
-            currentVersion: true,
-            versions: {
-              select: {
-                originalName: true,
-                contentType: true,
-                sha256: true,
-                malwareState: true,
-                createdAt: true,
+          documents: {
+            select: {
+              publicId: true,
+              type: true,
+              status: true,
+              currentVersion: true,
+              versions: {
+                select: {
+                  originalName: true,
+                  contentType: true,
+                  sha256: true,
+                  malwareState: true,
+                  createdAt: true,
+                },
+                orderBy: { version: "desc" },
+                take: 1,
               },
-              orderBy: { version: "desc" },
-              take: 1,
             },
+            orderBy: { createdAt: "asc" },
           },
-          orderBy: { createdAt: "asc" },
-        },
-        fieldVisits: {
-          select: {
-            publicId: true,
-            status: true,
-            address: true,
-            distanceMeters: true,
-            capturedAt: true,
-            evidence: {
-              select: {
-                publicId: true,
-                type: true,
-                sha256: true,
-                capturedAt: true,
+          fieldVisits: {
+            select: {
+              publicId: true,
+              status: true,
+              address: true,
+              distanceMeters: true,
+              capturedAt: true,
+              evidence: {
+                select: {
+                  publicId: true,
+                  type: true,
+                  sha256: true,
+                  capturedAt: true,
+                },
+                orderBy: { capturedAt: "asc" },
               },
-              orderBy: { capturedAt: "asc" },
             },
+            orderBy: { createdAt: "desc" },
           },
-          orderBy: { createdAt: "desc" },
         },
-      },
-      orderBy: [{ dueAt: "asc" }, { createdAt: "asc" }],
-      take: 100,
-    });
-    const now = Date.now();
-    const items = rows.map(({ publicId, ...row }) => ({
+        orderBy: [{ dueAt: "asc" }, { createdAt: "asc" }, { publicId: "asc" }],
+        take: query.limit + 1,
+        ...(query.cursor
+          ? { cursor: { publicId: query.cursor }, skip: 1 }
+          : {}),
+      }),
+      this.prisma.verificationCase.count({ where: baseWhere }),
+      this.prisma.verificationCase.count({
+        where: { ...baseWhere, dueAt: { lt: now } },
+      }),
+      this.prisma.verificationCase.count({
+        where: {
+          ...baseWhere,
+          checks: { some: { riskLevel: { in: ["HIGH", "CRITICAL"] } } },
+        },
+      }),
+      this.prisma.verificationCase.count({
+        where: { ...baseWhere, qaReviewerId: { not: null } },
+      }),
+    ]);
+    const hasMore = rows.length > query.limit;
+    const page = hasMore ? rows.slice(0, query.limit) : rows;
+    const items = page.map(({ publicId, ...row }) => ({
       id: publicId,
       ...row,
     }));
     return {
       items,
+      nextCursor: hasMore ? page.at(-1)?.publicId : null,
       summary: {
-        awaiting: items.length,
-        overdue: items.filter(
-          (item) => item.dueAt && new Date(item.dueAt).getTime() < now,
-        ).length,
-        highRisk: items.filter((item) =>
-          item.checks.some((check) =>
-            ["HIGH", "CRITICAL"].includes(check.riskLevel ?? ""),
-          ),
-        ).length,
-        claimed: items.filter((item) => item.qaReviewer !== null).length,
+        awaiting,
+        overdue,
+        highRisk,
+        claimed,
       },
     };
   }

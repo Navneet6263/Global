@@ -1,6 +1,7 @@
 import { Type } from "class-transformer";
 import {
   IsDateString,
+  IsEmail,
   IsIn,
   IsInt,
   IsNumber,
@@ -19,12 +20,36 @@ export class UpdateOpportunityDto {
   version!: number;
 
   @IsOptional()
+  @IsString()
+  @Length(2, 180)
+  companyName?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  contactName?: string;
+
+  @IsOptional()
   @IsIn(OpportunityStages)
   stage?: string;
 
   @IsOptional()
   @IsUUID()
   ownerId?: string;
+
+  @IsOptional()
+  @IsEmail()
+  contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(7, 24)
+  contactPhone?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 48)
+  source?: string;
 
   @IsOptional()
   @Type(() => Number)
@@ -45,9 +70,18 @@ export class UpdateOpportunityDto {
   expectedCloseDate?: string;
 
   @IsOptional()
+  @IsDateString()
+  nextFollowUpAt?: string;
+
+  @IsOptional()
   @IsString()
   @Length(2, 2000)
   notes?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 500)
+  lostReason?: string;
 
   @IsOptional()
   @IsString()

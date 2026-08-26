@@ -85,6 +85,7 @@ export const ModelName = {
   Invoice: 'Invoice',
   InvoiceLine: 'InvoiceLine',
   Payment: 'Payment',
+  CreditNote: 'CreditNote',
   Notification: 'Notification',
   CandidatePortalAccess: 'CandidatePortalAccess'
 } as const
@@ -625,7 +626,9 @@ export const SalesOpportunityScalarFieldEnum = {
   estimatedValue: 'estimatedValue',
   probability: 'probability',
   expectedCloseDate: 'expectedCloseDate',
+  nextFollowUpAt: 'nextFollowUpAt',
   notes: 'notes',
+  lostReason: 'lostReason',
   closedAt: 'closedAt',
   version: 'version',
   createdAt: 'createdAt',
@@ -664,6 +667,7 @@ export const InvoiceScalarFieldEnum = {
   taxAmount: 'taxAmount',
   totalAmount: 'totalAmount',
   paidAmount: 'paidAmount',
+  creditedAmount: 'creditedAmount',
   notes: 'notes',
   version: 'version',
   createdAt: 'createdAt',
@@ -701,6 +705,21 @@ export const PaymentScalarFieldEnum = {
 } as const
 
 export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
+
+
+export const CreditNoteScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  invoiceId: 'invoiceId',
+  createdById: 'createdById',
+  noteNumber: 'noteNumber',
+  amount: 'amount',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type CreditNoteScalarFieldEnum = (typeof CreditNoteScalarFieldEnum)[keyof typeof CreditNoteScalarFieldEnum]
 
 
 export const NotificationScalarFieldEnum = {

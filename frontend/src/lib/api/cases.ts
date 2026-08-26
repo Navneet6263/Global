@@ -1,5 +1,5 @@
 import type { CaseDraft, CheckKey } from "@/features/cases/new-case/model";
-import { apiRequest } from "./client";
+import { apiDownload, apiRequest, saveBlob } from "./client";
 
 export type ClientOption = {
   publicId: string;
@@ -146,6 +146,14 @@ export function listCases(
 
 export function getCase(caseId: string) {
   return apiRequest<CaseDetail>(`/cases/${caseId}`);
+}
+
+export async function exportCases(input: { search?: string; status?: string } = {}) {
+  const query = new URLSearchParams();
+  if (input.search) query.set("search", input.search);
+  if (input.status) query.set("status", input.status);
+  const blob = await apiDownload(`/cases/export?${query.toString()}`);
+  saveBlob(blob, `sapling-global-cases-${new Date().toISOString().slice(0, 10)}.csv`);
 }
 
 export function listClients() {

@@ -25,9 +25,7 @@ test("sign-in is keyboard operable and has no serious accessibility violations",
       ),
   ).toEqual([]);
 
-  await expect(page.getByLabel("Workspace code")).toBeEnabled();
-  await page.keyboard.press("Tab");
-  await expect(page.getByLabel("Workspace code")).toBeFocused();
+  await expect(page.getByLabel("Work email")).toBeEnabled();
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("Work email")).toBeFocused();
   await page.keyboard.press("Tab");
@@ -44,7 +42,7 @@ test("sign-in remains usable without horizontal overflow on a mobile viewport", 
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto("/login");
 
-  await expect(page.getByLabel("Workspace code")).toBeVisible();
+  await expect(page.getByLabel("Work email")).toBeVisible();
   await expect(page.getByRole("button", { name: "Enter workspace" })).toBeVisible();
   const dimensions = await page.evaluate(() => ({
     viewport: document.documentElement.clientWidth,

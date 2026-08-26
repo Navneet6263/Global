@@ -13,6 +13,7 @@ import {
 import { loadFieldDrafts, removeFieldDraft, saveFieldDraft } from "./offline-store";
 import { emptyFieldDraft, type ApiFieldVisit, type FieldDraft } from "./types";
 import { capturePreciseFix } from "./field-geo-capture";
+import { prepareEvidencePhotos } from "./evidence-files";
 
 export function useFieldWorkflow() {
   const queryClient = useQueryClient();
@@ -33,7 +34,6 @@ export function useFieldWorkflow() {
   const [locating, setLocating] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [online, setOnline] = useState(true);
-
   useEffect(() => {
     void loadFieldDrafts()
       .then(setDrafts)
@@ -48,7 +48,6 @@ export function useFieldWorkflow() {
       window.removeEventListener("offline", wentOffline);
     };
   }, []);
-
   useEffect(() => {
     const preferred = visits.find((visit) => ["ASSIGNED", "IN_PROGRESS"].includes(visit.status));
     if (!activeId && (preferred ?? visits[0])) setActiveId((preferred ?? visits[0])!.id);
@@ -58,7 +57,6 @@ export function useFieldWorkflow() {
   const draft = active
     ? (drafts[active.id] ?? emptyFieldDraft(active.id))
     : emptyFieldDraft("pending");
-
   const persist = useCallback(async (next: FieldDraft) => {
     setDrafts((current) => ({ ...current, [next.visitId]: next }));
     await saveFieldDraft(next).catch(() => {
@@ -66,7 +64,6 @@ export function useFieldWorkflow() {
       throw new Error("Offline draft could not be saved");
     });
   }, []);
-
   const update = useCallback(
     (patch: Partial<FieldDraft>) => {
       if (!active) return;
@@ -74,7 +71,6 @@ export function useFieldWorkflow() {
     },
     [active, draft, persist],
   );
-
   const captureFix = useCallback(() => capturePreciseFix(), []);
 
   const capture = useCallback(
@@ -115,15 +111,9 @@ export function useFieldWorkflow() {
 
   const addPhotos = useCallback(
     (files: FileList) => {
-      const capturedAt = new Date().toISOString();
-      const photos = Array.from(files).map((file) => ({
-        id: crypto.randomUUID(),
-        blob: file,
-        name: file.name || `field-evidence-${Date.now()}.jpg`,
-        type: file.type,
-        capturedAt,
-      }));
-      update({ photos: [...draft.photos, ...photos] });
+      const { photos, errors } = prepareEvidencePhotos(files, draft.photos.length);
+      errors.forEach((message) => toast.error(message));
+      if (photos.length) update({ photos: [...draft.photos, ...photos] });
     },
     [draft.photos, update],
   );

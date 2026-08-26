@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -82,9 +83,15 @@ export class CandidatePortalService {
           currentVersion: document.currentVersion,
         })),
         clarifications: access.case.clarifications.map((item) => ({
+          id: item.publicId,
           subject: item.subject,
           status: item.status,
           dueAt: item.dueAt,
+          messages: item.messages.map(({ senderType, body, createdAt }) => ({
+            sender: senderType,
+            body,
+            createdAt,
+          })),
         })),
         consentStatus: access.case.consents[0]?.status ?? "NOT_REQUESTED",
         reportAvailable: access.case.reports.some(
@@ -113,6 +120,79 @@ export class CandidatePortalService {
     );
   }
 
+  async respondToClarification(
+    accessPublicId: string,
+    token: string,
+    clarificationPublicId: string,
+    message: string,
+  ) {
+    const access = await this.authorize(accessPublicId, token);
+    const clarification = access.case.clarifications.find(
+      (item) => item.publicId === clarificationPublicId,
+    );
+    if (!clarification) throw new NotFoundException("Clarification not found");
+    if (clarification.status !== "OPEN") {
+      throw new ConflictException(
+        "Only an open information request can receive a response",
+      );
+    }
+    const respondedAt = new Date();
+    await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.clarification.updateMany({
+        where: { id: clarification.id, caseId: access.caseId, status: "OPEN" },
+        data: {
+          status: "RESPONDED",
+          responseTokenHash: null,
+          responseTokenExpiresAt: null,
+        },
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException(
+          "Information request changed; refresh and try again",
+        );
+      }
+      await tx.clarificationMessage.create({
+        data: {
+          clarificationId: clarification.id,
+          senderType: "CANDIDATE",
+          body: message.trim(),
+        },
+      });
+      const recipients = access.case.assignedOpsUserId
+        ? [{ id: access.case.assignedOpsUserId }]
+        : await tx.user.findMany({
+            where: {
+              tenantId: access.tenantId,
+              status: "ACTIVE",
+              userRoles: { some: { role: { code: "OPS_MANAGER" } } },
+            },
+            select: { id: true },
+          });
+      if (recipients.length) {
+        await tx.notification.createMany({
+          data: recipients.map((recipient) => ({
+            tenantId: access.tenantId,
+            userId: recipient.id,
+            type: "CLARIFICATION_RESPONDED",
+            title: "Candidate response received",
+            body: `${access.case.caseNumber}: ${clarification.subject}`,
+            href: `/cases/${access.case.publicId}`,
+          })),
+        });
+      }
+      await tx.auditEvent.create({
+        data: {
+          tenantId: access.tenantId,
+          action: "clarification.candidate-responded",
+          resourceType: "clarification",
+          resourcePublicId: clarificationPublicId,
+          afterJson: JSON.stringify({ status: "RESPONDED", respondedAt }),
+        },
+      });
+    });
+    return { received: true, respondedAt };
+  }
+
   private async authorize(publicId: string, token: string) {
     const access = await this.prisma.candidatePortalAccess.findUnique({
       where: { publicId },
@@ -131,7 +211,17 @@ export class CandidatePortalService {
               orderBy: { createdAt: "desc" },
             },
             clarifications: {
-              select: { subject: true, status: true, dueAt: true },
+              select: {
+                id: true,
+                publicId: true,
+                subject: true,
+                status: true,
+                dueAt: true,
+                messages: {
+                  select: { senderType: true, body: true, createdAt: true },
+                  orderBy: { createdAt: "asc" },
+                },
+              },
               orderBy: { createdAt: "desc" },
             },
             consents: {

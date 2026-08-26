@@ -75,6 +75,10 @@ export class CreateOpportunityDto {
   expectedCloseDate?: string;
 
   @IsOptional()
+  @IsDateString()
+  nextFollowUpAt?: string;
+
+  @IsOptional()
   @IsString()
   @Length(2, 2000)
   notes?: string;

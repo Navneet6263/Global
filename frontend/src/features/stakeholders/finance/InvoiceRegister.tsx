@@ -1,7 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Download, Eye, Search } from "lucide-react";
+import { toast } from "sonner";
 
-import { saveBlob } from "@/lib/api/client";
-import type { Invoice } from "@/lib/api/finance";
+import { exportFinanceLedger, type Invoice } from "@/lib/api/finance";
 import { StakeholderPanel } from "../StakeholderShell";
 import { formatDate, humanize, money } from "./finance-utils";
 
@@ -30,6 +31,10 @@ export function InvoiceRegister({
   onNext: () => void;
   onOpen: (invoice: Invoice) => void;
 }) {
+  const exportMutation = useMutation({
+    mutationFn: () => exportFinanceLedger({ search: search.trim(), status }),
+    onError: (error) => toast.error("Ledger export failed", { description: error.message }),
+  });
   return (
     <StakeholderPanel
       title="Invoice register"
@@ -38,11 +43,12 @@ export function InvoiceRegister({
       action={
         <button
           type="button"
-          onClick={() => exportLedger(items)}
-          disabled={!items.length}
+          onClick={() => exportMutation.mutate()}
+          disabled={!items.length || exportMutation.isPending}
           className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 px-3 text-[10px] font-semibold text-slate-600 disabled:opacity-40"
         >
-          <Download className="h-3.5 w-3.5" /> Export ledger
+          <Download className="h-3.5 w-3.5" />
+          {exportMutation.isPending ? "Preparing…" : "Export full ledger"}
         </button>
       }
     >
@@ -57,12 +63,22 @@ export function InvoiceRegister({
           />
         </label>
         <select
+          aria-label="Filter invoices by status"
           value={status}
           onChange={(event) => onStatus(event.target.value)}
           className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-xs font-semibold"
         >
           <option value="">All statuses</option>
-          {["ISSUED", "PARTIALLY_PAID", "PAID", "OVERDUE", "CANCELLED"].map((value) => (
+          {[
+            "ISSUED",
+            "PARTIALLY_PAID",
+            "PARTIALLY_CREDITED",
+            "PAID",
+            "CREDITED",
+            "SETTLED",
+            "OVERDUE",
+            "CANCELLED",
+          ].map((value) => (
             <option key={value} value={value}>
               {humanize(value)}
             </option>
@@ -84,7 +100,8 @@ export function InvoiceRegister({
           </thead>
           <tbody className="divide-y divide-slate-100">
             {items.map((item) => {
-              const balance = Number(item.totalAmount) - Number(item.paidAmount);
+              const balance =
+                Number(item.totalAmount) - Number(item.paidAmount) - Number(item.creditedAmount);
               return (
                 <tr key={item.id} className="text-sm hover:bg-slate-50/70">
                   <td className="px-5 py-4">
@@ -148,14 +165,13 @@ export function InvoiceRegister({
   );
 }
 function Status({ value }: { value: string }) {
-  const tone =
-    value === "PAID"
-      ? "bg-emerald-100 text-emerald-700"
-      : value === "OVERDUE"
-        ? "bg-red-100 text-red-700"
-        : value === "CANCELLED"
-          ? "bg-slate-100 text-slate-600"
-          : "bg-amber-100 text-amber-700";
+  const tone = ["PAID", "CREDITED", "SETTLED"].includes(value)
+    ? "bg-emerald-100 text-emerald-700"
+    : value === "OVERDUE"
+      ? "bg-red-100 text-red-700"
+      : value === "CANCELLED"
+        ? "bg-slate-100 text-slate-600"
+        : "bg-amber-100 text-amber-700";
   return (
     <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${tone}`}>
       {humanize(value)}
@@ -183,28 +199,5 @@ function PageButton({
     >
       <Icon className="h-4 w-4" />
     </button>
-  );
-}
-function exportLedger(items: Invoice[]) {
-  const escape = (value: unknown) => `"${String(value ?? "").replaceAll('"', '""')}"`;
-  const csv = [
-    ["Invoice", "Client", "Status", "Subtotal", "Tax", "Total", "Paid", "Balance", "Due"],
-    ...items.map((item) => [
-      item.invoiceNumber,
-      item.client.displayName,
-      item.status,
-      item.subtotal,
-      item.taxAmount,
-      item.totalAmount,
-      item.paidAmount,
-      Number(item.totalAmount) - Number(item.paidAmount),
-      item.dueAt ?? "",
-    ]),
-  ]
-    .map((row) => row.map(escape).join(","))
-    .join("\r\n");
-  saveBlob(
-    new Blob([csv], { type: "text/csv;charset=utf-8" }),
-    "sapling-global-invoice-ledger.csv",
   );
 }

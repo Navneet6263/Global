@@ -19,18 +19,18 @@ export function SecurityProfile({ profile }: { profile: Session | undefined }) {
             <p className="truncate text-sm font-semibold">
               {profile?.displayName ?? "Loading account"}
             </p>
-            <p className="truncate text-xs text-slate-500">{profile?.email}</p>
+            <p className="truncate text-xs text-slate-700">{profile?.email}</p>
           </div>
         </div>
         <dl className="mt-4 space-y-4 rounded-2xl border border-slate-200 p-4">
           <div>
-            <dt className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <dt className="text-[10px] font-bold uppercase tracking-wider text-slate-600">
               Organisation
             </dt>
             <dd className="mt-1 text-sm font-semibold">{profile?.tenantName ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <dt className="text-[10px] font-bold uppercase tracking-wider text-slate-600">
               Authorised roles
             </dt>
             <dd className="mt-2 flex flex-wrap gap-1.5">

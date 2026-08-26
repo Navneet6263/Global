@@ -8,7 +8,8 @@ import { money } from "./finance-utils";
 
 export function PaymentForm({ invoice, onClose }: { invoice: Invoice; onClose: () => void }) {
   const queryClient = useQueryClient();
-  const balance = Number(invoice.totalAmount) - Number(invoice.paidAmount);
+  const balance =
+    Number(invoice.totalAmount) - Number(invoice.paidAmount) - Number(invoice.creditedAmount);
   const [amount, setAmount] = useState(String(balance));
   const [method, setMethod] = useState("BANK_TRANSFER");
   const [reference, setReference] = useState("");

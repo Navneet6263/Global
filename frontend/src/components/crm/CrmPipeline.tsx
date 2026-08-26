@@ -20,7 +20,13 @@ const stageStyle: Record<OpportunityStage, { dot: string; chip: string }> = {
   LOST: { dot: "bg-stone-400", chip: "bg-stone-100 text-stone-600" },
 };
 
-export function CrmPipeline({ items }: { items: Opportunity[] }) {
+export function CrmPipeline({
+  items,
+  onOpen,
+}: {
+  items: Opportunity[];
+  onOpen: (id: string) => void;
+}) {
   const [focus, setFocus] = useState<OpportunityStage | "ALL">("ALL");
   const visibleStages =
     focus === "ALL" ? opportunityStages.filter((stage) => stage !== "LOST") : [focus];
@@ -89,7 +95,7 @@ export function CrmPipeline({ items }: { items: Opportunity[] }) {
               </div>
               <div className="space-y-2">
                 {rows.slice(0, 10).map((item) => (
-                  <DealCard key={item.id} item={item} />
+                  <DealCard key={item.id} item={item} onOpen={() => onOpen(item.id)} />
                 ))}
                 {!rows.length ? (
                   <div className="grid h-24 place-items-center rounded-xl border border-dashed border-border bg-white/60 text-[10px] text-muted-foreground">
@@ -105,7 +111,7 @@ export function CrmPipeline({ items }: { items: Opportunity[] }) {
   );
 }
 
-function DealCard({ item }: { item: Opportunity }) {
+function DealCard({ item, onOpen }: { item: Opportunity; onOpen: () => void }) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (stage: OpportunityStage) =>
@@ -124,7 +130,10 @@ function DealCard({ item }: { item: Opportunity }) {
     onError: (error: Error) => toast.error(error.message),
   });
   return (
-    <article className="rounded-xl border border-border/70 bg-white p-3 shadow-[0_5px_16px_-14px_rgba(0,0,0,.3)] transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md">
+    <article
+      onClick={onOpen}
+      className="cursor-pointer rounded-xl border border-border/70 bg-white p-3 shadow-[0_5px_16px_-14px_rgba(0,0,0,.3)] transition hover:-translate-y-0.5 hover:border-orange-200 hover:shadow-md"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-xs font-bold">{item.companyName}</p>
@@ -159,7 +168,15 @@ function DealCard({ item }: { item: Opportunity }) {
       </div>
       <select
         value={item.stage}
-        onChange={(event) => mutation.mutate(event.target.value as OpportunityStage)}
+        onClick={(event) => event.stopPropagation()}
+        onChange={(event) => {
+          const stage = event.target.value as OpportunityStage;
+          if (stage === "LOST") {
+            onOpen();
+            return;
+          }
+          mutation.mutate(stage);
+        }}
         disabled={mutation.isPending}
         aria-label={`Stage for ${item.companyName}`}
         className={`mt-2 h-8 w-full rounded-lg border-0 px-2 text-[10px] font-bold outline-none ${stageStyle[item.stage].chip}`}

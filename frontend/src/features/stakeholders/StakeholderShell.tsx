@@ -41,7 +41,7 @@ export function StakeholderHeader({
   return (
     <header className="flex flex-col gap-3 border-b border-slate-200 pb-5 pt-2 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-orange-600">
+        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-orange-700">
           {eyebrow}
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>

@@ -60,11 +60,16 @@ export interface QaQueueItem {
   }>;
 }
 
-export function getQaQueue() {
+export function getQaQueue(input: { search?: string; cursor?: string; limit?: number } = {}) {
+  const query = new URLSearchParams();
+  if (input.search) query.set("search", input.search);
+  if (input.cursor) query.set("cursor", input.cursor);
+  query.set("limit", String(input.limit ?? 25));
   return apiRequest<{
     items: QaQueueItem[];
+    nextCursor: string | null;
     summary: { awaiting: number; overdue: number; highRisk: number; claimed: number };
-  }>("/qa/queue");
+  }>(`/qa/queue?${query.toString()}`);
 }
 
 export function claimQaCase(caseId: string, caseVersion: number) {
