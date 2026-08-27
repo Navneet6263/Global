@@ -1,14 +1,20 @@
+import { Transform } from "class-transformer";
 import {
   IsEmail,
   IsIn,
   IsInt,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   Length,
+  Matches,
   Max,
   Min,
 } from "class-validator";
+import {
+  INDIAN_MOBILE_MESSAGE,
+  INDIAN_MOBILE_PATTERN,
+  normalizeIndianMobile,
+} from "../../common/validation/indian-mobile";
 
 export class UpdateClientDto {
   @IsInt()
@@ -35,7 +41,10 @@ export class UpdateClientDto {
   contactEmail?: string;
 
   @IsOptional()
-  @IsPhoneNumber()
+  @Transform(({ value }) => normalizeIndianMobile(value))
+  @Matches(INDIAN_MOBILE_PATTERN, {
+    message: `contactPhone ${INDIAN_MOBILE_MESSAGE}`,
+  })
   contactPhone?: string;
 
   @IsOptional()

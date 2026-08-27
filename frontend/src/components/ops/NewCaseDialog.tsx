@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Sparkles } from "lucide-react";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import {
   createEmptyCaseDraft,
   type CaseDraft,
 } from "@/features/cases/new-case/model";
+import { getSession } from "@/lib/api/auth";
 import { createCase, listClients } from "@/lib/api/cases";
 
 const steps = ["Candidate", "Checks", "Review"];
@@ -21,12 +22,39 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<CaseDraft>(createEmptyCaseDraft);
   const queryClient = useQueryClient();
+  const session = useQuery({
+    queryKey: ["session"],
+    queryFn: getSession,
+    staleTime: 60_000,
+  });
+  const fixedClient = useMemo(
+    () =>
+      session.data?.clientId
+        ? {
+            publicId: session.data.clientId,
+            displayName: session.data.clientName ?? "Assigned client workspace",
+          }
+        : undefined,
+    [session.data?.clientId, session.data?.clientName],
+  );
   const clients = useQuery({
     queryKey: ["clients", "case-options"],
     queryFn: listClients,
-    enabled: open,
+    enabled: open && session.isSuccess && !fixedClient,
     staleTime: 5 * 60_000,
   });
+  useEffect(() => {
+    if (!open || !fixedClient) return;
+    setDraft((current) =>
+      current.clientId === fixedClient.publicId && current.client === fixedClient.displayName
+        ? current
+        : {
+            ...current,
+            clientId: fixedClient.publicId,
+            client: fixedClient.displayName,
+          },
+    );
+  }, [fixedClient, open]);
   const createMutation = useMutation({
     mutationFn: createCase,
     onSuccess: async (created) => {
@@ -112,7 +140,8 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
               draft={draft}
               onChange={update}
               clients={clients.data?.items ?? []}
-              clientsLoading={clients.isLoading}
+              clientsLoading={!fixedClient && (session.isLoading || clients.isLoading)}
+              {...(fixedClient ? { fixedClient } : {})}
             />
           )}
           {step === 1 && <ChecksStep draft={draft} onChange={update} />}

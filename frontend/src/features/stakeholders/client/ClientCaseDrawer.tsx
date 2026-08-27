@@ -1,11 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Download, ExternalLink, MessageSquareText, X } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { Download, ExternalLink, ShieldCheck, X } from "lucide-react";
 
-import { listClarifications, respondToClarificationAsClient } from "@/lib/api/clarifications";
+import { listClarifications } from "@/lib/api/clarifications";
 import { getCase } from "@/lib/api/cases";
 import { downloadReport, listReports } from "@/lib/api/reports";
+import { ClientCaseDocuments } from "./ClientCaseDocuments";
+import { ClientCaseTimeline } from "./ClientCaseTimeline";
+import { ClientClarificationCard } from "./ClientClarificationCard";
+import {
+  caseStatusLabel,
+  formatDate,
+  humanize,
+  relativeTime,
+  slaText,
+  statusTone,
+} from "./client-portal-utils";
 
 export function ClientCaseDrawer({
   caseId,
@@ -23,6 +32,10 @@ export function ClientCaseDrawer({
     queryFn: () => listClarifications(caseId),
   });
   const item = detail.data;
+  const completedChecks = item?.checks.filter((check) => check.status === "COMPLETED").length ?? 0;
+  const progress = item?.checks.length
+    ? Math.round((completedChecks / item.checks.length) * 100)
+    : 0;
   return (
     <div
       className="fixed inset-0 z-50 flex justify-end bg-slate-950/25 backdrop-blur-[2px]"
@@ -61,10 +74,37 @@ export function ClientCaseDrawer({
           </p>
         ) : null}
         <div className="space-y-5 p-5">
+          {item ? (
+            <section className="rounded-2xl bg-slate-950 p-4 text-white">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    Overall progress
+                  </p>
+                  <p className="mt-1 text-sm font-semibold">{caseStatusLabel(item.status)}</p>
+                </div>
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/10 text-orange-300">
+                  <ShieldCheck className="h-4 w-4" />
+                </span>
+              </div>
+              <div className="mt-4 flex items-center gap-3">
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className="h-full rounded-full bg-orange-400"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <span className="text-xs font-semibold">{progress}%</span>
+              </div>
+              <p className="mt-2 text-[10px] text-slate-400">
+                {completedChecks} of {item.checks.length} verification checks completed
+              </p>
+            </section>
+          ) : null}
           <section className="grid gap-3 sm:grid-cols-3">
-            <Fact label="Status" value={humanize(item?.status ?? "Loading")} />
+            <Fact label="SLA" value={item ? slaText(item.dueAt, item.status) : "Loading"} />
             <Fact label="Priority" value={humanize(item?.priority ?? "—")} />
-            <Fact label="Due date" value={item?.dueAt ? formatDate(item.dueAt) : "Not set"} />
+            <Fact label="Last update" value={item ? relativeTime(item.updatedAt) : "Loading"} />
           </section>
           <section className="rounded-2xl border border-slate-200">
             <Heading title="Verification checks" detail={`${item?.checks.length ?? 0} checks`} />
@@ -82,6 +122,8 @@ export function ClientCaseDrawer({
               ))}
             </div>
           </section>
+          {item ? <ClientCaseTimeline items={item.statusHistory} /> : null}
+          {item ? <ClientCaseDocuments caseId={caseId} items={item.documents} /> : null}
           <section className="rounded-2xl border border-slate-200">
             <Heading title="Published reports" detail="Versioned and authenticity protected" />
             <div className="space-y-2 p-4">
@@ -112,7 +154,7 @@ export function ClientCaseDrawer({
             <Heading title="Clarifications" detail="Questions and responses linked to this case" />
             <div className="space-y-3 p-4">
               {clarifications.data?.items.map((clarification) => (
-                <ClarificationCard
+                <ClientClarificationCard
                   key={clarification.id}
                   caseId={caseId}
                   item={clarification}
@@ -136,70 +178,6 @@ export function ClientCaseDrawer({
   );
 }
 
-function ClarificationCard({
-  caseId,
-  item,
-  canRespond,
-}: {
-  caseId: string;
-  item: Awaited<ReturnType<typeof listClarifications>>["items"][number];
-  canRespond: boolean;
-}) {
-  const queryClient = useQueryClient();
-  const [message, setMessage] = useState("");
-  const respond = useMutation({
-    mutationFn: () => respondToClarificationAsClient(caseId, item.id, message.trim()),
-    onSuccess: async () => {
-      toast.success("Response submitted");
-      setMessage("");
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] }),
-        queryClient.invalidateQueries({ queryKey: ["cases", caseId] }),
-      ]);
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-  return (
-    <article className="rounded-xl bg-slate-50 p-4">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-xs font-semibold">{item.subject}</p>
-          <p className="mt-1 text-[10px] text-slate-500">
-            {item.messages.length} messages ·{" "}
-            {item.dueAt ? `Due ${formatDate(item.dueAt)}` : "No due date"}
-          </p>
-        </div>
-        <Status value={item.status} />
-      </div>
-      {item.messages.slice(-2).map((message) => (
-        <p
-          key={`${message.createdAt}-${message.body}`}
-          className="mt-2 rounded-lg bg-white p-2.5 text-[11px] leading-4 text-slate-600"
-        >
-          <span className="font-semibold">{humanize(message.senderType)}:</span> {message.body}
-        </p>
-      ))}
-      {canRespond && item.status === "OPEN" ? (
-        <div className="mt-3 flex gap-2">
-          <textarea
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            placeholder="Write the client response"
-            className="min-h-20 flex-1 rounded-xl border border-slate-200 bg-white p-3 text-xs outline-none focus:border-orange-300"
-          />
-          <button
-            type="button"
-            onClick={() => respond.mutate()}
-            disabled={message.trim().length < 2 || respond.isPending}
-            className="grid w-11 place-items-center rounded-xl bg-slate-950 text-white disabled:opacity-40"
-          >
-            <MessageSquareText className="h-4 w-4" />
-          </button>
-        </div>
-      ) : null}
-    </article>
-  );
-}
 function Heading({ title, detail }: { title: string; detail: string }) {
   return (
     <header className="border-b border-slate-200 px-4 py-3">
@@ -218,20 +196,13 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 function Status({ value }: { value: string }) {
   return (
-    <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[9px] font-bold text-blue-700">
-      {humanize(value)}
+    <span
+      className={`rounded-full px-2.5 py-1 text-[9px] font-bold ring-1 ring-inset ${statusTone(value)}`}
+    >
+      {["OPEN", "RESPONDED", "RESOLVED"].includes(value) ? humanize(value) : caseStatusLabel(value)}
     </span>
   );
 }
 function Empty({ text }: { text: string }) {
   return <p className="py-6 text-center text-xs text-slate-500">{text}</p>;
-}
-function humanize(value: string) {
-  return value
-    .toLowerCase()
-    .replaceAll("_", " ")
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }).format(new Date(value));
 }

@@ -13,6 +13,8 @@ import {
   MapPin,
   UserRoundCog,
   UsersRound,
+  BellRing,
+  Files,
 } from "lucide-react";
 import { getSession, logout } from "@/lib/api/auth";
 import { canAccessWorkspace } from "@/lib/auth/workspace-access";
@@ -21,6 +23,7 @@ type NavItem = {
   icon: typeof LayoutDashboard;
   label: string;
   to?: string;
+  href?: string;
   badge?: string;
 };
 
@@ -29,7 +32,7 @@ const groups: Array<{ title: string; items: NavItem[] }> = [
     title: "Command",
     items: [
       { icon: LayoutDashboard, label: "Control Tower", to: "/" },
-      { icon: Gauge, label: "Executive", to: "/executive" },
+      { icon: Gauge, label: "Executive", to: "/admin/analytics" },
       { icon: Briefcase, label: "Sales & CRM", to: "/sales-crm" },
     ],
   },
@@ -38,7 +41,7 @@ const groups: Array<{ title: string; items: NavItem[] }> = [
     items: [
       { icon: ClipboardCheck, label: "Verifier Desk", to: "/verifier" },
       { icon: ShieldCheck, label: "QA Review", to: "/qa-review" },
-      { icon: AlertTriangle, label: "Exceptions", to: "/exceptions" },
+      { icon: AlertTriangle, label: "Exceptions", to: "/operations/exceptions" },
       { icon: MapPin, label: "Field Executive", to: "/field-executive" },
     ],
   },
@@ -47,23 +50,46 @@ const groups: Array<{ title: string; items: NavItem[] }> = [
     items: [
       { icon: Building2, label: "Client Portal", to: "/client-portal" },
       { icon: Wallet, label: "Finance & Billing", to: "/finance" },
-      { icon: UsersRound, label: "Users & Settings", to: "/settings" },
-      { icon: UserRoundCog, label: "Account Security", to: "/security" },
+      { icon: UsersRound, label: "Users & Settings", to: "/admin/settings" },
+      { icon: UserRoundCog, label: "Account Security", to: "/change-password" },
     ],
   },
 ];
 
+const clientGroups: Array<{ title: string; items: NavItem[] }> = [
+  {
+    title: "Client workspace",
+    items: [
+      { icon: LayoutDashboard, label: "Portfolio overview", href: "/client-portal#overview" },
+      { icon: BellRing, label: "Action required", href: "/client-portal#actions" },
+      { icon: Files, label: "Verifications", href: "/client-portal#verifications" },
+    ],
+  },
+  {
+    title: "Account",
+    items: [{ icon: UserRoundCog, label: "Security", to: "/change-password" }],
+  },
+];
+
 export function Sidebar() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const location = useRouterState({ select: (s) => s.location });
+  const pathname = location.pathname;
+  const currentHash = location.hash.replace(/^#/, "");
   const queryClient = useQueryClient();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSettled: () => {
       queryClient.clear();
-      window.location.assign("/login");
+      window.location.assign("/auth");
     },
   });
+  const clientOnly = Boolean(
+    session.data?.clientId &&
+    session.data.roles.includes("CLIENT_ADMIN") &&
+    !session.data.roles.includes("PLATFORM_ADMIN"),
+  );
+  const navigationGroups = clientOnly ? clientGroups : groups;
 
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col overflow-hidden border-r border-[var(--hairline)] bg-white lg:flex">
@@ -78,7 +104,7 @@ export function Sidebar() {
       </div>
 
       <nav className="min-h-0 flex-1 space-y-5 overflow-y-auto px-3 py-4">
-        {groups.map((group) => (
+        {navigationGroups.map((group) => (
           <div key={group.title} className="space-y-1">
             <p className="px-3.5 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {group.title}
@@ -88,7 +114,13 @@ export function Sidebar() {
                 (item) => !item.to || !session.data || canAccessWorkspace(session.data, item.to),
               )
               .map((item) => {
-                const active = item.to ? pathname === item.to : false;
+                const targetHash = item.href?.split("#")[1];
+                const active = item.href
+                  ? pathname === "/client-portal" &&
+                    ((!currentHash && targetHash === "overview") || currentHash === targetHash)
+                  : item.to
+                    ? pathname === item.to
+                    : false;
                 const cls = `group relative flex w-full items-center gap-2.5 rounded-2xl px-3.5 py-2.5 text-sm transition-all duration-200 ${
                   active
                     ? "accent-panel font-semibold shadow-[var(--shadow-glow-accent)]"
@@ -115,7 +147,11 @@ export function Sidebar() {
                   </>
                 );
 
-                return item.to ? (
+                return item.href ? (
+                  <a key={item.label} href={item.href} className={cls}>
+                    {inner}
+                  </a>
+                ) : item.to ? (
                   <Link key={item.label} to={item.to} className={cls}>
                     {inner}
                   </Link>

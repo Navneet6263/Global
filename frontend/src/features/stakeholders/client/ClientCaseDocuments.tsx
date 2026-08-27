@@ -1,0 +1,107 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle2, FileUp, LoaderCircle, UploadCloud } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
+import type { CaseDetail } from "@/lib/api/cases";
+import { uploadDocument } from "@/lib/api/documents";
+import { humanize, statusTone } from "./client-portal-utils";
+
+type CaseDocument = CaseDetail["documents"][number];
+
+export function ClientCaseDocuments({ caseId, items }: { caseId: string; items: CaseDocument[] }) {
+  return (
+    <section className="rounded-2xl border border-slate-200">
+      <header className="border-b border-slate-100 px-4 py-3">
+        <h3 className="text-xs font-semibold">Documents</h3>
+        <p className="mt-0.5 text-[10px] text-slate-500">
+          Secure versions, current review state and re-upload controls
+        </p>
+      </header>
+      <div className="space-y-2 p-3">
+        {items.map((document) => (
+          <DocumentRow key={document.publicId} caseId={caseId} item={document} />
+        ))}
+        {!items.length ? (
+          <div className="flex flex-col items-center py-7 text-center">
+            <FileUp className="h-5 w-5 text-slate-300" />
+            <p className="mt-2 text-xs text-slate-500">No document has been requested yet.</p>
+          </div>
+        ) : null}
+      </div>
+    </section>
+  );
+}
+
+function DocumentRow({ caseId, item }: { caseId: string; item: CaseDocument }) {
+  const queryClient = useQueryClient();
+  const [file, setFile] = useState<File>();
+  const upload = useMutation({
+    mutationFn: () => {
+      if (!file) throw new Error("Choose a document first");
+      return uploadDocument(item.publicId, file);
+    },
+    onSuccess: async () => {
+      toast.success("Document uploaded securely");
+      setFile(undefined);
+      await queryClient.invalidateQueries({ queryKey: ["cases", caseId] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+  const latest = item.versions.at(-1);
+  return (
+    <article className="rounded-2xl bg-slate-50/80 p-3.5 ring-1 ring-slate-100">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-slate-500 shadow-sm">
+            {item.currentVersion ? (
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            ) : (
+              <FileUp className="h-4 w-4" />
+            )}
+          </span>
+          <div className="min-w-0">
+            <p className="truncate text-xs font-semibold">{humanize(item.type)}</p>
+            <p className="mt-0.5 truncate text-[10px] text-slate-500">
+              {latest
+                ? `${latest.originalName} · version ${item.currentVersion}`
+                : "Upload is still pending"}
+            </p>
+          </div>
+        </div>
+        <span
+          className={`rounded-full px-2.5 py-1 text-[9px] font-bold ring-1 ring-inset ${statusTone(item.status)}`}
+        >
+          {humanize(item.status)}
+        </span>
+      </div>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-3 py-2 text-[10px] text-slate-500 hover:border-orange-300">
+          <UploadCloud className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">
+            {file?.name ?? (item.currentVersion ? "Choose replacement file" : "Choose document")}
+          </span>
+          <input
+            type="file"
+            accept=".pdf,.png,.jpg,.jpeg"
+            className="sr-only"
+            onChange={(event) => setFile(event.target.files?.[0])}
+          />
+        </label>
+        <button
+          type="button"
+          onClick={() => upload.mutate()}
+          disabled={!file || upload.isPending}
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-[10px] font-semibold text-white disabled:opacity-35"
+        >
+          {upload.isPending ? (
+            <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <UploadCloud className="h-3.5 w-3.5" />
+          )}
+          {item.currentVersion ? "Upload new version" : "Upload"}
+        </button>
+      </div>
+    </article>
+  );
+}

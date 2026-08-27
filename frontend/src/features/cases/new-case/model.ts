@@ -32,10 +32,7 @@ export const candidateSchema = z.object({
   email: z.union([z.literal(""), z.string().trim().email("Enter a valid email")]),
   phone: z.union([
     z.literal(""),
-    z
-      .string()
-      .trim()
-      .regex(/^\+?[0-9\s()-]{8,18}$/, "Enter a valid mobile number"),
+    z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
   ]),
 });
 

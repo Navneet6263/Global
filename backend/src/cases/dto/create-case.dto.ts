@@ -1,3 +1,4 @@
+import { Transform } from "class-transformer";
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -5,11 +6,16 @@ import {
   IsEmail,
   IsIn,
   IsOptional,
-  IsPhoneNumber,
   IsString,
   IsUUID,
   Length,
+  Matches,
 } from "class-validator";
+import {
+  INDIAN_MOBILE_MESSAGE,
+  INDIAN_MOBILE_PATTERN,
+  normalizeIndianMobile,
+} from "../../common/validation/indian-mobile";
 import { CheckTypes } from "../case.constants";
 
 export class CreateCaseDto {
@@ -25,7 +31,8 @@ export class CreateCaseDto {
   email?: string;
 
   @IsOptional()
-  @IsPhoneNumber()
+  @Transform(({ value }) => normalizeIndianMobile(value))
+  @Matches(INDIAN_MOBILE_PATTERN, { message: `phone ${INDIAN_MOBILE_MESSAGE}` })
   phone?: string;
 
   @IsOptional()

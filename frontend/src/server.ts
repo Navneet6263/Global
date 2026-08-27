@@ -49,41 +49,13 @@ export default {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return withSecurityHeaders(request, await normalizeCatastrophicSsrResponse(response));
+      return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);
-      return withSecurityHeaders(
-        request,
-        new Response(renderErrorPage(), {
-          status: 500,
-          headers: { "content-type": "text/html; charset=utf-8" },
-        }),
-      );
+      return new Response(renderErrorPage(), {
+        status: 500,
+        headers: { "content-type": "text/html; charset=utf-8" },
+      });
     }
   },
 };
-
-function withSecurityHeaders(request: Request, response: Response): Response {
-  const headers = new Headers(response.headers);
-  headers.set("x-content-type-options", "nosniff");
-  headers.set("x-frame-options", "DENY");
-  headers.set("referrer-policy", "no-referrer");
-  headers.set(
-    "permissions-policy",
-    "camera=(self), geolocation=(self), microphone=(), payment=(), usb=()",
-  );
-  headers.set("cross-origin-opener-policy", "same-origin");
-  headers.delete("x-powered-by");
-  if (new URL(request.url).protocol === "https:") {
-    headers.set("strict-transport-security", "max-age=31536000; includeSubDomains");
-  }
-  if ((headers.get("content-type") ?? "").includes("text/html")) {
-    headers.set("cache-control", "private, no-store, max-age=0");
-    headers.set("pragma", "no-cache");
-  }
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers,
-  });
-}

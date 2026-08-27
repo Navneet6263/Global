@@ -30,16 +30,16 @@ import {
 
 const items = [
   { label: "Control Tower", to: "/", icon: LayoutDashboard },
-  { label: "Executive", to: "/executive", icon: BarChart3 },
+  { label: "Executive", to: "/admin/analytics", icon: BarChart3 },
   { label: "Sales & CRM", to: "/sales-crm", icon: BriefcaseBusiness },
   { label: "Verifier Desk", to: "/verifier", icon: ClipboardCheck },
   { label: "QA Review", to: "/qa-review", icon: ShieldCheck },
-  { label: "Exceptions", to: "/exceptions", icon: AlertTriangle },
+  { label: "Exceptions", to: "/operations/exceptions", icon: AlertTriangle },
   { label: "Client Portal", to: "/client-portal", icon: Building2 },
   { label: "Field Executive", to: "/field-executive", icon: MapPinCheck },
   { label: "Finance & Billing", to: "/finance", icon: CircleDollarSign },
-  { label: "Users & Settings", to: "/settings", icon: UsersRound },
-  { label: "Account Security", to: "/security", icon: UserRoundCog },
+  { label: "Users & Settings", to: "/admin/settings", icon: UsersRound },
+  { label: "Account Security", to: "/change-password", icon: UserRoundCog },
 ] as const;
 
 export function MobileWorkspaceNav() {
@@ -50,7 +50,7 @@ export function MobileWorkspaceNav() {
     mutationFn: logout,
     onSettled: () => {
       queryClient.clear();
-      window.location.assign("/login");
+      window.location.assign("/auth");
     },
   });
 

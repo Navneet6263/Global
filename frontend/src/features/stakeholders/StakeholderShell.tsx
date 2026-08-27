@@ -8,10 +8,12 @@ export function StakeholderShell({
   children,
   onRefresh,
   refreshing,
+  hideGlobalCreate,
 }: {
   children: ReactNode;
   onRefresh?: () => void;
   refreshing?: boolean;
+  hideGlobalCreate?: boolean;
 }) {
   return (
     <div className="min-h-screen bg-white text-slate-950 lg:pl-64">
@@ -20,6 +22,7 @@ export function StakeholderShell({
         <Topbar
           {...(onRefresh ? { onRefresh } : {})}
           {...(refreshing !== undefined ? { isRefreshing: refreshing } : {})}
+          showCreateCase={!hideGlobalCreate}
         />
         <main className="flex-1 space-y-5 px-4 pb-10 sm:px-6">{children}</main>
       </div>

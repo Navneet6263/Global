@@ -2,15 +2,15 @@ import type { Session } from "@/lib/api/auth";
 
 const accessByPath: Record<string, string[]> = {
   "/": ["PLATFORM_ADMIN", "OPS_MANAGER"],
-  "/executive": ["PLATFORM_ADMIN", "OPS_MANAGER"],
+  "/admin/analytics": ["PLATFORM_ADMIN"],
   "/sales-crm": ["PLATFORM_ADMIN", "SALES_MANAGER"],
   "/verifier": ["PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER"],
   "/qa-review": ["PLATFORM_ADMIN", "OPS_MANAGER", "QA_REVIEWER"],
-  "/exceptions": ["PLATFORM_ADMIN", "OPS_MANAGER"],
+  "/operations/exceptions": ["PLATFORM_ADMIN", "OPS_MANAGER"],
   "/client-portal": ["PLATFORM_ADMIN", "CLIENT_ADMIN"],
   "/field-executive": ["PLATFORM_ADMIN", "OPS_MANAGER", "FIELD_EXECUTIVE"],
   "/finance": ["PLATFORM_ADMIN", "FINANCE_MANAGER"],
-  "/settings": ["PLATFORM_ADMIN", "OPS_MANAGER"],
+  "/admin/settings": ["PLATFORM_ADMIN"],
 };
 
 export function canAccessWorkspace(session: Session, pathname: string): boolean {

@@ -10,27 +10,66 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as ClientPortalRouteImport } from './routes/client-portal'
-import { Route as ExceptionsRouteImport } from './routes/exceptions'
-import { Route as ExecutiveRouteImport } from './routes/executive'
 import { Route as FieldExecutiveRouteImport } from './routes/field-executive'
 import { Route as FinanceRouteImport } from './routes/finance'
-import { Route as LoginRouteImport } from './routes/login'
+import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as QaReviewRouteImport } from './routes/qa-review'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SalesCrmRouteImport } from './routes/sales-crm'
-import { Route as SecurityRouteImport } from './routes/security'
-import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as VerifierRouteImport } from './routes/verifier'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
+import { Route as AdminAuditRouteImport } from './routes/admin.audit'
+import { Route as AdminCasesRouteImport } from './routes/admin.cases'
+import { Route as AdminClientPortalRouteImport } from './routes/admin.client-portal'
+import { Route as AdminClientsRouteImport } from './routes/admin.clients'
+import { Route as AdminFieldRouteImport } from './routes/admin.field'
+import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
+import { Route as AdminQaRouteImport } from './routes/admin.qa'
+import { Route as AdminSalesRouteImport } from './routes/admin.sales'
+import { Route as AdminSecurityRouteImport } from './routes/admin.security'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminVerifierRouteImport } from './routes/admin.verifier'
 import { Route as CandidateAccessIdRouteImport } from './routes/candidate.$accessId'
 import { Route as CasesCaseIdRouteImport } from './routes/cases.$caseId'
 import { Route as ClarificationClarificationIdRouteImport } from './routes/clarification.$clarificationId'
 import { Route as ConsentConsentIdRouteImport } from './routes/consent.$consentId'
+import { Route as OperationsIndexRouteImport } from './routes/operations.index'
+import { Route as OperationsAssignmentsRouteImport } from './routes/operations.assignments'
+import { Route as OperationsCasesRouteImport } from './routes/operations.cases'
+import { Route as OperationsClarificationsRouteImport } from './routes/operations.clarifications'
+import { Route as OperationsExceptionsRouteImport } from './routes/operations.exceptions'
+import { Route as OperationsFieldRouteImport } from './routes/operations.field'
+import { Route as OperationsSlaRouteImport } from './routes/operations.sla'
+import { Route as OperationsTeamRouteImport } from './routes/operations.team'
+import { Route as SalesCrmIndexRouteImport } from './routes/sales-crm.index'
+import { Route as SalesCrmAccountsRouteImport } from './routes/sales-crm.accounts'
+import { Route as SalesCrmActivitiesRouteImport } from './routes/sales-crm.activities'
+import { Route as SalesCrmFollowUpsRouteImport } from './routes/sales-crm.follow-ups'
+import { Route as SalesCrmForecastRouteImport } from './routes/sales-crm.forecast'
+import { Route as SalesCrmOpportunitiesRouteImport } from './routes/sales-crm.opportunities'
+import { Route as SalesCrmSettingsRouteImport } from './routes/sales-crm.settings'
+import { Route as SalesCrmTeamRouteImport } from './routes/sales-crm.team'
 import { Route as ReportsVerifyAuthenticityCodeRouteImport } from './routes/reports.verify.$authenticityCode'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChangePasswordRoute = ChangePasswordRouteImport.update({
@@ -43,16 +82,6 @@ const ClientPortalRoute = ClientPortalRouteImport.update({
   path: '/client-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ExceptionsRoute = ExceptionsRouteImport.update({
-  id: '/exceptions',
-  path: '/exceptions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExecutiveRoute = ExecutiveRouteImport.update({
-  id: '/executive',
-  path: '/executive',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const FieldExecutiveRoute = FieldExecutiveRouteImport.update({
   id: '/field-executive',
   path: '/field-executive',
@@ -63,9 +92,9 @@ const FinanceRoute = FinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const OperationsRoute = OperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QaReviewRoute = QaReviewRouteImport.update({
@@ -73,25 +102,90 @@ const QaReviewRoute = QaReviewRouteImport.update({
   path: '/qa-review',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SalesCrmRoute = SalesCrmRouteImport.update({
   id: '/sales-crm',
   path: '/sales-crm',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SecurityRoute = SecurityRouteImport.update({
-  id: '/security',
-  path: '/security',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifierRoute = VerifierRouteImport.update({
   id: '/verifier',
   path: '/verifier',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAuditRoute = AdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCasesRoute = AdminCasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClientPortalRoute = AdminClientPortalRouteImport.update({
+  id: '/client-portal',
+  path: '/client-portal',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminClientsRoute = AdminClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFieldRoute = AdminFieldRouteImport.update({
+  id: '/field',
+  path: '/field',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFinanceRoute = AdminFinanceRouteImport.update({
+  id: '/finance',
+  path: '/finance',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminQaRoute = AdminQaRouteImport.update({
+  id: '/qa',
+  path: '/qa',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSalesRoute = AdminSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSecurityRoute = AdminSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVerifierRoute = AdminVerifierRouteImport.update({
+  id: '/verifier',
+  path: '/verifier',
+  getParentRoute: () => AdminRoute,
 } as any)
 const CandidateAccessIdRoute = CandidateAccessIdRouteImport.update({
   id: '/candidate/$accessId',
@@ -114,6 +208,87 @@ const ConsentConsentIdRoute = ConsentConsentIdRouteImport.update({
   path: '/consent/$consentId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OperationsIndexRoute = OperationsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsAssignmentsRoute = OperationsAssignmentsRouteImport.update({
+  id: '/assignments',
+  path: '/assignments',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsCasesRoute = OperationsCasesRouteImport.update({
+  id: '/cases',
+  path: '/cases',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsClarificationsRoute =
+  OperationsClarificationsRouteImport.update({
+    id: '/clarifications',
+    path: '/clarifications',
+    getParentRoute: () => OperationsRoute,
+  } as any)
+const OperationsExceptionsRoute = OperationsExceptionsRouteImport.update({
+  id: '/exceptions',
+  path: '/exceptions',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsFieldRoute = OperationsFieldRouteImport.update({
+  id: '/field',
+  path: '/field',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsSlaRoute = OperationsSlaRouteImport.update({
+  id: '/sla',
+  path: '/sla',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsTeamRoute = OperationsTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const SalesCrmIndexRoute = SalesCrmIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmAccountsRoute = SalesCrmAccountsRouteImport.update({
+  id: '/accounts',
+  path: '/accounts',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmActivitiesRoute = SalesCrmActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmFollowUpsRoute = SalesCrmFollowUpsRouteImport.update({
+  id: '/follow-ups',
+  path: '/follow-ups',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmForecastRoute = SalesCrmForecastRouteImport.update({
+  id: '/forecast',
+  path: '/forecast',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmOpportunitiesRoute = SalesCrmOpportunitiesRouteImport.update({
+  id: '/opportunities',
+  path: '/opportunities',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmSettingsRoute = SalesCrmSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
+const SalesCrmTeamRoute = SalesCrmTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => SalesCrmRoute,
+} as any)
 const ReportsVerifyAuthenticityCodeRoute =
   ReportsVerifyAuthenticityCodeRouteImport.update({
     id: '/reports/verify/$authenticityCode',
@@ -123,141 +298,308 @@ const ReportsVerifyAuthenticityCodeRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/client-portal': typeof ClientPortalRoute
-  '/exceptions': typeof ExceptionsRoute
-  '/executive': typeof ExecutiveRoute
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
-  '/login': typeof LoginRoute
+  '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
-  '/sales-crm': typeof SalesCrmRoute
-  '/security': typeof SecurityRoute
-  '/settings': typeof SettingsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sales-crm': typeof SalesCrmRouteWithChildren
   '/verifier': typeof VerifierRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/cases': typeof AdminCasesRoute
+  '/admin/client-portal': typeof AdminClientPortalRoute
+  '/admin/clients': typeof AdminClientsRoute
+  '/admin/field': typeof AdminFieldRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/qa': typeof AdminQaRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/verifier': typeof AdminVerifierRoute
   '/candidate/$accessId': typeof CandidateAccessIdRoute
   '/cases/$caseId': typeof CasesCaseIdRoute
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/operations/assignments': typeof OperationsAssignmentsRoute
+  '/operations/cases': typeof OperationsCasesRoute
+  '/operations/clarifications': typeof OperationsClarificationsRoute
+  '/operations/exceptions': typeof OperationsExceptionsRoute
+  '/operations/field': typeof OperationsFieldRoute
+  '/operations/sla': typeof OperationsSlaRoute
+  '/operations/team': typeof OperationsTeamRoute
+  '/sales-crm/accounts': typeof SalesCrmAccountsRoute
+  '/sales-crm/activities': typeof SalesCrmActivitiesRoute
+  '/sales-crm/follow-ups': typeof SalesCrmFollowUpsRoute
+  '/sales-crm/forecast': typeof SalesCrmForecastRoute
+  '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
+  '/sales-crm/settings': typeof SalesCrmSettingsRoute
+  '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/admin/': typeof AdminIndexRoute
+  '/operations/': typeof OperationsIndexRoute
+  '/sales-crm/': typeof SalesCrmIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/client-portal': typeof ClientPortalRoute
-  '/exceptions': typeof ExceptionsRoute
-  '/executive': typeof ExecutiveRoute
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
-  '/login': typeof LoginRoute
   '/qa-review': typeof QaReviewRoute
-  '/sales-crm': typeof SalesCrmRoute
-  '/security': typeof SecurityRoute
-  '/settings': typeof SettingsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/verifier': typeof VerifierRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/cases': typeof AdminCasesRoute
+  '/admin/client-portal': typeof AdminClientPortalRoute
+  '/admin/clients': typeof AdminClientsRoute
+  '/admin/field': typeof AdminFieldRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/qa': typeof AdminQaRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/verifier': typeof AdminVerifierRoute
   '/candidate/$accessId': typeof CandidateAccessIdRoute
   '/cases/$caseId': typeof CasesCaseIdRoute
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/operations/assignments': typeof OperationsAssignmentsRoute
+  '/operations/cases': typeof OperationsCasesRoute
+  '/operations/clarifications': typeof OperationsClarificationsRoute
+  '/operations/exceptions': typeof OperationsExceptionsRoute
+  '/operations/field': typeof OperationsFieldRoute
+  '/operations/sla': typeof OperationsSlaRoute
+  '/operations/team': typeof OperationsTeamRoute
+  '/sales-crm/accounts': typeof SalesCrmAccountsRoute
+  '/sales-crm/activities': typeof SalesCrmActivitiesRoute
+  '/sales-crm/follow-ups': typeof SalesCrmFollowUpsRoute
+  '/sales-crm/forecast': typeof SalesCrmForecastRoute
+  '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
+  '/sales-crm/settings': typeof SalesCrmSettingsRoute
+  '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/admin': typeof AdminIndexRoute
+  '/operations': typeof OperationsIndexRoute
+  '/sales-crm': typeof SalesCrmIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/client-portal': typeof ClientPortalRoute
-  '/exceptions': typeof ExceptionsRoute
-  '/executive': typeof ExecutiveRoute
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
-  '/login': typeof LoginRoute
+  '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
-  '/sales-crm': typeof SalesCrmRoute
-  '/security': typeof SecurityRoute
-  '/settings': typeof SettingsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sales-crm': typeof SalesCrmRouteWithChildren
   '/verifier': typeof VerifierRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
+  '/admin/audit': typeof AdminAuditRoute
+  '/admin/cases': typeof AdminCasesRoute
+  '/admin/client-portal': typeof AdminClientPortalRoute
+  '/admin/clients': typeof AdminClientsRoute
+  '/admin/field': typeof AdminFieldRoute
+  '/admin/finance': typeof AdminFinanceRoute
+  '/admin/qa': typeof AdminQaRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/security': typeof AdminSecurityRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/users': typeof AdminUsersRoute
+  '/admin/verifier': typeof AdminVerifierRoute
   '/candidate/$accessId': typeof CandidateAccessIdRoute
   '/cases/$caseId': typeof CasesCaseIdRoute
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/operations/assignments': typeof OperationsAssignmentsRoute
+  '/operations/cases': typeof OperationsCasesRoute
+  '/operations/clarifications': typeof OperationsClarificationsRoute
+  '/operations/exceptions': typeof OperationsExceptionsRoute
+  '/operations/field': typeof OperationsFieldRoute
+  '/operations/sla': typeof OperationsSlaRoute
+  '/operations/team': typeof OperationsTeamRoute
+  '/sales-crm/accounts': typeof SalesCrmAccountsRoute
+  '/sales-crm/activities': typeof SalesCrmActivitiesRoute
+  '/sales-crm/follow-ups': typeof SalesCrmFollowUpsRoute
+  '/sales-crm/forecast': typeof SalesCrmForecastRoute
+  '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
+  '/sales-crm/settings': typeof SalesCrmSettingsRoute
+  '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/admin/': typeof AdminIndexRoute
+  '/operations/': typeof OperationsIndexRoute
+  '/sales-crm/': typeof SalesCrmIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/auth'
     | '/change-password'
     | '/client-portal'
-    | '/exceptions'
-    | '/executive'
     | '/field-executive'
     | '/finance'
-    | '/login'
+    | '/operations'
     | '/qa-review'
+    | '/reset-password'
     | '/sales-crm'
-    | '/security'
-    | '/settings'
     | '/verifier'
+    | '/admin/analytics'
+    | '/admin/audit'
+    | '/admin/cases'
+    | '/admin/client-portal'
+    | '/admin/clients'
+    | '/admin/field'
+    | '/admin/finance'
+    | '/admin/qa'
+    | '/admin/sales'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/verifier'
     | '/candidate/$accessId'
     | '/cases/$caseId'
     | '/clarification/$clarificationId'
     | '/consent/$consentId'
+    | '/operations/assignments'
+    | '/operations/cases'
+    | '/operations/clarifications'
+    | '/operations/exceptions'
+    | '/operations/field'
+    | '/operations/sla'
+    | '/operations/team'
+    | '/sales-crm/accounts'
+    | '/sales-crm/activities'
+    | '/sales-crm/follow-ups'
+    | '/sales-crm/forecast'
+    | '/sales-crm/opportunities'
+    | '/sales-crm/settings'
+    | '/sales-crm/team'
+    | '/admin/'
+    | '/operations/'
+    | '/sales-crm/'
     | '/reports/verify/$authenticityCode'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/change-password'
     | '/client-portal'
-    | '/exceptions'
-    | '/executive'
     | '/field-executive'
     | '/finance'
-    | '/login'
     | '/qa-review'
-    | '/sales-crm'
-    | '/security'
-    | '/settings'
+    | '/reset-password'
     | '/verifier'
+    | '/admin/analytics'
+    | '/admin/audit'
+    | '/admin/cases'
+    | '/admin/client-portal'
+    | '/admin/clients'
+    | '/admin/field'
+    | '/admin/finance'
+    | '/admin/qa'
+    | '/admin/sales'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/verifier'
     | '/candidate/$accessId'
     | '/cases/$caseId'
     | '/clarification/$clarificationId'
     | '/consent/$consentId'
+    | '/operations/assignments'
+    | '/operations/cases'
+    | '/operations/clarifications'
+    | '/operations/exceptions'
+    | '/operations/field'
+    | '/operations/sla'
+    | '/operations/team'
+    | '/sales-crm/accounts'
+    | '/sales-crm/activities'
+    | '/sales-crm/follow-ups'
+    | '/sales-crm/forecast'
+    | '/sales-crm/opportunities'
+    | '/sales-crm/settings'
+    | '/sales-crm/team'
+    | '/admin'
+    | '/operations'
+    | '/sales-crm'
     | '/reports/verify/$authenticityCode'
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/auth'
     | '/change-password'
     | '/client-portal'
-    | '/exceptions'
-    | '/executive'
     | '/field-executive'
     | '/finance'
-    | '/login'
+    | '/operations'
     | '/qa-review'
+    | '/reset-password'
     | '/sales-crm'
-    | '/security'
-    | '/settings'
     | '/verifier'
+    | '/admin/analytics'
+    | '/admin/audit'
+    | '/admin/cases'
+    | '/admin/client-portal'
+    | '/admin/clients'
+    | '/admin/field'
+    | '/admin/finance'
+    | '/admin/qa'
+    | '/admin/sales'
+    | '/admin/security'
+    | '/admin/settings'
+    | '/admin/users'
+    | '/admin/verifier'
     | '/candidate/$accessId'
     | '/cases/$caseId'
     | '/clarification/$clarificationId'
     | '/consent/$consentId'
+    | '/operations/assignments'
+    | '/operations/cases'
+    | '/operations/clarifications'
+    | '/operations/exceptions'
+    | '/operations/field'
+    | '/operations/sla'
+    | '/operations/team'
+    | '/sales-crm/accounts'
+    | '/sales-crm/activities'
+    | '/sales-crm/follow-ups'
+    | '/sales-crm/forecast'
+    | '/sales-crm/opportunities'
+    | '/sales-crm/settings'
+    | '/sales-crm/team'
+    | '/admin/'
+    | '/operations/'
+    | '/sales-crm/'
     | '/reports/verify/$authenticityCode'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AuthRoute: typeof AuthRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
   ClientPortalRoute: typeof ClientPortalRoute
-  ExceptionsRoute: typeof ExceptionsRoute
-  ExecutiveRoute: typeof ExecutiveRoute
   FieldExecutiveRoute: typeof FieldExecutiveRoute
   FinanceRoute: typeof FinanceRoute
-  LoginRoute: typeof LoginRoute
+  OperationsRoute: typeof OperationsRouteWithChildren
   QaReviewRoute: typeof QaReviewRoute
-  SalesCrmRoute: typeof SalesCrmRoute
-  SecurityRoute: typeof SecurityRoute
-  SettingsRoute: typeof SettingsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SalesCrmRoute: typeof SalesCrmRouteWithChildren
   VerifierRoute: typeof VerifierRoute
   CandidateAccessIdRoute: typeof CandidateAccessIdRoute
   CasesCaseIdRoute: typeof CasesCaseIdRoute
@@ -275,6 +617,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/change-password': {
       id: '/change-password'
       path: '/change-password'
@@ -287,20 +643,6 @@ declare module '@tanstack/react-router' {
       path: '/client-portal'
       fullPath: '/client-portal'
       preLoaderRoute: typeof ClientPortalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/exceptions': {
-      id: '/exceptions'
-      path: '/exceptions'
-      fullPath: '/exceptions'
-      preLoaderRoute: typeof ExceptionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/executive': {
-      id: '/executive'
-      path: '/executive'
-      fullPath: '/executive'
-      preLoaderRoute: typeof ExecutiveRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/field-executive': {
@@ -317,11 +659,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FinanceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/operations': {
+      id: '/operations'
+      path: '/operations'
+      fullPath: '/operations'
+      preLoaderRoute: typeof OperationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/qa-review': {
@@ -331,25 +673,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sales-crm': {
       id: '/sales-crm'
       path: '/sales-crm'
       fullPath: '/sales-crm'
       preLoaderRoute: typeof SalesCrmRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/security': {
-      id: '/security'
-      path: '/security'
-      fullPath: '/security'
-      preLoaderRoute: typeof SecurityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verifier': {
@@ -358,6 +693,104 @@ declare module '@tanstack/react-router' {
       fullPath: '/verifier'
       preLoaderRoute: typeof VerifierRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/audit': {
+      id: '/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AdminAuditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cases': {
+      id: '/admin/cases'
+      path: '/cases'
+      fullPath: '/admin/cases'
+      preLoaderRoute: typeof AdminCasesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/client-portal': {
+      id: '/admin/client-portal'
+      path: '/client-portal'
+      fullPath: '/admin/client-portal'
+      preLoaderRoute: typeof AdminClientPortalRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/clients': {
+      id: '/admin/clients'
+      path: '/clients'
+      fullPath: '/admin/clients'
+      preLoaderRoute: typeof AdminClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/field': {
+      id: '/admin/field'
+      path: '/field'
+      fullPath: '/admin/field'
+      preLoaderRoute: typeof AdminFieldRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/finance': {
+      id: '/admin/finance'
+      path: '/finance'
+      fullPath: '/admin/finance'
+      preLoaderRoute: typeof AdminFinanceRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/qa': {
+      id: '/admin/qa'
+      path: '/qa'
+      fullPath: '/admin/qa'
+      preLoaderRoute: typeof AdminQaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sales': {
+      id: '/admin/sales'
+      path: '/sales'
+      fullPath: '/admin/sales'
+      preLoaderRoute: typeof AdminSalesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/security': {
+      id: '/admin/security'
+      path: '/security'
+      fullPath: '/admin/security'
+      preLoaderRoute: typeof AdminSecurityRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/verifier': {
+      id: '/admin/verifier'
+      path: '/verifier'
+      fullPath: '/admin/verifier'
+      preLoaderRoute: typeof AdminVerifierRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/candidate/$accessId': {
       id: '/candidate/$accessId'
@@ -387,6 +820,118 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsentConsentIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/operations/': {
+      id: '/operations/'
+      path: '/'
+      fullPath: '/operations/'
+      preLoaderRoute: typeof OperationsIndexRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/assignments': {
+      id: '/operations/assignments'
+      path: '/assignments'
+      fullPath: '/operations/assignments'
+      preLoaderRoute: typeof OperationsAssignmentsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/cases': {
+      id: '/operations/cases'
+      path: '/cases'
+      fullPath: '/operations/cases'
+      preLoaderRoute: typeof OperationsCasesRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/clarifications': {
+      id: '/operations/clarifications'
+      path: '/clarifications'
+      fullPath: '/operations/clarifications'
+      preLoaderRoute: typeof OperationsClarificationsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/exceptions': {
+      id: '/operations/exceptions'
+      path: '/exceptions'
+      fullPath: '/operations/exceptions'
+      preLoaderRoute: typeof OperationsExceptionsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/field': {
+      id: '/operations/field'
+      path: '/field'
+      fullPath: '/operations/field'
+      preLoaderRoute: typeof OperationsFieldRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/sla': {
+      id: '/operations/sla'
+      path: '/sla'
+      fullPath: '/operations/sla'
+      preLoaderRoute: typeof OperationsSlaRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/team': {
+      id: '/operations/team'
+      path: '/team'
+      fullPath: '/operations/team'
+      preLoaderRoute: typeof OperationsTeamRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/sales-crm/': {
+      id: '/sales-crm/'
+      path: '/'
+      fullPath: '/sales-crm/'
+      preLoaderRoute: typeof SalesCrmIndexRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/accounts': {
+      id: '/sales-crm/accounts'
+      path: '/accounts'
+      fullPath: '/sales-crm/accounts'
+      preLoaderRoute: typeof SalesCrmAccountsRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/activities': {
+      id: '/sales-crm/activities'
+      path: '/activities'
+      fullPath: '/sales-crm/activities'
+      preLoaderRoute: typeof SalesCrmActivitiesRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/follow-ups': {
+      id: '/sales-crm/follow-ups'
+      path: '/follow-ups'
+      fullPath: '/sales-crm/follow-ups'
+      preLoaderRoute: typeof SalesCrmFollowUpsRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/forecast': {
+      id: '/sales-crm/forecast'
+      path: '/forecast'
+      fullPath: '/sales-crm/forecast'
+      preLoaderRoute: typeof SalesCrmForecastRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/opportunities': {
+      id: '/sales-crm/opportunities'
+      path: '/opportunities'
+      fullPath: '/sales-crm/opportunities'
+      preLoaderRoute: typeof SalesCrmOpportunitiesRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/settings': {
+      id: '/sales-crm/settings'
+      path: '/settings'
+      fullPath: '/sales-crm/settings'
+      preLoaderRoute: typeof SalesCrmSettingsRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
+    '/sales-crm/team': {
+      id: '/sales-crm/team'
+      path: '/team'
+      fullPath: '/sales-crm/team'
+      preLoaderRoute: typeof SalesCrmTeamRouteImport
+      parentRoute: typeof SalesCrmRoute
+    }
     '/reports/verify/$authenticityCode': {
       id: '/reports/verify/$authenticityCode'
       path: '/reports/verify/$authenticityCode'
@@ -397,19 +942,106 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
+  AdminAuditRoute: typeof AdminAuditRoute
+  AdminCasesRoute: typeof AdminCasesRoute
+  AdminClientPortalRoute: typeof AdminClientPortalRoute
+  AdminClientsRoute: typeof AdminClientsRoute
+  AdminFieldRoute: typeof AdminFieldRoute
+  AdminFinanceRoute: typeof AdminFinanceRoute
+  AdminQaRoute: typeof AdminQaRoute
+  AdminSalesRoute: typeof AdminSalesRoute
+  AdminSecurityRoute: typeof AdminSecurityRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminVerifierRoute: typeof AdminVerifierRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
+  AdminAuditRoute: AdminAuditRoute,
+  AdminCasesRoute: AdminCasesRoute,
+  AdminClientPortalRoute: AdminClientPortalRoute,
+  AdminClientsRoute: AdminClientsRoute,
+  AdminFieldRoute: AdminFieldRoute,
+  AdminFinanceRoute: AdminFinanceRoute,
+  AdminQaRoute: AdminQaRoute,
+  AdminSalesRoute: AdminSalesRoute,
+  AdminSecurityRoute: AdminSecurityRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminVerifierRoute: AdminVerifierRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface OperationsRouteChildren {
+  OperationsAssignmentsRoute: typeof OperationsAssignmentsRoute
+  OperationsCasesRoute: typeof OperationsCasesRoute
+  OperationsClarificationsRoute: typeof OperationsClarificationsRoute
+  OperationsExceptionsRoute: typeof OperationsExceptionsRoute
+  OperationsFieldRoute: typeof OperationsFieldRoute
+  OperationsSlaRoute: typeof OperationsSlaRoute
+  OperationsTeamRoute: typeof OperationsTeamRoute
+  OperationsIndexRoute: typeof OperationsIndexRoute
+}
+
+const OperationsRouteChildren: OperationsRouteChildren = {
+  OperationsAssignmentsRoute: OperationsAssignmentsRoute,
+  OperationsCasesRoute: OperationsCasesRoute,
+  OperationsClarificationsRoute: OperationsClarificationsRoute,
+  OperationsExceptionsRoute: OperationsExceptionsRoute,
+  OperationsFieldRoute: OperationsFieldRoute,
+  OperationsSlaRoute: OperationsSlaRoute,
+  OperationsTeamRoute: OperationsTeamRoute,
+  OperationsIndexRoute: OperationsIndexRoute,
+}
+
+const OperationsRouteWithChildren = OperationsRoute._addFileChildren(
+  OperationsRouteChildren,
+)
+
+interface SalesCrmRouteChildren {
+  SalesCrmAccountsRoute: typeof SalesCrmAccountsRoute
+  SalesCrmActivitiesRoute: typeof SalesCrmActivitiesRoute
+  SalesCrmFollowUpsRoute: typeof SalesCrmFollowUpsRoute
+  SalesCrmForecastRoute: typeof SalesCrmForecastRoute
+  SalesCrmOpportunitiesRoute: typeof SalesCrmOpportunitiesRoute
+  SalesCrmSettingsRoute: typeof SalesCrmSettingsRoute
+  SalesCrmTeamRoute: typeof SalesCrmTeamRoute
+  SalesCrmIndexRoute: typeof SalesCrmIndexRoute
+}
+
+const SalesCrmRouteChildren: SalesCrmRouteChildren = {
+  SalesCrmAccountsRoute: SalesCrmAccountsRoute,
+  SalesCrmActivitiesRoute: SalesCrmActivitiesRoute,
+  SalesCrmFollowUpsRoute: SalesCrmFollowUpsRoute,
+  SalesCrmForecastRoute: SalesCrmForecastRoute,
+  SalesCrmOpportunitiesRoute: SalesCrmOpportunitiesRoute,
+  SalesCrmSettingsRoute: SalesCrmSettingsRoute,
+  SalesCrmTeamRoute: SalesCrmTeamRoute,
+  SalesCrmIndexRoute: SalesCrmIndexRoute,
+}
+
+const SalesCrmRouteWithChildren = SalesCrmRoute._addFileChildren(
+  SalesCrmRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AuthRoute: AuthRoute,
   ChangePasswordRoute: ChangePasswordRoute,
   ClientPortalRoute: ClientPortalRoute,
-  ExceptionsRoute: ExceptionsRoute,
-  ExecutiveRoute: ExecutiveRoute,
   FieldExecutiveRoute: FieldExecutiveRoute,
   FinanceRoute: FinanceRoute,
-  LoginRoute: LoginRoute,
+  OperationsRoute: OperationsRouteWithChildren,
   QaReviewRoute: QaReviewRoute,
-  SalesCrmRoute: SalesCrmRoute,
-  SecurityRoute: SecurityRoute,
-  SettingsRoute: SettingsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SalesCrmRoute: SalesCrmRouteWithChildren,
   VerifierRoute: VerifierRoute,
   CandidateAccessIdRoute: CandidateAccessIdRoute,
   CasesCaseIdRoute: CasesCaseIdRoute,

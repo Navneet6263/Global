@@ -7,11 +7,11 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-import { AuthBoundary } from "@/components/auth/AuthBoundary";
 
 function NotFoundComponent() {
   return (
@@ -75,37 +75,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sapling Global — Verification Management Platform" },
+      { title: "Sapling Global Verification Operations" },
       {
         name: "description",
-        content:
-          "Consent-first background verification operations, quality review and client reporting.",
+        content: "Secure verification operations platform by Sapling Global.",
       },
       { name: "author", content: "Sapling Global" },
-      { name: "referrer", content: "no-referrer" },
-      { name: "robots", content: "noindex, nofollow, noarchive" },
-      { name: "theme-color", content: "#0b0b0f" },
-      { property: "og:title", content: "Sapling Global Verification Platform" },
+      { property: "og:title", content: "Sapling Global Verification Operations" },
       {
         property: "og:description",
-        content: "Secure verification operations, consent, evidence, QA and reporting.",
+        content: "Secure verification operations and delivery platform.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
-      },
       {
         rel: "stylesheet",
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   shellComponent: RootShell,
@@ -130,21 +119,14 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useEffect(() => {
-    if ("serviceWorker" in navigator && import.meta.env.PROD) {
-      void navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch((error) => {
-        console.error("Service worker registration failed", error);
-      });
-    }
-  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <AuthBoundary>
+      <TooltipProvider delayDuration={200}>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
-      </AuthBoundary>
-      <Toaster />
+        <Toaster position="bottom-right" />
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }

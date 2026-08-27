@@ -1,3 +1,4 @@
+import { Transform } from "class-transformer";
 import {
   ArrayMaxSize,
   ArrayMinSize,
@@ -10,6 +11,11 @@ import {
   Matches,
 } from "class-validator";
 import {
+  INDIAN_MOBILE_MESSAGE,
+  INDIAN_MOBILE_PATTERN,
+  normalizeIndianMobile,
+} from "../../common/validation/indian-mobile";
+import {
   MIN_USER_PASSWORD_LENGTH,
   USER_PASSWORD_PATTERN,
   USER_PASSWORD_REQUIREMENTS,
@@ -18,7 +24,10 @@ import {
 export class CreateUserDto {
   @IsEmail() email!: string;
   @IsString() @Length(2, 120) displayName!: string;
-  @IsOptional() @IsString() @Length(7, 24) phone?: string;
+  @IsOptional()
+  @Transform(({ value }) => normalizeIndianMobile(value))
+  @Matches(INDIAN_MOBILE_PATTERN, { message: `phone ${INDIAN_MOBILE_MESSAGE}` })
+  phone?: string;
   @IsOptional() @IsUUID() branchId?: string;
   @IsOptional() @IsUUID() clientId?: string;
   @IsArray()

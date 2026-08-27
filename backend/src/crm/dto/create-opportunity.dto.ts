@@ -1,4 +1,4 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
   IsDateString,
   IsEmail,
@@ -9,9 +9,15 @@ import {
   IsString,
   IsUUID,
   Length,
+  Matches,
   Max,
   Min,
 } from "class-validator";
+import {
+  INDIAN_MOBILE_MESSAGE,
+  INDIAN_MOBILE_PATTERN,
+  normalizeIndianMobile,
+} from "../../common/validation/indian-mobile";
 
 export const OpportunityStages = [
   "NEW",
@@ -36,8 +42,10 @@ export class CreateOpportunityDto {
   contactEmail?: string;
 
   @IsOptional()
-  @IsString()
-  @Length(7, 24)
+  @Transform(({ value }) => normalizeIndianMobile(value))
+  @Matches(INDIAN_MOBILE_PATTERN, {
+    message: `contactPhone ${INDIAN_MOBILE_MESSAGE}`,
+  })
   contactPhone?: string;
 
   @IsOptional()

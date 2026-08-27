@@ -20,6 +20,7 @@ interface TopbarProps {
   onSearchChange?: (value: string) => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
+  showCreateCase?: boolean;
 }
 
 export function Topbar({
@@ -28,6 +29,7 @@ export function Topbar({
   onSearchChange,
   onRefresh,
   isRefreshing = false,
+  showCreateCase = true,
 }: TopbarProps) {
   const session = useQuery({
     queryKey: ["session"],
@@ -79,7 +81,7 @@ export function Topbar({
           <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
         </button>
 
-        {canCreateCase ? (
+        {canCreateCase && showCreateCase ? (
           <NewCaseDialog
             trigger={
               <button className="ink-panel flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-semibold shadow-[var(--shadow-float)] transition-transform hover:scale-[1.03] sm:px-4">
@@ -93,7 +95,7 @@ export function Topbar({
         {canReadNotifications ? <NotificationInbox /> : null}
 
         <Link
-          to="/security"
+          to="/change-password"
           aria-label="Open account security"
           title={session.data?.displayName}
           className="accent-panel grid h-10 w-10 place-items-center rounded-full text-xs font-bold shadow-[var(--shadow-glow-accent)]"

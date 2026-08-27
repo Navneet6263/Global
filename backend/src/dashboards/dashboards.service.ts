@@ -144,6 +144,11 @@ export class DashboardsService {
           dueAt: true,
           updatedAt: true,
           createdAt: true,
+          messages: {
+            select: { senderType: true, body: true, createdAt: true },
+            orderBy: { createdAt: "desc" },
+            take: 1,
+          },
           case: {
             select: {
               publicId: true,
@@ -232,9 +237,10 @@ export class DashboardsService {
         id: publicId,
         ...item,
       })),
-      clarifications: clarifications.map(({ publicId, ...item }) => ({
+      clarifications: clarifications.map(({ publicId, messages, ...item }) => ({
         id: publicId,
         ...item,
+        latestMessage: messages[0] ?? null,
       })),
       fieldVisits: fieldVisits.map(({ publicId, ...item }) => ({
         id: publicId,

@@ -1,26 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  AlertTriangle,
-  BriefcaseBusiness,
-  CheckCircle2,
-  MessageCircleQuestion,
-  Plus,
-} from "lucide-react";
+import { BellRing, Files, LayoutDashboard, Plus, ScrollText } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { ClientCaseDrawer } from "@/features/stakeholders/client/ClientCaseDrawer";
+import { ClientActionCenter } from "@/features/stakeholders/client/ClientActionCenter";
 import { NewCaseDialog } from "@/components/ops/NewCaseDialog";
 import { ClientInsights } from "@/features/stakeholders/client/ClientInsights";
+import { ClientOverview, PortfolioTrustNote } from "@/features/stakeholders/client/ClientOverview";
 import { ClientPortfolio } from "@/features/stakeholders/client/ClientPortfolio";
-import {
-  StakeholderHeader,
-  StakeholderKpis,
-  StakeholderShell,
-} from "@/features/stakeholders/StakeholderShell";
+import { ClientWorkflow } from "@/features/stakeholders/client/ClientWorkflow";
+import { StakeholderHeader, StakeholderShell } from "@/features/stakeholders/StakeholderShell";
 import { getSession } from "@/lib/api/auth";
 import { listCases } from "@/lib/api/cases";
-import { getOperationsDashboard } from "@/lib/api/dashboards";
+import { getExceptionsDashboard, getOperationsDashboard } from "@/lib/api/dashboards";
 
 export const Route = createFileRoute("/client-portal")({
   head: () => ({ meta: [{ title: "Client Portal — Sapling Global" }] }),
@@ -47,37 +40,34 @@ function ClientPortalPage() {
     queryKey: ["dashboard", "client"],
     queryFn: getOperationsDashboard,
   });
+  const exceptions = useQuery({
+    queryKey: ["dashboard", "client", "actions"],
+    queryFn: getExceptionsDashboard,
+  });
   const cases = useQuery({
     queryKey: ["cases", "client-portal", search, status, cursor],
     queryFn: () => listCases({ search, status, limit: 25, ...(cursor ? { cursor } : {}) }),
   });
-  const data = dashboard.data;
   const rows = cases.data?.items ?? [];
-  const completed = (data?.statusMix["COMPLETED"] ?? 0) + (data?.statusMix["CLOSED"] ?? 0);
-  const active = Math.max(
-    0,
-    (data?.summary.total ?? 0) - completed - (data?.statusMix["CANCELLED"] ?? 0),
-  );
-  const clarification = data?.statusMix["CLARIFICATION_PENDING"] ?? 0;
-  const overdue = data?.summary.overdue ?? 0;
-  const total = data?.summary.total ?? 0;
+  const actionCount =
+    exceptions.data?.clarifications.filter((item) => item.status === "OPEN").length ?? 0;
   return (
     <StakeholderShell
+      hideGlobalCreate
       onRefresh={() => {
         void dashboard.refetch();
+        void exceptions.refetch();
         void cases.refetch();
       }}
-      refreshing={dashboard.isFetching || cases.isFetching}
+      refreshing={dashboard.isFetching || exceptions.isFetching || cases.isFetching}
     >
       <StakeholderHeader
-        eyebrow="Stakeholders / Client"
-        title="Verification portfolio"
-        description="Track every authorised candidate, turnaround commitment and verification outcome from one clear workspace."
+        eyebrow={`${session.data?.clientName ?? "Client"} / Verification workspace`}
+        title="Your verification portfolio"
+        description="Monitor progress, resolve document requests and access completed reports without chasing updates."
         action={
           <div className="flex flex-wrap items-center gap-2">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-              {session.data?.displayName ?? "Authorised client user"}
-            </div>
+            <PortfolioTrustNote />
             {session.data?.permissions.includes("*") ||
             session.data?.permissions.includes("case:create") ? (
               <NewCaseDialog
@@ -94,74 +84,57 @@ function ClientPortalPage() {
           </div>
         }
       />
-      {dashboard.isError || cases.isError ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {dashboard.error?.message ?? cases.error?.message}
-        </div>
-      ) : null}
-      <StakeholderKpis
-        items={[
-          {
-            label: "Portfolio",
-            value: total,
-            detail: `${active} cases currently active`,
-            icon: BriefcaseBusiness,
-            tone: "blue",
-            progress: ratio(active, total),
-          },
-          {
-            label: "Completed",
-            value: completed,
-            detail: `${data?.summary.completedToday ?? 0} completed today`,
-            icon: CheckCircle2,
-            tone: "emerald",
-            progress: ratio(completed, total),
-          },
-          {
-            label: "Awaiting action",
-            value: clarification,
-            detail: "Clarifications needing response",
-            icon: MessageCircleQuestion,
-            tone: "orange",
-            progress: ratio(clarification, total),
-          },
-          {
-            label: "SLA overdue",
-            value: overdue,
-            detail: overdue ? "Requires immediate attention" : "Portfolio currently on track",
-            icon: AlertTriangle,
-            tone: overdue ? "red" : "emerald",
-            progress: ratio(overdue, total),
-          },
-        ]}
-      />
-      <ClientInsights data={data} />
-      <ClientPortfolio
-        items={rows}
-        search={searchInput}
-        status={status}
-        page={cursorHistory.length + 1}
-        hasPrevious={cursorHistory.length > 0}
-        hasNext={Boolean(cases.data?.nextCursor)}
-        onSearch={setSearchInput}
-        onStatus={(value) => {
-          setStatus(value);
+      <PortalSectionNav
+        actionCount={actionCount}
+        onReports={() => {
+          setStatus("COMPLETED");
           setCursor(undefined);
           setCursorHistory([]);
+          window.setTimeout(
+            () => document.getElementById("verifications")?.scrollIntoView({ behavior: "smooth" }),
+            0,
+          );
         }}
-        onPrevious={() => {
-          const history = [...cursorHistory];
-          setCursor(history.pop());
-          setCursorHistory(history);
-        }}
-        onNext={() => {
-          const next = cases.data?.nextCursor;
-          if (!next) return;
-          setCursorHistory((current) => [...current, cursor]);
-          setCursor(next);
-        }}
-        onOpen={setSelectedCaseId}
       />
+      {dashboard.isError || exceptions.isError || cases.isError ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          {dashboard.error?.message ?? exceptions.error?.message ?? cases.error?.message}
+        </div>
+      ) : null}
+      <div id="overview" className="scroll-mt-24 space-y-5">
+        <ClientOverview operations={dashboard.data} exceptions={exceptions.data} />
+        <ClientWorkflow data={dashboard.data} />
+      </div>
+      <ClientActionCenter data={exceptions.data} onOpen={setSelectedCaseId} />
+      <ClientInsights data={dashboard.data} />
+      <div id="verifications" className="scroll-mt-24">
+        <ClientPortfolio
+          items={rows}
+          search={searchInput}
+          status={status}
+          page={cursorHistory.length + 1}
+          hasPrevious={cursorHistory.length > 0}
+          hasNext={Boolean(cases.data?.nextCursor)}
+          onSearch={setSearchInput}
+          onStatus={(value) => {
+            setStatus(value);
+            setCursor(undefined);
+            setCursorHistory([]);
+          }}
+          onPrevious={() => {
+            const history = [...cursorHistory];
+            setCursor(history.pop());
+            setCursorHistory(history);
+          }}
+          onNext={() => {
+            const next = cases.data?.nextCursor;
+            if (!next) return;
+            setCursorHistory((current) => [...current, cursor]);
+            setCursor(next);
+          }}
+          onOpen={setSelectedCaseId}
+        />
+      </div>
       {selectedCaseId ? (
         <ClientCaseDrawer
           caseId={selectedCaseId}
@@ -173,6 +146,44 @@ function ClientPortalPage() {
   );
 }
 
-function ratio(value: number, total: number) {
-  return total ? Math.round((value / total) * 100) : 0;
+function PortalSectionNav({
+  actionCount,
+  onReports,
+}: {
+  actionCount: number;
+  onReports: () => void;
+}) {
+  const items = [
+    { label: "Overview", href: "#overview", icon: LayoutDashboard },
+    { label: "Action required", href: "#actions", icon: BellRing, badge: actionCount },
+    { label: "Verifications", href: "#verifications", icon: Files },
+  ];
+  return (
+    <nav
+      className="sticky top-[4.5rem] z-20 flex gap-1 overflow-x-auto rounded-2xl border border-slate-200 bg-white/90 p-1.5 shadow-sm backdrop-blur-xl"
+      aria-label="Client portal sections"
+    >
+      {items.map((item) => (
+        <a
+          key={item.label}
+          href={item.href}
+          className="flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+        >
+          <item.icon className="h-3.5 w-3.5" /> {item.label}
+          {item.badge ? (
+            <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[9px] text-amber-800">
+              {item.badge}
+            </span>
+          ) : null}
+        </a>
+      ))}
+      <button
+        type="button"
+        onClick={onReports}
+        className="flex h-9 shrink-0 items-center gap-2 rounded-xl px-3 text-[11px] font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-950"
+      >
+        <ScrollText className="h-3.5 w-3.5" /> Completed reports
+      </button>
+    </nav>
+  );
 }
