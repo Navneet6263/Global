@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
+import { networkLocationLabel } from "../common/http/network-location";
 
 type AuditFilters = {
   page: number;
@@ -83,6 +84,7 @@ export class AuditService {
           resourcePublicId: true,
           requestId: true,
           ipAddress: true,
+          locationLabel: true,
           beforeJson: true,
           afterJson: true,
           createdAt: true,
@@ -95,7 +97,14 @@ export class AuditService {
       this.prisma.auditEvent.count({ where }),
     ]);
     return {
-      items: rows.map(({ publicId, ...event }) => ({ id: publicId, ...event })),
+      items: rows.map(({ publicId, ...event }) => ({
+        id: publicId,
+        ...event,
+        locationLabel: networkLocationLabel(
+          event.ipAddress,
+          event.locationLabel,
+        ),
+      })),
       total,
       page: query.page,
       pageSize: query.pageSize,

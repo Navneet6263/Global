@@ -55,9 +55,13 @@ export function cachedIdentity(): AuthenticatedIdentity | null {
 
 export async function cacheIdentityFromSession(session: Session): Promise<AuthenticatedIdentity> {
   const identity = fromBackendSession(session);
-  currentIdentity = null;
-  await prepareDeviceOfflineData(identity.deviceDataScope);
   currentIdentity = identity;
+  const offlineWorkspace = identity.roles.some(
+    (role) => role === "FIELD_EXECUTIVE" || role === "VERIFIER",
+  );
+  const preparation = prepareDeviceOfflineData(identity.deviceDataScope);
+  if (offlineWorkspace) await preparation;
+  else void preparation.catch(() => undefined);
   return identity;
 }
 

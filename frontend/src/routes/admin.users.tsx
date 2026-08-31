@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Users } from "lucide-react";
 import { toast } from "sonner";
 import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
-import type { UserQuery, UserStatus } from "@/lib/contracts/user";
+import type { PlatformUser, UserQuery, UserStatus } from "@/lib/contracts/user";
 import { PageHeader } from "@/components/layout/page-header";
 import { PaginationBar } from "@/components/layout/pagination-bar";
 import { EmptyState } from "@/components/feedback/empty-state";
@@ -33,6 +33,7 @@ import {
 } from "@/features/users/hooks/use-users";
 import { listBranches } from "@/lib/backend-api/settings";
 import { listAllClients } from "@/lib/backend-api/cases";
+import { UserActivityDrawer } from "@/features/users/components/user-activity-drawer";
 
 const STATUS_OPTIONS: { value: UserStatus | "all"; label: string }[] = [
   { value: "all", label: "All statuses" },
@@ -70,6 +71,7 @@ function UsersPage() {
   });
   const [creating, setCreating] = useState(false);
   const [passwordReceipt, setPasswordReceipt] = useState<TemporaryPasswordReceipt | null>(null);
+  const [activityUser, setActivityUser] = useState<PlatformUser | null>(null);
 
   const { data, isPending, isError, isFetching, refetch } = useUsers(query);
   const createUser = useCreateUser();
@@ -167,6 +169,7 @@ function UsersPage() {
           <>
             <UserTable
               rows={rows}
+              onViewActivity={setActivityUser}
               onToggleStatus={(user) => {
                 const next = user.status === "suspended" ? "active" : "suspended";
                 setStatus.mutate(
@@ -244,6 +247,7 @@ function UsersPage() {
           resetPassword.reset();
         }}
       />
+      <UserActivityDrawer user={activityUser} onClose={() => setActivityUser(null)} />
     </div>
   );
 }

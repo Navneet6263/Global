@@ -17,7 +17,9 @@ export function useCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateUserInput) => api.users.create(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 }
 
@@ -26,7 +28,9 @@ export function useSetUserStatus() {
   return useMutation({
     mutationFn: (input: { id: string; status: "active" | "suspended" }) =>
       api.users.setStatus(input.id, input.status),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["users"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 }
 

@@ -32,6 +32,7 @@ export class OutboxWorkerService
   private readonly logger = new Logger(OutboxWorkerService.name);
   private timer?: NodeJS.Timeout;
   private running = false;
+  private notificationSuppressionLogged = false;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -293,7 +294,19 @@ export class OutboxWorkerService
 
   private async deliverWebhook(payload: object, idempotencyKey: string) {
     const webhook = this.config.get<string>("NOTIFICATION_WEBHOOK_URL");
-    if (!webhook) throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
+    if (!webhook) {
+      const environment = this.config.get<string>("NODE_ENV", "development");
+      if (environment === "production") {
+        throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
+      }
+      if (!this.notificationSuppressionLogged) {
+        this.logger.warn(
+          "Notification delivery is disabled in this non-production environment; queued notification events will be safely acknowledged",
+        );
+        this.notificationSuppressionLogged = true;
+      }
+      return;
+    }
     const body = JSON.stringify(payload);
     const timestamp = Date.now().toString();
     const secret = this.config.get<string>("NOTIFICATION_WEBHOOK_SECRET");

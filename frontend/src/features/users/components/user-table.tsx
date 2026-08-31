@@ -1,6 +1,6 @@
 "use client";
 
-import { MoreHorizontal, ShieldCheck, ShieldOff } from "lucide-react";
+import { Activity, MoreHorizontal, ShieldCheck, ShieldOff } from "lucide-react";
 import type { PlatformUser } from "@/lib/contracts/user";
 import { ROLE_DEFINITIONS } from "@/config/roles";
 import { StatusBadge } from "@/components/feedback/status-badge";
@@ -18,9 +18,15 @@ interface UserTableProps {
   rows: readonly PlatformUser[];
   onToggleStatus: (user: PlatformUser) => void;
   onResetPassword: (user: PlatformUser) => void;
+  onViewActivity: (user: PlatformUser) => void;
 }
 
-export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTableProps) {
+export function UserTable({
+  rows,
+  onToggleStatus,
+  onResetPassword,
+  onViewActivity,
+}: UserTableProps) {
   const showMfa = rows.some((user) => user.mfaEnabled !== null);
   return (
     <div className="overflow-x-auto">
@@ -64,9 +70,13 @@ export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTablePr
                     {initialsOf(user.fullName)}
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-[13px] font-medium text-foreground">
+                    <button
+                      type="button"
+                      onClick={() => onViewActivity(user)}
+                      className="block max-w-full cursor-pointer truncate text-left text-[13px] font-medium text-foreground underline-offset-4 hover:text-primary hover:underline"
+                    >
                       {user.fullName}
-                    </span>
+                    </button>
                     <span className="num block truncate text-[11px] text-muted-foreground">
                       {user.employeeId ? `${user.employeeId} · ${user.email}` : user.email}
                     </span>
@@ -122,6 +132,10 @@ export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTablePr
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52 rounded-2xl">
+                    <DropdownMenuItem onSelect={() => onViewActivity(user)}>
+                      <Activity className="size-3.5" aria-hidden />
+                      View activity timeline
+                    </DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => onResetPassword(user)}>
                       Reset password
                     </DropdownMenuItem>

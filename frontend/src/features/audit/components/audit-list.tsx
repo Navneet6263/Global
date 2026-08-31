@@ -23,8 +23,8 @@ export function AuditList({ events }: { events: readonly AuditEvent[] }) {
               </span>
             </div>
             <p className="text-[11px] text-muted-foreground">
-              {event.actorName} · {event.actorRole} · IP {event.ipAddress ?? "n/a"} · request{" "}
-              <span className="num">{event.requestId}</span>
+              {event.actorName} · {event.actorRole} · {event.locationLabel} · IP{" "}
+              {event.ipAddress ?? "n/a"} · request <span className="num">{event.requestId}</span>
             </p>
             {changes.length > 0 ? (
               <ul className="space-y-1 rounded-xl border border-border bg-muted/35 px-3 py-2">

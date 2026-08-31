@@ -34,6 +34,7 @@ export interface CreateUserInput {
   branchLabel?: string;
   clientId?: string;
   clientLabel?: string;
+  additionalAccessConfirmed?: boolean;
 }
 
 export interface CreatedUserResult {

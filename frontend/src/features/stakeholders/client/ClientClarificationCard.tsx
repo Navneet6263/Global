@@ -19,10 +19,10 @@ export function ClientClarificationCard({
   const [message, setMessage] = useState("");
   const respond = useMutation({
     mutationFn: () => respondToClarificationAsClient(caseId, item.id, message.trim()),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Response submitted");
       setMessage("");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] }),
         queryClient.invalidateQueries({ queryKey: ["cases", caseId] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard", "client", "actions"] }),

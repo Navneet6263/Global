@@ -3,6 +3,7 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsEmail,
   IsOptional,
   IsString,
@@ -32,9 +33,10 @@ export class CreateUserDto {
   @IsOptional() @IsUUID() clientId?: string;
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(8)
+  @ArrayMaxSize(3)
   @IsString({ each: true })
   roleCodes!: string[];
+  @IsOptional() @IsBoolean() additionalAccessConfirmed?: boolean;
   @IsString()
   @Length(MIN_USER_PASSWORD_LENGTH, 200)
   @Matches(USER_PASSWORD_PATTERN, {

@@ -14,6 +14,7 @@ export interface AuditEvent {
   resourceId: string;
   at: string;
   ipAddress: string | null;
+  locationLabel: string;
   before: Record<string, string | number | boolean | null> | null;
   after: Record<string, string | number | boolean | null> | null;
 }

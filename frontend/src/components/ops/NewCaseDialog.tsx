@@ -1,11 +1,15 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, CheckCircle2, Copy, Mail, Sparkles } from "lucide-react";
+import { Check, Mail, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { CandidateStep } from "@/features/cases/new-case/CandidateStep";
 import { ChecksStep } from "@/features/cases/new-case/ChecksStep";
+import {
+  CaseAccessSuccess,
+  type CreatedCaseAccess,
+} from "@/features/cases/new-case/CaseAccessSuccess";
 import { ReviewStep } from "@/features/cases/new-case/ReviewStep";
 import {
   candidateSchema,
@@ -14,7 +18,7 @@ import {
 } from "@/features/cases/new-case/model";
 import { getSession } from "@/lib/api/auth";
 import { createCase, listAllClients, listCaseServicePackages } from "@/lib/api/cases";
-import { issueCandidateAccess, type CandidateAccessResult } from "@/lib/api/candidate-portal";
+import { issueCandidateAccess } from "@/lib/api/candidate-portal";
 
 const steps = ["Candidate", "Checks", "Review"];
 
@@ -23,11 +27,8 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<CaseDraft>(createEmptyCaseDraft);
   const [inviteCandidate, setInviteCandidate] = useState(true);
-  const [completed, setCompleted] = useState<{
-    caseNumber: string;
-    url: string;
-    access: CandidateAccessResult;
-  }>();
+  const [completed, setCompleted] = useState<CreatedCaseAccess>();
+  const issuingForCase = useRef<string | undefined>(undefined);
   const queryClient = useQueryClient();
   const session = useQuery({
     queryKey: ["session"],
@@ -69,43 +70,55 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
     );
   }, [fixedClient, open]);
   const createMutation = useMutation({
-    mutationFn: createCase,
-    onSuccess: async (created) => {
-      let access: CandidateAccessResult | undefined;
-      if (inviteCandidate) {
-        try {
-          access = await issueCandidateAccess(created.id);
-        } catch (error) {
-          toast.error("Case created, but candidate link could not be issued", {
-            description:
-              error instanceof Error ? error.message : "Issue it from Case 360 and try again.",
-          });
-        }
-      }
-      await Promise.all([
+    mutationFn: ({ caseDraft }: { caseDraft: CaseDraft; shouldInvite: boolean }) =>
+      createCase(caseDraft),
+    onSuccess: (created, variables) => {
+      const shouldIssue = variables.shouldInvite;
+      issuingForCase.current = shouldIssue ? created.id : undefined;
+      setCompleted({
+        caseId: created.id,
+        caseNumber: created.caseNumber,
+        consentUrl: `${window.location.origin}/consent/${created.consentDelivery.consentId}`,
+        consentExpiresAt: created.consentDelivery.expiresAt,
+        ...(created.consentDelivery.developmentOtp
+          ? { developmentOtp: created.consentDelivery.developmentOtp }
+          : {}),
+        candidate: { status: shouldIssue ? "issuing" : "skipped" },
+      });
+      reset();
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["cases"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
       ]);
       toast.success(`${created.caseNumber} initiated`, {
-        description: created.consentDelivery.developmentOtp
-          ? `Development consent OTP: ${created.consentDelivery.developmentOtp}`
-          : "Consent OTP delivery is queued and the audit trail is active.",
+        description: shouldIssue
+          ? "Case saved. The candidate document link is being secured in the background."
+          : "Case and consent access are ready.",
       });
-      if (access) {
-        setCompleted({
-          caseNumber: created.caseNumber,
-          access,
-          url:
-            window.location.origin +
-            "/candidate/" +
-            access.id +
-            "#token=" +
-            encodeURIComponent(access.token),
+      if (!shouldIssue) return;
+
+      void issueCandidateAccess(created.id)
+        .then((access) => {
+          if (issuingForCase.current !== created.id) return;
+          const url = `${window.location.origin}/candidate/${access.id}#token=${encodeURIComponent(access.token)}`;
+          setCompleted((current) =>
+            current?.caseId === created.id
+              ? { ...current, candidate: { status: "ready", access, url } }
+              : current,
+          );
+        })
+        .catch((error: unknown) => {
+          if (issuingForCase.current !== created.id) return;
+          const message = error instanceof Error ? error.message : "Issue it from Case 360.";
+          setCompleted((current) =>
+            current?.caseId === created.id
+              ? { ...current, candidate: { status: "failed", error: message } }
+              : current,
+          );
+          toast.error("Case created, but candidate link could not be issued", {
+            description: message,
+          });
         });
-      } else {
-        setOpen(false);
-      }
-      reset();
     },
     onError: (error) => toast.error("Case could not be initiated", { description: error.message }),
   });
@@ -128,7 +141,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
       toast.error("Complete the required case information");
       return;
     }
-    createMutation.mutate(draft);
+    createMutation.mutate({ caseDraft: draft, shouldInvite: inviteCandidate });
   };
 
   return (
@@ -137,6 +150,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen);
         if (!nextOpen) {
+          issuingForCase.current = undefined;
           reset();
           setCompleted(undefined);
         }
@@ -145,9 +159,10 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-w-3xl gap-0 overflow-hidden rounded-3xl border-0 bg-card p-0 shadow-xl">
         {completed ? (
-          <CandidateInviteSuccess
+          <CaseAccessSuccess
             result={completed}
             onClose={() => {
+              issuingForCase.current = undefined;
               setCompleted(undefined);
               setOpen(false);
             }}
@@ -277,66 +292,5 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
         )}
       </DialogContent>
     </Dialog>
-  );
-}
-
-function CandidateInviteSuccess({
-  result,
-  onClose,
-}: {
-  result: { caseNumber: string; url: string; access: CandidateAccessResult };
-  onClose: () => void;
-}) {
-  const delivery = result.access.delivery;
-  const copy = () =>
-    void navigator.clipboard
-      .writeText(result.url)
-      .then(() => toast.success("Candidate link copied"))
-      .catch(() => toast.error("Copy failed; select and copy the link manually"));
-
-  return (
-    <div className="p-6 sm:p-8">
-      <span className="grid size-12 place-items-center rounded-full bg-success-soft text-success-foreground">
-        <CheckCircle2 className="size-6" aria-hidden />
-      </span>
-      <h2 className="mt-4 text-xl font-semibold">Verification initiated</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {result.caseNumber} is ready and its candidate workspace is secured.
-      </p>
-      <div className="mt-5 rounded-2xl border border-border bg-secondary/40 p-4">
-        <p className="text-xs font-semibold">Candidate document-upload link</p>
-        <div className="mt-2 flex gap-2">
-          <input
-            readOnly
-            value={result.url}
-            aria-label="Candidate document-upload link"
-            className="h-10 min-w-0 flex-1 rounded-xl border border-border bg-card px-3 text-xs"
-          />
-          <button
-            type="button"
-            onClick={copy}
-            className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"
-            aria-label="Copy candidate link"
-          >
-            <Copy className="size-4" aria-hidden />
-          </button>
-        </div>
-        <p className="mt-2 text-[11px] text-muted-foreground">
-          {delivery.queued
-            ? "Delivery queued by " + delivery.channel + " to " + delivery.destination + "."
-            : "No candidate email or mobile was available; copy and share this link securely."}{" "}
-          Expires {new Date(result.access.expiresAt).toLocaleString("en-IN")}.
-        </p>
-      </div>
-      <div className="mt-6 flex justify-end">
-        <button
-          type="button"
-          onClick={onClose}
-          className="h-10 rounded-full bg-primary px-5 text-sm font-semibold text-primary-foreground"
-        >
-          Done
-        </button>
-      </div>
-    </div>
   );
 }

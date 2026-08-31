@@ -20,8 +20,8 @@ export function ClientActionCenter({
   const open = data?.clarifications.filter((item) => item.status === "OPEN") ?? [];
   const underReview = data?.clarifications.filter((item) => item.status === "RESPONDED") ?? [];
   const overdue = data?.overdue ?? [];
+  const rejectedDocuments = data?.rejectedDocuments ?? [];
   const actionCount = data?.summary.clientActions ?? 0;
-  const rejectedDocumentCount = Math.max(0, actionCount - open.length);
 
   return (
     <section id="actions" className="surface scroll-mt-28 overflow-hidden rounded-[1.75rem]">
@@ -57,7 +57,11 @@ export function ClientActionCenter({
       ) : (
         <div className="grid gap-5 p-4 xl:grid-cols-[1.35fr_0.65fr]">
           <div>
-            <SectionLabel icon={FileWarning} label="Needs your response" count={open.length} />
+            <SectionLabel
+              icon={FileWarning}
+              label="Needs your response"
+              count={open.length + rejectedDocuments.length}
+            />
             <div className="mt-2 space-y-2">
               {open.slice(0, 6).map((item) => (
                 <button
@@ -101,18 +105,37 @@ export function ClientActionCenter({
                   <ArrowRight className="mt-2 size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-warning-foreground" />
                 </button>
               ))}
-              {!open.length ? <CompactEmpty text="No response is pending from your team." /> : null}
-              {rejectedDocumentCount ? (
-                <div className="rounded-2xl border border-critical/15 bg-critical-soft/55 p-3.5 text-[11px] leading-5 text-critical-foreground">
-                  <p className="font-semibold">
-                    {rejectedDocumentCount} rejected document{" "}
-                    {rejectedDocumentCount === 1 ? "version needs" : "versions need"} replacement
-                  </p>
-                  <p className="mt-1 text-muted-foreground">
-                    Open the affected verification below and use its Documents section to upload a
-                    corrected version.
-                  </p>
-                </div>
+              {rejectedDocuments.slice(0, 6).map((document) => (
+                <button
+                  key={document.id}
+                  type="button"
+                  onClick={() => onOpen(document.case.publicId)}
+                  className="group flex w-full items-start gap-3 rounded-2xl border border-critical/20 bg-critical-soft/55 p-3.5 text-left shadow-[var(--shadow-card)] transition hover:-translate-y-px hover:border-critical/35"
+                >
+                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-card text-critical-foreground shadow-[var(--shadow-card)]">
+                    <FileWarning className="size-4" aria-hidden />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="text-xs font-semibold text-foreground">
+                      {document.type.replaceAll("_", " ")} needs replacement
+                    </span>
+                    <span className="mt-1 block text-[11px] leading-4 text-muted-foreground">
+                      The submitted file did not pass document review. Open the case to upload a
+                      corrected version.
+                    </span>
+                    <span className="mt-2 flex flex-wrap gap-x-3 text-[10px] text-muted-foreground">
+                      <span className="font-semibold text-foreground">
+                        {document.case.subject.fullName}
+                      </span>
+                      <span>{document.case.caseNumber}</span>
+                      <span>{relativeTime(document.updatedAt)}</span>
+                    </span>
+                  </span>
+                  <ArrowRight className="mt-2 size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-critical-foreground" />
+                </button>
+              ))}
+              {!open.length && !rejectedDocuments.length ? (
+                <CompactEmpty text="No response is pending from your team." />
               ) : null}
             </div>
           </div>

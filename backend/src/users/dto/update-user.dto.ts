@@ -2,6 +2,7 @@ import {
   ArrayMaxSize,
   ArrayMinSize,
   IsArray,
+  IsBoolean,
   IsIn,
   IsInt,
   IsOptional,
@@ -15,7 +16,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(8)
+  @ArrayMaxSize(3)
   @IsString({ each: true })
   roleCodes?: string[];
+  @IsOptional() @IsBoolean() additionalAccessConfirmed?: boolean;
 }

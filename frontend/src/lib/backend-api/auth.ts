@@ -19,6 +19,7 @@ export type ActiveSession = {
   id: string;
   userAgent?: string | null;
   ipAddress?: string | null;
+  locationLabel?: string | null;
   deviceName?: string | null;
   createdAt: string;
   expiresAt: string;
@@ -77,6 +78,7 @@ export type SecurityEvent = {
   id: string;
   action: string;
   ipAddress?: string | null;
+  locationLabel?: string | null;
   afterJson?: string | null;
   createdAt: string;
   risk: "NORMAL" | "ATTENTION";

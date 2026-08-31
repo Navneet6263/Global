@@ -17,7 +17,9 @@ export function useCreateClient() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (draft: ClientDraft) => api.clients.create(draft),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
   });
 }
 
@@ -26,6 +28,8 @@ export function useSetClientStatus() {
   return useMutation({
     mutationFn: (input: { id: string; status: "active" | "suspended" }) =>
       api.clients.setStatus(input.id, input.status),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["clients"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["clients"] });
+    },
   });
 }

@@ -48,6 +48,7 @@ export type AuditEventMinAggregateOutputType = {
   resourcePublicId: string | null
   requestId: string | null
   ipAddress: string | null
+  locationLabel: string | null
   beforeJson: string | null
   afterJson: string | null
   createdAt: Date | null
@@ -63,6 +64,7 @@ export type AuditEventMaxAggregateOutputType = {
   resourcePublicId: string | null
   requestId: string | null
   ipAddress: string | null
+  locationLabel: string | null
   beforeJson: string | null
   afterJson: string | null
   createdAt: Date | null
@@ -78,6 +80,7 @@ export type AuditEventCountAggregateOutputType = {
   resourcePublicId: number
   requestId: number
   ipAddress: number
+  locationLabel: number
   beforeJson: number
   afterJson: number
   createdAt: number
@@ -107,6 +110,7 @@ export type AuditEventMinAggregateInputType = {
   resourcePublicId?: true
   requestId?: true
   ipAddress?: true
+  locationLabel?: true
   beforeJson?: true
   afterJson?: true
   createdAt?: true
@@ -122,6 +126,7 @@ export type AuditEventMaxAggregateInputType = {
   resourcePublicId?: true
   requestId?: true
   ipAddress?: true
+  locationLabel?: true
   beforeJson?: true
   afterJson?: true
   createdAt?: true
@@ -137,6 +142,7 @@ export type AuditEventCountAggregateInputType = {
   resourcePublicId?: true
   requestId?: true
   ipAddress?: true
+  locationLabel?: true
   beforeJson?: true
   afterJson?: true
   createdAt?: true
@@ -239,6 +245,7 @@ export type AuditEventGroupByOutputType = {
   resourcePublicId: string | null
   requestId: string | null
   ipAddress: string | null
+  locationLabel: string | null
   beforeJson: string | null
   afterJson: string | null
   createdAt: Date
@@ -277,6 +284,7 @@ export type AuditEventWhereInput = {
   resourcePublicId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   requestId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   ipAddress?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  locationLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   beforeJson?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   afterJson?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
@@ -294,6 +302,7 @@ export type AuditEventOrderByWithRelationInput = {
   resourcePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
   requestId?: Prisma.SortOrderInput | Prisma.SortOrder
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   beforeJson?: Prisma.SortOrderInput | Prisma.SortOrder
   afterJson?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -314,6 +323,7 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   resourcePublicId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   requestId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   ipAddress?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  locationLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   beforeJson?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   afterJson?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
@@ -331,6 +341,7 @@ export type AuditEventOrderByWithAggregationInput = {
   resourcePublicId?: Prisma.SortOrderInput | Prisma.SortOrder
   requestId?: Prisma.SortOrderInput | Prisma.SortOrder
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  locationLabel?: Prisma.SortOrderInput | Prisma.SortOrder
   beforeJson?: Prisma.SortOrderInput | Prisma.SortOrder
   afterJson?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -354,6 +365,7 @@ export type AuditEventScalarWhereWithAggregatesInput = {
   resourcePublicId?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   requestId?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   ipAddress?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
+  locationLabel?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   beforeJson?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   afterJson?: Prisma.StringNullableWithAggregatesFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AuditEvent"> | Date | string
@@ -367,6 +379,7 @@ export type AuditEventCreateInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -384,6 +397,7 @@ export type AuditEventUncheckedCreateInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -397,6 +411,7 @@ export type AuditEventUpdateInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -414,6 +429,7 @@ export type AuditEventUncheckedUpdateInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -428,6 +444,7 @@ export type AuditEventCreateManyInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -441,6 +458,7 @@ export type AuditEventUpdateManyMutationInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -456,6 +474,7 @@ export type AuditEventUncheckedUpdateManyInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -481,6 +500,7 @@ export type AuditEventCountOrderByAggregateInput = {
   resourcePublicId?: Prisma.SortOrder
   requestId?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
+  locationLabel?: Prisma.SortOrder
   beforeJson?: Prisma.SortOrder
   afterJson?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -502,6 +522,7 @@ export type AuditEventMaxOrderByAggregateInput = {
   resourcePublicId?: Prisma.SortOrder
   requestId?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
+  locationLabel?: Prisma.SortOrder
   beforeJson?: Prisma.SortOrder
   afterJson?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -517,6 +538,7 @@ export type AuditEventMinOrderByAggregateInput = {
   resourcePublicId?: Prisma.SortOrder
   requestId?: Prisma.SortOrder
   ipAddress?: Prisma.SortOrder
+  locationLabel?: Prisma.SortOrder
   beforeJson?: Prisma.SortOrder
   afterJson?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -620,6 +642,7 @@ export type AuditEventCreateWithoutTenantInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -635,6 +658,7 @@ export type AuditEventUncheckedCreateWithoutTenantInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -678,6 +702,7 @@ export type AuditEventScalarWhereInput = {
   resourcePublicId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   requestId?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   ipAddress?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
+  locationLabel?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   beforeJson?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   afterJson?: Prisma.StringNullableFilter<"AuditEvent"> | string | null
   createdAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
@@ -691,6 +716,7 @@ export type AuditEventCreateWithoutActorInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -706,6 +732,7 @@ export type AuditEventUncheckedCreateWithoutActorInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -744,6 +771,7 @@ export type AuditEventCreateManyTenantInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -757,6 +785,7 @@ export type AuditEventUpdateWithoutTenantInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -772,6 +801,7 @@ export type AuditEventUncheckedUpdateWithoutTenantInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -786,6 +816,7 @@ export type AuditEventUncheckedUpdateManyWithoutTenantInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -799,6 +830,7 @@ export type AuditEventCreateManyActorInput = {
   resourcePublicId?: string | null
   requestId?: string | null
   ipAddress?: string | null
+  locationLabel?: string | null
   beforeJson?: string | null
   afterJson?: string | null
   createdAt?: Date | string
@@ -812,6 +844,7 @@ export type AuditEventUpdateWithoutActorInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -827,6 +860,7 @@ export type AuditEventUncheckedUpdateWithoutActorInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -841,6 +875,7 @@ export type AuditEventUncheckedUpdateManyWithoutActorInput = {
   resourcePublicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   requestId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locationLabel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   beforeJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   afterJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -858,6 +893,7 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   resourcePublicId?: boolean
   requestId?: boolean
   ipAddress?: boolean
+  locationLabel?: boolean
   beforeJson?: boolean
   afterJson?: boolean
   createdAt?: boolean
@@ -877,12 +913,13 @@ export type AuditEventSelectScalar = {
   resourcePublicId?: boolean
   requestId?: boolean
   ipAddress?: boolean
+  locationLabel?: boolean
   beforeJson?: boolean
   afterJson?: boolean
   createdAt?: boolean
 }
 
-export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "actorUserId" | "action" | "resourceType" | "resourcePublicId" | "requestId" | "ipAddress" | "beforeJson" | "afterJson" | "createdAt", ExtArgs["result"]["auditEvent"]>
+export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "actorUserId" | "action" | "resourceType" | "resourcePublicId" | "requestId" | "ipAddress" | "locationLabel" | "beforeJson" | "afterJson" | "createdAt", ExtArgs["result"]["auditEvent"]>
 export type AuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   actor?: boolean | Prisma.AuditEvent$actorArgs<ExtArgs>
@@ -904,6 +941,7 @@ export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.Internal
     resourcePublicId: string | null
     requestId: string | null
     ipAddress: string | null
+    locationLabel: string | null
     beforeJson: string | null
     afterJson: string | null
     createdAt: Date
@@ -1287,6 +1325,7 @@ export interface AuditEventFieldRefs {
   readonly resourcePublicId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly requestId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly ipAddress: Prisma.FieldRef<"AuditEvent", 'String'>
+  readonly locationLabel: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly beforeJson: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly afterJson: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly createdAt: Prisma.FieldRef<"AuditEvent", 'DateTime'>

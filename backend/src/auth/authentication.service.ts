@@ -75,6 +75,7 @@ export class AuthenticationService {
         resourceType: "user",
         resourcePublicId: user.publicId,
         ipAddress: meta.ipAddress,
+        locationLabel: meta.locationLabel,
         afterJson: JSON.stringify({ userAgent: meta.userAgent?.slice(0, 300) }),
       },
     });
@@ -144,6 +145,7 @@ export class AuthenticationService {
           resourceType: "user",
           resourcePublicId: user.publicId,
           ipAddress: meta.ipAddress,
+          locationLabel: meta.locationLabel,
           afterJson: JSON.stringify({
             failedLoginCount,
             locked: failedLoginCount >= MAX_FAILED_LOGINS,

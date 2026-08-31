@@ -27,9 +27,9 @@ export function InvoiceDetailDrawer({
   const cancel = useMutation({
     mutationFn: () =>
       cancelInvoice(invoice.id, { version: invoice.version, reason: reason.trim() }),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Invoice cancelled");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["finance", "invoices"] }),
         queryClient.invalidateQueries({ queryKey: ["finance", "overview"] }),
       ]);

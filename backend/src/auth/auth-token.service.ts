@@ -70,6 +70,7 @@ export class AuthTokenService {
       },
       meta,
       session.familyId,
+      session.deviceName,
     );
   }
 
@@ -84,8 +85,11 @@ export class AuthTokenService {
   async issue(
     identity: TokenIdentity,
     meta: RequestMeta,
-    familyId: string = randomUUID(),
+    familyId?: string,
+    deviceName?: string | null,
   ): Promise<TokenPair> {
+    const isFreshLogin = !familyId;
+    const nextFamilyId = familyId ?? randomUUID();
     const refreshTtl = this.config.get<string>("JWT_REFRESH_TTL", "7d");
     const refreshSeconds = ttlSeconds(refreshTtl);
     const accessSeconds = ttlSeconds(
@@ -113,16 +117,31 @@ export class AuthTokenService {
         expiresIn: refreshSeconds,
       },
     );
-    await this.prisma.refreshSession.create({
-      data: {
-        publicId: sessionPublicId,
-        userId: identity.userId,
-        familyId,
-        tokenHash: this.digest(refreshToken),
-        userAgent: meta.userAgent?.slice(0, 500),
-        ipAddress: meta.ipAddress?.slice(0, 64),
-        expiresAt: refreshExpiresAt,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      if (isFreshLogin && meta.deviceKey) {
+        await tx.refreshSession.updateMany({
+          where: {
+            userId: identity.userId,
+            deviceKey: meta.deviceKey,
+            revokedAt: null,
+          },
+          data: { revokedAt: new Date() },
+        });
+      }
+      await tx.refreshSession.create({
+        data: {
+          publicId: sessionPublicId,
+          userId: identity.userId,
+          familyId: nextFamilyId,
+          tokenHash: this.digest(refreshToken),
+          userAgent: meta.userAgent?.slice(0, 500),
+          ipAddress: meta.ipAddress?.slice(0, 64),
+          deviceKey: meta.deviceKey?.slice(0, 64),
+          deviceName: deviceName?.slice(0, 80),
+          locationLabel: meta.locationLabel?.slice(0, 160),
+          expiresAt: refreshExpiresAt,
+        },
+      });
     });
     return { accessToken, refreshToken, refreshExpiresAt };
   }
@@ -183,5 +202,4 @@ export class AuthTokenService {
   private digest(value: string): string {
     return createHash("sha256").update(value).digest("hex");
   }
-
 }

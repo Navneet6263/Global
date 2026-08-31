@@ -71,6 +71,7 @@ export const auditRepository: AuditRepository = {
       resourceId: event.resourcePublicId ?? "—",
       at: event.createdAt,
       ipAddress: event.ipAddress ?? null,
+      locationLabel: event.locationLabel ?? "Location unavailable",
       before: jsonObject(event.beforeJson),
       after: jsonObject(event.afterJson),
     }));
@@ -111,6 +112,7 @@ export const securityRepository: SecurityRepository = {
         deviceName: session.deviceName ?? null,
         userAgent: session.userAgent ?? null,
         ipAddress: session.ipAddress ?? null,
+        locationLabel: session.locationLabel ?? "Location unavailable",
         startedAt: session.createdAt,
         expiresAt: session.expiresAt,
         isCurrent: session.current,
@@ -120,6 +122,7 @@ export const securityRepository: SecurityRepository = {
         type: authEventType(event.action),
         at: event.createdAt,
         ipAddress: event.ipAddress ?? null,
+        locationLabel: event.locationLabel ?? "Location unavailable",
         userAgent:
           typeof jsonObject(event.afterJson)?.["userAgent"] === "string"
             ? (jsonObject(event.afterJson)?.["userAgent"] as string)
@@ -208,6 +211,15 @@ export const settingsRepository: SettingsRepository = {
           enabled: field.outsideGeofencePolicy === "BLOCK",
         },
       ],
+      fieldPolicyConfig: {
+        defaultRadiusMeters: field.defaultRadiusMeters,
+        maxAccuracyMeters: field.maxAccuracyMeters,
+        minimumPhotos: field.minimumPhotos,
+        retentionDays: field.retentionDays,
+        requireCheckout: field.requireCheckout,
+        outsideGeofencePolicy: field.outsideGeofencePolicy,
+        version: field.version,
+      },
       evidencePolicy: [
         {
           id: "photos",

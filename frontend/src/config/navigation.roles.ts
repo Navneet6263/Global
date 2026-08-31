@@ -1,11 +1,15 @@
 import {
+  BarChart3,
+  BellRing,
   BriefcaseBusiness,
   ClipboardCheck,
   FileCheck2,
+  Files,
   KeyRound,
   LayoutDashboard,
   MapPinned,
   ReceiptIndianRupee,
+  ScrollText,
 } from "lucide-react";
 import type { NavGroup, NavItem, NavWorkspace, WorkspaceNavigation } from "./navigation.types";
 import type { Role } from "./roles";
@@ -53,15 +57,57 @@ function roleNav(
 }
 
 export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>> = {
-  "client-admin": roleNav(
-    "client-admin",
-    "CLIENT_ADMIN",
-    "Verification Portfolio",
-    "Cases, actions and completed reports",
-    "/client-portal",
-    LayoutDashboard,
-    "case:read",
-  ),
+  "client-admin": {
+    groups: ROLE_GROUPS,
+    items: [
+      clientItem(
+        "Portfolio overview",
+        "Live volume, SLA and verification flow",
+        LayoutDashboard,
+        "/client-portal",
+        "dashboard:read",
+      ),
+      clientItem(
+        "Verifications",
+        "Search and monitor every candidate case",
+        Files,
+        "/client-portal/verifications",
+        "case:read",
+      ),
+      clientItem(
+        "Action required",
+        "Document corrections and information requests",
+        BellRing,
+        "/client-portal/actions",
+        "case:read",
+        { key: "clientActions", tone: "warning" },
+      ),
+      clientItem(
+        "Reports",
+        "Published signed verification reports",
+        ScrollText,
+        "/client-portal/reports",
+        "report:read",
+      ),
+      clientItem(
+        "Portfolio analytics",
+        "Stage ageing, outcome and rejection hotspots",
+        BarChart3,
+        "/client-portal/analytics",
+        "dashboard:read",
+      ),
+      {
+        workspace: "client-admin",
+        label: "Account Security",
+        description: "Password, sessions and sign-in activity",
+        icon: KeyRound,
+        route: "/change-password",
+        group: "account",
+        roles: ["CLIENT_ADMIN"],
+        permission: "notification:read",
+      },
+    ],
+  },
   verifier: roleNav(
     "verifier",
     "VERIFIER",
@@ -101,3 +147,24 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
 };
 
 export const ROLE_WORKSPACE_ICON = BriefcaseBusiness;
+
+function clientItem(
+  label: string,
+  description: string,
+  icon: NavItem["icon"],
+  route: string,
+  permission: NavItem["permission"],
+  badge?: NavItem["badge"],
+): NavItem {
+  return {
+    workspace: "client-admin",
+    label,
+    description,
+    icon,
+    route,
+    group: "command",
+    roles: ["CLIENT_ADMIN"],
+    permission,
+    ...(badge ? { badge } : {}),
+  };
+}

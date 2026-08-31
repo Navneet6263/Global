@@ -14,6 +14,40 @@ export interface ReportSummary {
   }>;
 }
 
+export interface PublishedReportSummary {
+  id: string;
+  status: string;
+  currentVersion: number;
+  publishedAt?: string | null;
+  case: {
+    id: string;
+    caseNumber: string;
+    completedAt?: string | null;
+    subject: { fullName: string };
+  };
+  latestVersion: {
+    version: number;
+    authenticityCode: string;
+    sha256: string;
+    generatedAt: string;
+  } | null;
+}
+
+export function listPublishedReports(
+  input: {
+    search?: string;
+    cursor?: string;
+    limit?: number;
+  } = {},
+) {
+  const query = new URLSearchParams({ limit: String(input.limit ?? 20) });
+  if (input.search) query.set("search", input.search);
+  if (input.cursor) query.set("cursor", input.cursor);
+  return apiRequest<{ items: PublishedReportSummary[]; nextCursor: string | null }>(
+    `/reports?${query.toString()}`,
+  );
+}
+
 export function listReports(caseId: string) {
   return apiRequest<{ items: ReportSummary[] }>(`/cases/${caseId}/reports`);
 }

@@ -73,7 +73,7 @@ export function VerifierTaskWorkspace({
   }, [deviceDataScope, draftKey, draftReady, findings, result, sourceSummary, task.status]);
   const mutation = useMutation({
     mutationFn: (input: Parameters<typeof updateTask>[1]) => updateTask(task.id, input),
-    onSuccess: async (_, input) => {
+    onSuccess: (_, input) => {
       if (input.status === "COMPLETED" && deviceDataScope) {
         void removeVerifierDraft(deviceDataScope, draftKey);
       }
@@ -84,7 +84,7 @@ export function VerifierTaskWorkspace({
             ? "Blocker recorded"
             : "Verification started",
       );
-      await onUpdated();
+      void onUpdated();
     },
     onError: (error: Error) => toast.error(error.message),
   });

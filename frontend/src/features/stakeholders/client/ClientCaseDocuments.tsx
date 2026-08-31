@@ -73,10 +73,10 @@ function DocumentRow({
       if (!file) throw new Error("Choose a document first");
       return uploadDocument(item.publicId, file);
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Document uploaded securely");
       setFile(undefined);
-      await queryClient.invalidateQueries({ queryKey: ["cases", caseId] });
+      void queryClient.invalidateQueries({ queryKey: ["cases", caseId] });
     },
     onError: (error: Error) => toast.error(error.message),
   });

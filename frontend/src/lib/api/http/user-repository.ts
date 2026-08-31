@@ -67,6 +67,7 @@ export const userRepository: UserRepository = {
       branchId: input.branchId,
       clientId: input.clientId,
       roleCodes: [...input.roles],
+      additionalAccessConfirmed: input.additionalAccessConfirmed,
       temporaryPassword: password,
     });
     const user: PlatformUser = {

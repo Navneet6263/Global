@@ -151,6 +151,7 @@ export interface ExceptionsDashboard {
     overdue: number;
     clarifications: number;
     fieldExceptions: number;
+    rejectedDocuments: number;
     total: number;
     uniqueCases: number;
     critical: number;
@@ -193,11 +194,54 @@ export interface ExceptionsDashboard {
     case: ExceptionCase;
     assignee?: { displayName: string } | null;
   }>;
+  rejectedDocuments: Array<{
+    id: string;
+    type: string;
+    status: string;
+    updatedAt: string;
+    case: ExceptionCase;
+  }>;
+  generatedAt: string;
+}
+
+export interface ClientAnalyticsDashboard {
+  summary: {
+    totalChecks: number;
+    returnedOutcomes: number;
+    nonClear: number;
+    nonClearRate: number;
+    rejectedDocuments: number;
+    qaRework: number;
+  };
+  bottleneck: { status: string; count: number; oldestAgeHours: number } | null;
+  stageHealth: Array<{ status: string; count: number; oldestAgeHours: number }>;
+  checkHealth: Array<{
+    type: string;
+    total: number;
+    completed: number;
+    pending: number;
+    returned: number;
+    clear: number;
+    discrepancies: number;
+    unableToVerify: number;
+  }>;
+  documentHealth: Array<{
+    type: string;
+    total: number;
+    available: number;
+    verified: number;
+    rejected: number;
+  }>;
+  qaDecisions: Record<string, number>;
   generatedAt: string;
 }
 
 export function getOperationsDashboard() {
   return apiRequest<OperationsDashboard>("/dashboards/operations");
+}
+
+export function getClientAnalyticsDashboard() {
+  return apiRequest<ClientAnalyticsDashboard>("/dashboards/client");
 }
 
 export function getExecutiveDashboard(filters: ExecutiveDashboardFilters = {}) {

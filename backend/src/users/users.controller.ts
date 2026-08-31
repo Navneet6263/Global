@@ -20,6 +20,7 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ResetUserPasswordDto } from "./dto/reset-user-password.dto";
 import { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
+import { UserActivityQueryDto } from "./dto/user-activity-query.dto";
 
 @Controller("users")
 @RequirePermissions(Permission.UserRead)
@@ -43,8 +44,9 @@ export class UsersController {
   activity(
     @CurrentActor() actor: Actor,
     @Param("userId", ParseUUIDPipe) userId: string,
+    @Query() query: UserActivityQueryDto,
   ) {
-    return this.users.activity(actor, userId);
+    return this.users.activity(actor, userId, query);
   }
 
   @Post()

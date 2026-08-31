@@ -1,6 +1,6 @@
 "use client";
 
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { Menu, RefreshCw, ShieldCheck } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -23,15 +23,14 @@ interface TopToolbarProps {
 export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolbarProps) {
   const session = sessionForNav(workspace);
   const queryClient = useQueryClient();
-  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const presentation = WORKSPACE_PRESENTATION[workspace];
 
   const refresh = async () => {
     setRefreshing(true);
-    await Promise.all([queryClient.invalidateQueries(), router.invalidate()]);
+    await queryClient.refetchQueries({ type: "active" });
     setRefreshing(false);
-    notifySuccess("Workspace refreshed", "All operational panels re-fetched.");
+    notifySuccess("Workspace refreshed", "Visible operational panels are up to date.");
   };
 
   return (

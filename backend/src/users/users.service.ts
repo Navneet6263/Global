@@ -12,6 +12,9 @@ import type { CreateUserDto } from "./dto/create-user.dto";
 import type { UpdateUserDto } from "./dto/update-user.dto";
 import type { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 import type { Prisma } from "../generated/prisma/client";
+import { assertSafeRoleCombination } from "./role-combination";
+import { networkLocationLabel } from "../common/http/network-location";
+import type { UserActivityQueryDto } from "./dto/user-activity-query.dto";
 
 export function userDirectoryBranchScope(actor: Actor) {
   return !actor.roles.includes("PLATFORM_ADMIN") && actor.branchId
@@ -87,6 +90,7 @@ export class UsersService {
 
   async create(actor: Actor, input: CreateUserDto) {
     this.assertDirectoryRole(actor);
+    assertSafeRoleCombination(input.roleCodes, input.additionalAccessConfirmed);
     const normalizedEmail = input.email.trim().toLowerCase();
     const exists = await this.prisma.user.findFirst({
       where: { tenantId: actor.tenantId, normalizedEmail },
@@ -210,6 +214,9 @@ export class UsersService {
       throw new NotFoundException("One or more roles were not found");
     const currentRoleCodes = user.userRoles.map(({ role }) => role.code);
     const nextRoleCodes = input.roleCodes ?? currentRoleCodes;
+    if (input.roleCodes) {
+      assertSafeRoleCombination(nextRoleCodes, input.additionalAccessConfirmed);
+    }
     if (nextRoleCodes.includes("CLIENT_ADMIN") && !user.clientId) {
       throw new ConflictException(
         "Client administrators must be assigned to a client",
@@ -322,7 +329,7 @@ export class UsersService {
     return { reset: true };
   }
 
-  async activity(actor: Actor, publicId: string) {
+  async activity(actor: Actor, publicId: string, query: UserActivityQueryDto) {
     this.assertDirectoryRole(actor);
     const user = await this.prisma.user.findFirst({
       where: {
@@ -330,30 +337,51 @@ export class UsersService {
         publicId,
         ...this.branchScope(actor),
       },
-      select: { id: true },
+      select: { id: true, displayName: true, email: true },
     });
     if (!user) throw new NotFoundException("User not found");
-    const rows = await this.prisma.auditEvent.findMany({
-      where: {
-        tenantId: actor.tenantId,
-        OR: [
-          { resourceType: "user", resourcePublicId: publicId },
-          { actorUserId: user.id, action: { startsWith: "auth." } },
-        ],
-      },
-      select: {
-        publicId: true,
-        action: true,
-        ipAddress: true,
-        afterJson: true,
-        createdAt: true,
-        actor: { select: { displayName: true } },
-      },
-      orderBy: [{ createdAt: "desc" }, { publicId: "desc" }],
-      take: 30,
-    });
+    const where = {
+      tenantId: actor.tenantId,
+      OR: [
+        { actorUserId: user.id },
+        { resourceType: "user", resourcePublicId: publicId },
+      ],
+    };
+    const [rows, total] = await Promise.all([
+      this.prisma.auditEvent.findMany({
+        where,
+        select: {
+          publicId: true,
+          action: true,
+          resourceType: true,
+          resourcePublicId: true,
+          requestId: true,
+          ipAddress: true,
+          locationLabel: true,
+          beforeJson: true,
+          afterJson: true,
+          createdAt: true,
+          actor: { select: { displayName: true, email: true } },
+        },
+        orderBy: [{ createdAt: "desc" }, { publicId: "desc" }],
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      this.prisma.auditEvent.count({ where }),
+    ]);
     return {
-      items: rows.map(({ publicId: id, ...event }) => ({ id, ...event })),
+      user: { id: publicId, displayName: user.displayName, email: user.email },
+      items: rows.map(({ publicId: id, ...event }) => ({
+        id,
+        ...event,
+        locationLabel: networkLocationLabel(
+          event.ipAddress,
+          event.locationLabel,
+        ),
+      })),
+      total,
+      page: query.page,
+      pageSize: query.pageSize,
     };
   }
 

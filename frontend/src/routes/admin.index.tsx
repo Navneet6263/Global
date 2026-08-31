@@ -7,10 +7,7 @@ import { ActionQueue } from "@/features/admin-dashboard/components/action-queue"
 import { PlatformHealthPanel } from "@/features/admin-dashboard/components/platform-health-panel";
 import { AdminCrmSummary } from "@/features/admin-dashboard/components/admin-crm-summary";
 import { useCrmAdminSummary } from "@/features/crm/hooks/use-crm";
-import {
-  controlTowerQueryOptions,
-  useControlTower,
-} from "@/features/admin-dashboard/hooks/use-control-tower";
+import { useControlTower } from "@/features/admin-dashboard/hooks/use-control-tower";
 
 export const Route = createFileRoute("/admin/")({
   head: () => ({
@@ -28,9 +25,6 @@ export const Route = createFileRoute("/admin/")({
       },
     ],
   }),
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(controlTowerQueryOptions);
-  },
   component: ControlTowerPage,
 });
 

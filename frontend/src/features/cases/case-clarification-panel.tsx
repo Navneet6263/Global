@@ -42,7 +42,7 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
         message: message.trim(),
         ...(checkId ? { checkId } : {}),
       }),
-    onSuccess: async (result) => {
+    onSuccess: (result) => {
       const url = `${window.location.origin}/clarification/${result.id}#token=${encodeURIComponent(result.portalToken)}`;
       setShareUrl(url);
       setSubject("");
@@ -51,7 +51,7 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
       toast.success("Clarification raised", {
         description: "Secure candidate response link is ready to share.",
       });
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["clarifications", item.id] }),
       ]);
@@ -60,14 +60,14 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
   });
   const resolve = useMutation({
     mutationFn: (clarificationId: string) => resolveClarification(item.id, clarificationId),
-    onSuccess: async (result) => {
+    onSuccess: (result) => {
       toast.success("Clarification resolved", {
         description:
           result.caseStatus === "IN_PROGRESS"
             ? "All responses are reviewed; verification has resumed."
             : "The reviewed response has been closed.",
       });
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["clarifications", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["cases"] }),

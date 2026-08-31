@@ -23,9 +23,9 @@ export function PaymentForm({ invoice, onClose }: { invoice: Invoice; onClose: (
         receivedAt: new Date().toISOString(),
         version: invoice.version,
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Payment recorded");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["finance", "overview"] }),
         queryClient.invalidateQueries({ queryKey: ["finance", "invoices"] }),
       ]);

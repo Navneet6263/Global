@@ -38,6 +38,11 @@ import { Route as AdminVerifierRouteImport } from './routes/admin.verifier'
 import { Route as CandidateAccessIdRouteImport } from './routes/candidate.$accessId'
 import { Route as CasesCaseIdRouteImport } from './routes/cases.$caseId'
 import { Route as ClarificationClarificationIdRouteImport } from './routes/clarification.$clarificationId'
+import { Route as ClientPortalIndexRouteImport } from './routes/client-portal.index'
+import { Route as ClientPortalActionsRouteImport } from './routes/client-portal.actions'
+import { Route as ClientPortalAnalyticsRouteImport } from './routes/client-portal.analytics'
+import { Route as ClientPortalReportsRouteImport } from './routes/client-portal.reports'
+import { Route as ClientPortalVerificationsRouteImport } from './routes/client-portal.verifications'
 import { Route as ConsentConsentIdRouteImport } from './routes/consent.$consentId'
 import { Route as OperationsIndexRouteImport } from './routes/operations.index'
 import { Route as OperationsAssignmentsRouteImport } from './routes/operations.assignments'
@@ -203,6 +208,32 @@ const ClarificationClarificationIdRoute =
     path: '/clarification/$clarificationId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ClientPortalIndexRoute = ClientPortalIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalActionsRoute = ClientPortalActionsRouteImport.update({
+  id: '/actions',
+  path: '/actions',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalAnalyticsRoute = ClientPortalAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalReportsRoute = ClientPortalReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalVerificationsRoute =
+  ClientPortalVerificationsRouteImport.update({
+    id: '/verifications',
+    path: '/verifications',
+    getParentRoute: () => ClientPortalRoute,
+  } as any)
 const ConsentConsentIdRoute = ConsentConsentIdRouteImport.update({
   id: '/consent/$consentId',
   path: '/consent/$consentId',
@@ -301,7 +332,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
-  '/client-portal': typeof ClientPortalRoute
+  '/client-portal': typeof ClientPortalRouteWithChildren
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/operations': typeof OperationsRouteWithChildren
@@ -325,6 +356,10 @@ export interface FileRoutesByFullPath {
   '/candidate/$accessId': typeof CandidateAccessIdRoute
   '/cases/$caseId': typeof CasesCaseIdRoute
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
+  '/client-portal/actions': typeof ClientPortalActionsRoute
+  '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
+  '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
   '/operations/cases': typeof OperationsCasesRoute
@@ -341,6 +376,7 @@ export interface FileRoutesByFullPath {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/admin/': typeof AdminIndexRoute
+  '/client-portal/': typeof ClientPortalIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
@@ -349,7 +385,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
-  '/client-portal': typeof ClientPortalRoute
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/qa-review': typeof QaReviewRoute
@@ -371,6 +406,10 @@ export interface FileRoutesByTo {
   '/candidate/$accessId': typeof CandidateAccessIdRoute
   '/cases/$caseId': typeof CasesCaseIdRoute
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
+  '/client-portal/actions': typeof ClientPortalActionsRoute
+  '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
+  '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
   '/operations/cases': typeof OperationsCasesRoute
@@ -387,6 +426,7 @@ export interface FileRoutesByTo {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/admin': typeof AdminIndexRoute
+  '/client-portal': typeof ClientPortalIndexRoute
   '/operations': typeof OperationsIndexRoute
   '/sales-crm': typeof SalesCrmIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
@@ -397,7 +437,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
-  '/client-portal': typeof ClientPortalRoute
+  '/client-portal': typeof ClientPortalRouteWithChildren
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/operations': typeof OperationsRouteWithChildren
@@ -421,6 +461,10 @@ export interface FileRoutesById {
   '/candidate/$accessId': typeof CandidateAccessIdRoute
   '/cases/$caseId': typeof CasesCaseIdRoute
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
+  '/client-portal/actions': typeof ClientPortalActionsRoute
+  '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
+  '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
   '/operations/cases': typeof OperationsCasesRoute
@@ -437,6 +481,7 @@ export interface FileRoutesById {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/admin/': typeof AdminIndexRoute
+  '/client-portal/': typeof ClientPortalIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
@@ -472,6 +517,10 @@ export interface FileRouteTypes {
     | '/candidate/$accessId'
     | '/cases/$caseId'
     | '/clarification/$clarificationId'
+    | '/client-portal/actions'
+    | '/client-portal/analytics'
+    | '/client-portal/reports'
+    | '/client-portal/verifications'
     | '/consent/$consentId'
     | '/operations/assignments'
     | '/operations/cases'
@@ -488,6 +537,7 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/admin/'
+    | '/client-portal/'
     | '/operations/'
     | '/sales-crm/'
     | '/reports/verify/$authenticityCode'
@@ -496,7 +546,6 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/change-password'
-    | '/client-portal'
     | '/field-executive'
     | '/finance'
     | '/qa-review'
@@ -518,6 +567,10 @@ export interface FileRouteTypes {
     | '/candidate/$accessId'
     | '/cases/$caseId'
     | '/clarification/$clarificationId'
+    | '/client-portal/actions'
+    | '/client-portal/analytics'
+    | '/client-portal/reports'
+    | '/client-portal/verifications'
     | '/consent/$consentId'
     | '/operations/assignments'
     | '/operations/cases'
@@ -534,6 +587,7 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/admin'
+    | '/client-portal'
     | '/operations'
     | '/sales-crm'
     | '/reports/verify/$authenticityCode'
@@ -567,6 +621,10 @@ export interface FileRouteTypes {
     | '/candidate/$accessId'
     | '/cases/$caseId'
     | '/clarification/$clarificationId'
+    | '/client-portal/actions'
+    | '/client-portal/analytics'
+    | '/client-portal/reports'
+    | '/client-portal/verifications'
     | '/consent/$consentId'
     | '/operations/assignments'
     | '/operations/cases'
@@ -583,6 +641,7 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/admin/'
+    | '/client-portal/'
     | '/operations/'
     | '/sales-crm/'
     | '/reports/verify/$authenticityCode'
@@ -593,7 +652,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
-  ClientPortalRoute: typeof ClientPortalRoute
+  ClientPortalRoute: typeof ClientPortalRouteWithChildren
   FieldExecutiveRoute: typeof FieldExecutiveRoute
   FinanceRoute: typeof FinanceRoute
   OperationsRoute: typeof OperationsRouteWithChildren
@@ -812,6 +871,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClarificationClarificationIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/client-portal/': {
+      id: '/client-portal/'
+      path: '/'
+      fullPath: '/client-portal/'
+      preLoaderRoute: typeof ClientPortalIndexRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/actions': {
+      id: '/client-portal/actions'
+      path: '/actions'
+      fullPath: '/client-portal/actions'
+      preLoaderRoute: typeof ClientPortalActionsRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/analytics': {
+      id: '/client-portal/analytics'
+      path: '/analytics'
+      fullPath: '/client-portal/analytics'
+      preLoaderRoute: typeof ClientPortalAnalyticsRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/reports': {
+      id: '/client-portal/reports'
+      path: '/reports'
+      fullPath: '/client-portal/reports'
+      preLoaderRoute: typeof ClientPortalReportsRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/verifications': {
+      id: '/client-portal/verifications'
+      path: '/verifications'
+      fullPath: '/client-portal/verifications'
+      preLoaderRoute: typeof ClientPortalVerificationsRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
     '/consent/$consentId': {
       id: '/consent/$consentId'
       path: '/consent/$consentId'
@@ -979,6 +1073,26 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ClientPortalRouteChildren {
+  ClientPortalActionsRoute: typeof ClientPortalActionsRoute
+  ClientPortalAnalyticsRoute: typeof ClientPortalAnalyticsRoute
+  ClientPortalReportsRoute: typeof ClientPortalReportsRoute
+  ClientPortalVerificationsRoute: typeof ClientPortalVerificationsRoute
+  ClientPortalIndexRoute: typeof ClientPortalIndexRoute
+}
+
+const ClientPortalRouteChildren: ClientPortalRouteChildren = {
+  ClientPortalActionsRoute: ClientPortalActionsRoute,
+  ClientPortalAnalyticsRoute: ClientPortalAnalyticsRoute,
+  ClientPortalReportsRoute: ClientPortalReportsRoute,
+  ClientPortalVerificationsRoute: ClientPortalVerificationsRoute,
+  ClientPortalIndexRoute: ClientPortalIndexRoute,
+}
+
+const ClientPortalRouteWithChildren = ClientPortalRoute._addFileChildren(
+  ClientPortalRouteChildren,
+)
+
 interface OperationsRouteChildren {
   OperationsAssignmentsRoute: typeof OperationsAssignmentsRoute
   OperationsCasesRoute: typeof OperationsCasesRoute
@@ -1036,7 +1150,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   ChangePasswordRoute: ChangePasswordRoute,
-  ClientPortalRoute: ClientPortalRoute,
+  ClientPortalRoute: ClientPortalRouteWithChildren,
   FieldExecutiveRoute: FieldExecutiveRoute,
   FinanceRoute: FinanceRoute,
   OperationsRoute: OperationsRouteWithChildren,

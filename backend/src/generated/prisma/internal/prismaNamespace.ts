@@ -3089,6 +3089,8 @@ export const RefreshSessionScalarFieldEnum = {
   userAgent: 'userAgent',
   ipAddress: 'ipAddress',
   deviceName: 'deviceName',
+  deviceKey: 'deviceKey',
+  locationLabel: 'locationLabel',
   expiresAt: 'expiresAt',
   revokedAt: 'revokedAt',
   createdAt: 'createdAt'
@@ -3449,6 +3451,7 @@ export const AuditEventScalarFieldEnum = {
   resourcePublicId: 'resourcePublicId',
   requestId: 'requestId',
   ipAddress: 'ipAddress',
+  locationLabel: 'locationLabel',
   beforeJson: 'beforeJson',
   afterJson: 'afterJson',
   createdAt: 'createdAt'

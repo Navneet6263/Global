@@ -60,6 +60,7 @@ export class CaseOperationsService {
             version: current.version,
           }),
           afterJson: JSON.stringify({
+            caseNumber: current.caseNumber,
             priority: "URGENT",
             version: current.version + 1,
             note,
@@ -149,6 +150,8 @@ export class CaseOperationsService {
           }),
           afterJson: JSON.stringify({
             ownerId: owner.publicId,
+            ownerName: owner.displayName,
+            caseNumber: current.caseNumber,
             version: current.version + 1,
             note,
           }),

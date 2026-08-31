@@ -20,9 +20,9 @@ export function CreditNoteForm({ invoice, onClose }: { invoice: Invoice; onClose
         reason: reason.trim(),
         version: invoice.version,
       }),
-    onSuccess: async (created) => {
+    onSuccess: (created) => {
       toast.success(`${created.noteNumber} issued`);
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["finance", "overview"] }),
         queryClient.invalidateQueries({ queryKey: ["finance", "invoices"] }),
       ]);

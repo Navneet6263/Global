@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { Role } from "@/config/roles";
+import { ROLE_DEFINITIONS, type Role } from "@/config/roles";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -80,6 +80,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
       branchLabel: branch?.label,
       clientId: client?.id,
       clientLabel: client?.label,
+      additionalAccessConfirmed: roles.length > 1,
     });
   };
 
@@ -91,6 +92,8 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
     setClientId("none");
     setScopeError("");
   }, [form, props.open]);
+
+  const needsBranch = roles.some((role) => ROLE_DEFINITIONS[role].scopeFields.includes("branch"));
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
@@ -123,21 +126,26 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
             <Field label="Mobile (optional)" error={form.formState.errors.mobile?.message}>
               <Input inputMode="numeric" placeholder="9876543210" {...form.register("mobile")} />
             </Field>
-            <Field label="Operating branch">
-              <Select value={branchId} onValueChange={setBranchId}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tenant-wide / all branches</SelectItem>
-                  {props.branches.map((item) => (
-                    <SelectItem key={item.id} value={item.id}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
+            {needsBranch ? (
+              <Field
+                label="Operating branch"
+                hint="Limits this account to work assigned to that office. It does not route cases from an address automatically."
+              >
+                <Select value={branchId} onValueChange={setBranchId}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tenant-wide / all branches</SelectItem>
+                    {props.branches.map((item) => (
+                      <SelectItem key={item.id} value={item.id}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            ) : null}
             {roles.includes("CLIENT_ADMIN") ? (
               <div className="sm:col-span-2">
                 <Field label="Client workspace" error={scopeError}>
@@ -181,11 +189,22 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
   );
 }
 
-function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
+function Field({
+  label,
+  hint,
+  error,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  error?: string;
+  children: ReactNode;
+}) {
   return (
     <div>
       <Label className="mb-1.5 block text-xs">{label}</Label>
       {children}
+      {hint ? <p className="mt-1 text-[10px] leading-4 text-muted-foreground">{hint}</p> : null}
       {error ? <p className="mt-1 text-[11px] text-critical-foreground">{error}</p> : null}
     </div>
   );

@@ -3,6 +3,7 @@ export interface ActiveSession {
   deviceName: string | null;
   userAgent: string | null;
   ipAddress: string | null;
+  locationLabel: string;
   startedAt: string;
   expiresAt: string;
   isCurrent: boolean;
@@ -21,6 +22,7 @@ export interface AuthEvent {
   type: AuthEventType;
   at: string;
   ipAddress: string | null;
+  locationLabel: string;
   userAgent: string | null;
   detail: string;
 }

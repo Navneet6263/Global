@@ -25,9 +25,9 @@ export function SecuritySessions({
   const queryClient = useQueryClient();
   const rename = useMutation({
     mutationFn: ({ id, name }: { id: string; name: string }) => renameActiveSession(id, name),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Device name updated");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["auth", "sessions"] }),
         queryClient.invalidateQueries({ queryKey: ["auth", "security-events"] }),
       ]);
@@ -147,7 +147,7 @@ function SessionRow({
         <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-slate-500">
           <span className="inline-flex items-center gap-1">
             <MapPin className="h-3 w-3" />
-            {item.ipAddress ?? "IP unavailable"}
+            {item.locationLabel ?? "Location unavailable"} · {item.ipAddress ?? "IP unavailable"}
           </span>
           <span className="inline-flex items-center gap-1">
             <Clock3 className="h-3 w-3" />

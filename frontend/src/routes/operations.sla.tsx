@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import {
   Bar,
   BarChart,
@@ -15,6 +15,11 @@ import { Section } from "@/components/layout/section";
 import { ErrorState } from "@/components/feedback/error-state";
 import { ChartSkeleton } from "@/components/feedback/skeletons";
 import { StatusBadge } from "@/components/feedback/status-badge";
+import {
+  OpsSlaEmptyMessage,
+  OpsSlaKpi,
+  OpsSlaPerformanceTable,
+} from "@/features/operations/components/ops-sla-panels";
 import { OPS_SLA_META, OPS_STAGE_META } from "@/features/operations/contracts/case";
 import { useOpsSla } from "@/features/operations/hooks/use-operations";
 import { formatDuration, formatPercent } from "@/lib/formatting";
@@ -56,13 +61,13 @@ function SlaMonitorPage() {
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <Kpi
+            <OpsSlaKpi
               label="SLA health"
               value={data.healthPercent === null ? "—" : formatPercent(data.healthPercent)}
             />
-            <Kpi label="Due next 7 days" value={String(data.dueNext7Days)} />
-            <Kpi label="Overdue" value={String(data.overdue)} tone="critical" />
-            <Kpi
+            <OpsSlaKpi label="Due next 7 days" value={String(data.dueNext7Days)} />
+            <OpsSlaKpi label="Overdue" value={String(data.overdue)} tone="critical" />
+            <OpsSlaKpi
               label="Avg turnaround"
               value={
                 data.averageTurnaroundMinutes === null
@@ -168,122 +173,88 @@ function SlaMonitorPage() {
               title="Stage ageing"
               description="Average and oldest age of work sitting at each stage."
             >
-              <ul className="space-y-2.5">
-                {data.stageAgeing.map((row) => (
-                  <li key={row.stage} className="space-y-1">
-                    <div className="flex justify-between text-[12px]">
-                      <span className="text-foreground">{OPS_STAGE_META[row.stage].label}</span>
-                      <span className="num text-muted-foreground">
-                        avg {formatDuration(row.averageAgeMinutes)} · oldest{" "}
-                        {formatDuration(row.oldestAgeMinutes)}
-                      </span>
-                    </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                      <span
-                        className="block h-full rounded-full bg-primary/70"
-                        style={{ width: `${Math.min(100, (row.averageAgeMinutes / 4320) * 100)}%` }}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              {data.stageAgeing.length ? (
+                <ul className="space-y-2.5">
+                  {data.stageAgeing.map((row) => (
+                    <li key={row.stage} className="space-y-1">
+                      <div className="flex justify-between text-[12px]">
+                        <span className="text-foreground">{OPS_STAGE_META[row.stage].label}</span>
+                        <span className="num text-muted-foreground">
+                          avg {formatDuration(row.averageAgeMinutes)} · oldest{" "}
+                          {formatDuration(row.oldestAgeMinutes)}
+                        </span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                        <span
+                          className="block h-full rounded-full bg-primary/70"
+                          style={{
+                            width: `${Math.min(100, (row.averageAgeMinutes / 4320) * 100)}%`,
+                          }}
+                        />
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <OpsSlaEmptyMessage>
+                  No active cases are waiting in a delivery stage.
+                </OpsSlaEmptyMessage>
+              )}
             </Section>
 
             <Section
               title="Cases at risk"
               description="Open cases with the least buffer remaining."
             >
-              <ul className="divide-y divide-border">
-                {data.atRisk.slice(0, 8).map((row) => (
-                  <li key={row.id} className="flex items-center justify-between gap-3 py-2.5">
-                    <div className="min-w-0">
-                      <p className="truncate text-[13px] text-foreground">{row.candidateName}</p>
-                      <p className="num truncate text-[11px] text-muted-foreground">
-                        {row.caseNumber} · {row.clientName}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <span className="num text-[11px] text-muted-foreground">
-                        {row.slaMinutesRemaining <= 0
-                          ? `overdue ${formatDuration(-row.slaMinutesRemaining)}`
-                          : `${formatDuration(row.slaMinutesRemaining)} left`}
-                      </span>
-                      <StatusBadge
-                        label={OPS_SLA_META[row.slaState].label}
-                        tone={OPS_SLA_META[row.slaState].tone}
-                      />
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              {data.atRisk.length ? (
+                <ul className="divide-y divide-border">
+                  {data.atRisk.slice(0, 8).map((row) => (
+                    <li key={row.id}>
+                      <Link
+                        to="/operations/cases"
+                        search={{ caseId: row.id }}
+                        className="flex items-center justify-between gap-3 rounded-xl px-2 py-2.5 transition-colors hover:bg-muted/60"
+                        aria-label={`Open ${row.candidateName} in Case 360`}
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate text-[13px] text-foreground">
+                            {row.candidateName}
+                          </p>
+                          <p className="num truncate text-[11px] text-muted-foreground">
+                            {row.caseNumber} · {row.clientName}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-2">
+                          <span className="num text-[11px] text-muted-foreground">
+                            {row.slaMinutesRemaining <= 0
+                              ? `overdue ${formatDuration(-row.slaMinutesRemaining)}`
+                              : `${formatDuration(row.slaMinutesRemaining)} left`}
+                          </span>
+                          <StatusBadge
+                            label={OPS_SLA_META[row.slaState].label}
+                            tone={OPS_SLA_META[row.slaState].tone}
+                          />
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <OpsSlaEmptyMessage>
+                  Every active case is currently within its safe SLA buffer.
+                </OpsSlaEmptyMessage>
+              )}
             </Section>
           </div>
 
           <div className={`grid gap-4 ${data.byPackage.length ? "xl:grid-cols-2" : ""}`}>
-            <PerformanceTable title="On-time by client" rows={data.byClient} />
+            <OpsSlaPerformanceTable title="On-time by client" rows={data.byClient} />
             {data.byPackage.length ? (
-              <PerformanceTable title="On-time by package" rows={data.byPackage} />
+              <OpsSlaPerformanceTable title="On-time by package" rows={data.byPackage} />
             ) : null}
           </div>
         </>
       )}
     </div>
-  );
-}
-
-function Kpi({ label, value, tone }: { label: string; value: string; tone?: "critical" }) {
-  return (
-    <div className="surface px-4 py-3.5">
-      <p className="text-[11px] tracking-[0.07em] text-muted-foreground uppercase">{label}</p>
-      <p
-        className={
-          tone === "critical"
-            ? "num mt-1.5 text-[1.4rem] leading-none font-medium text-critical-foreground"
-            : "num mt-1.5 text-[1.4rem] leading-none font-medium text-foreground"
-        }
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
-
-function PerformanceTable({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: readonly { name: string; onTimePercent: number | null; volume: number }[];
-}) {
-  return (
-    <Section title={title} description="Volume-weighted delivery in the selected reporting window.">
-      <ul className="space-y-2.5">
-        {rows.map((row) => (
-          <li key={row.name} className="space-y-1">
-            <div className="flex justify-between text-[12px]">
-              <span className="text-foreground">{row.name}</span>
-              <span className="num text-muted-foreground">
-                {row.onTimePercent === null ? "Not available" : formatPercent(row.onTimePercent)} ·{" "}
-                {row.volume} cases
-              </span>
-            </div>
-            {row.onTimePercent !== null ? (
-              <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                <span
-                  className={
-                    row.onTimePercent >= 92
-                      ? "block h-full rounded-full bg-success"
-                      : row.onTimePercent >= 87
-                        ? "block h-full rounded-full bg-warning"
-                        : "block h-full rounded-full bg-critical"
-                  }
-                  style={{ width: `${row.onTimePercent}%` }}
-                />
-              </div>
-            ) : null}
-          </li>
-        ))}
-      </ul>
-    </Section>
   );
 }

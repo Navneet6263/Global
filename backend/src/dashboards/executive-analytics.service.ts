@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import type { ExecutiveQueryDto } from "./dto/executive-query.dto";
 import {
@@ -35,9 +36,7 @@ export class ExecutiveAnalyticsService {
     const scopedClientId = isPlatformAdmin ? undefined : actor.clientId;
     const relationScope = scopedClientId ? { clientId: scopedClientId } : {};
     const where = {
-      tenantId: actor.tenantId,
-      ...(scopedBranchId ? { branchId: scopedBranchId } : {}),
-      ...relationScope,
+      ...caseAccessScope(actor),
       createdAt: { gte: range.from, lte: range.to },
       ...(query.clientId ? { client: { publicId: query.clientId } } : {}),
       ...(query.branchId ? { branch: { publicId: query.branchId } } : {}),

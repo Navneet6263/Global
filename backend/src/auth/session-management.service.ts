@@ -6,6 +6,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import type { PageQueryDto } from "../common/dto/page-query.dto";
 import { PrismaService } from "../database/prisma.service";
+import { networkLocationLabel } from "../common/http/network-location";
 
 @Injectable()
 export class SessionManagementService {
@@ -25,6 +26,9 @@ export class SessionManagementService {
           userAgent: true,
           ipAddress: true,
           deviceName: true,
+          deviceKey: true,
+          familyId: true,
+          locationLabel: true,
           createdAt: true,
           expiresAt: true,
         },
@@ -36,11 +40,25 @@ export class SessionManagementService {
         select: { passwordChangedAt: true },
       }),
     ]);
+    const seenDevices = new Set<string>();
+    const devices = rows.filter((row) => {
+      const key = row.deviceKey
+        ? `device:${row.deviceKey}`
+        : `family:${row.familyId}`;
+      if (seenDevices.has(key)) return false;
+      seenDevices.add(key);
+      return true;
+    });
     return {
-      items: rows.map(({ publicId, ...row }) => ({
-        id: publicId,
-        ...row,
-        current: publicId === currentSessionId,
+      items: devices.map((row) => ({
+        id: row.publicId,
+        userAgent: row.userAgent,
+        ipAddress: row.ipAddress,
+        deviceName: row.deviceName,
+        createdAt: row.createdAt,
+        expiresAt: row.expiresAt,
+        locationLabel: networkLocationLabel(row.ipAddress, row.locationLabel),
+        current: row.publicId === currentSessionId,
       })),
       passwordChangedAt: user.passwordChangedAt,
     };
@@ -59,6 +77,7 @@ export class SessionManagementService {
           publicId: true,
           action: true,
           ipAddress: true,
+          locationLabel: true,
           afterJson: true,
           createdAt: true,
         },
@@ -85,6 +104,10 @@ export class SessionManagementService {
       items: page.map(({ publicId: id, ...event }) => ({
         id,
         ...event,
+        locationLabel: networkLocationLabel(
+          event.ipAddress,
+          event.locationLabel,
+        ),
         risk:
           event.action.includes("failed") || event.action.includes("reuse")
             ? "ATTENTION"
@@ -97,15 +120,26 @@ export class SessionManagementService {
 
   async rename(actor: Actor, sessionPublicId: string, name: string) {
     const normalizedName = name.trim();
-    const updated = await this.prisma.refreshSession.updateMany({
+    const target = await this.prisma.refreshSession.findFirst({
       where: {
         userId: actor.userId,
         publicId: sessionPublicId,
         revokedAt: null,
       },
+      select: { familyId: true, deviceKey: true },
+    });
+    if (!target) throw new NotFoundException("Active session not found");
+    const updated = await this.prisma.refreshSession.updateMany({
+      where: {
+        userId: actor.userId,
+        revokedAt: null,
+        ...(target.deviceKey
+          ? { deviceKey: target.deviceKey }
+          : { familyId: target.familyId }),
+      },
       data: { deviceName: normalizedName },
     });
-    if (updated.count !== 1) {
+    if (updated.count < 1) {
       throw new NotFoundException("Active session not found");
     }
     await this.prisma.auditEvent.create({
@@ -132,7 +166,7 @@ export class SessionManagementService {
         publicId: currentSessionId,
         revokedAt: null,
       },
-      select: { familyId: true },
+      select: { familyId: true, deviceKey: true },
     });
     if (!current) {
       throw new UnauthorizedException("Current session is unavailable");
@@ -142,7 +176,14 @@ export class SessionManagementService {
         where: {
           userId: actor.userId,
           revokedAt: null,
-          familyId: { not: current.familyId },
+          ...(current.deviceKey
+            ? {
+                OR: [
+                  { deviceKey: { not: current.deviceKey } },
+                  { deviceKey: null },
+                ],
+              }
+            : { familyId: { not: current.familyId } }),
         },
         data: { revokedAt: new Date() },
       });
@@ -168,14 +209,16 @@ export class SessionManagementService {
         publicId: sessionPublicId,
         revokedAt: null,
       },
-      select: { familyId: true },
+      select: { familyId: true, deviceKey: true },
     });
     if (!target) throw new NotFoundException("Active session not found");
     return this.prisma.$transaction(async (tx) => {
       const revoked = await tx.refreshSession.updateMany({
         where: {
           userId: actor.userId,
-          familyId: target.familyId,
+          ...(target.deviceKey
+            ? { deviceKey: target.deviceKey }
+            : { familyId: target.familyId }),
           revokedAt: null,
         },
         data: { revokedAt: new Date() },

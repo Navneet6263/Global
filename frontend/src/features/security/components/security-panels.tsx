@@ -61,7 +61,7 @@ export function SessionsPanel({ overview, onRevoke, onRevokeOthers, busy }: Sess
                 </p>
               ) : null}
               <p className="text-[11px] text-muted-foreground/80">
-                IP {session.ipAddress ?? "not recorded"} · Started{" "}
+                {session.locationLabel} · IP {session.ipAddress ?? "not recorded"} · Started{" "}
                 {formatDateTime(session.startedAt)} · Expires {formatDateTime(session.expiresAt)}
               </p>
             </div>
@@ -110,6 +110,7 @@ export function AuthEventsPanel({ overview }: { overview: SecurityOverview }) {
                       className="truncate text-[11px] text-muted-foreground"
                       title={event.userAgent ?? undefined}
                     >
+                      {event.locationLabel} ·{" "}
                       {event.ipAddress ? `IP ${event.ipAddress}` : "IP not recorded"}
                       {event.userAgent ? ` · ${event.userAgent}` : ""}
                     </p>

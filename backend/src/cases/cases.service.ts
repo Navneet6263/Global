@@ -10,9 +10,7 @@ import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { ConsentIssuanceService } from "../consents/consent-issuance.service";
 import { PrismaService } from "../database/prisma.service";
 import { CheckTypes } from "./case.constants";
-import { presentCaseListItem } from "./case.presenter";
 import { CaseReaderService } from "./case-reader.service";
-import { caseListSelect } from "./case.selects";
 import { CaseWorkflowPolicy } from "./case-workflow.policy";
 import type { CreateCaseDto } from "./dto/create-case.dto";
 import type { TransitionCaseDto } from "./dto/transition-case.dto";
@@ -67,7 +65,13 @@ export class CasesService {
           publicId: input.servicePackageId,
           isActive: true,
         },
-        select: { id: true, publicId: true, code: true, checksJson: true, tatHours: true },
+        select: {
+          id: true,
+          publicId: true,
+          code: true,
+          checksJson: true,
+          tatHours: true,
+        },
       }),
     ]);
     if (!client) throw new NotFoundException("Active client not found");
@@ -82,7 +86,12 @@ export class CasesService {
     const now = new Date();
     const dueAt = new Date(
       now.getTime() +
-        this.tatHours(input.priority, client.slaHours, servicePackage.tatHours) * 3_600_000,
+        this.tatHours(
+          input.priority,
+          client.slaHours,
+          servicePackage.tatHours,
+        ) *
+          3_600_000,
     );
     const caseNumber = this.caseNumber(now);
     const created = await this.prisma.$transaction(async (tx) => {
@@ -124,7 +133,8 @@ export class CasesService {
           consents: {
             create: {
               status: "REQUESTED",
-              purpose: "Employment background verification for the selected checks",
+              purpose:
+                "Employment background verification for the selected checks",
               noticeVersion: "2026-01",
             },
           },
@@ -169,14 +179,12 @@ export class CasesService {
           payloadJson: JSON.stringify({ caseId: verificationCase.publicId }),
         },
       });
-      const row = await tx.verificationCase.findUniqueOrThrow({
-        where: { id: verificationCase.id },
-        select: caseListSelect,
-      });
-      return { row, consentDelivery };
+      return { casePublicId: verificationCase.publicId, consentDelivery };
     });
     return {
-      ...presentCaseListItem(created.row, actor, this.pii),
+      id: created.casePublicId,
+      caseNumber,
+      status: "CONSENT_PENDING",
       consentDelivery: created.consentDelivery,
     };
   }
@@ -184,17 +192,23 @@ export class CasesService {
   async transition(actor: Actor, publicId: string, input: TransitionCaseDto) {
     const current = await this.prisma.verificationCase.findFirst({
       where: { ...caseAccessScope(actor), publicId },
-      select: { id: true, status: true, version: true },
+      select: { id: true, caseNumber: true, status: true, version: true },
     });
     if (!current) throw new NotFoundException("Case not found");
     if (current.version !== input.version) {
-      throw new ConflictException("Case changed since it was loaded; refresh and try again");
+      throw new ConflictException(
+        "Case changed since it was loaded; refresh and try again",
+      );
     }
     await this.workflow.assertAllowed(current.id, current.status, input.status);
 
     await this.prisma.$transaction(async (tx) => {
       const result = await tx.verificationCase.updateMany({
-        where: { id: current.id, tenantId: actor.tenantId, version: input.version },
+        where: {
+          id: current.id,
+          tenantId: actor.tenantId,
+          version: input.version,
+        },
         data: {
           status: input.status,
           version: { increment: 1 },
@@ -220,8 +234,16 @@ export class CasesService {
           action: "case.transitioned",
           resourceType: "case",
           resourcePublicId: publicId,
-          beforeJson: JSON.stringify({ status: current.status, version: current.version }),
-          afterJson: JSON.stringify({ status: input.status, version: current.version + 1 }),
+          beforeJson: JSON.stringify({
+            status: current.status,
+            version: current.version,
+          }),
+          afterJson: JSON.stringify({
+            caseNumber: current.caseNumber,
+            status: input.status,
+            version: current.version + 1,
+            reason: input.reason,
+          }),
         },
       });
       await tx.outboxEvent.create({
@@ -230,7 +252,10 @@ export class CasesService {
           topic: "case.status.changed",
           aggregateType: "case",
           aggregateId: publicId,
-          payloadJson: JSON.stringify({ from: current.status, to: input.status }),
+          payloadJson: JSON.stringify({
+            from: current.status,
+            to: input.status,
+          }),
         },
       });
     });
@@ -259,8 +284,13 @@ export class CasesService {
     return `SG-${now.toISOString().slice(0, 10).replaceAll("-", "")}-${randomUUID().slice(0, 6).toUpperCase()}`;
   }
 
-  private tatHours(priority: string, clientSla: number, packageTat: number): number {
-    const priorityCap = { URGENT: 24, HIGH: 48, NORMAL: 120, LOW: 168 }[priority] ?? 120;
+  private tatHours(
+    priority: string,
+    clientSla: number,
+    packageTat: number,
+  ): number {
+    const priorityCap =
+      { URGENT: 24, HIGH: 48, NORMAL: 120, LOW: 168 }[priority] ?? 120;
     return Math.min(clientSla, packageTat, priorityCap);
   }
 }

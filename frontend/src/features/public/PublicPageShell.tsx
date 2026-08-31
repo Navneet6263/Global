@@ -1,5 +1,6 @@
-import { ShieldCheck, Sprout } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
+import { SaplingSymbol } from "@/components/brand/sapling-symbol";
 
 export function PublicPageShell({
   context,
@@ -17,8 +18,8 @@ export function PublicPageShell({
       >
         <header className="surface flex items-center justify-between gap-3 rounded-[1.5rem] px-4 py-3.5 sm:px-5">
           <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent text-primary">
-              <Sprout className="size-5" aria-hidden />
+            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#fff9f3] ring-1 ring-primary/15">
+              <SaplingSymbol className="size-9" />
             </span>
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold">Sapling Global</p>

@@ -3,18 +3,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Building2, ClipboardCheck, Clock3 } from "lucide-react";
 
 import { AdminShell } from "@/components/shell/admin-shell";
-import { CaseActions, CandidatePanel, CheckCard } from "@/features/cases/case-workflow-panels";
-import { FieldVisitPanel } from "@/features/cases/case-field-visit-panel";
-import { ConsentPanel, DocumentPanel, ReportsPanel } from "@/features/cases/case-evidence-panels";
-import { ClarificationPanel } from "@/features/cases/case-clarification-panel";
-import {
-  CaseError,
-  CaseSkeleton,
-  Metric,
-  Panel,
-  WorkflowStrip,
-} from "@/features/cases/case-detail-ui";
-import { formatDate, formatDateTime, humanize } from "@/features/cases/case-detail-formatting";
+import { CaseError, CaseSkeleton, Metric, WorkflowStrip } from "@/features/cases/case-detail-ui";
+import { formatDate, humanize } from "@/features/cases/case-detail-formatting";
+import { CaseWorkspaceTabs } from "@/features/cases/case-workspace-tabs";
+import { CaseActions } from "@/features/cases/case-workflow-panels";
 import { getCase, type CaseDetail } from "@/lib/api/cases";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
@@ -91,53 +83,7 @@ function CaseDetailView({ item }: { item: CaseDetail }) {
       <WorkflowStrip item={item} />
       <CaseActions item={item} />
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.4fr)_minmax(20rem,0.75fr)]">
-        <div className="space-y-5">
-          <Panel title="Verification checks" subtitle="Current result and progress for each check">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {item.checks.map((check) => (
-                <CheckCard
-                  key={check.publicId}
-                  caseId={item.id}
-                  caseStatus={item.status}
-                  check={check}
-                />
-              ))}
-            </div>
-          </Panel>
-
-          <DocumentPanel item={item} />
-
-          <ClarificationPanel item={item} />
-
-          <FieldVisitPanel item={item} />
-        </div>
-
-        <aside className="space-y-5">
-          <CandidatePanel item={item} />
-
-          <ConsentPanel item={item} />
-
-          <ReportsPanel item={item} />
-
-          <Panel title="Status history" subtitle="Immutable workflow transitions">
-            <div className="space-y-4">
-              {item.statusHistory.map((entry, index) => (
-                <div key={`${entry.createdAt}-${index}`} className="relative pl-6">
-                  <span className="absolute left-0 top-1 h-2.5 w-2.5 rounded-full bg-accent ring-4 ring-accent/15" />
-                  <p className="text-sm font-medium">{humanize(entry.toStatus)}</p>
-                  <p className="mt-0.5 text-xs text-muted-foreground">
-                    {formatDateTime(entry.createdAt)}
-                  </p>
-                  {entry.reason ? (
-                    <p className="mt-1 text-xs text-muted-foreground">{entry.reason}</p>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          </Panel>
-        </aside>
-      </div>
+      <CaseWorkspaceTabs item={item} />
     </div>
   );
 }

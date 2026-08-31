@@ -1,6 +1,8 @@
 export interface RequestMeta {
   ipAddress?: string;
   userAgent?: string;
+  deviceKey?: string;
+  locationLabel?: string;
 }
 
 export interface TokenPair {

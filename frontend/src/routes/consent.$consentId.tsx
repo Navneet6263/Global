@@ -30,8 +30,8 @@ function ConsentPage() {
   });
   const confirm = useMutation({
     mutationFn: () => confirmConsent(consentId, otp),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["public-consent", consentId] });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["public-consent", consentId] });
     },
   });
 

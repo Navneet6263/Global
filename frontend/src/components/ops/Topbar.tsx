@@ -117,11 +117,15 @@ function NotificationInbox() {
   });
   const read = useMutation({
     mutationFn: markNotificationRead,
-    onSuccess: async () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
   });
   const readAll = useMutation({
     mutationFn: markAllNotificationsRead,
-    onSuccess: async () => queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
   });
   const openNotification = (item: NotificationItem) => {
     if (!item.readAt) read.mutate(item.id);

@@ -35,6 +35,7 @@ export function createUser(input: {
   branchId?: string;
   clientId?: string;
   roleCodes: string[];
+  additionalAccessConfirmed?: boolean;
   temporaryPassword: string;
 }) {
   const phone = toIndianMobileE164(input.phone);
@@ -109,15 +110,32 @@ export async function listAllUsers(role?: string) {
   return { items, total: Number.isFinite(total) ? total : items.length };
 }
 
-export function getUserActivity(userId: string) {
-  return apiRequest<{
-    items: Array<{
-      id: string;
-      action: string;
-      ipAddress?: string | null;
-      afterJson?: string | null;
-      createdAt: string;
-      actor?: { displayName: string } | null;
-    }>;
-  }>(`/users/${userId}/activity`);
+export interface UserActivityEvent {
+  id: string;
+  action: string;
+  resourceType: string;
+  resourcePublicId?: string | null;
+  requestId?: string | null;
+  ipAddress?: string | null;
+  locationLabel?: string | null;
+  beforeJson?: string | null;
+  afterJson?: string | null;
+  createdAt: string;
+  actor?: { displayName: string; email: string } | null;
+}
+
+export interface UserActivityResponse {
+  user: { id: string; displayName: string; email: string };
+  items: UserActivityEvent[];
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export function getUserActivity(userId: string, input: { page?: number; pageSize?: number } = {}) {
+  const query = new URLSearchParams({
+    page: String(input.page ?? 1),
+    pageSize: String(input.pageSize ?? 10),
+  });
+  return apiRequest<UserActivityResponse>(`/users/${userId}/activity?${query.toString()}`);
 }

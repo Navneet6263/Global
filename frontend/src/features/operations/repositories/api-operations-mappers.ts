@@ -172,7 +172,7 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
     evidenceCount: visit.evidence?.length ?? visit._count?.evidence ?? 0,
     note: visit.distanceMeters ? `${visit.distanceMeters} metres from target` : "",
   }));
-  const latestConsent = row.consents.at(-1);
+  const latestConsent = row.consents[0];
   return {
     ...base,
     checks: row.checks.map((check) => ({
@@ -188,20 +188,28 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
       sourceSummary: check.sourceSummary ?? "",
       blocker: check.tasks?.find((task) => task.status === "BLOCKED")?.instructions ?? null,
     })),
-    documents: row.documents.map((item) => ({
-      id: item.publicId,
-      label: item.type.replaceAll("_", " "),
-      status:
-        item.status === "VERIFIED"
-          ? "verified"
-          : item.status === "REJECTED"
-            ? "rejected"
-            : item.currentVersion
-              ? "received"
-              : "pending",
-      updatedAt: item.versions.at(-1)?.createdAt ?? row.updatedAt,
-    })),
+    documents: row.documents.map((item) => {
+      const latest = item.versions[0];
+      return {
+        id: item.publicId,
+        label: item.type.replaceAll("_", " "),
+        status:
+          item.status === "VERIFIED"
+            ? ("verified" as const)
+            : item.status === "REJECTED"
+              ? ("rejected" as const)
+              : item.currentVersion
+                ? ("received" as const)
+                : ("pending" as const),
+        originalName: latest?.originalName ?? null,
+        version: item.currentVersion,
+        available: Boolean(latest && item.currentVersion > 0),
+        updatedAt: latest?.createdAt ?? row.updatedAt,
+        ...(latest ? { note: `v${latest.version} · ${latest.malwareState.toLowerCase()}` } : {}),
+      };
+    }),
     consent: {
+      id: latestConsent?.publicId ?? null,
       status:
         latestConsent?.status === "ACCEPTED" ? "signed" : latestConsent ? "pending" : "missing",
       channel: "portal",

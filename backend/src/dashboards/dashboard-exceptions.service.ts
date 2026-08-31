@@ -25,81 +25,109 @@ export class DashboardExceptionsService {
       status: "EXCEPTION_REVIEW",
       case: caseAccessScope(actor),
     };
-    const [overdue, clarifications, fieldVisits, resolvedToday, clientActions] =
-      await Promise.all([
-        this.prisma.verificationCase.findMany({
-          where: overdueWhere,
-          select: {
-            publicId: true,
-            caseNumber: true,
-            status: true,
-            priority: true,
-            dueAt: true,
-            createdAt: true,
-            subject: { select: { fullName: true } },
-            client: { select: { displayName: true } },
+    const [
+      overdue,
+      clarifications,
+      fieldVisits,
+      rejectedDocuments,
+      resolvedToday,
+    ] = await Promise.all([
+      this.prisma.verificationCase.findMany({
+        where: overdueWhere,
+        select: {
+          publicId: true,
+          caseNumber: true,
+          status: true,
+          priority: true,
+          dueAt: true,
+          createdAt: true,
+          subject: { select: { fullName: true } },
+          client: { select: { displayName: true } },
+        },
+        orderBy: { dueAt: "asc" },
+      }),
+      this.prisma.clarification.findMany({
+        where: clarificationWhere,
+        select: {
+          publicId: true,
+          status: true,
+          subject: true,
+          dueAt: true,
+          updatedAt: true,
+          createdAt: true,
+          messages: {
+            select: { senderType: true, body: true, createdAt: true },
+            orderBy: { createdAt: "desc" },
+            take: 1,
           },
-          orderBy: { dueAt: "asc" },
-        }),
-        this.prisma.clarification.findMany({
-          where: clarificationWhere,
-          select: {
-            publicId: true,
-            status: true,
-            subject: true,
-            dueAt: true,
-            updatedAt: true,
-            createdAt: true,
-            messages: {
-              select: { senderType: true, body: true, createdAt: true },
-              orderBy: { createdAt: "desc" },
-              take: 1,
-            },
-            case: {
-              select: {
-                publicId: true,
-                caseNumber: true,
-                subject: { select: { fullName: true } },
-                client: { select: { displayName: true } },
-              },
+          case: {
+            select: {
+              publicId: true,
+              caseNumber: true,
+              subject: { select: { fullName: true } },
+              client: { select: { displayName: true } },
             },
           },
-          orderBy: [{ status: "desc" }, { updatedAt: "asc" }],
-        }),
-        this.prisma.fieldVisit.findMany({
-          where: fieldWhere,
-          select: {
-            publicId: true,
-            address: true,
-            distanceMeters: true,
-            geofenceMeters: true,
-            capturedAt: true,
-            createdAt: true,
-            version: true,
-            case: {
-              select: {
-                publicId: true,
-                caseNumber: true,
-                subject: { select: { fullName: true } },
-                client: { select: { displayName: true } },
-              },
+        },
+        orderBy: [{ status: "desc" }, { updatedAt: "asc" }],
+      }),
+      this.prisma.fieldVisit.findMany({
+        where: fieldWhere,
+        select: {
+          publicId: true,
+          address: true,
+          distanceMeters: true,
+          geofenceMeters: true,
+          capturedAt: true,
+          createdAt: true,
+          version: true,
+          case: {
+            select: {
+              publicId: true,
+              caseNumber: true,
+              subject: { select: { fullName: true } },
+              client: { select: { displayName: true } },
             },
-            assignee: { select: { displayName: true } },
           },
-          orderBy: { capturedAt: "asc" },
-        }),
-        this.resolvedToday(actor, now),
-        this.clientActions(actor),
-      ]);
+          assignee: { select: { displayName: true } },
+        },
+        orderBy: { capturedAt: "asc" },
+      }),
+      this.prisma.document.findMany({
+        where: {
+          tenantId: actor.tenantId,
+          status: "REJECTED",
+          case: caseAccessScope(actor),
+        },
+        select: {
+          publicId: true,
+          type: true,
+          status: true,
+          updatedAt: true,
+          case: {
+            select: {
+              publicId: true,
+              caseNumber: true,
+              subject: { select: { fullName: true } },
+              client: { select: { displayName: true } },
+            },
+          },
+        },
+        orderBy: { updatedAt: "asc" },
+      }),
+      this.resolvedToday(actor, now),
+    ]);
     const affectedCaseIds = new Set([
       ...overdue.map((row) => row.publicId),
       ...clarifications.map((row) => row.case.publicId),
       ...fieldVisits.map((row) => row.case.publicId),
+      ...rejectedDocuments.map((row) => row.case.publicId),
     ]);
     const ages = [
       ...overdue.map((row) => ageHours(row.createdAt, now)),
       ...clarifications.map((row) => ageHours(row.createdAt, now)),
       ...fieldVisits.map((row) => ageHours(row.createdAt, now)),
+      ...rejectedDocuments.map((row) => ageHours(row.updatedAt, now)),
     ];
     const overdueCount = overdue.length;
     const clarificationCount = clarifications.length;
@@ -109,22 +137,36 @@ export class DashboardExceptionsService {
         overdue: overdueCount,
         clarifications: clarificationCount,
         fieldExceptions: fieldCount,
+        rejectedDocuments: rejectedDocuments.length,
         total: overdueCount + clarificationCount + fieldCount,
         uniqueCases: affectedCaseIds.size,
-        critical: overdue.filter((row) => row.priority === "URGENT").length + fieldCount,
+        critical:
+          overdue.filter((row) => row.priority === "URGENT").length +
+          fieldCount,
         resolvedToday,
-        clientActions,
+        clientActions:
+          clarifications.filter((row) => row.status === "OPEN").length +
+          rejectedDocuments.length,
         averageAgeHours: ages.length
-          ? Math.round(ages.reduce((total, age) => total + age, 0) / ages.length)
+          ? Math.round(
+              ages.reduce((total, age) => total + age, 0) / ages.length,
+            )
           : 0,
       },
-      overdue: overdue.map(({ publicId, ...row }) => ({ id: publicId, ...row })),
+      overdue: overdue.map(({ publicId, ...row }) => ({
+        id: publicId,
+        ...row,
+      })),
       clarifications: clarifications.map(({ publicId, messages, ...row }) => ({
         id: publicId,
         ...row,
         latestMessage: messages[0] ?? null,
       })),
       fieldVisits: presentFieldExceptions(actor, fieldVisits),
+      rejectedDocuments: rejectedDocuments.map(({ publicId, ...row }) => ({
+        id: publicId,
+        ...row,
+      })),
       generatedAt: now,
     };
   }
@@ -150,26 +192,6 @@ export class DashboardExceptionsService {
       }),
     ]);
     return counts.reduce((sum, count) => sum + count, 0);
-  }
-
-  private async clientActions(actor: Actor) {
-    const [clarifications, documents] = await Promise.all([
-      this.prisma.clarification.count({
-        where: {
-          tenantId: actor.tenantId,
-          status: "OPEN",
-          case: caseAccessScope(actor),
-        },
-      }),
-      this.prisma.document.count({
-        where: {
-          tenantId: actor.tenantId,
-          status: "REJECTED",
-          case: caseAccessScope(actor),
-        },
-      }),
-    ]);
-    return clarifications + documents;
   }
 }
 

@@ -21,9 +21,9 @@ export function ObjectDeletionRecovery() {
   });
   const requeue = useMutation({
     mutationFn: requeueObjectDeletion,
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Secure object deletion requeued");
-      await queryClient.invalidateQueries({ queryKey: recoveryKey });
+      void queryClient.invalidateQueries({ queryKey: recoveryKey });
     },
     onError: (error) => toast.error(error instanceof Error ? error.message : "Requeue failed"),
   });

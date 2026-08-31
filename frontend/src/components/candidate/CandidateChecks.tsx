@@ -89,9 +89,9 @@ function ClarificationCard({
   const [message, setMessage] = useState("");
   const response = useMutation({
     mutationFn: () => respondToCandidateClarification(accessId, token, item.id, message.trim()),
-    onSuccess: async () => {
+    onSuccess: () => {
       setMessage("");
-      await queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
+      void queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
     },
   });
 

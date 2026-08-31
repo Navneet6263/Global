@@ -13,6 +13,7 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
+import { DashboardClientService } from "./dashboard-client.service";
 import { DashboardsService } from "./dashboards.service";
 import { ExecutiveAnalyticsService } from "./executive-analytics.service";
 import { ExecutiveExportService } from "./executive-export.service";
@@ -27,6 +28,7 @@ import {
 export class DashboardsController {
   constructor(
     private readonly dashboards: DashboardsService,
+    private readonly clientDashboard: DashboardClientService,
     private readonly executiveAnalytics: ExecutiveAnalyticsService,
     private readonly executiveExport: ExecutiveExportService,
   ) {}
@@ -35,6 +37,12 @@ export class DashboardsController {
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   operations(@CurrentActor() actor: Actor) {
     return this.dashboards.operations(actor);
+  }
+
+  @Get("client")
+  @RequireRoles("CLIENT_ADMIN")
+  client(@CurrentActor() actor: Actor) {
+    return this.clientDashboard.get(actor);
   }
 
   @Get("executive")

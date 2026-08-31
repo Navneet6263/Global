@@ -56,9 +56,9 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
           taxRate: Number(line.taxRate),
         })),
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Invoice issued");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["finance", "overview"] }),
         queryClient.invalidateQueries({ queryKey: ["finance", "invoices"] }),
       ]);

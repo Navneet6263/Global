@@ -164,7 +164,18 @@ export class DocumentsService {
         malwareState: "CLEAN",
       },
       orderBy: { version: "desc" },
-      select: { objectKey: true, originalName: true, contentType: true },
+      select: {
+        objectKey: true,
+        originalName: true,
+        contentType: true,
+        version: true,
+        document: {
+          select: {
+            type: true,
+            case: { select: { publicId: true, caseNumber: true } },
+          },
+        },
+      },
     });
     if (!version)
       throw new NotFoundException("A safe document version is not available");
@@ -176,6 +187,12 @@ export class DocumentsService {
         action: "document.downloaded",
         resourceType: "document",
         resourcePublicId: publicId,
+        afterJson: JSON.stringify({
+          caseId: version.document.case.publicId,
+          caseNumber: version.document.case.caseNumber,
+          documentType: version.document.type,
+          version: version.version,
+        }),
       },
     });
     return {

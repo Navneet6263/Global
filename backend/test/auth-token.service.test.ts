@@ -69,6 +69,16 @@ void test("refresh rotation preserves family, branch claims and session metadata
         return Promise.resolve(data);
       },
     },
+    $transaction: (work: (client: unknown) => Promise<unknown>) =>
+      work({
+        refreshSession: {
+          updateMany: () => Promise.resolve({ count: 0 }),
+          create: ({ data }: { data: Record<string, unknown> }) => {
+            created.push(data);
+            return Promise.resolve(data);
+          },
+        },
+      }),
   };
   const jwtMock = jwt();
   const service = new AuthTokenService(

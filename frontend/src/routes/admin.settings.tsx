@@ -17,12 +17,7 @@ import {
   SlaDefaultsPanel,
 } from "@/features/settings/components/settings-panels";
 import type { PolicyToggle } from "@/lib/contracts/settings";
-import {
-  createBranch,
-  createServicePackage,
-  getFieldPolicy,
-  updateFieldPolicy,
-} from "@/lib/backend-api/settings";
+import { createBranch, createServicePackage, updateFieldPolicy } from "@/lib/backend-api/settings";
 import {
   AddBranchDialog,
   AddPackageDialog,
@@ -59,7 +54,8 @@ function SettingsPage() {
 
   const policyMutation = useMutation({
     mutationFn: async (policy: PolicyToggle) => {
-      const current = await getFieldPolicy();
+      if (!data) throw new Error("Settings are still loading");
+      const current = data.fieldPolicyConfig;
       const base = {
         defaultRadiusMeters: current.defaultRadiusMeters,
         maxAccuracyMeters: current.maxAccuracyMeters,
@@ -75,17 +71,17 @@ function SettingsPage() {
       }
       return updateFieldPolicy(base);
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
       toast.success("Policy updated", { description: "The API recorded the audited change." });
     },
     onError: (error: Error) => toast.error("Policy update failed", { description: error.message }),
   });
   const branchMutation = useMutation({
     mutationFn: createBranch,
-    onSuccess: async () => {
+    onSuccess: () => {
       setBranchOpen(false);
-      await queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
       toast.success("Branch added");
     },
     onError: (error: Error) =>
@@ -93,9 +89,9 @@ function SettingsPage() {
   });
   const packageMutation = useMutation({
     mutationFn: createServicePackage,
-    onSuccess: async () => {
+    onSuccess: () => {
       setPackageOpen(false);
-      await queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
       toast.success("Service package added");
     },
     onError: (error: Error) =>
@@ -120,10 +116,7 @@ function SettingsPage() {
               Workspace
             </TabsTrigger>
             <TabsTrigger value="catalogue" className="text-xs">
-              Branches & packages
-            </TabsTrigger>
-            <TabsTrigger value="policy" className="text-xs">
-              Verification policy
+              Delivery setup
             </TabsTrigger>
             <TabsTrigger value="sla" className="text-xs">
               SLA & retention
@@ -137,20 +130,12 @@ function SettingsPage() {
           <TabsContent value="catalogue" className="space-y-6 pt-4">
             <BranchesPanel settings={data} onAdd={() => setBranchOpen(true)} />
             <PackagesPanel settings={data} onAdd={() => setPackageOpen(true)} />
-          </TabsContent>
-
-          <TabsContent value="policy" className="space-y-6 pt-4">
             <PolicyPanel
-              title="Field verification policy"
-              description="Controls for physical address and employer visits."
+              title="Field visit rules"
+              description="Completion gates applied to every newly assigned physical visit."
               policies={data.fieldPolicy}
               busy={policyMutation.isPending}
               onToggle={(policy) => policyMutation.mutate(policy)}
-            />
-            <PolicyPanel
-              title="Evidence policy"
-              description="Evidence quality gates enforced before QA sign-off."
-              policies={data.evidencePolicy}
             />
           </TabsContent>
 

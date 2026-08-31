@@ -24,9 +24,9 @@ export function QaReviewPanel({
   const claimedByMe = item.qaReviewer?.publicId === reviewerId;
   const claim = useMutation({
     mutationFn: () => claimQaCase(item.id, item.version),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Case reserved for your independent review");
-      await onRefresh();
+      void onRefresh();
     },
     onError: (error: Error) => toast.error(error.message),
   });
@@ -39,13 +39,13 @@ export function QaReviewPanel({
         notes: notes.trim(),
         reworkCheckIds: mode === "REWORK" ? reworkIds : [],
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success(
         mode === "APPROVED"
           ? "Case approved and report queued"
           : "New verifier rework task created",
       );
-      await onRefresh();
+      void onRefresh();
     },
     onError: (error: Error) => toast.error(error.message),
   });

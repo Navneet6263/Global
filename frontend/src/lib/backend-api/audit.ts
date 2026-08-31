@@ -7,6 +7,7 @@ export interface AuditEvent {
   resourcePublicId?: string | null;
   requestId?: string | null;
   ipAddress?: string | null;
+  locationLabel?: string | null;
   beforeJson?: string | null;
   afterJson?: string | null;
   createdAt: string;

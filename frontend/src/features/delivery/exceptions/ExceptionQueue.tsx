@@ -58,20 +58,20 @@ export function ExceptionQueue({
         version: item.version!,
         note,
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       setPending(undefined);
       toast.success("Field exception updated");
-      await onRefresh();
+      void onRefresh();
     },
     onError: (error: Error) => toast.error(error.message),
   });
   const clarify = useMutation({
     mutationFn: ({ item, note }: { item: ExceptionQueueItem; note: string }) =>
       resolveClarification(item.caseId, item.id, note),
-    onSuccess: async () => {
+    onSuccess: () => {
       setPending(undefined);
       toast.success("Clarification resolved");
-      await onRefresh();
+      void onRefresh();
     },
     onError: (error: Error) => toast.error(error.message),
   });

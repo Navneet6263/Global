@@ -8,6 +8,7 @@ import {
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
+import type { PageQueryDto } from "../common/dto/page-query.dto";
 import { PrismaService } from "../database/prisma.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
 import { ReportPdfService } from "./report-pdf.service";
@@ -21,6 +22,70 @@ export class ReportsService {
     private readonly storage: LocalObjectStorageService,
     private readonly pdf: ReportPdfService,
   ) {}
+
+  async listPublished(actor: Actor, query: PageQueryDto) {
+    const search = query.search?.trim();
+    const caseFilters = [
+      caseAccessScope(actor),
+      ...(search
+        ? [
+            {
+              OR: [
+                { caseNumber: { contains: search } },
+                { subject: { fullName: { contains: search } } },
+              ],
+            },
+          ]
+        : []),
+    ];
+    const rows = await this.prisma.report.findMany({
+      where: {
+        tenantId: actor.tenantId,
+        status: "PUBLISHED",
+        case: { AND: caseFilters },
+      },
+      select: {
+        publicId: true,
+        status: true,
+        currentVersion: true,
+        publishedAt: true,
+        case: {
+          select: {
+            publicId: true,
+            caseNumber: true,
+            completedAt: true,
+            subject: { select: { fullName: true } },
+          },
+        },
+        versions: {
+          select: {
+            version: true,
+            authenticityCode: true,
+            sha256: true,
+            generatedAt: true,
+          },
+          orderBy: { version: "desc" },
+          take: 1,
+        },
+      },
+      orderBy: [{ publishedAt: "desc" }, { publicId: "desc" }],
+      take: query.limit + 1,
+      ...(query.cursor ? { cursor: { publicId: query.cursor }, skip: 1 } : {}),
+    });
+    const hasMore = rows.length > query.limit;
+    const items = (hasMore ? rows.slice(0, query.limit) : rows).map(
+      ({ publicId, case: verificationCase, versions, ...report }) => ({
+        id: publicId,
+        ...report,
+        case: { id: verificationCase.publicId, ...verificationCase },
+        latestVersion: versions[0] ?? null,
+      }),
+    );
+    return {
+      items,
+      nextCursor: hasMore ? (items.at(-1)?.id ?? null) : null,
+    };
+  }
 
   async listForCase(actor: Actor, casePublicId: string) {
     const reports = await this.prisma.report.findMany({

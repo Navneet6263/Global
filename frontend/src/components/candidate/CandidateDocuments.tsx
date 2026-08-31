@@ -37,9 +37,9 @@ export function CandidateDocuments({
       if (!file) throw new Error("Select a file first");
       return uploadCandidateDocument(accessId, token, type, file);
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       setFile(null);
-      await queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
+      void queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
     },
   });
 

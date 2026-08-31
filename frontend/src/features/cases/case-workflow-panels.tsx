@@ -36,9 +36,9 @@ export function CaseActions({ item }: { item: CaseDetail }) {
         version: item.version,
         reason: "Verification work authorised and started",
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success("Verification started");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["cases"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
@@ -169,10 +169,10 @@ export function CheckCard({
         assigneeId,
         ...(instructions.trim() ? { instructions: instructions.trim() } : {}),
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success(`${humanize(check.type)} assigned`);
       setInstructions("");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", caseId] }),
         queryClient.invalidateQueries({ queryKey: ["tasks"] }),
       ]);

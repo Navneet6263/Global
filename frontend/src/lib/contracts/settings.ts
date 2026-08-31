@@ -47,6 +47,15 @@ export interface PlatformSettings {
   branches: readonly Branch[];
   packages: readonly ServicePackage[];
   fieldPolicy: readonly PolicyToggle[];
+  fieldPolicyConfig: {
+    defaultRadiusMeters: number;
+    maxAccuracyMeters: number;
+    minimumPhotos: number;
+    retentionDays: number;
+    requireCheckout: boolean;
+    outsideGeofencePolicy: "BLOCK" | "SUPERVISOR_APPROVAL" | "ALLOW_AND_FLAG";
+    version: number;
+  };
   evidencePolicy: readonly PolicyToggle[];
   slaDefaults: readonly SlaDefault[];
   retention: readonly RetentionRule[];

@@ -142,6 +142,10 @@ export class BulkTaskAssignmentService {
                 }),
                 afterJson: JSON.stringify({
                   assigneeId: assignee.publicId,
+                  assigneeName: assignee.displayName,
+                  caseId: entry.check.case.publicId,
+                  caseNumber: entry.check.case.caseNumber,
+                  checkId: entry.check.publicId,
                   status: "OPEN",
                   version: task.version,
                   bulk: true,

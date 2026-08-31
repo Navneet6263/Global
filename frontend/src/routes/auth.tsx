@@ -1,19 +1,11 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { AuthBrandPanel } from "@/features/auth/components/auth-brand-panel";
 import { LoginCard } from "@/features/auth/components/login-card";
-import { landingPathForRoles, loadIdentity } from "@/lib/auth/platform-session";
+import { cachedIdentity, landingPathForRoles, loadIdentity } from "@/lib/auth/platform-session";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
-  beforeLoad: async () => {
-    const identity = await loadIdentity();
-    if (!identity) return;
-    throw redirect({
-      to: (identity.mustChangePassword
-        ? "/change-password"
-        : landingPathForRoles(identity.roles)) as "/admin",
-    });
-  },
   head: () => ({
     meta: [
       { title: "Sign in — Sapling Global Verification Platform" },
@@ -36,6 +28,26 @@ export const Route = createFileRoute("/auth")({
 });
 
 function AuthPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    let active = true;
+    const redirectIdentity = (identity: Awaited<ReturnType<typeof loadIdentity>>) => {
+      if (!active || !identity) return;
+      const destination = identity.mustChangePassword
+        ? "/change-password"
+        : landingPathForRoles(identity.roles);
+      void navigate({ to: destination as "/admin", replace: true });
+    };
+
+    const cached = cachedIdentity();
+    if (cached) redirectIdentity(cached);
+    else void loadIdentity().then(redirectIdentity);
+    return () => {
+      active = false;
+    };
+  }, [navigate]);
+
   return (
     <main className="relative flex min-h-screen items-center overflow-hidden bg-canvas px-4 py-8 sm:px-6 lg:px-10">
       <div

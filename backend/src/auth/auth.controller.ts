@@ -27,6 +27,7 @@ import { LoginDto } from "./dto/login.dto";
 import { ChangePasswordDto } from "./dto/change-password.dto";
 import { RenameSessionDto } from "./dto/rename-session.dto";
 import { ttlSeconds } from "../config/ttl";
+import { randomUUID } from "node:crypto";
 
 @Controller("auth")
 export class AuthController {
@@ -43,7 +44,8 @@ export class AuthController {
     @Req() request: FastifyRequest,
     @Res({ passthrough: true }) response: FastifyReply,
   ) {
-    const result = await this.auth.login(input, this.meta(request));
+    const deviceKey = this.deviceKey(request, response);
+    const result = await this.auth.login(input, this.meta(request, deviceKey));
     this.setCookies(response, result.tokens);
     return { authenticated: true, session: result.session };
   }
@@ -58,7 +60,11 @@ export class AuthController {
     const token = (request.cookies as Record<string, string> | undefined)
       ?.sg_refresh;
     if (!token) throw new UnauthorizedException("Refresh cookie is missing");
-    const tokens = await this.auth.refresh(token, this.meta(request));
+    const deviceKey = this.deviceKey(request, response);
+    const tokens = await this.auth.refresh(
+      token,
+      this.meta(request, deviceKey),
+    );
     this.setCookies(response, tokens);
     return { authenticated: true };
   }
@@ -155,7 +161,35 @@ export class AuthController {
     });
   }
 
-  private meta(request: FastifyRequest) {
-    return { ipAddress: request.ip, userAgent: request.headers["user-agent"] };
+  private meta(request: FastifyRequest, deviceKey?: string) {
+    const header = (name: string) => {
+      const value = request.headers[name];
+      return Array.isArray(value) ? value[0] : value;
+    };
+    const city = header("cf-ipcity") ?? header("x-vercel-ip-city");
+    const region = header("cf-region") ?? header("x-vercel-ip-country-region");
+    const country = header("cf-ipcountry") ?? header("x-vercel-ip-country");
+    return {
+      ipAddress: request.ip,
+      userAgent: request.headers["user-agent"],
+      deviceKey,
+      locationLabel:
+        [city, region, country].filter(Boolean).join(", ") || undefined,
+    };
+  }
+
+  private deviceKey(request: FastifyRequest, response: FastifyReply): string {
+    const existing = (request.cookies as Record<string, string> | undefined)
+      ?.sg_device;
+    const deviceKey =
+      existing && /^[0-9a-f-]{36}$/i.test(existing) ? existing : randomUUID();
+    response.setCookie("sg_device", deviceKey, {
+      httpOnly: true,
+      secure: this.config.get<boolean>("COOKIE_SECURE", false),
+      sameSite: "strict",
+      path: "/",
+      maxAge: 365 * 24 * 60 * 60,
+    });
+    return deviceKey;
   }
 }

@@ -82,13 +82,24 @@ function AuditPage() {
             onClick={() => {
               downloadCsv(
                 `sapling-global-audit-${new Date().toISOString().slice(0, 10)}.csv`,
-                ["Timestamp", "Action", "Actor", "Resource", "Resource ID", "Request ID"],
+                [
+                  "Timestamp",
+                  "Action",
+                  "Actor",
+                  "Resource",
+                  "Resource ID",
+                  "Location",
+                  "IP address",
+                  "Request ID",
+                ],
                 events.map((event) => [
                   event.at,
                   event.action,
                   event.actorName,
                   event.resourceType,
                   event.resourceId,
+                  event.locationLabel,
+                  event.ipAddress ?? "",
                   event.requestId,
                 ]),
               );

@@ -62,7 +62,7 @@ export function AdminShell({ children, workspace = "platform-admin" }: AdminShel
 
       <div className="flex min-h-screen flex-col lg:pl-[276px]">
         <TopToolbar workspace={workspace} onOpenNav={() => setNavOpen(true)} />
-        <main id="workspace-main" className="flex-1 px-4 py-6 lg:px-7 lg:py-8">
+        <main id="workspace-main" className="flex-1 px-4 pt-3 pb-6 lg:px-7 lg:pt-3 lg:pb-8">
           <div className="mx-auto w-full max-w-[1560px] space-y-6">{children}</div>
         </main>
       </div>

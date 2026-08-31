@@ -39,7 +39,7 @@ export function BranchesPanel({
   return (
     <Section
       title="Branches"
-      description="Operating locations and field capacity used for case routing."
+      description="Office-based data scopes. Assign a case and user to Agra to keep Agra delivery with that team."
       actions={
         onAdd ? (
           <Button size="sm" variant="outline" onClick={onAdd}>
@@ -58,6 +58,9 @@ export function BranchesPanel({
               <p className="text-[11px] text-muted-foreground">
                 {[branch.code, branch.city].filter(Boolean).join(" · ")} · {branch.fieldExecutives}{" "}
                 active field {branch.fieldExecutives === 1 ? "executive" : "executives"}
+              </p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground/80">
+                Available for user scope and case assignment
               </p>
             </div>
             <StatusBadge
@@ -81,7 +84,7 @@ export function PackagesPanel({
   return (
     <Section
       title="Service packages"
-      description="Check bundles offered to clients, with SLA and unit pricing."
+      description="Reusable verification bundles shown when a client starts a new verification."
       actions={
         onAdd ? (
           <Button size="sm" variant="outline" onClick={onAdd}>
@@ -100,12 +103,15 @@ export function PackagesPanel({
               <p className="text-[11px] text-muted-foreground">
                 {pkg.checks} checks · {pkg.tatHours}h turnaround
               </p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground/80">
+                Includes required checks, committed TAT and commercial price
+              </p>
             </div>
             <span className="num text-[13px] font-semibold text-foreground">
               {pkg.unitPrice == null ? "Price not configured" : formatInr(pkg.unitPrice)}
             </span>
             <StatusBadge
-              label={pkg.status === "published" ? "Published" : "Draft"}
+              label={pkg.status === "published" ? "Active" : "Inactive"}
               tone={pkg.status === "published" ? "success" : "neutral"}
             />
           </li>

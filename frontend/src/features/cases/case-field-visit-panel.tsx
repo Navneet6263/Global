@@ -49,14 +49,14 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
         assigneeId,
         ...(radius === undefined ? {} : { geofenceMeters: radius }),
       }),
-    onSuccess: async () => {
+    onSuccess: () => {
       setAddress("");
       setLatitude("");
       setLongitude("");
       setGeofenceMeters("");
       setAssigneeId("");
       toast.success("Field visit assigned");
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["field-visits"] }),
       ]);
@@ -73,11 +73,11 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
       version: number;
       decision: "APPROVE" | "RETRY";
     }) => reviewFieldException(visitId, { decision, version }),
-    onSuccess: async (result) => {
+    onSuccess: (result) => {
       toast.success(
         result.status === "COMPLETED" ? "Field exception approved" : "Fresh visit requested",
       );
-      await Promise.all([
+      void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["field-visits"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard", "exceptions"] }),

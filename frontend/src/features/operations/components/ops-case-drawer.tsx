@@ -1,20 +1,23 @@
 "use client";
 
+import { Link } from "@tanstack/react-router";
+import { ArrowUpRight, BriefcaseBusiness } from "lucide-react";
 import type { OpsCaseDetail } from "../contracts/case";
 import {
   OPS_CHECK_STATUS_META,
   OPS_CLARIFICATION_STATE_META,
-  OPS_DOCUMENT_STATUS_META,
   OPS_PRIORITY_META,
   OPS_SLA_META,
   OPS_STAGE_META,
 } from "../contracts/case";
+import { OpsCaseAccessPanel } from "./ops-case-access-panel";
+import { OpsCaseDocuments } from "./ops-case-documents";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatDateTime, formatDuration, formatRelativeToNow } from "@/lib/formatting";
+import { formatDateTime, formatDuration } from "@/lib/formatting";
 import { useCaseAction } from "../hooks/use-operations";
 
 interface OpsCaseDrawerProps {
@@ -29,7 +32,10 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
 
   return (
     <Sheet open={open} onOpenChange={(next) => (next ? undefined : onClose())}>
-      <SheetContent side="right" className="w-full gap-0 overflow-y-auto sm:max-w-[620px]">
+      <SheetContent
+        side="right"
+        className="w-[min(96vw,820px)] max-w-none gap-0 overflow-y-auto p-0 sm:max-w-[760px] xl:max-w-[820px]"
+      >
         {loading ? (
           <div className="space-y-3 p-6">
             <Skeleton className="h-6 w-52" />
@@ -48,8 +54,8 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
           </div>
         ) : (
           <>
-            <SheetHeader className="border-b border-border px-6 py-5">
-              <SheetTitle className="text-base">{caseDetail.candidateName}</SheetTitle>
+            <SheetHeader className="border-b border-border px-5 py-5 pr-16 sm:px-6 sm:pr-16">
+              <SheetTitle className="text-lg">{caseDetail.candidateName}</SheetTitle>
               <p className="num text-xs text-muted-foreground">
                 {caseDetail.caseNumber} · {caseDetail.clientName} · {caseDetail.packageName}
               </p>
@@ -70,10 +76,31 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
               </div>
             </SheetHeader>
 
-            <div className="flex flex-wrap gap-2 border-b border-border px-6 py-3">
+            <div className="grid gap-2 border-b border-border bg-muted/20 px-5 py-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-6">
+              <Link
+                to="/cases/$caseId"
+                params={{ caseId: caseDetail.id }}
+                className="group flex min-w-0 items-center gap-3 rounded-2xl border border-primary/15 bg-primary/[0.06] px-4 py-3 transition-colors hover:border-primary/30 hover:bg-primary/[0.09]"
+              >
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground">
+                  <BriefcaseBusiness className="size-4" aria-hidden />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold text-foreground">
+                    Open full case workspace
+                  </span>
+                  <span className="block truncate text-[11px] text-muted-foreground">
+                    Assignments, evidence, QA, reports and complete history
+                  </span>
+                </span>
+                <ArrowUpRight
+                  className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground"
+                  aria-hidden
+                />
+              </Link>
               <Button
                 variant="outline"
-                size="sm"
+                className="h-auto min-h-11 rounded-2xl px-4"
                 disabled={action.isPending}
                 onClick={() => action.mutate({ caseId: caseDetail.id, action: "escalate" })}
               >
@@ -81,13 +108,26 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
               </Button>
             </div>
 
-            <Tabs defaultValue="summary" className="px-6 py-4">
-              <TabsList className="flex-wrap">
-                <TabsTrigger value="summary">Summary</TabsTrigger>
-                <TabsTrigger value="checks">Checks</TabsTrigger>
-                <TabsTrigger value="documents">Documents</TabsTrigger>
-                <TabsTrigger value="clarifications">Clarifications</TabsTrigger>
-                <TabsTrigger value="timeline">Timeline</TabsTrigger>
+            <Tabs defaultValue="summary" className="px-5 py-4 sm:px-6">
+              <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:grid-cols-6">
+                <TabsTrigger className="px-2 py-2 text-xs" value="summary">
+                  Summary
+                </TabsTrigger>
+                <TabsTrigger className="px-2 py-2 text-xs" value="access">
+                  Access
+                </TabsTrigger>
+                <TabsTrigger className="px-2 py-2 text-xs" value="checks">
+                  Checks
+                </TabsTrigger>
+                <TabsTrigger className="px-2 py-2 text-xs" value="documents">
+                  Documents
+                </TabsTrigger>
+                <TabsTrigger className="px-2 py-2 text-xs" value="clarifications">
+                  Clarifications
+                </TabsTrigger>
+                <TabsTrigger className="px-2 py-2 text-xs" value="timeline">
+                  Timeline
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="summary" className="space-y-4 pt-4">
@@ -104,7 +144,7 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
                     ))}
                   </ul>
                 ) : null}
-                <dl className="grid grid-cols-2 gap-3 text-xs">
+                <dl className="grid gap-3 text-xs sm:grid-cols-2">
                   <Field label="Operations owner" value={caseDetail.opsOwner ?? "Unassigned"} />
                   <Field label="Verifier" value={caseDetail.verifier ?? "Not allocated"} />
                   <Field label="Branch" value={`${caseDetail.branch} · ${caseDetail.city}`} />
@@ -121,6 +161,10 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
                   <Field label="Created" value={formatDateTime(caseDetail.createdAt)} />
                   <Field label="Next action" value={caseDetail.nextAction} />
                 </dl>
+              </TabsContent>
+
+              <TabsContent value="access">
+                <OpsCaseAccessPanel key={caseDetail.id} item={caseDetail} />
               </TabsContent>
 
               <TabsContent value="checks" className="space-y-2 pt-4">
@@ -143,32 +187,8 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
                 ))}
               </TabsContent>
 
-              <TabsContent value="documents" className="space-y-2 pt-4">
-                <div className="rounded-xl border border-border px-3 py-2.5 text-xs">
-                  <p className="font-medium text-foreground">Consent</p>
-                  <p className="text-muted-foreground">
-                    {caseDetail.consent.status} via {caseDetail.consent.channel} · requested{" "}
-                    {formatRelativeToNow(caseDetail.consent.requestedAt)}
-                  </p>
-                </div>
-                {caseDetail.documents.map((document) => (
-                  <div
-                    key={document.id}
-                    className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2.5"
-                  >
-                    <div>
-                      <p className="text-[13px] text-foreground">{document.label}</p>
-                      <p className="text-[11px] text-muted-foreground">
-                        {formatRelativeToNow(document.updatedAt)}
-                        {document.note ? ` · ${document.note}` : ""}
-                      </p>
-                    </div>
-                    <StatusBadge
-                      label={OPS_DOCUMENT_STATUS_META[document.status].label}
-                      tone={OPS_DOCUMENT_STATUS_META[document.status].tone}
-                    />
-                  </div>
-                ))}
+              <TabsContent value="documents">
+                <OpsCaseDocuments documents={caseDetail.documents} />
               </TabsContent>
 
               <TabsContent value="clarifications" className="space-y-2 pt-4">

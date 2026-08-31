@@ -138,6 +138,10 @@ export class TaskAssignmentService {
           }),
           afterJson: JSON.stringify({
             assigneeId: assignee.publicId,
+            assigneeName: assignee.displayName,
+            caseId: task.check.case.publicId,
+            caseNumber: task.check.case.caseNumber,
+            checkId: task.check.publicId,
             status: "OPEN",
             version: task.version + 1,
             note: instructions,

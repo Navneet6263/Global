@@ -6,7 +6,9 @@ import { getExceptionsDashboard } from "@/lib/backend-api/dashboards";
 
 export function useNavBadge(item: NavItem): number | undefined {
   const needsExceptionTotal =
-    item.badge?.key === "criticalExceptions" || item.badge?.key === "opsExceptions";
+    item.badge?.key === "criticalExceptions" ||
+    item.badge?.key === "opsExceptions" ||
+    item.badge?.key === "clientActions";
   const operations = useQuery({
     queryKey: ["operations", "navigation-badges"],
     queryFn: () => operationsApi.getDashboard(),
@@ -20,7 +22,10 @@ export function useNavBadge(item: NavItem): number | undefined {
     staleTime: 30_000,
   });
   const exceptions = useQuery({
-    queryKey: ["dashboard", "navigation-badges", "exceptions"],
+    queryKey:
+      item.badge?.key === "clientActions"
+        ? ["dashboard", "client", "actions"]
+        : ["dashboard", "navigation-badges", "exceptions"],
     queryFn: getExceptionsDashboard,
     enabled: Boolean(item.badge) && needsExceptionTotal,
     staleTime: 30_000,
@@ -29,6 +34,7 @@ export function useNavBadge(item: NavItem): number | undefined {
   if (!item.badge) return undefined;
   if (item.badge.key === "criticalExceptions") return exceptions.data?.summary.critical;
   if (item.badge.key === "opsExceptions") return exceptions.data?.summary.total;
+  if (item.badge.key === "clientActions") return exceptions.data?.summary.clientActions;
   return item.workspace === "sales-crm"
     ? crm.data
       ? crmBadge(item.badge.key, crm.data)

@@ -1,4 +1,11 @@
-import { Controller, Get, Param, ParseUUIDPipe, Post } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import {
   CurrentActor,
@@ -8,6 +15,7 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
+import { PageQueryDto } from "../common/dto/page-query.dto";
 import { ReportsService } from "./reports.service";
 import { ReportRecoveryService } from "./report-recovery.service";
 
@@ -17,6 +25,13 @@ export class ReportsController {
     private readonly reports: ReportsService,
     private readonly recovery: ReportRecoveryService,
   ) {}
+
+  @Get("reports")
+  @RequirePermissions(Permission.ReportRead)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN", "QA_REVIEWER")
+  published(@CurrentActor() actor: Actor, @Query() query: PageQueryDto) {
+    return this.reports.listPublished(actor, query);
+  }
 
   @Get("cases/:caseId/reports")
   @RequirePermissions(Permission.ReportRead)

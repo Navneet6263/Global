@@ -47,11 +47,15 @@ export interface OpsDocument {
   id: string;
   label: string;
   status: "pending" | "received" | "rejected" | "reupload_required" | "verified";
+  originalName: string | null;
+  version: number;
+  available: boolean;
   updatedAt: string;
   note?: string;
 }
 
 export interface OpsConsent {
+  id: string | null;
   status: "pending" | "signed" | "expired" | "missing";
   channel: "email" | "sms" | "portal";
   requestedAt: string;

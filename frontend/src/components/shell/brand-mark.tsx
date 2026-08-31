@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Sprout } from "lucide-react";
+import { SaplingSymbol } from "@/components/brand/sapling-symbol";
 import { ORGANISATION } from "@/config/workspaces";
 import type { NavWorkspace } from "@/config/navigation";
 import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
@@ -13,8 +13,8 @@ export function BrandMark({ workspace = "platform-admin" }: { workspace?: NavWor
       className="flex items-center gap-2.5 rounded-xl px-1 py-1 transition-opacity hover:opacity-90"
       aria-label={`${ORGANISATION.name} — ${presentation.label} home`}
     >
-      <span className="flex size-9 items-center justify-center rounded-xl bg-primary/12 text-primary ring-1 ring-primary/20">
-        <Sprout className="size-[18px]" aria-hidden />
+      <span className="flex size-9 items-center justify-center rounded-xl bg-[#fff9f3] ring-1 ring-primary/15">
+        <SaplingSymbol className="size-8" />
       </span>
       <span className="min-w-0">
         <span className="block truncate text-sm font-semibold tracking-[-0.01em] text-foreground">
