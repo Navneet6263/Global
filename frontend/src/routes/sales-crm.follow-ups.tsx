@@ -96,7 +96,13 @@ function FollowUpsPage() {
             <button
               key={item.id}
               type="button"
-              onClick={() => setSearch({ view: item.id, page: 1 })}
+              onClick={() => {
+                if (item.id === "completed") {
+                  void navigate({ to: "/sales-crm/activities", search: { type: "FOLLOW_UP" } });
+                  return;
+                }
+                setSearch({ view: item.id, page: 1 });
+              }}
               className={cn(
                 "rounded-full px-3 py-1.5 text-[11px] font-medium transition-colors",
                 view === item.id
@@ -138,7 +144,7 @@ function FollowUpsPage() {
         <EmptyState
           icon={CalendarCheck}
           title="Nothing pending in this view"
-          description="This queue is clear. Switch views to check upcoming or completed follow-ups."
+          description="This queue is clear. Switch views to check another scheduled period."
         />
       ) : (
         <div className="space-y-3">

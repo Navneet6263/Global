@@ -15,7 +15,9 @@ import {
   UserRoundCog,
   UsersRound,
 } from "lucide-react";
-import { getSession, logout } from "@/lib/api/auth";
+import { toast } from "sonner";
+import { getSession } from "@/lib/api/auth";
+import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { canAccessWorkspace } from "@/lib/auth/workspace-access";
 
 import {
@@ -47,11 +49,12 @@ export function MobileWorkspaceNav() {
   const queryClient = useQueryClient();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSettled: () => {
+    mutationFn: endAuthenticatedSession,
+    onSuccess: () => {
       queryClient.clear();
       window.location.assign("/auth");
     },
+    onError: (error: Error) => toast.error("Sign out failed", { description: error.message }),
   });
 
   return (

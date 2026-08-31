@@ -14,7 +14,7 @@ export interface SummaryCard {
   label: string;
   value: string;
   description: string;
-  comparison: { label: string; delta: number; direction: TrendDirection };
+  comparison?: { label: string; delta: number; direction: TrendDirection };
   tone: StatusTone;
   series: readonly { label: string; value: number }[];
   target: { route: string; search?: Record<string, string> };
@@ -25,7 +25,7 @@ export interface PipelineStage {
   count: number;
   shareOfPortfolio: number;
   mode: "processing" | "waiting" | "closed";
-  averageAgeMinutes: number;
+  oldestAgeMinutes: number;
   slaRiskCount: number;
   isBottleneck: boolean;
 }

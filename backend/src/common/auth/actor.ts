@@ -4,6 +4,9 @@ export interface Actor {
   tenantId: bigint;
   tenantPublicId: string;
   tenantName: string;
+  branchId?: bigint;
+  branchPublicId?: string;
+  branchName?: string;
   clientId?: bigint;
   clientPublicId?: string;
   clientName?: string;
@@ -18,6 +21,7 @@ export interface Actor {
 export interface AccessTokenPayload {
   sub: string;
   tenantId: string;
+  branchId?: string;
   email: string;
   sessionId: string;
   type: "access";

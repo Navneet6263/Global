@@ -1,7 +1,7 @@
 "use client";
 
 import { useNavigate } from "@tanstack/react-router";
-import { Building2, GitBranch, Package, Plus, UserPlus } from "lucide-react";
+import { Building2, GitBranch, LayoutGrid, Package, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +11,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { notifyPendingIntegration } from "@/lib/feedback/notify";
 
 export function QuickCreateMenu() {
   const navigate = useNavigate();
@@ -19,30 +18,30 @@ export function QuickCreateMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Quick create">
-          <Plus className="size-4" aria-hidden />
+        <Button variant="outline" size="icon" aria-label="Platform shortcuts">
+          <LayoutGrid className="size-4" aria-hidden />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 rounded-2xl">
         <DropdownMenuLabel className="text-xs text-muted-foreground">
-          Quick create
+          Platform shortcuts
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void navigate({ to: "/admin/clients" })}>
           <Building2 className="size-4" aria-hidden />
-          Add client
+          Manage clients
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => void navigate({ to: "/admin/users" })}>
           <UserPlus className="size-4" aria-hidden />
-          Create user ID
+          Manage user IDs
         </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => void navigate({ to: "/admin/settings" })}>
           <GitBranch className="size-4" aria-hidden />
-          Add branch
+          Manage branches
         </DropdownMenuItem>
-        <DropdownMenuItem onSelect={() => notifyPendingIntegration("Add service package")}>
+        <DropdownMenuItem onSelect={() => void navigate({ to: "/admin/settings" })}>
           <Package className="size-4" aria-hidden />
-          Add service package
+          Manage service packages
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

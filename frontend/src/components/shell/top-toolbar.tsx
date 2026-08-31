@@ -4,9 +4,9 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { Menu, RefreshCw, ShieldCheck } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ORGANISATION } from "@/config/workspaces";
 import { sessionForNav } from "@/lib/auth/session";
 import type { NavWorkspace } from "@/config/navigation";
+import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
 import { initialsOf } from "@/lib/formatting";
 import { notifySuccess } from "@/lib/feedback/notify";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
   const queryClient = useQueryClient();
   const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
+  const presentation = WORKSPACE_PRESENTATION[workspace];
 
   const refresh = async () => {
     setRefreshing(true);
@@ -47,17 +48,17 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
         </Button>
 
         <div className="hidden min-w-0 lg:block">
-          <p className="truncate text-[13px] font-medium text-foreground">
-            {ORGANISATION.workspaceLabel}
-          </p>
-          <p className="truncate text-[11px] text-muted-foreground">
-            Branch scope: {session.branchScope.join(", ")}
-          </p>
+          <p className="truncate text-[13px] font-medium text-foreground">{presentation.heading}</p>
+          <p className="truncate text-[11px] text-muted-foreground">{session.scopeLabel}</p>
         </div>
 
-        <div className="ml-auto hidden flex-1 justify-center px-4 md:flex">
-          <GlobalSearch />
-        </div>
+        {presentation.search ? (
+          <div className="ml-auto hidden flex-1 justify-center px-4 md:flex">
+            <GlobalSearch workspace={workspace} />
+          </div>
+        ) : (
+          <div className="ml-auto" />
+        )}
 
         <div className="ml-auto flex items-center gap-1.5 md:ml-0">
           <Tooltip>
@@ -74,12 +75,12 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
             </TooltipTrigger>
             <TooltipContent>Refresh all panels</TooltipContent>
           </Tooltip>
-          <NotificationsMenu />
-          <QuickCreateMenu />
+          <NotificationsMenu workspace={workspace} />
+          {presentation.quickCreate ? <QuickCreateMenu /> : null}
           <Tooltip>
             <TooltipTrigger asChild>
               <Button variant="ghost" size="icon" asChild aria-label="Account and security">
-                <Link to="/admin/security">
+                <Link to={presentation.security as "/admin/security"}>
                   <ShieldCheck className="size-4" aria-hidden />
                 </Link>
               </Button>
@@ -87,7 +88,7 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
             <TooltipContent>Account &amp; security</TooltipContent>
           </Tooltip>
           <Link
-            to="/admin/security"
+            to={presentation.security as "/admin/security"}
             aria-label={`Signed in as ${session.fullName}`}
             className="flex size-8 items-center justify-center rounded-full bg-primary/12 text-xs font-semibold text-primary ring-1 ring-primary/20 transition-shadow hover:ring-primary/40"
           >
@@ -95,9 +96,11 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
           </Link>
         </div>
       </div>
-      <div className="px-4 pb-3 md:hidden">
-        <GlobalSearch />
-      </div>
+      {presentation.search ? (
+        <div className="px-4 pb-3 md:hidden">
+          <GlobalSearch workspace={workspace} />
+        </div>
+      ) : null}
     </header>
   );
 }

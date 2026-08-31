@@ -1,12 +1,10 @@
 export interface ActiveSession {
   id: string;
-  device: string;
-  browser: string;
-  operatingSystem: string;
-  ipAddress: string;
-  location: string;
+  deviceName: string | null;
+  userAgent: string | null;
+  ipAddress: string | null;
   startedAt: string;
-  lastSeenAt: string;
+  expiresAt: string;
   isCurrent: boolean;
 }
 
@@ -22,8 +20,8 @@ export interface AuthEvent {
   id: string;
   type: AuthEventType;
   at: string;
-  ipAddress: string;
-  device: string;
+  ipAddress: string | null;
+  userAgent: string | null;
   detail: string;
 }
 

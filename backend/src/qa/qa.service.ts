@@ -8,23 +8,18 @@ import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { QaDecisionDto } from "./dto/qa-decision.dto";
 import type { QaQueryDto } from "./dto/qa-query.dto";
+import { QA_REQUIRED_CHECKLIST } from "./qa.constants";
 
 @Injectable()
 export class QaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  private readonly requiredChecklist = [
-    "Candidate identity and case scope verified",
-    "All check results and source summaries reviewed",
-    "Supporting evidence is complete and readable",
-    "Discrepancies and risk ratings are consistent",
-    "Report language is factual and non-discriminatory",
-  ];
-
   async queue(actor: Actor, query: QaQueryDto) {
     const now = new Date();
     const baseWhere = {
       tenantId: actor.tenantId,
+      ...(actor.branchId ? { branchId: actor.branchId } : {}),
+      ...(actor.clientId ? { clientId: actor.clientId } : {}),
       status: "QA_REVIEW",
     } as const;
     const search = query.search?.trim();
@@ -166,7 +161,12 @@ export class QaService {
 
   async claim(actor: Actor, casePublicId: string, caseVersion: number) {
     const record = await this.prisma.verificationCase.findFirst({
-      where: { tenantId: actor.tenantId, publicId: casePublicId },
+      where: {
+        tenantId: actor.tenantId,
+        publicId: casePublicId,
+        ...(actor.branchId ? { branchId: actor.branchId } : {}),
+        ...(actor.clientId ? { clientId: actor.clientId } : {}),
+      },
       select: {
         id: true,
         status: true,
@@ -192,24 +192,26 @@ export class QaService {
         "Another reviewer is currently working on this case",
       );
     }
-    const updated = await this.prisma.verificationCase.updateMany({
-      where: { id: record.id, version: caseVersion },
-      data: {
-        qaReviewerId: actor.userId,
-        qaClaimedAt: new Date(),
-        version: { increment: 1 },
-      },
-    });
-    if (updated.count !== 1)
-      throw new ConflictException("Case was claimed by another reviewer");
-    await this.prisma.auditEvent.create({
-      data: {
-        tenantId: actor.tenantId,
-        actorUserId: actor.userId,
-        action: "qa.case-claimed",
-        resourceType: "case",
-        resourcePublicId: casePublicId,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.verificationCase.updateMany({
+        where: { id: record.id, version: caseVersion, status: "QA_REVIEW" },
+        data: {
+          qaReviewerId: actor.userId,
+          qaClaimedAt: new Date(),
+          version: { increment: 1 },
+        },
+      });
+      if (updated.count !== 1)
+        throw new ConflictException("Case was claimed by another reviewer");
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "qa.case-claimed",
+          resourceType: "case",
+          resourcePublicId: casePublicId,
+        },
+      });
     });
     return {
       id: casePublicId,
@@ -220,7 +222,12 @@ export class QaService {
 
   async decide(actor: Actor, casePublicId: string, input: QaDecisionDto) {
     const verificationCase = await this.prisma.verificationCase.findFirst({
-      where: { tenantId: actor.tenantId, publicId: casePublicId },
+      where: {
+        tenantId: actor.tenantId,
+        publicId: casePublicId,
+        ...(actor.branchId ? { branchId: actor.branchId } : {}),
+        ...(actor.clientId ? { clientId: actor.clientId } : {}),
+      },
       include: {
         checks: {
           select: {
@@ -255,6 +262,9 @@ export class QaService {
     if (!verificationCase) throw new NotFoundException("Case not found");
     if (verificationCase.status !== "QA_REVIEW")
       throw new ConflictException("Case is not awaiting QA review");
+    if (input.notes.trim().length < 10) {
+      throw new BadRequestException("QA notes must contain a factual decision");
+    }
     if (verificationCase.version !== input.caseVersion)
       throw new ConflictException("Case changed; refresh and try again");
     if (verificationCase.qaReviewerId !== actor.userId) {
@@ -272,8 +282,8 @@ export class QaService {
       );
     }
     if (
-      input.checklist.length !== this.requiredChecklist.length ||
-      this.requiredChecklist.some((item) => !input.checklist.includes(item))
+      input.checklist.length !== QA_REQUIRED_CHECKLIST.length ||
+      QA_REQUIRED_CHECKLIST.some((item) => !input.checklist.includes(item))
     ) {
       throw new BadRequestException(
         "Complete the full controlled QA checklist",

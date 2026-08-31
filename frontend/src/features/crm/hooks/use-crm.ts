@@ -15,6 +15,7 @@ import type {
   OpportunityQuery,
   StageChangeInput,
   UpdateOpportunityInput,
+  UpdateCrmSettingsInput,
 } from "../contracts/crm";
 
 export const crmKeys = {
@@ -28,6 +29,7 @@ export const crmKeys = {
   accounts: (query: AccountQuery) => [...crmKeys.all, "accounts", query] as const,
   forecast: (query: ForecastQuery) => [...crmKeys.all, "forecast", query] as const,
   owners: () => [...crmKeys.all, "owners"] as const,
+  settings: () => [...crmKeys.all, "settings"] as const,
 };
 
 export const crmOverviewQueryOptions = queryOptions({
@@ -91,6 +93,14 @@ export function useSalesOwners() {
   return useQuery({ queryKey: crmKeys.owners(), queryFn: () => crmApi.getSalesOwners() });
 }
 
+export function useCrmSettings() {
+  return useQuery({
+    queryKey: crmKeys.settings(),
+    queryFn: () => crmApi.getSettings(),
+    staleTime: 60_000,
+  });
+}
+
 function useCrmMutation<TInput, TResult>(
   mutationFn: (input: TInput) => Promise<TResult>,
   success: (result: TResult, input: TInput) => { title: string; description?: string },
@@ -150,8 +160,8 @@ export function usePrepareOnboarding() {
   return useCrmMutation<string, unknown>(
     (id) => crmApi.prepareOnboarding(id),
     () => ({
-      title: "Onboarding handoff prepared",
-      description: "Client workspace provisioning happens during API integration.",
+      title: "Onboarding handoff recorded",
+      description: "The won opportunity is now marked for client onboarding.",
     }),
   );
 }
@@ -174,5 +184,15 @@ export function useRescheduleFollowUp() {
   return useCrmMutation<FollowUpActionInput, unknown>(
     (input) => crmApi.rescheduleFollowUp(input),
     () => ({ title: "Follow-up rescheduled" }),
+  );
+}
+
+export function useUpdateCrmSettings() {
+  return useCrmMutation<UpdateCrmSettingsInput, Awaited<ReturnType<typeof crmApi.updateSettings>>>(
+    (input) => crmApi.updateSettings(input),
+    () => ({
+      title: "CRM settings saved",
+      description: "Pipeline defaults and lead sources are now active for this workspace.",
+    }),
   );
 }

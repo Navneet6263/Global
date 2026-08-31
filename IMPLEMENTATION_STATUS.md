@@ -1,53 +1,40 @@
 # Sapling Global implementation status
 
+_Evidence snapshot: 27 August 2026. "Verified" below means this repository and the currently configured SQL Server, not an internet production deployment._
+
 ## Implemented in code
 
-- Live role-filtered workspaces for Operations, Exceptions, Client, Candidate, Verifier, QA, Field, Executive, Sales, Finance, Settings and Account Security.
-- Executive portfolio intelligence with access-scoped client/branch/check filters, SLA and ageing analytics, attention prioritisation, team capacity, CRM/finance health, case drill-down, audited CSV/PDF exports and encrypted scheduled email delivery through the retrying outbox.
-- Case 360 with consent, candidate access, documents, verification assignment, findings, clarifications, field visits, QA history and versioned reports.
-- SQL Server persistence for clients, cases, users/roles, settings, CRM opportunities, invoices/payments, notifications and audit events.
-- Secure public flows using expiring hashed tokens or OTPs for candidate access, clarifications, consent and report authenticity.
-- Field workflow with IndexedDB queue, installable offline app shell, fresh GPS policy, geofence decisions, evidence hashing, exception approval/retry and retention enforcement.
-- Fastify API hardening: Helmet, strict CORS/origin checks, request IDs, allow-list DTO validation, throttling, problem details and redacted production request logs.
-- Warm configurable SQL connection pooling, bounded connection/request/interactive-transaction timeouts, transient read retry and explicit service-unavailable responses prevent slow or unavailable database connections from surfacing as unexplained internal errors.
-- HttpOnly sessions with rotation, database-backed immediate revocation, refresh-token reuse detection, account lockout and forced first-login password change.
-- Self-service active-device visibility, current/other-session revocation and audited password controls.
-- AES-256-GCM encryption for new candidate email/phone/employee-code data with a legacy-row compatibility path.
-- Canonical Base64URL enforcement prevents alternate encodings of authenticated encrypted payloads from being accepted.
-- Private S3/Azure storage adapters, ClamAV scanning, transactional outbox retry/recovery, notification webhooks and automatic signed report generation.
-- Idempotency enforcement for authenticated writes and optimistic concurrency on mutable business records.
-- Idempotency keys are bound to the concrete resource path, actor and canonical payload, preventing cross-resource or cross-user replay.
-- Immutable document, evidence and report object keys across local, S3 and Azure adapters, with compare-and-swap document versioning and unreferenced-object cleanup on failed persistence.
-- Retention removes database evidence transactionally and dispatches retryable object-deletion work through the outbox instead of creating a file/database split-brain window.
-- User administration preserves suspended accounts for reactivation, rejects client-administrator assignments without a client and prevents removal of the tenant's last active platform administrator.
-- Server-rendered, audited invoice PDFs plus versioned verification report PDFs.
-- Container definition, production environment gates and release/backup/rollback runbook.
+- API-backed, permission-scoped workspaces for Platform Admin, Operations, Client Admin, Candidate, Verifier, QA, Field Executive, Sales CRM and Finance; business screens do not depend on bundled mock repositories.
+- Persisted case intake and Case 360 covering consent, candidate access, documents, verification tasks, clarifications, field visits, QA history, reports and audit history.
+- Persisted CRM, invoices/payments/credit notes, settings, users/roles, notifications and executive analytics with audited exports and scheduled delivery.
+- HttpOnly rotating sessions, immediate revocation, refresh-token reuse detection, lockout, forced first-login password change, role/client/branch scope enforcement and idempotent writes.
+- AES-256-GCM protection for subject contact/employee data, idempotency responses and sensitive queued payloads, including a compare-and-swap legacy plaintext backfill/key-rotation utility.
+- AES-GCM encrypted, account-isolated Field and Verifier IndexedDB drafts with expiry; the offline navigation shell exposes only draft counts and no candidate data.
+- Private S3/Azure adapters, development-only local storage, malware scanning integration, immutable object keys, retrying outbox delivery and versioned report/invoice PDFs.
+- Field-evidence retention with transactional database cleanup, retryable object deletion, worker health reporting and Platform Admin failure review/requeue.
+- SQL runtime-role bootstrap with schema data access but no schema control and explicit `AuditEvent` update/delete denial.
+- Production environment validation, container definition and SQL-backed CI release workflow are present in the repository.
 
-## Verified on this workstation
+## Verified in the current environment
 
-- Frontend TypeScript: zero errors.
-- Frontend ESLint: zero errors and zero warnings.
-- Frontend production client/SSR/worker build: passed.
-- Backend Nest build and ESLint: passed.
-- Compiled NestJS/Fastify API boot: passed against the configured Sapling Global SQL Server with background workers disabled for the release check; `/api/v1/health/ready` returned HTTP 200 with `database: up`.
-- Prisma schema validation and client generation: passed.
-- Backend unit/security tests: 24/24 passing, including production environment gates, bounded database transaction settings, retry policy, forced-password authorization, immutable local object storage, cryptographic encoding checks and executive SLA/attention rules.
-- Rollback-based live SQL integration: passed for tenant isolation, client-bound access, candidate-link token binding and clarification-link token binding; no fixture rows remained.
-- Production-runtime dependency audit: zero known vulnerabilities. The full development-tool audit currently reports three high findings from one upstream `deepmerge-ts` advisory pinned by the latest Prisma 7.9.1 CLI; the affected Prisma CLI/config packages are excluded from the runtime image. The audit-recommended forced downgrade to Prisma 6.12 is incompatible and was not applied.
-- Playwright Chromium coverage passed for all 11 authenticated workspaces against real APIs with zero 5xx responses and zero serious/critical WCAG violations; session refresh/logout revocation, forced first-login password replacement, public-page security headers, keyboard order and 360px mobile overflow also passed.
-- Managed live write-path verification passed in 3.6 minutes from user create/suspend/list/reactivate and invalid client-admin rejection through client/case creation, consent OTP acceptance, document inspection/immutable storage, clarification response, verifier block/resume/completion, automatic QA transition, QA approval, versioned PDF generation/download and public SHA-256 authenticity verification. Idempotent replay was asserted, and all uniquely scoped database rows, two stored objects and the temporary administrator were deleted afterward.
-- SQL Server migration `20260820160000_business_modules`: applied successfully to `Sapling Global`; migration status is current and schema diff reports no difference.
-- Reference data: synchronized without resetting the existing administrator password. Post-cleanup deployment verification passed for tenant `SAPLING`, eight system roles, six baseline users, one platform administrator and persisted-table access.
+- Prisma client generation and schema validation passed.
+- All 14 repository migrations are applied to the configured `Sapling Global` SQL Server.
+- Deployment verification passed for tenant `SAPLING`, eight required roles, 15 users, two active platform administrators and access to nine persisted feature checks.
+- Data-key rotation/backfill completed with zero legacy plaintext subjects, zero outdated subject ciphertext, zero outdated idempotency responses and zero pending outbox secrets requiring rotation in that run.
+- Backend build and ESLint passed; backend unit/security suite passed 114/114.
+- Rollback-based SQL integration suite passed 1/1 after the current role and clarification-readiness changes.
+- Frontend TypeScript and production build passed. Encrypted offline-draft browser tests passed 2/2 and offline relaunch-shell coverage passed 1/1.
+- Current full dependency audit and production-runtime audit report zero known vulnerabilities.
 
-## Environment-dependent release gates
+The final full frontend formatting/lint gate and the freshly added seven-role authenticated browser rerun were still in progress at this snapshot. Earlier workspace counts and timing results are intentionally not carried forward as release evidence.
 
-The code and configured SQL Server are synchronized. Before live traffic:
+## Not yet an internet production release
 
-1. Take and restore-verify a SQL Server backup for the target environment, then run the documented preflight/deploy/verify release sequence.
-2. Configure real S3/Azure, ClamAV, HTTPS certificates, notification webhook, DNS-based SQL certificate identity and independent secrets through the deployment secret manager.
-3. Repeat the proven authenticated Playwright and rollback-based database integration suites against the exact migrated staging release using private credentials.
-4. Perform keyboard/screen-reader, mobile-device GPS/camera, load, backup/restore and independent security review in the target infrastructure.
-5. Build and scan the container in CI (Docker is not installed on this workstation), enable centralized logs/alerts, then complete the controlled production release from the same tested artifact.
-6. Keep the full development-tool audit gated in CI and upgrade Prisma as soon as its config package adopts patched `deepmerge-ts`; continue requiring a zero-vulnerability production-runtime audit for every artifact.
+- No public HTTPS deployment has been completed or verified from this workstation.
+- Real S3/Azure credentials, ClamAV, notification delivery, DNS-based SQL certificate identity, secret-manager injection, centralized monitoring and alert routing still require target-environment configuration and provider tests.
+- Backup/restore, object recovery, load, real-device GPS/camera, accessibility assistive-technology and independent security exercises must run against the exact release artifact and infrastructure.
+- The application currently automates the configured field-evidence/location retention window. Broader candidate, document, report, finance and audit schedules - and every legal-hold exception - require approved business/legal policy before additional deletion automation is enabled.
+- Cloud object versioning does not itself prove erasure: lifecycle rules must explicitly address noncurrent versions and delete markers while preserving any approved legal hold.
+- A successful GitHub CI run, container scan, staging role flows and controlled production change/rollback approval remain release gates.
 
-Code completion does not substitute for these infrastructure checks; the release runbook treats them as mandatory gates.
+Follow [docs/PRODUCTION_RUNBOOK.md](docs/PRODUCTION_RUNBOOK.md); code completion or local SQL validation must not be presented as a live production deployment.

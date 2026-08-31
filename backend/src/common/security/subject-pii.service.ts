@@ -12,6 +12,7 @@ type StoredSubject = {
   phone?: string | null;
   employeeCode?: string | null;
   piiCiphertext?: string | null;
+  piiKeyVersion?: number | null;
 };
 
 @Injectable()
@@ -31,9 +32,16 @@ export class SubjectPiiService {
       : null;
   }
 
+  keyVersion() {
+    return this.secretBox.activeVersion;
+  }
+
   open(subject: StoredSubject): SubjectPii {
     if (subject.piiCiphertext) {
-      return this.secretBox.open<SubjectPii>(subject.piiCiphertext);
+      return this.secretBox.open<SubjectPii>(
+        subject.piiCiphertext,
+        subject.piiKeyVersion ?? 1,
+      );
     }
     return {
       ...(subject.email ? { email: subject.email } : {}),
@@ -43,8 +51,9 @@ export class SubjectPiiService {
   }
 
   present<T extends StoredSubject>(subject: T) {
-    const { piiCiphertext, ...safe } = subject;
+    const { piiCiphertext, piiKeyVersion, ...safe } = subject;
     void piiCiphertext;
+    void piiKeyVersion;
     const pii = this.open(subject);
     return {
       ...safe,

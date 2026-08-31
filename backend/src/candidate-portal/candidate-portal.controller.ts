@@ -30,7 +30,7 @@ export class CandidatePortalController {
   ) {}
 
   @Post("cases/:caseId/candidate-access")
-  @RequirePermissions(Permission.ConsentManage)
+  @RequirePermissions(Permission.CaseCreate)
   issue(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,

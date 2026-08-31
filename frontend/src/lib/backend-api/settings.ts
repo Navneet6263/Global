@@ -1,5 +1,12 @@
 import { apiRequest } from "./client";
 
+export interface Organisation {
+  publicId: string;
+  name: string;
+  timezone: string;
+  status: string;
+}
+
 export interface FieldPolicy {
   publicId: string;
   defaultRadiusMeters: number;
@@ -17,6 +24,7 @@ export interface Branch {
   name: string;
   city?: string | null;
   isActive: boolean;
+  fieldExecutiveCount: number;
   createdAt: string;
 }
 export interface ServicePackage {
@@ -28,6 +36,10 @@ export interface ServicePackage {
   tatHours: number;
   isActive: boolean;
   createdAt: string;
+}
+
+export function getOrganisation() {
+  return apiRequest<Organisation>("/settings/organisation");
 }
 
 export function getFieldPolicy() {

@@ -30,11 +30,21 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
   return (
     <Sheet open={open} onOpenChange={(next) => (next ? undefined : onClose())}>
       <SheetContent side="right" className="w-full gap-0 overflow-y-auto sm:max-w-[620px]">
-        {loading || !caseDetail ? (
+        {loading ? (
           <div className="space-y-3 p-6">
             <Skeleton className="h-6 w-52" />
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-40 w-full" />
+          </div>
+        ) : !caseDetail ? (
+          <div className="space-y-3 p-6">
+            <p className="text-sm font-semibold text-foreground">Case detail is unavailable</p>
+            <p className="text-xs text-muted-foreground">
+              The case may have moved outside your scope or the link may no longer be valid.
+            </p>
+            <Button variant="outline" size="sm" onClick={onClose}>
+              Close
+            </Button>
           </div>
         ) : (
           <>
@@ -61,24 +71,14 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
             </SheetHeader>
 
             <div className="flex flex-wrap gap-2 border-b border-border px-6 py-3">
-              {(
-                [
-                  ["raise_clarification", "Raise clarification"],
-                  ["request_document", "Request document"],
-                  ["escalate", "Escalate to client"],
-                  ["send_to_qa", "Send to QA"],
-                ] as const
-              ).map(([value, label]) => (
-                <Button
-                  key={value}
-                  variant="outline"
-                  size="sm"
-                  disabled={action.isPending}
-                  onClick={() => action.mutate({ caseId: caseDetail.id, action: value })}
-                >
-                  {label}
-                </Button>
-              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={action.isPending}
+                onClick={() => action.mutate({ caseId: caseDetail.id, action: "escalate" })}
+              >
+                Escalate to client
+              </Button>
             </div>
 
             <Tabs defaultValue="summary" className="px-6 py-4">

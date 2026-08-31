@@ -1,13 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import type { NavWorkspace } from "@/config/navigation";
+import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
 
-export function GlobalSearch() {
+export function GlobalSearch({ workspace }: { workspace: NavWorkspace }) {
   const navigate = useNavigate();
+  const inputId = useId();
   const [term, setTerm] = useState("");
+  const searchConfig = WORKSPACE_PRESENTATION[workspace].search;
+
+  if (!searchConfig) return null;
 
   return (
     <form
@@ -16,10 +22,13 @@ export function GlobalSearch() {
       onSubmit={(event) => {
         event.preventDefault();
         const search = term.trim();
-        void navigate({ to: "/admin/cases", search: search ? { q: search } : {} });
+        void navigate({
+          to: searchConfig.route as "/admin/cases",
+          search: search ? { q: search } : {},
+        });
       }}
     >
-      <label htmlFor="global-search" className="sr-only">
+      <label htmlFor={inputId} className="sr-only">
         Search candidates, case numbers or clients
       </label>
       <Search
@@ -27,10 +36,10 @@ export function GlobalSearch() {
         aria-hidden
       />
       <Input
-        id="global-search"
+        id={inputId}
         value={term}
         onChange={(event) => setTerm(event.target.value)}
-        placeholder="Search candidate, case number or client…"
+        placeholder={searchConfig.placeholder}
         className="h-9 rounded-xl pl-9"
         autoComplete="off"
       />

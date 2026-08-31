@@ -35,6 +35,7 @@ model Tenant {
   idempotencyKeys IdempotencyKey[]
   servicePackages ServicePackage[]
   fieldPolicy     TenantFieldPolicy?
+  crmSettings     TenantCrmSettings?
   opportunities   SalesOpportunity[]
   salesActivities SalesActivity[]
   invoices        Invoice[]
@@ -199,6 +200,7 @@ model ServicePackage {
   updatedAt  DateTime @updatedAt @db.DateTime2
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cases  VerificationCase[]
 
   @@unique([tenantId, code])
 }
@@ -230,6 +232,7 @@ model VerificationCase {
   tenantId          BigInt
   branchId          BigInt?
   clientId          BigInt
+  servicePackageId  BigInt?
   subjectId         BigInt
   assignedOpsUserId BigInt?
   qaReviewerId      BigInt?
@@ -248,6 +251,7 @@ model VerificationCase {
   tenant          Tenant                  @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   branch          Branch?                 @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   client          Client                  @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  servicePackage  ServicePackage?         @relation(fields: [servicePackageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   subject         Subject                 @relation(fields: [subjectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   assignedOpsUser User?                   @relation("CaseOpsAssignee", fields: [assignedOpsUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   qaReviewer       User?                   @relation("CaseQaReviewer", fields: [qaReviewerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -265,6 +269,7 @@ model VerificationCase {
   @@unique([tenantId, caseNumber])
   @@index([tenantId, status, dueAt])
   @@index([tenantId, clientId, createdAt])
+  @@index([tenantId, servicePackageId])
   @@index([tenantId, assignedOpsUserId, status])
   @@index([tenantId, qaReviewerId, status])
   @@index([tenantId, subjectId])
@@ -602,12 +607,15 @@ model OutboxEvent {
   status        String    @default("PENDING") @db.VarChar(24)
   attempts      Int       @default(0)
   availableAt   DateTime  @default(now()) @db.DateTime2
+  claimedAt     DateTime? @db.DateTime2
+  claimToken    String?   @db.VarChar(64)
   processedAt   DateTime? @db.DateTime2
   createdAt     DateTime  @default(now()) @db.DateTime2
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([status, availableAt])
+  @@index([status, claimedAt])
   @@index([tenantId, aggregateType, aggregateId])
 }
 
@@ -619,6 +627,9 @@ model IdempotencyKey {
   requestHash  String   @db.Char(64)
   responseCode Int?
   responseJson String?  @db.NVarChar(Max)
+  responseCiphertext String? @db.NVarChar(Max)
+  responseKeyVersion Int?
+  completedAt  DateTime? @db.DateTime2
   expiresAt    DateTime @db.DateTime2
   createdAt    DateTime @default(now()) @db.DateTime2
 
@@ -645,6 +656,24 @@ model TenantFieldPolicy {
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
+model TenantCrmSettings {
+  id                     BigInt   @id @default(autoincrement())
+  publicId               String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId               BigInt   @unique
+  newProbability         Int      @default(10)
+  qualifiedProbability   Int      @default(30)
+  proposalProbability    Int      @default(55)
+  negotiationProbability Int      @default(75)
+  wonProbability         Int      @default(100)
+  lostProbability        Int      @default(0)
+  leadSourcesJson        String   @default("[\"INBOUND\",\"OUTBOUND\",\"REFERRAL\",\"EVENT\",\"PARTNER\",\"MARKETPLACE\"]") @db.NVarChar(Max)
+  version                Int      @default(1)
+  createdAt              DateTime @default(now()) @db.DateTime2
+  updatedAt              DateTime @updatedAt @db.DateTime2
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
 model SalesOpportunity {
   id                BigInt    @id @default(autoincrement())
   publicId          String    @unique @default(uuid()) @db.UniqueIdentifier
@@ -652,18 +681,22 @@ model SalesOpportunity {
   clientId          BigInt?
   ownerId           BigInt?
   companyName       String    @db.NVarChar(180)
+  city              String?   @db.NVarChar(80)
+  industry          String?   @db.NVarChar(120)
   contactName       String    @db.NVarChar(120)
+  contactTitle      String?   @db.NVarChar(120)
   contactEmail      String?   @db.VarChar(254)
   contactPhone      String?   @db.VarChar(24)
   stage             String    @default("NEW") @db.VarChar(32)
   source            String?   @db.VarChar(48)
-  estimatedValue    Decimal   @default(0) @db.Decimal(18, 2)
+  estimatedValue    Decimal   @db.Decimal(18, 2)
   probability       Int       @default(10)
   expectedCloseDate DateTime? @db.Date
   nextFollowUpAt    DateTime? @db.DateTime2
   notes             String?   @db.NVarChar(2000)
   lostReason        String?   @db.NVarChar(500)
   closedAt          DateTime? @db.DateTime2
+  onboardingHandoffAt DateTime? @db.DateTime2
   version           Int       @default(1)
   createdAt         DateTime  @default(now()) @db.DateTime2
   updatedAt         DateTime  @updatedAt @db.DateTime2

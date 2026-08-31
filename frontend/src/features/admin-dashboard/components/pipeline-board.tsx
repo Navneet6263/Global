@@ -84,11 +84,9 @@ export function PipelineBoard({ stages }: { stages: readonly PipelineStage[] }) 
 
                 <dl className="space-y-1 border-t border-border/70 pt-2.5 text-[11px] text-muted-foreground">
                   <div className="flex items-center justify-between gap-2">
-                    <dt>Avg age</dt>
+                    <dt>Oldest</dt>
                     <dd className="num font-medium text-foreground">
-                      {stage.averageAgeMinutes === 0
-                        ? "—"
-                        : formatDuration(stage.averageAgeMinutes)}
+                      {stage.oldestAgeMinutes === 0 ? "—" : formatDuration(stage.oldestAgeMinutes)}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between gap-2">

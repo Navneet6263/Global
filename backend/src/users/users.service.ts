@@ -5,52 +5,66 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
+import { assertAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
 import { hashPassword } from "../auth/password";
 import type { CreateUserDto } from "./dto/create-user.dto";
 import type { UpdateUserDto } from "./dto/update-user.dto";
+import type { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
+import type { Prisma } from "../generated/prisma/client";
+
+export function userDirectoryBranchScope(actor: Actor) {
+  return !actor.roles.includes("PLATFORM_ADMIN") && actor.branchId
+    ? { branchId: actor.branchId }
+    : {};
+}
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async list(actor: Actor, role?: string) {
-    const users = await this.prisma.user.findMany({
-      where: {
-        tenantId: actor.tenantId,
-        ...(role
-          ? {
-              status: "ACTIVE",
-              userRoles: { some: { role: { code: role } } },
-            }
-          : {}),
-      },
-      select: {
-        publicId: true,
-        displayName: true,
-        email: true,
-        phone: true,
-        status: true,
-        mustChangePassword: true,
-        lastLoginAt: true,
-        version: true,
-        branch: { select: { publicId: true, code: true, name: true } },
-        client: { select: { publicId: true, displayName: true } },
-        userRoles: { select: { role: { select: { code: true, name: true } } } },
-      },
-      orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
-      take: 250,
-    });
+  async list(actor: Actor, query: UserDirectoryQueryDto) {
+    this.assertDirectoryRole(actor);
+    const where = userDirectoryWhere(actor, query);
+    const [users, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        select: {
+          publicId: true,
+          displayName: true,
+          email: true,
+          phone: true,
+          status: true,
+          mustChangePassword: true,
+          lastLoginAt: true,
+          createdAt: true,
+          version: true,
+          branch: { select: { publicId: true, code: true, name: true } },
+          client: { select: { publicId: true, displayName: true } },
+          userRoles: {
+            select: { role: { select: { code: true, name: true } } },
+          },
+        },
+        orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
     return {
       items: users.map(({ publicId, userRoles, ...user }) => ({
         id: publicId,
         ...user,
         roles: userRoles.map(({ role: assignedRole }) => assignedRole),
       })),
+      total,
+      page: query.page,
+      pageSize: query.pageSize,
     };
   }
 
   async roles(actor: Actor) {
+    this.assertDirectoryRole(actor);
     const rows = await this.prisma.role.findMany({
       where: { tenantId: actor.tenantId },
       select: {
@@ -72,6 +86,7 @@ export class UsersService {
   }
 
   async create(actor: Actor, input: CreateUserDto) {
+    this.assertDirectoryRole(actor);
     const normalizedEmail = input.email.trim().toLowerCase();
     const exists = await this.prisma.user.findFirst({
       where: { tenantId: actor.tenantId, normalizedEmail },
@@ -162,8 +177,13 @@ export class UsersService {
   }
 
   async update(actor: Actor, publicId: string, input: UpdateUserDto) {
+    this.assertDirectoryRole(actor);
     const user = await this.prisma.user.findFirst({
-      where: { tenantId: actor.tenantId, publicId },
+      where: {
+        tenantId: actor.tenantId,
+        publicId,
+        ...this.branchScope(actor),
+      },
       select: {
         id: true,
         version: true,
@@ -195,65 +215,68 @@ export class UsersService {
         "Client administrators must be assigned to a client",
       );
     }
-    if (
+    const mayRemovePlatformAdmin =
       user.status === "ACTIVE" &&
       currentRoleCodes.includes("PLATFORM_ADMIN") &&
       (input.status === "SUSPENDED" ||
-        !nextRoleCodes.includes("PLATFORM_ADMIN"))
-    ) {
-      const otherActiveAdministrators = await this.prisma.user.count({
-        where: {
-          tenantId: actor.tenantId,
-          id: { not: user.id },
-          status: "ACTIVE",
-          userRoles: { some: { role: { code: "PLATFORM_ADMIN" } } },
-        },
-      });
-      if (!otherActiveAdministrators) {
-        throw new ConflictException(
-          "The tenant must retain at least one active platform administrator",
-        );
-      }
-    }
-    return this.prisma.$transaction(async (tx) => {
-      const updated = await tx.user.updateMany({
-        where: { id: user.id, version: input.version },
-        data: { status: input.status, version: { increment: 1 } },
-      });
-      if (updated.count !== 1)
-        throw new ConflictException("User was updated concurrently");
-      if (input.roleCodes) {
-        await tx.userRole.deleteMany({ where: { userId: user.id } });
-        await tx.userRole.createMany({
-          data: roles.map((role) => ({ userId: user.id, roleId: role.id })),
+        !nextRoleCodes.includes("PLATFORM_ADMIN"));
+    return this.prisma.$transaction(
+      async (tx) => {
+        if (mayRemovePlatformAdmin) {
+          const otherActiveAdministrators = await tx.user.count({
+            where: {
+              tenantId: actor.tenantId,
+              id: { not: user.id },
+              status: "ACTIVE",
+              userRoles: { some: { role: { code: "PLATFORM_ADMIN" } } },
+            },
+          });
+          if (!otherActiveAdministrators) {
+            throw new ConflictException(
+              "The tenant must retain at least one active platform administrator",
+            );
+          }
+        }
+        const updated = await tx.user.updateMany({
+          where: { id: user.id, version: input.version },
+          data: { status: input.status, version: { increment: 1 } },
         });
-      }
-      if (input.status === "SUSPENDED")
-        await tx.refreshSession.updateMany({
-          where: { userId: user.id, revokedAt: null },
-          data: { revokedAt: new Date() },
+        if (updated.count !== 1)
+          throw new ConflictException("User was updated concurrently");
+        if (input.roleCodes) {
+          await tx.userRole.deleteMany({ where: { userId: user.id } });
+          await tx.userRole.createMany({
+            data: roles.map((role) => ({ userId: user.id, roleId: role.id })),
+          });
+        }
+        if (input.status === "SUSPENDED")
+          await tx.refreshSession.updateMany({
+            where: { userId: user.id, revokedAt: null },
+            data: { revokedAt: new Date() },
+          });
+        await tx.auditEvent.create({
+          data: {
+            tenantId: actor.tenantId,
+            actorUserId: actor.userId,
+            action: "user.updated",
+            resourceType: "user",
+            resourcePublicId: publicId,
+            afterJson: JSON.stringify({
+              status: input.status ?? user.status,
+              roles: nextRoleCodes,
+              version: input.version + 1,
+            }),
+          },
         });
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "user.updated",
-          resourceType: "user",
-          resourcePublicId: publicId,
-          afterJson: JSON.stringify({
-            status: input.status,
-            roles: input.roleCodes,
-            version: input.version + 1,
-          }),
-        },
-      });
-      return {
-        id: publicId,
-        status: input.status,
-        roleCodes: input.roleCodes,
-        version: input.version + 1,
-      };
-    });
+        return {
+          id: publicId,
+          status: input.status ?? user.status,
+          roleCodes: nextRoleCodes,
+          version: input.version + 1,
+        };
+      },
+      { isolationLevel: "Serializable" },
+    );
   }
 
   async resetPassword(
@@ -261,8 +284,13 @@ export class UsersService {
     publicId: string,
     temporaryPassword: string,
   ) {
+    this.assertDirectoryRole(actor);
     const user = await this.prisma.user.findFirst({
-      where: { tenantId: actor.tenantId, publicId },
+      where: {
+        tenantId: actor.tenantId,
+        publicId,
+        ...this.branchScope(actor),
+      },
       select: { id: true },
     });
     if (!user) throw new NotFoundException("User not found");
@@ -295,8 +323,13 @@ export class UsersService {
   }
 
   async activity(actor: Actor, publicId: string) {
+    this.assertDirectoryRole(actor);
     const user = await this.prisma.user.findFirst({
-      where: { tenantId: actor.tenantId, publicId },
+      where: {
+        tenantId: actor.tenantId,
+        publicId,
+        ...this.branchScope(actor),
+      },
       select: { id: true },
     });
     if (!user) throw new NotFoundException("User not found");
@@ -334,4 +367,48 @@ export class UsersService {
       return [];
     }
   }
+
+  private branchScope(actor: Actor) {
+    return userDirectoryBranchScope(actor);
+  }
+
+  private assertDirectoryRole(actor: Actor) {
+    assertAnyRole(
+      actor,
+      OPERATIONS_ROLES,
+      "Only operations can access the tenant user directory",
+    );
+  }
+}
+
+export function userDirectoryWhere(
+  actor: Actor,
+  query: Pick<UserDirectoryQueryDto, "role" | "search" | "status">,
+): Prisma.UserWhereInput {
+  const search = query.search?.trim();
+  return {
+    tenantId: actor.tenantId,
+    ...userDirectoryBranchScope(actor),
+    ...(query.role
+      ? { userRoles: { some: { role: { code: query.role } } } }
+      : {}),
+    ...(query.status === "INVITED"
+      ? { status: "ACTIVE", mustChangePassword: true }
+      : query.status === "ACTIVE"
+        ? { status: "ACTIVE", mustChangePassword: false }
+        : query.status === "SUSPENDED"
+          ? { status: "SUSPENDED" }
+          : {}),
+    ...(search
+      ? {
+          OR: [
+            { displayName: { contains: search } },
+            { email: { contains: search } },
+            { phone: { contains: search } },
+            { branch: { name: { contains: search } } },
+            { client: { displayName: { contains: search } } },
+          ],
+        }
+      : {}),
+  };
 }

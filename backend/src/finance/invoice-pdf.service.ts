@@ -1,11 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import {
-  PDFDocument,
-  StandardFonts,
-  rgb,
-  type PDFFont,
-  type PDFPage,
-} from "pdf-lib";
+import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
 
 interface InvoicePdfData {
   invoiceNumber: string;
@@ -47,8 +42,7 @@ interface InvoicePdfData {
 export class InvoicePdfService {
   async render(data: InvoicePdfData): Promise<Buffer> {
     const document = await PDFDocument.create();
-    const regular = await document.embedFont(StandardFonts.Helvetica);
-    const bold = await document.embedFont(StandardFonts.HelveticaBold);
+    const { regular, bold } = await embedUnicodeFonts(document);
     let page = document.addPage([595, 842]);
     let y = this.header(page, bold, data);
 
@@ -370,6 +364,6 @@ export class InvoicePdfService {
   }
 
   private safe(value: string): string {
-    return value.replace(/[^\x20-\x7E]/g, "?");
+    return value;
   }
 }

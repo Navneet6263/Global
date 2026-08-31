@@ -2,27 +2,36 @@
 
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, ShieldCheck } from "lucide-react";
+import { Loader2, LogOut, ShieldCheck } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { sessionForNav } from "@/lib/auth/session";
 import type { NavWorkspace } from "@/config/navigation";
+import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
 import { ROLE_DEFINITIONS } from "@/config/roles";
 import { initialsOf } from "@/lib/formatting";
-import { logout } from "@/lib/backend-api/auth";
-import { clearIdentity } from "@/lib/auth/platform-session";
+import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { Button } from "@/components/ui/button";
 
 export function AccountFooter({ workspace = "platform-admin" }: { workspace?: NavWorkspace }) {
   const session = sessionForNav(workspace);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [signingOut, setSigningOut] = useState(false);
   const roleLabel = session.roles.map((role) => ROLE_DEFINITIONS[role].label).join(", ");
+  const securityRoute = WORKSPACE_PRESENTATION[workspace].security;
 
   const signOut = async () => {
-    await queryClient.cancelQueries();
-    queryClient.clear();
-    await logout();
-    clearIdentity();
-    await navigate({ to: "/auth", replace: true });
+    setSigningOut(true);
+    try {
+      await queryClient.cancelQueries();
+      await endAuthenticatedSession();
+      queryClient.clear();
+      await navigate({ to: "/auth", replace: true });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Sign out could not be completed");
+      setSigningOut(false);
+    }
   };
 
   return (
@@ -40,14 +49,24 @@ export function AccountFooter({ workspace = "platform-admin" }: { workspace?: Na
       </div>
       <div className="flex items-center gap-2">
         <Button asChild variant="ghost" size="sm" className="flex-1 justify-start">
-          <Link to="/admin/security">
+          <Link to={securityRoute as "/admin/security"}>
             <ShieldCheck className="size-3.5" aria-hidden />
             Security
           </Link>
         </Button>
-        <Button variant="ghost" size="sm" aria-label="Sign out" onClick={() => void signOut()}>
-          <LogOut className="size-3.5" aria-hidden />
-          Sign out
+        <Button
+          variant="ghost"
+          size="sm"
+          aria-label="Sign out"
+          disabled={signingOut}
+          onClick={() => void signOut()}
+        >
+          {signingOut ? (
+            <Loader2 className="size-3.5 animate-spin" aria-hidden />
+          ) : (
+            <LogOut className="size-3.5" aria-hidden />
+          )}
+          {signingOut ? "Signing out" : "Sign out"}
         </Button>
       </div>
     </div>

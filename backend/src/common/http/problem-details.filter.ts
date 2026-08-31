@@ -25,11 +25,12 @@ export class ProblemDetailsFilter implements ExceptionFilter {
     const raw =
       exception instanceof HttpException ? exception.getResponse() : undefined;
     const message = this.messageFrom(raw, exception, status);
+    const path = request.url.split("?", 1)[0] || "/";
 
     if (status >= 500) {
       this.logger.error({
         requestId: request.id,
-        path: request.url,
+        path,
         exception,
       });
     }
@@ -46,7 +47,7 @@ export class ProblemDetailsFilter implements ExceptionFilter {
         title: HttpStatus[status] ?? "Error",
         status,
         detail: message,
-        instance: request.url,
+        instance: path,
         requestId: request.id,
       });
   }

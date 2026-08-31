@@ -37,6 +37,9 @@ const searchSchema = z.object({
   view: z.enum(["board", "table"]).optional(),
   stage: z.string().optional(),
   owner: z.string().optional(),
+  source: z.string().optional(),
+  followUp: z.string().optional(),
+  sort: z.string().optional(),
   search: z.string().optional(),
   savedView: z.string().optional(),
   opportunityId: z.string().optional(),
@@ -70,13 +73,16 @@ function OpportunitiesPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const session = sessionForNav("sales-crm");
   const canWrite = can(session, "crm:write");
-  const canAssign = can(session, "crm:assign");
+  const canAssign = can(session, "crm:write");
 
   const view = search.view ?? "board";
   const query: OpportunityQuery = {
     search: search.search,
     stage: (search.stage as CrmStage | undefined) ?? "all",
     owner: search.owner ?? "all",
+    source: search.source as OpportunityQuery["source"],
+    followUp: search.followUp as OpportunityQuery["followUp"],
+    sort: search.sort as OpportunityQuery["sort"],
     savedView: search.savedView ?? "all",
     page: search.page ?? 1,
     pageSize: view === "board" ? 60 : 10,
@@ -159,12 +165,21 @@ function OpportunitiesPage() {
           description="Clear the filters or create a new opportunity to start a pipeline."
         />
       ) : view === "board" ? (
-        <CrmOpportunityBoard
-          rows={listQuery.data.rows}
-          canWrite={canWrite}
-          onOpen={open}
-          onAdvance={(row, stage) => changeStage.mutate({ opportunityId: row.id, stage })}
-        />
+        <div className="space-y-3">
+          <CrmOpportunityBoard
+            rows={listQuery.data.rows}
+            canWrite={canWrite}
+            onOpen={open}
+            onAdvance={(row, stage) => changeStage.mutate({ opportunityId: row.id, stage })}
+          />
+          <PaginationBar
+            page={listQuery.data.page}
+            pageSize={listQuery.data.pageSize}
+            total={listQuery.data.total}
+            label="opportunities"
+            onPageChange={(page) => setSearch({ page })}
+          />
+        </div>
       ) : (
         <div className="overflow-hidden rounded-[1.5rem] border border-white/80 bg-card/85 shadow-[var(--shadow-card)] backdrop-blur-sm">
           <CrmOpportunityTable rows={listQuery.data.rows} onOpen={open} />

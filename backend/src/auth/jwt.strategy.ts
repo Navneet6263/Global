@@ -45,11 +45,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       },
       include: {
         tenant: true,
+        branch: true,
         client: true,
         userRoles: { include: { role: true } },
       },
     });
     if (!user) throw new UnauthorizedException("Account is unavailable");
+    if (payload.branchId && user.branch?.publicId !== payload.branchId) {
+      throw new UnauthorizedException("Branch access has changed");
+    }
 
     const roles = user.userRoles.map(({ role }) => role.code);
     const permissions = [
@@ -70,6 +74,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       tenantId: user.tenantId,
       tenantPublicId: user.tenant.publicId,
       tenantName: user.tenant.name,
+      branchId: user.branchId ?? undefined,
+      branchPublicId: user.branch?.publicId,
+      branchName: user.branch?.name,
       clientId: user.clientId ?? undefined,
       clientPublicId: user.client?.publicId,
       clientName: user.client?.displayName,

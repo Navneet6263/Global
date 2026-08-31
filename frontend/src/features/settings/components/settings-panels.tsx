@@ -5,36 +5,49 @@ import { Section } from "@/components/layout/section";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { Switch } from "@/components/ui/switch";
 import { formatInr } from "@/lib/formatting";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
 export function OrganisationPanel({ settings }: { settings: PlatformSettings }) {
   const org = settings.organisation;
   return (
     <Section
-      title="Organisation profile"
-      description="Legal identity used on candidate consent forms, reports and invoices."
+      title="Workspace identity"
+      description="Tenant identity and timezone stored by the platform."
     >
-      <dl className="grid gap-4 sm:grid-cols-2">
-        <Detail label="Legal name" value={org.legalName} />
-        <Detail label="Brand name" value={org.brandName} />
-        <Detail label="GSTIN" value={org.gstin} />
-        <Detail label="Timezone" value={org.timezoneLabel} />
-        <Detail label="Support email" value={org.supportEmail} />
-        <Detail label="Support phone" value={org.supportPhone} />
-        <Detail
-          label="Registered address"
-          value={org.registeredAddress}
-          className="sm:col-span-2"
+      <div className="flex flex-wrap items-end gap-x-12 gap-y-4">
+        <dl className="grid min-w-0 flex-1 gap-4 sm:grid-cols-2">
+          <Detail label="Workspace name" value={org.name} />
+          <Detail label="Timezone" value={org.timezone} />
+        </dl>
+        <StatusBadge
+          label={org.status === "ACTIVE" ? "Active" : org.status}
+          tone={org.status === "ACTIVE" ? "success" : "warning"}
         />
-      </dl>
+      </div>
     </Section>
   );
 }
 
-export function BranchesPanel({ settings }: { settings: PlatformSettings }) {
+export function BranchesPanel({
+  settings,
+  onAdd,
+}: {
+  settings: PlatformSettings;
+  onAdd?: () => void;
+}) {
   return (
     <Section
       title="Branches"
       description="Operating locations and field capacity used for case routing."
+      actions={
+        onAdd ? (
+          <Button size="sm" variant="outline" onClick={onAdd}>
+            <Plus className="size-3.5" />
+            Add branch
+          </Button>
+        ) : undefined
+      }
       padded={false}
     >
       <ul className="divide-y divide-border">
@@ -43,8 +56,8 @@ export function BranchesPanel({ settings }: { settings: PlatformSettings }) {
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-foreground">{branch.name}</p>
               <p className="text-[11px] text-muted-foreground">
-                {branch.city}, {branch.state} · {branch.headOfBranch} · {branch.fieldExecutives}{" "}
-                field executives
+                {[branch.code, branch.city].filter(Boolean).join(" · ")} · {branch.fieldExecutives}{" "}
+                active field {branch.fieldExecutives === 1 ? "executive" : "executives"}
               </p>
             </div>
             <StatusBadge
@@ -58,11 +71,25 @@ export function BranchesPanel({ settings }: { settings: PlatformSettings }) {
   );
 }
 
-export function PackagesPanel({ settings }: { settings: PlatformSettings }) {
+export function PackagesPanel({
+  settings,
+  onAdd,
+}: {
+  settings: PlatformSettings;
+  onAdd?: () => void;
+}) {
   return (
     <Section
       title="Service packages"
       description="Check bundles offered to clients, with SLA and unit pricing."
+      actions={
+        onAdd ? (
+          <Button size="sm" variant="outline" onClick={onAdd}>
+            <Plus className="size-3.5" />
+            Add package
+          </Button>
+        ) : undefined
+      }
       padded={false}
     >
       <ul className="divide-y divide-border">
@@ -71,11 +98,11 @@ export function PackagesPanel({ settings }: { settings: PlatformSettings }) {
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-foreground">{pkg.name}</p>
               <p className="text-[11px] text-muted-foreground">
-                {pkg.checks} checks · {pkg.slaDays}-day SLA · {pkg.clientsUsing} clients
+                {pkg.checks} checks · {pkg.tatHours}h turnaround
               </p>
             </div>
             <span className="num text-[13px] font-semibold text-foreground">
-              {formatInr(pkg.unitPrice)}
+              {pkg.unitPrice == null ? "Price not configured" : formatInr(pkg.unitPrice)}
             </span>
             <StatusBadge
               label={pkg.status === "published" ? "Published" : "Draft"}
@@ -93,11 +120,13 @@ export function PolicyPanel({
   description,
   policies,
   onToggle,
+  busy = false,
 }: {
   title: string;
   description: string;
   policies: readonly PolicyToggle[];
-  onToggle: (policy: PolicyToggle) => void;
+  onToggle?: (policy: PolicyToggle) => void;
+  busy?: boolean;
 }) {
   return (
     <Section title={title} description={description} padded={false}>
@@ -110,7 +139,8 @@ export function PolicyPanel({
             </div>
             <Switch
               checked={policy.enabled}
-              onCheckedChange={() => onToggle(policy)}
+              disabled={!onToggle || busy}
+              onCheckedChange={() => onToggle?.(policy)}
               aria-label={policy.label}
             />
           </li>
@@ -124,7 +154,7 @@ export function SlaDefaultsPanel({ settings }: { settings: PlatformSettings }) {
   return (
     <Section
       title="SLA defaults"
-      description="Baseline turnaround and escalation windows per check type."
+      description="Configured turnaround commitment for each service package."
       padded={false}
     >
       <ul className="divide-y divide-border">
@@ -132,7 +162,7 @@ export function SlaDefaultsPanel({ settings }: { settings: PlatformSettings }) {
           <li key={entry.id} className="flex items-center gap-3 px-5 py-3">
             <p className="min-w-0 flex-1 text-[13px] text-foreground">{entry.checkLabel}</p>
             <span className="num text-[12px] text-muted-foreground">
-              {entry.standardHours}h standard · escalate at {entry.escalationHours}h
+              {entry.standardHours} hours
             </span>
           </li>
         ))}
@@ -145,50 +175,14 @@ export function RetentionPanel({ settings }: { settings: PlatformSettings }) {
   return (
     <Section
       title="Data retention"
-      description="Retention windows and disposal method per data class."
+      description="Configured retention window for evidence data."
       padded={false}
     >
       <ul className="divide-y divide-border">
         {settings.retention.map((rule) => (
           <li key={rule.id} className="flex flex-wrap items-center gap-3 px-5 py-3">
             <p className="min-w-0 flex-1 text-[13px] text-foreground">{rule.dataClass}</p>
-            <span className="num text-[12px] text-muted-foreground">
-              {rule.retentionMonths} months · {rule.disposalMethod}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </Section>
-  );
-}
-
-export function NotificationsPanel({
-  settings,
-  onToggle,
-}: {
-  settings: PlatformSettings;
-  onToggle: (id: string) => void;
-}) {
-  return (
-    <Section
-      title="Notification matrix"
-      description="Channels used to notify candidates, clients and internal teams."
-      padded={false}
-    >
-      <ul className="divide-y divide-border">
-        {settings.notifications.map((pref) => (
-          <li key={pref.id} className="flex items-center gap-4 px-5 py-3">
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] text-foreground">{pref.event}</p>
-              <p className="text-[11px] tracking-wide text-muted-foreground uppercase">
-                {pref.channel.replace("_", " ")}
-              </p>
-            </div>
-            <Switch
-              checked={pref.enabled}
-              onCheckedChange={() => onToggle(pref.id)}
-              aria-label={`${pref.event} via ${pref.channel}`}
-            />
+            <span className="num text-[12px] text-muted-foreground">{rule.retentionDays} days</span>
           </li>
         ))}
       </ul>
@@ -197,6 +191,7 @@ export function NotificationsPanel({
 }
 
 function Detail({ label, value, className }: { label: string; value: string; className?: string }) {
+  if (!value.trim()) return null;
   return (
     <div className={className}>
       <dt className="text-[11px] tracking-wide text-muted-foreground uppercase">{label}</dt>

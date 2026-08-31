@@ -54,10 +54,16 @@ export function PortfolioCard({ portfolio, completion }: PortfolioCardProps) {
               <br />
               all clients · all branches
             </span>
-            <span className="num rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-medium">
-              {portfolio.comparison.delta > 0 ? "+" : ""}
-              {portfolio.comparison.delta}%
-            </span>
+            {portfolio.comparison ? (
+              <span className="num rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-medium">
+                {portfolio.comparison.delta > 0 ? "+" : ""}
+                {portfolio.comparison.delta}%
+              </span>
+            ) : (
+              <span className="rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-medium">
+                Live total
+              </span>
+            )}
           </div>
           <span
             aria-hidden

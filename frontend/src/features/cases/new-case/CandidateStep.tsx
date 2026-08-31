@@ -30,12 +30,16 @@ export function CandidateStep({
   onChange,
   clients,
   clientsLoading,
+  clientsError,
+  onRetryClients,
   fixedClient,
 }: {
   draft: CaseDraft;
   onChange: (patch: Partial<CaseDraft>) => void;
   clients: ClientOption[];
   clientsLoading: boolean;
+  clientsError: string | undefined;
+  onRetryClients: () => void;
   fixedClient?: { publicId: string; displayName: string };
 }) {
   return (
@@ -83,6 +87,14 @@ export function CandidateStep({
                 </option>
               ))}
             </select>
+            {clientsError ? (
+              <span className="mt-1.5 block text-[10px] text-critical-foreground">
+                Client list could not be loaded.{" "}
+                <button type="button" className="font-semibold underline" onClick={onRetryClients}>
+                  Retry
+                </button>
+              </span>
+            ) : null}
           </span>
         )}
       </label>
@@ -116,6 +128,10 @@ export function CandidateStep({
           />
         </span>
       </label>
+      <p className="sm:col-span-2 -mt-1 text-[10px] leading-4 text-muted-foreground">
+        Provide at least one verified contact channel. Consent OTP and the secure link are sent to
+        the mobile number first, or to email when mobile is not supplied.
+      </p>
       <div className="sm:col-span-2">
         <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
           Priority

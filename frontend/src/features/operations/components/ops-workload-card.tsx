@@ -54,9 +54,8 @@ export function OpsWorkloadCard({ workload, completed }: OpsWorkloadCardProps) {
               <br />
               all branches · all verifiers
             </span>
-            <span className="num rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-medium">
-              {workload.deltaPercent > 0 ? "+" : ""}
-              {workload.deltaPercent.toFixed(1)}%
+            <span className="rounded-full bg-white/15 px-2 py-0.5 text-[11px] font-medium">
+              Current snapshot
             </span>
           </div>
           <span

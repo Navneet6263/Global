@@ -1,6 +1,8 @@
 import {
   Briefcase,
+  FlaskConical,
   GraduationCap,
+  Globe2,
   Home,
   IdCard,
   Scale,
@@ -10,7 +12,15 @@ import {
 import { z } from "zod";
 
 export type CheckKey =
-  "identity" | "address" | "employment" | "education" | "criminal" | "reference";
+  | "IDENTITY"
+  | "ADDRESS"
+  | "EMPLOYMENT"
+  | "EDUCATION"
+  | "CRIMINAL"
+  | "COURT_RECORD"
+  | "REFERENCE"
+  | "GLOBAL_DATABASE"
+  | "DRUG_TEST";
 
 export type Priority = (typeof priorities)[number];
 
@@ -20,60 +30,50 @@ export type CaseDraft = {
   phone: string;
   clientId: string;
   client: string;
+  servicePackageId: string;
   packageName: string;
+  packageTatHours: number;
   priority: Priority;
   checks: CheckKey[];
 };
 
-export const candidateSchema = z.object({
-  candidate: z.string().trim().min(2, "Candidate name is required"),
-  clientId: z.string().uuid("Choose a client"),
-  client: z.string().trim().min(2, "Client is required"),
-  email: z.union([z.literal(""), z.string().trim().email("Enter a valid email")]),
-  phone: z.union([
-    z.literal(""),
-    z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
-  ]),
-});
+export const candidateSchema = z
+  .object({
+    candidate: z.string().trim().min(2, "Candidate name is required"),
+    clientId: z.string().uuid("Choose a client"),
+    client: z.string().trim().min(2, "Client is required"),
+    email: z.union([z.literal(""), z.string().trim().email("Enter a valid email")]),
+    phone: z.union([
+      z.literal(""),
+      z.string().regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit Indian mobile number"),
+    ]),
+  })
+  .refine((candidate) => Boolean(candidate.email.trim() || candidate.phone), {
+    message: "Enter the candidate email or mobile number",
+    path: ["phone"],
+  });
 
 export const checkCatalog: Array<{
   key: CheckKey;
   label: string;
-  tatDays: number;
   icon: LucideIcon;
 }> = [
-  { key: "identity", label: "Identity (Aadhaar / PAN)", tatDays: 0.6, icon: IdCard },
-  { key: "address", label: "Address (physical)", tatDays: 5.2, icon: Home },
-  { key: "employment", label: "Employment history", tatDays: 2.4, icon: Briefcase },
-  { key: "education", label: "Education", tatDays: 3.1, icon: GraduationCap },
-  { key: "criminal", label: "Criminal / Court", tatDays: 4.6, icon: Scale },
-  { key: "reference", label: "Reference check", tatDays: 1.8, icon: Users },
-];
-
-export const defaultChecks: CheckKey[] = ["identity", "address", "employment", "education"];
-
-export const packages: Array<{ name: string; checks: CheckKey[]; blurb: string }> = [
-  { name: "Gig Basic", checks: ["identity", "address"], blurb: "2 checks · fastest TAT" },
-  {
-    name: "Standard+",
-    checks: ["identity", "address", "employment", "education"],
-    blurb: "4 checks · most used",
-  },
-  {
-    name: "Leadership",
-    checks: ["identity", "address", "employment", "education", "criminal", "reference"],
-    blurb: "6 checks · full BGV",
-  },
+  { key: "IDENTITY", label: "Identity (Aadhaar / PAN)", icon: IdCard },
+  { key: "ADDRESS", label: "Address (physical)", icon: Home },
+  { key: "EMPLOYMENT", label: "Employment history", icon: Briefcase },
+  { key: "EDUCATION", label: "Education", icon: GraduationCap },
+  { key: "CRIMINAL", label: "Criminal record", icon: Scale },
+  { key: "COURT_RECORD", label: "Court record", icon: Scale },
+  { key: "REFERENCE", label: "Reference check", icon: Users },
+  { key: "GLOBAL_DATABASE", label: "Global database", icon: Globe2 },
+  { key: "DRUG_TEST", label: "Drug test", icon: FlaskConical },
 ];
 
 export const priorities = ["Standard", "Priority", "Critical"] as const;
 
-export function estimatedTatDays(checks: CheckKey[], priority: Priority): number {
-  const longestCheck = checkCatalog
-    .filter((check) => checks.includes(check.key))
-    .reduce((max, check) => Math.max(max, check.tatDays), 0);
-  const multiplier = priority === "Critical" ? 0.6 : priority === "Priority" ? 0.8 : 1;
-  return Math.max(1, Math.round(longestCheck * multiplier));
+export function estimatedTatDays(packageTatHours: number, priority: Priority): number {
+  const priorityCap = priority === "Critical" ? 24 : priority === "Priority" ? 48 : 120;
+  return Math.max(1, Math.ceil(Math.min(packageTatHours, priorityCap) / 24));
 }
 
 export function createEmptyCaseDraft(): CaseDraft {
@@ -83,8 +83,10 @@ export function createEmptyCaseDraft(): CaseDraft {
     phone: "",
     clientId: "",
     client: "",
-    packageName: "Standard+",
+    servicePackageId: "",
+    packageName: "",
+    packageTatHours: 0,
     priority: "Standard",
-    checks: [...defaultChecks],
+    checks: [],
   };
 }

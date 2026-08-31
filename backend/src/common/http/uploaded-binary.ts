@@ -1,4 +1,5 @@
-import { BadRequestException } from "@nestjs/common";
+import { BadRequestException, ConflictException } from "@nestjs/common";
+import { createHash } from "node:crypto";
 import type { FastifyRequest } from "fastify";
 
 export interface UploadedBinary {
@@ -32,6 +33,14 @@ export async function readUploadedBinary(
   const buffer = await part.toBuffer();
   if (part.file.truncated || buffer.length > maxBytes) {
     throw new BadRequestException("File exceeds the upload limit");
+  }
+  const claimedDigest = request.headers["x-content-sha256"];
+  if (claimedDigest) {
+    const value = Array.isArray(claimedDigest) ? claimedDigest[0] : claimedDigest;
+    const actual = createHash("sha256").update(buffer).digest("hex");
+    if (!value || !/^[a-f0-9]{64}$/.test(value) || value !== actual) {
+      throw new ConflictException("Uploaded file digest does not match its request header");
+    }
   }
   return {
     buffer,

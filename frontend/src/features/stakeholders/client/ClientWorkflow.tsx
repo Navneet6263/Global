@@ -2,11 +2,13 @@ import {
   ArrowRight,
   CircleCheck,
   FileCheck2,
+  Flame,
   ScanSearch,
   ShieldCheck,
   UserCheck,
 } from "lucide-react";
 
+import { Section } from "@/components/layout/section";
 import type { OperationsDashboard } from "@/lib/api/dashboards";
 
 export function ClientWorkflow({ data }: { data: OperationsDashboard | undefined }) {
@@ -16,95 +18,114 @@ export function ClientWorkflow({ data }: { data: OperationsDashboard | undefined
       hint: "Case setup",
       count: count(data, ["DRAFT", "CONSENT_PENDING"]),
       icon: UserCheck,
-      tone: "blue",
+      colour: "var(--info)",
+      soft: "var(--info-soft)",
     },
     {
       label: "Documents",
       hint: "Collection",
       count: count(data, ["DOCUMENT_PENDING"]),
       icon: FileCheck2,
-      tone: "amber",
+      colour: "var(--warning)",
+      soft: "var(--warning-soft)",
     },
     {
       label: "Verification",
       hint: "Checks running",
       count: count(data, ["READY", "IN_PROGRESS"]),
       icon: ScanSearch,
-      tone: "blue",
+      colour: "var(--mint)",
+      soft: "var(--mint-soft)",
     },
     {
       label: "Information needed",
       hint: "Client action",
       count: count(data, ["CLARIFICATION_PENDING"]),
       icon: CircleCheck,
-      tone: "orange",
+      colour: "var(--primary)",
+      soft: "var(--accent)",
     },
     {
       label: "Quality review",
       hint: "Final review",
       count: count(data, ["QA_PENDING", "QA_REVIEW", "APPROVED"]),
       icon: ShieldCheck,
-      tone: "violet",
+      colour: "var(--review)",
+      soft: "var(--review-soft)",
     },
     {
       label: "Completed",
       hint: "Report ready",
       count: count(data, ["COMPLETED", "CLOSED"]),
       icon: CircleCheck,
-      tone: "emerald",
+      colour: "var(--success)",
+      soft: "var(--success-soft)",
     },
-  ] as const;
-  const activeTotal = stages.slice(0, 5).reduce((sum, stage) => sum + stage.count, 0);
-  const bottleneck = stages
-    .slice(0, 5)
-    .reduce((largest, stage) => (stage.count > largest.count ? stage : largest));
+  ];
+  const total = stages.reduce((sum, stage) => sum + stage.count, 0);
+  const activeStages = stages.slice(0, -1);
+  const bottleneck = activeStages.reduce((largest, stage) =>
+    stage.count > largest.count ? stage : largest,
+  );
 
   return (
-    <section className="rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_16px_44px_-34px_rgba(15,23,42,0.45)]">
-      <header className="flex flex-col gap-2 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h2 className="text-sm font-semibold text-slate-950">Verification flow</h2>
-          <p className="mt-0.5 text-xs text-slate-500">
-            See exactly where every active case is moving or waiting.
-          </p>
-        </div>
-        <div className="rounded-full bg-slate-50 px-3 py-1.5 text-[10px] font-semibold text-slate-600">
-          {activeTotal ? `${bottleneck.label} currently has the most work` : "No active bottleneck"}
-        </div>
-      </header>
-      <div className="grid gap-2 p-4 md:grid-cols-3 xl:grid-cols-6">
-        {stages.map((stage, index) => (
-          <div key={stage.label} className="relative flex min-w-0 items-center gap-3 xl:block">
-            <article className="min-w-0 flex-1 rounded-2xl bg-slate-50/80 p-3.5 ring-1 ring-slate-100">
-              <div className="flex items-start justify-between gap-2">
-                <span className={`grid h-8 w-8 place-items-center rounded-xl ${tones[stage.tone]}`}>
-                  <stage.icon className="h-3.5 w-3.5" />
+    <Section
+      title="Verification flow"
+      description="Live distribution of your portfolio. The busiest waiting stage is highlighted automatically."
+      actions={
+        <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <Flame className="size-3.5 text-primary" aria-hidden />
+          {bottleneck?.count ? `${bottleneck.label} is busiest` : "No active bottleneck"}
+        </span>
+      }
+      bodyClassName="p-4"
+    >
+      <ol className="flex snap-x gap-1 overflow-x-auto pb-1">
+        {stages.map((stage, index) => {
+          const isBottleneck = stage === bottleneck && stage.count > 0;
+          const share = total ? Math.round((stage.count / total) * 100) : 0;
+          return (
+            <li key={stage.label} className="flex min-w-[170px] flex-1 snap-start items-stretch">
+              <article
+                className="flex min-h-40 flex-1 flex-col justify-between rounded-2xl border p-3.5 shadow-[var(--shadow-card)]"
+                style={{
+                  borderColor: isBottleneck
+                    ? "color-mix(in oklab, var(--primary) 40%, white)"
+                    : "var(--border)",
+                  borderTop: `2px solid ${stage.colour}`,
+                  background: `linear-gradient(180deg, ${stage.soft}, color-mix(in oklab, var(--card) 92%, transparent) 58%)`,
+                }}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <span
+                    className="grid size-9 place-items-center rounded-xl border border-white/70"
+                    style={{ color: stage.colour, background: stage.soft }}
+                  >
+                    <stage.icon className="size-4" aria-hidden />
+                  </span>
+                  <span className="num text-[10px] text-muted-foreground">{share}%</span>
+                </div>
+                <div className="mt-5">
+                  <p className="num text-2xl font-medium tracking-[-0.03em] text-foreground">
+                    {stage.count}
+                  </p>
+                  <p className="mt-2 text-[12px] font-semibold text-foreground">{stage.label}</p>
+                  <p className="mt-0.5 text-[10px] text-muted-foreground">{stage.hint}</p>
+                </div>
+              </article>
+              {index < stages.length - 1 ? (
+                <span className="flex w-4 items-center justify-center" aria-hidden>
+                  <ArrowRight className="size-3.5 text-border-strong" />
                 </span>
-                <span className="text-xl font-semibold tracking-tight">{stage.count}</span>
-              </div>
-              <p className="mt-4 truncate text-[11px] font-semibold text-slate-800">
-                {stage.label}
-              </p>
-              <p className="mt-0.5 text-[10px] text-slate-500">{stage.hint}</p>
-            </article>
-            {index < stages.length - 1 ? (
-              <ArrowRight className="hidden h-3.5 w-3.5 shrink-0 text-slate-300 xl:absolute xl:-right-[0.44rem] xl:top-1/2 xl:block xl:z-10" />
-            ) : null}
-          </div>
-        ))}
-      </div>
-    </section>
+              ) : null}
+            </li>
+          );
+        })}
+      </ol>
+    </Section>
   );
 }
 
 function count(data: OperationsDashboard | undefined, statuses: string[]) {
   return statuses.reduce((sum, status) => sum + (data?.statusMix[status] ?? 0), 0);
 }
-
-const tones = {
-  blue: "bg-blue-100 text-blue-700",
-  amber: "bg-amber-100 text-amber-700",
-  orange: "bg-orange-100 text-orange-700",
-  violet: "bg-violet-100 text-violet-700",
-  emerald: "bg-emerald-100 text-emerald-700",
-} as const;

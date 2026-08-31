@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus, Users } from "lucide-react";
 import { toast } from "sonner";
@@ -21,11 +22,17 @@ import {
 import { UserTable } from "@/features/users/components/user-table";
 import { CreateUserDialog } from "@/features/users/components/create-user-dialog";
 import {
+  TemporaryPasswordDialog,
+  type TemporaryPasswordReceipt,
+} from "@/features/users/components/temporary-password-dialog";
+import {
   useCreateUser,
   useResetUserPassword,
   useSetUserStatus,
   useUsers,
 } from "@/features/users/hooks/use-users";
+import { listBranches } from "@/lib/backend-api/settings";
+import { listAllClients } from "@/lib/backend-api/cases";
 
 const STATUS_OPTIONS: { value: UserStatus | "all"; label: string }[] = [
   { value: "all", label: "All statuses" },
@@ -62,11 +69,20 @@ function UsersPage() {
     pageSize: 10,
   });
   const [creating, setCreating] = useState(false);
+  const [passwordReceipt, setPasswordReceipt] = useState<TemporaryPasswordReceipt | null>(null);
 
   const { data, isPending, isError, isFetching, refetch } = useUsers(query);
   const createUser = useCreateUser();
   const setStatus = useSetUserStatus();
   const resetPassword = useResetUserPassword();
+  const scopes = useQuery({
+    queryKey: ["users", "scope-options"],
+    queryFn: async () => {
+      const [branches, clients] = await Promise.all([listBranches(), listAllClients()]);
+      return { branches: branches.items, clients };
+    },
+    staleTime: 60_000,
+  });
   const rows = data?.rows ?? [];
 
   return (
@@ -88,7 +104,7 @@ function UsersPage() {
           <Input
             value={query.search ?? ""}
             onChange={(event) => setQuery((c) => ({ ...c, search: event.target.value, page: 1 }))}
-            placeholder="Search name, employee ID or email"
+            placeholder="Search name or email"
             aria-label="Search users"
             className="w-full sm:max-w-xs"
           />
@@ -160,15 +176,24 @@ function UsersPage() {
                       toast.success(
                         `${user.fullName} ${next === "active" ? "reactivated" : "suspended"}`,
                       ),
+                    onError: (error: Error) =>
+                      toast.error("User access could not be updated", {
+                        description: error.message,
+                      }),
                   },
                 );
               }}
               onResetPassword={(user) =>
                 resetPassword.mutate(user.id, {
                   onSuccess: (result) =>
-                    toast.success(`Temporary password issued for ${user.fullName}`, {
-                      description: `Share securely: ${result.temporaryPassword}`,
+                    setPasswordReceipt({
+                      kind: "reset",
+                      fullName: user.fullName,
+                      email: user.email,
+                      password: result.temporaryPassword,
                     }),
+                  onError: (error: Error) =>
+                    toast.error("Password reset failed", { description: error.message }),
                 })
               }
             />
@@ -186,17 +211,38 @@ function UsersPage() {
       <CreateUserDialog
         open={creating}
         submitting={createUser.isPending}
+        branches={(scopes.data?.branches ?? []).map((branch) => ({
+          id: branch.id,
+          label: `${branch.name}${branch.city ? ` · ${branch.city}` : ""}`,
+        }))}
+        clients={(scopes.data?.clients ?? []).map((client) => ({
+          id: client.publicId,
+          label: client.displayName,
+        }))}
         onOpenChange={setCreating}
         onSubmit={(input) =>
           createUser.mutate(input, {
             onSuccess: (result) => {
               setCreating(false);
-              toast.success(`${result.user.fullName} created`, {
-                description: `Temporary password: ${result.temporaryPassword}`,
+              setPasswordReceipt({
+                kind: "created",
+                fullName: result.user.fullName,
+                email: result.user.email,
+                password: result.temporaryPassword,
               });
             },
+            onError: (error: Error) =>
+              toast.error("User ID could not be created", { description: error.message }),
           })
         }
+      />
+      <TemporaryPasswordDialog
+        receipt={passwordReceipt}
+        onClose={() => {
+          setPasswordReceipt(null);
+          createUser.reset();
+          resetPassword.reset();
+        }}
       />
     </div>
   );

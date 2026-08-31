@@ -80,6 +80,7 @@ export const ModelName = {
   OutboxEvent: 'OutboxEvent',
   IdempotencyKey: 'IdempotencyKey',
   TenantFieldPolicy: 'TenantFieldPolicy',
+  TenantCrmSettings: 'TenantCrmSettings',
   SalesOpportunity: 'SalesOpportunity',
   SalesActivity: 'SalesActivity',
   Invoice: 'Invoice',
@@ -264,6 +265,7 @@ export const VerificationCaseScalarFieldEnum = {
   tenantId: 'tenantId',
   branchId: 'branchId',
   clientId: 'clientId',
+  servicePackageId: 'servicePackageId',
   subjectId: 'subjectId',
   assignedOpsUserId: 'assignedOpsUserId',
   qaReviewerId: 'qaReviewerId',
@@ -571,6 +573,8 @@ export const OutboxEventScalarFieldEnum = {
   status: 'status',
   attempts: 'attempts',
   availableAt: 'availableAt',
+  claimedAt: 'claimedAt',
+  claimToken: 'claimToken',
   processedAt: 'processedAt',
   createdAt: 'createdAt'
 } as const
@@ -586,6 +590,9 @@ export const IdempotencyKeyScalarFieldEnum = {
   requestHash: 'requestHash',
   responseCode: 'responseCode',
   responseJson: 'responseJson',
+  responseCiphertext: 'responseCiphertext',
+  responseKeyVersion: 'responseKeyVersion',
+  completedAt: 'completedAt',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 } as const
@@ -611,6 +618,25 @@ export const TenantFieldPolicyScalarFieldEnum = {
 export type TenantFieldPolicyScalarFieldEnum = (typeof TenantFieldPolicyScalarFieldEnum)[keyof typeof TenantFieldPolicyScalarFieldEnum]
 
 
+export const TenantCrmSettingsScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  newProbability: 'newProbability',
+  qualifiedProbability: 'qualifiedProbability',
+  proposalProbability: 'proposalProbability',
+  negotiationProbability: 'negotiationProbability',
+  wonProbability: 'wonProbability',
+  lostProbability: 'lostProbability',
+  leadSourcesJson: 'leadSourcesJson',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantCrmSettingsScalarFieldEnum = (typeof TenantCrmSettingsScalarFieldEnum)[keyof typeof TenantCrmSettingsScalarFieldEnum]
+
+
 export const SalesOpportunityScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -618,7 +644,10 @@ export const SalesOpportunityScalarFieldEnum = {
   clientId: 'clientId',
   ownerId: 'ownerId',
   companyName: 'companyName',
+  city: 'city',
+  industry: 'industry',
   contactName: 'contactName',
+  contactTitle: 'contactTitle',
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
   stage: 'stage',
@@ -630,6 +659,7 @@ export const SalesOpportunityScalarFieldEnum = {
   notes: 'notes',
   lostReason: 'lostReason',
   closedAt: 'closedAt',
+  onboardingHandoffAt: 'onboardingHandoffAt',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

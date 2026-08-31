@@ -7,6 +7,10 @@ import {
 } from "../src/auth/password-policy";
 import { PrismaClient } from "../src/generated/prisma/client";
 
+if (process.env.NODE_ENV === "production") {
+  throw new Error("Dashboard test users cannot be provisioned in production");
+}
+
 const tenantCode = process.env.DASHBOARD_USER_TENANT_CODE?.trim() || "SAPLING";
 const emailDomain =
   process.env.DASHBOARD_USER_DOMAIN?.trim().toLowerCase() || "greencall.com";

@@ -31,6 +31,7 @@ export type VerificationCaseAvgAggregateOutputType = {
   tenantId: number | null
   branchId: number | null
   clientId: number | null
+  servicePackageId: number | null
   subjectId: number | null
   assignedOpsUserId: number | null
   qaReviewerId: number | null
@@ -42,6 +43,7 @@ export type VerificationCaseSumAggregateOutputType = {
   tenantId: bigint | null
   branchId: bigint | null
   clientId: bigint | null
+  servicePackageId: bigint | null
   subjectId: bigint | null
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
@@ -54,6 +56,7 @@ export type VerificationCaseMinAggregateOutputType = {
   tenantId: bigint | null
   branchId: bigint | null
   clientId: bigint | null
+  servicePackageId: bigint | null
   subjectId: bigint | null
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
@@ -76,6 +79,7 @@ export type VerificationCaseMaxAggregateOutputType = {
   tenantId: bigint | null
   branchId: bigint | null
   clientId: bigint | null
+  servicePackageId: bigint | null
   subjectId: bigint | null
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
@@ -98,6 +102,7 @@ export type VerificationCaseCountAggregateOutputType = {
   tenantId: number
   branchId: number
   clientId: number
+  servicePackageId: number
   subjectId: number
   assignedOpsUserId: number
   qaReviewerId: number
@@ -121,6 +126,7 @@ export type VerificationCaseAvgAggregateInputType = {
   tenantId?: true
   branchId?: true
   clientId?: true
+  servicePackageId?: true
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
@@ -132,6 +138,7 @@ export type VerificationCaseSumAggregateInputType = {
   tenantId?: true
   branchId?: true
   clientId?: true
+  servicePackageId?: true
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
@@ -144,6 +151,7 @@ export type VerificationCaseMinAggregateInputType = {
   tenantId?: true
   branchId?: true
   clientId?: true
+  servicePackageId?: true
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
@@ -166,6 +174,7 @@ export type VerificationCaseMaxAggregateInputType = {
   tenantId?: true
   branchId?: true
   clientId?: true
+  servicePackageId?: true
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
@@ -188,6 +197,7 @@ export type VerificationCaseCountAggregateInputType = {
   tenantId?: true
   branchId?: true
   clientId?: true
+  servicePackageId?: true
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
@@ -297,6 +307,7 @@ export type VerificationCaseGroupByOutputType = {
   tenantId: bigint
   branchId: bigint | null
   clientId: bigint
+  servicePackageId: bigint | null
   subjectId: bigint
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
@@ -342,6 +353,7 @@ export type VerificationCaseWhereInput = {
   tenantId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
   branchId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   clientId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
+  servicePackageId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   subjectId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
   assignedOpsUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
@@ -359,6 +371,7 @@ export type VerificationCaseWhereInput = {
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  servicePackage?: Prisma.XOR<Prisma.ServicePackageNullableScalarRelationFilter, Prisma.ServicePackageWhereInput> | null
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   assignedOpsUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   qaReviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -380,6 +393,7 @@ export type VerificationCaseOrderByWithRelationInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrderInput | Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -397,6 +411,7 @@ export type VerificationCaseOrderByWithRelationInput = {
   tenant?: Prisma.TenantOrderByWithRelationInput
   branch?: Prisma.BranchOrderByWithRelationInput
   client?: Prisma.ClientOrderByWithRelationInput
+  servicePackage?: Prisma.ServicePackageOrderByWithRelationInput
   subject?: Prisma.SubjectOrderByWithRelationInput
   assignedOpsUser?: Prisma.UserOrderByWithRelationInput
   qaReviewer?: Prisma.UserOrderByWithRelationInput
@@ -422,6 +437,7 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   tenantId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
   branchId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   clientId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
+  servicePackageId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   subjectId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
   assignedOpsUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
@@ -439,6 +455,7 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
+  servicePackage?: Prisma.XOR<Prisma.ServicePackageNullableScalarRelationFilter, Prisma.ServicePackageWhereInput> | null
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   assignedOpsUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   qaReviewer?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -460,6 +477,7 @@ export type VerificationCaseOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrderInput | Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrderInput | Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -490,6 +508,7 @@ export type VerificationCaseScalarWhereWithAggregatesInput = {
   tenantId?: Prisma.BigIntWithAggregatesFilter<"VerificationCase"> | bigint | number
   branchId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
   clientId?: Prisma.BigIntWithAggregatesFilter<"VerificationCase"> | bigint | number
+  servicePackageId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
   subjectId?: Prisma.BigIntWithAggregatesFilter<"VerificationCase"> | bigint | number
   assignedOpsUserId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
@@ -523,6 +542,7 @@ export type VerificationCaseCreateInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -544,6 +564,7 @@ export type VerificationCaseUncheckedCreateInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -587,6 +608,7 @@ export type VerificationCaseUpdateInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -608,6 +630,7 @@ export type VerificationCaseUncheckedUpdateInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -639,6 +662,7 @@ export type VerificationCaseCreateManyInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -677,6 +701,7 @@ export type VerificationCaseUncheckedUpdateManyInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -714,6 +739,7 @@ export type VerificationCaseCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
@@ -735,6 +761,7 @@ export type VerificationCaseAvgOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
@@ -747,6 +774,7 @@ export type VerificationCaseMaxOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
@@ -769,6 +797,7 @@ export type VerificationCaseMinOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
@@ -790,6 +819,7 @@ export type VerificationCaseSumOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   branchId?: Prisma.SortOrder
   clientId?: Prisma.SortOrder
+  servicePackageId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
@@ -1016,6 +1046,48 @@ export type VerificationCaseUncheckedUpdateManyWithoutClientNestedInput = {
   deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
 }
 
+export type VerificationCaseCreateNestedManyWithoutServicePackageInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput> | Prisma.VerificationCaseCreateWithoutServicePackageInput[] | Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput | Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput[]
+  createMany?: Prisma.VerificationCaseCreateManyServicePackageInputEnvelope
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+}
+
+export type VerificationCaseUncheckedCreateNestedManyWithoutServicePackageInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput> | Prisma.VerificationCaseCreateWithoutServicePackageInput[] | Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput | Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput[]
+  createMany?: Prisma.VerificationCaseCreateManyServicePackageInputEnvelope
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+}
+
+export type VerificationCaseUpdateManyWithoutServicePackageNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput> | Prisma.VerificationCaseCreateWithoutServicePackageInput[] | Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput | Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput[]
+  upsert?: Prisma.VerificationCaseUpsertWithWhereUniqueWithoutServicePackageInput | Prisma.VerificationCaseUpsertWithWhereUniqueWithoutServicePackageInput[]
+  createMany?: Prisma.VerificationCaseCreateManyServicePackageInputEnvelope
+  set?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  disconnect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  delete?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutServicePackageInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutServicePackageInput[]
+  updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutServicePackageInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutServicePackageInput[]
+  deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
+}
+
+export type VerificationCaseUncheckedUpdateManyWithoutServicePackageNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput> | Prisma.VerificationCaseCreateWithoutServicePackageInput[] | Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput | Prisma.VerificationCaseCreateOrConnectWithoutServicePackageInput[]
+  upsert?: Prisma.VerificationCaseUpsertWithWhereUniqueWithoutServicePackageInput | Prisma.VerificationCaseUpsertWithWhereUniqueWithoutServicePackageInput[]
+  createMany?: Prisma.VerificationCaseCreateManyServicePackageInputEnvelope
+  set?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  disconnect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  delete?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutServicePackageInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutServicePackageInput[]
+  updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutServicePackageInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutServicePackageInput[]
+  deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
+}
+
 export type VerificationCaseCreateNestedManyWithoutSubjectInput = {
   create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutSubjectInput, Prisma.VerificationCaseUncheckedCreateWithoutSubjectInput> | Prisma.VerificationCaseCreateWithoutSubjectInput[] | Prisma.VerificationCaseUncheckedCreateWithoutSubjectInput[]
   connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutSubjectInput | Prisma.VerificationCaseCreateOrConnectWithoutSubjectInput[]
@@ -1216,6 +1288,7 @@ export type VerificationCaseCreateWithoutTenantInput = {
   updatedAt?: Date | string
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -1236,6 +1309,7 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   publicId?: string
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -1296,6 +1370,7 @@ export type VerificationCaseScalarWhereInput = {
   tenantId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
   branchId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   clientId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
+  servicePackageId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   subjectId?: Prisma.BigIntFilter<"VerificationCase"> | bigint | number
   assignedOpsUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
@@ -1328,6 +1403,7 @@ export type VerificationCaseCreateWithoutBranchInput = {
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -1348,6 +1424,7 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   publicId?: string
   tenantId: bigint | number
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -1416,6 +1493,7 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
   checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
@@ -1436,6 +1514,7 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
@@ -1487,6 +1566,7 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
@@ -1507,6 +1587,7 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaClaimedAt?: Date | string | null
@@ -1589,6 +1670,7 @@ export type VerificationCaseCreateWithoutClientInput = {
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -1609,6 +1691,7 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   publicId?: string
   tenantId: bigint | number
   branchId?: bigint | number | null
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -1660,6 +1743,95 @@ export type VerificationCaseUpdateManyWithWhereWithoutClientInput = {
   data: Prisma.XOR<Prisma.VerificationCaseUpdateManyMutationInput, Prisma.VerificationCaseUncheckedUpdateManyWithoutClientInput>
 }
 
+export type VerificationCaseCreateWithoutServicePackageInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutServicePackageInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput>
+}
+
+export type VerificationCaseCreateManyServicePackageInputEnvelope = {
+  data: Prisma.VerificationCaseCreateManyServicePackageInput | Prisma.VerificationCaseCreateManyServicePackageInput[]
+}
+
+export type VerificationCaseUpsertWithWhereUniqueWithoutServicePackageInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedUpdateWithoutServicePackageInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedCreateWithoutServicePackageInput>
+}
+
+export type VerificationCaseUpdateWithWhereUniqueWithoutServicePackageInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutServicePackageInput, Prisma.VerificationCaseUncheckedUpdateWithoutServicePackageInput>
+}
+
+export type VerificationCaseUpdateManyWithWhereWithoutServicePackageInput = {
+  where: Prisma.VerificationCaseScalarWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateManyMutationInput, Prisma.VerificationCaseUncheckedUpdateManyWithoutServicePackageInput>
+}
+
 export type VerificationCaseCreateWithoutSubjectInput = {
   id?: bigint | number
   publicId?: string
@@ -1677,6 +1849,7 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
   checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
@@ -1697,6 +1870,7 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
@@ -1764,6 +1938,7 @@ export type VerificationCaseCreateWithoutChecksInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -1784,6 +1959,7 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -1842,6 +2018,7 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -1862,6 +2039,7 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -1904,6 +2082,7 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -1924,6 +2103,7 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -1982,6 +2162,7 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2002,6 +2183,7 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2044,6 +2226,7 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2064,6 +2247,7 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2122,6 +2306,7 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2142,6 +2327,7 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2184,6 +2370,7 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2204,6 +2391,7 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2262,6 +2450,7 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2282,6 +2471,7 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2324,6 +2514,7 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2344,6 +2535,7 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2402,6 +2594,7 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2422,6 +2615,7 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2464,6 +2658,7 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2484,6 +2679,7 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2542,6 +2738,7 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2562,6 +2759,7 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2604,6 +2802,7 @@ export type VerificationCaseCreateWithoutReportsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2624,6 +2823,7 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2682,6 +2882,7 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2702,6 +2903,7 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2744,6 +2946,7 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2764,6 +2967,7 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2822,6 +3026,7 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2842,6 +3047,7 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -2884,6 +3090,7 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -2904,6 +3111,7 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -2962,6 +3170,7 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -2982,6 +3191,7 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3024,6 +3234,7 @@ export type VerificationCaseCreateWithoutCandidateAccessInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
   assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
   qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
@@ -3044,6 +3255,7 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -3102,6 +3314,7 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -3122,6 +3335,7 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3151,6 +3365,7 @@ export type VerificationCaseCreateManyTenantInput = {
   publicId?: string
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -3183,6 +3398,7 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -3203,6 +3419,7 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3234,6 +3451,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutTenantInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3254,6 +3472,7 @@ export type VerificationCaseCreateManyBranchInput = {
   publicId?: string
   tenantId: bigint | number
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -3286,6 +3505,7 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -3306,6 +3526,7 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3337,6 +3558,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutBranchInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3358,6 +3580,7 @@ export type VerificationCaseCreateManyAssignedOpsUserInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
@@ -3378,6 +3601,7 @@ export type VerificationCaseCreateManyQaReviewerInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaClaimedAt?: Date | string | null
@@ -3410,6 +3634,7 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
   checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
@@ -3430,6 +3655,7 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3461,6 +3687,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3493,6 +3720,7 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
@@ -3513,6 +3741,7 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3544,6 +3773,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutQaReviewerInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3563,6 +3793,7 @@ export type VerificationCaseCreateManyClientInput = {
   publicId?: string
   tenantId: bigint | number
   branchId?: bigint | number | null
+  servicePackageId?: bigint | number | null
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
@@ -3595,6 +3826,7 @@ export type VerificationCaseUpdateWithoutClientInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
@@ -3615,6 +3847,7 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3646,6 +3879,114 @@ export type VerificationCaseUncheckedUpdateManyWithoutClientInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VerificationCaseCreateManyServicePackageInput = {
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VerificationCaseUpdateWithoutServicePackageInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateManyWithoutServicePackageInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -3667,6 +4008,7 @@ export type VerificationCaseCreateManySubjectInput = {
   tenantId: bigint | number
   branchId?: bigint | number | null
   clientId: bigint | number
+  servicePackageId?: bigint | number | null
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
@@ -3699,6 +4041,7 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
   qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
   checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
@@ -3719,6 +4062,7 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3750,6 +4094,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutSubjectInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3883,6 +4228,7 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   tenantId?: boolean
   branchId?: boolean
   clientId?: boolean
+  servicePackageId?: boolean
   subjectId?: boolean
   assignedOpsUserId?: boolean
   qaReviewerId?: boolean
@@ -3900,6 +4246,7 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.VerificationCase$branchArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  servicePackage?: boolean | Prisma.VerificationCase$servicePackageArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   assignedOpsUser?: boolean | Prisma.VerificationCase$assignedOpsUserArgs<ExtArgs>
   qaReviewer?: boolean | Prisma.VerificationCase$qaReviewerArgs<ExtArgs>
@@ -3924,6 +4271,7 @@ export type VerificationCaseSelectScalar = {
   tenantId?: boolean
   branchId?: boolean
   clientId?: boolean
+  servicePackageId?: boolean
   subjectId?: boolean
   assignedOpsUserId?: boolean
   qaReviewerId?: boolean
@@ -3940,11 +4288,12 @@ export type VerificationCaseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
+export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
 export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.VerificationCase$branchArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
+  servicePackage?: boolean | Prisma.VerificationCase$servicePackageArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   assignedOpsUser?: boolean | Prisma.VerificationCase$assignedOpsUserArgs<ExtArgs>
   qaReviewer?: boolean | Prisma.VerificationCase$qaReviewerArgs<ExtArgs>
@@ -3967,6 +4316,7 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     tenant: Prisma.$TenantPayload<ExtArgs>
     branch: Prisma.$BranchPayload<ExtArgs> | null
     client: Prisma.$ClientPayload<ExtArgs>
+    servicePackage: Prisma.$ServicePackagePayload<ExtArgs> | null
     subject: Prisma.$SubjectPayload<ExtArgs>
     assignedOpsUser: Prisma.$UserPayload<ExtArgs> | null
     qaReviewer: Prisma.$UserPayload<ExtArgs> | null
@@ -3987,6 +4337,7 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     tenantId: bigint
     branchId: bigint | null
     clientId: bigint
+    servicePackageId: bigint | null
     subjectId: bigint
     assignedOpsUserId: bigint | null
     qaReviewerId: bigint | null
@@ -4344,6 +4695,7 @@ export interface Prisma__VerificationCaseClient<T, Null = never, ExtArgs extends
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   branch<T extends Prisma.VerificationCase$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$branchArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  servicePackage<T extends Prisma.VerificationCase$servicePackageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$servicePackageArgs<ExtArgs>>): Prisma.Prisma__ServicePackageClient<runtime.Types.Result.GetResult<Prisma.$ServicePackagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   subject<T extends Prisma.SubjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SubjectDefaultArgs<ExtArgs>>): Prisma.Prisma__SubjectClient<runtime.Types.Result.GetResult<Prisma.$SubjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   assignedOpsUser<T extends Prisma.VerificationCase$assignedOpsUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$assignedOpsUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   qaReviewer<T extends Prisma.VerificationCase$qaReviewerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$qaReviewerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -4391,6 +4743,7 @@ export interface VerificationCaseFieldRefs {
   readonly tenantId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly branchId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly clientId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
+  readonly servicePackageId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly subjectId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly assignedOpsUserId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly qaReviewerId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
@@ -4768,6 +5121,25 @@ export type VerificationCase$branchArgs<ExtArgs extends runtime.Types.Extensions
    */
   include?: Prisma.BranchInclude<ExtArgs> | null
   where?: Prisma.BranchWhereInput
+}
+
+/**
+ * VerificationCase.servicePackage
+ */
+export type VerificationCase$servicePackageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServicePackage
+   */
+  select?: Prisma.ServicePackageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ServicePackage
+   */
+  omit?: Prisma.ServicePackageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServicePackageInclude<ExtArgs> | null
+  where?: Prisma.ServicePackageWhereInput
 }
 
 /**

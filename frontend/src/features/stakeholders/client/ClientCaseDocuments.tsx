@@ -9,23 +9,47 @@ import { humanize, statusTone } from "./client-portal-utils";
 
 type CaseDocument = CaseDetail["documents"][number];
 
-export function ClientCaseDocuments({ caseId, items }: { caseId: string; items: CaseDocument[] }) {
+const uploadableStatuses = new Set([
+  "DRAFT",
+  "CONSENT_PENDING",
+  "DOCUMENT_PENDING",
+  "IN_PROGRESS",
+  "CLARIFICATION_PENDING",
+]);
+
+export function ClientCaseDocuments({
+  caseId,
+  caseStatus,
+  items,
+}: {
+  caseId: string;
+  caseStatus: string;
+  items: CaseDocument[];
+}) {
+  const canUpload = uploadableStatuses.has(caseStatus);
   return (
-    <section className="rounded-2xl border border-slate-200">
-      <header className="border-b border-slate-100 px-4 py-3">
-        <h3 className="text-xs font-semibold">Documents</h3>
-        <p className="mt-0.5 text-[10px] text-slate-500">
+    <section className="surface overflow-hidden rounded-2xl">
+      <header className="border-b border-border px-4 py-3">
+        <h3 className="text-xs font-semibold text-foreground">Documents</h3>
+        <p className="mt-0.5 text-[10px] text-muted-foreground">
           Secure versions, current review state and re-upload controls
         </p>
       </header>
       <div className="space-y-2 p-3">
         {items.map((document) => (
-          <DocumentRow key={document.publicId} caseId={caseId} item={document} />
+          <DocumentRow
+            key={document.publicId}
+            caseId={caseId}
+            item={document}
+            canUpload={canUpload}
+          />
         ))}
         {!items.length ? (
           <div className="flex flex-col items-center py-7 text-center">
-            <FileUp className="h-5 w-5 text-slate-300" />
-            <p className="mt-2 text-xs text-slate-500">No document has been requested yet.</p>
+            <FileUp className="size-5 text-muted-foreground/45" />
+            <p className="mt-2 text-xs text-muted-foreground">
+              No document has been requested yet.
+            </p>
           </div>
         ) : null}
       </div>
@@ -33,7 +57,15 @@ export function ClientCaseDocuments({ caseId, items }: { caseId: string; items: 
   );
 }
 
-function DocumentRow({ caseId, item }: { caseId: string; item: CaseDocument }) {
+function DocumentRow({
+  caseId,
+  item,
+  canUpload,
+}: {
+  caseId: string;
+  item: CaseDocument;
+  canUpload: boolean;
+}) {
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File>();
   const upload = useMutation({
@@ -50,19 +82,19 @@ function DocumentRow({ caseId, item }: { caseId: string; item: CaseDocument }) {
   });
   const latest = item.versions.at(-1);
   return (
-    <article className="rounded-2xl bg-slate-50/80 p-3.5 ring-1 ring-slate-100">
+    <article className="rounded-2xl border border-border bg-card/70 p-3.5 shadow-[var(--shadow-card)]">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-slate-500 shadow-sm">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-mint-soft text-mint-deep shadow-[var(--shadow-card)]">
             {item.currentVersion ? (
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="size-4 text-success" />
             ) : (
               <FileUp className="h-4 w-4" />
             )}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-xs font-semibold">{humanize(item.type)}</p>
-            <p className="mt-0.5 truncate text-[10px] text-slate-500">
+            <p className="truncate text-xs font-semibold text-foreground">{humanize(item.type)}</p>
+            <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
               {latest
                 ? `${latest.originalName} · version ${item.currentVersion}`
                 : "Upload is still pending"}
@@ -75,33 +107,39 @@ function DocumentRow({ caseId, item }: { caseId: string; item: CaseDocument }) {
           {humanize(item.status)}
         </span>
       </div>
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-        <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white px-3 py-2 text-[10px] text-slate-500 hover:border-orange-300">
-          <UploadCloud className="h-3.5 w-3.5 shrink-0" />
-          <span className="truncate">
-            {file?.name ?? (item.currentVersion ? "Choose replacement file" : "Choose document")}
-          </span>
-          <input
-            type="file"
-            accept=".pdf,.png,.jpg,.jpeg"
-            className="sr-only"
-            onChange={(event) => setFile(event.target.files?.[0])}
-          />
-        </label>
-        <button
-          type="button"
-          onClick={() => upload.mutate()}
-          disabled={!file || upload.isPending}
-          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-slate-950 px-4 text-[10px] font-semibold text-white disabled:opacity-35"
-        >
-          {upload.isPending ? (
-            <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
-          ) : (
-            <UploadCloud className="h-3.5 w-3.5" />
-          )}
-          {item.currentVersion ? "Upload new version" : "Upload"}
-        </button>
-      </div>
+      {canUpload ? (
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+          <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border-strong bg-card px-3 py-2 text-[10px] text-muted-foreground hover:border-primary/45 hover:text-foreground">
+            <UploadCloud className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">
+              {file?.name ?? (item.currentVersion ? "Choose replacement file" : "Choose document")}
+            </span>
+            <input
+              type="file"
+              accept=".pdf,.png,.jpg,.jpeg"
+              className="sr-only"
+              onChange={(event) => setFile(event.target.files?.[0])}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => upload.mutate()}
+            disabled={!file || upload.isPending}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-primary px-4 text-[10px] font-semibold text-primary-foreground shadow-[var(--shadow-card)] disabled:opacity-35"
+          >
+            {upload.isPending ? (
+              <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <UploadCloud className="h-3.5 w-3.5" />
+            )}
+            {item.currentVersion ? "Upload new version" : "Upload"}
+          </button>
+        </div>
+      ) : (
+        <p className="mt-3 rounded-xl bg-muted px-3 py-2 text-[10px] text-muted-foreground">
+          Uploads are locked after verification enters review or completion.
+        </p>
+      )}
     </article>
   );
 }

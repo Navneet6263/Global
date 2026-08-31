@@ -17,7 +17,52 @@ export const caseListSelect = {
   updatedAt: true,
   subject: { select: subjectPublicSelect },
   client: { select: { publicId: true, code: true, displayName: true } },
-  checks: { select: checkPublicSelect, orderBy: { createdAt: "asc" as const } },
+  servicePackage: {
+    select: { publicId: true, code: true, name: true, tatHours: true },
+  },
+  branch: { select: { publicId: true, name: true, city: true } },
+  assignedOpsUser: { select: { publicId: true, displayName: true } },
+  checks: {
+    select: {
+      ...checkPublicSelect,
+      tasks: {
+        select: {
+          publicId: true,
+          status: true,
+          instructions: true,
+          blockerReason: true,
+          dueAt: true,
+          startedAt: true,
+          completedAt: true,
+          version: true,
+          assignee: {
+            select: { publicId: true, displayName: true, email: true },
+          },
+        },
+        orderBy: { createdAt: "desc" as const },
+      },
+    },
+    orderBy: { createdAt: "asc" as const },
+  },
+  fieldVisits: {
+    select: {
+      publicId: true,
+      status: true,
+      version: true,
+      address: true,
+      geofenceMeters: true,
+      distanceMeters: true,
+      capturedAt: true,
+      checkedInAt: true,
+      completedAt: true,
+      createdAt: true,
+      assignee: {
+        select: { publicId: true, displayName: true, email: true },
+      },
+      _count: { select: { evidence: true } },
+    },
+    orderBy: { createdAt: "desc" as const },
+  },
 } as const;
 
 export const caseDetailSelect = {
@@ -131,6 +176,7 @@ export const caseDetailSelect = {
       distanceMeters: true,
       capturedAt: true,
       completedAt: true,
+      createdAt: true,
       checkedInAt: true,
       checkInAccuracy: true,
       assignee: {

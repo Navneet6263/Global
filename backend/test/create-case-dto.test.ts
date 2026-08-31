@@ -4,14 +4,14 @@ import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { CreateCaseDto } from "../src/cases/dto/create-case.dto";
 
-function caseInput(phone: string) {
+function caseInput(phone?: string, email?: string) {
   return plainToInstance(CreateCaseDto, {
     clientId: "6fa75d80-a4a7-40d7-93a2-805934321300",
+    servicePackageId: "4e181a5a-4381-4d31-b64a-f64dff168aa8",
     fullName: "Example Candidate",
-    email: "candidate@example.com",
+    email: email === undefined ? "candidate@example.com" : email,
     phone,
     priority: "NORMAL",
-    checks: ["IDENTITY"],
   });
 }
 
@@ -49,4 +49,16 @@ void test("case intake rejects non-digit characters", async () => {
     errors.some((error) => error.property === "phone"),
     true,
   );
+});
+
+void test("case intake requires at least one candidate contact channel", async () => {
+  const errors = await validate(caseInput(undefined, ""));
+  assert.equal(
+    errors.some((error) => ["email", "phone"].includes(error.property)),
+    true,
+  );
+});
+
+void test("case intake accepts email without a mobile number", async () => {
+  assert.equal((await validate(caseInput(undefined, "candidate@example.com"))).length, 0);
 });

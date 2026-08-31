@@ -9,11 +9,28 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { createHash, randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
 import type { UploadedBinary } from "../common/http/uploaded-binary";
 import { PrismaService } from "../database/prisma.service";
 import { ContentInspectionService } from "./content-inspection.service";
 import type { CreateDocumentDto } from "./dto/create-document.dto";
 import { LocalObjectStorageService } from "./local-object-storage.service";
+
+export const DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES = new Set([
+  "DRAFT",
+  "CONSENT_PENDING",
+  "DOCUMENT_PENDING",
+  "IN_PROGRESS",
+  "CLARIFICATION_PENDING",
+]);
+
+export function assertDocumentUploadAllowed(status: string) {
+  if (!DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES.has(status)) {
+    throw new ConflictException(
+      `Documents cannot be changed while the case is ${status.toLowerCase().replaceAll("_", " ")}`,
+    );
+  }
+}
 
 @Injectable()
 export class DocumentsService {
@@ -29,13 +46,13 @@ export class DocumentsService {
   async create(actor: Actor, casePublicId: string, input: CreateDocumentDto) {
     const verificationCase = await this.prisma.verificationCase.findFirst({
       where: {
-        tenantId: actor.tenantId,
+        ...caseAccessScope(actor),
         publicId: casePublicId,
-        ...(actor.clientId ? { clientId: actor.clientId } : {}),
       },
-      select: { id: true },
+      select: { id: true, status: true },
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
+    assertDocumentUploadAllowed(verificationCase.status);
     const document = await this.prisma.document.create({
       data: {
         tenantId: actor.tenantId,
@@ -59,18 +76,20 @@ export class DocumentsService {
       where: {
         tenantId: actor.tenantId,
         publicId,
-        ...(actor.clientId ? { case: { clientId: actor.clientId } } : {}),
+        case: caseAccessScope(actor),
       },
       include: {
-        case: { select: { publicId: true } },
+        case: { select: { publicId: true, status: true } },
         tenant: { select: { publicId: true } },
       },
     });
     if (!document) throw new NotFoundException("Document not found");
+    assertDocumentUploadAllowed(document.case.status);
 
     await this.inspection.inspect(
       file,
       this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
+      { documentType: document.type },
     );
     const version = document.currentVersion + 1;
     const sha256 = createHash("sha256").update(file.buffer).digest("hex");
@@ -140,7 +159,7 @@ export class DocumentsService {
         document: {
           publicId,
           tenantId: actor.tenantId,
-          ...(actor.clientId ? { case: { clientId: actor.clientId } } : {}),
+          case: caseAccessScope(actor),
         },
         malwareState: "CLEAN",
       },
@@ -173,10 +192,12 @@ export class DocumentsService {
       tenantPublicId: string;
       caseId: bigint;
       casePublicId: string;
+      caseStatus: string;
     },
     type: string,
     file: UploadedBinary,
   ) {
+    assertDocumentUploadAllowed(access.caseStatus);
     const allowed = new Set([
       "AADHAAR",
       "PAN",
@@ -185,13 +206,13 @@ export class DocumentsService {
       "ADDRESS_PROOF",
       "EDUCATION_CERTIFICATE",
       "EMPLOYMENT_PROOF",
-      "OTHER",
     ]);
     if (!allowed.has(type))
       throw new BadRequestException("Unsupported document type");
     await this.inspection.inspect(
       file,
       this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
+      { documentType: type },
     );
     const sha256 = createHash("sha256").update(file.buffer).digest("hex");
     const document = await this.prisma.document.findFirst({

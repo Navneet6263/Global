@@ -2,6 +2,7 @@ import { Body, Controller, Get, Patch, Post } from "@nestjs/common";
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -12,8 +13,12 @@ import { SettingsService } from "./settings.service";
 
 @Controller("settings")
 @RequirePermissions(Permission.SettingsManage)
+@RequireRoles("PLATFORM_ADMIN")
 export class SettingsController {
   constructor(private readonly settings: SettingsService) {}
+  @Get("organisation") organisation(@CurrentActor() actor: Actor) {
+    return this.settings.organisation(actor);
+  }
   @Get("field-policy") fieldPolicy(@CurrentActor() actor: Actor) {
     return this.settings.fieldPolicy(actor);
   }

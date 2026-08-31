@@ -32,7 +32,6 @@ interface CaseTableProps {
   onToggleRow: (id: string) => void;
   onToggleAll: () => void;
   onOpenCase: (id: string) => void;
-  onRowAction: (action: string, row: VerificationCase) => void;
 }
 
 export function CaseTable({
@@ -44,7 +43,6 @@ export function CaseTable({
   onToggleRow,
   onToggleAll,
   onOpenCase,
-  onRowAction,
 }: CaseTableProps) {
   const columns = CASE_COLUMNS.filter((column) => visibleColumns.includes(column.id));
   const allSelected = rows.length > 0 && rows.every((row) => selected.includes(row.id));
@@ -126,18 +124,6 @@ export function CaseTable({
                   <DropdownMenuContent align="end" className="w-52 rounded-2xl">
                     <DropdownMenuItem onSelect={() => onOpenCase(row.id)}>
                       Open case drawer
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onRowAction("Reassign case", row)}>
-                      Reassign owner
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onRowAction("Raise clarification", row)}>
-                      Raise clarification
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onRowAction("Escalate to QA", row)}>
-                      Escalate to QA
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onRowAction("Download report", row)}>
-                      Download latest report
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

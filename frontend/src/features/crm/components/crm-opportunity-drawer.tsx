@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formatDate, formatIndianMobile, formatInr } from "@/lib/formatting";
+import { formatDate, formatDateTime, formatIndianMobile, formatInr } from "@/lib/formatting";
 
 interface CrmOpportunityDrawerProps {
   detail?: OpportunityDetail;
@@ -43,7 +43,7 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
           <SheetTitle className="text-base">{detail?.company ?? "Opportunity"}</SheetTitle>
           {detail ? (
             <p className="text-[12px] text-muted-foreground">
-              {detail.contactName} · {detail.contactTitle} · {detail.city}
+              {[detail.contactName, detail.contactTitle, detail.city].filter(Boolean).join(" · ")}
             </p>
           ) : null}
         </SheetHeader>
@@ -67,15 +67,26 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
             </div>
 
             <dl className="grid grid-cols-2 gap-3 rounded-2xl border border-border bg-muted/40 p-4 text-[12px]">
-              <Field label="Expected close" value={formatDate(detail.expectedCloseDate)} />
+              <Field
+                label="Expected close"
+                value={
+                  detail.expectedCloseDate ? formatDate(detail.expectedCloseDate) : "Not scheduled"
+                }
+              />
               <Field
                 label="Next follow-up"
                 value={detail.nextFollowUpAt ? formatDate(detail.nextFollowUpAt) : "Not scheduled"}
               />
               <Field label="Owner" value={detail.ownerName ?? "Unassigned"} />
-              <Field label="Industry" value={detail.industry} />
+              <Field label="Industry" value={detail.industry || "Not recorded"} />
               <Field label="Email" value={detail.contactEmail} />
               <Field label="Mobile" value={formatIndianMobile(detail.contactMobile)} />
+              {detail.onboardingHandoffAt ? (
+                <Field
+                  label="Onboarding handoff"
+                  value={formatDateTime(detail.onboardingHandoffAt)}
+                />
+              ) : null}
             </dl>
 
             {detail.notes ? (
@@ -150,8 +161,13 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
                 Mark lost
               </Button>
               {detail.stage === "WON" ? (
-                <Button size="sm" variant="secondary" onClick={props.onHandoff}>
-                  Prepare onboarding handoff
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={props.onHandoff}
+                  disabled={!canWrite || detail.onboardingHandoff}
+                >
+                  {detail.onboardingHandoff ? "Handoff recorded" : "Hand to onboarding"}
                 </Button>
               ) : null}
             </div>

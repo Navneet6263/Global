@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   Logger,
   NotFoundException,
@@ -8,6 +9,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { createHash, randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
 import type { UploadedBinary } from "../common/http/uploaded-binary";
 import { PrismaService } from "../database/prisma.service";
 import { ContentInspectionService } from "../documents/content-inspection.service";
@@ -49,6 +51,14 @@ export class FieldEvidenceService {
         tenantId: actor.tenantId,
         publicId: visitPublicId,
         assigneeId: actor.userId,
+        ...(actor.branchId || actor.clientId
+          ? {
+              case: {
+                ...(actor.branchId ? { branchId: actor.branchId } : {}),
+                ...(actor.clientId ? { clientId: actor.clientId } : {}),
+              },
+            }
+          : {}),
       },
       include: {
         tenant: { select: { publicId: true } },
@@ -105,6 +115,18 @@ export class FieldEvidenceService {
     let evidence;
     try {
       evidence = await this.prisma.$transaction(async (tx) => {
+        const accepting = await tx.fieldVisit.updateMany({
+          where: {
+            id: visit.id,
+            status: { in: ["ASSIGNED", "IN_PROGRESS"] },
+          },
+          data: { status: "IN_PROGRESS" },
+        });
+        if (accepting.count !== 1) {
+          throw new ConflictException(
+            "This visit stopped accepting evidence; refresh and try again",
+          );
+        }
         const created = await tx.evidenceItem.create({
           data: {
             publicId,
@@ -124,10 +146,6 @@ export class FieldEvidenceService {
             capturedAt: true,
             createdAt: true,
           },
-        });
-        await tx.fieldVisit.updateMany({
-          where: { id: visit.id, status: "ASSIGNED" },
-          data: { status: "IN_PROGRESS" },
         });
         await tx.auditEvent.create({
           data: {
@@ -159,7 +177,19 @@ export class FieldEvidenceService {
         publicId: evidencePublicId,
         fieldVisit: {
           tenantId: actor.tenantId,
-          ...(fieldExecutive ? { assigneeId: actor.userId } : {}),
+          ...(fieldExecutive
+            ? {
+                assigneeId: actor.userId,
+                ...(actor.branchId || actor.clientId
+                  ? {
+                      case: {
+                        ...(actor.branchId ? { branchId: actor.branchId } : {}),
+                        ...(actor.clientId ? { clientId: actor.clientId } : {}),
+                      },
+                    }
+                  : {}),
+              }
+            : { case: caseAccessScope(actor) }),
         },
       },
       select: {

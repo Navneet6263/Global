@@ -17,6 +17,7 @@ interface CasesSearch {
   caseId?: string;
   unassigned?: boolean;
   dueToday?: boolean;
+  dueNext7Days?: boolean;
   sla?: OpsSlaState;
   stage?: OpsStage;
 }
@@ -26,6 +27,8 @@ export const Route = createFileRoute("/operations/cases")({
     caseId: typeof search["caseId"] === "string" ? (search["caseId"] as string) : undefined,
     unassigned: search["unassigned"] === true || search["unassigned"] === "true" ? true : undefined,
     dueToday: search["dueToday"] === true || search["dueToday"] === "true" ? true : undefined,
+    dueNext7Days:
+      search["dueNext7Days"] === true || search["dueNext7Days"] === "true" ? true : undefined,
     sla: typeof search["sla"] === "string" ? (search["sla"] as OpsSlaState) : undefined,
     stage: typeof search["stage"] === "string" ? (search["stage"] as OpsStage) : undefined,
   }),
@@ -61,6 +64,7 @@ function OperationsCasesPage() {
     sortDir: "asc",
     unassigned: search.unassigned,
     dueToday: search.dueToday,
+    dueNext7Days: search.dueNext7Days,
     sla: search.sla,
     stage: search.stage,
   });

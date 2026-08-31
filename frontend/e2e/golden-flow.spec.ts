@@ -1,6 +1,17 @@
-import { expect, request, test, type APIRequestContext, type APIResponse } from "@playwright/test";
+import { expect, request, test, type APIRequestContext } from "@playwright/test";
+import { createHash } from "node:crypto";
+import {
+  createRunUser,
+  expectJson,
+  getCase,
+  openForcedPasswordContext,
+  suspendRunUsers,
+  waitForPublishedReport,
+  type CaseDetail,
+} from "./golden-flow-support";
 
 const enabled = process.env.E2E_GOLDEN_FLOW === "true";
+const isolated = process.env.E2E_GOLDEN_ISOLATED === "true";
 const credentials = {
   tenantCode: process.env.E2E_TENANT_CODE,
   email: process.env.E2E_ADMIN_EMAIL,
@@ -9,12 +20,17 @@ const credentials = {
 const runId = process.env.E2E_GOLDEN_RUN_ID?.toLowerCase();
 const apiUrl = `${(process.env.E2E_API_URL ?? "http://127.0.0.1:4100/api/v1").replace(/\/+$/, "")}/`;
 const browserOrigin = process.env.E2E_BASE_URL ?? "http://localhost:8080";
-const verifierTemporaryPassword = "Managed!Password2026";
-const verifierPassword = "Verified!Flow2026";
-
 test("case lifecycle reaches a verified report through real APIs", async () => {
   test.setTimeout(360_000);
   test.skip(!enabled, "Set E2E_GOLDEN_FLOW=true to run managed write-path verification");
+  if (!isolated) {
+    throw new Error(
+      "E2E_GOLDEN_ISOLATED=true is required: this flow consumes a development-only OTP and must never target staging or production",
+    );
+  }
+  if (!["127.0.0.1", "localhost", "::1", "[::1]"].includes(new URL(apiUrl).hostname)) {
+    throw new Error("The isolated golden flow accepts only a loopback API endpoint");
+  }
   if (!credentials.tenantCode || !credentials.email || !credentials.password) {
     throw new Error("E2E tenant and administrator credentials are required");
   }
@@ -27,30 +43,24 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
     extraHTTPHeaders: { origin: browserOrigin },
   });
   let verifierApi: APIRequestContext | undefined;
+  let qaApi: APIRequestContext | undefined;
+  const runUserEmails: string[] = [];
   let keyIndex = 0;
   const writeHeaders = () => ({
-    "idempotency-key": `gf:${runId}:${String(++keyIndex).padStart(4, "0")}`,
+    "idempotency-key": `golden:${runId}:${String(++keyIndex).padStart(4, "0")}`,
   });
 
   try {
     await expectJson(await api.post("auth/login", { data: credentials }), 201);
 
-    const managedUser = await expectJson<{
-      id: string;
-      status: string;
-      version: number;
-    }>(
-      await api.post("users", {
-        headers: writeHeaders(),
-        data: {
-          email: `managed-${runId}@e2e.invalid`,
-          displayName: "Golden flow managed user",
-          roleCodes: ["VERIFIER"],
-          temporaryPassword: verifierTemporaryPassword,
-        },
-      }),
-      201,
-    );
+    const verifierEmail = `managed-verifier-${runId}@e2e.invalid`;
+    runUserEmails.push(verifierEmail);
+    const managedUser = await createRunUser(api, {
+      email: verifierEmail,
+      displayName: "Golden flow managed verifier",
+      role: "VERIFIER",
+      writeHeaders,
+    });
     const suspendedUser = await expectJson<{
       status: string;
       version: number;
@@ -64,7 +74,12 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
     expect(suspendedUser.status).toBe("SUSPENDED");
     const userDirectory = await expectJson<{
       items: Array<{ id: string; status: string }>;
-    }>(await api.get("users"), 200);
+      total: number;
+    }>(
+      await api.get(`users?search=${encodeURIComponent(managedUser.email)}&page=1&pageSize=1`),
+      200,
+    );
+    expect(userDirectory.total).toBe(1);
     expect(userDirectory.items).toContainEqual(
       expect.objectContaining({
         id: managedUser.id,
@@ -92,6 +107,15 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
     );
     expect(reactivatedUser.status).toBe("ACTIVE");
 
+    const qaEmail = `managed-qa-${runId}@e2e.invalid`;
+    runUserEmails.push(qaEmail);
+    const qaUser = await createRunUser(api, {
+      email: qaEmail,
+      displayName: "Golden flow independent QA reviewer",
+      role: "QA_REVIEWER",
+      writeHeaders,
+    });
+
     const clientKey = writeHeaders();
     const clientInput = {
       code: `GF${runId.toUpperCase()}`,
@@ -113,17 +137,28 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
     expect(replay.headers()["x-idempotent-replay"]).toBe("true");
     expect(replayClient.publicId).toBe(client.publicId);
 
-    const createdCase = await expectJson<{ id: string; status: string }>(
+    const catalog = await expectJson<{
+      items: Array<{ id: string; code: string; checks: string[] }>;
+    }>(await api.get("cases/catalog"), 200);
+    const servicePackage = catalog.items.find((item) => item.code === "STANDARD_BGV");
+    if (!servicePackage) throw new Error("STANDARD_BGV is not active for the E2E tenant");
+    expect(servicePackage.checks).toEqual(["IDENTITY", "ADDRESS", "EMPLOYMENT", "EDUCATION"]);
+
+    const createdCase = await expectJson<{
+      id: string;
+      status: string;
+      consentDelivery: { consentId: string; developmentOtp?: string };
+    }>(
       await api.post("cases", {
         headers: writeHeaders(),
         data: {
           clientId: client.publicId,
+          servicePackageId: servicePackage.id,
           fullName: "Golden Flow Candidate",
           email: `candidate-${runId}@e2e.invalid`,
           employeeCode: `GF-${runId}`,
           externalRef: `E2E-GOLDEN-${runId}`,
           priority: "HIGH",
-          checks: ["IDENTITY"],
         },
       }),
       201,
@@ -132,15 +167,7 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
 
     const initial = await getCase(api, createdCase.id);
     expect(initial.consents).toHaveLength(1);
-    const consent = await expectJson<{
-      consentId: string;
-      developmentOtp?: string;
-    }>(
-      await api.post(`cases/${createdCase.id}/consent/request`, {
-        headers: writeHeaders(),
-      }),
-      201,
-    );
+    const consent = createdCase.consentDelivery;
     expect(consent.developmentOtp).toMatch(/^\d{6}$/);
     await expectJson(
       await api.post(`public/consents/${consent.consentId}/confirm`, {
@@ -156,14 +183,18 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
       }),
       201,
     );
+    const uploadBytes = Buffer.from("%PDF-1.4\n% Sapling Global release verification\n%%EOF\n");
     const upload = await expectJson<{ malwareState: string; sha256: string }>(
       await api.post(`documents/${document.id}/content`, {
-        headers: writeHeaders(),
+        headers: {
+          ...writeHeaders(),
+          "x-content-sha256": createHash("sha256").update(uploadBytes).digest("hex"),
+        },
         multipart: {
           file: {
             name: "golden-flow-passport.pdf",
             mimeType: "application/pdf",
-            buffer: Buffer.from("%PDF-1.4\n% Sapling Global release verification\n%%EOF\n"),
+            buffer: uploadBytes,
           },
         },
       }),
@@ -219,95 +250,97 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
 
     caseDetail = await getCase(api, createdCase.id);
     expect(caseDetail.status).toBe("IN_PROGRESS");
-    const task = await expectJson<{ id: string; version: number }>(
-      await api.post(`checks/${caseDetail.checks[0].publicId}/tasks`, {
-        headers: writeHeaders(),
-        data: {
-          assigneeId: managedUser.id,
-          instructions: "Validate identity document and record the source.",
-        },
-      }),
-      201,
-    );
-    verifierApi = await request.newContext({
-      baseURL: apiUrl,
-      extraHTTPHeaders: { origin: browserOrigin },
-    });
-    const verifierCredentials = {
-      tenantCode: credentials.tenantCode,
-      email: `managed-${runId}@e2e.invalid`,
-    };
-    await expectJson(
-      await verifierApi.post("auth/login", {
-        data: { ...verifierCredentials, password: verifierTemporaryPassword },
-      }),
-      201,
-    );
-    await expectJson(
-      await verifierApi.post("auth/change-password", {
-        headers: writeHeaders(),
-        data: {
-          currentPassword: verifierTemporaryPassword,
-          newPassword: verifierPassword,
-        },
-      }),
-      201,
-    );
-    await expectJson(
-      await verifierApi.post("auth/login", {
-        data: { ...verifierCredentials, password: verifierPassword },
-      }),
-      201,
-    );
-    const started = await expectJson<{ version: number; status: string }>(
-      await verifierApi.patch(`tasks/${task.id}`, {
-        headers: writeHeaders(),
-        data: { status: "IN_PROGRESS", version: task.version },
-      }),
-      200,
-    );
-    expect(started.status).toBe("IN_PROGRESS");
-    const blocked = await expectJson<{ version: number; status: string }>(
-      await verifierApi.patch(`tasks/${task.id}`, {
-        headers: writeHeaders(),
-        data: {
-          status: "BLOCKED",
-          version: started.version,
-          sourceSummary: "Awaiting an authoritative identity-source response.",
-          findings: [],
-        },
-      }),
-      200,
-    );
-    expect(blocked.status).toBe("BLOCKED");
-    caseDetail = await getCase(api, createdCase.id);
-    expect(caseDetail.checks[0].status).toBe("BLOCKED");
-    const resumed = await expectJson<{ version: number; status: string }>(
-      await verifierApi.patch(`tasks/${task.id}`, {
-        headers: writeHeaders(),
-        data: { status: "IN_PROGRESS", version: blocked.version, findings: [] },
-      }),
-      200,
-    );
-    expect(resumed.status).toBe("IN_PROGRESS");
-    await expectJson(
-      await verifierApi.patch(`tasks/${task.id}`, {
-        headers: writeHeaders(),
-        data: {
-          status: "COMPLETED",
-          version: resumed.version,
-          result: "CLEAR",
-          sourceSummary: "Passport document inspected and identity details matched.",
-          findings: [],
-        },
-      }),
-      200,
-    );
+    const tasks: Array<{
+      id: string;
+      version: number;
+      check: CaseDetail["checks"][number];
+    }> = [];
+    for (const check of caseDetail.checks) {
+      const task = await expectJson<{ id: string; version: number }>(
+        await api.post(`checks/${check.publicId}/tasks`, {
+          headers: writeHeaders(),
+          data: {
+            assigneeId: managedUser.id,
+            instructions: `Validate the ${check.type.toLowerCase()} check and record its authoritative source.`,
+          },
+        }),
+        201,
+      );
+      tasks.push({ ...task, check });
+    }
+    expect(tasks).toHaveLength(servicePackage.checks.length);
 
-    caseDetail = await getCase(api, createdCase.id);
-    expect(caseDetail.status).toBe("QA_REVIEW");
+    verifierApi = await openForcedPasswordContext({
+      apiUrl,
+      browserOrigin,
+      tenantCode: credentials.tenantCode,
+      user: managedUser,
+      writeHeaders,
+    });
+    for (const [index, task] of tasks.entries()) {
+      const started = await expectJson<{ version: number; status: string }>(
+        await verifierApi.patch(`tasks/${task.id}`, {
+          headers: writeHeaders(),
+          data: { status: "IN_PROGRESS", version: task.version },
+        }),
+        200,
+      );
+      expect(started.status).toBe("IN_PROGRESS");
+      let completionVersion = started.version;
+      if (index === 0) {
+        const blocked = await expectJson<{ version: number; status: string }>(
+          await verifierApi.patch(`tasks/${task.id}`, {
+            headers: writeHeaders(),
+            data: {
+              status: "BLOCKED",
+              version: started.version,
+              sourceSummary: "Awaiting an authoritative identity-source response.",
+              findings: [],
+            },
+          }),
+          200,
+        );
+        expect(blocked.status).toBe("BLOCKED");
+        caseDetail = await getCase(api, createdCase.id);
+        expect(
+          caseDetail.checks.find((item) => item.publicId === task.check.publicId)?.status,
+        ).toBe("BLOCKED");
+        const resumed = await expectJson<{ version: number; status: string }>(
+          await verifierApi.patch(`tasks/${task.id}`, {
+            headers: writeHeaders(),
+            data: { status: "IN_PROGRESS", version: blocked.version, findings: [] },
+          }),
+          200,
+        );
+        expect(resumed.status).toBe("IN_PROGRESS");
+        completionVersion = resumed.version;
+      }
+      const completed = await expectJson<{ status: string }>(
+        await verifierApi.patch(`tasks/${task.id}`, {
+          headers: writeHeaders(),
+          data: {
+            status: "COMPLETED",
+            version: completionVersion,
+            result: "CLEAR",
+            sourceSummary: `${task.check.type} source inspected and details matched.`,
+            findings: [],
+          },
+        }),
+        200,
+      );
+      expect(completed.status).toBe("COMPLETED");
+      caseDetail = await getCase(api, createdCase.id);
+      expect(caseDetail.status).toBe(index === tasks.length - 1 ? "QA_REVIEW" : "IN_PROGRESS");
+    }
+    qaApi = await openForcedPasswordContext({
+      apiUrl,
+      browserOrigin,
+      tenantCode: credentials.tenantCode,
+      user: qaUser,
+      writeHeaders,
+    });
     const claim = await expectJson<{ caseVersion: number }>(
-      await api.post(`qa/cases/${createdCase.id}/claim`, {
+      await qaApi.post(`qa/cases/${createdCase.id}/claim`, {
         headers: writeHeaders(),
         data: { caseVersion: caseDetail.version },
       }),
@@ -317,7 +350,7 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
       caseStatus: string;
       caseVersion: number;
     }>(
-      await api.post(`qa/cases/${createdCase.id}/decision`, {
+      await qaApi.post(`qa/cases/${createdCase.id}/decision`, {
         headers: writeHeaders(),
         data: {
           decision: "APPROVED",
@@ -362,56 +395,12 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
     expect(caseDetail.qaReviews[0].decision).toBe("APPROVED");
     expect(caseDetail.reports[0].status).toBe("PUBLISHED");
   } finally {
-    await verifierApi?.dispose();
-    await api.dispose();
+    try {
+      await suspendRunUsers(api, runUserEmails, writeHeaders);
+    } finally {
+      await qaApi?.dispose();
+      await verifierApi?.dispose();
+      await api.dispose();
+    }
   }
 });
-
-type CaseDetail = {
-  status: string;
-  version: number;
-  checks: Array<{ publicId: string; status: string }>;
-  consents: Array<{ publicId: string; status: string }>;
-  documents: Array<{ status: string }>;
-  clarifications: Array<{ status: string }>;
-  qaReviews: Array<{ decision: string }>;
-  reports: Array<{ status: string }>;
-};
-
-async function getCase(api: APIRequestContext, caseId: string): Promise<CaseDetail> {
-  return expectJson<CaseDetail>(await api.get(`cases/${caseId}`), 200);
-}
-
-async function waitForPublishedReport(
-  api: APIRequestContext,
-  caseId: string,
-): Promise<{ id: string; authenticityCode: string; sha256: string; status: string }> {
-  for (let attempt = 0; attempt < 30; attempt += 1) {
-    const reports = await expectJson<{
-      items: Array<{
-        id: string;
-        status: string;
-        versions: Array<{ authenticityCode: string; sha256: string }>;
-      }>;
-    }>(await api.get(`cases/${caseId}/reports`), 200);
-    const published = reports.items.find(
-      (item) => item.status === "PUBLISHED" && item.versions.length > 0,
-    );
-    if (published) {
-      return {
-        id: published.id,
-        status: published.status,
-        authenticityCode: published.versions[0]!.authenticityCode,
-        sha256: published.versions[0]!.sha256,
-      };
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1_000));
-  }
-  throw new Error("The approved case did not receive a published report within 30 seconds");
-}
-
-async function expectJson<T = unknown>(response: APIResponse, status: number): Promise<T> {
-  const text = await response.text();
-  expect(response.status(), text.slice(0, 800)).toBe(status);
-  return (text ? JSON.parse(text) : undefined) as T;
-}

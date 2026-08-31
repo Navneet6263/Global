@@ -1,3 +1,5 @@
+import { API_BASE_URL as apiBase } from "@/config/api";
+
 export type ProblemDetails = {
   status: number;
   title?: string;
@@ -15,18 +17,68 @@ export class ApiError extends Error {
   }
 }
 
-const apiBase =
-  import.meta.env["VITE_API_URL"] ??
-  (typeof window !== "undefined" && ["3000", "5173"].includes(window.location.port)
-    ? "http://localhost:4000/api/v1"
-    : "/api/v1");
+let refreshPromise: Promise<boolean> | null = null;
+let expiryCleanup: (() => Promise<void> | void) | null = null;
+let expiryCleanupPromise: Promise<void> | null = null;
+const refreshVersionKey = "sapling.auth.refresh-version";
 
-async function refreshSession() {
+export function registerSessionExpiryHandler(handler: () => Promise<void> | void): void {
+  expiryCleanup = handler;
+}
+
+async function handleExpiredSession(): Promise<void> {
+  if (!expiryCleanup) return;
+  if (!expiryCleanupPromise) {
+    expiryCleanupPromise = Promise.resolve(expiryCleanup()).finally(() => {
+      expiryCleanupPromise = null;
+    });
+  }
+  await expiryCleanupPromise.catch(() => undefined);
+}
+
+function refreshVersion() {
+  try {
+    return window.localStorage.getItem(refreshVersionKey);
+  } catch {
+    return null;
+  }
+}
+
+function markRefreshed() {
+  try {
+    window.localStorage.setItem(refreshVersionKey, crypto.randomUUID());
+  } catch {
+    // Storage can be disabled; the in-tab single-flight remains safe.
+  }
+}
+
+async function performRefresh() {
   const response = await fetch(`${apiBase}/auth/refresh`, {
     method: "POST",
     credentials: "include",
   });
+  if (response.ok) markRefreshed();
   return response.ok;
+}
+
+async function coordinatedRefresh() {
+  const before = refreshVersion();
+  if (typeof navigator !== "undefined" && navigator.locks) {
+    return navigator.locks.request("sapling-auth-refresh", async () => {
+      if (refreshVersion() !== before) return true;
+      return performRefresh();
+    });
+  }
+  return performRefresh();
+}
+
+function refreshSession(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = coordinatedRefresh().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
 }
 
 async function toApiError(response: Response) {
@@ -64,9 +116,12 @@ export async function apiRequest<T>(
     allowRefresh &&
     !["/auth/login", "/auth/refresh", "/auth/logout"].includes(path)
   ) {
-    if (await refreshSession()) return apiRequest<T>(path, init, false);
+    if (await refreshSession()) {
+      return apiRequest<T>(path, { ...init, headers }, false);
+    }
   }
   if (!response.ok) {
+    if (response.status === 401 && path !== "/auth/login") await handleExpiredSession();
     throw await toApiError(response);
   }
   if (response.status === 204) return undefined as T;
@@ -81,7 +136,10 @@ export async function apiDownload(path: string, allowRefresh = true): Promise<Bl
   if (response.status === 401 && allowRefresh && (await refreshSession())) {
     return apiDownload(path, false);
   }
-  if (!response.ok) throw await toApiError(response);
+  if (!response.ok) {
+    if (response.status === 401) await handleExpiredSession();
+    throw await toApiError(response);
+  }
   return response.blob();
 }
 

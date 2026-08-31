@@ -163,6 +163,11 @@ export type IdempotencyKey = Prisma.IdempotencyKeyModel
  */
 export type TenantFieldPolicy = Prisma.TenantFieldPolicyModel
 /**
+ * Model TenantCrmSettings
+ * 
+ */
+export type TenantCrmSettings = Prisma.TenantCrmSettingsModel
+/**
  * Model SalesOpportunity
  * 
  */
@@ -189,7 +194,7 @@ export type InvoiceLine = Prisma.InvoiceLineModel
 export type Payment = Prisma.PaymentModel
 /**
  * Model CreditNote
- *
+ * 
  */
 export type CreditNote = Prisma.CreditNoteModel
 /**

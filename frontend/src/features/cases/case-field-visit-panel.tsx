@@ -7,7 +7,7 @@ import { Empty, Panel, Status } from "@/features/cases/case-detail-ui";
 import { getSession } from "@/lib/api/auth";
 import type { CaseDetail } from "@/lib/api/cases";
 import { createFieldVisit, reviewFieldException } from "@/lib/api/field-visits";
-import { listUsers } from "@/lib/api/users";
+import { listAllUsers } from "@/lib/api/users";
 
 export function FieldVisitPanel({ item }: { item: CaseDetail }) {
   const queryClient = useQueryClient();
@@ -23,7 +23,7 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
     session.data?.permissions.includes("field-visit:write");
   const directory = useQuery({
     queryKey: ["users", "FIELD_EXECUTIVE"],
-    queryFn: () => listUsers("FIELD_EXECUTIVE"),
+    queryFn: () => listAllUsers("FIELD_EXECUTIVE"),
     enabled: Boolean(canAssign && item.status === "IN_PROGRESS"),
     staleTime: 60_000,
   });

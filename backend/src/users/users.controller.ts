@@ -8,10 +8,10 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { IsIn, IsOptional } from "class-validator";
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -19,30 +19,17 @@ import { UsersService } from "./users.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { ResetUserPasswordDto } from "./dto/reset-user-password.dto";
-
-class UserDirectoryQueryDto {
-  @IsOptional()
-  @IsIn([
-    "PLATFORM_ADMIN",
-    "OPS_MANAGER",
-    "VERIFIER",
-    "QA_REVIEWER",
-    "CLIENT_ADMIN",
-    "FIELD_EXECUTIVE",
-    "SALES_MANAGER",
-    "FINANCE_MANAGER",
-  ])
-  role?: string;
-}
+import { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 
 @Controller("users")
-@RequirePermissions(Permission.TaskWrite)
+@RequirePermissions(Permission.UserRead)
+@RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
 export class UsersController {
   constructor(private readonly users: UsersService) {}
 
   @Get()
   list(@CurrentActor() actor: Actor, @Query() query: UserDirectoryQueryDto) {
-    return this.users.list(actor, query.role);
+    return this.users.list(actor, query);
   }
 
   @Get("roles")
@@ -61,12 +48,14 @@ export class UsersController {
   }
 
   @Post()
+  @RequireRoles("PLATFORM_ADMIN")
   @RequirePermissions(Permission.UserWrite)
   create(@CurrentActor() actor: Actor, @Body() input: CreateUserDto) {
     return this.users.create(actor, input);
   }
 
   @Patch(":userId")
+  @RequireRoles("PLATFORM_ADMIN")
   @RequirePermissions(Permission.UserWrite)
   update(
     @CurrentActor() actor: Actor,
@@ -77,6 +66,7 @@ export class UsersController {
   }
 
   @Post(":userId/reset-password")
+  @RequireRoles("PLATFORM_ADMIN")
   @RequirePermissions(Permission.UserWrite)
   resetPassword(
     @CurrentActor() actor: Actor,

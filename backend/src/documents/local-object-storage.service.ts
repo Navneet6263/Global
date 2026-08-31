@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { resolve, sep } from "node:path";
+import { randomUUID } from "node:crypto";
 import {
   GetObjectCommand,
   DeleteObjectCommand,
@@ -9,6 +10,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
+import { DefaultAzureCredential } from "@azure/identity";
 
 @Injectable()
 export class LocalObjectStorageService {
@@ -31,20 +33,28 @@ export class LocalObjectStorageService {
       config.get<string>("OBJECT_STORAGE_PATH", ".data/objects"),
     );
     if (this.driver === "s3") {
+      const accessKeyId = config.get<string>("S3_ACCESS_KEY_ID");
+      const secretAccessKey = config.get<string>("S3_SECRET_ACCESS_KEY");
       this.s3 = new S3Client({
         region: config.getOrThrow<string>("S3_REGION"),
         endpoint: config.get<string>("S3_ENDPOINT") || undefined,
         forcePathStyle: config.get<boolean>("S3_FORCE_PATH_STYLE", false),
-        credentials: {
-          accessKeyId: config.getOrThrow<string>("S3_ACCESS_KEY_ID"),
-          secretAccessKey: config.getOrThrow<string>("S3_SECRET_ACCESS_KEY"),
-        },
+        credentials:
+          accessKeyId && secretAccessKey
+            ? { accessKeyId, secretAccessKey }
+            : undefined,
       });
     }
     if (this.driver === "azure") {
-      const service = BlobServiceClient.fromConnectionString(
-        config.getOrThrow<string>("AZURE_STORAGE_CONNECTION_STRING"),
+      const connectionString = config.get<string>(
+        "AZURE_STORAGE_CONNECTION_STRING",
       );
+      const service = connectionString
+        ? BlobServiceClient.fromConnectionString(connectionString)
+        : new BlobServiceClient(
+            config.getOrThrow<string>("AZURE_STORAGE_ACCOUNT_URL"),
+            new DefaultAzureCredential(),
+          );
       this.azure = service.getContainerClient(this.bucket);
     }
   }
@@ -64,7 +74,6 @@ export class LocalObjectStorageService {
       return;
     }
     if (this.azure) {
-      await this.azure.createIfNotExists();
       await this.azure.getBlockBlobClient(key).uploadData(contents, {
         blobHTTPHeaders: { blobContentType: "application/octet-stream" },
         conditions: { ifNoneMatch: "*" },
@@ -107,6 +116,18 @@ export class LocalObjectStorageService {
       await unlink(this.resolveSafe(key));
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
+    }
+  }
+
+  async probe(): Promise<void> {
+    const key = `_health/${randomUUID()}.bin`;
+    const expected = Buffer.from(`sapling-storage-health:${randomUUID()}`);
+    try {
+      await this.put(key, expected);
+      const actual = await this.get(key);
+      if (!actual.equals(expected)) throw new Error("Object storage probe mismatch");
+    } finally {
+      await this.delete(key);
     }
   }
 

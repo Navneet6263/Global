@@ -12,16 +12,17 @@ import { formatPercent } from "@/lib/formatting";
 export const Route = createFileRoute("/operations/team")({
   head: () => ({
     meta: [
-      { title: "Team Capacity — Sapling Global Operations" },
+      { title: "Team Workload — Sapling Global Operations" },
       {
         name: "description",
         content:
-          "Verifier workload, branch load, skill demand and rebalancing signals for the delivery team.",
+          "Verifier workload, branch distribution, check demand and due-date pressure for the delivery team.",
       },
-      { property: "og:title", content: "Team Capacity — Sapling Global Operations" },
+      { property: "og:title", content: "Team Workload — Sapling Global Operations" },
       {
         property: "og:description",
-        content: "See who is overloaded, who has headroom and where demand is concentrated.",
+        content:
+          "Compare open verifier workload and see where current check demand is concentrated.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -36,8 +37,8 @@ function TeamCapacityPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Team capacity"
-        description="Balance workload across verifiers and branches before SLAs start slipping."
+        title="Team workload"
+        description="Balance assigned checks across verifiers and branches before SLAs start slipping."
         meta={data ? `${data.openAssignments} checks awaiting allocation` : undefined}
       />
 
@@ -48,10 +49,7 @@ function TeamCapacityPage() {
       ) : (
         <>
           <div className="grid gap-4 lg:grid-cols-2">
-            <Section
-              title="Workload per verifier"
-              description="Open checks against working capacity."
-            >
+            <Section title="Workload per verifier" description="Current open checks by verifier.">
               <div className="h-[260px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={[...data.workload]} margin={{ left: -18, right: 8, top: 8 }}>
@@ -92,7 +90,7 @@ function TeamCapacityPage() {
 
             <Section
               title="Demand by check type"
-              description="Where open work is concentrated today."
+              description="Where the current open-check queue is concentrated."
             >
               <ul className="space-y-2.5">
                 {data.demand.map((row) => {
@@ -120,7 +118,7 @@ function TeamCapacityPage() {
             <div className="space-y-4">
               <Section
                 title="Branch load"
-                description="Members, open checks and utilisation by branch."
+                description="Members, open checks and share of assigned workload."
               >
                 <ul className="space-y-2.5">
                   {data.branches.map((row) => (
@@ -129,7 +127,7 @@ function TeamCapacityPage() {
                         <span className="text-foreground">{row.branch}</span>
                         <span className="num text-muted-foreground">
                           {row.members} members · {row.openChecks} checks ·{" "}
-                          {formatPercent(row.loadPercent, 0)}
+                          {formatPercent(row.loadPercent, 0)} share
                         </span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -148,53 +146,16 @@ function TeamCapacityPage() {
                   ))}
                 </ul>
               </Section>
-
-              <Section
-                title="Rebalancing signals"
-                description="Suggested moves to protect SLA health."
-              >
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <SignalCard
-                    title="Overloaded"
-                    names={data.overloaded}
-                    className="border-critical/25 bg-critical/6"
-                  />
-                  <SignalCard
-                    title="Has headroom"
-                    names={data.underutilised}
-                    className="border-success/25 bg-success/6"
-                  />
-                </div>
-              </Section>
             </div>
 
             <OpsCapacityList
               members={data.members}
               title="Verifier roster"
-              description="Live load, skills, availability and turnaround per verifier."
+              description="Live assignments, due-date pressure and measured turnaround per verifier."
             />
           </div>
         </>
       )}
-    </div>
-  );
-}
-
-function SignalCard({
-  title,
-  names,
-  className,
-}: {
-  title: string;
-  names: readonly string[];
-  className: string;
-}) {
-  return (
-    <div className={`rounded-2xl border px-4 py-3 ${className}`}>
-      <p className="text-[11px] tracking-[0.07em] text-muted-foreground uppercase">{title}</p>
-      <p className="mt-1.5 text-[12.5px] text-foreground/90">
-        {names.length > 0 ? names.join(", ") : "None right now"}
-      </p>
     </div>
   );
 }

@@ -127,7 +127,7 @@ export function OpsCaseFilters({ query, clients, owners, onChange, onReset }: Op
         size="sm"
         onClick={() => onChange({ unassigned: !query.unassigned, page: 1 })}
       >
-        Unassigned
+        No ops owner
       </Button>
       <Button
         variant={query.dueToday ? "default" : "outline"}

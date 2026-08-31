@@ -73,10 +73,14 @@ export function slaOf(dueAt?: string | null): { minutes: number; state: OpsSlaSt
 }
 
 export function baseCase(row: CaseListItem): OpsCase {
+  const assignedOpsUser = row.assignedOpsUser;
   const stage = stages[row.status] ?? "verification";
   const sla = slaOf(row.dueAt);
   const tasks = row.checks.flatMap((check) => check.tasks ?? []);
   const verifier = tasks.find((task) => task.assignee)?.assignee?.displayName ?? null;
+  const fieldAssignment = (row.fieldVisits ?? []).find(
+    (visit) => visit.status !== "COMPLETED" && visit.assignee,
+  )?.assignee?.displayName;
   const completed = row.checks.filter((check) => check.status === "COMPLETED").length;
   return {
     id: row.id,
@@ -86,7 +90,7 @@ export function baseCase(row: CaseListItem): OpsCase {
     candidateMobile: row.subject.phone ?? "",
     clientId: row.client.publicId,
     clientName: row.client.displayName,
-    packageName: `${row.checks.length} checks`,
+    packageName: `${row.checks.length}-check scope`,
     stage,
     progress: progress[stage],
     checksCompleted: completed,
@@ -95,14 +99,17 @@ export function baseCase(row: CaseListItem): OpsCase {
     risk: riskOf(row.riskLevel),
     slaMinutesRemaining: sla.minutes,
     slaState: sla.state,
-    opsOwner: null,
+    opsOwner: assignedOpsUser?.displayName ?? null,
     verifier,
-    fieldAssignment: null,
-    branch: "Unassigned",
-    city: "—",
+    fieldAssignment: fieldAssignment ?? null,
+    branch: row.branch?.name ?? "No branch assigned",
+    city: row.branch?.city ?? row.branch?.name ?? "Location not recorded",
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
-    blocker: tasks.find((task) => task.status === "BLOCKED")?.instructions ?? null,
+    blocker:
+      tasks.find((task) => task.status === "BLOCKED")?.blockerReason ??
+      tasks.find((task) => task.status === "BLOCKED")?.instructions ??
+      null,
     nextAction:
       stage === "completed" ? "Closed" : verifier ? "Monitor verification" : "Assign verifier",
     stageAgeMinutes: Math.max(0, Math.round((Date.now() - Date.parse(row.updatedAt)) / 60_000)),
@@ -111,7 +118,9 @@ export function baseCase(row: CaseListItem): OpsCase {
 
 export function clarificationState(status: string): OpsClarification["state"] {
   if (status === "RESOLVED") return "resolved";
-  if (status === "ANSWERED" || status === "RESPONSE_RECEIVED") return "response_received";
+  if (["ANSWERED", "RESPONDED", "RESPONSE_RECEIVED"].includes(status)) {
+    return "response_received";
+  }
   if (status === "UNDER_REVIEW") return "under_review";
   return "awaiting_client";
 }
@@ -155,12 +164,12 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
     candidateName: row.subject.fullName,
     clientName: row.client.displayName,
     address: visit.address,
-    city: "—",
+    city: row.branch?.city ?? row.branch?.name ?? "Location not recorded",
     fieldExecutive: visit.assignee?.displayName ?? "Unassigned",
-    scheduledAt: visit.capturedAt ?? row.createdAt,
+    scheduledAt: visit.createdAt,
     status: fieldStatus(visit.status),
     geofenceMetres: visit.geofenceMeters,
-    evidenceCount: 0,
+    evidenceCount: visit.evidence?.length ?? visit._count?.evidence ?? 0,
     note: visit.distanceMeters ? `${visit.distanceMeters} metres from target` : "",
   }));
   const latestConsent = row.consents.at(-1);

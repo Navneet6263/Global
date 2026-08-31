@@ -10,8 +10,7 @@ export type WorkspaceId =
   | "field"
   | "client"
   | "sales"
-  | "finance"
-  | "candidate";
+  | "finance";
 
 export interface WorkspaceDefinition {
   id: WorkspaceId;
@@ -20,7 +19,6 @@ export interface WorkspaceDefinition {
   basePath: string;
   roles: readonly Role[];
   requiredPermission: Permission;
-  status: "available" | "planned";
 }
 
 export const WORKSPACES: readonly WorkspaceDefinition[] = [
@@ -31,88 +29,70 @@ export const WORKSPACES: readonly WorkspaceDefinition[] = [
     basePath: "/admin",
     roles: ["PLATFORM_ADMIN"],
     requiredPermission: "dashboard:read",
-    status: "available",
   },
   {
     id: "operations",
     label: "Operations Manager",
     summary: "Allocation, throughput and SLA recovery workspace.",
-    basePath: "/admin/cases",
-    roles: ["PLATFORM_ADMIN", "OPS_MANAGER"],
-    requiredPermission: "case:assign",
-    status: "planned",
+    basePath: "/operations",
+    roles: ["OPS_MANAGER"],
+    requiredPermission: "task:write",
   },
   {
     id: "executive",
     label: "Executive Analytics",
     summary: "Portfolio, risk and forecast analytics for leadership.",
     basePath: "/admin/analytics",
-    roles: ["PLATFORM_ADMIN", "OPS_MANAGER"],
+    roles: ["PLATFORM_ADMIN"],
     requiredPermission: "report:read",
-    status: "available",
   },
   {
     id: "verifier",
     label: "Verifier",
-    summary: "Check execution queues. Detailed screens land in a later phase.",
-    basePath: "/admin/verifier",
-    roles: ["PLATFORM_ADMIN", "VERIFIER"],
+    summary: "Assigned checks, findings and source verification.",
+    basePath: "/verifier",
+    roles: ["VERIFIER"],
     requiredPermission: "case:read",
-    status: "planned",
   },
   {
     id: "qa",
     label: "QA Reviewer",
     summary: "Review, correction and sign-off workspace.",
-    basePath: "/admin/qa",
-    roles: ["PLATFORM_ADMIN", "QA_REVIEWER"],
-    requiredPermission: "qa:read",
-    status: "planned",
+    basePath: "/qa-review",
+    roles: ["QA_REVIEWER"],
+    requiredPermission: "qa:review",
   },
   {
     id: "field",
     label: "Field Executive",
     summary: "Visit scheduling, GPS evidence and exception capture.",
-    basePath: "/admin/field",
-    roles: ["PLATFORM_ADMIN", "FIELD_EXECUTIVE"],
-    requiredPermission: "field:read",
-    status: "planned",
+    basePath: "/field-executive",
+    roles: ["FIELD_EXECUTIVE"],
+    requiredPermission: "field-visit:read",
   },
   {
     id: "client",
     label: "Client Admin",
-    summary: "Client-facing portal preview for onboarding teams.",
-    basePath: "/admin/client-portal",
-    roles: ["PLATFORM_ADMIN", "CLIENT_ADMIN"],
-    requiredPermission: "client:read",
-    status: "planned",
+    summary: "Client-scoped case intake, actions and reports.",
+    basePath: "/client-portal",
+    roles: ["CLIENT_ADMIN"],
+    requiredPermission: "case:read",
   },
   {
     id: "sales",
     label: "Sales & CRM",
     summary: "Revenue command, opportunity pipeline and forecast.",
     basePath: "/sales-crm",
-    roles: ["PLATFORM_ADMIN", "SALES_MANAGER"],
+    roles: ["SALES_MANAGER"],
     requiredPermission: "crm:read",
-    status: "available",
   },
   {
     id: "finance",
     label: "Finance",
     summary: "Invoices, collections and revenue recognition.",
-    basePath: "/admin/finance",
-    roles: ["PLATFORM_ADMIN", "FINANCE_MANAGER"],
+    basePath: "/finance",
+    roles: ["FINANCE_MANAGER"],
     requiredPermission: "finance:read",
-    status: "planned",
-  },
-  {
-    id: "candidate",
-    label: "Candidate Portal",
-    summary: "Consent, document upload and status tracking for candidates.",
-    basePath: "/candidate",
-    roles: [],
-    requiredPermission: "case:read",
-    status: "planned",
   },
 ];
 

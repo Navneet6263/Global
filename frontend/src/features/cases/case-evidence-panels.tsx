@@ -15,7 +15,7 @@ import {
   uploadDocument,
   type DocumentType,
 } from "@/lib/api/documents";
-import { downloadReport, generateReport, listReports } from "@/lib/api/reports";
+import { downloadReport, generateReport, listReports, retryReport } from "@/lib/api/reports";
 
 export function DocumentPanel({ item }: { item: CaseDetail }) {
   const queryClient = useQueryClient();
@@ -50,7 +50,6 @@ export function DocumentPanel({ item }: { item: CaseDetail }) {
     },
     onError: (error: Error) => toast.error(error.message),
   });
-
   return (
     <Panel title="Documents" subtitle="Versioned evidence with integrity and safety checks">
       {canWrite ? (
@@ -165,6 +164,14 @@ export function ReportsPanel({ item }: { item: CaseDetail }) {
     mutationFn: (reportId: string) => downloadReport(reportId, item.caseNumber),
     onError: (error: Error) => toast.error(error.message),
   });
+  const retry = useMutation({
+    mutationFn: (reportId: string) => retryReport(item.id, reportId),
+    onSuccess: async () => {
+      toast.success("Report retry queued");
+      await queryClient.invalidateQueries({ queryKey: ["reports", item.id] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
   const latest = reports.data?.items[0];
   const latestVersion = latest?.versions[0];
 
@@ -188,20 +195,37 @@ export function ReportsPanel({ item }: { item: CaseDetail }) {
         <div className="mt-4 rounded-2xl border border-[var(--hairline)] bg-secondary/35 p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold">Published report v{latest.currentVersion}</p>
+              <p className="text-sm font-semibold">
+                {latest.status === "PUBLISHED"
+                  ? `Published report v${latest.currentVersion}`
+                  : latest.status === "FAILED"
+                    ? "Report generation failed"
+                    : "Report generation queued"}
+              </p>
               <p className="mt-1 text-xs text-muted-foreground">
                 {latest.publishedAt ? formatDateTime(latest.publishedAt) : "Publishing"}
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => download.mutate(latest.id)}
-              disabled={download.isPending}
-              className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground disabled:opacity-50"
-              aria-label="Download published report"
-            >
-              <FileDown className="h-4 w-4" />
-            </button>
+            {latest.status === "PUBLISHED" ? (
+              <button
+                type="button"
+                onClick={() => download.mutate(latest.id)}
+                disabled={download.isPending}
+                className="grid h-10 w-10 place-items-center rounded-full bg-primary text-primary-foreground disabled:opacity-50"
+                aria-label="Download published report"
+              >
+                <FileDown className="h-4 w-4" />
+              </button>
+            ) : latest.status === "FAILED" && canGenerate ? (
+              <button
+                type="button"
+                onClick={() => retry.mutate(latest.id)}
+                disabled={retry.isPending}
+                className="rounded-full bg-destructive px-4 py-2 text-xs font-semibold text-destructive-foreground disabled:opacity-50"
+              >
+                {retry.isPending ? "Retrying…" : "Retry report"}
+              </button>
+            ) : null}
           </div>
           {latestVersion ? (
             <a

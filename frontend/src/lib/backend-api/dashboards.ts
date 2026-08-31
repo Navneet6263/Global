@@ -8,6 +8,12 @@ export interface OperationsDashboard {
     completedToday: number;
   };
   statusMix: Record<string, number>;
+  stageHealth?: Array<{
+    status: string;
+    count: number;
+    oldestAgeHours: number;
+    atRisk: number;
+  }>;
   outcomeMix: Record<string, number>;
   trend: Array<{ month: string; created: number; completed: number }>;
   recentCases: Array<{
@@ -25,7 +31,7 @@ export interface OperationsDashboard {
 
 export interface ExecutiveDashboard extends OperationsDashboard {
   performance: {
-    averageTatHours: number;
+    averageTatHours: number | null;
     slaPercentage: number | null;
     completedCases: number;
   };
@@ -150,6 +156,7 @@ export interface ExceptionsDashboard {
     critical: number;
     resolvedToday: number;
     averageAgeHours: number;
+    clientActions: number;
   };
   overdue: Array<{
     id: string;

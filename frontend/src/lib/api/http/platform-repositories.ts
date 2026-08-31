@@ -4,7 +4,7 @@ import type {
   SecurityRepository,
   SettingsRepository,
 } from "../repositories";
-import { listAuditEvents } from "@/lib/backend-api/audit";
+import { getAuditFacets, listAuditEvents } from "@/lib/backend-api/audit";
 import {
   listActiveSessions,
   listSecurityEvents,
@@ -12,10 +12,14 @@ import {
   revokeOtherSessions,
 } from "@/lib/backend-api/auth";
 import { listNotifications } from "@/lib/backend-api/notifications";
-import { getFieldPolicy, listBranches, listServicePackages } from "@/lib/backend-api/settings";
+import {
+  getFieldPolicy,
+  getOrganisation,
+  listBranches,
+  listServicePackages,
+} from "@/lib/backend-api/settings";
 import type { AuditCategory, AuditEvent } from "@/lib/contracts/audit";
 import type { AuthEventType } from "@/lib/contracts/security";
-import { cachedIdentity } from "@/lib/auth/platform-session";
 
 function jsonObject(
   value?: string | null,
@@ -46,8 +50,17 @@ function category(action: string, resource: string): AuditCategory {
 
 export const auditRepository: AuditRepository = {
   async list(query) {
-    const response = await listAuditEvents();
-    let rows: AuditEvent[] = response.items.map((event) => ({
+    const response = await listAuditEvents({
+      search: query.search,
+      category: query.category,
+      actor: query.actor,
+      resourceType: query.resourceType,
+      from: query.from,
+      to: query.to,
+      page: query.page ?? 1,
+      pageSize: query.pageSize ?? 15,
+    });
+    const rows: AuditEvent[] = response.items.map((event) => ({
       id: event.id,
       requestId: event.requestId ?? "—",
       category: category(event.action, event.resourceType),
@@ -61,39 +74,18 @@ export const auditRepository: AuditRepository = {
       before: jsonObject(event.beforeJson),
       after: jsonObject(event.afterJson),
     }));
-    const search = query.search?.toLowerCase();
-    if (search)
-      rows = rows.filter((row) =>
-        [row.action, row.actorName, row.requestId, row.resourceId].some((value) =>
-          value.toLowerCase().includes(search),
-        ),
-      );
-    if (query.category && query.category !== "all")
-      rows = rows.filter((row) => row.category === query.category);
-    if (query.actor && query.actor !== "all")
-      rows = rows.filter((row) => row.actorName === query.actor);
-    if (query.resourceType && query.resourceType !== "all")
-      rows = rows.filter((row) => row.resourceType === query.resourceType);
-    if (query.from) rows = rows.filter((row) => Date.parse(row.at) >= Date.parse(query.from!));
-    if (query.to)
-      rows = rows.filter((row) => Date.parse(row.at) <= Date.parse(query.to!) + 86_399_999);
-    const page = query.page ?? 1;
-    const pageSize = query.pageSize ?? 10;
     return {
-      rows: rows.slice((page - 1) * pageSize, page * pageSize),
-      total: rows.length,
-      page,
-      pageSize,
+      rows,
+      total: response.total,
+      page: response.page,
+      pageSize: response.pageSize,
     };
   },
   async actors() {
-    const rows = (await listAuditEvents()).items.map(
-      (event) => event.actor?.displayName ?? "System",
-    );
-    return [...new Set(rows)];
+    return (await getAuditFacets()).actors;
   },
   async resourceTypes() {
-    return [...new Set((await listAuditEvents()).items.map((event) => event.resourceType))];
+    return (await getAuditFacets()).resourceTypes;
   },
 };
 
@@ -116,29 +108,28 @@ export const securityRepository: SecurityRepository = {
     return {
       sessions: sessions.items.map((session) => ({
         id: session.id,
-        device: session.deviceName ?? "Unknown device",
-        browser: session.userAgent ?? "Unknown browser",
-        operatingSystem: "—",
-        ipAddress: session.ipAddress ?? "—",
-        location: "—",
+        deviceName: session.deviceName ?? null,
+        userAgent: session.userAgent ?? null,
+        ipAddress: session.ipAddress ?? null,
         startedAt: session.createdAt,
-        lastSeenAt: session.createdAt,
+        expiresAt: session.expiresAt,
         isCurrent: session.current,
       })),
       events: events.items.map((event) => ({
         id: event.id,
         type: authEventType(event.action),
         at: event.createdAt,
-        ipAddress: event.ipAddress ?? "—",
-        device: "Web session",
+        ipAddress: event.ipAddress ?? null,
+        userAgent:
+          typeof jsonObject(event.afterJson)?.["userAgent"] === "string"
+            ? (jsonObject(event.afterJson)?.["userAgent"] as string)
+            : null,
         detail: event.action.replaceAll(".", " "),
       })),
       refreshReuseDetected: events.items.some((event) =>
         event.action.toLowerCase().includes("reuse"),
       ),
-      passwordUpdatedAt:
-        events.items.find((event) => event.action.toLowerCase().includes("password"))?.createdAt ??
-        new Date(0).toISOString(),
+      passwordUpdatedAt: sessions.passwordChangedAt,
     };
   },
   async revokeSession(id) {
@@ -174,38 +165,33 @@ export const notificationRepository: NotificationRepository = {
 
 export const settingsRepository: SettingsRepository = {
   async get() {
-    const [field, branches, packages] = await Promise.all([
+    const [organisation, field, branches, packages] = await Promise.all([
+      getOrganisation(),
       getFieldPolicy(),
       listBranches(),
       listServicePackages(),
     ]);
-    const identity = cachedIdentity();
     return {
       organisation: {
-        legalName: identity?.tenantName ?? "Sapling Global",
-        brandName: identity?.tenantName ?? "Sapling Global",
-        gstin: "",
-        registeredAddress: "",
-        supportEmail: "",
-        supportPhone: "",
-        timezoneLabel: "Asia/Kolkata",
+        id: organisation.publicId,
+        name: organisation.name,
+        timezone: organisation.timezone,
+        status: organisation.status,
       },
       branches: branches.items.map((branch) => ({
         id: branch.id,
+        code: branch.code,
         name: branch.name,
         city: branch.city ?? "",
-        state: "",
-        headOfBranch: "Not assigned",
-        fieldExecutives: 0,
+        fieldExecutives: branch.fieldExecutiveCount,
         status: branch.isActive ? "active" : "paused",
       })),
       packages: packages.items.map((item) => ({
         id: item.id,
         name: item.name,
         checks: item.checks.length,
-        slaDays: Math.max(1, Math.round(item.tatHours / 24)),
-        unitPrice: Number(item.price ?? 0),
-        clientsUsing: 0,
+        tatHours: item.tatHours,
+        unitPrice: item.price == null ? null : Number(item.price),
         status: item.isActive ? "published" : "draft",
       })),
       fieldPolicy: [
@@ -217,8 +203,8 @@ export const settingsRepository: SettingsRepository = {
         },
         {
           id: "geofence",
-          label: "Geofence enforcement",
-          description: `${field.defaultRadiusMeters} metre default radius with ${field.maxAccuracyMeters} metre accuracy.`,
+          label: "Block outside-geofence completion",
+          description: `${field.defaultRadiusMeters} metre radius and ${field.maxAccuracyMeters} metre accuracy; switch off to require supervisor review.`,
           enabled: field.outsideGeofencePolicy === "BLOCK",
         },
       ],
@@ -234,18 +220,14 @@ export const settingsRepository: SettingsRepository = {
         id: item.id,
         checkLabel: item.name,
         standardHours: item.tatHours,
-        escalationHours: Math.max(1, item.tatHours - 12),
       })),
       retention: [
         {
           id: "field-evidence",
           dataClass: "Field evidence",
-          retentionMonths: Math.max(1, Math.round(field.retentionDays / 30)),
-          disposalMethod: "Secure deletion",
+          retentionDays: field.retentionDays,
         },
       ],
-      notifications: [],
-      clientAdministration: [],
     };
   },
 };

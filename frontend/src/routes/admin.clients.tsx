@@ -71,7 +71,7 @@ function ClientsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Client management"
-        description="Every enterprise account with live volume, SLA attainment and commercial exposure."
+        description="Every client workspace with live portfolio load, SLA performance and access."
         meta={data ? `${data.total} client accounts` : undefined}
         actions={
           <Button size="sm" onClick={() => setCreating(true)}>
@@ -85,7 +85,7 @@ function ClientsPage() {
         <Input
           value={query.search ?? ""}
           onChange={(event) => setQuery((c) => ({ ...c, search: event.target.value, page: 1 }))}
-          placeholder="Search client, industry or city"
+          placeholder="Search client or primary contact"
           aria-label="Search clients"
           className="w-full sm:max-w-xs"
         />
@@ -136,6 +136,10 @@ function ClientsPage() {
                         toast.success(
                           `${target.name} ${next === "active" ? "reactivated" : "suspended"}`,
                         ),
+                      onError: (error: Error) =>
+                        toast.error("Client access could not be updated", {
+                          description: error.message,
+                        }),
                     },
                   );
                 }}
@@ -168,9 +172,11 @@ function ClientsPage() {
             onSuccess: (client) => {
               setCreating(false);
               toast.success(`${client.name} onboarded`, {
-                description: "Default package catalogue applied.",
+                description: "The client workspace is ready for user assignment.",
               });
             },
+            onError: (error: Error) =>
+              toast.error("Client could not be onboarded", { description: error.message }),
           })
         }
       />

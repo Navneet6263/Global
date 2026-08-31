@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SalesActivityType } from "../contracts/crm";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -55,10 +55,19 @@ export function CrmActivityDialog({
 }: CrmActivityDialogProps) {
   const [type, setType] = useState<SalesActivityType>("CALL");
   const [summary, setSummary] = useState("");
-  const [occurredAt, setOccurredAt] = useState("2026-08-26");
+  const [occurredAt, setOccurredAt] = useState(() => localDateValue(new Date()));
   const [nextFollowUpAt, setNextFollowUpAt] = useState("");
   const [notes, setNotes] = useState("");
   const invalid = summary.trim().length < 4;
+
+  useEffect(() => {
+    if (!open) return;
+    setType("CALL");
+    setSummary("");
+    setOccurredAt(localDateValue(new Date()));
+    setNextFollowUpAt("");
+    setNotes("");
+  }, [open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -136,10 +145,8 @@ export function CrmActivityDialog({
               onSubmit({
                 type,
                 summary: summary.trim(),
-                occurredAt: new Date(`${occurredAt}T10:00:00.000Z`).toISOString(),
-                nextFollowUpAt: nextFollowUpAt
-                  ? new Date(`${nextFollowUpAt}T05:30:00.000Z`).toISOString()
-                  : null,
+                occurredAt: localDateToIso(occurredAt, 12),
+                nextFollowUpAt: nextFollowUpAt ? localDateToIso(nextFollowUpAt, 9) : null,
                 notes,
               })
             }
@@ -150,4 +157,16 @@ export function CrmActivityDialog({
       </DialogContent>
     </Dialog>
   );
+}
+
+function localDateValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function localDateToIso(value: string, hour: number) {
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year!, month! - 1, day!, hour).toISOString();
 }

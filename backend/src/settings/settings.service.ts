@@ -9,6 +9,18 @@ import type { UpdateFieldPolicyDto } from "./dto/update-field-policy.dto";
 export class SettingsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  organisation(actor: Actor) {
+    return this.prisma.tenant.findUniqueOrThrow({
+      where: { id: actor.tenantId },
+      select: {
+        publicId: true,
+        name: true,
+        timezone: true,
+        status: true,
+      },
+    });
+  }
+
   fieldPolicy(actor: Actor) {
     return this.prisma.tenantFieldPolicy.upsert({
       where: { tenantId: actor.tenantId },
@@ -93,11 +105,25 @@ export class SettingsService {
         city: true,
         isActive: true,
         createdAt: true,
+        _count: {
+          select: {
+            users: {
+              where: {
+                status: "ACTIVE",
+                userRoles: { some: { role: { code: "FIELD_EXECUTIVE" } } },
+              },
+            },
+          },
+        },
       },
       orderBy: [{ isActive: "desc" }, { name: "asc" }],
     });
     return {
-      items: items.map(({ publicId, ...item }) => ({ id: publicId, ...item })),
+      items: items.map(({ publicId, _count, ...item }) => ({
+        id: publicId,
+        ...item,
+        fieldExecutiveCount: _count.users,
+      })),
     };
   }
 

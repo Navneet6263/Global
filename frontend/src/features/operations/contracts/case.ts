@@ -196,6 +196,7 @@ export interface OpsCaseQuery {
   owner?: string;
   unassigned?: boolean;
   dueToday?: boolean;
+  dueNext7Days?: boolean;
   from?: string;
   to?: string;
   sortBy?: "updatedAt" | "sla" | "candidateName" | "progress" | "priority";

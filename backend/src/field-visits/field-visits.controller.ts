@@ -15,6 +15,7 @@ import type { FastifyRequest } from "fastify";
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -35,12 +36,19 @@ export class FieldVisitsController {
   ) {}
 
   @Get("field-visits/mine")
+  @RequireRoles("FIELD_EXECUTIVE")
   @RequirePermissions(Permission.FieldVisitRead)
   mine(@CurrentActor() actor: Actor) {
     return this.visits.mine(actor);
   }
 
   @Get("field-evidence/:evidenceId/content")
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "QA_REVIEWER",
+    "FIELD_EXECUTIVE",
+  )
   @RequirePermissions(Permission.FieldEvidenceRead)
   async downloadEvidence(
     @CurrentActor() actor: Actor,
@@ -50,6 +58,7 @@ export class FieldVisitsController {
   }
 
   @Post("cases/:caseId/field-visits")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   @RequirePermissions(Permission.FieldVisitWrite)
   create(
     @CurrentActor() actor: Actor,
@@ -60,6 +69,7 @@ export class FieldVisitsController {
   }
 
   @Post("field-visits/:visitId/evidence")
+  @RequireRoles("FIELD_EXECUTIVE")
   @RequirePermissions(Permission.FieldVisitWrite)
   async addEvidence(
     @CurrentActor() actor: Actor,
@@ -76,6 +86,7 @@ export class FieldVisitsController {
   }
 
   @Post("field-visits/:visitId/check-in")
+  @RequireRoles("FIELD_EXECUTIVE")
   @RequirePermissions(Permission.FieldVisitWrite)
   checkIn(
     @CurrentActor() actor: Actor,
@@ -86,6 +97,7 @@ export class FieldVisitsController {
   }
 
   @Patch("field-visits/:visitId/complete")
+  @RequireRoles("FIELD_EXECUTIVE")
   @RequirePermissions(Permission.FieldVisitWrite)
   complete(
     @CurrentActor() actor: Actor,
@@ -96,6 +108,7 @@ export class FieldVisitsController {
   }
 
   @Patch("field-visits/:visitId/exception")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   @RequirePermissions(Permission.FieldVisitWrite)
   reviewException(
     @CurrentActor() actor: Actor,

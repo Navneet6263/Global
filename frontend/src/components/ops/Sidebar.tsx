@@ -16,7 +16,9 @@ import {
   BellRing,
   Files,
 } from "lucide-react";
-import { getSession, logout } from "@/lib/api/auth";
+import { toast } from "sonner";
+import { getSession } from "@/lib/api/auth";
+import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { canAccessWorkspace } from "@/lib/auth/workspace-access";
 
 type NavItem = {
@@ -78,11 +80,12 @@ export function Sidebar() {
   const queryClient = useQueryClient();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const logoutMutation = useMutation({
-    mutationFn: logout,
-    onSettled: () => {
+    mutationFn: endAuthenticatedSession,
+    onSuccess: () => {
       queryClient.clear();
       window.location.assign("/auth");
     },
+    onError: (error: Error) => toast.error("Sign out failed", { description: error.message }),
   });
   const clientOnly = Boolean(
     session.data?.clientId &&

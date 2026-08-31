@@ -1,25 +1,25 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, CircleDollarSign, FilePlus2, Landmark, WalletCards } from "lucide-react";
+import { FilePlus2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { ErrorState } from "@/components/feedback/error-state";
+import { CardGridSkeleton, TableSkeleton } from "@/components/feedback/skeletons";
 import { FinanceInsights } from "@/features/stakeholders/finance/FinanceInsights";
+import { FinanceSummary } from "@/features/stakeholders/finance/FinanceSummary";
 import { CreditNoteForm } from "@/features/stakeholders/finance/CreditNoteForm";
 import { InvoiceDetailDrawer } from "@/features/stakeholders/finance/InvoiceDetailDrawer";
 import { InvoiceForm } from "@/features/stakeholders/finance/InvoiceForm";
 import { InvoiceRegister } from "@/features/stakeholders/finance/InvoiceRegister";
 import { PaymentForm } from "@/features/stakeholders/finance/PaymentForm";
-import { money } from "@/features/stakeholders/finance/finance-utils";
-import {
-  StakeholderHeader,
-  StakeholderKpis,
-  StakeholderShell,
-} from "@/features/stakeholders/StakeholderShell";
+import { StakeholderHeader, StakeholderShell } from "@/features/stakeholders/StakeholderShell";
 import { getSession } from "@/lib/api/auth";
 import { getFinanceOverview, listInvoices, type Invoice } from "@/lib/api/finance";
+import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/finance")({
   head: () => ({ meta: [{ title: "Finance & Billing — Sapling Global" }] }),
+  beforeLoad: () => requireRoleWorkspace(["FINANCE_MANAGER"]),
   component: FinancePage,
 });
 
@@ -49,10 +49,14 @@ function FinancePage() {
   });
   const data = overview.data;
   const rows = invoices.data?.items ?? [];
-  const billed = data?.summary.billed ?? 0;
-  const collected = data?.summary.collected ?? 0;
+  const canWrite = Boolean(
+    session.data?.permissions.includes("*") || session.data?.permissions.includes("finance:write"),
+  );
+  const hasError = overview.isError || invoices.isError;
+  const isPending = overview.isPending || invoices.isPending;
   return (
     <StakeholderShell
+      workspace="finance"
       onRefresh={() => {
         void overview.refetch();
         void invoices.refetch();
@@ -60,23 +64,32 @@ function FinancePage() {
       refreshing={overview.isFetching || invoices.isFetching}
     >
       <StakeholderHeader
-        eyebrow="Stakeholders / Finance"
+        eyebrow="Finance · Billing workspace"
         title="Revenue control"
-        description="Issue invoices, monitor receivables and record collections with a complete server-validated trail."
+        description="Issue invoices, reconcile collections and act on ageing receivables with a complete server-validated trail."
         action={
-          <button
-            type="button"
-            onClick={() => setShowCreate((value) => !value)}
-            className="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-950 px-4 text-xs font-semibold text-white shadow-sm"
-          >
-            <FilePlus2 className="h-4 w-4" /> Issue invoice
-          </button>
+          canWrite ? (
+            <button
+              type="button"
+              onClick={() => setShowCreate((value) => !value)}
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-primary px-4 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-card)] transition hover:-translate-y-px hover:shadow-[var(--shadow-raise)]"
+            >
+              <FilePlus2 className="size-4" /> Issue invoice
+            </button>
+          ) : null
         }
       />
-      {overview.isError || invoices.isError ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          {overview.error?.message ?? invoices.error?.message}
-        </div>
+      {hasError ? (
+        <ErrorState
+          description={
+            overview.error?.message ?? invoices.error?.message ?? "Finance data failed to load."
+          }
+          onRetry={() => {
+            void overview.refetch();
+            void invoices.refetch();
+          }}
+          retrying={overview.isFetching || invoices.isFetching}
+        />
       ) : null}
       {showCreate ? <InvoiceForm onClose={() => setShowCreate(false)} /> : null}
       {paymentFor ? <PaymentForm invoice={paymentFor} onClose={() => setPaymentFor(null)} /> : null}
@@ -84,10 +97,7 @@ function FinancePage() {
       {selectedInvoice ? (
         <InvoiceDetailDrawer
           invoice={selectedInvoice}
-          canWrite={Boolean(
-            session.data?.permissions.includes("*") ||
-            session.data?.permissions.includes("finance:write"),
-          )}
+          canWrite={canWrite}
           onClose={() => setSelectedInvoice(null)}
           onPayment={() => {
             setPaymentFor(selectedInvoice);
@@ -99,76 +109,45 @@ function FinancePage() {
           }}
         />
       ) : null}
-      <StakeholderKpis
-        items={[
-          {
-            label: "Billed",
-            value: money(billed),
-            detail: `${data?.summary.invoiceCount ?? 0} invoices in register`,
-            icon: CircleDollarSign,
-            tone: "blue",
-            progress: billed ? 100 : 0,
-          },
-          {
-            label: "Collected",
-            value: money(collected),
-            detail: billed
-              ? `${Math.round((collected / billed) * 100)}% realised · ${money(data?.summary.credited ?? 0)} credited`
-              : "No collections recorded",
-            icon: Landmark,
-            tone: "emerald",
-            progress: ratio(collected, billed),
-          },
-          {
-            label: "Outstanding",
-            value: money(data?.summary.outstanding ?? 0),
-            detail: `${data?.summary.openInvoiceCount ?? 0} open invoices`,
-            icon: WalletCards,
-            tone: "orange",
-            progress: ratio(data?.summary.outstanding ?? 0, billed),
-          },
-          {
-            label: "Overdue",
-            value: money(data?.summary.overdueAmount ?? 0),
-            detail: `${data?.summary.overdueCount ?? 0} invoices beyond due date`,
-            icon: AlertTriangle,
-            tone: data?.summary.overdueCount ? "red" : "emerald",
-            progress: ratio(data?.summary.overdueAmount ?? 0, billed),
-          },
-        ]}
-      />
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(18rem,0.55fr)]">
-        <InvoiceRegister
-          items={rows}
-          search={searchInput}
-          status={status}
-          page={cursorHistory.length + 1}
-          hasPrevious={cursorHistory.length > 0}
-          hasNext={Boolean(invoices.data?.nextCursor)}
-          onSearch={setSearchInput}
-          onStatus={(value) => {
-            setStatus(value);
-            setCursor(undefined);
-            setCursorHistory([]);
-          }}
-          onPrevious={() => {
-            const history = [...cursorHistory];
-            setCursor(history.pop());
-            setCursorHistory(history);
-          }}
-          onNext={() => {
-            const next = invoices.data?.nextCursor;
-            if (!next) return;
-            setCursorHistory((current) => [...current, cursor]);
-            setCursor(next);
-          }}
-          onOpen={setSelectedInvoice}
-        />
-        <FinanceInsights data={data} />
-      </div>
+      {isPending ? (
+        <div className="space-y-5" aria-label="Loading finance workspace">
+          <CardGridSkeleton count={4} />
+          <TableSkeleton rows={7} />
+        </div>
+      ) : (
+        <>
+          <FinanceSummary data={data} />
+          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.55fr)_minmax(19rem,0.45fr)]">
+            <InvoiceRegister
+              items={rows}
+              search={searchInput}
+              status={status}
+              page={cursorHistory.length + 1}
+              hasPrevious={cursorHistory.length > 0}
+              hasNext={Boolean(invoices.data?.nextCursor)}
+              onSearch={setSearchInput}
+              onStatus={(value) => {
+                setStatus(value);
+                setCursor(undefined);
+                setCursorHistory([]);
+              }}
+              onPrevious={() => {
+                const history = [...cursorHistory];
+                setCursor(history.pop());
+                setCursorHistory(history);
+              }}
+              onNext={() => {
+                const next = invoices.data?.nextCursor;
+                if (!next) return;
+                setCursorHistory((current) => [...current, cursor]);
+                setCursor(next);
+              }}
+              onOpen={setSelectedInvoice}
+            />
+            <FinanceInsights data={data} />
+          </div>
+        </>
+      )}
     </StakeholderShell>
   );
-}
-function ratio(value: number, total: number) {
-  return total ? Math.round((value / total) * 100) : 0;
 }

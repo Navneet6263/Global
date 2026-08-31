@@ -31,16 +31,21 @@ export function percent(numerator: number, denominator: number) {
 
 export function average(values: number[]) {
   return values.length
-    ? Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 10) / 10
+    ? Math.round(
+        (values.reduce((sum, value) => sum + value, 0) / values.length) * 10,
+      ) / 10
     : null;
 }
 
 export function caseStats(rows: ExecutiveCaseRow[], now: Date) {
   const completed = rows.filter((row) => row.completedAt);
   const eligible = completed.filter((row) => row.dueAt);
-  const withinSla = eligible.filter((row) => row.completedAt! <= row.dueAt!).length;
+  const withinSla = eligible.filter(
+    (row) => row.completedAt! <= row.dueAt!,
+  ).length;
   const overdue = rows.filter(
-    (row) => row.dueAt && row.dueAt < now && !terminalStatuses.includes(row.status),
+    (row) =>
+      row.dueAt && row.dueAt < now && !terminalStatuses.includes(row.status),
   ).length;
   return {
     total: rows.length,
@@ -49,7 +54,10 @@ export function caseStats(rows: ExecutiveCaseRow[], now: Date) {
     overdue,
     slaPercentage: percent(withinSla, eligible.length),
     averageTatHours: average(
-      completed.map((row) => (row.completedAt!.getTime() - row.createdAt.getTime()) / 3_600_000),
+      completed.map(
+        (row) =>
+          (row.completedAt!.getTime() - row.createdAt.getTime()) / 3_600_000,
+      ),
     ),
   };
 }
@@ -59,18 +67,28 @@ export function groupedPerformance(
   now: Date,
   kind: "client" | "branch",
 ) {
-  const groups = new Map<string, { id: string; name: string; rows: ExecutiveCaseRow[] }>();
+  const groups = new Map<
+    string,
+    { id: string; name: string; rows: ExecutiveCaseRow[] }
+  >();
   for (const row of rows) {
     const entity = kind === "client" ? row.client : row.branch;
     const id = entity?.publicId ?? "unassigned";
-    const name = kind === "client" ? row.client.displayName : (row.branch?.name ?? "Unassigned");
+    const name =
+      kind === "client"
+        ? row.client.displayName
+        : (row.branch?.name ?? "Unassigned");
     const current: { id: string; name: string; rows: ExecutiveCaseRow[] } =
       groups.get(id) ?? { id, name, rows: [] };
     current.rows.push(row);
     groups.set(id, current);
   }
   return [...groups.values()]
-    .map((group) => ({ id: group.id, name: group.name, ...caseStats(group.rows, now) }))
+    .map((group) => ({
+      id: group.id,
+      name: group.name,
+      ...caseStats(group.rows, now),
+    }))
     .sort((a, b) => b.total - a.total);
 }
 
@@ -80,17 +98,36 @@ export function attentionQueue(rows: ExecutiveCaseRow[], now: Date) {
       if (terminalStatuses.includes(row.status)) return [];
       const reasons: string[] = [];
       if (row.dueAt && row.dueAt < now) reasons.push("Overdue");
-      if (["HIGH", "CRITICAL"].includes(row.riskLevel ?? "")) reasons.push(`${row.riskLevel} risk`);
+      if (["HIGH", "CRITICAL"].includes(row.riskLevel ?? ""))
+        reasons.push(`${row.riskLevel} risk`);
       if (row.priority === "URGENT") reasons.push("Urgent priority");
-      if (row.clarifications.some((item) => ["OPEN", "RESPONDED"].includes(item.status)))
+      if (
+        row.clarifications.some((item) =>
+          ["OPEN", "RESPONDED"].includes(item.status),
+        )
+      )
         reasons.push("Clarification open");
       if (row.fieldVisits.some((item) => item.status === "EXCEPTION_REVIEW"))
         reasons.push("Field exception");
       if (!reasons.length) return [];
-      const ageHours = Math.max(0, (now.getTime() - row.updatedAt.getTime()) / 3_600_000);
-      const severity = reasons.includes("Overdue") || reasons.includes("CRITICAL risk") ? 3 :
-        reasons.includes("HIGH risk") || reasons.includes("Urgent priority") ? 2 : 1;
-      return [{ ...presentCase(row), reasons, severity, ageHours: Math.round(ageHours) }];
+      const ageHours = Math.max(
+        0,
+        (now.getTime() - row.updatedAt.getTime()) / 3_600_000,
+      );
+      const severity =
+        reasons.includes("Overdue") || reasons.includes("CRITICAL risk")
+          ? 3
+          : reasons.includes("HIGH risk") || reasons.includes("Urgent priority")
+            ? 2
+            : 1;
+      return [
+        {
+          ...presentCase(row),
+          reasons,
+          severity,
+          ageHours: Math.round(ageHours),
+        },
+      ];
     })
     .sort((a, b) => b.severity - a.severity || b.ageHours - a.ageHours)
     .slice(0, 12);

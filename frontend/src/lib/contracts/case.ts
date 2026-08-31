@@ -8,7 +8,16 @@ export type CasePriority = "standard" | "high" | "critical";
 export type SlaState = "healthy" | "approaching" | "overdue";
 
 export type CheckType =
-  "identity" | "address" | "employment" | "education" | "criminal" | "reference";
+  | "identity"
+  | "address"
+  | "employment"
+  | "education"
+  | "criminal"
+  | "court_record"
+  | "reference"
+  | "global_database"
+  | "drug_test"
+  | "other";
 
 export type CheckStatus =
   | "not_started"
@@ -38,12 +47,12 @@ export interface CaseDocument {
 
 export interface CaseClarification {
   id: string;
-  raisedBy: string;
-  audience: "candidate" | "client" | "internal";
+  raisedBy?: string;
+  audience?: "candidate" | "client" | "internal";
   question: string;
   status: "open" | "answered" | "closed";
   raisedAt: string;
-  dueAt: string;
+  dueAt: string | null;
 }
 
 export interface CaseTimelineEvent {
@@ -65,9 +74,9 @@ export interface CaseAssignmentEntry {
 export interface CaseReport {
   id: string;
   version: string;
-  publishedAt: string;
-  outcome: "clear" | "minor_discrepancy" | "major_discrepancy";
-  sizeKb: number;
+  status: string;
+  publishedAt: string | null;
+  createdAt: string;
 }
 
 export interface VerificationCase {
@@ -78,16 +87,15 @@ export interface VerificationCase {
   candidateMobile: string;
   clientId: string;
   clientName: string;
-  packageName: string;
+  packageName: string | null;
   checkBundle: readonly CheckType[];
   stage: CaseStage;
   progress: number;
   priority: CasePriority;
   slaMinutesRemaining: number;
   slaState: SlaState;
-  owner: string;
-  ownerRole: string;
-  branch: string;
+  owner: string | null;
+  branch: string | null;
   createdAt: string;
   updatedAt: string;
   checks: readonly VerificationCheck[];
@@ -106,7 +114,7 @@ export interface CaseQuery {
   sla?: SlaState | "all";
   from?: string;
   to?: string;
-  sortBy?: "updatedAt" | "sla" | "candidateName" | "progress";
+  sortBy?: "updatedAt" | "sla" | "candidateName";
   sortDir?: "asc" | "desc";
   page?: number;
   pageSize?: number;
@@ -127,8 +135,12 @@ export const CHECK_LABELS: Record<CheckType, string> = {
   address: "Address",
   employment: "Employment",
   education: "Education",
-  criminal: "Criminal / court",
+  criminal: "Criminal",
+  court_record: "Court record",
   reference: "Reference",
+  global_database: "Global database",
+  drug_test: "Drug test",
+  other: "Other",
 };
 
 export const PRIORITY_META: Record<CasePriority, { label: string; tone: StatusTone }> = {

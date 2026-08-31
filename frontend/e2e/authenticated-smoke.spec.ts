@@ -24,21 +24,25 @@ test("administrator can open every operational workspace without server failures
     if (response.status() >= 500) failures.push(`${response.status()} ${response.url()}`);
   });
   const workspaces: Array<[string, RegExp]> = [
-    ["/", /Operations command center/i],
-    ["/exceptions", /Exception triage/i],
-    ["/verifier", /Verification workbench/i],
-    ["/qa-review", /Independent QA review/i],
-    ["/field-executive", /My field route/i],
-    ["/client-portal", /Verification portfolio/i],
-    ["/executive", /Portfolio intelligence/i],
-    ["/sales-crm", /Revenue command/i],
-    ["/finance", /Revenue control/i],
-    ["/settings", /^Settings$/i],
-    ["/security", /Account protection/i],
+    ["/admin", /Control Tower — Sapling Global Platform Admin/i],
+    ["/admin/analytics", /Executive Analytics — Sapling Global/i],
+    ["/admin/sales", /Sales & CRM Oversight — Sapling Global/i],
+    ["/admin/cases", /Verification Register — Sapling Global/i],
+    ["/admin/verifier", /Verifier Operations — Sapling Global/i],
+    ["/admin/qa", /QA Review Oversight — Sapling Global/i],
+    ["/admin/exceptions", /Exception Oversight — Sapling Global/i],
+    ["/admin/field", /Field Operations Oversight — Sapling Global/i],
+    ["/admin/clients", /Client Management — Sapling Global/i],
+    ["/admin/client-portal", /Client Portfolio Oversight — Sapling Global/i],
+    ["/admin/finance", /Finance & Billing Oversight — Sapling Global/i],
+    ["/admin/users", /User IDs & Access — Sapling Global/i],
+    ["/admin/settings", /Platform Settings — Sapling Global/i],
+    ["/admin/audit", /Audit Trail — Sapling Global/i],
+    ["/admin/security", /Account Security — Sapling Global/i],
   ];
-  for (const [path, heading] of workspaces) {
+  for (const [path, title] of workspaces) {
     await page.goto(path);
-    await expect(page.getByRole("heading", { name: heading }).first()).toBeVisible();
+    await expect(page).toHaveTitle(title);
     const scan = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
       .analyze();
@@ -58,15 +62,15 @@ test("administrator can open every operational workspace without server failures
 
 test("session survives refresh and logout revokes the browser session", async ({ page }) => {
   await page.reload();
-  await expect(page).not.toHaveURL(/\/login/);
-  await page.getByRole("button", { name: /logout/i }).click();
-  await expect(page).toHaveURL(/\/login/);
+  await expect(page).not.toHaveURL(/\/auth/);
+  await page.getByRole("button", { name: /sign out/i }).click();
+  await expect(page).toHaveURL(/\/auth/);
   await page.goto("/");
-  await expect(page).toHaveURL(/\/login/);
+  await expect(page).toHaveURL(/\/auth/);
 });
 
 async function login(page: Page) {
-  await page.goto("/login");
+  await page.goto("/auth");
   await page.getByLabel("Work email").fill(credentials.email!);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password!);
   const loginResponse = page.waitForResponse(
@@ -74,7 +78,7 @@ async function login(page: Page) {
       response.request().method() === "POST" && response.url().endsWith("/api/v1/auth/login"),
     { timeout: 60_000 },
   );
-  await page.getByRole("button", { name: /enter workspace/i }).click();
+  await page.getByRole("button", { name: /sign in/i }).click();
   expect((await loginResponse).status()).toBe(201);
-  await expect(page).not.toHaveURL(/\/login/, { timeout: 45_000 });
+  await expect(page).not.toHaveURL(/\/auth/, { timeout: 45_000 });
 }

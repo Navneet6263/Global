@@ -13,7 +13,7 @@ interface OpsMetricCardProps {
 }
 
 export function OpsMetricCard({ metric, active, onSelect }: OpsMetricCardProps) {
-  const DeltaIcon = DIRECTION_ICON[metric.direction];
+  const DeltaIcon = metric.direction ? DIRECTION_ICON[metric.direction] : Minus;
   const colour = TONE_STROKE[metric.tone];
   const max = Math.max(...metric.series, 1);
 
@@ -40,14 +40,18 @@ export function OpsMetricCard({ metric, active, onSelect }: OpsMetricCardProps) 
           <span className="num block text-[1.6rem] leading-none font-medium tracking-[-0.03em] text-foreground">
             {formatNumber(metric.value)}
           </span>
-          <span className="inline-flex items-center gap-1 text-[11px]">
-            <DeltaIcon className={cn("size-3", TONE_TEXT[metric.tone])} aria-hidden />
-            <span className={cn("num font-medium", TONE_TEXT[metric.tone])}>
-              {metric.deltaPercent > 0 ? "+" : ""}
-              {metric.deltaPercent.toFixed(1)}%
+          {metric.deltaPercent !== undefined ? (
+            <span className="inline-flex items-center gap-1 text-[11px]">
+              <DeltaIcon className={cn("size-3", TONE_TEXT[metric.tone])} aria-hidden />
+              <span className={cn("num font-medium", TONE_TEXT[metric.tone])}>
+                {metric.deltaPercent > 0 ? "+" : ""}
+                {metric.deltaPercent.toFixed(1)}%
+              </span>
+              <span className="text-muted-foreground">vs previous period</span>
             </span>
-            <span className="text-muted-foreground">vs yesterday</span>
-          </span>
+          ) : (
+            <span className="text-[11px] text-muted-foreground">Current snapshot</span>
+          )}
         </div>
 
         <div className="flex h-9 w-24 shrink-0 items-end gap-[2px]" aria-hidden>

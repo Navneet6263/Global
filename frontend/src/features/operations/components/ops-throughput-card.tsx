@@ -14,7 +14,7 @@ export function OpsThroughputCard({ data }: { data: OpsDashboard["throughput"] }
   return (
     <Section
       title="Created vs completed"
-      description="Last seven days of intake against released reports."
+      description="Recent monthly case intake against completed cases."
     >
       <div className="h-[236px] w-full">
         <ResponsiveContainer width="100%" height="100%">

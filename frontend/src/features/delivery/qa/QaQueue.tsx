@@ -1,22 +1,19 @@
-import { ChevronLeft, ChevronRight, Search, ShieldCheck } from "lucide-react";
+import {
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  Clock3,
+  Search,
+  ShieldCheck,
+} from "lucide-react";
 
 import type { QaQueueItem } from "@/lib/api/qa";
-import { formatDate } from "../utils";
+import { cn } from "@/lib/utils";
+import { formatDate, humanize } from "../utils";
 
-export function QaQueue({
-  items,
-  selectedId,
-  search,
-  page,
-  hasPrevious,
-  hasNext,
-  onSearch,
-  onPrevious,
-  onNext,
-  onSelect,
-}: {
+interface QaQueueProps {
   items: QaQueueItem[];
-  selectedId?: string | undefined;
+  selectedId?: string;
   search: string;
   page: number;
   hasPrevious: boolean;
@@ -25,90 +22,167 @@ export function QaQueue({
   onPrevious: () => void;
   onNext: () => void;
   onSelect: (id: string) => void;
-}) {
+}
+
+export function QaQueue(props: QaQueueProps) {
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 p-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+    <section className="overflow-hidden rounded-[1.65rem] border border-white/80 bg-card/85 shadow-[var(--shadow-float)] backdrop-blur-sm xl:sticky xl:top-5 xl:self-start">
+      <header className="border-b border-border/70 p-4">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-[15px] font-semibold tracking-[-0.02em]">Quality review queue</h2>
+            <p className="mt-0.5 text-[10.5px] text-muted-foreground">
+              Claim one case before making a decision
+            </p>
+          </div>
+          <span className="num rounded-full bg-review-soft px-2.5 py-1 text-[10px] font-medium text-review-foreground">
+            {props.items.length} shown
+          </span>
+        </div>
+        <div className="relative mt-3">
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
-            value={search}
-            onChange={(event) => onSearch(event.target.value)}
+            value={props.search}
+            onChange={(event) => props.onSearch(event.target.value)}
             placeholder="Search candidate, case or client"
-            className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none focus:border-orange-300"
+            aria-label="Search QA queue"
+            className="h-10 w-full rounded-full border border-border bg-background/75 pl-9 pr-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
           />
         </div>
+      </header>
+
+      <div className="max-h-[720px] space-y-2 overflow-y-auto p-3">
+        {props.items.map((item) => (
+          <QaQueueCard
+            key={item.id}
+            item={item}
+            active={props.selectedId === item.id}
+            onSelect={() => props.onSelect(item.id)}
+          />
+        ))}
+        {!props.items.length ? <QaQueueEmpty /> : null}
       </div>
-      <div className="max-h-[720px] divide-y divide-slate-100 overflow-y-auto">
-        {items.map((item) => {
-          const highRisk = item.checks.some((check) =>
-            ["HIGH", "CRITICAL"].includes(check.riskLevel ?? ""),
-          );
-          const overdue = Boolean(item.dueAt && new Date(item.dueAt).getTime() < Date.now());
-          return (
-            <button
-              key={item.id}
-              onClick={() => onSelect(item.id)}
-              className={`w-full p-4 text-left transition ${selectedId === item.id ? "bg-orange-50" : "hover:bg-slate-50"}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">{item.subject.fullName}</p>
-                  <p className="mt-0.5 truncate text-xs text-slate-500">
-                    {item.caseNumber} · {item.client.displayName}
-                  </p>
-                </div>
-                <span
-                  className={`rounded-full px-2.5 py-1 text-[9px] font-bold ${highRisk ? "bg-red-100 text-red-700" : "bg-emerald-100 text-emerald-700"}`}
-                >
-                  {highRisk ? "High risk" : "Review"}
-                </span>
-              </div>
-              <div className="mt-3 flex items-center justify-between text-[10px] text-slate-500">
-                <span>{item.checks.length} completed checks</span>
-                <span className={overdue ? "font-semibold text-red-600" : ""}>
-                  {item.dueAt ? formatDate(item.dueAt) : "No due date"}
-                </span>
-              </div>
-              {item.qaReviewer ? (
-                <p className="mt-2 flex items-center gap-1 text-[10px] font-semibold text-violet-700">
-                  <ShieldCheck className="h-3 w-3" /> Claimed by {item.qaReviewer.displayName}
-                </p>
-              ) : null}
-            </button>
-          );
-        })}
-        {!items.length ? (
-          <p className="px-5 py-14 text-center text-sm text-slate-500">
-            No cases match this review view.
-          </p>
-        ) : null}
-      </div>
-      <footer className="flex items-center justify-between border-t border-slate-200 px-4 py-3">
-        <span className="text-[11px] font-medium text-slate-500">
-          Server page {page} · {items.length} cases
+
+      <footer className="flex items-center justify-between border-t border-border/70 px-4 py-3">
+        <span className="text-[10px] text-muted-foreground">
+          Page {props.page} · {props.items.length} cases
         </span>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            onClick={onPrevious}
-            disabled={!hasPrevious}
-            aria-label="Previous review page"
-            className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            disabled={!hasNext}
-            aria-label="Next review page"
-            className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-35"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+        <div className="flex gap-1.5">
+          <PageButton
+            label="Previous review page"
+            disabled={!props.hasPrevious}
+            onClick={props.onPrevious}
+            icon={ChevronLeft}
+          />
+          <PageButton
+            label="Next review page"
+            disabled={!props.hasNext}
+            onClick={props.onNext}
+            icon={ChevronRight}
+          />
         </div>
       </footer>
     </section>
+  );
+}
+
+function QaQueueCard({
+  item,
+  active,
+  onSelect,
+}: {
+  item: QaQueueItem;
+  active: boolean;
+  onSelect: () => void;
+}) {
+  const highRisk = item.checks.some((check) =>
+    ["HIGH", "CRITICAL"].includes(check.riskLevel ?? ""),
+  );
+  const overdue = Boolean(item.dueAt && new Date(item.dueAt).getTime() < Date.now());
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={active}
+      className={cn(
+        "relative w-full overflow-hidden rounded-[1.15rem] border p-3.5 text-left transition duration-200",
+        active
+          ? "border-review/25 bg-review-soft/65 shadow-[var(--shadow-card)]"
+          : "border-transparent bg-background/55 hover:border-white hover:bg-white/85",
+      )}
+    >
+      {active ? <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-review" /> : null}
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-[13px] font-semibold">{item.subject.fullName}</p>
+          <p className="mt-0.5 truncate text-[10.5px] text-muted-foreground">
+            {item.caseNumber} · {item.client.displayName}
+          </p>
+        </div>
+        <span
+          className={cn(
+            "shrink-0 rounded-full border px-2 py-1 text-[8.5px] font-semibold",
+            highRisk
+              ? "border-critical/25 bg-critical-soft text-critical-foreground"
+              : "border-success/25 bg-success-soft text-success-foreground",
+          )}
+        >
+          {highRisk ? "High risk" : humanize(item.priority)}
+        </span>
+      </div>
+      <div className="mt-3 flex items-center justify-between gap-2 text-[9.5px] text-muted-foreground">
+        <span>{item.checks.length} completed checks</span>
+        <span
+          className={cn(
+            "flex items-center gap-1",
+            overdue && "font-medium text-critical-foreground",
+          )}
+        >
+          {overdue ? <AlertTriangle className="size-3" /> : <Clock3 className="size-3" />}
+          {item.dueAt ? formatDate(item.dueAt) : "No due date"}
+        </span>
+      </div>
+      {item.qaReviewer ? (
+        <p className="mt-2 flex items-center gap-1 text-[9.5px] font-medium text-review-foreground">
+          <ShieldCheck className="size-3" /> Claimed by {item.qaReviewer.displayName}
+        </p>
+      ) : null}
+    </button>
+  );
+}
+
+function QaQueueEmpty() {
+  return (
+    <div className="px-5 py-14 text-center">
+      <span className="mx-auto grid size-10 place-items-center rounded-full bg-review-soft text-review-foreground">
+        <ShieldCheck className="size-4" />
+      </span>
+      <p className="mt-3 text-[12px] font-medium">Review queue is clear</p>
+      <p className="mt-1 text-[10.5px] text-muted-foreground">No cases match this search.</p>
+    </div>
+  );
+}
+
+function PageButton({
+  label,
+  disabled,
+  onClick,
+  icon: Icon,
+}: {
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+  icon: typeof ChevronLeft;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className="grid size-8 place-items-center rounded-full border border-border bg-white/70 text-muted-foreground transition hover:bg-review-soft hover:text-review-foreground disabled:cursor-not-allowed disabled:opacity-35"
+    >
+      <Icon className="size-3.5" />
+    </button>
   );
 }

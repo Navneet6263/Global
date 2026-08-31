@@ -17,21 +17,21 @@ export function EvidencePreview({
     return () => URL.revokeObjectURL(next);
   }, [photo.blob]);
   return (
-    <div className="flex items-center gap-2 rounded-lg bg-white p-2">
+    <div className="flex items-center gap-3 rounded-[1rem] border border-white/80 bg-white/80 p-2 shadow-sm">
       {url ? (
         <img
           src={url}
           alt="Pending field evidence preview"
-          className="h-11 w-11 rounded-lg object-cover"
+          className="size-12 rounded-xl object-cover"
         />
       ) : (
-        <span className="grid h-11 w-11 place-items-center rounded-lg bg-slate-100">
-          <Camera className="h-4 w-4 text-slate-400" />
+        <span className="grid size-12 place-items-center rounded-xl bg-secondary">
+          <Camera className="size-4 text-muted-foreground" />
         </span>
       )}
       <div className="min-w-0 flex-1">
         <p className="truncate text-[10px] font-semibold">{photo.name}</p>
-        <p className="text-[9px] text-slate-400">
+        <p className="mt-0.5 text-[9px] text-muted-foreground">
           {Math.max(1, Math.round(photo.blob.size / 1024))} KB · pending sync
         </p>
       </div>
@@ -39,9 +39,9 @@ export function EvidencePreview({
         type="button"
         onClick={onRemove}
         aria-label={`Remove ${photo.name}`}
-        className="rounded-md p-1.5 text-red-600"
+        className="grid size-8 place-items-center rounded-full bg-critical-soft text-critical transition-colors hover:bg-critical/15"
       >
-        <Trash2 className="h-3.5 w-3.5" />
+        <Trash2 className="size-3.5" />
       </button>
     </div>
   );

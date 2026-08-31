@@ -17,7 +17,7 @@ import { getSession } from "@/lib/api/auth";
 import { issueCandidateAccess } from "@/lib/api/candidate-portal";
 import { transitionCase, type CaseDetail } from "@/lib/api/cases";
 import { createTask } from "@/lib/api/tasks";
-import { listUsers } from "@/lib/api/users";
+import { listAllUsers } from "@/lib/api/users";
 
 export function CaseActions({ item }: { item: CaseDetail }) {
   const queryClient = useQueryClient();
@@ -73,14 +73,16 @@ export function CandidatePanel({ item }: { item: CaseDetail }) {
   const [shareUrl, setShareUrl] = useState("");
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const canIssue =
-    session.data?.permissions.includes("*") || session.data?.permissions.includes("consent:manage");
+    session.data?.permissions.includes("*") || session.data?.permissions.includes("case:create");
   const mutation = useMutation({
     mutationFn: () => issueCandidateAccess(item.id),
     onSuccess: (result) => {
       const url = `${window.location.origin}/candidate/${result.id}#token=${encodeURIComponent(result.token)}`;
       setShareUrl(url);
       toast.success("Secure candidate link issued", {
-        description: `Expires ${formatDateTime(result.expiresAt)}`,
+        description: result.delivery.queued
+          ? `${result.delivery.channel} delivery queued to ${result.delivery.destination} · expires ${formatDateTime(result.expiresAt)}`
+          : `Copy and share securely · expires ${formatDateTime(result.expiresAt)}`,
       });
     },
     onError: (error: Error) => toast.error(error.message),
@@ -157,7 +159,7 @@ export function CheckCard({
   const task = check.tasks?.[0];
   const directory = useQuery({
     queryKey: ["users", "VERIFIER"],
-    queryFn: () => listUsers("VERIFIER"),
+    queryFn: () => listAllUsers("VERIFIER"),
     enabled: Boolean(canAssign && caseStatus === "IN_PROGRESS" && !task),
     staleTime: 60_000,
   });

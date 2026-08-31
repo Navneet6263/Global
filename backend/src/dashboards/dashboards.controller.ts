@@ -9,6 +9,7 @@ import {
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -31,16 +32,19 @@ export class DashboardsController {
   ) {}
 
   @Get("operations")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   operations(@CurrentActor() actor: Actor) {
     return this.dashboards.operations(actor);
   }
 
   @Get("executive")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   executive(@CurrentActor() actor: Actor, @Query() query: ExecutiveQueryDto) {
     return this.executiveAnalytics.dashboard(actor, query);
   }
 
   @Get("executive/export")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   exportExecutive(
     @CurrentActor() actor: Actor,
     @Query() query: ExecutiveExportQueryDto,
@@ -49,6 +53,7 @@ export class DashboardsController {
   }
 
   @Post("executive/schedule")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   scheduleExecutive(
     @CurrentActor() actor: Actor,
     @Body() input: ExecutiveScheduleDto,
@@ -57,6 +62,7 @@ export class DashboardsController {
   }
 
   @Get("exceptions")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   exceptions(@CurrentActor() actor: Actor) {
     return this.dashboards.exceptions(actor);
   }

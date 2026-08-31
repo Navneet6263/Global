@@ -1,4 +1,5 @@
 import type { AnalyticsRepository, DashboardRepository } from "../repositories";
+import { dashboardStageMap as stageMap } from "./dashboard-stage-map";
 import type { CaseStage } from "@/lib/contracts/case";
 import type { ActionItem, PipelineStage, SummaryCard } from "@/lib/contracts/dashboard";
 import type {
@@ -7,19 +8,13 @@ import type {
   PerformanceRow,
 } from "@/lib/contracts/analytics";
 import { apiRequest } from "@/lib/backend-api/client";
-import { getExecutiveDashboard, getOperationsDashboard } from "@/lib/backend-api/dashboards";
-
-const stageMap: Record<string, CaseStage> = {
-  DRAFT: "intake",
-  CONSENT_PENDING: "consent",
-  DOCUMENT_PENDING: "documents",
-  IN_PROGRESS: "verification",
-  CLARIFICATION_PENDING: "clarification",
-  QA_REVIEW: "qa",
-  COMPLETED: "completed",
-  CLOSED: "completed",
-  CANCELLED: "completed",
-};
+import {
+  getExceptionsDashboard,
+  getExecutiveDashboard,
+  getOperationsDashboard,
+  type ExceptionsDashboard,
+  type OperationsDashboard,
+} from "@/lib/backend-api/dashboards";
 
 function numberSeries(
   rows: Array<{ month: string; created: number; completed: number }>,
@@ -28,91 +23,98 @@ function numberSeries(
   return rows.map((row) => ({ label: row.month, value: row[key] }));
 }
 
-function summaryCards(data: Awaited<ReturnType<typeof getExecutiveDashboard>>): SummaryCard[] {
+function summaryCards(
+  data: Awaited<ReturnType<typeof getExecutiveDashboard>>,
+  operations: OperationsDashboard,
+  exceptions: ExceptionsDashboard,
+): SummaryCard[] {
   const active =
-    data.summary.total - (data.statusMix["COMPLETED"] ?? 0) - (data.statusMix["CLOSED"] ?? 0);
-  const completedMonth = data.performanceTrend.at(-1)?.created ?? 0;
-  const trend = data.trend;
+    operations.summary.total -
+    (operations.statusMix["COMPLETED"] ?? 0) -
+    (operations.statusMix["CLOSED"] ?? 0) -
+    (operations.statusMix["CANCELLED"] ?? 0);
   return [
     {
       id: "portfolio",
       label: "Active portfolio",
       value: String(Math.max(0, active)),
-      description: "Cases currently in flight",
-      comparison: { label: "Current period", delta: 0, direction: "flat" },
+      description: "All non-terminal cases currently in flight",
       tone: "success",
-      series: numberSeries(trend, "created"),
+      series: numberSeries(operations.trend, "created"),
       target: { route: "/admin/cases" },
     },
     {
       id: "sla-health",
       label: "SLA health",
-      value: `${data.performance.slaPercentage ?? 0}%`,
-      description: "Completed within committed due date",
-      comparison: { label: "Current period", delta: 0, direction: "flat" },
+      value: data.performance.slaPercentage === null ? "—" : `${data.performance.slaPercentage}%`,
+      description: "Completion SLA for cases initiated in the last 12 months",
       tone: (data.performance.slaPercentage ?? 100) < 85 ? "warning" : "success",
-      series: data.performanceTrend.map((row) => ({
-        label: row.month,
-        value: row.slaPercentage ?? 0,
-      })),
+      series: data.performanceTrend.flatMap((row) =>
+        row.slaPercentage === null ? [] : [{ label: row.month, value: row.slaPercentage }],
+      ),
       target: { route: "/admin/analytics" },
     },
     {
       id: "completion-time",
       label: "Average completion time",
-      value: `${data.performance.averageTatHours}h`,
-      description: "Turnaround across completed cases",
-      comparison: { label: "Current period", delta: 0, direction: "flat" },
+      value:
+        data.performance.averageTatHours === null ? "—" : `${data.performance.averageTatHours}h`,
+      description: "Turnaround for cases initiated in the last 12 months",
       tone: "info",
-      series: data.performanceTrend.map((row) => ({
-        label: row.month,
-        value: row.averageTatHours ?? 0,
-      })),
+      series: data.performanceTrend.flatMap((row) =>
+        row.averageTatHours === null ? [] : [{ label: row.month, value: row.averageTatHours }],
+      ),
       target: { route: "/admin/analytics" },
     },
     {
       id: "client-action",
       label: "Client action required",
-      value: String(data.summary.overdue),
-      description: "Portfolio items requiring attention",
-      comparison: { label: "Current period", delta: 0, direction: "flat" },
-      tone: data.summary.overdue ? "warning" : "success",
-      series: data.performanceTrend.map((row) => ({ label: row.month, value: row.overdue })),
-      target: { route: "/admin/cases", search: { sla: "overdue" } },
+      value: String(exceptions.summary.clientActions),
+      description: "Open clarifications and rejected documents",
+      tone: exceptions.summary.clientActions ? "warning" : "success",
+      series: [{ label: "Live", value: exceptions.summary.clientActions }],
+      target: { route: "/admin/client-portal" },
     },
     {
       id: "completed-month",
-      label: "Completed this month",
-      value: String(data.performance.completedCases),
-      description: "Closed verification cases",
-      comparison: {
-        label: "Current month",
-        delta: completedMonth,
-        direction: completedMonth > 0 ? "up" : "flat",
-      },
+      label: "Completed today",
+      value: String(operations.summary.completedToday),
+      description: "Cases completed since local day start",
       tone: "success",
-      series: numberSeries(trend, "completed"),
+      series: numberSeries(operations.trend, "completed"),
       target: { route: "/admin/cases", search: { stage: "completed" } },
     },
     {
       id: "critical-exceptions",
       label: "Critical exceptions",
-      value: String(data.attentionQueue.filter((row) => row.severity >= 3).length),
-      description: "Items needing immediate intervention",
-      comparison: { label: "Live queue", delta: 0, direction: "flat" },
+      value: String(exceptions.summary.critical),
+      description: "Urgent overdue cases and field exceptions",
       tone: "critical",
-      series: data.performanceTrend.map((row) => ({ label: row.month, value: row.overdue })),
-      target: { route: "/admin/cases" },
+      series: [{ label: "Live", value: exceptions.summary.critical }],
+      target: { route: "/admin/exceptions" },
     },
   ];
 }
 
-function pipeline(data: Awaited<ReturnType<typeof getExecutiveDashboard>>): PipelineStage[] {
-  const total = Math.max(1, data.summary.total);
-  const grouped = new Map<CaseStage, number>();
-  Object.entries(data.statusMix).forEach(([status, count]) => {
+function pipeline(operations: OperationsDashboard): PipelineStage[] {
+  const grouped = new Map<CaseStage, { count: number; oldestHours: number; atRisk: number }>();
+  (operations.stageHealth ?? []).forEach((row) => {
+    if (row.status === "CANCELLED") return;
+    const stage = stageMap[row.status] ?? "verification";
+    const current = grouped.get(stage) ?? { count: 0, oldestHours: 0, atRisk: 0 };
+    grouped.set(stage, {
+      count: current.count + row.count,
+      oldestHours: Math.max(current.oldestHours, row.oldestAgeHours),
+      atRisk: current.atRisk + row.atRisk,
+    });
+  });
+  Object.entries(operations.statusMix).forEach(([status, count]) => {
+    if (status === "CANCELLED" || operations.stageHealth?.some((row) => row.status === status)) {
+      return;
+    }
     const stage = stageMap[status] ?? "verification";
-    grouped.set(stage, (grouped.get(stage) ?? 0) + count);
+    const current = grouped.get(stage) ?? { count: 0, oldestHours: 0, atRisk: 0 };
+    grouped.set(stage, { ...current, count: current.count + count });
   });
   const stages: CaseStage[] = [
     "intake",
@@ -123,21 +125,31 @@ function pipeline(data: Awaited<ReturnType<typeof getExecutiveDashboard>>): Pipe
     "qa",
     "completed",
   ];
+  const total = Math.max(
+    1,
+    [...grouped.values()].reduce((sum, item) => sum + item.count, 0),
+  );
+  const bottleneck = stages
+    .filter((stage) => stage !== "completed")
+    .sort(
+      (left, right) =>
+        (grouped.get(right)?.oldestHours ?? 0) - (grouped.get(left)?.oldestHours ?? 0),
+    )[0];
   return stages.map((stage) => {
-    const count = grouped.get(stage) ?? 0;
+    const health = grouped.get(stage) ?? { count: 0, oldestHours: 0, atRisk: 0 };
     return {
       stage,
-      count,
-      shareOfPortfolio: Math.round((count / total) * 100),
+      count: health.count,
+      shareOfPortfolio: Math.round((health.count / total) * 100),
       mode:
         stage === "completed"
           ? "closed"
           : ["consent", "documents", "clarification"].includes(stage)
             ? "waiting"
             : "processing",
-      averageAgeMinutes: 0,
-      slaRiskCount: stage === "completed" ? 0 : Math.min(count, data.summary.overdue),
-      isBottleneck: count === Math.max(...Array.from(grouped.values()), 0),
+      oldestAgeMinutes: Math.round(health.oldestHours * 60),
+      slaRiskCount: stage === "completed" ? 0 : health.atRisk,
+      isBottleneck: stage === bottleneck && health.count > 0 && health.oldestHours > 0,
     };
   });
 }
@@ -164,11 +176,15 @@ function actions(data: Awaited<ReturnType<typeof getExecutiveDashboard>>): Actio
 
 export const dashboardRepository: DashboardRepository = {
   async getControlTower() {
-    const data = await getExecutiveDashboard({ months: 12 });
+    const [data, operations, exceptions] = await Promise.all([
+      getExecutiveDashboard({ months: 12 }),
+      getOperationsDashboard(),
+      getExceptionsDashboard(),
+    ]);
     return {
       generatedAt: data.generatedAt,
-      summary: summaryCards(data),
-      pipeline: pipeline(data),
+      summary: summaryCards(data, operations, exceptions),
+      pipeline: pipeline(operations),
       actions: actions(data),
     };
   },
@@ -211,9 +227,9 @@ function performance(
     id: row.id,
     name: row.name,
     volume: row.total,
-    slaAttainment: row.slaPercentage ?? 0,
-    averageTurnaroundHours: row.averageTatHours ?? 0,
-    discrepancyRate: row.total ? Math.round((row.overdue / row.total) * 100) : 0,
+    performanceRate: row.slaPercentage,
+    averageTurnaroundHours: row.averageTatHours,
+    exceptionRate: row.total ? Math.round((row.overdue / row.total) * 100) : 0,
   }));
 }
 
@@ -221,9 +237,13 @@ const riskTones: DistributionSlice["tone"][] = ["success", "warning", "critical"
 
 export const analyticsRepository: AnalyticsRepository = {
   async getExecutive(query): Promise<ExecutiveAnalytics> {
-    const months = query.window === "7d" ? 1 : query.window === "90d" ? 3 : 1;
+    const days = query.window === "7d" ? 7 : query.window === "90d" ? 90 : 30;
+    const to = new Date();
+    const from = new Date(to.getTime() - (days - 1) * 86_400_000);
     const data = await getExecutiveDashboard({
-      months,
+      months: Math.max(3, Math.ceil(days / 30)),
+      from: from.toISOString(),
+      to: to.toISOString(),
       clientId: query.clientId === "all" ? undefined : query.clientId,
     });
     return {
@@ -232,14 +252,12 @@ export const analyticsRepository: AnalyticsRepository = {
         value: row.created,
         secondary: row.completed,
       })),
-      slaTrend: data.performanceTrend.map((row) => ({
-        label: row.month,
-        value: row.slaPercentage ?? 0,
-      })),
-      turnaroundTrend: data.performanceTrend.map((row) => ({
-        label: row.month,
-        value: row.averageTatHours ?? 0,
-      })),
+      slaTrend: data.performanceTrend.flatMap((row) =>
+        row.slaPercentage === null ? [] : [{ label: row.month, value: row.slaPercentage }],
+      ),
+      turnaroundTrend: data.performanceTrend.flatMap((row) =>
+        row.averageTatHours === null ? [] : [{ label: row.month, value: row.averageTatHours }],
+      ),
       riskDistribution: Object.entries(data.riskMix).map(([label, value], index) => ({
         label,
         value,
@@ -251,27 +269,21 @@ export const analyticsRepository: AnalyticsRepository = {
         id: row.type,
         name: row.type,
         volume: row.total,
-        slaAttainment: row.total ? Math.round((row.completed / row.total) * 100) : 0,
-        averageTurnaroundHours: row.averageTatHours ?? 0,
-        discrepancyRate: row.total ? Math.round((row.discrepancies / row.total) * 100) : 0,
+        performanceRate: row.total ? Math.round((row.completed / row.total) * 100) : null,
+        averageTurnaroundHours: row.averageTatHours,
+        exceptionRate: row.total ? Math.round((row.discrepancies / row.total) * 100) : 0,
       })),
-      capacity: data.teamCapacity.map((row) => ({
+      capacity: data.teamCapacity.map((row, _index, rows) => ({
         id: row.id,
-        team: row.name,
-        headcount: 1,
+        owner: row.name,
         openLoad: row.active,
-        capacity: Math.max(row.active + row.completed, 1),
-        utilisation: Math.min(
-          100,
-          Math.round((row.active / Math.max(row.active + row.completed, 1)) * 100),
+        completed: row.completed,
+        overdue: row.overdue,
+        relativeLoad: Math.round(
+          (row.active / Math.max(...rows.map((member) => member.active), 1)) * 100,
         ),
       })),
-      forecast: data.performanceTrend.map((row) => ({
-        label: row.month,
-        expectedIntake: row.created,
-        expectedCompletions: Math.max(0, row.created - row.overdue),
-        slaRisk: row.overdue,
-      })),
+      forecast: data.forecast,
     };
   },
 };

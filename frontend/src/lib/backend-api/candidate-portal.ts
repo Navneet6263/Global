@@ -25,11 +25,15 @@ export interface CandidatePortalData {
 
 export type CandidateCase = CandidatePortalData["case"];
 
+export interface CandidateAccessResult {
+  id: string;
+  token: string;
+  expiresAt: string;
+  delivery: { queued: true; channel: "EMAIL" | "SMS"; destination: string } | { queued: false };
+}
+
 export function issueCandidateAccess(caseId: string) {
-  return apiRequest<{ id: string; token: string; expiresAt: string }>(
-    `/cases/${caseId}/candidate-access`,
-    { method: "POST" },
-  );
+  return apiRequest<CandidateAccessResult>(`/cases/${caseId}/candidate-access`, { method: "POST" });
 }
 
 export function getCandidatePortal(accessId: string, token: string) {

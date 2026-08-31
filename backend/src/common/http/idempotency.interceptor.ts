@@ -4,6 +4,7 @@ import {
   ConflictException,
   ExecutionContext,
   Injectable,
+  Logger,
   type NestInterceptor,
 } from "@nestjs/common";
 import { createHash } from "node:crypto";
@@ -17,13 +18,21 @@ import {
   throwError,
 } from "rxjs";
 import type { Actor } from "../auth/actor";
+import { SecretBoxService } from "../security/secret-box.service";
 import { PrismaService } from "../../database/prisma.service";
 
 type AuthenticatedRequest = FastifyRequest & { user?: Actor };
+type IdempotencyWhere = {
+  tenantId_key_route: { tenantId: bigint; key: string; route: string };
+};
 
 @Injectable()
 export class IdempotencyInterceptor implements NestInterceptor {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(IdempotencyInterceptor.name);
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly secrets: SecretBoxService,
+  ) {}
 
   async intercept(
     context: ExecutionContext,
@@ -46,12 +55,18 @@ export class IdempotencyInterceptor implements NestInterceptor {
     }
     const pathname = new URL(request.url, "http://internal").pathname;
     const route = `${request.method} ${pathname}`.slice(0, 160);
+    const contentSha256 = this.contentDigest(request);
     const requestHash = createHash("sha256")
       .update(
         this.stableJson({
           actor: request.user.userPublicId,
           body: request.body ?? null,
           contentLength: this.header(request, "content-length") ?? null,
+          contentSha256,
+          semanticHeaders: {
+            capturedAt: this.header(request, "x-captured-at") ?? null,
+            evidenceId: this.header(request, "x-evidence-id") ?? null,
+          },
         }),
       )
       .digest("hex");
@@ -72,10 +87,15 @@ export class IdempotencyInterceptor implements NestInterceptor {
           "Idempotency key was already used with a different request",
         );
       }
-      if (existing.responseJson && existing.responseCode) {
+      if (existing.responseCiphertext && existing.responseCode) {
         response.header("x-idempotent-replay", "true");
         response.code(existing.responseCode);
-        return from([JSON.parse(existing.responseJson) as unknown]);
+        return from([
+          this.secrets.open<unknown>(
+            existing.responseCiphertext,
+            existing.responseKeyVersion ?? 1,
+          ),
+        ]);
       }
       throw new ConflictException(
         "An identical request is already in progress",
@@ -91,7 +111,8 @@ export class IdempotencyInterceptor implements NestInterceptor {
           expiresAt: new Date(Date.now() + 24 * 60 * 60_000),
         },
       });
-    } catch {
+    } catch (error) {
+      if (!this.isUniqueConflict(error)) throw error;
       throw new ConflictException(
         "An identical request is already in progress",
       );
@@ -100,18 +121,22 @@ export class IdempotencyInterceptor implements NestInterceptor {
     return next.handle().pipe(
       catchError((error: unknown) =>
         from(
-          this.prisma.idempotencyKey.deleteMany({ where: recordWhere }),
+          this.prisma.idempotencyKey
+            .deleteMany({ where: recordWhere })
+            .catch(() => undefined),
         ).pipe(mergeMap(() => throwError(() => error))),
       ),
       mergeMap((value: unknown) =>
         from(
-          this.prisma.idempotencyKey.update({
-            where: unique,
-            data: {
-              responseCode: response.statusCode,
-              responseJson: this.stableJson(value),
+          this.persistResponse(unique, response.statusCode, value).catch(
+            (error: unknown) => {
+              this.logger.error(
+                `Business write completed but idempotency response persistence failed: ${
+                  error instanceof Error ? error.message : "unknown error"
+                }`,
+              );
             },
-          }),
+          ),
         ).pipe(map(() => value)),
       ),
     );
@@ -139,5 +164,55 @@ export class IdempotencyInterceptor implements NestInterceptor {
   private header(request: FastifyRequest, name: string) {
     const value = request.headers[name];
     return Array.isArray(value) ? value[0] : value;
+  }
+
+  private contentDigest(request: FastifyRequest) {
+    const contentType = this.header(request, "content-type") ?? "";
+    if (!contentType.toLowerCase().startsWith("multipart/form-data")) {
+      return null;
+    }
+    const digest = this.header(request, "x-content-sha256")?.toLowerCase();
+    if (!digest || !/^[a-f0-9]{64}$/.test(digest)) {
+      throw new BadRequestException(
+        "Multipart writes require an x-content-sha256 payload digest",
+      );
+    }
+    return digest;
+  }
+
+  private isUniqueConflict(error: unknown) {
+    return (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: unknown }).code === "P2002"
+    );
+  }
+
+  private async persistResponse(
+    where: IdempotencyWhere,
+    responseCode: number,
+    value: unknown,
+  ) {
+    const data = {
+      responseCode,
+      responseJson: null,
+      responseCiphertext: this.secrets.seal(value ?? null),
+      responseKeyVersion: this.secrets.activeVersion,
+      completedAt: new Date(),
+    };
+    let lastError: unknown;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      try {
+        await this.prisma.idempotencyKey.update({ where, data });
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 25 * (attempt + 1)));
+        }
+      }
+    }
+    throw lastError;
   }
 }

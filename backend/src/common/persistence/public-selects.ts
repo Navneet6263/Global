@@ -20,6 +20,7 @@ export const subjectPublicSelect = {
   phone: true,
   employeeCode: true,
   piiCiphertext: true,
+  piiKeyVersion: true,
 } as const;
 
 export const checkPublicSelect = {

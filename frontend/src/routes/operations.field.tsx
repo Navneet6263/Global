@@ -45,7 +45,7 @@ function FieldOperationsPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Tile label="Scheduled" value={data?.scheduled} />
-        <Tile label="Today" value={data?.today} />
+        <Tile label="Activity today" value={data?.today} />
         <Tile label="Checked in" value={data?.checkedIn} />
         <Tile label="Evidence pending" value={data?.evidencePending} tone="warning" />
         <Tile label="Outside geofence" value={data?.outsideGeofence} tone="critical" />
@@ -56,7 +56,7 @@ function FieldOperationsPage() {
       <div className="grid gap-4 xl:grid-cols-[1.35fr_1fr]">
         <Section
           title="Visit board"
-          description="Scheduled and in-progress visits with evidence status."
+          description="Recorded and in-progress visits with evidence status."
           padded={false}
         >
           {isPending ? (
@@ -90,7 +90,6 @@ function FieldOperationsPage() {
                     <p className="num text-[11px] text-muted-foreground">
                       {visit.city} · {visit.fieldExecutive} · {formatDateTime(visit.scheduledAt)} ·{" "}
                       {visit.evidenceCount} evidence
-                      {visit.geofenceMetres !== null ? ` · ${visit.geofenceMetres} m off site` : ""}
                     </p>
                     {visit.note ? (
                       <p className="text-[11px] text-muted-foreground/85">{visit.note}</p>
@@ -104,7 +103,7 @@ function FieldOperationsPage() {
 
         <Section
           title="Executive load"
-          description="Visits scheduled today and open follow-ups."
+          description="Visit activity recorded today and open follow-ups."
           padded={false}
         >
           {isPending ? (

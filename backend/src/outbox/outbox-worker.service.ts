@@ -5,36 +5,25 @@ import {
   OnModuleDestroy,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { createHmac } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { SecretBoxService } from "../common/security/secret-box.service";
 import { PrismaService } from "../database/prisma.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
 import { ReportsService } from "../reports/reports.service";
-
-type ConsentDelivery = {
-  channel: "SMS" | "EMAIL";
-  destination: string | null;
-  otp: string;
-  consentUrl: string;
-  expiresAt: string;
-};
-
-type ExecutiveDelivery = {
-  recipientEmail: string;
-  format: "pdf" | "csv";
-  dashboardUrl: string;
-  exportUrl: string;
-  deliveryAt: string;
-};
-
-const NOOP_TOPICS = new Set([
-  "case.created",
-  "case.status.changed",
-  "consent.accepted",
-  "clarification.responded",
-  "verification.check.completed",
-  "verification.case.ready-for-qa",
-]);
+import { ReportRecoveryService } from "../reports/report-recovery.service";
+import { RuntimeHealthService } from "../health/runtime-health.service";
+import { ObjectDeletionRecoveryService } from "./object-deletion-recovery.service";
+import {
+  NOOP_TOPICS,
+  type CandidateAccessDelivery,
+  type ConsentDelivery,
+  type ExecutiveDelivery,
+} from "./outbox-worker.types";
+import {
+  OutboxClaimService,
+  type ClaimedOutboxEvent,
+} from "./outbox-claim.service";
 
 @Injectable()
 export class OutboxWorkerService
@@ -50,17 +39,31 @@ export class OutboxWorkerService
     private readonly storage: LocalObjectStorageService,
     private readonly secretBox: SecretBoxService,
     private readonly config: ConfigService,
+    private readonly claims: OutboxClaimService,
+    private readonly reportRecovery: ReportRecoveryService,
+    private readonly deletionRecovery: ObjectDeletionRecoveryService,
+    private readonly health: RuntimeHealthService,
   ) {}
 
   onApplicationBootstrap() {
+    const processRole = this.config.get<string>("PROCESS_ROLE", "all");
+    if (!["all", "worker"].includes(processRole)) {
+      this.logger.log(`Outbox worker skipped for ${processRole} process`);
+      return;
+    }
     if (!this.config.get<boolean>("OUTBOX_WORKER_ENABLED", true)) {
       this.logger.log("Outbox worker is disabled for this process");
       return;
     }
     const interval = this.config.get<number>("OUTBOX_POLL_INTERVAL_MS", 5000);
+    this.health.register("outbox", interval * 3 + 60_000);
     this.timer = setInterval(() => void this.poll(), interval);
     this.timer.unref();
-    void this.recoverAbandonedClaims().then(() => this.poll());
+    void this.claims.recoverAbandoned().then((count) => {
+      if (count)
+        this.logger.warn(`Recovered ${count} abandoned outbox event(s)`);
+      return this.poll();
+    });
   }
 
   onModuleDestroy() {
@@ -72,11 +75,13 @@ export class OutboxWorkerService
     this.running = true;
     try {
       for (let processed = 0; processed < 10; processed += 1) {
-        const event = await this.claim();
+        const event = await this.claims.claim();
         if (!event) break;
         await this.process(event);
       }
+      this.health.success("outbox");
     } catch (error) {
+      this.health.failure("outbox", error);
       this.logger.error(
         error instanceof Error ? error.message : "Outbox polling failed",
       );
@@ -85,43 +90,22 @@ export class OutboxWorkerService
     }
   }
 
-  private async claim() {
-    const candidate = await this.prisma.outboxEvent.findFirst({
-      where: {
-        status: { in: ["PENDING", "RETRY"] },
-        availableAt: { lte: new Date() },
-      },
-      orderBy: [{ availableAt: "asc" }, { id: "asc" }],
-    });
-    if (!candidate) return null;
-    const claimed = await this.prisma.outboxEvent.updateMany({
-      where: { id: candidate.id, status: candidate.status },
-      data: { status: "PROCESSING", attempts: { increment: 1 } },
-    });
-    return claimed.count === 1
-      ? { ...candidate, attempts: candidate.attempts + 1 }
-      : null;
-  }
-
-  private async process(
-    event: Awaited<ReturnType<OutboxWorkerService["claim"]>>,
-  ) {
-    if (!event) return;
+  private async process(event: ClaimedOutboxEvent) {
     try {
       const payload = JSON.parse(event.payloadJson) as Record<string, unknown>;
       if (event.topic === "report.generate.requested") {
         const caseId = this.requiredString(payload, "caseId");
+        const reportId =
+          this.optionalString(payload, "reportId") ?? event.aggregateId;
         const actorUserId = this.optionalString(payload, "actorUserId");
-        const actor = actorUserId
-          ? await this.actor(actorUserId)
-          : await this.fallbackReportActor(event.tenantId);
-        await this.reports.generate(actor, caseId);
+        const actor = await this.reportActor(event.tenantId, actorUserId);
+        await this.reports.generateRequested(actor, caseId, reportId);
       } else if (event.topic === "consent.otp.requested") {
         const secret = this.requiredString(payload, "secret");
-        await this.deliverConsent(
-          this.secretBox.open<ConsentDelivery>(secret),
-          event.id.toString(),
-        );
+        const delivery = this.secretBox.open<ConsentDelivery>(secret);
+        if (await this.isCurrentConsentOtp(event, delivery)) {
+          await this.deliverConsent(delivery, event.id.toString());
+        }
       } else if (event.topic === "object.delete.requested") {
         await this.storage.delete(this.requiredString(payload, "objectKey"));
       } else if (event.topic === "dashboard.executive.delivery") {
@@ -130,26 +114,58 @@ export class OutboxWorkerService
           this.secretBox.open<ExecutiveDelivery>(secret),
           event.id.toString(),
         );
+      } else if (event.topic === "candidate.access.issued") {
+        const secret = this.requiredString(payload, "secret");
+        const delivery = this.secretBox.open<CandidateAccessDelivery>(secret);
+        if (await this.isCurrentCandidateAccess(event, delivery)) {
+          await this.deliverCandidateAccess(delivery, event.id.toString());
+        }
       } else if (!NOOP_TOPICS.has(event.topic)) {
         throw new Error(`Unsupported outbox topic: ${event.topic}`);
       }
-      await this.prisma.outboxEvent.update({
-        where: { id: event.id },
-        data: { status: "PROCESSED", processedAt: new Date() },
-      });
+      const sensitive = [
+        "consent.otp.requested",
+        "dashboard.executive.delivery",
+        "candidate.access.issued",
+      ].includes(event.topic);
+      if (!(await this.claims.complete(event, sensitive))) {
+        this.logger.warn(
+          `Outbox event ${event.id.toString()} completed after its processing lease expired`,
+        );
+      }
     } catch (error) {
       const failed = event.attempts >= 10;
       const delayMs = Math.min(
         15 * 60_000,
         5000 * 2 ** Math.min(event.attempts, 8),
       );
-      await this.prisma.outboxEvent.update({
-        where: { id: event.id },
-        data: {
-          status: failed ? "FAILED" : "RETRY",
-          availableAt: new Date(Date.now() + delayMs),
-        },
-      });
+      if (failed && event.topic === "report.generate.requested") {
+        await this.reportRecovery.markFailed(
+          event.tenantId,
+          event.aggregateId,
+          error,
+        );
+      }
+      if (failed && event.topic === "object.delete.requested") {
+        const recorded = await this.deletionRecovery.failTerminal(event, error);
+        if (!recorded) {
+          this.logger.warn(
+            `Object deletion event ${event.id.toString()} lost its processing lease before terminal failure was recorded`,
+          );
+        }
+      } else {
+        await this.claims.fail(
+          event,
+          failed,
+          new Date(Date.now() + delayMs),
+          failed &&
+            [
+              "consent.otp.requested",
+              "dashboard.executive.delivery",
+              "candidate.access.issued",
+            ].includes(event.topic),
+        );
+      }
       this.logger.error(
         `Outbox event ${event.id.toString()} (${event.topic}) failed: ${error instanceof Error ? error.message : "unknown error"}`,
       );
@@ -162,15 +178,8 @@ export class OutboxWorkerService
   ) {
     if (!delivery.destination)
       throw new Error("Candidate email or phone is required for OTP delivery");
-    const webhook = this.config.get<string>("NOTIFICATION_WEBHOOK_URL");
-    if (!webhook) throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
-    const response = await fetch(webhook, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "idempotency-key": `sapling-outbox-${idempotencyKey}`,
-      },
-      body: JSON.stringify({
+    await this.deliverWebhook(
+      {
         channel: delivery.channel,
         destination: delivery.destination,
         template: "candidate-consent-otp",
@@ -179,26 +188,95 @@ export class OutboxWorkerService
           consentUrl: delivery.consentUrl,
           expiresAt: delivery.expiresAt,
         },
-      }),
-      signal: AbortSignal.timeout(10_000),
+      },
+      `sapling-outbox-${idempotencyKey}`,
+    );
+  }
+
+  private async deliverCandidateAccess(
+    delivery: CandidateAccessDelivery,
+    idempotencyKey: string,
+  ) {
+    await this.deliverWebhook(
+      {
+        channel: delivery.channel,
+        destination: delivery.destination,
+        template: "candidate-document-upload-link",
+        variables: {
+          portalUrl: delivery.portalUrl,
+          expiresAt: delivery.expiresAt,
+        },
+      },
+      `sapling-candidate-access-${idempotencyKey}`,
+    );
+  }
+
+  private async isCurrentCandidateAccess(
+    event: ClaimedOutboxEvent,
+    delivery: CandidateAccessDelivery,
+  ) {
+    const access = await this.prisma.candidatePortalAccess.findFirst({
+      where: {
+        publicId: delivery.accessId,
+        tenantId: event.tenantId,
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+      },
+      select: { id: true },
     });
-    if (!response.ok)
-      throw new Error(`Notification provider returned HTTP ${response.status}`);
+    if (access) return true;
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: event.tenantId,
+        action: "candidate-portal.delivery-skipped",
+        resourceType: "candidate-portal-access",
+        resourcePublicId: delivery.accessId,
+        afterJson: JSON.stringify({ reason: "expired-or-revoked" }),
+      },
+    });
+    return false;
+  }
+
+  private async isCurrentConsentOtp(
+    event: ClaimedOutboxEvent,
+    delivery: ConsentDelivery,
+  ) {
+    const consent = await this.prisma.consent.findFirst({
+      where: {
+        publicId: event.aggregateId,
+        case: { tenantId: event.tenantId },
+      },
+      select: { status: true, otpLastIssuedAt: true, otpExpiresAt: true },
+    });
+    const issuedAt = new Date(delivery.issuedAt);
+    const current = Boolean(
+      consent &&
+      consent.status === "REQUESTED" &&
+      consent.otpLastIssuedAt?.getTime() === issuedAt.getTime() &&
+      consent.otpExpiresAt &&
+      consent.otpExpiresAt > new Date() &&
+      new Date(delivery.expiresAt) > new Date(),
+    );
+    if (!current) {
+      await this.prisma.auditEvent.create({
+        data: {
+          tenantId: event.tenantId,
+          action: "consent.otp-delivery-skipped",
+          resourceType: "consent",
+          resourcePublicId: event.aggregateId,
+          afterJson: JSON.stringify({ reason: "expired-or-superseded" }),
+        },
+      });
+    }
+    return current;
   }
 
   private async deliverExecutive(
     delivery: ExecutiveDelivery,
     idempotencyKey: string,
   ) {
-    const webhook = this.config.get<string>("NOTIFICATION_WEBHOOK_URL");
-    if (!webhook) throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
-    const response = await fetch(webhook, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "idempotency-key": `sapling-executive-${idempotencyKey}`,
-      },
-      body: JSON.stringify({
+    await this.deliverWebhook(
+      {
         channel: "EMAIL",
         destination: delivery.recipientEmail,
         template: "executive-portfolio-brief",
@@ -208,23 +286,51 @@ export class OutboxWorkerService
           exportUrl: delivery.exportUrl,
           scheduledFor: delivery.deliveryAt,
         },
-      }),
+      },
+      `sapling-executive-${idempotencyKey}`,
+    );
+  }
+
+  private async deliverWebhook(payload: object, idempotencyKey: string) {
+    const webhook = this.config.get<string>("NOTIFICATION_WEBHOOK_URL");
+    if (!webhook) throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
+    const body = JSON.stringify(payload);
+    const timestamp = Date.now().toString();
+    const secret = this.config.get<string>("NOTIFICATION_WEBHOOK_SECRET");
+    const signature = secret
+      ? createHmac("sha256", secret)
+          .update(`${timestamp}.${body}`)
+          .digest("hex")
+      : undefined;
+    const response = await fetch(webhook, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "idempotency-key": idempotencyKey,
+        "x-sapling-timestamp": timestamp,
+        ...(signature ? { "x-sapling-signature": `sha256=${signature}` } : {}),
+      },
+      body,
       signal: AbortSignal.timeout(10_000),
     });
     if (!response.ok)
       throw new Error(`Notification provider returned HTTP ${response.status}`);
   }
 
-  private async actor(userPublicId: string): Promise<Actor> {
+  private async actor(
+    userPublicId: string,
+    tenantId: bigint,
+  ): Promise<Actor | null> {
     const user = await this.prisma.user.findFirst({
-      where: { publicId: userPublicId, status: "ACTIVE" },
+      where: { publicId: userPublicId, tenantId, status: "ACTIVE" },
       include: {
         tenant: true,
+        branch: true,
         client: true,
         userRoles: { include: { role: true } },
       },
     });
-    if (!user) throw new Error("Outbox actor is unavailable");
+    if (!user) return null;
     const roles = user.userRoles.map(({ role }) => role.code);
     const permissions = [
       ...new Set(
@@ -243,6 +349,9 @@ export class OutboxWorkerService
       tenantId: user.tenantId,
       tenantPublicId: user.tenant.publicId,
       tenantName: user.tenant.name,
+      branchId: user.branchId ?? undefined,
+      branchPublicId: user.branch?.publicId,
+      branchName: user.branch?.name,
       clientId: user.clientId ?? undefined,
       clientPublicId: user.client?.publicId,
       clientName: user.client?.displayName,
@@ -254,40 +363,28 @@ export class OutboxWorkerService
     };
   }
 
+  private async reportActor(tenantId: bigint, userPublicId?: string) {
+    const requested = userPublicId
+      ? await this.actor(userPublicId, tenantId)
+      : null;
+    return requested ?? this.fallbackReportActor(tenantId);
+  }
+
   private async fallbackReportActor(tenantId: bigint): Promise<Actor> {
     const user = await this.prisma.user.findFirst({
       where: {
         tenantId,
         status: "ACTIVE",
-        userRoles: {
-          some: {
-            role: {
-              code: { in: ["PLATFORM_ADMIN", "QA_REVIEWER", "OPS_MANAGER"] },
-            },
-          },
-        },
+        userRoles: { some: { role: { code: "PLATFORM_ADMIN" } } },
       },
       select: { publicId: true },
       orderBy: { id: "asc" },
     });
     if (!user)
       throw new Error("No active report-generation actor is available");
-    return this.actor(user.publicId);
-  }
-
-  private async recoverAbandonedClaims() {
-    const recovered = await this.prisma.outboxEvent.updateMany({
-      where: {
-        status: "PROCESSING",
-        availableAt: { lt: new Date(Date.now() - 15 * 60_000) },
-      },
-      data: { status: "RETRY", availableAt: new Date() },
-    });
-    if (recovered.count) {
-      this.logger.warn(
-        `Recovered ${recovered.count} abandoned outbox event(s)`,
-      );
-    }
+    const actor = await this.actor(user.publicId, tenantId);
+    if (!actor) throw new Error("Report-generation actor became unavailable");
+    return actor;
   }
 
   private requiredString(payload: Record<string, unknown>, key: string) {

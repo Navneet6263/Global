@@ -3,9 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, Clock3, LockKeyhole, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { DeliveryHeader, DeliveryKpis, DeliveryShell } from "@/features/delivery/DeliveryShell";
+import { DeliveryShell } from "@/features/delivery/DeliveryShell";
 import { QaQueue } from "@/features/delivery/qa/QaQueue";
 import { QaReviewPanel } from "@/features/delivery/qa/QaReviewPanel";
+import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -13,9 +14,11 @@ import {
 } from "@/features/delivery/WorkspaceStates";
 import { getSession } from "@/lib/api/auth";
 import { getQaQueue } from "@/lib/api/qa";
+import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/qa-review")({
   head: () => ({ meta: [{ title: "QA Review — Sapling Global" }] }),
+  beforeLoad: () => requireRoleWorkspace(["QA_REVIEWER"]),
   component: QaWorkspace,
 });
 
@@ -56,26 +59,25 @@ function QaWorkspace() {
     await queryClient.invalidateQueries({ queryKey: ["dashboard"] });
   };
   return (
-    <DeliveryShell onRefresh={() => void queue.refetch()} refreshing={queue.isFetching}>
-      <DeliveryHeader
-        eyebrow="Delivery / Quality"
+    <DeliveryShell
+      workspace="qa-reviewer"
+      onRefresh={() => void queue.refetch()}
+      refreshing={queue.isFetching}
+    >
+      <WorkspaceIntro
+        eyebrow="Delivery · Independent quality gate"
         title="Independent QA review"
-        description="Evidence-led review, controlled decisions and clear rework ownership before any report is released."
-        aside={
-          <span className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-            Segregated quality gate
-          </span>
-        }
+        description="Review every source, finding and evidence item before a controlled approval or traceable rework decision."
+        signal={`${summary.awaiting} awaiting review`}
       />
-      <DeliveryKpis
+      <WorkspaceMetricGrid
         items={[
           {
             label: "Awaiting review",
             value: summary.awaiting,
             detail: "Completed cases at the QA gate",
             icon: ShieldCheck,
-            tone: "blue",
-            progress: summary.awaiting ? 100 : 0,
+            tone: "mint",
           },
           {
             label: "SLA overdue",
@@ -83,7 +85,7 @@ function QaWorkspace() {
             detail: "Review queue beyond due time",
             icon: Clock3,
             tone: "red",
-            progress: ratio(summary.overdue, summary.awaiting),
+            share: ratio(summary.overdue, summary.awaiting),
           },
           {
             label: "High risk",
@@ -91,7 +93,7 @@ function QaWorkspace() {
             detail: "Cases with high or critical findings",
             icon: AlertTriangle,
             tone: "amber",
-            progress: ratio(summary.highRisk, summary.awaiting),
+            share: ratio(summary.highRisk, summary.awaiting),
           },
           {
             label: "Claimed",
@@ -99,7 +101,7 @@ function QaWorkspace() {
             detail: "Protected from duplicate review",
             icon: LockKeyhole,
             tone: "violet",
-            progress: ratio(summary.claimed, summary.awaiting),
+            share: ratio(summary.claimed, summary.awaiting),
           },
         ]}
       />

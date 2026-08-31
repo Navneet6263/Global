@@ -277,6 +277,7 @@ export type ServicePackageWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"ServicePackage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServicePackage"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  cases?: Prisma.VerificationCaseListRelationFilter
 }
 
 export type ServicePackageOrderByWithRelationInput = {
@@ -292,6 +293,7 @@ export type ServicePackageOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
+  cases?: Prisma.VerificationCaseOrderByRelationAggregateInput
 }
 
 export type ServicePackageWhereUniqueInput = Prisma.AtLeast<{
@@ -311,6 +313,7 @@ export type ServicePackageWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"ServicePackage"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"ServicePackage"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  cases?: Prisma.VerificationCaseListRelationFilter
 }, "id" | "publicId" | "tenantId_code">
 
 export type ServicePackageOrderByWithAggregationInput = {
@@ -361,6 +364,7 @@ export type ServicePackageCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutServicePackagesInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutServicePackageInput
 }
 
 export type ServicePackageUncheckedCreateInput = {
@@ -375,6 +379,7 @@ export type ServicePackageUncheckedCreateInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutServicePackageInput
 }
 
 export type ServicePackageUpdateInput = {
@@ -389,6 +394,7 @@ export type ServicePackageUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutServicePackagesNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutServicePackageNestedInput
 }
 
 export type ServicePackageUncheckedUpdateInput = {
@@ -403,6 +409,7 @@ export type ServicePackageUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutServicePackageNestedInput
 }
 
 export type ServicePackageCreateManyInput = {
@@ -516,6 +523,11 @@ export type ServicePackageSumOrderByAggregateInput = {
   tatHours?: Prisma.SortOrder
 }
 
+export type ServicePackageNullableScalarRelationFilter = {
+  is?: Prisma.ServicePackageWhereInput | null
+  isNot?: Prisma.ServicePackageWhereInput | null
+}
+
 export type ServicePackageCreateNestedManyWithoutTenantInput = {
   create?: Prisma.XOR<Prisma.ServicePackageCreateWithoutTenantInput, Prisma.ServicePackageUncheckedCreateWithoutTenantInput> | Prisma.ServicePackageCreateWithoutTenantInput[] | Prisma.ServicePackageUncheckedCreateWithoutTenantInput[]
   connectOrCreate?: Prisma.ServicePackageCreateOrConnectWithoutTenantInput | Prisma.ServicePackageCreateOrConnectWithoutTenantInput[]
@@ -566,6 +578,22 @@ export type NullableDecimalFieldUpdateOperationsInput = {
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
+export type ServicePackageCreateNestedOneWithoutCasesInput = {
+  create?: Prisma.XOR<Prisma.ServicePackageCreateWithoutCasesInput, Prisma.ServicePackageUncheckedCreateWithoutCasesInput>
+  connectOrCreate?: Prisma.ServicePackageCreateOrConnectWithoutCasesInput
+  connect?: Prisma.ServicePackageWhereUniqueInput
+}
+
+export type ServicePackageUpdateOneWithoutCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.ServicePackageCreateWithoutCasesInput, Prisma.ServicePackageUncheckedCreateWithoutCasesInput>
+  connectOrCreate?: Prisma.ServicePackageCreateOrConnectWithoutCasesInput
+  upsert?: Prisma.ServicePackageUpsertWithoutCasesInput
+  disconnect?: Prisma.ServicePackageWhereInput | boolean
+  delete?: Prisma.ServicePackageWhereInput | boolean
+  connect?: Prisma.ServicePackageWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ServicePackageUpdateToOneWithWhereWithoutCasesInput, Prisma.ServicePackageUpdateWithoutCasesInput>, Prisma.ServicePackageUncheckedUpdateWithoutCasesInput>
+}
+
 export type ServicePackageCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -577,6 +605,7 @@ export type ServicePackageCreateWithoutTenantInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutServicePackageInput
 }
 
 export type ServicePackageUncheckedCreateWithoutTenantInput = {
@@ -590,6 +619,7 @@ export type ServicePackageUncheckedCreateWithoutTenantInput = {
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutServicePackageInput
 }
 
 export type ServicePackageCreateOrConnectWithoutTenantInput = {
@@ -634,6 +664,78 @@ export type ServicePackageScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"ServicePackage"> | Date | string
 }
 
+export type ServicePackageCreateWithoutCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  checksJson: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  tatHours?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutServicePackagesInput
+}
+
+export type ServicePackageUncheckedCreateWithoutCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  code: string
+  name: string
+  checksJson: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  tatHours?: number
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ServicePackageCreateOrConnectWithoutCasesInput = {
+  where: Prisma.ServicePackageWhereUniqueInput
+  create: Prisma.XOR<Prisma.ServicePackageCreateWithoutCasesInput, Prisma.ServicePackageUncheckedCreateWithoutCasesInput>
+}
+
+export type ServicePackageUpsertWithoutCasesInput = {
+  update: Prisma.XOR<Prisma.ServicePackageUpdateWithoutCasesInput, Prisma.ServicePackageUncheckedUpdateWithoutCasesInput>
+  create: Prisma.XOR<Prisma.ServicePackageCreateWithoutCasesInput, Prisma.ServicePackageUncheckedCreateWithoutCasesInput>
+  where?: Prisma.ServicePackageWhereInput
+}
+
+export type ServicePackageUpdateToOneWithWhereWithoutCasesInput = {
+  where?: Prisma.ServicePackageWhereInput
+  data: Prisma.XOR<Prisma.ServicePackageUpdateWithoutCasesInput, Prisma.ServicePackageUncheckedUpdateWithoutCasesInput>
+}
+
+export type ServicePackageUpdateWithoutCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  checksJson?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  tatHours?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutServicePackagesNestedInput
+}
+
+export type ServicePackageUncheckedUpdateWithoutCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  checksJson?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  tatHours?: Prisma.IntFieldUpdateOperationsInput | number
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type ServicePackageCreateManyTenantInput = {
   publicId?: string
   code: string
@@ -657,6 +759,7 @@ export type ServicePackageUpdateWithoutTenantInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cases?: Prisma.VerificationCaseUpdateManyWithoutServicePackageNestedInput
 }
 
 export type ServicePackageUncheckedUpdateWithoutTenantInput = {
@@ -670,6 +773,7 @@ export type ServicePackageUncheckedUpdateWithoutTenantInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutServicePackageNestedInput
 }
 
 export type ServicePackageUncheckedUpdateManyWithoutTenantInput = {
@@ -686,6 +790,35 @@ export type ServicePackageUncheckedUpdateManyWithoutTenantInput = {
 }
 
 
+/**
+ * Count Type ServicePackageCountOutputType
+ */
+
+export type ServicePackageCountOutputType = {
+  cases: number
+}
+
+export type ServicePackageCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  cases?: boolean | ServicePackageCountOutputTypeCountCasesArgs
+}
+
+/**
+ * ServicePackageCountOutputType without action
+ */
+export type ServicePackageCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ServicePackageCountOutputType
+   */
+  select?: Prisma.ServicePackageCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ServicePackageCountOutputType without action
+ */
+export type ServicePackageCountOutputTypeCountCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationCaseWhereInput
+}
+
 
 export type ServicePackageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -700,6 +833,8 @@ export type ServicePackageSelect<ExtArgs extends runtime.Types.Extensions.Intern
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  cases?: boolean | Prisma.ServicePackage$casesArgs<ExtArgs>
+  _count?: boolean | Prisma.ServicePackageCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["servicePackage"]>
 
 
@@ -721,12 +856,15 @@ export type ServicePackageSelectScalar = {
 export type ServicePackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "name" | "checksJson" | "price" | "tatHours" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["servicePackage"]>
 export type ServicePackageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  cases?: boolean | Prisma.ServicePackage$casesArgs<ExtArgs>
+  _count?: boolean | Prisma.ServicePackageCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $ServicePackagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ServicePackage"
   objects: {
     tenant: Prisma.$TenantPayload<ExtArgs>
+    cases: Prisma.$VerificationCasePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -1081,6 +1219,7 @@ readonly fields: ServicePackageFieldRefs;
 export interface Prisma__ServicePackageClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  cases<T extends Prisma.ServicePackage$casesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServicePackage$casesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1465,6 +1604,30 @@ export type ServicePackageDeleteManyArgs<ExtArgs extends runtime.Types.Extension
    * Limit how many ServicePackages to delete.
    */
   limit?: number
+}
+
+/**
+ * ServicePackage.cases
+ */
+export type ServicePackage$casesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationCase
+   */
+  select?: Prisma.VerificationCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationCase
+   */
+  omit?: Prisma.VerificationCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationCaseInclude<ExtArgs> | null
+  where?: Prisma.VerificationCaseWhereInput
+  orderBy?: Prisma.VerificationCaseOrderByWithRelationInput | Prisma.VerificationCaseOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationCaseScalarFieldEnum | Prisma.VerificationCaseScalarFieldEnum[]
 }
 
 /**

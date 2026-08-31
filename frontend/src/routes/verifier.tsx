@@ -3,8 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Ban, CheckCircle2, ClipboardCheck, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { DeliveryHeader, DeliveryKpis, DeliveryShell } from "@/features/delivery/DeliveryShell";
-import { humanize } from "@/features/delivery/utils";
+import { DeliveryShell } from "@/features/delivery/DeliveryShell";
+import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
 import { VerifierQueue } from "@/features/delivery/verifier/VerifierQueue";
 import { VerifierTaskWorkspace } from "@/features/delivery/verifier/VerifierTaskWorkspace";
 import {
@@ -13,9 +13,11 @@ import {
   WorkspaceLoading,
 } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks } from "@/lib/api/tasks";
+import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/verifier")({
   head: () => ({ meta: [{ title: "Verifier Workbench — Sapling Global" }] }),
+  beforeLoad: () => requireRoleWorkspace(["VERIFIER"]),
   component: VerifierWorkbench,
 });
 
@@ -56,26 +58,25 @@ function VerifierWorkbench() {
   }, [selected, selectedId]);
   const summary = tasks.data?.summary ?? { active: 0, overdue: 0, blocked: 0, completedToday: 0 };
   return (
-    <DeliveryShell onRefresh={() => void tasks.refetch()} refreshing={tasks.isFetching}>
-      <DeliveryHeader
-        eyebrow="Delivery / Verifier"
+    <DeliveryShell
+      workspace="verifier"
+      onRefresh={() => void tasks.refetch()}
+      refreshing={tasks.isFetching}
+    >
+      <WorkspaceIntro
+        eyebrow="Delivery · Verifier desk"
         title="Verification workbench"
-        description="Prioritised checks, defensible source records and structured findings in one focused workspace."
-        aside={
-          <span className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-600">
-            {summary.active} active checks
-          </span>
-        }
+        description="A focused execution desk for source checks, evidence-backed findings and controlled hand-off to quality review."
+        signal={`${summary.active} active checks`}
       />
-      <DeliveryKpis
+      <WorkspaceMetricGrid
         items={[
           {
             label: "Active workload",
             value: summary.active,
             detail: "Open, assigned and in progress",
             icon: ClipboardCheck,
-            tone: "blue",
-            progress: summary.active ? 100 : 0,
+            tone: "mint",
           },
           {
             label: "SLA overdue",
@@ -83,7 +84,7 @@ function VerifierWorkbench() {
             detail: "Past committed task due time",
             icon: Clock3,
             tone: "red",
-            progress: ratio(summary.overdue, summary.active),
+            share: ratio(summary.overdue, summary.active),
           },
           {
             label: "Blocked",
@@ -91,34 +92,18 @@ function VerifierWorkbench() {
             detail: "Waiting on a source or dependency",
             icon: Ban,
             tone: "amber",
-            progress: ratio(summary.blocked, summary.active),
+            share: ratio(summary.blocked, summary.active),
           },
           {
             label: "Completed today",
             value: summary.completedToday,
             detail: "Sent to the next workflow stage",
             icon: CheckCircle2,
-            tone: "emerald",
-            progress: ratio(summary.completedToday, summary.active + summary.completedToday),
+            tone: "mint",
+            share: ratio(summary.completedToday, summary.active + summary.completedToday),
           },
         ]}
       />
-      <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
-        {filters.map((value) => (
-          <button
-            key={value}
-            onClick={() => {
-              setFilter(value);
-              setSelectedId(undefined);
-              setCursor(undefined);
-              setCursorHistory([]);
-            }}
-            className={`rounded-xl px-3.5 py-2 text-xs font-semibold transition ${filter === value ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
-          >
-            {humanize(value)}
-          </button>
-        ))}
-      </div>
       {tasks.isLoading ? <WorkspaceLoading label="Loading assigned checks" /> : null}
       {tasks.isError ? (
         <WorkspaceError message={tasks.error.message} onRetry={() => void tasks.refetch()} />
@@ -129,9 +114,17 @@ function VerifierWorkbench() {
             items={items}
             selectedId={selected?.id}
             search={searchInput}
+            filters={filters}
+            activeFilter={filter}
             hasPrevious={cursorHistory.length > 0}
             hasNext={Boolean(tasks.data?.nextCursor)}
             onSearch={setSearchInput}
+            onFilter={(value) => {
+              setFilter(value);
+              setSelectedId(undefined);
+              setCursor(undefined);
+              setCursorHistory([]);
+            }}
             onPrevious={() => {
               const history = [...cursorHistory];
               setCursor(history.pop());

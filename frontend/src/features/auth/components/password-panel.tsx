@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Loader2, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,15 @@ import { Label } from "@/components/ui/label";
 interface PasswordPanelProps {
   submitting: boolean;
   onSubmit: (email: string, password: string) => void;
-  onForgot: () => void;
 }
 
-export function PasswordPanel({ submitting, onSubmit, onForgot }: PasswordPanelProps) {
+export function PasswordPanel({ submitting, onSubmit }: PasswordPanelProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [reveal, setReveal] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   return (
     <form
@@ -45,13 +47,7 @@ export function PasswordPanel({ submitting, onSubmit, onForgot }: PasswordPanelP
           <Label htmlFor="login-password" className="text-xs">
             Password
           </Label>
-          <button
-            type="button"
-            onClick={onForgot}
-            className="text-[11px] font-medium text-primary hover:underline"
-          >
-            Forgot password?
-          </button>
+          <span className="text-[11px] text-muted-foreground">Secure password</span>
         </div>
         <div className="relative">
           <Input
@@ -62,6 +58,7 @@ export function PasswordPanel({ submitting, onSubmit, onForgot }: PasswordPanelP
             className="pr-10"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            minLength={7}
             required
           />
           <button
@@ -79,7 +76,7 @@ export function PasswordPanel({ submitting, onSubmit, onForgot }: PasswordPanelP
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={submitting}>
+      <Button type="submit" className="w-full" disabled={submitting || !hydrated}>
         {submitting ? (
           <Loader2 className="size-4 animate-spin" aria-hidden />
         ) : (

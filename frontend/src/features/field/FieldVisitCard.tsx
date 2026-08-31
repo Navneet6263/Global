@@ -1,7 +1,6 @@
 import {
   Camera,
   Check,
-  Clock3,
   Crosshair,
   LogIn,
   LogOut,
@@ -19,9 +18,24 @@ import {
   verdictLabel,
   type GeoFix,
 } from "@/components/field/geo";
-import type { ApiFieldVisit, FieldDraft, FieldExecutionPolicy } from "./types";
 import { EvidencePreview } from "./EvidencePreview";
 import { FieldControl, FieldStepStrip, FieldVisitStatus } from "./FieldVisitParts";
+import type { ApiFieldVisit, FieldDraft, FieldExecutionPolicy } from "./types";
+
+type FieldVisitCardProps = {
+  visit: ApiFieldVisit;
+  draft: FieldDraft;
+  fix: GeoFix | null;
+  photoCount: number;
+  geoError: string | null;
+  locating: boolean;
+  syncing: boolean;
+  policy: FieldExecutionPolicy;
+  onCapture: (kind: "checkIn" | "refresh") => void;
+  onCheckout: () => void;
+  onPhotos: (files: FileList) => void;
+  onRemovePhoto: (id: string) => void;
+};
 
 export function FieldVisitCard({
   visit,
@@ -36,20 +50,7 @@ export function FieldVisitCard({
   onCheckout,
   onPhotos,
   onRemovePhoto,
-}: {
-  visit: ApiFieldVisit;
-  draft: FieldDraft;
-  fix: GeoFix | null;
-  photoCount: number;
-  geoError: string | null;
-  locating: boolean;
-  syncing: boolean;
-  policy: FieldExecutionPolicy;
-  onCapture: (kind: "checkIn" | "refresh") => void;
-  onCheckout: () => void;
-  onPhotos: (files: FileList) => void;
-  onRemovePhoto: (id: string) => void;
-}) {
+}: FieldVisitCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const target = { lat: Number(visit.targetLatitude), lng: Number(visit.targetLongitude) };
   const hasTarget = Number.isFinite(target.lat) && Number.isFinite(target.lng);
@@ -78,61 +79,65 @@ export function FieldVisitCard({
     accuracyOk &&
     photoCount >= policy.minimumPhotos &&
     draft.checklist.length >= 2;
+
   return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 p-4">
+    <section className="surface-float overflow-hidden rounded-[1.75rem]">
+      <header className="p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-orange-600">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
               Selected visit
             </p>
-            <h2 className="mt-1 text-lg font-bold text-slate-950">{visit.case.subject.fullName}</h2>
-            <p className="mt-1 text-xs text-slate-500">
+            <h1 className="mt-1.5 truncate text-xl font-semibold tracking-[-0.025em]">
+              {visit.case.subject.fullName}
+            </h1>
+            <p className="mt-1 truncate text-[11px] text-muted-foreground">
               {visit.case.caseNumber} · {visit.case.client.displayName}
             </p>
           </div>
           <FieldVisitStatus status={visit.status} />
         </div>
-        <p className="mt-3 flex items-start gap-1.5 text-xs text-slate-600">
-          <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-orange-600" /> {visit.address}
-        </p>
-      </div>
+        <div className="mt-4 flex items-start gap-2 rounded-[1rem] bg-secondary/50 p-3 text-xs leading-5 text-muted-foreground">
+          <MapPin className="mt-0.5 size-3.5 shrink-0 text-primary" />
+          <span>{visit.address}</span>
+        </div>
+      </header>
+
       <FieldStepStrip
         checkedIn={checkedIn}
         photoReady={photoCount >= policy.minimumPhotos}
         checklistReady={draft.checklist.length >= 2}
-        complete={!active}
+        complete={visit.status === "COMPLETED"}
       />
+
       {!active ? (
-        <div className="m-4 rounded-xl border border-emerald-100 bg-emerald-50 p-4">
-          <p className="flex items-center gap-2 text-sm font-semibold text-emerald-700">
-            <Check className="h-4 w-4" />{" "}
-            {visit.status === "COMPLETED"
-              ? "Visit completed and locked"
-              : "Awaiting supervisor review"}
-          </p>
-          <p className="mt-1 text-xs text-slate-500">
-            Evidence and location controls are readonly for this visit state.
-          </p>
-        </div>
+        <LockedVisit status={visit.status} />
       ) : (
-        <>
-          <div className="m-4 rounded-xl border border-blue-100 bg-blue-50/50 p-4">
+        <div className="space-y-4 p-4 sm:p-5">
+          <section className="rounded-[1.25rem] border border-info/10 bg-info-soft/65 p-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="flex items-center gap-2 text-xs font-semibold text-blue-700">
-                <Crosshair className="h-4 w-4" /> Precise event location
-              </p>
+              <div className="flex items-center gap-2">
+                <span className="grid size-8 place-items-center rounded-full bg-white/80 text-info">
+                  <Crosshair className="size-4" />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold text-info-foreground">Event location</p>
+                  <p className="text-[9px] text-muted-foreground">
+                    Radius {visit.geofenceMeters} m · accuracy ≤ {policy.maxAccuracyMeters} m
+                  </p>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={() => onCapture("refresh")}
                 disabled={locating}
-                className="rounded-lg bg-white px-3 py-2 text-[10px] font-semibold shadow-sm disabled:opacity-50"
+                className="rounded-full bg-white px-3 py-2 text-[10px] font-semibold text-info-foreground shadow-sm disabled:opacity-50"
               >
-                {locating ? "Locating…" : "Refresh fix"}
+                {locating ? "Locating…" : "Refresh GPS"}
               </button>
             </div>
             {reference ? (
-              <div className="mt-3 space-y-1 text-[10px] text-slate-500">
+              <div className="mt-3 rounded-[1rem] bg-white/70 p-3 text-[10px] leading-5 text-muted-foreground">
                 <p>
                   {formatCoord(reference)} · ±{reference.accuracy} m · {reference.time}
                 </p>
@@ -142,19 +147,19 @@ export function FieldVisitCard({
                 </p>
               </div>
             ) : (
-              <p className="mt-2 text-[10px] text-slate-500">
-                Capture check-in only after reaching the visit location.
+              <p className="mt-3 text-[10px] leading-5 text-muted-foreground">
+                Reach the address, then capture GPS check-in. Continuous tracking is never used.
               </p>
             )}
             {geoError ? (
-              <p className="mt-3 flex gap-2 rounded-lg bg-red-50 p-2 text-[10px] text-red-700">
-                <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
+              <p className="mt-3 flex gap-2 rounded-[1rem] bg-critical-soft p-3 text-[10px] leading-4 text-critical-foreground">
+                <ShieldAlert className="size-3.5 shrink-0" />
                 {geoError}
               </p>
             ) : null}
             {verdict ? (
               <p
-                className={`mt-3 rounded-lg p-2 text-[10px] font-semibold ${verdict === "inside" && accuracyOk ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}
+                className={`mt-3 rounded-[1rem] p-3 text-[10px] font-semibold ${verdict === "inside" && accuracyOk ? "bg-success-soft text-success-foreground" : "bg-warning-soft text-warning-foreground"}`}
               >
                 {verdictLabel[verdict]}
                 {!accuracyOk
@@ -164,8 +169,9 @@ export function FieldVisitCard({
                     : ""}
               </p>
             ) : null}
-          </div>
-          <div className="grid grid-cols-2 gap-2 px-4">
+          </section>
+
+          <div className="grid grid-cols-2 gap-2">
             <FieldControl
               primary
               icon={LogIn}
@@ -176,6 +182,7 @@ export function FieldVisitCard({
             <FieldControl
               icon={Navigation}
               label="Navigate"
+              disabled={!hasTarget}
               href={
                 hasTarget
                   ? `https://www.google.com/maps/dir/?api=1&destination=${target.lat},${target.lng}`
@@ -184,7 +191,7 @@ export function FieldVisitCard({
             />
             <FieldControl
               icon={Camera}
-              label="Capture evidence"
+              label="Add evidence"
               onClick={() => inputRef.current?.click()}
             />
             <FieldControl
@@ -206,15 +213,21 @@ export function FieldVisitCard({
               event.target.value = "";
             }}
           />
-          <div className="m-4 rounded-xl bg-slate-50 p-3">
+
+          <section className="rounded-[1.25rem] bg-secondary/50 p-3.5">
             <div className="flex items-center justify-between">
-              <p className="text-xs font-semibold">Evidence queue</p>
-              <span className="text-[10px] text-slate-500">
-                {photoCount}/{policy.minimumPhotos} required
+              <div>
+                <p className="text-xs font-semibold">Evidence queue</p>
+                <p className="mt-0.5 text-[9px] text-muted-foreground">
+                  {visit.evidence.length} uploaded · {draft.photos.length} on device
+                </p>
+              </div>
+              <span className="num rounded-full bg-white px-2.5 py-1 text-[10px] text-muted-foreground">
+                {photoCount}/{policy.minimumPhotos}
               </span>
             </div>
             {draft.photos.length ? (
-              <div className="mt-2 space-y-2">
+              <div className="mt-3 space-y-2">
                 {draft.photos.map((photo) => (
                   <EvidencePreview
                     key={photo.id}
@@ -224,13 +237,32 @@ export function FieldVisitCard({
                 ))}
               </div>
             ) : (
-              <p className="mt-2 text-[10px] text-slate-400">
-                New photos will show here before secure upload.
+              <p className="mt-3 rounded-[1rem] border border-dashed border-border p-4 text-center text-[10px] text-muted-foreground">
+                New photos appear here before secure upload.
               </p>
             )}
-          </div>
-        </>
+          </section>
+        </div>
       )}
     </section>
+  );
+}
+
+function LockedVisit({ status }: { status: string }) {
+  const completed = status === "COMPLETED";
+  return (
+    <div
+      className={`m-4 rounded-[1.25rem] p-4 ${completed ? "bg-success-soft" : "bg-warning-soft"}`}
+    >
+      <p
+        className={`flex items-center gap-2 text-sm font-semibold ${completed ? "text-success-foreground" : "text-warning-foreground"}`}
+      >
+        <Check className="size-4" />
+        {completed ? "Visit completed and locked" : "Awaiting supervisor review"}
+      </p>
+      <p className="mt-1 text-xs leading-5 text-muted-foreground">
+        Evidence and location controls are read-only for this visit state.
+      </p>
+    </div>
   );
 }

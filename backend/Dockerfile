@@ -1,9 +1,14 @@
 FROM node:24-bookworm-slim AS build
 
 WORKDIR /app
-# Prisma client generation parses the datasource configuration but does not connect.
-# Keep this build-only value out of the runtime stage; deployment injects the real URL.
-ENV DATABASE_URL="sqlserver://localhost:1433;database=Sapling Global;user=build;password=build-only-not-a-secret;encrypt=true;trustServerCertificate=true"
+# Prisma client generation parses these placeholders but does not connect.
+ENV DB_HOST=localhost \
+    DB_PORT=1433 \
+    DB_NAME="Sapling Global" \
+    DB_USER=build \
+    DB_PASSWORD=build-only-not-a-secret \
+    DB_ENCRYPT=true \
+    DB_TRUST_SERVER_CERTIFICATE=true
 COPY package.json package-lock.json ./
 COPY backend/package.json backend/package.json
 COPY frontend/package.json frontend/package.json

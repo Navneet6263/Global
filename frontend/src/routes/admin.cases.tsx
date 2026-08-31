@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { CaseStage } from "@/lib/contracts/case";
+import type { CasePriority, CaseStage } from "@/lib/contracts/case";
 import { PageHeader } from "@/components/layout/page-header";
 import { PaginationBar } from "@/components/layout/pagination-bar";
 import { ErrorState } from "@/components/feedback/error-state";
@@ -15,6 +16,8 @@ import { useCaseFacets, useCases } from "@/features/cases/hooks/use-cases";
 import { useCaseRegister } from "@/features/cases/hooks/use-case-register";
 import { FolderSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { exportCases } from "@/lib/backend-api/cases";
+import { downloadCsv } from "@/lib/csv";
 
 interface CasesSearch {
   q?: string;
@@ -55,6 +58,22 @@ function CasesPage() {
   const { data, isPending, isError, isFetching, refetch } = useCases(query);
   const facets = useCaseFacets();
   const rows = data?.rows ?? [];
+  const exportMutation = useMutation({
+    mutationFn: () =>
+      exportCases({
+        search: query.search,
+        stage: query.stage === "all" ? undefined : query.stage,
+        clientId: query.clientId === "all" ? undefined : query.clientId,
+        priority: backendPriority(query.priority),
+        sla: query.sla === "all" ? undefined : query.sla,
+        from: query.from,
+        to: query.to,
+        sortBy: query.sortBy,
+        sortDir: query.sortDir,
+      }),
+    onSuccess: () => toast.success("Case register downloaded"),
+    onError: (error: Error) => toast.error("Export failed", { description: error.message }),
+  });
 
   const setCaseId = (caseId: string | undefined) => {
     void navigate({ search: (prev) => ({ ...prev, caseId }) });
@@ -79,9 +98,7 @@ function CasesPage() {
           onQueryChange={actions.patchQuery}
           onViewChange={actions.applyView}
           onToggleColumn={actions.toggleColumn}
-          onExport={() =>
-            toast.success("Export queued", { description: "CSV will arrive by email." })
-          }
+          onExport={() => exportMutation.mutate()}
           onReset={actions.reset}
         />
 
@@ -89,8 +106,27 @@ function CasesPage() {
           <CaseBulkBar
             count={selected.length}
             onClear={actions.clearSelection}
-            onAction={(label) => {
-              toast.success(`${label} applied to ${selected.length} cases`);
+            onExport={() => {
+              const selectedRows = rows.filter((row) => selected.includes(row.id));
+              if (selectedRows.length !== selected.length) {
+                toast.error("Selection changed", {
+                  description: "Select the cases again from the current page before exporting.",
+                });
+                actions.clearSelection();
+                return;
+              }
+              downloadCsv(
+                `sapling-global-selected-cases-${new Date().toISOString().slice(0, 10)}.csv`,
+                ["Case number", "Candidate", "Client", "Stage", "Priority", "Owner"],
+                selectedRows.map((row) => [
+                  row.caseNumber,
+                  row.candidateName,
+                  row.clientName,
+                  row.stage,
+                  row.priority,
+                  row.owner ?? "",
+                ]),
+              );
               actions.clearSelection();
             }}
           />
@@ -129,9 +165,6 @@ function CasesPage() {
                 )
               }
               onOpenCase={setCaseId}
-              onRowAction={(action, row) =>
-                toast.success(`${action} · ${row.caseNumber}`, { description: row.candidateName })
-              }
             />
             <CaseMobileList rows={rows} onOpenCase={setCaseId} />
             <PaginationBar
@@ -145,13 +178,12 @@ function CasesPage() {
         )}
       </div>
 
-      <CaseDetailDrawer
-        caseId={search.caseId}
-        onClose={() => setCaseId(undefined)}
-        onAction={(action) =>
-          toast.success(action, { description: "Recorded in the audit trail." })
-        }
-      />
+      <CaseDetailDrawer caseId={search.caseId} onClose={() => setCaseId(undefined)} />
     </div>
   );
+}
+
+function backendPriority(priority: CasePriority | "all" | undefined) {
+  if (!priority || priority === "all") return undefined;
+  return { standard: "NORMAL", high: "HIGH", critical: "URGENT" }[priority];
 }

@@ -4,7 +4,8 @@ import {
   StreamableFile,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
+import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import { SecretBoxService } from "../common/security/secret-box.service";
@@ -64,11 +65,14 @@ export class ExecutiveExportService {
     const webOrigin = this.config
       .getOrThrow<string>("WEB_ORIGIN")
       .replace(/\/$/, "");
+    const apiOrigin = this.config
+      .get<string>("PUBLIC_API_ORIGIN", webOrigin)
+      .replace(/\/$/, "");
     const secret = this.secretBox.seal({
       recipientEmail: input.recipientEmail.toLowerCase(),
       format: input.format,
-      dashboardUrl: `${webOrigin}/executive?${query}`,
-      exportUrl: `${webOrigin}/api/v1/dashboards/executive/export?${query}&format=${input.format}`,
+      dashboardUrl: `${webOrigin}/admin/analytics?${query}`,
+      exportUrl: `${apiOrigin}/api/v1/dashboards/executive/export?${query}&format=${input.format}`,
       deliveryAt: deliveryAt.toISOString(),
     });
     const scheduled = await this.prisma.$transaction(async (tx) => {
@@ -149,8 +153,7 @@ export class ExecutiveExportService {
     data: Awaited<ReturnType<ExecutiveAnalyticsService["dashboard"]>>,
   ) {
     const document = await PDFDocument.create();
-    const regular = await document.embedFont(StandardFonts.Helvetica);
-    const bold = await document.embedFont(StandardFonts.HelveticaBold);
+    const { regular, bold } = await embedUnicodeFonts(document);
     const page = document.addPage([842, 595]);
     page.drawText("Sapling Global | Executive portfolio", {
       x: 42,
@@ -266,7 +269,8 @@ export class ExecutiveExportService {
       typeof value === "boolean"
         ? String(value)
         : "";
-    return `"${text.replaceAll('"', '""')}"`;
+    const safe = /^[=+\-@]/.test(text) ? `'${text}` : text;
+    return `"${safe.replaceAll('"', '""')}"`;
   }
 
   private clip(value: string, length: number) {

@@ -4,6 +4,21 @@ export type CrmStage = "NEW" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "WON" 
 
 export type LeadSource = "INBOUND" | "OUTBOUND" | "REFERRAL" | "EVENT" | "PARTNER" | "MARKETPLACE";
 
+export interface CrmSettings {
+  id: string | null;
+  stageProbabilities: Record<CrmStage, number>;
+  leadSources: readonly LeadSource[];
+  version: number;
+  updatedAt: string | null;
+  canEdit: boolean;
+}
+
+export interface UpdateCrmSettingsInput {
+  version: number;
+  stageProbabilities: Record<CrmStage, number>;
+  leadSources: LeadSource[];
+}
+
 export type SalesActivityType =
   "CALL" | "EMAIL" | "MEETING" | "NOTE" | "FOLLOW_UP" | "STAGE_CHANGE" | "CREATED" | "WON" | "LOST";
 
@@ -26,7 +41,7 @@ export interface Opportunity {
   weightedValue: number;
   ownerId: string | null;
   ownerName: string | null;
-  expectedCloseDate: string;
+  expectedCloseDate: string | null;
   nextFollowUpAt: string | null;
   lastActivityAt: string | null;
   createdAt: string;
@@ -36,6 +51,7 @@ export interface Opportunity {
   closedAt?: string;
   finalValue?: number;
   onboardingHandoff?: boolean;
+  onboardingHandoffAt?: string | null;
 }
 
 export interface OpportunityDetail extends Opportunity {
@@ -92,7 +108,7 @@ export interface SalesOwner {
   id: string;
   name: string;
   email: string;
-  territory: string;
+  territory: string | null;
   activeOpportunities: number;
   pipelineValue: number;
   weightedForecast: number;
@@ -130,8 +146,8 @@ export interface CrmStageSnapshot {
   count: number;
   value: number;
   weightedValue: number;
-  averageAgeDays: number;
-  conversionFromPrevious: number;
+  averageAgeDays: number | null;
+  conversionFromPrevious: number | null;
   overdueFollowUps: number;
 }
 
@@ -149,6 +165,9 @@ export interface CrmOverview {
   trend: readonly CrmTrendPoint[];
   activities: readonly SalesActivity[];
   followUps: readonly FollowUp[];
+  pendingFollowUpsTotal: number;
+  overdueFollowUpsTotal: number;
+  unassignedOpportunitiesTotal: number;
 }
 
 export interface CrmAdminSummary {
@@ -229,8 +248,8 @@ export interface RevenueForecast {
   commitForecast: number;
   bestCaseForecast: number;
   closedWon: number;
-  target: number;
-  gapToTarget: number;
+  target: number | null;
+  gapToTarget: number | null;
   monthly: readonly CrmTrendPoint[];
   byOwner: readonly ForecastBucket[];
   byStage: readonly ForecastBucket[];

@@ -61,9 +61,9 @@ export function CaseSummaryPanel({ item }: { item: VerificationCase }) {
       </div>
 
       <dl className="grid grid-cols-2 gap-3 border-t border-border pt-3 text-xs">
-        <Detail label="Package" value={item.packageName} />
-        <Detail label="Branch" value={item.branch} />
-        <Detail label="Operations owner" value={`${item.owner} · ${item.ownerRole}`} />
+        <Detail label="Package" value={item.packageName ?? "Not assigned"} />
+        <Detail label="Branch" value={item.branch ?? "Not assigned"} />
+        <Detail label="Operations owner" value={item.owner ?? "Not assigned"} />
         <Detail label="Created" value={formatDateTime(item.createdAt)} />
         <Detail label="Last updated" value={formatDateTime(item.updatedAt)} />
         <Detail label="Checks in bundle" value={`${item.checkBundle.length} verification checks`} />

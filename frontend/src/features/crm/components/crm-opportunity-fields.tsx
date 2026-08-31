@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import type { SalesOwner } from "../contracts/crm";
+import type { LeadSource, SalesOwner } from "../contracts/crm";
 import { LEAD_SOURCES, SOURCE_LABEL } from "../config/crm";
 import type { OpportunityFormValues } from "../schemas/opportunity.schema";
 import { Input } from "@/components/ui/input";
@@ -22,7 +22,11 @@ import {
 } from "@/components/ui/select";
 
 /** Account and primary-contact inputs for the opportunity form. */
-export function CrmAccountFields() {
+export function CrmAccountFields({
+  leadSources = LEAD_SOURCES,
+}: {
+  leadSources?: readonly LeadSource[];
+}) {
   const form = useFormContext<OpportunityFormValues>();
 
   return (
@@ -43,7 +47,7 @@ export function CrmAccountFields() {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {LEAD_SOURCES.map((source) => (
+                {leadSources.map((source) => (
                   <SelectItem key={source} value={source}>
                     {SOURCE_LABEL[source]}
                   </SelectItem>

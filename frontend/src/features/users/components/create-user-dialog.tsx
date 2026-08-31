@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
+import type { Role } from "@/config/roles";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -17,9 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { CreateUserInput } from "@/lib/contracts/user";
-
-const BRANCHES = ["Mumbai", "Bengaluru", "Delhi NCR", "Hyderabad", "Pune", "Chennai"];
+import { UserRolePicker } from "./user-role-picker";
 
 const schema = z.object({
   fullName: z.string().min(3, "Enter the full legal name"),
@@ -32,157 +37,156 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
+export interface ScopeOption {
+  id: string;
+  label: string;
+}
 
 interface CreateUserDialogProps {
   open: boolean;
   submitting: boolean;
+  branches: readonly ScopeOption[];
+  clients: readonly ScopeOption[];
   onOpenChange: (open: boolean) => void;
   onSubmit: (input: CreateUserInput) => void;
 }
 
-export function CreateUserDialog({
-  open,
-  submitting,
-  onOpenChange,
-  onSubmit,
-}: CreateUserDialogProps) {
-  const [roles, setRoles] = useState<Role[]>(["VERIFIER"]);
-  const [branches, setBranches] = useState<string[]>(["Mumbai"]);
+export function CreateUserDialog(props: CreateUserDialogProps) {
+  const [roles, setRoles] = useState<Role[]>([]);
+  const [branchId, setBranchId] = useState("all");
+  const [clientId, setClientId] = useState("none");
+  const [scopeError, setScopeError] = useState("");
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { fullName: "", email: "", mobile: "" },
   });
 
-  const toggle = <T,>(list: T[], value: T) =>
-    list.includes(value) ? list.filter((entry) => entry !== value) : [...list, value];
+  const submit = (values: FormValues) => {
+    if (!roles.length) return;
+    if (roles.includes("CLIENT_ADMIN") && clientId === "none") {
+      setScopeError("Select the client workspace for this Client Admin.");
+      return;
+    }
+    const branch = props.branches.find((item) => item.id === branchId);
+    const client = roles.includes("CLIENT_ADMIN")
+      ? props.clients.find((item) => item.id === clientId)
+      : undefined;
+    props.onSubmit({
+      fullName: values.fullName,
+      email: values.email,
+      mobile: values.mobile || undefined,
+      roles,
+      branchId: branch?.id,
+      branchLabel: branch?.label,
+      clientId: client?.id,
+      clientLabel: client?.label,
+    });
+  };
+
+  useEffect(() => {
+    if (props.open) return;
+    form.reset({ fullName: "", email: "", mobile: "" });
+    setRoles([]);
+    setBranchId("all");
+    setClientId("none");
+    setScopeError("");
+  }, [form, props.open]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+    <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Create user ID</DialogTitle>
           <DialogDescription>
-            Issues a platform ID with a temporary password and the selected role scope.
+            Assign only the role and server-validated scope this person needs.
           </DialogDescription>
         </DialogHeader>
-
-        <form
-          className="space-y-4"
-          onSubmit={form.handleSubmit((values) => {
-            if (roles.length === 0) return;
-            onSubmit({
-              fullName: values.fullName,
-              email: values.email,
-              mobile: values.mobile || undefined,
-              roles,
-              branchScope: branches,
-              clientWorkspaceScope: [],
-            });
-            form.reset();
-          })}
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <Label htmlFor="fullName" className="mb-1.5 block text-xs">
-                Full name
-              </Label>
-              <Input id="fullName" placeholder="Rohan Iyer" {...form.register("fullName")} />
-              {form.formState.errors.fullName ? (
-                <p className="mt-1 text-[11px] text-critical-foreground">
-                  {form.formState.errors.fullName.message}
-                </p>
-              ) : null}
-            </div>
-            <div>
-              <Label htmlFor="email" className="mb-1.5 block text-xs">
-                Work email
-              </Label>
+        <form className="space-y-5" onSubmit={form.handleSubmit(submit)}>
+          <UserRolePicker
+            selected={roles}
+            onChange={(value) => {
+              setRoles(value);
+              if (!value.includes("CLIENT_ADMIN")) setScopeError("");
+            }}
+          />
+          <div className="grid gap-4 border-t border-border pt-5 sm:grid-cols-2">
+            <Field label="Full name" error={form.formState.errors.fullName?.message}>
+              <Input placeholder="Rohan Iyer" {...form.register("fullName")} />
+            </Field>
+            <Field label="Work email" error={form.formState.errors.email?.message}>
               <Input
-                id="email"
                 type="email"
                 placeholder="rohan@saplingglobal.in"
                 {...form.register("email")}
               />
-              {form.formState.errors.email ? (
-                <p className="mt-1 text-[11px] text-critical-foreground">
-                  {form.formState.errors.email.message}
-                </p>
-              ) : null}
-            </div>
-            <div>
-              <Label htmlFor="mobile" className="mb-1.5 block text-xs">
-                Mobile (optional)
-              </Label>
-              <Input
-                id="mobile"
-                inputMode="numeric"
-                placeholder="9876543210"
-                {...form.register("mobile")}
-              />
-              {form.formState.errors.mobile ? (
-                <p className="mt-1 text-[11px] text-critical-foreground">
-                  {form.formState.errors.mobile.message}
-                </p>
-              ) : null}
-            </div>
-          </div>
-
-          <fieldset className="space-y-2">
-            <legend className="text-xs font-medium text-foreground">Roles</legend>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {ROLES.map((role) => (
-                <label
-                  key={role}
-                  className="flex items-start gap-2 rounded-xl border border-border bg-card px-3 py-2 text-[12px]"
-                >
-                  <Checkbox
-                    checked={roles.includes(role)}
-                    onCheckedChange={() => setRoles((current) => toggle(current, role))}
-                  />
-                  <span className="min-w-0">
-                    <span className="block font-medium text-foreground">
-                      {ROLE_DEFINITIONS[role].label}
-                    </span>
-                    <span className="block text-[11px] text-muted-foreground">
-                      {ROLE_DEFINITIONS[role].permissions.length} permissions
-                    </span>
-                  </span>
-                </label>
-              ))}
-            </div>
-            {roles.length === 0 ? (
-              <p className="text-[11px] text-critical-foreground">Select at least one role.</p>
+            </Field>
+            <Field label="Mobile (optional)" error={form.formState.errors.mobile?.message}>
+              <Input inputMode="numeric" placeholder="9876543210" {...form.register("mobile")} />
+            </Field>
+            <Field label="Operating branch">
+              <Select value={branchId} onValueChange={setBranchId}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tenant-wide / all branches</SelectItem>
+                  {props.branches.map((item) => (
+                    <SelectItem key={item.id} value={item.id}>
+                      {item.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            {roles.includes("CLIENT_ADMIN") ? (
+              <div className="sm:col-span-2">
+                <Field label="Client workspace" error={scopeError}>
+                  <Select
+                    value={clientId}
+                    onValueChange={(value) => {
+                      setClientId(value);
+                      setScopeError("");
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Select a client workspace</SelectItem>
+                      {props.clients.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
             ) : null}
-          </fieldset>
-
-          <fieldset className="space-y-2">
-            <legend className="text-xs font-medium text-foreground">Branch scope</legend>
-            <div className="flex flex-wrap gap-2">
-              {BRANCHES.map((branch) => (
-                <label
-                  key={branch}
-                  className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[12px]"
-                >
-                  <Checkbox
-                    checked={branches.includes(branch)}
-                    onCheckedChange={() => setBranches((current) => toggle(current, branch))}
-                  />
-                  {branch}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
+          </div>
+          <p className="rounded-2xl bg-mint-soft/70 px-4 py-3 text-xs text-mint-deep">
+            A one-time temporary password is generated only after the API creates the account.
+          </p>
           <DialogFooter>
-            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="ghost" onClick={() => props.onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={submitting || roles.length === 0}>
-              {submitting ? "Creating…" : "Create user ID"}
+            <Button type="submit" disabled={props.submitting || roles.length === 0}>
+              {props.submitting ? "Creating…" : "Create user ID"}
             </Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function Field({ label, error, children }: { label: string; error?: string; children: ReactNode }) {
+  return (
+    <div>
+      <Label className="mb-1.5 block text-xs">{label}</Label>
+      {children}
+      {error ? <p className="mt-1 text-[11px] text-critical-foreground">{error}</p> : null}
+    </div>
   );
 }

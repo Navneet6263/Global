@@ -14,7 +14,7 @@ interface OpsMetricTileProps {
 
 export function OpsMetricTile({ metric, onSelect }: OpsMetricTileProps) {
   const accent = opsAccent(metric.id);
-  const DeltaIcon = DIRECTION_ICON[metric.direction];
+  const DeltaIcon = metric.direction ? DIRECTION_ICON[metric.direction] : Minus;
   const max = Math.max(...metric.series, 1);
 
   return (
@@ -41,29 +41,35 @@ export function OpsMetricTile({ metric, onSelect }: OpsMetricTileProps) {
           <span className="num text-[1.35rem] leading-none font-medium tracking-[-0.03em] text-foreground">
             {formatNumber(metric.value)}
           </span>
-          <span className="inline-flex items-center gap-0.5 text-[11px]">
-            <DeltaIcon className={cn("size-3", TONE_TEXT[metric.tone])} aria-hidden />
-            <span className={cn("num font-medium", TONE_TEXT[metric.tone])}>
-              {metric.deltaPercent > 0 ? "+" : ""}
-              {metric.deltaPercent.toFixed(1)}%
+          {metric.deltaPercent !== undefined ? (
+            <span className="inline-flex items-center gap-0.5 text-[11px]">
+              <DeltaIcon className={cn("size-3", TONE_TEXT[metric.tone])} aria-hidden />
+              <span className={cn("num font-medium", TONE_TEXT[metric.tone])}>
+                {metric.deltaPercent > 0 ? "+" : ""}
+                {metric.deltaPercent.toFixed(1)}%
+              </span>
             </span>
-          </span>
+          ) : (
+            <span className="text-[11px] text-muted-foreground">Snapshot</span>
+          )}
         </div>
       </div>
 
-      <div className="flex h-9 w-20 shrink-0 items-end gap-[2px]" aria-hidden>
-        {metric.series.slice(-12).map((value, index, all) => (
-          <span
-            key={index}
-            className="flex-1 rounded-[2px]"
-            style={{
-              height: `${Math.max(12, (value / max) * 100)}%`,
-              background: accent.colour,
-              opacity: 0.25 + (index / Math.max(all.length - 1, 1)) * 0.6,
-            }}
-          />
-        ))}
-      </div>
+      {metric.series.length ? (
+        <div className="flex h-9 w-20 shrink-0 items-end gap-[2px]" aria-hidden>
+          {metric.series.slice(-12).map((value, index, all) => (
+            <span
+              key={index}
+              className="flex-1 rounded-[2px]"
+              style={{
+                height: `${Math.max(12, (value / max) * 100)}%`,
+                background: accent.colour,
+                opacity: 0.25 + (index / Math.max(all.length - 1, 1)) * 0.6,
+              }}
+            />
+          ))}
+        </div>
+      ) : null}
     </button>
   );
 }

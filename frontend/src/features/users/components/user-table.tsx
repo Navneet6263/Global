@@ -21,6 +21,7 @@ interface UserTableProps {
 }
 
 export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTableProps) {
+  const showMfa = rows.some((user) => user.mfaEnabled !== null);
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[860px] border-collapse text-left">
@@ -35,9 +36,11 @@ export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTablePr
             <th scope="col" className="px-3 py-2.5">
               Scope
             </th>
-            <th scope="col" className="px-3 py-2.5">
-              MFA
-            </th>
+            {showMfa ? (
+              <th scope="col" className="px-3 py-2.5">
+                MFA
+              </th>
+            ) : null}
             <th scope="col" className="px-3 py-2.5">
               Status
             </th>
@@ -65,7 +68,7 @@ export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTablePr
                       {user.fullName}
                     </span>
                     <span className="num block truncate text-[11px] text-muted-foreground">
-                      {user.employeeId} · {user.email}
+                      {user.employeeId ? `${user.employeeId} · ${user.email}` : user.email}
                     </span>
                   </span>
                 </div>
@@ -85,19 +88,23 @@ export function UserTable({ rows, onToggleStatus, onResetPassword }: UserTablePr
               <td className="px-3 py-3 text-[12px] text-muted-foreground">
                 {user.branchScope.length > 0 ? user.branchScope.join(", ") : "All branches"}
               </td>
-              <td className="px-3 py-3">
-                {user.mfaEnabled ? (
-                  <span className="inline-flex items-center gap-1.5 text-[12px] text-success-foreground">
-                    <ShieldCheck className="size-3.5" aria-hidden />
-                    Enabled
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-[12px] text-critical-foreground">
-                    <ShieldOff className="size-3.5" aria-hidden />
-                    Off
-                  </span>
-                )}
-              </td>
+              {showMfa ? (
+                <td className="px-3 py-3">
+                  {user.mfaEnabled === true ? (
+                    <span className="inline-flex items-center gap-1.5 text-[12px] text-success-foreground">
+                      <ShieldCheck className="size-3.5" aria-hidden />
+                      Enabled
+                    </span>
+                  ) : user.mfaEnabled === false ? (
+                    <span className="inline-flex items-center gap-1.5 text-[12px] text-critical-foreground">
+                      <ShieldOff className="size-3.5" aria-hidden />
+                      Off
+                    </span>
+                  ) : (
+                    <span className="text-[12px] text-muted-foreground">Not available</span>
+                  )}
+                </td>
+              ) : null}
               <td className="px-3 py-3">
                 <StatusBadge
                   label={USER_STATUS_META[user.status].label}

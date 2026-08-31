@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
-import { useState } from "react";
+import { Landmark, X } from "lucide-react";
+import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { recordPayment, type Invoice } from "@/lib/api/finance";
-import { money } from "./finance-utils";
+import { humanize, money } from "./finance-utils";
 
 export function PaymentForm({ invoice, onClose }: { invoice: Invoice; onClose: () => void }) {
   const queryClient = useQueryClient();
@@ -34,61 +34,108 @@ export function PaymentForm({ invoice, onClose }: { invoice: Invoice; onClose: (
     onError: (error: Error) => toast.error(error.message),
   });
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-        if (valid) mutation.mutate();
-      }}
-      className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm"
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-foreground/20 p-3 backdrop-blur-[3px]"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Record payment"
     >
-      <header className="flex items-start justify-between">
-        <div>
-          <h2 className="text-sm font-semibold">Record payment · {invoice.invoiceNumber}</h2>
-          <p className="mt-1 text-xs text-slate-500">Open balance {money(balance)}</p>
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label="Close payment form"
+        className="absolute inset-0 cursor-default"
+      />
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (valid) mutation.mutate();
+        }}
+        className="surface relative w-full max-w-2xl rounded-[2rem] p-5 shadow-[var(--shadow-float)]"
+      >
+        <header className="flex items-start justify-between gap-3 border-b border-border pb-4">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-success">
+              Collection entry
+            </p>
+            <h2 className="mt-1 text-lg font-semibold tracking-tight text-foreground">
+              Record payment
+            </h2>
+            <p className="num mt-1 text-xs text-muted-foreground">{invoice.invoiceNumber}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close payment form"
+            className="grid size-9 place-items-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)]"
+          >
+            <X className="size-4" />
+          </button>
+        </header>
+        <div className="mt-4 flex items-center gap-3 rounded-2xl bg-success-soft p-4 text-success-foreground">
+          <span className="grid size-9 place-items-center rounded-xl bg-card/80">
+            <Landmark className="size-4" />
+          </span>
+          <div>
+            <p className="text-[10px] uppercase tracking-wider opacity-75">Open balance</p>
+            <p className="num mt-0.5 text-lg font-semibold">{money(balance)}</p>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close payment form"
-          className="grid h-8 w-8 place-items-center rounded-lg bg-white text-slate-500"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </header>
-      <div className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_1.2fr_auto]">
-        <input
-          type="number"
-          min="0.01"
-          max={balance}
-          step="0.01"
-          value={amount}
-          onChange={(event) => setAmount(event.target.value)}
-          className={fieldClass}
-        />
-        <select
-          value={method}
-          onChange={(event) => setMethod(event.target.value)}
-          className={fieldClass}
-        >
-          {["BANK_TRANSFER", "UPI", "CHEQUE", "CARD", "OTHER"].map((value) => (
-            <option key={value}>{value}</option>
-          ))}
-        </select>
-        <input
-          value={reference}
-          onChange={(event) => setReference(event.target.value)}
-          placeholder="Payment reference"
-          className={fieldClass}
-        />
-        <button
-          disabled={!valid || mutation.isPending}
-          className="h-11 rounded-xl bg-slate-950 px-5 text-xs font-semibold text-white disabled:opacity-40"
-        >
-          {mutation.isPending ? "Recording…" : "Record payment"}
-        </button>
-      </div>
-    </form>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <Field label="Amount received">
+            <input
+              aria-label="Amount received"
+              type="number"
+              min="0.01"
+              max={balance}
+              step="0.01"
+              value={amount}
+              onChange={(event) => setAmount(event.target.value)}
+              className={fieldClass}
+            />
+          </Field>
+          <Field label="Payment method">
+            <select
+              value={method}
+              onChange={(event) => setMethod(event.target.value)}
+              className={fieldClass}
+            >
+              {["BANK_TRANSFER", "UPI", "CHEQUE", "CARD", "OTHER"].map((value) => (
+                <option key={value} value={value}>
+                  {humanize(value)}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Payment reference">
+            <input
+              value={reference}
+              onChange={(event) => setReference(event.target.value)}
+              placeholder="UTR, cheque or receipt number"
+              className={fieldClass}
+            />
+          </Field>
+        </div>
+        <footer className="mt-5 flex justify-end">
+          <button
+            disabled={!valid || mutation.isPending}
+            className="h-10 rounded-full bg-mint-deep px-5 text-xs font-semibold text-white shadow-[var(--shadow-card)] disabled:opacity-40"
+          >
+            {mutation.isPending ? "Recording…" : "Record payment"}
+          </button>
+        </footer>
+      </form>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <label className="last:sm:col-span-2">
+      <span className="mb-1.5 block text-xs font-semibold text-foreground">{label}</span>
+      {children}
+    </label>
   );
 }
 const fieldClass =
-  "h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-emerald-300";
+  "h-11 w-full rounded-xl border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-success/45 focus:ring-4 focus:ring-success/8";

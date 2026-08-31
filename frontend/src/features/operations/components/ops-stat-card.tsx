@@ -44,22 +44,30 @@ export function OpsStatCard({ metric, onSelect }: OpsStatCardProps) {
         <MoreHorizontal className="size-4 text-muted-foreground/50" aria-hidden />
       </div>
 
-      <div className="-mx-1 mt-2">
-        <Sparkline data={points} tone={metric.tone} accent={accent.colour} height={76} />
-      </div>
+      {points.length ? (
+        <div className="-mx-1 mt-2">
+          <Sparkline data={points} tone={metric.tone} accent={accent.colour} height={76} />
+        </div>
+      ) : (
+        <div className="flex h-[76px] items-center text-[11px] text-muted-foreground">
+          Current portfolio snapshot
+        </div>
+      )}
 
       <div className="mt-1 flex items-end gap-2">
         <span className="num text-[1.7rem] leading-none font-medium tracking-[-0.04em] text-foreground">
           {formatNumber(metric.value)}
         </span>
-        <span
-          className="num mb-0.5 inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
-          style={{ background: accent.fill, borderColor: accent.edge, color: accent.colour }}
-        >
-          <DeltaIcon className="size-3" aria-hidden />
-          {metric.deltaPercent > 0 ? "+" : ""}
-          {metric.deltaPercent.toFixed(1)}%
-        </span>
+        {metric.deltaPercent !== undefined ? (
+          <span
+            className="num mb-0.5 inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
+            style={{ background: accent.fill, borderColor: accent.edge, color: accent.colour }}
+          >
+            <DeltaIcon className="size-3" aria-hidden />
+            {metric.deltaPercent > 0 ? "+" : ""}
+            {metric.deltaPercent.toFixed(1)}%
+          </span>
+        ) : null}
       </div>
     </button>
   );

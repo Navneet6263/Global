@@ -11,6 +11,7 @@ import { PermissionsGuard } from "./common/auth/permissions.guard";
 import { PasswordChangeGuard } from "./common/auth/password-change.guard";
 import { JsonSafeInterceptor } from "./common/http/json-safe.interceptor";
 import { IdempotencyInterceptor } from "./common/http/idempotency.interceptor";
+import { IdempotencyCleanupService } from "./common/http/idempotency-cleanup.service";
 import { validateEnvironment } from "./config/env";
 import { ConsentsModule } from "./consents/consents.module";
 import { DashboardsModule } from "./dashboards/dashboards.module";
@@ -63,6 +64,7 @@ import { OutboxModule } from "./outbox/outbox.module";
     HealthModule,
   ],
   providers: [
+    IdempotencyCleanupService,
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PasswordChangeGuard },

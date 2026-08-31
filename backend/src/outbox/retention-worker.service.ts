@@ -6,6 +6,7 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PrismaService } from "../database/prisma.service";
+import { RuntimeHealthService } from "../health/runtime-health.service";
 
 @Injectable()
 export class RetentionWorkerService
@@ -18,9 +19,15 @@ export class RetentionWorkerService
   constructor(
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
+    private readonly health: RuntimeHealthService,
   ) {}
 
   onApplicationBootstrap() {
+    const processRole = this.config.get<string>("PROCESS_ROLE", "all");
+    if (!["all", "worker"].includes(processRole)) {
+      this.logger.log(`Retention worker skipped for ${processRole} process`);
+      return;
+    }
     if (!this.config.get<boolean>("RETENTION_WORKER_ENABLED", true)) {
       this.logger.log("Retention worker is disabled for this process");
       return;
@@ -29,6 +36,7 @@ export class RetentionWorkerService
       "RETENTION_POLL_INTERVAL_MS",
       86_400_000,
     );
+    this.health.register("retention", interval * 2 + 60_000);
     this.timer = setInterval(() => void this.run(), interval);
     this.timer.unref();
     void this.run();
@@ -64,20 +72,29 @@ export class RetentionWorkerService
         for (const visit of visits) {
           try {
             await this.prisma.$transaction(async (tx) => {
-              await tx.evidenceItem.deleteMany({
-                where: { fieldVisitId: visit.id },
-              });
-              await tx.fieldVisit.update({
-                where: { id: visit.id },
+              const claimed = await tx.fieldVisit.updateMany({
+                where: {
+                  id: visit.id,
+                  completedAt: { lt: cutoff },
+                  capturedAt: { not: null },
+                },
                 data: {
                   capturedLatitude: null,
                   capturedLongitude: null,
                   accuracyMeters: null,
                   distanceMeters: null,
                   capturedAt: null,
+                  checkInLatitude: null,
+                  checkInLongitude: null,
+                  checkInAccuracy: null,
+                  checkedInAt: null,
                   checklistJson: null,
                   remarks: null,
                 },
+              });
+              if (claimed.count !== 1) return;
+              await tx.evidenceItem.deleteMany({
+                where: { fieldVisitId: visit.id },
               });
               await tx.auditEvent.create({
                 data: {
@@ -114,7 +131,9 @@ export class RetentionWorkerService
           }
         }
       }
+      this.health.success("retention");
     } catch (error) {
+      this.health.failure("retention", error);
       this.logger.error(
         error instanceof Error ? error.message : "Retention polling failed",
       );

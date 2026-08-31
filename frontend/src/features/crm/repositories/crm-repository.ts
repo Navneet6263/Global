@@ -6,6 +6,7 @@ import type {
   CreateOpportunityInput,
   CrmAdminSummary,
   CrmOverview,
+  CrmSettings,
   FollowUp,
   FollowUpActionInput,
   FollowUpQuery,
@@ -22,6 +23,7 @@ import type {
   SalesOwner,
   StageChangeInput,
   UpdateOpportunityInput,
+  UpdateCrmSettingsInput,
 } from "../contracts/crm";
 
 /** Single data contract for the Sales & CRM workspace. */
@@ -43,4 +45,6 @@ export interface CrmRepository {
   getAccounts(filters: AccountQuery): Promise<PaginatedAccounts>;
   getForecast(filters: ForecastQuery): Promise<RevenueForecast>;
   getSalesOwners(): Promise<SalesOwner[]>;
+  getSettings(): Promise<CrmSettings>;
+  updateSettings(input: UpdateCrmSettingsInput): Promise<CrmSettings>;
 }

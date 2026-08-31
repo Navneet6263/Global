@@ -26,7 +26,7 @@ export const CASE_COLUMNS: readonly CaseColumn[] = [
   { id: "client", label: "Client" },
   { id: "package", label: "Package" },
   { id: "stage", label: "Stage", alwaysVisible: true },
-  { id: "progress", label: "Progress", sortKey: "progress" },
+  { id: "progress", label: "Progress" },
   { id: "priority", label: "Priority" },
   { id: "sla", label: "SLA remaining", sortKey: "sla" },
   { id: "owner", label: "Operations owner" },

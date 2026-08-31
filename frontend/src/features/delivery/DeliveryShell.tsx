@@ -1,27 +1,21 @@
 import type { ComponentType, ReactNode } from "react";
+import { AdminShell } from "@/components/shell/admin-shell";
+import type { NavWorkspace } from "@/config/navigation";
 
-import { Sidebar } from "@/components/ops/Sidebar";
-import { Topbar } from "@/components/ops/Topbar";
-
-export function DeliveryShell({
-  children,
-  onRefresh,
-  refreshing,
-}: {
+interface DeliveryShellProps {
   children: ReactNode;
+  workspace: Extract<NavWorkspace, "verifier" | "qa-reviewer">;
   onRefresh: () => void;
   refreshing: boolean;
-}) {
+}
+
+export function DeliveryShell(props: DeliveryShellProps) {
   return (
-    <div className="min-h-screen bg-white text-foreground lg:pl-64">
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar onRefresh={onRefresh} isRefreshing={refreshing} />
-        <main className="flex-1 px-4 pb-12 pt-5 sm:px-6">
-          <div className="mx-auto max-w-[1500px] space-y-5">{children}</div>
-        </main>
+    <AdminShell workspace={props.workspace}>
+      <div aria-busy={props.refreshing} className="space-y-6">
+        {props.children}
       </div>
-    </div>
+    </AdminShell>
   );
 }
 
@@ -37,15 +31,15 @@ export function DeliveryHeader({
   aside?: ReactNode;
 }) {
   return (
-    <header className="flex flex-wrap items-end justify-between gap-4 border-b border-slate-200 pb-5">
+    <header className="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-orange-700">
+        <p className="text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
           {eyebrow}
         </p>
-        <h1 className="mt-1.5 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+        <h1 className="mt-1.5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {title}
         </h1>
-        <p className="mt-1.5 max-w-2xl text-sm text-slate-500">{description}</p>
+        <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">{description}</p>
       </div>
       {aside}
     </header>
@@ -53,28 +47,12 @@ export function DeliveryHeader({
 }
 
 type Tone = "blue" | "emerald" | "amber" | "red" | "violet";
-const tones: Record<Tone, { card: string; icon: string; bar: string }> = {
-  blue: {
-    card: "border-blue-100 bg-blue-50/45",
-    icon: "bg-blue-100 text-blue-700",
-    bar: "bg-blue-500",
-  },
-  emerald: {
-    card: "border-emerald-100 bg-emerald-50/45",
-    icon: "bg-emerald-100 text-emerald-700",
-    bar: "bg-emerald-500",
-  },
-  amber: {
-    card: "border-amber-100 bg-amber-50/45",
-    icon: "bg-amber-100 text-amber-700",
-    bar: "bg-amber-500",
-  },
-  red: { card: "border-red-100 bg-red-50/45", icon: "bg-red-100 text-red-700", bar: "bg-red-500" },
-  violet: {
-    card: "border-violet-100 bg-violet-50/45",
-    icon: "bg-violet-100 text-violet-700",
-    bar: "bg-violet-500",
-  },
+const tones: Record<Tone, { icon: string; bar: string }> = {
+  blue: { icon: "bg-info-soft text-info-foreground", bar: "bg-info" },
+  emerald: { icon: "bg-success-soft text-success-foreground", bar: "bg-success" },
+  amber: { icon: "bg-warning-soft text-warning-foreground", bar: "bg-warning" },
+  red: { icon: "bg-critical-soft text-critical-foreground", bar: "bg-critical" },
+  violet: { icon: "bg-review-soft text-review-foreground", bar: "bg-review" },
 };
 
 export function DeliveryKpis({
@@ -91,31 +69,28 @@ export function DeliveryKpis({
 }) {
   return (
     <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" aria-label="Workspace summary">
-      {items.map(({ label, value, detail, icon: Icon, tone, progress }) => {
-        const style = tones[tone];
-        return (
-          <article key={label} className={`rounded-2xl border p-4 shadow-sm ${style.card}`}>
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[11px] font-semibold text-slate-500">{label}</p>
-                <p className="num mt-1 text-2xl font-bold text-slate-950">{value}</p>
-              </div>
-              <span className={`grid h-9 w-9 place-items-center rounded-xl ${style.icon}`}>
-                <Icon className="h-4 w-4" />
-              </span>
+      {items.map(({ label, value, detail, icon: Icon, tone, progress }) => (
+        <article key={label} className="surface p-4 transition-transform hover:-translate-y-0.5">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
+              <p className="num mt-1 text-2xl font-semibold text-foreground">{value}</p>
             </div>
-            <p className="mt-2 text-[10px] text-slate-500">{detail}</p>
-            {progress !== undefined ? (
-              <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/80">
-                <div
-                  className={`h-full rounded-full ${style.bar}`}
-                  style={{ width: `${Math.max(3, Math.min(100, progress))}%` }}
-                />
-              </div>
-            ) : null}
-          </article>
-        );
-      })}
+            <span className={`grid size-9 place-items-center rounded-xl ${tones[tone].icon}`}>
+              <Icon className="size-4" />
+            </span>
+          </div>
+          <p className="mt-2 text-[11px] text-muted-foreground">{detail}</p>
+          {progress !== undefined ? (
+            <div className="mt-3 h-1 overflow-hidden rounded-full bg-muted">
+              <div
+                className={`h-full rounded-full ${tones[tone].bar}`}
+                style={{ width: `${Math.max(3, Math.min(100, progress))}%` }}
+              />
+            </div>
+          ) : null}
+        </article>
+      ))}
     </section>
   );
 }

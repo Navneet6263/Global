@@ -43,13 +43,17 @@ function OperationsDashboard() {
   };
 
   const openMetric = (id: OpsMetricId) => {
+    if (id === "clarifications") {
+      void navigate({ to: "/operations/clarifications" });
+      return;
+    }
     void navigate({
       to: "/operations/cases",
       search:
         id === "unassigned"
           ? { unassigned: true }
           : id === "dueToday"
-            ? { dueToday: true }
+            ? { dueNext7Days: true }
             : id === "slaRisk"
               ? { sla: "overdue" }
               : {},

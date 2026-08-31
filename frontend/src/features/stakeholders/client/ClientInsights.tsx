@@ -1,29 +1,34 @@
 import { Activity, CheckCircle2, CircleAlert, MinusCircle } from "lucide-react";
 
+import { Section } from "@/components/layout/section";
 import type { OperationsDashboard } from "@/lib/api/dashboards";
-import { StakeholderPanel } from "../StakeholderShell";
 import { humanize } from "./client-portal-utils";
 
 export function ClientInsights({ data }: { data: OperationsDashboard | undefined }) {
   return (
     <div className="grid gap-4 xl:grid-cols-[1.35fr_0.65fr]">
-      <StakeholderPanel
+      <Section
         title="Monthly movement"
-        detail="New case intake compared with completed verifications"
+        description="New case intake compared with completed verifications"
+        bodyClassName="p-5"
       >
         <div className="p-5">
-          <div className="mb-5 flex items-center gap-4 text-[10px] text-slate-500">
-            <Legend color="bg-slate-900" label="New cases" />
-            <Legend color="bg-orange-400" label="Completed" />
+          <div className="mb-5 flex items-center gap-4 text-[10px] text-muted-foreground">
+            <Legend color="bg-mint" label="New cases" />
+            <Legend color="bg-primary" label="Completed" />
           </div>
           <MovementChart data={data?.trend ?? []} />
         </div>
-      </StakeholderPanel>
-      <StakeholderPanel title="Outcome health" detail="Results returned across completed checks">
+      </Section>
+      <Section
+        title="Outcome health"
+        description="Results returned across completed checks"
+        bodyClassName="p-5"
+      >
         <div className="p-5">
           <OutcomeMix values={data?.outcomeMix ?? {}} />
         </div>
-      </StakeholderPanel>
+      </Section>
     </div>
   );
 }
@@ -38,16 +43,16 @@ function MovementChart({ data }: { data: OperationsDashboard["trend"] }) {
           <div className="flex h-36 items-end gap-1.5">
             <span
               title={`${item.created} new`}
-              className="w-3 rounded-t-md bg-slate-900 sm:w-5"
+              className="w-3 rounded-t-lg bg-mint shadow-[0_6px_14px_-8px_var(--mint)] sm:w-5"
               style={{ height: `${Math.max(5, (item.created / max) * 136)}px` }}
             />
             <span
               title={`${item.completed} completed`}
-              className="w-3 rounded-t-md bg-orange-400 sm:w-5"
+              className="w-3 rounded-t-lg bg-primary shadow-[0_6px_14px_-8px_var(--primary)] sm:w-5"
               style={{ height: `${Math.max(5, (item.completed / max) * 136)}px` }}
             />
           </div>
-          <span className="mt-2 text-[9px] font-semibold text-slate-500">{item.month}</span>
+          <span className="mt-2 text-[9px] font-medium text-muted-foreground">{item.month}</span>
         </div>
       ))}
     </div>
@@ -60,7 +65,7 @@ function OutcomeMix({ values }: { values: Record<string, number> }) {
   if (!total) return <Empty text="Outcome health will appear after checks are completed." />;
   return (
     <div>
-      <div className="flex h-2 overflow-hidden rounded-full bg-slate-100">
+      <div className="flex h-2 overflow-hidden rounded-full bg-muted">
         {entries.map(([label, value]) => (
           <span
             key={label}
@@ -79,10 +84,10 @@ function OutcomeMix({ values }: { values: Record<string, number> }) {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2 text-[11px]">
-                  <span className="truncate font-semibold">{humanize(label)}</span>
-                  <span className="font-semibold">{value}</span>
+                  <span className="truncate font-semibold text-foreground">{humanize(label)}</span>
+                  <span className="num font-semibold text-foreground">{value}</span>
                 </div>
-                <p className="mt-0.5 text-[9px] text-slate-400">
+                <p className="mt-0.5 text-[9px] text-muted-foreground">
                   {Math.round((value / total) * 100)}% of returned outcomes
                 </p>
               </div>
@@ -96,12 +101,24 @@ function OutcomeMix({ values }: { values: Record<string, number> }) {
 
 function outcomeTone(value: string) {
   if (value === "CLEAR")
-    return { bar: "bg-emerald-500", icon: "bg-emerald-50 text-emerald-700", Icon: CheckCircle2 };
+    return {
+      bar: "bg-success",
+      icon: "bg-success-soft text-success-foreground",
+      Icon: CheckCircle2,
+    };
   if (["DISCREPANCY", "UNABLE_TO_VERIFY"].includes(value))
-    return { bar: "bg-red-400", icon: "bg-red-50 text-red-700", Icon: CircleAlert };
+    return {
+      bar: "bg-critical",
+      icon: "bg-critical-soft text-critical-foreground",
+      Icon: CircleAlert,
+    };
   if (value === "PENDING")
-    return { bar: "bg-slate-300", icon: "bg-slate-100 text-slate-600", Icon: MinusCircle };
-  return { bar: "bg-amber-400", icon: "bg-amber-50 text-amber-700", Icon: Activity };
+    return {
+      bar: "bg-neutral",
+      icon: "bg-neutral-soft text-neutral-foreground",
+      Icon: MinusCircle,
+    };
+  return { bar: "bg-warning", icon: "bg-warning-soft text-warning-foreground", Icon: Activity };
 }
 
 function Legend({ color, label }: { color: string; label: string }) {
@@ -113,5 +130,9 @@ function Legend({ color, label }: { color: string; label: string }) {
   );
 }
 function Empty({ text }: { text: string }) {
-  return <p className="py-16 text-center text-xs text-slate-500">{text}</p>;
+  return (
+    <p className="rounded-2xl border border-dashed border-border-strong bg-muted/25 py-16 text-center text-xs text-muted-foreground">
+      {text}
+    </p>
+  );
 }

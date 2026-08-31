@@ -70,7 +70,7 @@ export function CrmActivityFeed({ activities, limit = 7, showLink = true }: CrmA
               <p className="text-[13px] leading-snug font-medium text-foreground">{row.summary}</p>
               <p className="text-[11px] text-muted-foreground">
                 {ACTIVITY_LABEL[row.type]} · {row.company} · {row.actor} ·{" "}
-                {formatRelativeToNow(row.occurredAt, new Date("2026-08-26T09:00:00.000Z"))}
+                {formatRelativeToNow(row.occurredAt)}
               </p>
             </li>
           );

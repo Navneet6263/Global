@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatInr, formatNumber, formatPercent, formatRelativeToNow } from "@/lib/formatting";
+import { formatNumber, formatPercent, formatRelativeToNow } from "@/lib/formatting";
 import { CLIENT_STATUS_META } from "../client-status-meta";
 
 interface ClientCardProps {
@@ -31,7 +31,7 @@ export function ClientCard({ client, onOpen, onToggleStatus }: ClientCardProps) 
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-sm font-semibold text-foreground">{client.name}</h3>
           <p className="truncate text-xs text-muted-foreground">
-            {client.industry} · {client.city}
+            {client.code} · {client.legalName}
           </p>
         </div>
         <StatusBadge label={status.label} tone={status.tone} />
@@ -52,12 +52,12 @@ export function ClientCard({ client, onOpen, onToggleStatus }: ClientCardProps) 
 
       <dl className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
         <Metric label="Active cases" value={formatNumber(client.activeCases)} />
-        <Metric label="Cases MTD" value={formatNumber(client.caseVolumeMtd)} />
-        <Metric label="SLA attainment" value={formatPercent(client.slaAttainment)} />
+        <Metric label="Portfolio" value={formatNumber(client.caseVolumeTotal)} />
         <Metric
-          label="Outstanding"
-          value={formatInr(client.billing.outstanding, { compact: true })}
+          label="SLA attainment"
+          value={client.slaAttainment === null ? "No history" : formatPercent(client.slaAttainment)}
         />
+        <Metric label="At risk" value={formatNumber(client.outstandingActions)} />
       </dl>
 
       <footer className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-[11px] text-muted-foreground">

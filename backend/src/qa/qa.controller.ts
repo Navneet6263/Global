@@ -10,6 +10,7 @@ import {
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -20,15 +21,18 @@ import { QaService } from "./qa.service";
 
 @Controller("qa")
 @RequirePermissions(Permission.QaReview)
+@RequireRoles("QA_REVIEWER")
 export class QaController {
   constructor(private readonly qa: QaService) {}
 
   @Get("queue")
+  @RequireRoles("PLATFORM_ADMIN", "QA_REVIEWER")
   queue(@CurrentActor() actor: Actor, @Query() query: QaQueryDto) {
     return this.qa.queue(actor, query);
   }
 
   @Post("cases/:caseId/claim")
+  @RequireRoles("QA_REVIEWER")
   claim(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
@@ -38,6 +42,7 @@ export class QaController {
   }
 
   @Post("cases/:caseId/decision")
+  @RequireRoles("QA_REVIEWER")
   decide(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,

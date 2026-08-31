@@ -1,11 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import {
-  PDFDocument,
-  StandardFonts,
-  rgb,
-  type PDFFont,
-  type PDFPage,
-} from "pdf-lib";
+import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
 
 interface ReportData {
   caseNumber: string;
@@ -28,8 +23,7 @@ interface ReportData {
 export class ReportPdfService {
   async render(data: ReportData): Promise<Buffer> {
     const document = await PDFDocument.create();
-    const regular = await document.embedFont(StandardFonts.Helvetica);
-    const bold = await document.embedFont(StandardFonts.HelveticaBold);
+    const { regular, bold } = await embedUnicodeFonts(document);
     let page = document.addPage([595, 842]);
     let y = 790;
 
@@ -202,7 +196,7 @@ export class ReportPdfService {
   }
 
   private safe(value: string): string {
-    return value.replace(/[^\x20-\x7E]/g, "?");
+    return value;
   }
 
   private resultColor(result: string | null) {

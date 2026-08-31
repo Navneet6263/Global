@@ -30,12 +30,14 @@ export type IdempotencyKeyAvgAggregateOutputType = {
   id: number | null
   tenantId: number | null
   responseCode: number | null
+  responseKeyVersion: number | null
 }
 
 export type IdempotencyKeySumAggregateOutputType = {
   id: bigint | null
   tenantId: bigint | null
   responseCode: number | null
+  responseKeyVersion: number | null
 }
 
 export type IdempotencyKeyMinAggregateOutputType = {
@@ -46,6 +48,9 @@ export type IdempotencyKeyMinAggregateOutputType = {
   requestHash: string | null
   responseCode: number | null
   responseJson: string | null
+  responseCiphertext: string | null
+  responseKeyVersion: number | null
+  completedAt: Date | null
   expiresAt: Date | null
   createdAt: Date | null
 }
@@ -58,6 +63,9 @@ export type IdempotencyKeyMaxAggregateOutputType = {
   requestHash: string | null
   responseCode: number | null
   responseJson: string | null
+  responseCiphertext: string | null
+  responseKeyVersion: number | null
+  completedAt: Date | null
   expiresAt: Date | null
   createdAt: Date | null
 }
@@ -70,6 +78,9 @@ export type IdempotencyKeyCountAggregateOutputType = {
   requestHash: number
   responseCode: number
   responseJson: number
+  responseCiphertext: number
+  responseKeyVersion: number
+  completedAt: number
   expiresAt: number
   createdAt: number
   _all: number
@@ -80,12 +91,14 @@ export type IdempotencyKeyAvgAggregateInputType = {
   id?: true
   tenantId?: true
   responseCode?: true
+  responseKeyVersion?: true
 }
 
 export type IdempotencyKeySumAggregateInputType = {
   id?: true
   tenantId?: true
   responseCode?: true
+  responseKeyVersion?: true
 }
 
 export type IdempotencyKeyMinAggregateInputType = {
@@ -96,6 +109,9 @@ export type IdempotencyKeyMinAggregateInputType = {
   requestHash?: true
   responseCode?: true
   responseJson?: true
+  responseCiphertext?: true
+  responseKeyVersion?: true
+  completedAt?: true
   expiresAt?: true
   createdAt?: true
 }
@@ -108,6 +124,9 @@ export type IdempotencyKeyMaxAggregateInputType = {
   requestHash?: true
   responseCode?: true
   responseJson?: true
+  responseCiphertext?: true
+  responseKeyVersion?: true
+  completedAt?: true
   expiresAt?: true
   createdAt?: true
 }
@@ -120,6 +139,9 @@ export type IdempotencyKeyCountAggregateInputType = {
   requestHash?: true
   responseCode?: true
   responseJson?: true
+  responseCiphertext?: true
+  responseKeyVersion?: true
+  completedAt?: true
   expiresAt?: true
   createdAt?: true
   _all?: true
@@ -219,6 +241,9 @@ export type IdempotencyKeyGroupByOutputType = {
   requestHash: string
   responseCode: number | null
   responseJson: string | null
+  responseCiphertext: string | null
+  responseKeyVersion: number | null
+  completedAt: Date | null
   expiresAt: Date
   createdAt: Date
   _count: IdempotencyKeyCountAggregateOutputType | null
@@ -254,6 +279,9 @@ export type IdempotencyKeyWhereInput = {
   requestHash?: Prisma.StringFilter<"IdempotencyKey"> | string
   responseCode?: Prisma.IntNullableFilter<"IdempotencyKey"> | number | null
   responseJson?: Prisma.StringNullableFilter<"IdempotencyKey"> | string | null
+  responseCiphertext?: Prisma.StringNullableFilter<"IdempotencyKey"> | string | null
+  responseKeyVersion?: Prisma.IntNullableFilter<"IdempotencyKey"> | number | null
+  completedAt?: Prisma.DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"IdempotencyKey"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"IdempotencyKey"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -267,6 +295,9 @@ export type IdempotencyKeyOrderByWithRelationInput = {
   requestHash?: Prisma.SortOrder
   responseCode?: Prisma.SortOrderInput | Prisma.SortOrder
   responseJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  responseCiphertext?: Prisma.SortOrderInput | Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
@@ -284,6 +315,9 @@ export type IdempotencyKeyWhereUniqueInput = Prisma.AtLeast<{
   requestHash?: Prisma.StringFilter<"IdempotencyKey"> | string
   responseCode?: Prisma.IntNullableFilter<"IdempotencyKey"> | number | null
   responseJson?: Prisma.StringNullableFilter<"IdempotencyKey"> | string | null
+  responseCiphertext?: Prisma.StringNullableFilter<"IdempotencyKey"> | string | null
+  responseKeyVersion?: Prisma.IntNullableFilter<"IdempotencyKey"> | number | null
+  completedAt?: Prisma.DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"IdempotencyKey"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"IdempotencyKey"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -297,6 +331,9 @@ export type IdempotencyKeyOrderByWithAggregationInput = {
   requestHash?: Prisma.SortOrder
   responseCode?: Prisma.SortOrderInput | Prisma.SortOrder
   responseJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  responseCiphertext?: Prisma.SortOrderInput | Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.IdempotencyKeyCountOrderByAggregateInput
@@ -317,6 +354,9 @@ export type IdempotencyKeyScalarWhereWithAggregatesInput = {
   requestHash?: Prisma.StringWithAggregatesFilter<"IdempotencyKey"> | string
   responseCode?: Prisma.IntNullableWithAggregatesFilter<"IdempotencyKey"> | number | null
   responseJson?: Prisma.StringNullableWithAggregatesFilter<"IdempotencyKey"> | string | null
+  responseCiphertext?: Prisma.StringNullableWithAggregatesFilter<"IdempotencyKey"> | string | null
+  responseKeyVersion?: Prisma.IntNullableWithAggregatesFilter<"IdempotencyKey"> | number | null
+  completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"IdempotencyKey"> | Date | string | null
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"IdempotencyKey"> | Date | string
 }
@@ -328,6 +368,9 @@ export type IdempotencyKeyCreateInput = {
   requestHash: string
   responseCode?: number | null
   responseJson?: string | null
+  responseCiphertext?: string | null
+  responseKeyVersion?: number | null
+  completedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutIdempotencyKeysInput
@@ -341,6 +384,9 @@ export type IdempotencyKeyUncheckedCreateInput = {
   requestHash: string
   responseCode?: number | null
   responseJson?: string | null
+  responseCiphertext?: string | null
+  responseKeyVersion?: number | null
+  completedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -352,6 +398,9 @@ export type IdempotencyKeyUpdateInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutIdempotencyKeysNestedInput
@@ -365,6 +414,9 @@ export type IdempotencyKeyUncheckedUpdateInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -376,6 +428,9 @@ export type IdempotencyKeyCreateManyInput = {
   requestHash: string
   responseCode?: number | null
   responseJson?: string | null
+  responseCiphertext?: string | null
+  responseKeyVersion?: number | null
+  completedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -387,6 +442,9 @@ export type IdempotencyKeyUpdateManyMutationInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -399,6 +457,9 @@ export type IdempotencyKeyUncheckedUpdateManyInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -427,6 +488,9 @@ export type IdempotencyKeyCountOrderByAggregateInput = {
   requestHash?: Prisma.SortOrder
   responseCode?: Prisma.SortOrder
   responseJson?: Prisma.SortOrder
+  responseCiphertext?: Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -435,6 +499,7 @@ export type IdempotencyKeyAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   responseCode?: Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrder
 }
 
 export type IdempotencyKeyMaxOrderByAggregateInput = {
@@ -445,6 +510,9 @@ export type IdempotencyKeyMaxOrderByAggregateInput = {
   requestHash?: Prisma.SortOrder
   responseCode?: Prisma.SortOrder
   responseJson?: Prisma.SortOrder
+  responseCiphertext?: Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -457,6 +525,9 @@ export type IdempotencyKeyMinOrderByAggregateInput = {
   requestHash?: Prisma.SortOrder
   responseCode?: Prisma.SortOrder
   responseJson?: Prisma.SortOrder
+  responseCiphertext?: Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -465,6 +536,7 @@ export type IdempotencyKeySumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   responseCode?: Prisma.SortOrder
+  responseKeyVersion?: Prisma.SortOrder
 }
 
 export type IdempotencyKeyCreateNestedManyWithoutTenantInput = {
@@ -524,6 +596,9 @@ export type IdempotencyKeyCreateWithoutTenantInput = {
   requestHash: string
   responseCode?: number | null
   responseJson?: string | null
+  responseCiphertext?: string | null
+  responseKeyVersion?: number | null
+  completedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -535,6 +610,9 @@ export type IdempotencyKeyUncheckedCreateWithoutTenantInput = {
   requestHash: string
   responseCode?: number | null
   responseJson?: string | null
+  responseCiphertext?: string | null
+  responseKeyVersion?: number | null
+  completedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -575,6 +653,9 @@ export type IdempotencyKeyScalarWhereInput = {
   requestHash?: Prisma.StringFilter<"IdempotencyKey"> | string
   responseCode?: Prisma.IntNullableFilter<"IdempotencyKey"> | number | null
   responseJson?: Prisma.StringNullableFilter<"IdempotencyKey"> | string | null
+  responseCiphertext?: Prisma.StringNullableFilter<"IdempotencyKey"> | string | null
+  responseKeyVersion?: Prisma.IntNullableFilter<"IdempotencyKey"> | number | null
+  completedAt?: Prisma.DateTimeNullableFilter<"IdempotencyKey"> | Date | string | null
   expiresAt?: Prisma.DateTimeFilter<"IdempotencyKey"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"IdempotencyKey"> | Date | string
 }
@@ -585,6 +666,9 @@ export type IdempotencyKeyCreateManyTenantInput = {
   requestHash: string
   responseCode?: number | null
   responseJson?: string | null
+  responseCiphertext?: string | null
+  responseKeyVersion?: number | null
+  completedAt?: Date | string | null
   expiresAt: Date | string
   createdAt?: Date | string
 }
@@ -596,6 +680,9 @@ export type IdempotencyKeyUpdateWithoutTenantInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -607,6 +694,9 @@ export type IdempotencyKeyUncheckedUpdateWithoutTenantInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -618,6 +708,9 @@ export type IdempotencyKeyUncheckedUpdateManyWithoutTenantInput = {
   requestHash?: Prisma.StringFieldUpdateOperationsInput | string
   responseCode?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   responseJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseCiphertext?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseKeyVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -632,6 +725,9 @@ export type IdempotencyKeySelect<ExtArgs extends runtime.Types.Extensions.Intern
   requestHash?: boolean
   responseCode?: boolean
   responseJson?: boolean
+  responseCiphertext?: boolean
+  responseKeyVersion?: boolean
+  completedAt?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -647,11 +743,14 @@ export type IdempotencyKeySelectScalar = {
   requestHash?: boolean
   responseCode?: boolean
   responseJson?: boolean
+  responseCiphertext?: boolean
+  responseKeyVersion?: boolean
+  completedAt?: boolean
   expiresAt?: boolean
   createdAt?: boolean
 }
 
-export type IdempotencyKeyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "key" | "route" | "requestHash" | "responseCode" | "responseJson" | "expiresAt" | "createdAt", ExtArgs["result"]["idempotencyKey"]>
+export type IdempotencyKeyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "key" | "route" | "requestHash" | "responseCode" | "responseJson" | "responseCiphertext" | "responseKeyVersion" | "completedAt" | "expiresAt" | "createdAt", ExtArgs["result"]["idempotencyKey"]>
 export type IdempotencyKeyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -669,6 +768,9 @@ export type $IdempotencyKeyPayload<ExtArgs extends runtime.Types.Extensions.Inte
     requestHash: string
     responseCode: number | null
     responseJson: string | null
+    responseCiphertext: string | null
+    responseKeyVersion: number | null
+    completedAt: Date | null
     expiresAt: Date
     createdAt: Date
   }, ExtArgs["result"]["idempotencyKey"]>
@@ -1048,6 +1150,9 @@ export interface IdempotencyKeyFieldRefs {
   readonly requestHash: Prisma.FieldRef<"IdempotencyKey", 'String'>
   readonly responseCode: Prisma.FieldRef<"IdempotencyKey", 'Int'>
   readonly responseJson: Prisma.FieldRef<"IdempotencyKey", 'String'>
+  readonly responseCiphertext: Prisma.FieldRef<"IdempotencyKey", 'String'>
+  readonly responseKeyVersion: Prisma.FieldRef<"IdempotencyKey", 'Int'>
+  readonly completedAt: Prisma.FieldRef<"IdempotencyKey", 'DateTime'>
   readonly expiresAt: Prisma.FieldRef<"IdempotencyKey", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"IdempotencyKey", 'DateTime'>
 }

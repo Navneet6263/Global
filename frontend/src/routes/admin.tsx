@@ -1,16 +1,10 @@
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/shell/admin-shell";
-import { landingPathForRoles, loadIdentity } from "@/lib/auth/platform-session";
+import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/admin")({
   ssr: false,
-  beforeLoad: async () => {
-    const identity = await loadIdentity();
-    if (!identity) throw redirect({ to: "/auth" });
-    if (!identity.roles.includes("PLATFORM_ADMIN")) {
-      throw redirect({ to: landingPathForRoles(identity.roles) as "/admin" });
-    }
-  },
+  beforeLoad: () => requireRoleWorkspace(["PLATFORM_ADMIN"]),
   component: AdminLayout,
 });
 

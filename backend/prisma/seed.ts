@@ -26,7 +26,6 @@ const rolePermissions: Record<string, string[]> = {
   OPS_MANAGER: [
     Permission.DashboardRead,
     Permission.ClientRead,
-    Permission.ClientWrite,
     Permission.CaseRead,
     Permission.CaseCreate,
     Permission.CaseTransition,
@@ -41,10 +40,8 @@ const rolePermissions: Record<string, string[]> = {
     Permission.FieldVisitRead,
     Permission.FieldVisitWrite,
     Permission.FieldEvidenceRead,
-    Permission.AuditRead,
     Permission.UserRead,
     Permission.NotificationRead,
-    Permission.SettingsManage,
   ],
   VERIFIER: [
     Permission.DashboardRead,
@@ -97,7 +94,6 @@ const rolePermissions: Record<string, string[]> = {
     Permission.ClientRead,
     Permission.FinanceRead,
     Permission.FinanceWrite,
-    Permission.ReportRead,
     Permission.NotificationRead,
   ],
 };
@@ -202,46 +198,62 @@ async function main(): Promise<void> {
       passwordHash = await hashPassword(adminPassword);
     }
 
-    const user = await prisma.user.upsert({
-      where: {
-        tenantId_normalizedEmail: {
+    await prisma.$transaction(async (tx) => {
+      const user = await tx.user.upsert({
+        where: {
+          tenantId_normalizedEmail: {
+            tenantId: tenant.id,
+            normalizedEmail: configuredAdminEmail,
+          },
+        },
+        update: {
+          ...(process.env.SEED_ADMIN_NAME?.trim()
+            ? { displayName: adminName }
+            : {}),
+          ...(passwordHash
+            ? {
+                passwordHash,
+                failedLoginCount: 0,
+                lockedUntil: null,
+                passwordChangedAt: new Date(),
+                mustChangePassword: false,
+              }
+            : {}),
+        },
+        create: {
           tenantId: tenant.id,
+          branchId: branch.id,
+          email: configuredAdminEmail,
           normalizedEmail: configuredAdminEmail,
+          displayName: adminName,
+          passwordHash: passwordHash!,
+          mustChangePassword: false,
         },
-      },
-      update: {
-        ...(process.env.SEED_ADMIN_NAME?.trim()
-          ? { displayName: adminName }
-          : {}),
-        ...(passwordHash
-          ? {
-              passwordHash,
-              failedLoginCount: 0,
-              lockedUntil: null,
-              passwordChangedAt: new Date(),
-              mustChangePassword: false,
-            }
-          : {}),
-      },
-      create: {
-        tenantId: tenant.id,
-        branchId: branch.id,
-        email: configuredAdminEmail,
-        normalizedEmail: configuredAdminEmail,
-        displayName: adminName,
-        passwordHash: passwordHash!,
-        mustChangePassword: false,
-      },
-    });
-    await prisma.userRole.upsert({
-      where: {
-        userId_roleId: {
-          userId: user.id,
-          roleId: roles.get("PLATFORM_ADMIN")!,
+      });
+      await tx.userRole.upsert({
+        where: {
+          userId_roleId: {
+            userId: user.id,
+            roleId: roles.get("PLATFORM_ADMIN")!,
+          },
         },
-      },
-      update: {},
-      create: { userId: user.id, roleId: roles.get("PLATFORM_ADMIN")! },
+        update: {},
+        create: { userId: user.id, roleId: roles.get("PLATFORM_ADMIN")! },
+      });
+      if (existingAdmin && resetPassword) {
+        await tx.refreshSession.updateMany({
+          where: { userId: user.id, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+        await tx.auditEvent.create({
+          data: {
+            tenantId: tenant.id,
+            action: "seed.admin-password-reset",
+            resourceType: "user",
+            resourcePublicId: user.publicId,
+          },
+        });
+      }
     });
   }
 

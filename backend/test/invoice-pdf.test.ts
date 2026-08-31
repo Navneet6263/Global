@@ -14,11 +14,12 @@ void test("invoice renderer produces a paginated PDF with invoice metadata", asy
     taxAmount: 900,
     totalAmount: 5900,
     paidAmount: 0,
+    creditedAmount: 0,
     notes: "Payment is due according to the agreed billing terms.",
     createdAt: new Date("2026-08-20T08:00:00Z"),
     client: {
-      legalName: "Enterprise Client Private Limited",
-      displayName: "Enterprise Client",
+      legalName: "उद्यम क्लाइंट प्राइवेट लिमिटेड",
+      displayName: "उद्यम क्लाइंट",
       code: "ENTERPRISE",
       billingTerms: "Net 30",
     },
@@ -33,6 +34,7 @@ void test("invoice renderer produces a paginated PDF with invoice metadata", asy
       },
     ],
     payments: [],
+    creditNotes: [],
   });
 
   assert.equal(result.subarray(0, 5).toString(), "%PDF-");

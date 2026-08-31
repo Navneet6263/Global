@@ -7,6 +7,7 @@ import { BrandMark } from "./brand-mark";
 import { AccountFooter } from "./account-footer";
 import { TopToolbar } from "./top-toolbar";
 import type { NavWorkspace } from "@/config/navigation";
+import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
 
 interface AdminShellProps {
   children: ReactNode;
@@ -15,11 +16,12 @@ interface AdminShellProps {
 
 export function AdminShell({ children, workspace = "platform-admin" }: AdminShellProps) {
   const [navOpen, setNavOpen] = useState(false);
+  const presentation = WORKSPACE_PRESENTATION[workspace];
 
   return (
     <div className="min-h-screen">
       <a
-        href="#admin-main"
+        href="#workspace-main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-card focus:px-3 focus:py-2 focus:text-sm focus:shadow-md"
       >
         Skip to main content
@@ -48,7 +50,7 @@ export function AdminShell({ children, workspace = "platform-admin" }: AdminShel
       <Sheet open={navOpen} onOpenChange={setNavOpen}>
         <SheetContent side="left" className="w-[288px] gap-0 bg-sidebar p-0">
           <SheetHeader className="h-16 shrink-0 justify-center border-b border-sidebar-border px-4">
-            <SheetTitle className="sr-only">Platform navigation</SheetTitle>
+            <SheetTitle className="sr-only">{presentation.label} navigation</SheetTitle>
             <BrandMark workspace={workspace} />
           </SheetHeader>
           <div className="min-h-0 flex-1 overflow-y-auto">
@@ -60,7 +62,7 @@ export function AdminShell({ children, workspace = "platform-admin" }: AdminShel
 
       <div className="flex min-h-screen flex-col lg:pl-[276px]">
         <TopToolbar workspace={workspace} onOpenNav={() => setNavOpen(true)} />
-        <main id="admin-main" className="flex-1 px-4 py-6 lg:px-7 lg:py-8">
+        <main id="workspace-main" className="flex-1 px-4 py-6 lg:px-7 lg:py-8">
           <div className="mx-auto w-full max-w-[1560px] space-y-6">{children}</div>
         </main>
       </div>

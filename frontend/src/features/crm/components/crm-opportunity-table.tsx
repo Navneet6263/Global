@@ -44,7 +44,7 @@ export function CrmOpportunityTable({ rows, onOpen }: CrmOpportunityTableProps) 
                       {row.company}
                     </span>
                     <span className="block text-[11px] text-muted-foreground">
-                      {row.contactName} · {row.city}
+                      {[row.contactName, row.city].filter(Boolean).join(" · ")}
                     </span>
                   </button>
                 </td>
@@ -62,7 +62,7 @@ export function CrmOpportunityTable({ rows, onOpen }: CrmOpportunityTableProps) 
                   {row.ownerName ?? <span className="text-muted-foreground">Unassigned</span>}
                 </td>
                 <td className="num px-3 py-3 text-[13px] text-muted-foreground">
-                  {formatDate(row.expectedCloseDate)}
+                  {row.expectedCloseDate ? formatDate(row.expectedCloseDate) : "Not scheduled"}
                 </td>
                 <td className="px-3 py-3 text-[12px]">
                   {row.nextFollowUpAt ? (

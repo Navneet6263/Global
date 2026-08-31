@@ -5,8 +5,18 @@ import { LocalObjectStorageService } from "../src/documents/local-object-storage
 import { PrismaClient } from "../src/generated/prisma/client";
 
 const runId = required("E2E_GOLDEN_RUN_ID").trim().toLowerCase();
-if (process.env.NODE_ENV === "production") {
-  throw new Error("Golden-flow cleanup is disabled in production");
+if (process.env.NODE_ENV !== "development") {
+  throw new Error(
+    "Golden-flow cleanup runs only in the isolated development E2E environment",
+  );
+}
+if (process.env.E2E_GOLDEN_ISOLATED !== "true") {
+  throw new Error("E2E_GOLDEN_ISOLATED=true is required for golden cleanup");
+}
+if ((process.env.OBJECT_STORAGE_DRIVER ?? "local") !== "local") {
+  throw new Error(
+    "Golden cleanup accepts only the disposable local E2E object store",
+  );
 }
 if (!/^[a-z0-9]{6,20}$/.test(runId)) {
   throw new Error(
@@ -35,25 +45,50 @@ const storage = new LocalObjectStorageService(
 );
 
 async function main(): Promise<void> {
-  const managedUserEmail = `managed-${runId}@e2e.invalid`;
-  const managedUser = await prisma.user.findFirst({
+  const [permission] = await prisma.$queryRaw<
+    Array<{ databasePrincipal: string; canDeleteAudit: number }>
+  >`SELECT CURRENT_USER AS [databasePrincipal], HAS_PERMS_BY_NAME('dbo.AuditEvent', 'OBJECT', 'DELETE') AS [canDeleteAudit]`;
+  if (!permission || Number(permission.canDeleteAudit) !== 1) {
+    throw new Error(
+      "Golden cleanup requires the isolated migration/fixture database identity with AuditEvent DELETE permission; never use the append-only runtime identity",
+    );
+  }
+  const managedUserEmails = [
+    `managed-verifier-${runId}@e2e.invalid`,
+    `managed-qa-${runId}@e2e.invalid`,
+    `managed-${runId}@e2e.invalid`,
+  ];
+  const tenant = await prisma.tenant.findUnique({
+    where: { code: "SAPLING" },
+    select: { id: true },
+  });
+  if (!tenant) throw new Error("SAPLING tenant was not found");
+  const managedUsers = await prisma.user.findMany({
     where: {
-      normalizedEmail: managedUserEmail,
-      tenant: { code: "SAPLING" },
+      normalizedEmail: { in: managedUserEmails },
+      tenantId: tenant.id,
     },
     select: { id: true, publicId: true },
   });
   const client = await prisma.client.findFirst({
-    where: { code: clientCode, tenant: { code: "SAPLING" } },
+    where: { code: clientCode, tenantId: tenant.id },
     select: {
       id: true,
+      publicId: true,
       tenantId: true,
       cases: {
         select: {
           id: true,
           publicId: true,
           subjectId: true,
-          checks: { select: { publicId: true } },
+          checks: {
+            select: {
+              publicId: true,
+              tasks: { select: { publicId: true } },
+            },
+          },
+          consents: { select: { publicId: true } },
+          documents: { select: { publicId: true } },
           clarifications: { select: { publicId: true } },
           reports: { select: { publicId: true } },
         },
@@ -61,15 +96,17 @@ async function main(): Promise<void> {
     },
   });
   if (!client) {
-    if (managedUser) {
-      await prisma.$transaction(async (tx) => {
-        await deleteManagedUser(tx, managedUser);
-      });
-    }
+    await prisma.$transaction(async (tx) => {
+      await deleteRunIdempotency(tx, tenant.id);
+      for (const user of managedUsers) await deleteManagedUser(tx, user);
+    });
     console.log(
       JSON.stringify({
-        action: managedUser ? "deleted-user-only" : "nothing-to-delete",
+        action: managedUsers.length
+          ? "deleted-users-only"
+          : "nothing-to-delete",
         clientCode,
+        databasePrincipal: permission.databasePrincipal,
       }),
     );
     return;
@@ -85,9 +122,6 @@ async function main(): Promise<void> {
       select: { objectKey: true },
     }),
   ]);
-  for (const { objectKey } of objectRows.flat()) {
-    await storage.delete(objectKey);
-  }
 
   const caseIds = client.cases.map((item) => item.id);
   const casePublicIds = client.cases.map((item) => item.publicId);
@@ -98,12 +132,27 @@ async function main(): Promise<void> {
       item.checks.map((check) => check.publicId),
     ),
     ...client.cases.flatMap((item) =>
+      item.consents.map((consent) => consent.publicId),
+    ),
+    ...client.cases.flatMap((item) =>
       item.clarifications.map((clarification) => clarification.publicId),
     ),
     ...client.cases.flatMap((item) =>
       item.reports.map((report) => report.publicId),
     ),
   ];
+  const resourcePublicIds = [
+    client.publicId,
+    ...aggregateIds,
+    ...client.cases.flatMap((item) =>
+      item.documents.map((document) => document.publicId),
+    ),
+    ...client.cases.flatMap((item) =>
+      item.checks.flatMap((check) => check.tasks.map((task) => task.publicId)),
+    ),
+    ...managedUsers.map((user) => user.publicId),
+  ];
+  const managedUserIds = managedUsers.map((user) => user.id);
 
   await prisma.$transaction(
     async (tx) => {
@@ -120,18 +169,24 @@ async function main(): Promise<void> {
           },
         });
       }
-      await tx.idempotencyKey.deleteMany({
+      await tx.auditEvent.deleteMany({
         where: {
           tenantId: client.tenantId,
-          key: { startsWith: `gf:${runId}:` },
+          OR: [
+            { resourcePublicId: { in: resourcePublicIds } },
+            ...(managedUserIds.length
+              ? [{ actorUserId: { in: managedUserIds } }]
+              : []),
+          ],
         },
       });
+      await deleteRunIdempotency(tx, client.tenantId);
       if (caseIds.length) {
         await tx.verificationCase.deleteMany({
           where: { id: { in: caseIds } },
         });
       }
-      if (managedUser) await deleteManagedUser(tx, managedUser);
+      for (const user of managedUsers) await deleteManagedUser(tx, user);
       if (subjectIds.length) {
         await tx.subject.deleteMany({ where: { id: { in: subjectIds } } });
       }
@@ -139,14 +194,52 @@ async function main(): Promise<void> {
     },
     { maxWait: 30_000, timeout: 120_000 },
   );
+  const failedObjectKeys: string[] = [];
+  for (const { objectKey } of objectRows.flat()) {
+    try {
+      await storage.delete(objectKey);
+    } catch {
+      failedObjectKeys.push(objectKey);
+    }
+  }
+  if (failedObjectKeys.length) {
+    console.error(
+      JSON.stringify({
+        action: "database-deleted-object-cleanup-incomplete",
+        failedObjectKeys,
+        retry:
+          "Delete these keys from the isolated E2E object store, then rerun cleanup to confirm the database fixture is absent.",
+      }),
+    );
+    throw new Error(
+      `Database fixtures were deleted, but ${failedObjectKeys.length} object(s) require manual storage cleanup`,
+    );
+  }
   console.log(
     JSON.stringify({
       action: "deleted",
       clientCode,
       cases: caseIds.length,
       objects: objectRows.flat().length,
+      users: managedUsers.length,
+      databasePrincipal: permission.databasePrincipal,
     }),
   );
+}
+
+function deleteRunIdempotency(
+  tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+  tenantId: bigint,
+) {
+  return tx.idempotencyKey.deleteMany({
+    where: {
+      tenantId,
+      OR: [
+        { key: { startsWith: `golden:${runId}:` } },
+        { key: { startsWith: `gf:${runId}:` } },
+      ],
+    },
+  });
 }
 
 async function deleteManagedUser(

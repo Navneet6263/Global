@@ -53,7 +53,10 @@ export type SalesOpportunityMinAggregateOutputType = {
   clientId: bigint | null
   ownerId: bigint | null
   companyName: string | null
+  city: string | null
+  industry: string | null
   contactName: string | null
+  contactTitle: string | null
   contactEmail: string | null
   contactPhone: string | null
   stage: string | null
@@ -65,6 +68,7 @@ export type SalesOpportunityMinAggregateOutputType = {
   notes: string | null
   lostReason: string | null
   closedAt: Date | null
+  onboardingHandoffAt: Date | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -77,7 +81,10 @@ export type SalesOpportunityMaxAggregateOutputType = {
   clientId: bigint | null
   ownerId: bigint | null
   companyName: string | null
+  city: string | null
+  industry: string | null
   contactName: string | null
+  contactTitle: string | null
   contactEmail: string | null
   contactPhone: string | null
   stage: string | null
@@ -89,6 +96,7 @@ export type SalesOpportunityMaxAggregateOutputType = {
   notes: string | null
   lostReason: string | null
   closedAt: Date | null
+  onboardingHandoffAt: Date | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -101,7 +109,10 @@ export type SalesOpportunityCountAggregateOutputType = {
   clientId: number
   ownerId: number
   companyName: number
+  city: number
+  industry: number
   contactName: number
+  contactTitle: number
   contactEmail: number
   contactPhone: number
   stage: number
@@ -113,6 +124,7 @@ export type SalesOpportunityCountAggregateOutputType = {
   notes: number
   lostReason: number
   closedAt: number
+  onboardingHandoffAt: number
   version: number
   createdAt: number
   updatedAt: number
@@ -147,7 +159,10 @@ export type SalesOpportunityMinAggregateInputType = {
   clientId?: true
   ownerId?: true
   companyName?: true
+  city?: true
+  industry?: true
   contactName?: true
+  contactTitle?: true
   contactEmail?: true
   contactPhone?: true
   stage?: true
@@ -159,6 +174,7 @@ export type SalesOpportunityMinAggregateInputType = {
   notes?: true
   lostReason?: true
   closedAt?: true
+  onboardingHandoffAt?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -171,7 +187,10 @@ export type SalesOpportunityMaxAggregateInputType = {
   clientId?: true
   ownerId?: true
   companyName?: true
+  city?: true
+  industry?: true
   contactName?: true
+  contactTitle?: true
   contactEmail?: true
   contactPhone?: true
   stage?: true
@@ -183,6 +202,7 @@ export type SalesOpportunityMaxAggregateInputType = {
   notes?: true
   lostReason?: true
   closedAt?: true
+  onboardingHandoffAt?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -195,7 +215,10 @@ export type SalesOpportunityCountAggregateInputType = {
   clientId?: true
   ownerId?: true
   companyName?: true
+  city?: true
+  industry?: true
   contactName?: true
+  contactTitle?: true
   contactEmail?: true
   contactPhone?: true
   stage?: true
@@ -207,6 +230,7 @@ export type SalesOpportunityCountAggregateInputType = {
   notes?: true
   lostReason?: true
   closedAt?: true
+  onboardingHandoffAt?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -306,7 +330,10 @@ export type SalesOpportunityGroupByOutputType = {
   clientId: bigint | null
   ownerId: bigint | null
   companyName: string
+  city: string | null
+  industry: string | null
   contactName: string
+  contactTitle: string | null
   contactEmail: string | null
   contactPhone: string | null
   stage: string
@@ -318,6 +345,7 @@ export type SalesOpportunityGroupByOutputType = {
   notes: string | null
   lostReason: string | null
   closedAt: Date | null
+  onboardingHandoffAt: Date | null
   version: number
   createdAt: Date
   updatedAt: Date
@@ -353,7 +381,10 @@ export type SalesOpportunityWhereInput = {
   clientId?: Prisma.BigIntNullableFilter<"SalesOpportunity"> | bigint | number | null
   ownerId?: Prisma.BigIntNullableFilter<"SalesOpportunity"> | bigint | number | null
   companyName?: Prisma.StringFilter<"SalesOpportunity"> | string
+  city?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
+  industry?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactName?: Prisma.StringFilter<"SalesOpportunity"> | string
+  contactTitle?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactPhone?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   stage?: Prisma.StringFilter<"SalesOpportunity"> | string
@@ -365,6 +396,7 @@ export type SalesOpportunityWhereInput = {
   notes?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   lostReason?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
+  onboardingHandoffAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
@@ -381,7 +413,10 @@ export type SalesOpportunityOrderByWithRelationInput = {
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  industry?: Prisma.SortOrderInput | Prisma.SortOrder
   contactName?: Prisma.SortOrder
+  contactTitle?: Prisma.SortOrderInput | Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   stage?: Prisma.SortOrder
@@ -393,6 +428,7 @@ export type SalesOpportunityOrderByWithRelationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   lostReason?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  onboardingHandoffAt?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -412,7 +448,10 @@ export type SalesOpportunityWhereUniqueInput = Prisma.AtLeast<{
   clientId?: Prisma.BigIntNullableFilter<"SalesOpportunity"> | bigint | number | null
   ownerId?: Prisma.BigIntNullableFilter<"SalesOpportunity"> | bigint | number | null
   companyName?: Prisma.StringFilter<"SalesOpportunity"> | string
+  city?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
+  industry?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactName?: Prisma.StringFilter<"SalesOpportunity"> | string
+  contactTitle?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactPhone?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   stage?: Prisma.StringFilter<"SalesOpportunity"> | string
@@ -424,6 +463,7 @@ export type SalesOpportunityWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   lostReason?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
+  onboardingHandoffAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
@@ -440,7 +480,10 @@ export type SalesOpportunityOrderByWithAggregationInput = {
   clientId?: Prisma.SortOrderInput | Prisma.SortOrder
   ownerId?: Prisma.SortOrderInput | Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  city?: Prisma.SortOrderInput | Prisma.SortOrder
+  industry?: Prisma.SortOrderInput | Prisma.SortOrder
   contactName?: Prisma.SortOrder
+  contactTitle?: Prisma.SortOrderInput | Prisma.SortOrder
   contactEmail?: Prisma.SortOrderInput | Prisma.SortOrder
   contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   stage?: Prisma.SortOrder
@@ -452,6 +495,7 @@ export type SalesOpportunityOrderByWithAggregationInput = {
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
   lostReason?: Prisma.SortOrderInput | Prisma.SortOrder
   closedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  onboardingHandoffAt?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -472,7 +516,10 @@ export type SalesOpportunityScalarWhereWithAggregatesInput = {
   clientId?: Prisma.BigIntNullableWithAggregatesFilter<"SalesOpportunity"> | bigint | number | null
   ownerId?: Prisma.BigIntNullableWithAggregatesFilter<"SalesOpportunity"> | bigint | number | null
   companyName?: Prisma.StringWithAggregatesFilter<"SalesOpportunity"> | string
+  city?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
+  industry?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   contactName?: Prisma.StringWithAggregatesFilter<"SalesOpportunity"> | string
+  contactTitle?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   contactEmail?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   contactPhone?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   stage?: Prisma.StringWithAggregatesFilter<"SalesOpportunity"> | string
@@ -484,6 +531,7 @@ export type SalesOpportunityScalarWhereWithAggregatesInput = {
   notes?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   lostReason?: Prisma.StringNullableWithAggregatesFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SalesOpportunity"> | Date | string | null
+  onboardingHandoffAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntWithAggregatesFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SalesOpportunity"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"SalesOpportunity"> | Date | string
@@ -493,18 +541,22 @@ export type SalesOpportunityCreateInput = {
   id?: bigint | number
   publicId?: string
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -521,18 +573,22 @@ export type SalesOpportunityUncheckedCreateInput = {
   clientId?: bigint | number | null
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -543,7 +599,10 @@ export type SalesOpportunityUpdateInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -555,6 +614,7 @@ export type SalesOpportunityUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -571,7 +631,10 @@ export type SalesOpportunityUncheckedUpdateInput = {
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -583,6 +646,7 @@ export type SalesOpportunityUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -595,18 +659,22 @@ export type SalesOpportunityCreateManyInput = {
   clientId?: bigint | number | null
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -616,7 +684,10 @@ export type SalesOpportunityUpdateManyMutationInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -628,6 +699,7 @@ export type SalesOpportunityUpdateManyMutationInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -640,7 +712,10 @@ export type SalesOpportunityUncheckedUpdateManyInput = {
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -652,6 +727,7 @@ export type SalesOpportunityUncheckedUpdateManyInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -674,7 +750,10 @@ export type SalesOpportunityCountOrderByAggregateInput = {
   clientId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  industry?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
+  contactTitle?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   stage?: Prisma.SortOrder
@@ -686,6 +765,7 @@ export type SalesOpportunityCountOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   lostReason?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
+  onboardingHandoffAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -708,7 +788,10 @@ export type SalesOpportunityMaxOrderByAggregateInput = {
   clientId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  industry?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
+  contactTitle?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   stage?: Prisma.SortOrder
@@ -720,6 +803,7 @@ export type SalesOpportunityMaxOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   lostReason?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
+  onboardingHandoffAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -732,7 +816,10 @@ export type SalesOpportunityMinOrderByAggregateInput = {
   clientId?: Prisma.SortOrder
   ownerId?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  city?: Prisma.SortOrder
+  industry?: Prisma.SortOrder
   contactName?: Prisma.SortOrder
+  contactTitle?: Prisma.SortOrder
   contactEmail?: Prisma.SortOrder
   contactPhone?: Prisma.SortOrder
   stage?: Prisma.SortOrder
@@ -744,6 +831,7 @@ export type SalesOpportunityMinOrderByAggregateInput = {
   notes?: Prisma.SortOrder
   lostReason?: Prisma.SortOrder
   closedAt?: Prisma.SortOrder
+  onboardingHandoffAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -916,18 +1004,22 @@ export type SalesOpportunityCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -942,18 +1034,22 @@ export type SalesOpportunityUncheckedCreateWithoutTenantInput = {
   clientId?: bigint | number | null
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -995,7 +1091,10 @@ export type SalesOpportunityScalarWhereInput = {
   clientId?: Prisma.BigIntNullableFilter<"SalesOpportunity"> | bigint | number | null
   ownerId?: Prisma.BigIntNullableFilter<"SalesOpportunity"> | bigint | number | null
   companyName?: Prisma.StringFilter<"SalesOpportunity"> | string
+  city?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
+  industry?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactName?: Prisma.StringFilter<"SalesOpportunity"> | string
+  contactTitle?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactEmail?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   contactPhone?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   stage?: Prisma.StringFilter<"SalesOpportunity"> | string
@@ -1007,6 +1106,7 @@ export type SalesOpportunityScalarWhereInput = {
   notes?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   lostReason?: Prisma.StringNullableFilter<"SalesOpportunity"> | string | null
   closedAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
+  onboardingHandoffAt?: Prisma.DateTimeNullableFilter<"SalesOpportunity"> | Date | string | null
   version?: Prisma.IntFilter<"SalesOpportunity"> | number
   createdAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"SalesOpportunity"> | Date | string
@@ -1016,18 +1116,22 @@ export type SalesOpportunityCreateWithoutOwnerInput = {
   id?: bigint | number
   publicId?: string
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1042,18 +1146,22 @@ export type SalesOpportunityUncheckedCreateWithoutOwnerInput = {
   tenantId: bigint | number
   clientId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1089,18 +1197,22 @@ export type SalesOpportunityCreateWithoutClientInput = {
   id?: bigint | number
   publicId?: string
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1115,18 +1227,22 @@ export type SalesOpportunityUncheckedCreateWithoutClientInput = {
   tenantId: bigint | number
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1162,18 +1278,22 @@ export type SalesOpportunityCreateWithoutActivitiesInput = {
   id?: bigint | number
   publicId?: string
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1189,18 +1309,22 @@ export type SalesOpportunityUncheckedCreateWithoutActivitiesInput = {
   clientId?: bigint | number | null
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1226,7 +1350,10 @@ export type SalesOpportunityUpdateWithoutActivitiesInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1238,6 +1365,7 @@ export type SalesOpportunityUpdateWithoutActivitiesInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1253,7 +1381,10 @@ export type SalesOpportunityUncheckedUpdateWithoutActivitiesInput = {
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1265,6 +1396,7 @@ export type SalesOpportunityUncheckedUpdateWithoutActivitiesInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1275,18 +1407,22 @@ export type SalesOpportunityCreateManyTenantInput = {
   clientId?: bigint | number | null
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1296,7 +1432,10 @@ export type SalesOpportunityUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1308,6 +1447,7 @@ export type SalesOpportunityUpdateWithoutTenantInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1322,7 +1462,10 @@ export type SalesOpportunityUncheckedUpdateWithoutTenantInput = {
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1334,6 +1477,7 @@ export type SalesOpportunityUncheckedUpdateWithoutTenantInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1346,7 +1490,10 @@ export type SalesOpportunityUncheckedUpdateManyWithoutTenantInput = {
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1358,6 +1505,7 @@ export type SalesOpportunityUncheckedUpdateManyWithoutTenantInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1368,18 +1516,22 @@ export type SalesOpportunityCreateManyOwnerInput = {
   tenantId: bigint | number
   clientId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1389,7 +1541,10 @@ export type SalesOpportunityUpdateWithoutOwnerInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1401,6 +1556,7 @@ export type SalesOpportunityUpdateWithoutOwnerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1415,7 +1571,10 @@ export type SalesOpportunityUncheckedUpdateWithoutOwnerInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1427,6 +1586,7 @@ export type SalesOpportunityUncheckedUpdateWithoutOwnerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1439,7 +1599,10 @@ export type SalesOpportunityUncheckedUpdateManyWithoutOwnerInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1451,6 +1614,7 @@ export type SalesOpportunityUncheckedUpdateManyWithoutOwnerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1461,18 +1625,22 @@ export type SalesOpportunityCreateManyClientInput = {
   tenantId: bigint | number
   ownerId?: bigint | number | null
   companyName: string
+  city?: string | null
+  industry?: string | null
   contactName: string
+  contactTitle?: string | null
   contactEmail?: string | null
   contactPhone?: string | null
   stage?: string
   source?: string | null
-  estimatedValue?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  estimatedValue: runtime.Decimal | runtime.DecimalJsLike | number | string
   probability?: number
   expectedCloseDate?: Date | string | null
   nextFollowUpAt?: Date | string | null
   notes?: string | null
   lostReason?: string | null
   closedAt?: Date | string | null
+  onboardingHandoffAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1482,7 +1650,10 @@ export type SalesOpportunityUpdateWithoutClientInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1494,6 +1665,7 @@ export type SalesOpportunityUpdateWithoutClientInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1508,7 +1680,10 @@ export type SalesOpportunityUncheckedUpdateWithoutClientInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1520,6 +1695,7 @@ export type SalesOpportunityUncheckedUpdateWithoutClientInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1532,7 +1708,10 @@ export type SalesOpportunityUncheckedUpdateManyWithoutClientInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   ownerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  industry?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stage?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1544,6 +1723,7 @@ export type SalesOpportunityUncheckedUpdateManyWithoutClientInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lostReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  onboardingHandoffAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1587,7 +1767,10 @@ export type SalesOpportunitySelect<ExtArgs extends runtime.Types.Extensions.Inte
   clientId?: boolean
   ownerId?: boolean
   companyName?: boolean
+  city?: boolean
+  industry?: boolean
   contactName?: boolean
+  contactTitle?: boolean
   contactEmail?: boolean
   contactPhone?: boolean
   stage?: boolean
@@ -1599,6 +1782,7 @@ export type SalesOpportunitySelect<ExtArgs extends runtime.Types.Extensions.Inte
   notes?: boolean
   lostReason?: boolean
   closedAt?: boolean
+  onboardingHandoffAt?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1618,7 +1802,10 @@ export type SalesOpportunitySelectScalar = {
   clientId?: boolean
   ownerId?: boolean
   companyName?: boolean
+  city?: boolean
+  industry?: boolean
   contactName?: boolean
+  contactTitle?: boolean
   contactEmail?: boolean
   contactPhone?: boolean
   stage?: boolean
@@ -1630,12 +1817,13 @@ export type SalesOpportunitySelectScalar = {
   notes?: boolean
   lostReason?: boolean
   closedAt?: boolean
+  onboardingHandoffAt?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SalesOpportunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "ownerId" | "companyName" | "contactName" | "contactEmail" | "contactPhone" | "stage" | "source" | "estimatedValue" | "probability" | "expectedCloseDate" | "nextFollowUpAt" | "notes" | "lostReason" | "closedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["salesOpportunity"]>
+export type SalesOpportunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "ownerId" | "companyName" | "city" | "industry" | "contactName" | "contactTitle" | "contactEmail" | "contactPhone" | "stage" | "source" | "estimatedValue" | "probability" | "expectedCloseDate" | "nextFollowUpAt" | "notes" | "lostReason" | "closedAt" | "onboardingHandoffAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["salesOpportunity"]>
 export type SalesOpportunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   client?: boolean | Prisma.SalesOpportunity$clientArgs<ExtArgs>
@@ -1659,7 +1847,10 @@ export type $SalesOpportunityPayload<ExtArgs extends runtime.Types.Extensions.In
     clientId: bigint | null
     ownerId: bigint | null
     companyName: string
+    city: string | null
+    industry: string | null
     contactName: string
+    contactTitle: string | null
     contactEmail: string | null
     contactPhone: string | null
     stage: string
@@ -1671,6 +1862,7 @@ export type $SalesOpportunityPayload<ExtArgs extends runtime.Types.Extensions.In
     notes: string | null
     lostReason: string | null
     closedAt: Date | null
+    onboardingHandoffAt: Date | null
     version: number
     createdAt: Date
     updatedAt: Date
@@ -2053,7 +2245,10 @@ export interface SalesOpportunityFieldRefs {
   readonly clientId: Prisma.FieldRef<"SalesOpportunity", 'BigInt'>
   readonly ownerId: Prisma.FieldRef<"SalesOpportunity", 'BigInt'>
   readonly companyName: Prisma.FieldRef<"SalesOpportunity", 'String'>
+  readonly city: Prisma.FieldRef<"SalesOpportunity", 'String'>
+  readonly industry: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly contactName: Prisma.FieldRef<"SalesOpportunity", 'String'>
+  readonly contactTitle: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly contactEmail: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly contactPhone: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly stage: Prisma.FieldRef<"SalesOpportunity", 'String'>
@@ -2065,6 +2260,7 @@ export interface SalesOpportunityFieldRefs {
   readonly notes: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly lostReason: Prisma.FieldRef<"SalesOpportunity", 'String'>
   readonly closedAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>
+  readonly onboardingHandoffAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>
   readonly version: Prisma.FieldRef<"SalesOpportunity", 'Int'>
   readonly createdAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"SalesOpportunity", 'DateTime'>

@@ -47,6 +47,8 @@ function SecurityPage() {
       toast.success("Session revoked");
       void invalidate();
     },
+    onError: (error: Error) =>
+      toast.error("Session could not be revoked", { description: error.message }),
   });
 
   const revokeOthers = useMutation({
@@ -55,6 +57,8 @@ function SecurityPage() {
       toast.success("All other sessions revoked");
       void invalidate();
     },
+    onError: (error: Error) =>
+      toast.error("Other sessions could not be revoked", { description: error.message }),
   });
 
   return (

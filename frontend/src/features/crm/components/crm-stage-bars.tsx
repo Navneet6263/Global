@@ -51,7 +51,8 @@ export function CrmStageBars({ stages, onSelectStage }: CrmStageBarsProps) {
                 {STAGE_LABEL[stage.stage]}
               </span>
               <span className="num text-[10px] text-muted-foreground">
-                {stage.count} deals · {stage.averageAgeDays}d avg
+                {stage.count} deals
+                {stage.averageAgeDays === null ? "" : ` · ${stage.averageAgeDays}d avg`}
               </span>
             </button>
           );

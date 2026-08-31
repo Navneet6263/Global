@@ -426,6 +426,7 @@ export const ModelName = {
   OutboxEvent: 'OutboxEvent',
   IdempotencyKey: 'IdempotencyKey',
   TenantFieldPolicy: 'TenantFieldPolicy',
+  TenantCrmSettings: 'TenantCrmSettings',
   SalesOpportunity: 'SalesOpportunity',
   SalesActivity: 'SalesActivity',
   Invoice: 'Invoice',
@@ -449,7 +450,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "salesOpportunity" | "salesActivity" | "invoice" | "invoiceLine" | "payment" | "creditNote" | "notification" | "candidatePortalAccess"
+    modelProps: "tenant" | "branch" | "user" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "salesOpportunity" | "salesActivity" | "invoice" | "invoiceLine" | "payment" | "creditNote" | "notification" | "candidatePortalAccess"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2367,6 +2368,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TenantCrmSettings: {
+      payload: Prisma.$TenantCrmSettingsPayload<ExtArgs>
+      fields: Prisma.TenantCrmSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TenantCrmSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TenantCrmSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.TenantCrmSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TenantCrmSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.TenantCrmSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.TenantCrmSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.TenantCrmSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TenantCrmSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>
+        }
+        update: {
+          args: Prisma.TenantCrmSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.TenantCrmSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TenantCrmSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TenantCrmSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantCrmSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.TenantCrmSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTenantCrmSettings>
+        }
+        groupBy: {
+          args: Prisma.TenantCrmSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantCrmSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TenantCrmSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantCrmSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
     SalesOpportunity: {
       payload: Prisma.$SalesOpportunityPayload<ExtArgs>
       fields: Prisma.SalesOpportunityFieldRefs
@@ -3092,6 +3159,7 @@ export const VerificationCaseScalarFieldEnum = {
   tenantId: 'tenantId',
   branchId: 'branchId',
   clientId: 'clientId',
+  servicePackageId: 'servicePackageId',
   subjectId: 'subjectId',
   assignedOpsUserId: 'assignedOpsUserId',
   qaReviewerId: 'qaReviewerId',
@@ -3399,6 +3467,8 @@ export const OutboxEventScalarFieldEnum = {
   status: 'status',
   attempts: 'attempts',
   availableAt: 'availableAt',
+  claimedAt: 'claimedAt',
+  claimToken: 'claimToken',
   processedAt: 'processedAt',
   createdAt: 'createdAt'
 } as const
@@ -3414,6 +3484,9 @@ export const IdempotencyKeyScalarFieldEnum = {
   requestHash: 'requestHash',
   responseCode: 'responseCode',
   responseJson: 'responseJson',
+  responseCiphertext: 'responseCiphertext',
+  responseKeyVersion: 'responseKeyVersion',
+  completedAt: 'completedAt',
   expiresAt: 'expiresAt',
   createdAt: 'createdAt'
 } as const
@@ -3439,6 +3512,25 @@ export const TenantFieldPolicyScalarFieldEnum = {
 export type TenantFieldPolicyScalarFieldEnum = (typeof TenantFieldPolicyScalarFieldEnum)[keyof typeof TenantFieldPolicyScalarFieldEnum]
 
 
+export const TenantCrmSettingsScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  newProbability: 'newProbability',
+  qualifiedProbability: 'qualifiedProbability',
+  proposalProbability: 'proposalProbability',
+  negotiationProbability: 'negotiationProbability',
+  wonProbability: 'wonProbability',
+  lostProbability: 'lostProbability',
+  leadSourcesJson: 'leadSourcesJson',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantCrmSettingsScalarFieldEnum = (typeof TenantCrmSettingsScalarFieldEnum)[keyof typeof TenantCrmSettingsScalarFieldEnum]
+
+
 export const SalesOpportunityScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -3446,7 +3538,10 @@ export const SalesOpportunityScalarFieldEnum = {
   clientId: 'clientId',
   ownerId: 'ownerId',
   companyName: 'companyName',
+  city: 'city',
+  industry: 'industry',
   contactName: 'contactName',
+  contactTitle: 'contactTitle',
   contactEmail: 'contactEmail',
   contactPhone: 'contactPhone',
   stage: 'stage',
@@ -3458,6 +3553,7 @@ export const SalesOpportunityScalarFieldEnum = {
   notes: 'notes',
   lostReason: 'lostReason',
   closedAt: 'closedAt',
+  onboardingHandoffAt: 'onboardingHandoffAt',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -3831,6 +3927,7 @@ export type GlobalOmitConfig = {
   outboxEvent?: Prisma.OutboxEventOmit
   idempotencyKey?: Prisma.IdempotencyKeyOmit
   tenantFieldPolicy?: Prisma.TenantFieldPolicyOmit
+  tenantCrmSettings?: Prisma.TenantCrmSettingsOmit
   salesOpportunity?: Prisma.SalesOpportunityOmit
   salesActivity?: Prisma.SalesActivityOmit
   invoice?: Prisma.InvoiceOmit

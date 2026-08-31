@@ -14,25 +14,25 @@ export interface PerformanceRow {
   id: string;
   name: string;
   volume: number;
-  slaAttainment: number;
-  averageTurnaroundHours: number;
-  discrepancyRate: number;
+  performanceRate: number | null;
+  averageTurnaroundHours: number | null;
+  exceptionRate: number;
 }
 
 export interface CapacityRow {
   id: string;
-  team: string;
-  headcount: number;
+  owner: string;
   openLoad: number;
-  capacity: number;
-  utilisation: number;
+  completed: number;
+  overdue: number;
+  relativeLoad: number;
 }
 
-export interface ForecastPoint {
-  label: string;
-  expectedIntake: number;
-  expectedCompletions: number;
-  slaRisk: number;
+export interface ForecastSummary {
+  dueNext7Days: number;
+  atRiskNext7Days: number;
+  projectedCompletions7Days: number;
+  unassignedActive: number;
 }
 
 export interface ExecutiveAnalytics {
@@ -44,7 +44,7 @@ export interface ExecutiveAnalytics {
   branchPerformance: readonly PerformanceRow[];
   checkPerformance: readonly PerformanceRow[];
   capacity: readonly CapacityRow[];
-  forecast: readonly ForecastPoint[];
+  forecast: ForecastSummary;
 }
 
 export interface AnalyticsQuery {

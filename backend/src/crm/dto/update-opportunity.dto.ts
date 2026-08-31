@@ -32,8 +32,23 @@ export class UpdateOpportunityDto {
 
   @IsOptional()
   @IsString()
+  @Length(2, 80)
+  city?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  industry?: string | null;
+
+  @IsOptional()
+  @IsString()
   @Length(2, 120)
   contactName?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  contactTitle?: string | null;
 
   @IsOptional()
   @IsIn(OpportunityStages)
@@ -41,7 +56,7 @@ export class UpdateOpportunityDto {
 
   @IsOptional()
   @IsUUID()
-  ownerId?: string;
+  ownerId?: string | null;
 
   @IsOptional()
   @IsEmail()
@@ -84,7 +99,7 @@ export class UpdateOpportunityDto {
   @IsOptional()
   @IsString()
   @Length(2, 2000)
-  notes?: string;
+  notes?: string | null;
 
   @IsOptional()
   @IsString()

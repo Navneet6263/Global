@@ -34,12 +34,15 @@ export function useCaseRegister(initial: CaseRegisterInitialFilters) {
   const actions = useMemo(
     () => ({
       patchQuery(patch: Partial<CaseQuery>) {
+        setSelected([]);
         setQuery((current) => ({ ...current, ...patch, page: patch.page ?? 1 }));
       },
       setPage(page: number) {
+        setSelected([]);
         setQuery((current) => ({ ...current, page }));
       },
       sortBy(sortBy: NonNullable<CaseQuery["sortBy"]>) {
+        setSelected([]);
         setQuery((current) => ({
           ...current,
           sortBy,
@@ -50,6 +53,7 @@ export function useCaseRegister(initial: CaseRegisterInitialFilters) {
       applyView(viewId: string) {
         const view = SAVED_VIEWS.find((entry) => entry.id === viewId);
         if (!view) return;
+        setSelected([]);
         setActiveView(viewId);
         setQuery((current) => ({
           ...current,
@@ -61,6 +65,7 @@ export function useCaseRegister(initial: CaseRegisterInitialFilters) {
         }));
       },
       reset() {
+        setSelected([]);
         setActiveView("all");
         setVisibleColumns(DEFAULT_VISIBLE_COLUMNS);
         setQuery({

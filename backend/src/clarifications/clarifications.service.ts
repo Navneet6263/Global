@@ -1,28 +1,34 @@
 import {
   BadRequestException,
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from "@nestjs/common";
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
+import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
 import { PrismaService } from "../database/prisma.service";
+import { QaReadinessService } from "../verification/qa-readiness.service";
 import type { CreateClarificationDto } from "./dto/create-clarification.dto";
+import {
+  ClarificationTokenService,
+  digestClarificationToken,
+} from "./clarification-token.service";
 
 @Injectable()
 export class ClarificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly tokens: ClarificationTokenService,
+    private readonly qaReadiness: QaReadinessService,
+  ) {}
 
   async listForCase(actor: Actor, casePublicId: string) {
     const rows = await this.prisma.clarification.findMany({
       where: {
         tenantId: actor.tenantId,
-        case: {
-          publicId: casePublicId,
-          ...(actor.clientId ? { clientId: actor.clientId } : {}),
-        },
+        case: { ...caseAccessScope(actor), publicId: casePublicId },
       },
       select: {
         publicId: true,
@@ -50,13 +56,19 @@ export class ClarificationsService {
   ) {
     const verificationCase = await this.prisma.verificationCase.findFirst({
       where: {
-        tenantId: actor.tenantId,
+        ...caseAccessScope(actor),
         publicId: casePublicId,
-        ...(actor.clientId ? { clientId: actor.clientId } : {}),
       },
       select: { id: true, status: true },
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
+    if (
+      ["COMPLETED", "CLOSED", "CANCELLED"].includes(verificationCase.status)
+    ) {
+      throw new ConflictException(
+        "A completed or cancelled case cannot receive a clarification",
+      );
+    }
     const check = input.checkId
       ? await this.prisma.caseCheck.findFirst({
           where: {
@@ -80,7 +92,7 @@ export class ClarificationsService {
           checkId: check?.id,
           subject: input.subject.trim(),
           dueAt: input.dueAt ? new Date(input.dueAt) : undefined,
-          responseTokenHash: this.digest(portalToken),
+          responseTokenHash: digestClarificationToken(portalToken),
           responseTokenExpiresAt: tokenExpiresAt,
           messages: {
             create: {
@@ -136,7 +148,7 @@ export class ClarificationsService {
   }
 
   async getPublic(publicId: string, token: string) {
-    const clarification = await this.authorizePublic(publicId, token);
+    const clarification = await this.tokens.authorize(publicId, token);
     return {
       id: clarification.publicId,
       status: clarification.status,
@@ -154,22 +166,31 @@ export class ClarificationsService {
   }
 
   async respond(publicId: string, token: string, body: string) {
-    const clarification = await this.authorizePublic(publicId, token);
+    const clarification = await this.tokens.authorize(publicId, token);
     const respondedAt = new Date();
     await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.clarification.updateMany({
+        where: {
+          id: clarification.id,
+          status: "OPEN",
+          responseTokenHash: clarification.responseTokenHash,
+        },
+        data: {
+          status: "RESPONDED",
+          responseTokenHash: null,
+          responseTokenExpiresAt: null,
+        },
+      });
+      if (updated.count !== 1) {
+        throw new ConflictException(
+          "Clarification changed; refresh before responding again",
+        );
+      }
       await tx.clarificationMessage.create({
         data: {
           clarificationId: clarification.id,
           senderType: "CANDIDATE",
           body: body.trim(),
-        },
-      });
-      await tx.clarification.update({
-        where: { id: clarification.id },
-        data: {
-          status: "RESPONDED",
-          responseTokenHash: null,
-          responseTokenExpiresAt: null,
         },
       });
       await tx.outboxEvent.create({
@@ -184,16 +205,12 @@ export class ClarificationsService {
           }),
         },
       });
-      const recipients = clarification.case.assignedOpsUserId
-        ? [{ id: clarification.case.assignedOpsUserId }]
-        : await tx.user.findMany({
-            where: {
-              tenantId: clarification.tenantId,
-              status: "ACTIVE",
-              userRoles: { some: { role: { code: "OPS_MANAGER" } } },
-            },
-            select: { id: true },
-          });
+      const recipients = await activeOperationsRecipients(tx, {
+        tenantId: clarification.tenantId,
+        branchId: clarification.case.branchId,
+        clientId: clarification.case.clientId,
+        assignedUserId: clarification.case.assignedOpsUserId,
+      });
       if (recipients.length) {
         await tx.notification.createMany({
           data: recipients.map((recipient) => ({
@@ -206,98 +223,12 @@ export class ClarificationsService {
           })),
         });
       }
-    });
-    return { received: true, respondedAt };
-  }
-
-  async respondAsClient(
-    actor: Actor,
-    casePublicId: string,
-    clarificationPublicId: string,
-    body: string,
-  ) {
-    if (!actor.clientId) {
-      throw new ForbiddenException(
-        "Only a client-scoped account can submit a client response",
-      );
-    }
-    const clarification = await this.prisma.clarification.findFirst({
-      where: {
-        tenantId: actor.tenantId,
-        publicId: clarificationPublicId,
-        case: { publicId: casePublicId, clientId: actor.clientId },
-      },
-      select: {
-        id: true,
-        status: true,
-        subject: true,
-        case: {
-          select: {
-            publicId: true,
-            caseNumber: true,
-            assignedOpsUserId: true,
-          },
-        },
-      },
-    });
-    if (!clarification) throw new NotFoundException("Clarification not found");
-    if (clarification.status !== "OPEN") {
-      throw new ConflictException(
-        "Only an open clarification can receive a new client response",
-      );
-    }
-    const respondedAt = new Date();
-    await this.prisma.$transaction(async (tx) => {
-      const updated = await tx.clarification.updateMany({
-        where: { id: clarification.id, status: "OPEN" },
-        data: {
-          status: "RESPONDED",
-          responseTokenHash: null,
-          responseTokenExpiresAt: null,
-        },
-      });
-      if (updated.count !== 1) {
-        throw new ConflictException(
-          "Clarification changed; refresh and try again",
-        );
-      }
-      await tx.clarificationMessage.create({
-        data: {
-          clarificationId: clarification.id,
-          senderUserId: actor.userId,
-          senderType: "CLIENT",
-          body: body.trim(),
-        },
-      });
-      const recipients = clarification.case.assignedOpsUserId
-        ? [{ id: clarification.case.assignedOpsUserId }]
-        : await tx.user.findMany({
-            where: {
-              tenantId: actor.tenantId,
-              status: "ACTIVE",
-              userRoles: { some: { role: { code: "OPS_MANAGER" } } },
-            },
-            select: { id: true },
-          });
-      if (recipients.length) {
-        await tx.notification.createMany({
-          data: recipients.map((recipient) => ({
-            tenantId: actor.tenantId,
-            userId: recipient.id,
-            type: "CLARIFICATION_RESPONDED",
-            title: "Client response received",
-            body: `${clarification.case.caseNumber}: ${clarification.subject}`,
-            href: `/cases/${clarification.case.publicId}`,
-          })),
-        });
-      }
       await tx.auditEvent.create({
         data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "clarification.client-responded",
+          tenantId: clarification.tenantId,
+          action: "clarification.candidate-responded",
           resourceType: "clarification",
-          resourcePublicId: clarificationPublicId,
+          resourcePublicId: publicId,
           afterJson: JSON.stringify({ status: "RESPONDED", respondedAt }),
         },
       });
@@ -315,16 +246,21 @@ export class ClarificationsService {
       where: {
         tenantId: actor.tenantId,
         publicId: clarificationPublicId,
-        case: {
-          publicId: casePublicId,
-          ...(actor.clientId ? { clientId: actor.clientId } : {}),
-        },
+        case: { ...caseAccessScope(actor), publicId: casePublicId },
       },
       select: {
         id: true,
         status: true,
         subject: true,
-        case: { select: { id: true, status: true } },
+        case: {
+          select: {
+            id: true,
+            publicId: true,
+            status: true,
+            branchId: true,
+            clientId: true,
+          },
+        },
       },
     });
     if (!clarification) throw new NotFoundException("Clarification not found");
@@ -378,21 +314,38 @@ export class ClarificationsService {
         remaining === 0 &&
         clarification.case.status === "CLARIFICATION_PENDING"
       ) {
-        const resumed = await tx.verificationCase.updateMany({
-          where: { id: clarification.case.id, status: "CLARIFICATION_PENDING" },
-          data: { status: "IN_PROGRESS", version: { increment: 1 } },
+        const qaReady = await this.qaReadiness.promoteIfReady(tx, {
+          tenantId: actor.tenantId,
+          caseId: clarification.case.id,
+          casePublicId: clarification.case.publicId,
+          branchId: clarification.case.branchId,
+          clientId: clarification.case.clientId,
+          changedById: actor.userId,
+          fromStatus: "CLARIFICATION_PENDING",
+          reason: "All clarifications resolved after check completion",
         });
-        if (resumed.count === 1) {
-          caseStatus = "IN_PROGRESS";
-          await tx.caseStatusHistory.create({
-            data: {
-              caseId: clarification.case.id,
-              fromStatus: "CLARIFICATION_PENDING",
-              toStatus: "IN_PROGRESS",
-              changedById: actor.userId,
-              reason: "All candidate clarifications reviewed and resolved",
+        if (qaReady) {
+          caseStatus = "QA_REVIEW";
+        } else {
+          const resumed = await tx.verificationCase.updateMany({
+            where: {
+              id: clarification.case.id,
+              status: "CLARIFICATION_PENDING",
             },
+            data: { status: "IN_PROGRESS", version: { increment: 1 } },
           });
+          if (resumed.count === 1) {
+            caseStatus = "IN_PROGRESS";
+            await tx.caseStatusHistory.create({
+              data: {
+                caseId: clarification.case.id,
+                fromStatus: "CLARIFICATION_PENDING",
+                toStatus: "IN_PROGRESS",
+                changedById: actor.userId,
+                reason: "All candidate clarifications reviewed and resolved",
+              },
+            });
+          }
         }
       }
       await tx.auditEvent.create({
@@ -408,46 +361,5 @@ export class ClarificationsService {
       });
       return { id: clarificationPublicId, status: "RESOLVED", caseStatus };
     });
-  }
-
-  private async authorizePublic(publicId: string, token: string) {
-    const clarification = await this.prisma.clarification.findUnique({
-      where: { publicId },
-      include: {
-        case: {
-          select: {
-            publicId: true,
-            caseNumber: true,
-            assignedOpsUserId: true,
-          },
-        },
-        messages: { orderBy: { createdAt: "asc" } },
-      },
-    });
-    if (!clarification) throw new NotFoundException("Clarification not found");
-    if (
-      !clarification.responseTokenHash ||
-      !clarification.responseTokenExpiresAt ||
-      clarification.responseTokenExpiresAt <= new Date()
-    ) {
-      throw new UnauthorizedException(
-        "Clarification link is invalid or expired",
-      );
-    }
-    const expected = Buffer.from(clarification.responseTokenHash);
-    const actual = Buffer.from(this.digest(token));
-    if (
-      expected.length !== actual.length ||
-      !timingSafeEqual(expected, actual)
-    ) {
-      throw new UnauthorizedException(
-        "Clarification link is invalid or expired",
-      );
-    }
-    return clarification;
-  }
-
-  private digest(token: string): string {
-    return createHash("sha256").update(token).digest("hex");
   }
 }

@@ -18,7 +18,6 @@ import { Route as FieldExecutiveRouteImport } from './routes/field-executive'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as QaReviewRouteImport } from './routes/qa-review'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SalesCrmRouteImport } from './routes/sales-crm'
 import { Route as VerifierRouteImport } from './routes/verifier'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -27,6 +26,7 @@ import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminCasesRouteImport } from './routes/admin.cases'
 import { Route as AdminClientPortalRouteImport } from './routes/admin.client-portal'
 import { Route as AdminClientsRouteImport } from './routes/admin.clients'
+import { Route as AdminExceptionsRouteImport } from './routes/admin.exceptions'
 import { Route as AdminFieldRouteImport } from './routes/admin.field'
 import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
 import { Route as AdminQaRouteImport } from './routes/admin.qa'
@@ -102,11 +102,6 @@ const QaReviewRoute = QaReviewRouteImport.update({
   path: '/qa-review',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SalesCrmRoute = SalesCrmRouteImport.update({
   id: '/sales-crm',
   path: '/sales-crm',
@@ -145,6 +140,11 @@ const AdminClientPortalRoute = AdminClientPortalRouteImport.update({
 const AdminClientsRoute = AdminClientsRouteImport.update({
   id: '/clients',
   path: '/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminExceptionsRoute = AdminExceptionsRouteImport.update({
+  id: '/exceptions',
+  path: '/exceptions',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminFieldRoute = AdminFieldRouteImport.update({
@@ -306,7 +306,6 @@ export interface FileRoutesByFullPath {
   '/finance': typeof FinanceRoute
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
   '/verifier': typeof VerifierRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -314,6 +313,7 @@ export interface FileRoutesByFullPath {
   '/admin/cases': typeof AdminCasesRoute
   '/admin/client-portal': typeof AdminClientPortalRoute
   '/admin/clients': typeof AdminClientsRoute
+  '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/qa': typeof AdminQaRoute
@@ -353,13 +353,13 @@ export interface FileRoutesByTo {
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/qa-review': typeof QaReviewRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/verifier': typeof VerifierRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cases': typeof AdminCasesRoute
   '/admin/client-portal': typeof AdminClientPortalRoute
   '/admin/clients': typeof AdminClientsRoute
+  '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/qa': typeof AdminQaRoute
@@ -402,7 +402,6 @@ export interface FileRoutesById {
   '/finance': typeof FinanceRoute
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
-  '/reset-password': typeof ResetPasswordRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
   '/verifier': typeof VerifierRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -410,6 +409,7 @@ export interface FileRoutesById {
   '/admin/cases': typeof AdminCasesRoute
   '/admin/client-portal': typeof AdminClientPortalRoute
   '/admin/clients': typeof AdminClientsRoute
+  '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
   '/admin/qa': typeof AdminQaRoute
@@ -453,7 +453,6 @@ export interface FileRouteTypes {
     | '/finance'
     | '/operations'
     | '/qa-review'
-    | '/reset-password'
     | '/sales-crm'
     | '/verifier'
     | '/admin/analytics'
@@ -461,6 +460,7 @@ export interface FileRouteTypes {
     | '/admin/cases'
     | '/admin/client-portal'
     | '/admin/clients'
+    | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
     | '/admin/qa'
@@ -500,13 +500,13 @@ export interface FileRouteTypes {
     | '/field-executive'
     | '/finance'
     | '/qa-review'
-    | '/reset-password'
     | '/verifier'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/cases'
     | '/admin/client-portal'
     | '/admin/clients'
+    | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
     | '/admin/qa'
@@ -548,7 +548,6 @@ export interface FileRouteTypes {
     | '/finance'
     | '/operations'
     | '/qa-review'
-    | '/reset-password'
     | '/sales-crm'
     | '/verifier'
     | '/admin/analytics'
@@ -556,6 +555,7 @@ export interface FileRouteTypes {
     | '/admin/cases'
     | '/admin/client-portal'
     | '/admin/clients'
+    | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
     | '/admin/qa'
@@ -598,7 +598,6 @@ export interface RootRouteChildren {
   FinanceRoute: typeof FinanceRoute
   OperationsRoute: typeof OperationsRouteWithChildren
   QaReviewRoute: typeof QaReviewRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
   SalesCrmRoute: typeof SalesCrmRouteWithChildren
   VerifierRoute: typeof VerifierRoute
   CandidateAccessIdRoute: typeof CandidateAccessIdRoute
@@ -673,13 +672,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QaReviewRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sales-crm': {
       id: '/sales-crm'
       path: '/sales-crm'
@@ -734,6 +726,13 @@ declare module '@tanstack/react-router' {
       path: '/clients'
       fullPath: '/admin/clients'
       preLoaderRoute: typeof AdminClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/exceptions': {
+      id: '/admin/exceptions'
+      path: '/exceptions'
+      fullPath: '/admin/exceptions'
+      preLoaderRoute: typeof AdminExceptionsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/field': {
@@ -948,6 +947,7 @@ interface AdminRouteChildren {
   AdminCasesRoute: typeof AdminCasesRoute
   AdminClientPortalRoute: typeof AdminClientPortalRoute
   AdminClientsRoute: typeof AdminClientsRoute
+  AdminExceptionsRoute: typeof AdminExceptionsRoute
   AdminFieldRoute: typeof AdminFieldRoute
   AdminFinanceRoute: typeof AdminFinanceRoute
   AdminQaRoute: typeof AdminQaRoute
@@ -965,6 +965,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCasesRoute: AdminCasesRoute,
   AdminClientPortalRoute: AdminClientPortalRoute,
   AdminClientsRoute: AdminClientsRoute,
+  AdminExceptionsRoute: AdminExceptionsRoute,
   AdminFieldRoute: AdminFieldRoute,
   AdminFinanceRoute: AdminFinanceRoute,
   AdminQaRoute: AdminQaRoute,
@@ -1040,7 +1041,6 @@ const rootRouteChildren: RootRouteChildren = {
   FinanceRoute: FinanceRoute,
   OperationsRoute: OperationsRouteWithChildren,
   QaReviewRoute: QaReviewRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
   SalesCrmRoute: SalesCrmRouteWithChildren,
   VerifierRoute: VerifierRoute,
   CandidateAccessIdRoute: CandidateAccessIdRoute,

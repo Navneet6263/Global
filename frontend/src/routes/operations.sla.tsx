@@ -25,8 +25,7 @@ export const Route = createFileRoute("/operations/sla")({
       { title: "SLA Monitor — Sapling Global Operations" },
       {
         name: "description",
-        content:
-          "Breach risk, stage ageing, client and package on-time performance with root-cause breach reasons.",
+        content: "Breach risk, stage ageing and client on-time performance for active operations.",
       },
       { property: "og:title", content: "SLA Monitor — Sapling Global Operations" },
       {
@@ -47,7 +46,7 @@ function SlaMonitorPage() {
     <div className="space-y-6">
       <PageHeader
         title="SLA monitor"
-        description="Where commitments are slipping, how old work is by stage, and which reasons drive breaches."
+        description="Where commitments are slipping, how old work is by stage, and which clients need attention."
       />
 
       {isError ? <ErrorState onRetry={() => void refetch()} retrying={isFetching} /> : null}
@@ -56,18 +55,27 @@ function SlaMonitorPage() {
         <ChartSkeleton height={320} />
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-            <Kpi label="SLA health" value={formatPercent(data.healthPercent)} />
-            <Kpi label="Due today" value={String(data.dueToday)} />
-            <Kpi label="Due tomorrow" value={String(data.dueTomorrow)} />
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <Kpi
+              label="SLA health"
+              value={data.healthPercent === null ? "—" : formatPercent(data.healthPercent)}
+            />
+            <Kpi label="Due next 7 days" value={String(data.dueNext7Days)} />
             <Kpi label="Overdue" value={String(data.overdue)} tone="critical" />
-            <Kpi label="Avg turnaround" value={formatDuration(data.averageTurnaroundMinutes)} />
+            <Kpi
+              label="Avg turnaround"
+              value={
+                data.averageTurnaroundMinutes === null
+                  ? "—"
+                  : formatDuration(data.averageTurnaroundMinutes)
+              }
+            />
           </div>
 
-          <div className="grid gap-4 xl:grid-cols-2">
+          <div className={`grid gap-4 ${data.breachReasons.length ? "xl:grid-cols-2" : ""}`}>
             <Section
               title="On-time trend"
-              description="Weekly on-time percentage and breach count."
+              description="Monthly on-time percentage for the reporting window."
             >
               <div className="h-[240px]">
                 <ResponsiveContainer width="100%" height="100%">
@@ -80,7 +88,7 @@ function SlaMonitorPage() {
                       tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
                     />
                     <YAxis
-                      domain={[75, 100]}
+                      domain={[0, 100]}
                       tickLine={false}
                       axisLine={false}
                       tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
@@ -106,51 +114,53 @@ function SlaMonitorPage() {
               </div>
             </Section>
 
-            <Section title="Breach reasons" description="Root causes behind missed commitments.">
-              <div className="h-[240px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={[...data.breachReasons]}
-                    layout="vertical"
-                    margin={{ left: 24, right: 12 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 6"
-                      stroke="var(--border)"
-                      horizontal={false}
-                    />
-                    <XAxis
-                      type="number"
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                    />
-                    <YAxis
-                      type="category"
-                      dataKey="reason"
-                      width={168}
-                      tickLine={false}
-                      axisLine={false}
-                      tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        borderRadius: 14,
-                        border: "1px solid var(--border)",
-                        fontSize: 12,
-                        background: "var(--card)",
-                      }}
-                    />
-                    <Bar
-                      dataKey="count"
-                      name="Breaches"
-                      fill="var(--warning)"
-                      radius={[0, 6, 6, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </Section>
+            {data.breachReasons.length ? (
+              <Section title="Breach reasons" description="Root causes behind missed commitments.">
+                <div className="h-[240px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={[...data.breachReasons]}
+                      layout="vertical"
+                      margin={{ left: 24, right: 12 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 6"
+                        stroke="var(--border)"
+                        horizontal={false}
+                      />
+                      <XAxis
+                        type="number"
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                      />
+                      <YAxis
+                        type="category"
+                        dataKey="reason"
+                        width={168}
+                        tickLine={false}
+                        axisLine={false}
+                        tick={{ fontSize: 10, fill: "var(--muted-foreground)" }}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          borderRadius: 14,
+                          border: "1px solid var(--border)",
+                          fontSize: 12,
+                          background: "var(--card)",
+                        }}
+                      />
+                      <Bar
+                        dataKey="count"
+                        name="Breaches"
+                        fill="var(--warning)"
+                        radius={[0, 6, 6, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </Section>
+            ) : null}
           </div>
 
           <div className="grid gap-4 xl:grid-cols-2">
@@ -209,9 +219,11 @@ function SlaMonitorPage() {
             </Section>
           </div>
 
-          <div className="grid gap-4 xl:grid-cols-2">
+          <div className={`grid gap-4 ${data.byPackage.length ? "xl:grid-cols-2" : ""}`}>
             <PerformanceTable title="On-time by client" rows={data.byClient} />
-            <PerformanceTable title="On-time by package" rows={data.byPackage} />
+            {data.byPackage.length ? (
+              <PerformanceTable title="On-time by package" rows={data.byPackage} />
+            ) : null}
           </div>
         </>
       )}
@@ -241,31 +253,34 @@ function PerformanceTable({
   rows,
 }: {
   title: string;
-  rows: readonly { name: string; onTimePercent: number; volume: number }[];
+  rows: readonly { name: string; onTimePercent: number | null; volume: number }[];
 }) {
   return (
-    <Section title={title} description="Volume-weighted on-time delivery for the last 30 days.">
+    <Section title={title} description="Volume-weighted delivery in the selected reporting window.">
       <ul className="space-y-2.5">
         {rows.map((row) => (
           <li key={row.name} className="space-y-1">
             <div className="flex justify-between text-[12px]">
               <span className="text-foreground">{row.name}</span>
               <span className="num text-muted-foreground">
-                {formatPercent(row.onTimePercent)} · {row.volume} cases
+                {row.onTimePercent === null ? "Not available" : formatPercent(row.onTimePercent)} ·{" "}
+                {row.volume} cases
               </span>
             </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-              <span
-                className={
-                  row.onTimePercent >= 92
-                    ? "block h-full rounded-full bg-success"
-                    : row.onTimePercent >= 87
-                      ? "block h-full rounded-full bg-warning"
-                      : "block h-full rounded-full bg-critical"
-                }
-                style={{ width: `${row.onTimePercent}%` }}
-              />
-            </div>
+            {row.onTimePercent !== null ? (
+              <div className="h-1.5 overflow-hidden rounded-full bg-muted">
+                <span
+                  className={
+                    row.onTimePercent >= 92
+                      ? "block h-full rounded-full bg-success"
+                      : row.onTimePercent >= 87
+                        ? "block h-full rounded-full bg-warning"
+                        : "block h-full rounded-full bg-critical"
+                  }
+                  style={{ width: `${row.onTimePercent}%` }}
+                />
+              </div>
+            ) : null}
           </li>
         ))}
       </ul>

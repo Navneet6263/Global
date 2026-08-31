@@ -8,6 +8,8 @@ import { defineConfig, loadEnv, type PluginOption } from "vite";
 
 export default defineConfig(({ command, mode }) => {
   const loadedEnv = loadEnv(mode, process.cwd(), "VITE_");
+  const developmentApiTarget = loadedEnv["VITE_DEV_API_TARGET"] ?? "http://127.0.0.1:4000";
+  if (command === "build") validateProductionApiUrl(loadedEnv["VITE_API_URL"]);
   const envDefine = Object.fromEntries(
     Object.entries(loadedEnv).map(([key, value]) => [
       `import.meta.env.${key}`,
@@ -65,6 +67,12 @@ export default defineConfig(({ command, mode }) => {
     server: {
       host: "::",
       port: 8080,
+      proxy: {
+        "/api/v1": {
+          target: developmentApiTarget,
+          changeOrigin: false,
+        },
+      },
       watch: {
         awaitWriteFinish: {
           stabilityThreshold: 1000,
@@ -75,3 +83,17 @@ export default defineConfig(({ command, mode }) => {
     plugins,
   };
 });
+
+function validateProductionApiUrl(value: string | undefined) {
+  if (!value || value === "/api/v1") return;
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("VITE_API_URL must be /api/v1 or an absolute HTTPS URL");
+  }
+  const loopback = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
+  if (url.protocol !== "https:" || loopback) {
+    throw new Error("Production VITE_API_URL must use HTTPS and cannot target localhost");
+  }
+}

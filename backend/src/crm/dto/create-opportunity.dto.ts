@@ -33,9 +33,24 @@ export class CreateOpportunityDto {
   @Length(2, 180)
   companyName!: string;
 
+  @IsOptional()
+  @IsString()
+  @Length(2, 80)
+  city?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  industry?: string | null;
+
   @IsString()
   @Length(2, 120)
   contactName!: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 120)
+  contactTitle?: string | null;
 
   @IsOptional()
   @IsEmail()
@@ -76,11 +91,10 @@ export class CreateOpportunityDto {
   @IsInt()
   @Min(0)
   @Max(100)
-  probability = 10;
+  probability?: number;
 
-  @IsOptional()
   @IsDateString()
-  expectedCloseDate?: string;
+  expectedCloseDate!: string;
 
   @IsOptional()
   @IsDateString()

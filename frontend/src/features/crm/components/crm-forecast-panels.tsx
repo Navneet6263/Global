@@ -37,16 +37,22 @@ const SUMMARY: readonly {
     pick: (f) => f.commitForecast,
   },
   { id: "winRate", label: "Best case", icon: Sparkles, pick: (f) => f.bestCaseForecast },
-  { id: "activeOwners", label: "Target", icon: Flag, pick: (f) => f.target },
-  { id: "overdueFollowUps", label: "Gap to target", icon: TrendingUp, pick: (f) => f.gapToTarget },
+  { id: "activeOwners", label: "Target", icon: Flag, pick: (f) => f.target ?? 0 },
+  {
+    id: "overdueFollowUps",
+    label: "Gap to target",
+    icon: TrendingUp,
+    pick: (f) => f.gapToTarget ?? 0,
+  },
 ];
 
 export function CrmForecastSummary({ forecast }: { forecast: RevenueForecast }) {
   const target = forecast.target || 1;
+  const cards = forecast.target === null ? SUMMARY.slice(0, 4) : SUMMARY;
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-      {SUMMARY.map((card) => {
+      {cards.map((card) => {
         const accent = crmAccent(card.id);
         const value = card.pick(forecast);
         const share = Math.max(0, Math.min(1, Math.abs(value) / target));

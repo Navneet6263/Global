@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, MessageSquareText, Send } from "lucide-react";
+import { CheckCircle2, ClipboardCheck, Loader2, MessageSquareText, Send } from "lucide-react";
 import { useState } from "react";
 
-import { formatDate, humanize } from "./candidate-utils";
+import type { CandidateCase } from "@/lib/api/candidate-portal";
+import { respondToCandidateClarification } from "@/lib/api/candidate-portal";
 import { CandidateStatus } from "./candidate-ui";
-import { respondToCandidateClarification, type CandidateCase } from "@/lib/api/candidate-portal";
+import { formatDate, humanize } from "./candidate-utils";
 
 export function CandidateChecks({
   accessId,
@@ -16,28 +17,54 @@ export function CandidateChecks({
   data: CandidateCase;
 }) {
   return (
-    <section className="surface rounded-3xl p-5">
-      <h2 className="text-sm font-semibold">Verification checks</h2>
-      <p className="text-xs text-muted-foreground">
-        Progress is visible here while protected verification sources remain private.
-      </p>
-      <div className="mt-4 space-y-2">
-        {data.checks.map((check) => (
-          <div
-            key={check.type}
-            className="flex items-center justify-between rounded-2xl bg-secondary/45 p-3"
-          >
-            <p className="text-sm font-medium">{humanize(check.type)}</p>
-            <CandidateStatus value={check.status} />
-          </div>
-        ))}
+    <section className="surface rounded-[1.75rem] p-4 sm:p-5">
+      <div className="flex items-start gap-3">
+        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-mint-soft text-mint-deep">
+          <ClipboardCheck className="size-4" />
+        </span>
+        <div>
+          <h2 className="text-sm font-semibold">Verification checks</h2>
+          <p className="mt-0.5 text-[11px] leading-5 text-muted-foreground">
+            You can track progress while protected source details remain private.
+          </p>
+        </div>
       </div>
+      <div className="mt-4 space-y-2">
+        {data.checks.length ? (
+          data.checks.map((check) => (
+            <div
+              key={check.type}
+              className="flex items-center justify-between gap-3 rounded-[1rem] bg-secondary/45 px-3 py-3"
+            >
+              <div className="flex min-w-0 items-center gap-2.5">
+                <CheckCircle2
+                  className={`size-4 shrink-0 ${check.status === "COMPLETED" ? "text-success" : "text-border-strong"}`}
+                />
+                <p className="truncate text-xs font-medium">{humanize(check.type)}</p>
+              </div>
+              <CandidateStatus value={check.status} />
+            </div>
+          ))
+        ) : (
+          <p className="rounded-[1rem] border border-dashed border-border p-5 text-center text-xs text-muted-foreground">
+            Checks will appear after the verification package is confirmed.
+          </p>
+        )}
+      </div>
+
       {data.clarifications.length ? (
         <div className="mt-5 border-t border-border/70 pt-5">
-          <h3 className="text-xs font-semibold">Information requests</h3>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            Reply here securely; the operations team is notified immediately.
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h3 className="text-xs font-semibold">Information requests</h3>
+              <p className="mt-1 text-[10px] text-muted-foreground">
+                Your secure reply is added directly to this case.
+              </p>
+            </div>
+            <span className="num rounded-full bg-warning-soft px-2.5 py-1 text-[10px] text-warning-foreground">
+              {data.clarifications.length}
+            </span>
+          </div>
           <div className="mt-3 space-y-3">
             {data.clarifications.map((item) => (
               <ClarificationCard key={item.id} accessId={accessId} token={token} item={item} />
@@ -64,27 +91,35 @@ function ClarificationCard({
     mutationFn: () => respondToCandidateClarification(accessId, token, item.id, message.trim()),
     onSuccess: async () => {
       setMessage("");
-      await queryClient.invalidateQueries({
-        queryKey: ["candidate-portal", accessId, token],
-      });
+      await queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
     },
   });
+
   return (
-    <article className="rounded-2xl border border-amber-200 bg-amber-50/60 p-3.5">
+    <article className="rounded-[1.15rem] border border-warning/15 bg-warning-soft/60 p-3.5">
       <div className="flex items-start gap-3">
-        <MessageSquareText className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-white/80 text-warning-foreground">
+          <MessageSquareText className="size-3.5" />
+        </span>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs font-semibold">{item.subject}</p>
             <CandidateStatus value={item.status} />
           </div>
           {item.dueAt ? (
-            <p className="mt-1 text-[10px] text-amber-800">Reply by {formatDate(item.dueAt)}</p>
+            <p className="mt-1 text-[10px] text-warning-foreground">
+              Reply by {formatDate(item.dueAt)}
+            </p>
           ) : null}
           <div className="mt-3 space-y-2">
             {item.messages.map((entry, index) => (
-              <div key={`${entry.createdAt}-${index}`} className="rounded-xl bg-white/80 p-2.5">
-                <p className="text-[9px] font-bold uppercase tracking-wide text-muted-foreground">
+              <div
+                key={`${entry.createdAt}-${index}`}
+                className={`max-w-[92%] rounded-[0.9rem] px-3 py-2.5 ${entry.sender === "CANDIDATE" ? "ml-auto bg-mint-deep text-white" : "bg-white/85"}`}
+              >
+                <p
+                  className={`text-[9px] font-semibold uppercase tracking-wide ${entry.sender === "CANDIDATE" ? "text-white/55" : "text-muted-foreground"}`}
+                >
                   {entry.sender === "CANDIDATE" ? "Your response" : "Verification team"}
                 </p>
                 <p className="mt-1 whitespace-pre-wrap text-[11px] leading-4">{entry.body}</p>
@@ -99,7 +134,7 @@ function ClarificationCard({
                 maxLength={5000}
                 rows={3}
                 placeholder="Type a clear response…"
-                className="w-full resize-none rounded-xl border border-amber-200 bg-white px-3 py-2 text-xs outline-none focus:border-orange-400"
+                className="w-full resize-none rounded-[1rem] border border-input bg-white/90 px-3 py-2.5 text-xs leading-5 outline-none focus:ring-2 focus:ring-primary/15"
               />
               {response.isError ? (
                 <p className="mt-1 text-[10px] text-destructive">{response.error.message}</p>
@@ -108,12 +143,12 @@ function ClarificationCard({
                 type="button"
                 onClick={() => response.mutate()}
                 disabled={message.trim().length < 2 || response.isPending}
-                className="mt-2 inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-[11px] font-semibold text-white disabled:opacity-50"
+                className="mt-2 inline-flex h-9 items-center gap-2 rounded-full bg-primary px-4 text-[11px] font-semibold text-primary-foreground disabled:opacity-50"
               >
                 {response.isPending ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <Loader2 className="size-3.5 animate-spin" />
                 ) : (
-                  <Send className="h-3.5 w-3.5" />
+                  <Send className="size-3.5" />
                 )}
                 Send response
               </button>

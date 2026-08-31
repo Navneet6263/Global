@@ -17,6 +17,8 @@ import { PageQueryDto } from "../src/common/dto/page-query.dto";
 import { CandidatePortalService } from "../src/candidate-portal/candidate-portal.service";
 import type { DocumentsService } from "../src/documents/documents.service";
 import { ClarificationsService } from "../src/clarifications/clarifications.service";
+import { ClarificationTokenService } from "../src/clarifications/clarification-token.service";
+import { QaReadinessService } from "../src/verification/qa-readiness.service";
 
 const databaseConfigured = [
   "DB_HOST",
@@ -96,9 +98,13 @@ void test(
               scopedPrisma,
               null as unknown as DocumentsService,
             );
-            const clarifications = new ClarificationsService(scopedPrisma);
-            const tenantActor = actorFor(tenantA);
-            const clientActor = actorFor(tenantA, clientA1);
+            const clarifications = new ClarificationsService(
+              scopedPrisma,
+              new ClarificationTokenService(scopedPrisma),
+              new QaReadinessService(scopedPrisma),
+            );
+            const tenantActor = actorFor(tenantA, undefined, "PLATFORM_ADMIN");
+            const clientActor = actorFor(tenantA, clientA1, "CLIENT_ADMIN");
 
             const tenantCases = await caseReader.list(
               tenantActor,
@@ -264,6 +270,7 @@ async function createCase(
 function actorFor(
   tenant: { id: bigint; publicId: string; name: string },
   client?: { id: bigint; publicId: string; displayName: string },
+  role = "PLATFORM_ADMIN",
 ): Actor {
   return {
     userId: 0n,
@@ -281,7 +288,7 @@ function actorFor(
     email: "integration@example.invalid",
     displayName: "Integration actor",
     mustChangePassword: false,
-    roles: [],
+    roles: [role],
     permissions: [],
   };
 }

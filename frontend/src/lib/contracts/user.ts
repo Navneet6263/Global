@@ -4,7 +4,7 @@ export type UserStatus = "active" | "suspended" | "invited";
 
 export interface PlatformUser {
   id: string;
-  employeeId: string;
+  employeeId: string | null;
   fullName: string;
   email: string;
   mobile: string | null;
@@ -14,7 +14,7 @@ export interface PlatformUser {
   clientWorkspaceScope: readonly string[];
   lastLoginAt: string | null;
   createdAt: string;
-  mfaEnabled: boolean;
+  mfaEnabled: boolean | null;
 }
 
 export interface UserQuery {
@@ -30,8 +30,10 @@ export interface CreateUserInput {
   email: string;
   mobile?: string;
   roles: readonly Role[];
-  branchScope: readonly string[];
-  clientWorkspaceScope: readonly string[];
+  branchId?: string;
+  branchLabel?: string;
+  clientId?: string;
+  clientLabel?: string;
 }
 
 export interface CreatedUserResult {

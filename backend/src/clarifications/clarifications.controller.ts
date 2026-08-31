@@ -13,6 +13,7 @@ import {
   CurrentActor,
   Public,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -20,13 +21,24 @@ import { ClarificationsService } from "./clarifications.service";
 import { CreateClarificationDto } from "./dto/create-clarification.dto";
 import { RespondClarificationDto } from "./dto/respond-clarification.dto";
 import { ResolveClarificationDto } from "./dto/resolve-clarification.dto";
+import { ClientClarificationResponseService } from "./client-clarification-response.service";
 
 @Controller()
 export class ClarificationsController {
-  constructor(private readonly clarifications: ClarificationsService) {}
+  constructor(
+    private readonly clarifications: ClarificationsService,
+    private readonly clientResponses: ClientClarificationResponseService,
+  ) {}
 
   @Get("cases/:caseId/clarifications")
   @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "CLIENT_ADMIN",
+    "VERIFIER",
+    "QA_REVIEWER",
+  )
   list(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
@@ -36,6 +48,7 @@ export class ClarificationsController {
 
   @Post("cases/:caseId/clarifications")
   @RequirePermissions(Permission.ClarificationWrite)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
   create(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
@@ -46,6 +59,7 @@ export class ClarificationsController {
 
   @Patch("cases/:caseId/clarifications/:clarificationId/resolve")
   @RequirePermissions(Permission.ClarificationWrite)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
   resolve(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
@@ -62,13 +76,14 @@ export class ClarificationsController {
 
   @Post("cases/:caseId/clarifications/:clarificationId/respond")
   @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("CLIENT_ADMIN")
   respondAsClient(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
     @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
     @Body() input: RespondClarificationDto,
   ) {
-    return this.clarifications.respondAsClient(
+    return this.clientResponses.respond(
       actor,
       caseId,
       clarificationId,

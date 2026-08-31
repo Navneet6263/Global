@@ -66,6 +66,8 @@ const SEVERITY_TONE: Record<OpsExceptionSeverity, "critical" | "warning" | "info
   medium: "info",
 };
 
+const FILTER_TYPES: OpsExceptionType[] = ["sla_overdue", "client_clarification", "field_visit"];
+
 const PAGE_SIZE = 8;
 
 function ExceptionsPage() {
@@ -109,7 +111,7 @@ function ExceptionsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All types</SelectItem>
-              {(Object.keys(TYPE_LABELS) as OpsExceptionType[]).map((type) => (
+              {FILTER_TYPES.map((type) => (
                 <SelectItem key={type} value={type}>
                   {TYPE_LABELS[type]}
                 </SelectItem>
@@ -144,19 +146,9 @@ function ExceptionsPage() {
               <SelectItem value="over_3d">Over 3 days</SelectItem>
             </SelectContent>
           </Select>
-          <div className="ml-auto flex items-center gap-1.5">
-            {(["open", "resolved"] as const).map((status) => (
-              <Button
-                key={status}
-                size="sm"
-                variant={query.status === status ? "default" : "outline"}
-                onClick={() => patch({ status })}
-                className="capitalize"
-              >
-                {status}
-              </Button>
-            ))}
-          </div>
+          <p className="ml-auto text-xs text-muted-foreground">
+            {data ? `${data.resolvedCount} resolved today` : "Live open queue"}
+          </p>
         </div>
 
         {isPending ? (
@@ -179,12 +171,15 @@ function ExceptionsPage() {
                   key={row.id}
                   row={row}
                   busy={action.isPending}
-                  onResolve={() =>
-                    action.mutate({
-                      id: row.id,
-                      action: "resolve",
-                      value: "Resolved from exception queue",
-                    })
+                  onResolve={
+                    row.type === "client_clarification" || row.type === "field_visit"
+                      ? () =>
+                          action.mutate({
+                            id: row.id,
+                            action: "resolve",
+                            value: "Resolved from exception queue",
+                          })
+                      : undefined
                   }
                   onEscalate={() =>
                     action.mutate({ id: row.id, action: "escalate", value: "Escalated to lead" })
@@ -214,7 +209,7 @@ function ExceptionRow({
 }: {
   row: OpsException;
   busy: boolean;
-  onResolve: () => void;
+  onResolve?: () => void;
   onEscalate: () => void;
 }) {
   return (
@@ -241,9 +236,11 @@ function ExceptionRow({
           <Button size="sm" variant="outline" disabled={busy} onClick={onEscalate}>
             Escalate
           </Button>
-          <Button size="sm" disabled={busy} onClick={onResolve}>
-            Resolve
-          </Button>
+          {onResolve ? (
+            <Button size="sm" disabled={busy} onClick={onResolve}>
+              Resolve
+            </Button>
+          ) : null}
         </div>
       ) : row.resolutionNote ? (
         <p className="text-[11px] text-success-foreground">{row.resolutionNote}</p>

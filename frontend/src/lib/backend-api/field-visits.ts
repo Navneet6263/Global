@@ -7,6 +7,7 @@ import type {
 import type { GeoFix } from "@/components/field/geo";
 import { apiRequest } from "./client";
 import { apiDownload } from "./client";
+import { fileSha256 } from "./file-digest";
 
 export function getMyFieldVisits() {
   return apiRequest<{ items: ApiFieldVisit[]; policy: FieldExecutionPolicy }>("/field-visits/mine");
@@ -58,12 +59,17 @@ export async function viewFieldEvidence(evidenceId: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
-export function uploadVisitEvidence(visitId: string, photo: OfflinePhoto) {
+export async function uploadVisitEvidence(visitId: string, photo: OfflinePhoto) {
   const body = new FormData();
   body.append("file", photo.blob, photo.name);
+  const digest = await fileSha256(photo.blob);
   return apiRequest<{ id: string }>(`/field-visits/${visitId}/evidence`, {
     method: "POST",
-    headers: { "x-captured-at": photo.capturedAt, "x-evidence-id": photo.id },
+    headers: {
+      "x-captured-at": photo.capturedAt,
+      "x-evidence-id": photo.id,
+      "x-content-sha256": digest,
+    },
     body,
   });
 }

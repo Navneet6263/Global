@@ -8,11 +8,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/feedback/error-state";
 import { ListSkeleton } from "@/components/feedback/skeletons";
+import { Button } from "@/components/ui/button";
 import { useCaseDetail } from "../hooks/use-cases";
 import { CaseSummaryPanel } from "./drawer/case-summary-panel";
+import { CaseCandidateInvite } from "./drawer/case-candidate-invite";
 import { CaseChecksPanel } from "./drawer/case-checks-panel";
 import { CaseDocumentsPanel } from "./drawer/case-documents-panel";
 import {
@@ -25,7 +26,6 @@ import {
 interface CaseDetailDrawerProps {
   caseId: string | undefined;
   onClose: () => void;
-  onAction: (action: string) => void;
 }
 
 const TABS = [
@@ -37,7 +37,7 @@ const TABS = [
   { value: "reports", label: "Reports" },
 ] as const;
 
-export function CaseDetailDrawer({ caseId, onClose, onAction }: CaseDetailDrawerProps) {
+export function CaseDetailDrawer({ caseId, onClose }: CaseDetailDrawerProps) {
   const { data, isPending, isError, refetch } = useCaseDetail(caseId);
 
   return (
@@ -53,21 +53,21 @@ export function CaseDetailDrawer({ caseId, onClose, onAction }: CaseDetailDrawer
         <div className="space-y-4 p-4">
           {isPending ? <ListSkeleton rows={4} /> : null}
           {isError ? <ErrorState onRetry={() => void refetch()} /> : null}
+          {!isPending && !isError && !data ? (
+            <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
+              <p className="text-sm font-semibold text-foreground">Case detail is unavailable</p>
+              <p className="text-xs text-muted-foreground">
+                The case may have moved outside your scope or the link may no longer be valid.
+              </p>
+              <Button variant="outline" size="sm" onClick={onClose}>
+                Close
+              </Button>
+            </div>
+          ) : null}
           {data ? (
             <>
               <CaseSummaryPanel item={data} />
-
-              <div className="flex flex-wrap gap-2">
-                <Button size="sm" onClick={() => onAction("Reassign case")}>
-                  Reassign owner
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => onAction("Raise clarification")}>
-                  Raise clarification
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => onAction("Escalate to QA")}>
-                  Escalate to QA
-                </Button>
-              </div>
+              <CaseCandidateInvite item={data} />
 
               <Tabs defaultValue="checks">
                 <TabsList className="w-full flex-wrap justify-start">

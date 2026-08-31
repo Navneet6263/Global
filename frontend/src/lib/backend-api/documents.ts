@@ -1,4 +1,5 @@
 import { apiDownload, apiRequest, saveBlob } from "./client";
+import { fileSha256 } from "./file-digest";
 
 export const documentTypes = [
   "AADHAAR",
@@ -20,12 +21,13 @@ export function createDocument(caseId: string, type: DocumentType) {
   );
 }
 
-export function uploadDocument(documentId: string, file: File) {
+export async function uploadDocument(documentId: string, file: File) {
   const body = new FormData();
   body.append("file", file, file.name);
+  const digest = await fileSha256(file);
   return apiRequest<{ version: number; sha256: string; malwareState: string }>(
     `/documents/${documentId}/content`,
-    { method: "POST", body },
+    { method: "POST", headers: { "x-content-sha256": digest }, body },
   );
 }
 

@@ -48,6 +48,8 @@ export type OutboxEventMinAggregateOutputType = {
   status: string | null
   attempts: number | null
   availableAt: Date | null
+  claimedAt: Date | null
+  claimToken: string | null
   processedAt: Date | null
   createdAt: Date | null
 }
@@ -62,6 +64,8 @@ export type OutboxEventMaxAggregateOutputType = {
   status: string | null
   attempts: number | null
   availableAt: Date | null
+  claimedAt: Date | null
+  claimToken: string | null
   processedAt: Date | null
   createdAt: Date | null
 }
@@ -76,6 +80,8 @@ export type OutboxEventCountAggregateOutputType = {
   status: number
   attempts: number
   availableAt: number
+  claimedAt: number
+  claimToken: number
   processedAt: number
   createdAt: number
   _all: number
@@ -104,6 +110,8 @@ export type OutboxEventMinAggregateInputType = {
   status?: true
   attempts?: true
   availableAt?: true
+  claimedAt?: true
+  claimToken?: true
   processedAt?: true
   createdAt?: true
 }
@@ -118,6 +126,8 @@ export type OutboxEventMaxAggregateInputType = {
   status?: true
   attempts?: true
   availableAt?: true
+  claimedAt?: true
+  claimToken?: true
   processedAt?: true
   createdAt?: true
 }
@@ -132,6 +142,8 @@ export type OutboxEventCountAggregateInputType = {
   status?: true
   attempts?: true
   availableAt?: true
+  claimedAt?: true
+  claimToken?: true
   processedAt?: true
   createdAt?: true
   _all?: true
@@ -233,6 +245,8 @@ export type OutboxEventGroupByOutputType = {
   status: string
   attempts: number
   availableAt: Date
+  claimedAt: Date | null
+  claimToken: string | null
   processedAt: Date | null
   createdAt: Date
   _count: OutboxEventCountAggregateOutputType | null
@@ -270,6 +284,8 @@ export type OutboxEventWhereInput = {
   status?: Prisma.StringFilter<"OutboxEvent"> | string
   attempts?: Prisma.IntFilter<"OutboxEvent"> | number
   availableAt?: Prisma.DateTimeFilter<"OutboxEvent"> | Date | string
+  claimedAt?: Prisma.DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+  claimToken?: Prisma.StringNullableFilter<"OutboxEvent"> | string | null
   processedAt?: Prisma.DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OutboxEvent"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -285,6 +301,8 @@ export type OutboxEventOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
+  claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  claimToken?: Prisma.SortOrderInput | Prisma.SortOrder
   processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
@@ -303,6 +321,8 @@ export type OutboxEventWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"OutboxEvent"> | string
   attempts?: Prisma.IntFilter<"OutboxEvent"> | number
   availableAt?: Prisma.DateTimeFilter<"OutboxEvent"> | Date | string
+  claimedAt?: Prisma.DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+  claimToken?: Prisma.StringNullableFilter<"OutboxEvent"> | string | null
   processedAt?: Prisma.DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OutboxEvent"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
@@ -318,6 +338,8 @@ export type OutboxEventOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
+  claimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  claimToken?: Prisma.SortOrderInput | Prisma.SortOrder
   processedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.OutboxEventCountOrderByAggregateInput
@@ -340,6 +362,8 @@ export type OutboxEventScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"OutboxEvent"> | string
   attempts?: Prisma.IntWithAggregatesFilter<"OutboxEvent"> | number
   availableAt?: Prisma.DateTimeWithAggregatesFilter<"OutboxEvent"> | Date | string
+  claimedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OutboxEvent"> | Date | string | null
+  claimToken?: Prisma.StringNullableWithAggregatesFilter<"OutboxEvent"> | string | null
   processedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"OutboxEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OutboxEvent"> | Date | string
 }
@@ -353,6 +377,8 @@ export type OutboxEventCreateInput = {
   status?: string
   attempts?: number
   availableAt?: Date | string
+  claimedAt?: Date | string | null
+  claimToken?: string | null
   processedAt?: Date | string | null
   createdAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutOutboxEventsInput
@@ -368,6 +394,8 @@ export type OutboxEventUncheckedCreateInput = {
   status?: string
   attempts?: number
   availableAt?: Date | string
+  claimedAt?: Date | string | null
+  claimToken?: string | null
   processedAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -381,6 +409,8 @@ export type OutboxEventUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutOutboxEventsNestedInput
@@ -396,6 +426,8 @@ export type OutboxEventUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -409,6 +441,8 @@ export type OutboxEventCreateManyInput = {
   status?: string
   attempts?: number
   availableAt?: Date | string
+  claimedAt?: Date | string | null
+  claimToken?: string | null
   processedAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -422,6 +456,8 @@ export type OutboxEventUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -436,6 +472,8 @@ export type OutboxEventUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -460,6 +498,8 @@ export type OutboxEventCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
+  claimedAt?: Prisma.SortOrder
+  claimToken?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -480,6 +520,8 @@ export type OutboxEventMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
+  claimedAt?: Prisma.SortOrder
+  claimToken?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -494,6 +536,8 @@ export type OutboxEventMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   attempts?: Prisma.SortOrder
   availableAt?: Prisma.SortOrder
+  claimedAt?: Prisma.SortOrder
+  claimToken?: Prisma.SortOrder
   processedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -555,6 +599,8 @@ export type OutboxEventCreateWithoutTenantInput = {
   status?: string
   attempts?: number
   availableAt?: Date | string
+  claimedAt?: Date | string | null
+  claimToken?: string | null
   processedAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -568,6 +614,8 @@ export type OutboxEventUncheckedCreateWithoutTenantInput = {
   status?: string
   attempts?: number
   availableAt?: Date | string
+  claimedAt?: Date | string | null
+  claimToken?: string | null
   processedAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -610,6 +658,8 @@ export type OutboxEventScalarWhereInput = {
   status?: Prisma.StringFilter<"OutboxEvent"> | string
   attempts?: Prisma.IntFilter<"OutboxEvent"> | number
   availableAt?: Prisma.DateTimeFilter<"OutboxEvent"> | Date | string
+  claimedAt?: Prisma.DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+  claimToken?: Prisma.StringNullableFilter<"OutboxEvent"> | string | null
   processedAt?: Prisma.DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"OutboxEvent"> | Date | string
 }
@@ -622,6 +672,8 @@ export type OutboxEventCreateManyTenantInput = {
   status?: string
   attempts?: number
   availableAt?: Date | string
+  claimedAt?: Date | string | null
+  claimToken?: string | null
   processedAt?: Date | string | null
   createdAt?: Date | string
 }
@@ -635,6 +687,8 @@ export type OutboxEventUpdateWithoutTenantInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -648,6 +702,8 @@ export type OutboxEventUncheckedUpdateWithoutTenantInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -661,6 +717,8 @@ export type OutboxEventUncheckedUpdateManyWithoutTenantInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   attempts?: Prisma.IntFieldUpdateOperationsInput | number
   availableAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  claimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  claimToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   processedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -677,6 +735,8 @@ export type OutboxEventSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   status?: boolean
   attempts?: boolean
   availableAt?: boolean
+  claimedAt?: boolean
+  claimToken?: boolean
   processedAt?: boolean
   createdAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
@@ -694,11 +754,13 @@ export type OutboxEventSelectScalar = {
   status?: boolean
   attempts?: boolean
   availableAt?: boolean
+  claimedAt?: boolean
+  claimToken?: boolean
   processedAt?: boolean
   createdAt?: boolean
 }
 
-export type OutboxEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "topic" | "aggregateType" | "aggregateId" | "payloadJson" | "status" | "attempts" | "availableAt" | "processedAt" | "createdAt", ExtArgs["result"]["outboxEvent"]>
+export type OutboxEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "topic" | "aggregateType" | "aggregateId" | "payloadJson" | "status" | "attempts" | "availableAt" | "claimedAt" | "claimToken" | "processedAt" | "createdAt", ExtArgs["result"]["outboxEvent"]>
 export type OutboxEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -718,6 +780,8 @@ export type $OutboxEventPayload<ExtArgs extends runtime.Types.Extensions.Interna
     status: string
     attempts: number
     availableAt: Date
+    claimedAt: Date | null
+    claimToken: string | null
     processedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["outboxEvent"]>
@@ -1099,6 +1163,8 @@ export interface OutboxEventFieldRefs {
   readonly status: Prisma.FieldRef<"OutboxEvent", 'String'>
   readonly attempts: Prisma.FieldRef<"OutboxEvent", 'Int'>
   readonly availableAt: Prisma.FieldRef<"OutboxEvent", 'DateTime'>
+  readonly claimedAt: Prisma.FieldRef<"OutboxEvent", 'DateTime'>
+  readonly claimToken: Prisma.FieldRef<"OutboxEvent", 'String'>
   readonly processedAt: Prisma.FieldRef<"OutboxEvent", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"OutboxEvent", 'DateTime'>
 }

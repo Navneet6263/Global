@@ -40,12 +40,12 @@ export const Route = createFileRoute("/admin/analytics")({
       {
         name: "description",
         content:
-          "Portfolio throughput, SLA attainment, turnaround, outcome mix, capacity utilisation and next-week forecast.",
+          "Portfolio throughput, SLA attainment, turnaround, outcome mix, owner workload and seven-day outlook.",
       },
       { property: "og:title", content: "Executive Analytics — Sapling Global" },
       {
         property: "og:description",
-        content: "Throughput, SLA attainment, turnaround, capacity and forecast analytics.",
+        content: "Throughput, SLA attainment, turnaround, workload and delivery outlook analytics.",
       },
     ],
   }),
@@ -65,7 +65,7 @@ function AnalyticsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Executive analytics"
-        description="Delivery performance across clients, branches and check types, with capacity and forecast signals."
+        description="Delivery performance across clients, branches and check types, with workload and seven-day outlook signals."
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Select
@@ -123,6 +123,7 @@ function AnalyticsPage() {
             description="Volume and delivery quality by client account."
             rows={data.clientPerformance}
             entityLabel="Client"
+            exceptionLabel="Overdue"
           />
           <div className="grid gap-6 xl:grid-cols-2">
             <PerformanceTable
@@ -130,17 +131,20 @@ function AnalyticsPage() {
               description="Delivery performance by operating location."
               rows={data.branchPerformance}
               entityLabel="Branch"
+              exceptionLabel="Overdue"
             />
             <PerformanceTable
               title="Check performance"
               description="Turnaround and discrepancy rate by check type."
               rows={data.checkPerformance}
               entityLabel="Check"
+              performanceLabel="Completion"
+              exceptionLabel="Discrepancy"
             />
           </div>
           <div className="grid gap-6 xl:grid-cols-2">
             <CapacityPanel rows={data.capacity} />
-            <ForecastPanel rows={data.forecast} />
+            <ForecastPanel summary={data.forecast} />
           </div>
         </>
       ) : null}

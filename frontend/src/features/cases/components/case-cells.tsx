@@ -14,7 +14,9 @@ export function CandidateCell({ row }: { row: VerificationCase }) {
         <span className="block truncate text-[13px] font-medium text-foreground">
           {row.candidateName}
         </span>
-        <span className="block truncate text-[11px] text-muted-foreground">{row.branch}</span>
+        {row.branch ? (
+          <span className="block truncate text-[11px] text-muted-foreground">{row.branch}</span>
+        ) : null}
       </span>
     </div>
   );
@@ -65,8 +67,9 @@ export function SlaCell({ row }: { row: VerificationCase }) {
 export function OwnerCell({ row }: { row: VerificationCase }) {
   return (
     <span className="block min-w-0">
-      <span className="block truncate text-[13px] text-foreground">{row.owner}</span>
-      <span className="block truncate text-[11px] text-muted-foreground">{row.ownerRole}</span>
+      <span className="block truncate text-[13px] text-foreground">
+        {row.owner ?? "Not assigned"}
+      </span>
     </span>
   );
 }

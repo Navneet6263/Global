@@ -13,6 +13,7 @@ import type { FastifyRequest } from "fastify";
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -28,6 +29,7 @@ export class DocumentsController {
   ) {}
 
   @Post("cases/:caseId/documents")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   @RequirePermissions(Permission.DocumentWrite)
   create(
     @CurrentActor() actor: Actor,
@@ -38,6 +40,7 @@ export class DocumentsController {
   }
 
   @Post("documents/:documentId/content")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   @RequirePermissions(Permission.DocumentWrite)
   async upload(
     @CurrentActor() actor: Actor,
@@ -52,6 +55,13 @@ export class DocumentsController {
   }
 
   @Get("documents/:documentId/content")
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "CLIENT_ADMIN",
+    "VERIFIER",
+    "QA_REVIEWER",
+  )
   @RequirePermissions(Permission.DocumentRead)
   async download(
     @CurrentActor() actor: Actor,

@@ -14,7 +14,13 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
-      DATABASE_URL: "sqlserver://localhost:1433;database=Sapling Global;user=ci;password=ci-build-only;encrypt=true;trustServerCertificate=true"
+      DB_HOST: localhost
+      DB_PORT: "1433"
+      DB_NAME: Sapling Global
+      DB_USER: ci
+      DB_PASSWORD: ci-build-only
+      DB_ENCRYPT: "true"
+      DB_TRUST_SERVER_CERTIFICATE: "true"
     steps:
       - name: Check out source
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -65,7 +71,7 @@ jobs:
           retention-days: 14
           path: |
             backend/dist/
-            frontend/dist/
+            frontend/.output/
             sapling-global-runtime.cdx.json
 
   public-browser:
@@ -92,7 +98,12 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run public accessibility and responsive checks
-        run: npm run --workspace frontend test:e2e -- e2e/public-accessibility.spec.ts
+        env:
+          E2E_PUBLIC_ONLY: "true"
+        run: >-
+          npm run --workspace frontend test:e2e --
+          e2e/public-accessibility.spec.ts
+          e2e/offline-shell.spec.ts
 
       - name: Upload browser report
         if: always()
@@ -102,6 +113,305 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
           path: frontend/playwright-report/
+
+  sql-release-validation:
+    name: Isolated SQL release validation
+    needs: quality
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    env:
+      SQL_SERVER_IMAGE: mcr.microsoft.com/mssql/server:2022-CU26-ubuntu-22.04@sha256:ba4c8329f48fb8f02e1416be6a930ebfd71268caee78aa985f3af4315e457c89
+      NODE_ENV: development
+      PORT: "4000"
+      LOG_LEVEL: warn
+      PROCESS_ROLE: all
+      WEB_ORIGIN: http://127.0.0.1:8080
+      PUBLIC_API_ORIGIN: http://127.0.0.1:4000
+      DB_HOST: 127.0.0.1
+      DB_PORT: "1433"
+      DB_NAME: Sapling Global
+      DB_USER: sa
+      DB_ENCRYPT: "true"
+      DB_TRUST_SERVER_CERTIFICATE: "true"
+      DB_POOL_MIN: "0"
+      DB_POOL_MAX: "10"
+      COOKIE_SECURE: "false"
+      OBJECT_STORAGE_DRIVER: local
+      OUTBOX_POLL_INTERVAL_MS: "1000"
+      RETENTION_POLL_INTERVAL_MS: "60000"
+      NOTIFICATION_WEBHOOK_URL: http://127.0.0.1:4200/events
+      NOTIFICATION_HEALTH_URL: http://127.0.0.1:4200/health
+      MALWARE_SCAN_REQUIRED: "false"
+      VITE_API_URL: /api/v1
+      VITE_DEV_API_TARGET: http://127.0.0.1:4000
+      VITE_TENANT_CODE: SAPLING
+      E2E_BASE_URL: http://127.0.0.1:8080
+      E2E_API_URL: http://127.0.0.1:4000/api/v1
+      E2E_TENANT_CODE: SAPLING
+      E2E_ROLE_TENANT_CODE: SAPLING
+      E2E_GOLDEN_FLOW: "true"
+      E2E_GOLDEN_ISOLATED: "true"
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Generate masked run-scoped credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          db_password="Sql1!$(openssl rand -hex 24)"
+          seed_password="Seed1!$(openssl rand -hex 24)"
+          role_password="Role1!$(openssl rand -hex 24)"
+          forced_password="Temp1!$(openssl rand -hex 24)"
+          forced_new_password="Final1!$(openssl rand -hex 24)"
+          access_secret="$(openssl rand -hex 40)"
+          refresh_secret="$(openssl rand -hex 40)"
+          data_key="$(openssl rand -hex 40)"
+          webhook_secret="$(openssl rand -hex 40)"
+          role_domain="ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.e2e.invalid"
+          golden_run_id="ci${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}"
+          golden_run_id="${golden_run_id:0:20}"
+          for secret in "$db_password" "$seed_password" "$role_password" \
+            "$forced_password" "$forced_new_password" "$access_secret" \
+            "$refresh_secret" "$data_key" "$webhook_secret"; do
+            echo "::add-mask::$secret"
+          done
+          {
+            echo "DB_PASSWORD=$db_password"
+            echo "JWT_ACCESS_SECRET=$access_secret"
+            echo "JWT_REFRESH_SECRET=$refresh_secret"
+            echo "DATA_ENCRYPTION_KEY=$data_key"
+            echo "NOTIFICATION_WEBHOOK_SECRET=$webhook_secret"
+            echo "SEED_ADMIN_EMAIL=release-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}@e2e.invalid"
+            echo "SEED_ADMIN_NAME=Release Validation Administrator"
+            echo "SEED_ADMIN_PASSWORD=$seed_password"
+            echo "ROLE_DOMAIN=$role_domain"
+            echo "ROLE_PASSWORD=$role_password"
+            echo "FORCED_ADMIN_EMAIL=forced-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}@e2e.invalid"
+            echo "FORCED_TEMP_PASSWORD=$forced_password"
+            echo "FORCED_NEW_PASSWORD=$forced_new_password"
+            echo "E2E_GOLDEN_RUN_ID=$golden_run_id"
+            echo "OBJECT_STORAGE_PATH=${RUNNER_TEMP}/sapling-e2e-objects"
+          } >> "$GITHUB_ENV"
+
+      - name: Start isolated SQL Server
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --detach --name sapling-sql-ci \
+            --env ACCEPT_EULA=Y \
+            --env MSSQL_PID=Developer \
+            --env MSSQL_SA_PASSWORD="$DB_PASSWORD" \
+            --publish 127.0.0.1:1433:1433 \
+            "$SQL_SERVER_IMAGE"
+          sqlcmd_path=/opt/mssql-tools18/bin/sqlcmd
+          if ! docker exec sapling-sql-ci test -x "$sqlcmd_path"; then
+            sqlcmd_path=/opt/mssql-tools/bin/sqlcmd
+          fi
+          ready=false
+          for attempt in $(seq 1 90); do
+            if docker exec sapling-sql-ci "$sqlcmd_path" \
+              -S localhost -U sa -P "$DB_PASSWORD" -C -b -Q "SELECT 1" >/dev/null 2>&1; then
+              ready=true
+              break
+            fi
+            sleep 2
+          done
+          if [[ "$ready" != true ]]; then
+            docker logs sapling-sql-ci
+            exit 1
+          fi
+          docker exec sapling-sql-ci "$sqlcmd_path" \
+            -S localhost -U sa -P "$DB_PASSWORD" -C -b \
+            -Q "IF DB_ID(N'Sapling Global') IS NULL EXEC(N'CREATE DATABASE [Sapling Global]')"
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Deploy, seed and verify the database
+        run: |
+          npm run --workspace backend prisma:generate
+          npm run --workspace backend prisma:deploy
+          npm run --workspace backend prisma:seed
+          npm run --workspace backend prisma:verify
+          npm run --workspace backend test:integration
+          npm run --workspace backend build
+
+      - name: Install Chromium with system dependencies
+        run: npx playwright install --with-deps chromium
+
+      - name: Start notification stub, API and frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$OBJECT_STORAGE_PATH"
+          nohup node -e 'require("node:http").createServer((request, response) => { request.resume(); response.writeHead(request.method === "POST" ? 204 : 200); response.end(); }).listen(4200, "127.0.0.1")' \
+            >"$RUNNER_TEMP/notification.log" 2>&1 &
+          echo "WEBHOOK_PID=$!" >> "$GITHUB_ENV"
+          nohup node backend/dist/main.js \
+            >"$RUNNER_TEMP/api.log" 2>&1 &
+          echo "API_PID=$!" >> "$GITHUB_ENV"
+          nohup npm run --workspace frontend dev -- --host 127.0.0.1 --port 8080 \
+            >"$RUNNER_TEMP/frontend.log" 2>&1 &
+          echo "FRONTEND_PID=$!" >> "$GITHUB_ENV"
+          api_ready=false
+          web_ready=false
+          for attempt in $(seq 1 90); do
+            if curl --fail --silent http://127.0.0.1:4000/api/v1/health/ready >/dev/null; then
+              api_ready=true
+              break
+            fi
+            sleep 2
+          done
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8080/auth >/dev/null; then
+              web_ready=true
+              break
+            fi
+            sleep 2
+          done
+          if [[ "$api_ready" != true || "$web_ready" != true ]]; then
+            cat "$RUNNER_TEMP/api.log" "$RUNNER_TEMP/frontend.log"
+            exit 1
+          fi
+
+      - name: Create reserved client and dashboard role fixtures
+        shell: bash
+        run: |
+          set -euo pipefail
+          cookie_file="$RUNNER_TEMP/release-admin.cookies"
+          login_payload=$(jq -cn \
+            --arg tenantCode "$E2E_TENANT_CODE" \
+            --arg email "$SEED_ADMIN_EMAIL" \
+            --arg password "$SEED_ADMIN_PASSWORD" \
+            '{tenantCode: $tenantCode, email: $email, password: $password}')
+          curl --fail-with-body --silent --show-error \
+            --cookie-jar "$cookie_file" \
+            --header "content-type: application/json" \
+            --header "origin: $E2E_BASE_URL" \
+            --data "$login_payload" \
+            "$E2E_API_URL/auth/login" >/dev/null
+          client_payload=$(jq -cn \
+            --arg code "CI${GITHUB_RUN_ID}${GITHUB_RUN_ATTEMPT}" \
+            --arg legalName "Release Validation Client ${GITHUB_RUN_ID}" \
+            --arg displayName "Release Validation Client" \
+            --arg contactEmail "client-${GITHUB_RUN_ID}@e2e.invalid" \
+            '{code: $code, legalName: $legalName, displayName: $displayName, contactEmail: $contactEmail, slaHours: 72}')
+          curl --fail-with-body --silent --show-error \
+            --cookie "$cookie_file" \
+            --header "content-type: application/json" \
+            --header "origin: $E2E_BASE_URL" \
+            --header "idempotency-key: ci-client-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --data "$client_payload" \
+            "$E2E_API_URL/clients" >/dev/null
+          DASHBOARD_USER_TENANT_CODE="$E2E_TENANT_CODE" \
+          DASHBOARD_USER_DOMAIN="$ROLE_DOMAIN" \
+          DASHBOARD_USER_PASSWORD="$ROLE_PASSWORD" \
+            npm run --workspace backend prisma:dashboard-users
+
+      - name: Create forced-password fixture
+        shell: bash
+        run: |
+          E2E_FIXTURE_ACTION=create \
+          E2E_ADMIN_EMAIL="$FORCED_ADMIN_EMAIL" \
+          E2E_ADMIN_PASSWORD="$FORCED_TEMP_PASSWORD" \
+          E2E_ADMIN_MUST_CHANGE_PASSWORD=true \
+            npm run --workspace backend prisma:e2e-fixture
+
+      - name: Reset API rate-limit state for role smoke
+        shell: bash
+        run: bash scripts/restart-e2e-api.sh api-role.log
+
+      - name: Run role workspace smoke
+        shell: bash
+        run: |
+          export E2E_ROLE_WORKSPACES=true
+          export E2E_ROLE_DOMAIN="$ROLE_DOMAIN"
+          export E2E_ROLE_PASSWORD="$ROLE_PASSWORD"
+          export E2E_ROLE_LOGIN_INTERVAL_MS=15000
+          npm run --workspace frontend test:e2e -- --retries=0 \
+            e2e/role-workspaces.spec.ts
+
+      - name: Reset API rate-limit state for administrator smoke
+        shell: bash
+        run: bash scripts/restart-e2e-api.sh api-admin.log
+
+      - name: Run administrator browser smoke
+        shell: bash
+        run: |
+          export E2E_ADMIN_EMAIL="admin@$ROLE_DOMAIN"
+          export E2E_ADMIN_PASSWORD="$ROLE_PASSWORD"
+          npm run --workspace frontend test:e2e -- --retries=0 \
+            e2e/authenticated-smoke.spec.ts \
+            e2e/admin-sidebar.spec.ts
+
+      - name: Reset API rate-limit state for forced-password flow
+        shell: bash
+        run: bash scripts/restart-e2e-api.sh api-forced.log
+
+      - name: Run forced-password security flow
+        shell: bash
+        run: |
+          E2E_FORCED_PASSWORD_FLOW=true \
+          E2E_ADMIN_EMAIL="$FORCED_ADMIN_EMAIL" \
+          E2E_ADMIN_PASSWORD="$FORCED_TEMP_PASSWORD" \
+          E2E_ADMIN_NEW_PASSWORD="$FORCED_NEW_PASSWORD" \
+            npm run --workspace frontend test:e2e -- --retries=0 e2e/forced-password.spec.ts
+
+      - name: Reset API rate-limit state for golden flow
+        shell: bash
+        run: bash scripts/restart-e2e-api.sh api-golden.log
+
+      - name: Run isolated golden verification flow
+        shell: bash
+        run: |
+          E2E_ADMIN_EMAIL="$SEED_ADMIN_EMAIL" \
+          E2E_ADMIN_PASSWORD="$SEED_ADMIN_PASSWORD" \
+            npm run --workspace frontend test:e2e -- --retries=0 e2e/golden-flow.spec.ts
+
+      - name: Stop application processes before fixture cleanup
+        if: always()
+        shell: bash
+        run: |
+          for pid in "${FRONTEND_PID:-}" "${API_PID:-}" "${WEBHOOK_PID:-}"; do
+            if [[ -n "$pid" ]]; then kill "$pid" 2>/dev/null || true; fi
+          done
+
+      - name: Clean isolated golden-flow fixtures
+        if: always()
+        run: npm run --workspace backend prisma:golden-cleanup
+
+      - name: Clean forced-password fixture
+        if: always()
+        shell: bash
+        run: |
+          E2E_FIXTURE_ACTION=delete \
+          E2E_ADMIN_EMAIL="$FORCED_ADMIN_EMAIL" \
+            npm run --workspace backend prisma:e2e-fixture
+
+      - name: Upload release-validation evidence
+        if: always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
+        with:
+          name: sql-release-validation
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            frontend/playwright-report/
+            ${{ runner.temp }}/api*.log
+            ${{ runner.temp }}/frontend.log
+
+      - name: Destroy isolated SQL Server
+        if: always()
+        run: docker rm --force sapling-sql-ci || true
 
   container:
     name: Reproducible runtime image

@@ -13,10 +13,16 @@ export interface AuditEvent {
   actor?: { publicId: string; displayName: string; email: string } | null;
 }
 
-export function listAuditEvents(cursor?: string) {
-  const query = new URLSearchParams({ limit: "50" });
-  if (cursor) query.set("cursor", cursor);
-  return apiRequest<{ items: AuditEvent[]; nextCursor: string | null }>(
+export function listAuditEvents(filters: Record<string, string | number | undefined> = {}) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) {
+    if (value !== undefined && value !== "" && value !== "all") query.set(key, String(value));
+  }
+  return apiRequest<{ items: AuditEvent[]; total: number; page: number; pageSize: number }>(
     `/audit-events?${query.toString()}`,
   );
+}
+
+export function getAuditFacets() {
+  return apiRequest<{ actors: string[]; resourceTypes: string[] }>("/audit-events/facets");
 }

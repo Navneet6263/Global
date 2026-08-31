@@ -1,7 +1,8 @@
-import { getExceptionsDashboard, getExecutiveDashboard } from "@/lib/backend-api/dashboards";
-import { listUsers } from "@/lib/backend-api/users";
-import type { OpsCheckType } from "../contracts/case";
-import { baseCase, stages } from "./api-operations-mappers";
+import { getExecutiveDashboard } from "@/lib/backend-api/dashboards";
+import { listAllUsers } from "@/lib/backend-api/users";
+import { baseCase, fieldStatus, stages } from "./api-operations-mappers";
+import { listAllOperationCases } from "./api-operations-cases";
+import { buildVerifierTeam } from "./api-operations-team";
 
 export async function getSlaPerformance() {
   const data = await getExecutiveDashboard({ months: 12 });
@@ -12,15 +13,19 @@ export async function getSlaPerformance() {
       version: 1,
       subject: { publicId: row.id, fullName: row.subject.fullName },
       client: { publicId: row.client.publicId, code: "", displayName: row.client.displayName },
+      branch: row.branch,
+      assignedOpsUser: row.owner,
       checks: [],
     }),
   );
   return {
-    healthPercent: data.performance.slaPercentage ?? 0,
-    dueToday: data.forecast.dueNext7Days,
-    dueTomorrow: 0,
+    healthPercent: data.performance.slaPercentage,
+    dueNext7Days: data.forecast.dueNext7Days,
     overdue: data.summary.overdue,
-    averageTurnaroundMinutes: Math.round(data.performance.averageTatHours * 60),
+    averageTurnaroundMinutes:
+      data.performance.completedCases > 0 && data.performance.averageTatHours !== null
+        ? Math.round(data.performance.averageTatHours * 60)
+        : null,
     atRisk: cases.filter((row) => row.slaState !== "healthy"),
     stageAgeing: data.stageAgeing.map((row) => ({
       stage: stages[row.status] ?? "verification",
@@ -29,13 +34,13 @@ export async function getSlaPerformance() {
     })),
     byClient: data.clientPerformance.map((row) => ({
       name: row.name,
-      onTimePercent: row.slaPercentage ?? 0,
+      onTimePercent: row.slaPercentage,
       volume: row.total,
     })),
     byPackage: [],
     weeklyTrend: data.performanceTrend.map((row) => ({
       label: row.month,
-      onTimePercent: row.slaPercentage ?? 0,
+      onTimePercent: row.slaPercentage,
       breaches: row.overdue,
     })),
     breachReasons: [],
@@ -48,85 +53,86 @@ export async function getSlaPerformance() {
       })),
   };
 }
+
 export async function getTeamCapacity() {
-  const [data, users] = await Promise.all([
-    getExecutiveDashboard({ months: 1 }),
-    listUsers("VERIFIER"),
+  const [cases, users] = await Promise.all([listAllOperationCases(), listAllUsers("VERIFIER")]);
+  return buildVerifierTeam(cases, users.items);
+}
+
+export async function getFieldOperations() {
+  const [cases, users] = await Promise.all([
+    listAllOperationCases(),
+    listAllUsers("FIELD_EXECUTIVE"),
   ]);
-  const members = users.items.map((user) => {
-    const stats = data.teamCapacity.find((row) => row.id === user.id);
-    const active = stats?.active ?? 0;
-    return {
-      id: user.id,
-      name: user.displayName,
-      role: "Verifier",
-      branch: user.branch?.name ?? "All branches",
-      skills: [
-        "identity",
-        "address",
-        "employment",
-        "education",
-        "criminal",
-        "reference",
-      ] as OpsCheckType[],
-      activeCases: active,
-      activeChecks: active,
-      dueToday: 0,
-      overdue: stats?.overdue ?? 0,
-      completedToday: stats?.completed ?? 0,
-      averageTurnaroundMinutes: 0,
-      capacity:
-        active > 12
-          ? ("overloaded" as const)
-          : active > 8
-            ? ("stretched" as const)
-            : active > 3
-              ? ("balanced" as const)
-              : ("available" as const),
-      capacityPercent: Math.min(100, Math.round((active / 12) * 100)),
-      availability: "available" as const,
-    };
-  });
+  const records = cases.flatMap((item) =>
+    (item.fieldVisits ?? []).map((visit) => ({ item, visit })),
+  );
+  const visits = records.map(({ item, visit }) => ({
+    id: visit.publicId,
+    caseId: item.id,
+    caseNumber: item.caseNumber,
+    candidateName: item.subject.fullName,
+    clientName: item.client.displayName,
+    address: visit.address,
+    city: item.branch?.city ?? item.branch?.name ?? "Location not recorded",
+    fieldExecutive: visit.assignee?.displayName ?? "Unassigned",
+    scheduledAt: visit.createdAt,
+    status: fieldStatus(visit.status),
+    geofenceMetres: visit.geofenceMeters,
+    evidenceCount: visit._count?.evidence ?? 0,
+    note:
+      visit.distanceMeters !== null && visit.distanceMeters !== undefined
+        ? `${Math.round(Number(visit.distanceMeters))} m from target · ${visit.geofenceMeters} m allowed`
+        : "",
+  }));
+  const todayRecords = records.filter(({ visit }) => fieldActivityToday(visit));
+  const activeStates = new Set(["ASSIGNED", "IN_PROGRESS", "EVIDENCE_PENDING"]);
+
   return {
-    members,
-    workload: members.map((row) => ({
-      name: row.name,
-      checks: row.activeChecks,
-      capacityPercent: row.capacityPercent,
-    })),
-    branches: [],
-    demand: [],
-    overloaded: members.filter((row) => row.capacity === "overloaded").map((row) => row.name),
-    underutilised: members.filter((row) => row.capacity === "available").map((row) => row.name),
-    openAssignments: data.forecast.unassignedActive,
+    scheduled: records.filter(({ visit }) => visit.status === "ASSIGNED").length,
+    today: todayRecords.length,
+    checkedIn: records.filter(({ visit }) => visit.status === "IN_PROGRESS").length,
+    evidencePending: records.filter(({ visit }) => visit.status === "EVIDENCE_PENDING").length,
+    outsideGeofence: records.filter(
+      ({ visit }) =>
+        visit.status === "OUTSIDE_GEOFENCE" ||
+        (visit.distanceMeters !== null &&
+          visit.distanceMeters !== undefined &&
+          Number(visit.distanceMeters) > visit.geofenceMeters),
+    ).length,
+    exceptionReview: records.filter(({ visit }) => visit.status === "EXCEPTION_REVIEW").length,
+    completed: records.filter(({ visit }) => visit.status === "COMPLETED").length,
+    visits,
+    executiveLoad: users.items
+      .filter((user) => user.status === "ACTIVE")
+      .map((user) => {
+        const owned = records.filter(({ visit }) => visit.assignee?.publicId === user.id);
+        return {
+          name: user.displayName,
+          city: user.branch?.name ?? "No branch assigned",
+          visitsToday: owned.filter(({ visit }) => fieldActivityToday(visit)).length,
+          open: owned.filter(({ visit }) => activeStates.has(visit.status)).length,
+        };
+      }),
   };
 }
-export async function getFieldOperations() {
-  const data = await getExceptionsDashboard();
-  const visits = data.fieldVisits.map((row) => ({
-    id: row.id,
-    caseId: row.case.publicId,
-    caseNumber: row.case.caseNumber,
-    candidateName: row.case.subject.fullName,
-    clientName: row.case.client.displayName,
-    address: row.address,
-    city: "—",
-    fieldExecutive: row.assignee?.displayName ?? "Unassigned",
-    scheduledAt: row.createdAt,
-    status: "exception_review" as const,
-    geofenceMetres: row.geofenceMeters,
-    evidenceCount: 0,
-    note: row.distanceMeters ? `${row.distanceMeters} metres from target` : "",
-  }));
-  return {
-    scheduled: 0,
-    today: 0,
-    checkedIn: 0,
-    evidencePending: 0,
-    outsideGeofence: visits.filter((row) => row.note).length,
-    exceptionReview: visits.length,
-    completed: 0,
-    visits,
-    executiveLoad: [],
-  };
+
+type FieldVisitRecord = NonNullable<
+  Awaited<ReturnType<typeof listAllOperationCases>>[number]["fieldVisits"]
+>[number];
+
+function fieldActivityToday(visit: FieldVisitRecord) {
+  return [visit.createdAt, visit.checkedInAt, visit.capturedAt, visit.completedAt].some(
+    (value) => value && isToday(value),
+  );
+}
+
+function isToday(value: string) {
+  const date = new Date(value);
+  const now = new Date();
+  return (
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate()
+  );
 }

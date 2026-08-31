@@ -7,18 +7,22 @@ const credentials = {
   password: process.env.E2E_ADMIN_PASSWORD,
 };
 
-const workspaces: Array<{ path: string; name: string; heading: RegExp }> = [
-  { path: "/", name: "operations", heading: /Operations command center/i },
-  { path: "/exceptions", name: "exceptions", heading: /Exception triage/i },
-  { path: "/verifier", name: "verifier", heading: /Verification workbench/i },
-  { path: "/qa-review", name: "qa-review", heading: /Independent QA review/i },
-  { path: "/field-executive", name: "field", heading: /My field route/i },
-  { path: "/client-portal", name: "client-portal", heading: /Verification portfolio/i },
-  { path: "/executive", name: "executive", heading: /Portfolio intelligence/i },
-  { path: "/sales-crm", name: "sales", heading: /Revenue command/i },
-  { path: "/finance", name: "finance", heading: /Revenue control/i },
-  { path: "/settings", name: "settings", heading: /^Settings$/i },
-  { path: "/security", name: "security", heading: /Account protection/i },
+const workspaces: Array<{ path: string; name: string; title: RegExp }> = [
+  { path: "/admin", name: "control-tower", title: /Control Tower/i },
+  { path: "/admin/analytics", name: "analytics", title: /Executive Analytics/i },
+  { path: "/admin/sales", name: "sales-oversight", title: /Sales & CRM Oversight/i },
+  { path: "/admin/cases", name: "cases", title: /Verification Register/i },
+  { path: "/admin/verifier", name: "verifier-oversight", title: /Verifier Operations/i },
+  { path: "/admin/qa", name: "qa-oversight", title: /QA Review Oversight/i },
+  { path: "/admin/exceptions", name: "exceptions", title: /Exception Oversight/i },
+  { path: "/admin/field", name: "field-oversight", title: /Field Operations Oversight/i },
+  { path: "/admin/clients", name: "clients", title: /Client Management/i },
+  { path: "/admin/client-portal", name: "client-oversight", title: /Client Portfolio Oversight/i },
+  { path: "/admin/finance", name: "finance-oversight", title: /Finance & Billing Oversight/i },
+  { path: "/admin/users", name: "users", title: /User IDs & Access/i },
+  { path: "/admin/settings", name: "settings", title: /Platform Settings/i },
+  { path: "/admin/audit", name: "audit", title: /Audit Trail/i },
+  { path: "/admin/security", name: "security", title: /Account Security/i },
 ];
 
 test("all authenticated workspaces render cleanly on desktop and mobile", async ({
@@ -38,9 +42,7 @@ test("all authenticated workspaces render cleanly on desktop and mobile", async 
     await page.setViewportSize({ width: profile.width, height: profile.height });
     for (const workspace of workspaces) {
       await page.goto(workspace.path);
-      await expect(page.getByRole("heading", { name: workspace.heading }).first()).toBeVisible({
-        timeout: 45_000,
-      });
+      await expect(page).toHaveTitle(workspace.title, { timeout: 45_000 });
       await settle(page);
 
       const dimensions = await page.evaluate(() => ({
@@ -63,7 +65,7 @@ test("all authenticated workspaces render cleanly on desktop and mobile", async 
 });
 
 async function login(page: Page): Promise<void> {
-  await page.goto("/login");
+  await page.goto("/auth");
   await page.getByLabel("Work email").fill(credentials.email!);
   await page.getByLabel("Password", { exact: true }).fill(credentials.password!);
   const response = page.waitForResponse(
@@ -71,9 +73,9 @@ async function login(page: Page): Promise<void> {
       candidate.request().method() === "POST" && candidate.url().endsWith("/api/v1/auth/login"),
     { timeout: 60_000 },
   );
-  await page.getByRole("button", { name: /enter workspace/i }).click();
+  await page.getByRole("button", { name: /sign in/i }).click();
   expect((await response).status()).toBe(201);
-  await expect(page).not.toHaveURL(/\/login/, { timeout: 45_000 });
+  await expect(page).not.toHaveURL(/\/auth/, { timeout: 45_000 });
 }
 
 async function settle(page: Page): Promise<void> {

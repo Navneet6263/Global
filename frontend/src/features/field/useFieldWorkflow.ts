@@ -10,6 +10,7 @@ import {
   getMyFieldVisits,
   uploadVisitEvidence,
 } from "@/lib/api/field-visits";
+import { cachedIdentity } from "@/lib/auth/platform-session";
 import { loadFieldDrafts, removeFieldDraft, saveFieldDraft } from "./offline-store";
 import { emptyFieldDraft, type ApiFieldVisit, type FieldDraft } from "./types";
 import { capturePreciseFix } from "./field-geo-capture";
@@ -17,6 +18,7 @@ import { prepareEvidencePhotos } from "./evidence-files";
 
 export function useFieldWorkflow() {
   const queryClient = useQueryClient();
+  const deviceDataScope = cachedIdentity()?.deviceDataScope;
   const visitsQuery = useQuery({ queryKey: ["field-visits", "mine"], queryFn: getMyFieldVisits });
   const visits = useMemo(() => visitsQuery.data?.items ?? [], [visitsQuery.data?.items]);
   const policy = visitsQuery.data?.policy ?? {
@@ -35,7 +37,11 @@ export function useFieldWorkflow() {
   const [syncing, setSyncing] = useState(false);
   const [online, setOnline] = useState(true);
   useEffect(() => {
-    void loadFieldDrafts()
+    if (!deviceDataScope) {
+      toast.error("Secure offline storage is unavailable for this session");
+      return;
+    }
+    void loadFieldDrafts(deviceDataScope)
       .then(setDrafts)
       .catch(() => toast.error("Offline visit storage is unavailable"));
     setOnline(navigator.onLine);
@@ -47,7 +53,7 @@ export function useFieldWorkflow() {
       window.removeEventListener("online", wentOnline);
       window.removeEventListener("offline", wentOffline);
     };
-  }, []);
+  }, [deviceDataScope]);
   useEffect(() => {
     const preferred = visits.find((visit) => ["ASSIGNED", "IN_PROGRESS"].includes(visit.status));
     if (!activeId && (preferred ?? visits[0])) setActiveId((preferred ?? visits[0])!.id);
@@ -57,13 +63,17 @@ export function useFieldWorkflow() {
   const draft = active
     ? (drafts[active.id] ?? emptyFieldDraft(active.id))
     : emptyFieldDraft("pending");
-  const persist = useCallback(async (next: FieldDraft) => {
-    setDrafts((current) => ({ ...current, [next.visitId]: next }));
-    await saveFieldDraft(next).catch(() => {
-      toast.error("Draft could not be saved on this device");
-      throw new Error("Offline draft could not be saved");
-    });
-  }, []);
+  const persist = useCallback(
+    async (next: FieldDraft) => {
+      if (!deviceDataScope) throw new Error("Authenticated offline scope is unavailable");
+      setDrafts((current) => ({ ...current, [next.visitId]: next }));
+      await saveFieldDraft(deviceDataScope, next).catch(() => {
+        toast.error("Draft could not be saved on this device");
+        throw new Error("Offline draft could not be saved");
+      });
+    },
+    [deviceDataScope],
+  );
   const update = useCallback(
     (patch: Partial<FieldDraft>) => {
       if (!active) return;
@@ -140,7 +150,8 @@ export function useFieldWorkflow() {
       const withoutPhotos = { ...working, photos: [], synced: !working.checkOut };
       if (working.checkOut) {
         const result = await completeFieldVisit(visit, working, serverVersion);
-        await removeFieldDraft(visit.id);
+        if (!deviceDataScope) throw new Error("Authenticated offline scope is unavailable");
+        await removeFieldDraft(deviceDataScope, visit.id);
         setDrafts((current) => {
           const next = { ...current };
           delete next[visit.id];
@@ -155,7 +166,7 @@ export function useFieldWorkflow() {
       }
       await queryClient.invalidateQueries({ queryKey: ["field-visits", "mine"] });
     },
-    [persist, queryClient],
+    [deviceDataScope, persist, queryClient],
   );
 
   const checkout = useCallback(async () => {
@@ -201,14 +212,21 @@ export function useFieldWorkflow() {
       let failed = 0;
       for (const value of Object.values(drafts).filter((item) => !item.synced)) {
         const visit = visits.find((item) => item.id === value.visitId);
-        if (!visit) continue;
+        if (!visit) {
+          failed += 1;
+          continue;
+        }
         try {
           await syncOne(visit, value);
         } catch {
           failed += 1;
         }
       }
-      if (failed) toast.error(`${failed} visit${failed === 1 ? "" : "s"} need retry`);
+      if (failed) {
+        toast.error(`${failed} visit draft${failed === 1 ? "" : "s"} could not sync`, {
+          description: "Refresh assignments, then retry while online.",
+        });
+      }
     } finally {
       setSyncing(false);
     }

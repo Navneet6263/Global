@@ -20,5 +20,4 @@ export const api: SaplingApi = {
   notifications: notificationRepository,
 };
 
-export const API_BASE_URL: string =
-  (import.meta.env["VITE_API_URL"] as string | undefined) ?? "/api/v1";
+export { API_BASE_URL } from "@/config/api";

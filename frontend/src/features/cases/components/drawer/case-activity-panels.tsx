@@ -26,17 +26,24 @@ export function CaseClarificationsPanel({ item }: { item: VerificationCase }) {
           className="space-y-2 rounded-xl border border-border bg-card p-4"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <StatusBadge
-              label={`For ${clarification.audience}`}
-              tone={clarification.audience === "client" ? "info" : "warning"}
-            />
-            <span className="text-[11px] text-muted-foreground">
-              Due {formatDateTime(clarification.dueAt)}
-            </span>
+            {clarification.audience ? (
+              <StatusBadge
+                label={`For ${clarification.audience}`}
+                tone={clarification.audience === "client" ? "info" : "warning"}
+              />
+            ) : (
+              <StatusBadge label="Clarification" tone="warning" />
+            )}
+            {clarification.dueAt ? (
+              <span className="text-[11px] text-muted-foreground">
+                Due {formatDateTime(clarification.dueAt)}
+              </span>
+            ) : null}
           </div>
           <p className="text-[13px] text-foreground">{clarification.question}</p>
           <p className="text-[11px] text-muted-foreground">
-            Raised by {clarification.raisedBy} · {formatRelativeToNow(clarification.raisedAt)}
+            {clarification.raisedBy ? `Raised by ${clarification.raisedBy} · ` : ""}
+            {formatRelativeToNow(clarification.raisedAt)}
           </p>
         </li>
       ))}
@@ -105,12 +112,14 @@ export function CaseReportsPanel({ item }: { item: VerificationCase }) {
           <div className="min-w-0 flex-1">
             <p className="text-[13px] font-medium text-foreground">Report {report.version}</p>
             <p className="text-[11px] text-muted-foreground">
-              Published {formatDateTime(report.publishedAt)} · {report.sizeKb} KB
+              {report.publishedAt
+                ? `Published ${formatDateTime(report.publishedAt)}`
+                : `Created ${formatDateTime(report.createdAt)}`}
             </p>
           </div>
           <StatusBadge
-            label={report.outcome === "clear" ? "Clear" : "Minor discrepancy"}
-            tone={report.outcome === "clear" ? "success" : "warning"}
+            label={report.status.replaceAll("_", " ")}
+            tone={report.status === "PUBLISHED" ? "success" : "neutral"}
           />
         </li>
       ))}

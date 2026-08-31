@@ -1,8 +1,5 @@
 import { Transform } from "class-transformer";
 import {
-  ArrayMaxSize,
-  ArrayMinSize,
-  IsArray,
   IsEmail,
   IsIn,
   IsOptional,
@@ -10,13 +7,13 @@ import {
   IsUUID,
   Length,
   Matches,
+  ValidateIf,
 } from "class-validator";
 import {
   INDIAN_MOBILE_MESSAGE,
   INDIAN_MOBILE_PATTERN,
   normalizeIndianMobile,
 } from "../../common/validation/indian-mobile";
-import { CheckTypes } from "../case.constants";
 
 export class CreateCaseDto {
   @IsUUID()
@@ -26,13 +23,15 @@ export class CreateCaseDto {
   @Length(2, 160)
   fullName!: string;
 
-  @IsOptional()
-  @IsEmail()
+  @ValidateIf((input: CreateCaseDto) => !input.phone || input.email !== undefined)
+  @IsEmail({}, { message: "A valid candidate email or mobile number is required" })
   email?: string;
 
-  @IsOptional()
+  @ValidateIf((input: CreateCaseDto) => !input.email || input.phone !== undefined)
   @Transform(({ value }) => normalizeIndianMobile(value))
-  @Matches(INDIAN_MOBILE_PATTERN, { message: `phone ${INDIAN_MOBILE_MESSAGE}` })
+  @Matches(INDIAN_MOBILE_PATTERN, {
+    message: `A candidate email or phone ${INDIAN_MOBILE_MESSAGE}`,
+  })
   phone?: string;
 
   @IsOptional()
@@ -48,9 +47,6 @@ export class CreateCaseDto {
   @IsIn(["LOW", "NORMAL", "HIGH", "URGENT"])
   priority: string = "NORMAL";
 
-  @IsArray()
-  @ArrayMinSize(1)
-  @ArrayMaxSize(9)
-  @IsIn(CheckTypes, { each: true })
-  checks!: string[];
+  @IsUUID()
+  servicePackageId!: string;
 }

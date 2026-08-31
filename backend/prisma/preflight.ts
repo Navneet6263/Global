@@ -80,6 +80,21 @@ const checks: readonly DomainCheck[] = [
     allowed: ["PENDING", "PROCESSING", "RETRY", "PROCESSED", "FAILED"],
   },
   {
+    table: "Invoice",
+    column: "status",
+    allowed: [
+      "DRAFT",
+      "ISSUED",
+      "PARTIALLY_PAID",
+      "PAID",
+      "PARTIALLY_CREDITED",
+      "CREDITED",
+      "SETTLED",
+      "CANCELLED",
+      "OVERDUE",
+    ],
+  },
+  {
     table: "Report",
     column: "status",
     allowed: ["QUEUED", "PUBLISHED", "FAILED"],
@@ -107,6 +122,13 @@ const adapter = new PrismaMssql({
 const prisma = new PrismaClient({ adapter });
 
 async function main(): Promise<void> {
+  const baseline = await prisma.$queryRawUnsafe<Array<{ count: number }>>(
+    "SELECT COUNT(*) AS [count] FROM sys.tables WHERE [name] = 'Tenant' AND [schema_id] = SCHEMA_ID('dbo')",
+  );
+  if (Number(baseline[0]?.count ?? 0) === 0) {
+    console.log("Migration preflight skipped: fresh database has no application schema yet.");
+    return;
+  }
   const violations: string[] = [];
 
   for (const check of checks) {

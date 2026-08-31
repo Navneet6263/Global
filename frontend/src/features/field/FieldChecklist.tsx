@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+
 import type { FieldDraft } from "./types";
 
 const fieldChecklist = [
@@ -24,10 +25,15 @@ export function FieldChecklist({
         : [...draft.checklist, item],
     });
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Visit checklist</h2>
-        <span className="text-[10px] text-slate-400">
+    <section className="surface rounded-[1.75rem] p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold">Visit checklist</h2>
+          <p className="mt-0.5 text-[10px] text-muted-foreground">
+            Record only what was observed on site
+          </p>
+        </div>
+        <span className="num rounded-full bg-secondary px-2.5 py-1 text-[10px] text-muted-foreground">
           {draft.checklist.length}/{fieldChecklist.length}
         </span>
       </div>
@@ -40,12 +46,14 @@ export function FieldChecklist({
               type="button"
               disabled={disabled}
               onClick={() => toggle(item)}
-              className={`flex w-full items-center gap-2.5 rounded-xl border px-3 py-2.5 text-left ${done ? "border-emerald-100 bg-emerald-50" : "border-slate-200 bg-slate-50"} disabled:cursor-not-allowed`}
+              className={`flex min-h-11 w-full items-center gap-3 rounded-[1rem] border px-3 py-2.5 text-left transition-colors ${done ? "border-success/15 bg-success-soft" : "border-white/70 bg-secondary/45 hover:bg-secondary/70"} disabled:cursor-not-allowed disabled:opacity-60`}
             >
               <CheckCircle2
-                className={`h-4 w-4 shrink-0 ${done ? "text-emerald-600" : "text-slate-300"}`}
+                className={`size-4 shrink-0 ${done ? "text-success" : "text-border-strong"}`}
               />
-              <span className={`text-xs ${done ? "text-slate-800" : "text-slate-500"}`}>
+              <span
+                className={`text-xs ${done ? "font-medium text-success-foreground" : "text-muted-foreground"}`}
+              >
                 {item}
               </span>
             </button>
@@ -58,9 +66,9 @@ export function FieldChecklist({
         disabled={disabled}
         onChange={(event) => onChange({ remarks: event.target.value })}
         placeholder="Who confirmed the address? Add factual remarks only."
-        className="mt-3 h-20 w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs outline-none focus:border-orange-300 disabled:cursor-not-allowed"
+        className="mt-3 h-24 w-full resize-none rounded-[1rem] border border-input bg-white/80 px-3 py-2.5 text-xs leading-5 outline-none transition-shadow placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-primary/15 disabled:cursor-not-allowed"
       />
-      <p className="mt-2 text-[10px] text-slate-400">
+      <p className="mt-2 text-[10px] text-muted-foreground">
         Stored on this device until sync · {draft.synced ? "synced" : "pending secure API sync"}.
       </p>
     </section>

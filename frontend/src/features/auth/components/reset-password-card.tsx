@@ -1,26 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
-import { changePassword, logout } from "@/lib/backend-api/auth";
-import { clearIdentity } from "@/lib/auth/platform-session";
+import { changePassword } from "@/lib/backend-api/auth";
+import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { BrandMark } from "@/components/shell/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { isValidUserPassword, PASSWORD_REQUIREMENTS } from "@/lib/password-policy";
 
 export function ResetPasswordCard() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
   const submit = async () => {
-    if (password.length < 7) {
-      toast.error("Use at least 7 characters");
+    if (!isValidUserPassword(password)) {
+      toast.error(PASSWORD_REQUIREMENTS);
       return;
     }
     if (password !== confirm) {
@@ -30,8 +33,9 @@ export function ResetPasswordCard() {
     setBusy(true);
     try {
       await changePassword({ currentPassword, newPassword: password });
-      await logout();
-      clearIdentity();
+      await queryClient.cancelQueries();
+      await endAuthenticatedSession();
+      queryClient.clear();
       toast.success("Password updated. Sign in again.");
       await navigate({ to: "/auth", replace: true });
     } catch (error) {
@@ -81,8 +85,10 @@ export function ResetPasswordCard() {
             autoComplete="new-password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            minLength={7}
             required
           />
+          <p className="mt-1.5 text-[11px] text-muted-foreground">{PASSWORD_REQUIREMENTS}.</p>
         </div>
         <div>
           <Label htmlFor="confirm-password" className="mb-1.5 block text-xs">
@@ -94,6 +100,7 @@ export function ResetPasswordCard() {
             autoComplete="new-password"
             value={confirm}
             onChange={(event) => setConfirm(event.target.value)}
+            minLength={7}
             required
           />
         </div>
@@ -110,9 +117,24 @@ export function ResetPasswordCard() {
           variant="ghost"
           size="sm"
           className="w-full"
-          onClick={() => void navigate({ to: "/auth", replace: true })}
+          disabled={busy}
+          onClick={() => {
+            void (async () => {
+              setBusy(true);
+              try {
+                await queryClient.cancelQueries();
+                await endAuthenticatedSession();
+                queryClient.clear();
+                await navigate({ to: "/auth", replace: true });
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Could not sign out");
+              } finally {
+                setBusy(false);
+              }
+            })();
+          }}
         >
-          Back to sign in
+          Sign out and return to sign in
         </Button>
       </form>
     </section>

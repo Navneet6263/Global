@@ -9,10 +9,10 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import type { NavGroup, NavItem } from "./navigation";
+import type { NavGroup, NavItem } from "./navigation.types";
 import type { Role } from "./roles";
 
-const CRM_ROLES: readonly Role[] = ["SALES_MANAGER", "PLATFORM_ADMIN"];
+const CRM_ROLES: readonly Role[] = ["SALES_MANAGER"];
 
 export const CRM_NAV_GROUPS: readonly NavGroup[] = [
   { id: "revenue", label: "Revenue", defaultOpen: true },
@@ -31,7 +31,6 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     group: "revenue",
     roles: CRM_ROLES,
     permission: "crm:read",
-    phase: "live",
   },
   {
     workspace: "sales-crm",
@@ -43,7 +42,6 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     roles: CRM_ROLES,
     permission: "crm:read",
     badge: { key: "crmOpenOpportunities", tone: "info" },
-    phase: "live",
   },
   {
     workspace: "sales-crm",
@@ -53,8 +51,7 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     route: "/sales-crm/forecast",
     group: "revenue",
     roles: CRM_ROLES,
-    permission: "crm:forecast",
-    phase: "live",
+    permission: "crm:read",
   },
   {
     workspace: "sales-crm",
@@ -66,7 +63,6 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     roles: CRM_ROLES,
     permission: "crm:read",
     badge: { key: "crmOverdueFollowUps", tone: "critical" },
-    phase: "live",
   },
   {
     workspace: "sales-crm",
@@ -77,7 +73,6 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     group: "work",
     roles: CRM_ROLES,
     permission: "crm:read",
-    phase: "live",
   },
   {
     workspace: "sales-crm",
@@ -88,7 +83,6 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     group: "work",
     roles: CRM_ROLES,
     permission: "client:read",
-    phase: "live",
   },
   {
     workspace: "sales-crm",
@@ -98,8 +92,7 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     route: "/sales-crm/team",
     group: "stakeholders",
     roles: CRM_ROLES,
-    permission: "crm:assign",
-    phase: "live",
+    permission: "crm:write",
   },
   {
     workspace: "sales-crm",
@@ -110,7 +103,6 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     group: "account",
     roles: CRM_ROLES,
     permission: "crm:read",
-    phase: "live",
   },
   {
     workspace: "sales-crm",
@@ -121,6 +113,5 @@ export const CRM_NAV_ITEMS: readonly NavItem[] = [
     group: "account",
     roles: CRM_ROLES,
     permission: "crm:read",
-    phase: "live",
   },
 ];

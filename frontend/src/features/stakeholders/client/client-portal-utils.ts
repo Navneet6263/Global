@@ -27,18 +27,18 @@ export function caseStatusLabel(value: string): string {
 
 export function statusTone(value: string): string {
   if (["COMPLETED", "CLOSED", "APPROVED", "RESOLVED"].includes(value)) {
-    return "bg-emerald-50 text-emerald-700 ring-emerald-200";
+    return "bg-success-soft text-success-foreground ring-success/20";
   }
   if (["CANCELLED", "REJECTED", "OVERDUE"].includes(value)) {
-    return "bg-red-50 text-red-700 ring-red-200";
+    return "bg-critical-soft text-critical-foreground ring-critical/20";
   }
   if (["CLARIFICATION_PENDING", "OPEN", "DOCUMENT_PENDING"].includes(value)) {
-    return "bg-amber-50 text-amber-700 ring-amber-200";
+    return "bg-warning-soft text-warning-foreground ring-warning/20";
   }
   if (["RESPONDED", "QA_PENDING", "QA_REVIEW"].includes(value)) {
-    return "bg-violet-50 text-violet-700 ring-violet-200";
+    return "bg-review-soft text-review-foreground ring-review/20";
   }
-  return "bg-blue-50 text-blue-700 ring-blue-200";
+  return "bg-info-soft text-info-foreground ring-info/20";
 }
 
 export function relativeTime(value: string): string {

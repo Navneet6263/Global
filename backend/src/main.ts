@@ -18,6 +18,13 @@ import { AppModule } from "./app.module";
 import { ProblemDetailsFilter } from "./common/http/problem-details.filter";
 
 async function bootstrap(): Promise<void> {
+  const trustProxyValue = process.env.TRUST_PROXY ?? "false";
+  const trustProxy =
+    trustProxyValue === "false"
+      ? false
+      : /^\d+$/.test(trustProxyValue)
+        ? Number(trustProxyValue)
+        : trustProxyValue.split(",").map((entry) => entry.trim());
   const adapter = new FastifyAdapter({
     logger:
       process.env.NODE_ENV === "production"
@@ -31,9 +38,24 @@ async function bootstrap(): Promise<void> {
               ],
               censor: "[REDACTED]",
             },
+            serializers: {
+              req(request: {
+                method?: string;
+                url?: string;
+                remoteAddress?: string;
+                remotePort?: number;
+              }) {
+                return {
+                  method: request.method,
+                  url: request.url?.split("?", 1)[0],
+                  remoteAddress: request.remoteAddress,
+                  remotePort: request.remotePort,
+                };
+              },
+            },
           }
         : false,
-    trustProxy: process.env.TRUST_PROXY === "true",
+    trustProxy,
     requestIdHeader: "x-request-id",
     genReqId: () => randomUUID(),
   });

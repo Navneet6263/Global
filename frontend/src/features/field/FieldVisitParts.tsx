@@ -18,15 +18,25 @@ export function FieldStepStrip({
     { number: "4", label: "Complete", done: complete },
   ];
   return (
-    <div className="grid grid-cols-4 border-b border-slate-200 bg-slate-50 px-2 py-3">
-      {steps.map(({ number, label, done }) => (
-        <div key={label} className="text-center">
+    <div className="grid grid-cols-4 border-y border-white/70 bg-secondary/45 px-2 py-3.5">
+      {steps.map(({ number, label, done }, index) => (
+        <div key={label} className="relative text-center">
+          {index ? (
+            <span
+              aria-hidden
+              className={`absolute right-1/2 top-3 h-px w-full ${steps[index - 1]?.done ? "bg-success/45" : "bg-border"}`}
+            />
+          ) : null}
           <span
-            className={`mx-auto grid h-6 w-6 place-items-center rounded-full text-[9px] font-bold ${done ? "bg-emerald-600 text-white" : "bg-white text-slate-400"}`}
+            className={`relative z-10 mx-auto grid size-6 place-items-center rounded-full border text-[9px] font-semibold shadow-sm ${done ? "border-success bg-success text-white" : "border-white bg-white text-muted-foreground"}`}
           >
             {done ? <Check className="h-3 w-3" /> : number}
           </span>
-          <p className="mt-1 text-[9px] text-slate-500">{label}</p>
+          <p
+            className={`mt-1.5 text-[9px] ${done ? "font-medium text-success-foreground" : "text-muted-foreground"}`}
+          >
+            {label}
+          </p>
         </div>
       ))}
     </div>
@@ -36,13 +46,16 @@ export function FieldStepStrip({
 export function FieldVisitStatus({ status }: { status: string }) {
   const tone =
     status === "COMPLETED"
-      ? "bg-emerald-100 text-emerald-700"
+      ? "bg-success-soft text-success-foreground"
       : status === "EXCEPTION_REVIEW"
-        ? "bg-amber-100 text-amber-700"
-        : "bg-blue-100 text-blue-700";
+        ? "bg-warning-soft text-warning-foreground"
+        : "bg-info-soft text-info-foreground";
   return (
-    <span className={`rounded-full px-2.5 py-1 text-[9px] font-bold ${tone}`}>
-      {status.replaceAll("_", " ").toLowerCase()}
+    <span className={`rounded-full px-2.5 py-1 text-[9px] font-semibold ${tone}`}>
+      {status
+        .replaceAll("_", " ")
+        .toLowerCase()
+        .replace(/^./, (value) => value.toUpperCase())}
     </span>
   );
 }
@@ -62,7 +75,7 @@ export function FieldControl({
   primary?: boolean;
   href?: string | undefined;
 }) {
-  const classes = `flex h-11 items-center justify-center gap-1.5 rounded-xl text-xs font-semibold ${primary ? "bg-slate-950 text-white" : "border border-slate-200 bg-white text-slate-700"} disabled:cursor-not-allowed disabled:opacity-35`;
+  const classes = `flex h-11 items-center justify-center gap-2 rounded-full text-xs font-semibold transition-all ${primary ? "bg-mint-deep text-white shadow-[var(--shadow-card)] hover:-translate-y-0.5" : "border border-white/80 bg-white/85 text-foreground shadow-[var(--shadow-card)] hover:bg-white"} disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0`;
   return href ? (
     <a href={href} target="_blank" rel="noreferrer" className={classes}>
       <Icon className="h-4 w-4" />

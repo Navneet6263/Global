@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
 import { ReportPdfService } from "./report-pdf.service";
@@ -25,10 +26,7 @@ export class ReportsService {
     const reports = await this.prisma.report.findMany({
       where: {
         tenantId: actor.tenantId,
-        case: {
-          publicId: casePublicId,
-          ...(actor.clientId ? { clientId: actor.clientId } : {}),
-        },
+        case: { ...caseAccessScope(actor), publicId: casePublicId },
       },
       select: {
         publicId: true,
@@ -57,12 +55,27 @@ export class ReportsService {
   }
 
   async generate(actor: Actor, casePublicId: string) {
+    return this.generateVersion(actor, casePublicId);
+  }
+
+  async generateRequested(
+    actor: Actor,
+    casePublicId: string,
+    reportPublicId: string,
+  ) {
+    return this.generateVersion(actor, casePublicId, reportPublicId);
+  }
+
+  private async generateVersion(
+    actor: Actor,
+    casePublicId: string,
+    requestedReportId?: string,
+  ) {
     const verificationCase = await this.prisma.verificationCase.findFirst({
       where: {
-        tenantId: actor.tenantId,
+        ...caseAccessScope(actor),
         publicId: casePublicId,
         status: { in: ["COMPLETED", "CLOSED"] },
-        ...(actor.clientId ? { clientId: actor.clientId } : {}),
       },
       include: {
         tenant: { select: { publicId: true } },
@@ -76,13 +89,44 @@ export class ReportsService {
           },
           orderBy: { createdAt: "asc" },
         },
-        reports: { orderBy: { createdAt: "desc" }, take: 1 },
+        reports: {
+          ...(requestedReportId
+            ? { where: { publicId: requestedReportId } }
+            : {}),
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          include: {
+            versions: { orderBy: { version: "desc" }, take: 1 },
+          },
+        },
       },
     });
     if (!verificationCase)
       throw new NotFoundException("Completed case not found");
 
     const existing = verificationCase.reports[0];
+    if (requestedReportId) {
+      if (!existing) {
+        throw new NotFoundException(
+          "Requested report does not belong to this case",
+        );
+      }
+      if (existing.currentVersion > 0) {
+        const published = existing.versions[0];
+        if (!published)
+          throw new ConflictException(
+            "Published report version is unavailable",
+          );
+        return {
+          id: existing.publicId,
+          status: existing.status,
+          version: published.version,
+          sha256: published.sha256,
+          authenticityCode: published.authenticityCode,
+          generatedAt: published.generatedAt,
+        };
+      }
+    }
     const report =
       existing ??
       (await this.prisma.report.create({
@@ -168,7 +212,7 @@ export class ReportsService {
           publicId: reportPublicId,
           tenantId: actor.tenantId,
           status: "PUBLISHED",
-          ...(actor.clientId ? { case: { clientId: actor.clientId } } : {}),
+          case: caseAccessScope(actor),
         },
       },
       orderBy: { version: "desc" },

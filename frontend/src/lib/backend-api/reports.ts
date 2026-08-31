@@ -28,6 +28,12 @@ export function generateReport(caseId: string) {
   }>(`/cases/${caseId}/reports/generate`, { method: "POST" });
 }
 
+export function retryReport(caseId: string, reportId: string) {
+  return apiRequest<{ id: string; status: string }>(`/cases/${caseId}/reports/${reportId}/retry`, {
+    method: "POST",
+  });
+}
+
 export async function downloadReport(reportId: string, caseNumber: string) {
   const blob = await apiDownload(`/reports/${reportId}/content`);
   saveBlob(blob, `Sapling-Global-${caseNumber}.pdf`);

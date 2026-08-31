@@ -18,9 +18,9 @@ export interface OpsMetric {
   label: string;
   explanation: string;
   value: number;
-  previousValue: number;
-  deltaPercent: number;
-  direction: TrendDirection;
+  previousValue?: number;
+  deltaPercent?: number;
+  direction?: TrendDirection;
   tone: StatusTone;
   series: readonly number[];
   filterLabel: string;
@@ -30,10 +30,9 @@ export interface OpsStageSnapshot {
   stage: OpsStage;
   count: number;
   percent: number;
-  averageAgeMinutes: number;
   oldestAgeMinutes: number;
   slaRiskCount: number;
-  unassignedCount: number;
+  unassignedCount?: number;
   bottleneck: boolean;
 }
 
@@ -92,23 +91,18 @@ export interface OpsAssignableItem {
   requestedAt: string;
 }
 
-export type OpsCapacity = "available" | "balanced" | "stretched" | "overloaded";
-
 export interface OpsTeamMember {
   id: string;
   name: string;
   role: string;
   branch: string;
-  skills: readonly OpsCheckType[];
   activeCases: number;
   activeChecks: number;
   dueToday: number;
   overdue: number;
   completedToday: number;
-  averageTurnaroundMinutes: number;
-  capacity: OpsCapacity;
-  capacityPercent: number;
-  availability: "available" | "on_leave" | "in_field";
+  averageTurnaroundMinutes: number | null;
+  relativeLoadPercent: number;
 }
 
 export interface AssignmentQueue {
@@ -174,16 +168,15 @@ export interface OpsExceptionQuery {
 }
 
 export interface SlaPerformance {
-  healthPercent: number;
-  dueToday: number;
-  dueTomorrow: number;
+  healthPercent: number | null;
+  dueNext7Days: number;
   overdue: number;
-  averageTurnaroundMinutes: number;
+  averageTurnaroundMinutes: number | null;
   atRisk: readonly OpsCase[];
   stageAgeing: readonly { stage: OpsStage; averageAgeMinutes: number; oldestAgeMinutes: number }[];
-  byClient: readonly { name: string; onTimePercent: number; volume: number }[];
-  byPackage: readonly { name: string; onTimePercent: number; volume: number }[];
-  weeklyTrend: readonly { label: string; onTimePercent: number; breaches: number }[];
+  byClient: readonly { name: string; onTimePercent: number | null; volume: number }[];
+  byPackage: readonly { name: string; onTimePercent: number | null; volume: number }[];
+  weeklyTrend: readonly { label: string; onTimePercent: number | null; breaches: number }[];
   breachReasons: readonly { reason: string; count: number }[];
   bottlenecks: readonly { stage: OpsStage; detail: string; impactedCases: number }[];
 }
@@ -201,11 +194,9 @@ export interface SlaQuery {
 
 export interface TeamCapacity {
   members: readonly OpsTeamMember[];
-  workload: readonly { name: string; checks: number; capacityPercent: number }[];
+  workload: readonly { name: string; checks: number }[];
   branches: readonly { branch: string; members: number; openChecks: number; loadPercent: number }[];
   demand: readonly { checkType: OpsCheckType; open: number }[];
-  overloaded: readonly string[];
-  underutilised: readonly string[];
   openAssignments: number;
 }
 

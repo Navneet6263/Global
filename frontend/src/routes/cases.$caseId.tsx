@@ -2,8 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Building2, ClipboardCheck, Clock3 } from "lucide-react";
 
-import { Sidebar } from "@/components/ops/Sidebar";
-import { Topbar } from "@/components/ops/Topbar";
+import { AdminShell } from "@/components/shell/admin-shell";
 import { CaseActions, CandidatePanel, CheckCard } from "@/features/cases/case-workflow-panels";
 import { FieldVisitPanel } from "@/features/cases/case-field-visit-panel";
 import { ConsentPanel, DocumentPanel, ReportsPanel } from "@/features/cases/case-evidence-panels";
@@ -17,8 +16,10 @@ import {
 } from "@/features/cases/case-detail-ui";
 import { formatDate, formatDateTime, humanize } from "@/features/cases/case-detail-formatting";
 import { getCase, type CaseDetail } from "@/lib/api/cases";
+import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/cases/$caseId")({
+  beforeLoad: () => requireRoleWorkspace(["OPS_MANAGER"]),
   component: CaseWorkspace,
   head: () => ({ meta: [{ title: "Case 360 — Sapling Global" }] }),
 });
@@ -31,17 +32,11 @@ function CaseWorkspace() {
   });
 
   return (
-    <div className="canvas-mesh min-h-screen bg-background text-foreground lg:pl-64">
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Topbar onRefresh={() => void query.refetch()} isRefreshing={query.isFetching} />
-        <main className="flex-1 px-4 pb-12 pt-5 sm:px-6">
-          {query.isLoading ? <CaseSkeleton /> : null}
-          {query.isError ? <CaseError message={query.error.message} /> : null}
-          {query.data ? <CaseDetailView item={query.data} /> : null}
-        </main>
-      </div>
-    </div>
+    <AdminShell workspace="operations">
+      {query.isLoading ? <CaseSkeleton /> : null}
+      {query.isError ? <CaseError message={query.error.message} /> : null}
+      {query.data ? <CaseDetailView item={query.data} /> : null}
+    </AdminShell>
   );
 }
 
@@ -49,7 +44,7 @@ function CaseDetailView({ item }: { item: CaseDetail }) {
   return (
     <div className="mx-auto max-w-[1500px] space-y-5">
       <Link
-        to="/"
+        to="/operations/cases"
         className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="h-4 w-4" /> Back to operations

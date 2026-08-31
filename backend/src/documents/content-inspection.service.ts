@@ -7,6 +7,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { createConnection } from "node:net";
 import type { UploadedBinary } from "../common/http/uploaded-binary";
+import { inspectDocumentStructure } from "./document-structure-inspection";
 
 const allowedMime = new Set(["application/pdf", "image/jpeg", "image/png"]);
 
@@ -15,7 +16,11 @@ export class ContentInspectionService {
   private readonly logger = new Logger(ContentInspectionService.name);
   constructor(private readonly config: ConfigService) {}
 
-  async inspect(file: UploadedBinary, maxBytes: number): Promise<void> {
+  async inspect(
+    file: UploadedBinary,
+    maxBytes: number,
+    options?: { documentType: string },
+  ): Promise<void> {
     if (!file.buffer?.length)
       throw new BadRequestException("Document file is empty");
     if (file.size > maxBytes)
@@ -32,7 +37,14 @@ export class ContentInspectionService {
     ) {
       throw new BadRequestException("Malware test signature detected");
     }
+    if (options) {
+      await inspectDocumentStructure(file, options.documentType);
+    }
     await this.scanWithClamAv(file.buffer);
+  }
+
+  async probe(): Promise<void> {
+    await this.scanWithClamAv(Buffer.from("sapling-malware-scanner-health"));
   }
 
   private async scanWithClamAv(contents: Buffer) {

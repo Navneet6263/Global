@@ -6,7 +6,8 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { clientPublicSelect } from "../common/persistence/public-selects";
 import { PrismaService } from "../database/prisma.service";
-import type { PageQueryDto } from "../common/dto/page-query.dto";
+import type { Prisma } from "../generated/prisma/client";
+import type { ClientQueryDto } from "./dto/client-query.dto";
 import type { CreateClientDto } from "./dto/create-client.dto";
 import type { UpdateClientDto } from "./dto/update-client.dto";
 
@@ -14,30 +15,55 @@ import type { UpdateClientDto } from "./dto/update-client.dto";
 export class ClientsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async list(actor: Actor, query: PageQueryDto) {
-    const search = query.search?.trim();
-    const rows = await this.prisma.client.findMany({
-      where: {
-        tenantId: actor.tenantId,
-        ...(actor.clientId ? { id: actor.clientId } : {}),
-        ...(search
-          ? {
-              OR: [
-                { code: { contains: search } },
-                { displayName: { contains: search } },
-                { legalName: { contains: search } },
-              ],
-            }
+  async list(actor: Actor, query: ClientQueryDto) {
+    const where = clientDirectoryWhere(actor, query);
+    const orderBy: Prisma.ClientOrderByWithRelationInput[] = [
+      { displayName: "asc" },
+      { publicId: "asc" },
+    ];
+    const pageSize = query.pageSize ?? query.limit;
+    if (query.page) {
+      const [rows, total] = await Promise.all([
+        this.prisma.client.findMany({
+          where,
+          select: clientPublicSelect,
+          orderBy,
+          skip: (query.page - 1) * pageSize,
+          take: pageSize,
+        }),
+        this.prisma.client.count({ where }),
+      ]);
+      return {
+        items: rows,
+        total,
+        page: query.page,
+        pageSize,
+        nextCursor:
+          query.page * pageSize < total
+            ? (rows.at(-1)?.publicId ?? null)
+            : null,
+      };
+    }
+
+    const [rows, total] = await Promise.all([
+      this.prisma.client.findMany({
+        where,
+        select: clientPublicSelect,
+        orderBy,
+        take: query.limit + 1,
+        ...(query.cursor
+          ? { cursor: { publicId: query.cursor }, skip: 1 }
           : {}),
-      },
-      select: clientPublicSelect,
-      orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
-      take: query.limit + 1,
-      ...(query.cursor ? { cursor: { publicId: query.cursor }, skip: 1 } : {}),
-    });
+      }),
+      this.prisma.client.count({ where }),
+    ]);
     const hasMore = rows.length > query.limit;
     const items = hasMore ? rows.slice(0, query.limit) : rows;
-    return { items, nextCursor: hasMore ? items.at(-1)?.publicId : null };
+    return {
+      items,
+      total,
+      nextCursor: hasMore ? (items.at(-1)?.publicId ?? null) : null,
+    };
   }
 
   async create(actor: Actor, input: CreateClientDto) {
@@ -133,4 +159,27 @@ export class ClientsService {
       return updated;
     });
   }
+}
+
+export function clientDirectoryWhere(
+  actor: Actor,
+  query: ClientQueryDto,
+): Prisma.ClientWhereInput {
+  const search = query.search?.trim();
+  return {
+    tenantId: actor.tenantId,
+    ...(actor.clientId ? { id: actor.clientId } : {}),
+    ...(query.status ? { status: query.status } : {}),
+    ...(search
+      ? {
+          OR: [
+            { code: { contains: search } },
+            { displayName: { contains: search } },
+            { legalName: { contains: search } },
+            { contactName: { contains: search } },
+            { contactEmail: { contains: search } },
+          ],
+        }
+      : {}),
+  };
 }

@@ -5,17 +5,21 @@ const tenantCode = process.env.E2E_TENANT_CODE;
 const email = process.env.E2E_ADMIN_EMAIL;
 const temporaryPassword = process.env.E2E_ADMIN_PASSWORD;
 const newPassword = process.env.E2E_ADMIN_NEW_PASSWORD;
-const apiUrl = `${(process.env.E2E_API_URL ?? "http://localhost:4000/api/v1").replace(/\/+$/, "")}/`;
+const apiUrl = `${(process.env.E2E_API_URL ?? "http://127.0.0.1:4100/api/v1").replace(/\/+$/, "")}/`;
+const browserOrigin = process.env.E2E_BASE_URL ?? "http://localhost:8080";
 
 test("temporary-password accounts cannot bypass server-side password setup", async () => {
   test.skip(!enabled, "Set E2E_FORCED_PASSWORD_FLOW=true to verify forced password setup");
   if (!tenantCode || !email || !temporaryPassword || !newPassword) {
     throw new Error("Forced-password E2E credentials are required");
   }
+  if (!email.toLowerCase().endsWith("@e2e.invalid")) {
+    throw new Error("Forced-password E2E may only mutate a disposable @e2e.invalid account");
+  }
 
   const api = await request.newContext({
     baseURL: apiUrl,
-    extraHTTPHeaders: { origin: "http://localhost:3000" },
+    extraHTTPHeaders: { origin: browserOrigin },
   });
   try {
     await expectStatus(
@@ -37,7 +41,7 @@ test("temporary-password accounts cannot bypass server-side password setup", asy
 
     await expectStatus(
       await api.post("auth/change-password", {
-        headers: { "idempotency-key": "forced-password-change-0001" },
+        headers: { "idempotency-key": `forced-password:${crypto.randomUUID()}` },
         data: { currentPassword: temporaryPassword, newPassword },
       }),
       201,

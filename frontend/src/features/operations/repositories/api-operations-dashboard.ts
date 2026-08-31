@@ -1,110 +1,74 @@
-import { getExecutiveDashboard, getOperationsDashboard } from "@/lib/backend-api/dashboards";
+import {
+  getExceptionsDashboard,
+  getExecutiveDashboard,
+  getOperationsDashboard,
+} from "@/lib/backend-api/dashboards";
+import type { OpsStage, OpsPriority } from "../contracts/case";
+import type { OpsMetric, OpsStageSnapshot } from "../contracts/operations";
 import { slaOf, stages } from "./api-operations-mappers";
 
 export async function getOperationsWorkspaceDashboard() {
-  const [ops, executive] = await Promise.all([
+  const [ops, executive, exceptions] = await Promise.all([
     getOperationsDashboard(),
     getExecutiveDashboard({ months: 12 }),
+    getExceptionsDashboard(),
   ]);
   const active =
-    ops.summary.total - (ops.statusMix["COMPLETED"] ?? 0) - (ops.statusMix["CLOSED"] ?? 0);
-  const metrics = [
+    ops.summary.total -
+    (ops.statusMix["COMPLETED"] ?? 0) -
+    (ops.statusMix["CLOSED"] ?? 0) -
+    (ops.statusMix["CANCELLED"] ?? 0);
+  const metrics: OpsMetric[] = [
+    snapshotMetric("active", "Active workload", "Cases currently in delivery", active, "info"),
+    snapshotMetric(
+      "unassigned",
+      "Unassigned",
+      "Cases without an operations owner",
+      executive.forecast.unassignedActive,
+      executive.forecast.unassignedActive ? "warning" : "success",
+    ),
+    snapshotMetric(
+      "dueToday",
+      "Due next 7 days",
+      "Delivery commitments due within seven days",
+      executive.forecast.dueNext7Days,
+      "warning",
+    ),
     {
-      id: "active" as const,
-      label: "Active workload",
-      explanation: "Cases currently in delivery",
-      value: active,
-      previousValue: active,
-      deltaPercent: 0,
-      direction: "flat" as const,
-      tone: "info" as const,
-      series: ops.trend.map((row) => row.created),
-      filterLabel: "Active",
-    },
-    {
-      id: "unassigned" as const,
-      label: "Unassigned",
-      explanation: "Cases without an operations owner",
-      value: executive.forecast.unassignedActive,
-      previousValue: executive.forecast.unassignedActive,
-      deltaPercent: 0,
-      direction: "flat" as const,
-      tone: executive.forecast.unassignedActive ? ("warning" as const) : ("success" as const),
-      series: ops.trend.map(() => 0),
-      filterLabel: "Unassigned",
-    },
-    {
-      id: "dueToday" as const,
-      label: "Due today",
-      explanation: "Delivery commitments due today",
-      value: executive.forecast.dueNext7Days,
-      previousValue: executive.forecast.dueNext7Days,
-      deltaPercent: 0,
-      direction: "flat" as const,
-      tone: "warning" as const,
+      ...snapshotMetric(
+        "slaRisk",
+        "SLA risk",
+        "Cases already overdue",
+        ops.summary.overdue,
+        ops.summary.overdue ? "critical" : "success",
+      ),
       series: executive.performanceTrend.map((row) => row.overdue),
-      filterLabel: "Due today",
     },
+    snapshotMetric(
+      "clarifications",
+      "Clarifications",
+      "Open stakeholder responses",
+      exceptions.summary.clarifications,
+      exceptions.summary.clarifications ? "warning" : "success",
+    ),
     {
-      id: "slaRisk" as const,
-      label: "SLA risk",
-      explanation: "Cases already overdue",
-      value: ops.summary.overdue,
-      previousValue: ops.summary.overdue,
-      deltaPercent: 0,
-      direction: "flat" as const,
-      tone: ops.summary.overdue ? ("critical" as const) : ("success" as const),
-      series: executive.performanceTrend.map((row) => row.overdue),
-      filterLabel: "SLA risk",
-    },
-    {
-      id: "clarifications" as const,
-      label: "Clarifications",
-      explanation: "Open stakeholder responses",
-      value: 0,
-      previousValue: 0,
-      deltaPercent: 0,
-      direction: "flat" as const,
-      tone: "warning" as const,
-      series: ops.trend.map(() => 0),
-      filterLabel: "Clarifications",
-    },
-    {
-      id: "completedToday" as const,
-      label: "Completed today",
-      explanation: "Cases closed today",
-      value: ops.summary.completedToday,
-      previousValue: ops.summary.completedToday,
-      deltaPercent: 0,
-      direction: "flat" as const,
-      tone: "success" as const,
+      ...snapshotMetric(
+        "completedToday",
+        "Completed today",
+        "Cases closed today",
+        ops.summary.completedToday,
+        "success",
+      ),
       series: ops.trend.map((row) => row.completed),
-      filterLabel: "Completed today",
     },
   ];
-  const total = Math.max(1, ops.summary.total);
-  const stagesData = Object.entries(ops.statusMix).map(([status, count]) => ({
-    stage: stages[status] ?? "verification",
-    count,
-    percent: Math.round((count / total) * 100),
-    averageAgeMinutes: 0,
-    oldestAgeMinutes: 0,
-    slaRiskCount: Math.min(count, ops.summary.overdue),
-    unassignedCount: 0,
-    bottleneck: false,
-  }));
   const actions = executive.attentionQueue.map((item) => ({
     id: item.id,
     kind: item.reasons.some((reason) => reason.toLowerCase().includes("overdue"))
       ? ("sla_overdue" as const)
       : ("sla_approaching" as const),
     treatment: item.severity >= 3 ? ("critical" as const) : ("action" as const),
-    severity:
-      item.severity >= 3
-        ? ("critical" as const)
-        : item.severity >= 2
-          ? ("high" as const)
-          : ("standard" as const),
+    severity: severity(item.severity),
     caseId: item.id,
     caseNumber: item.caseNumber,
     candidateName: item.subject.fullName,
@@ -119,12 +83,70 @@ export async function getOperationsWorkspaceDashboard() {
   return {
     generatedAt: ops.generatedAt,
     metrics,
-    stages: stagesData,
+    stages: stageSnapshots(ops.stageHealth ?? []),
     actions,
     throughput: ops.trend.map((row) => ({
       label: row.month,
       created: row.created,
       completed: row.completed,
     })),
+  };
+}
+
+function snapshotMetric(
+  id: OpsMetric["id"],
+  label: string,
+  explanation: string,
+  value: number,
+  tone: OpsMetric["tone"],
+): OpsMetric {
+  return { id, label, explanation, value, tone, series: [], filterLabel: label };
+}
+
+function severity(value: number): OpsPriority {
+  if (value >= 3) return "critical";
+  if (value >= 2) return "high";
+  return "standard";
+}
+
+function stageSnapshots(
+  rows: Array<{
+    status: string;
+    count: number;
+    oldestAgeHours: number;
+    atRisk: number;
+  }>,
+): OpsStageSnapshot[] {
+  const groups = new Map<OpsStage, Omit<OpsStageSnapshot, "percent">>();
+  rows.forEach((row) => {
+    if (row.status === "CANCELLED") return;
+    const stage = stages[row.status] ?? "verification";
+    const current = groups.get(stage) ?? emptyStage(stage);
+    const count = current.count + row.count;
+    groups.set(stage, {
+      ...current,
+      count,
+      oldestAgeMinutes: Math.max(current.oldestAgeMinutes, Math.round(row.oldestAgeHours * 60)),
+      slaRiskCount: current.slaRiskCount + row.atRisk,
+      bottleneck: current.bottleneck || row.atRisk > 0,
+    });
+  });
+  const total = Math.max(
+    1,
+    [...groups.values()].reduce((sum, row) => sum + row.count, 0),
+  );
+  return [...groups.values()].map((row) => ({
+    ...row,
+    percent: Math.round((row.count / total) * 100),
+  }));
+}
+
+function emptyStage(stage: OpsStage): Omit<OpsStageSnapshot, "percent"> {
+  return {
+    stage,
+    count: 0,
+    oldestAgeMinutes: 0,
+    slaRiskCount: 0,
+    bottleneck: false,
   };
 }

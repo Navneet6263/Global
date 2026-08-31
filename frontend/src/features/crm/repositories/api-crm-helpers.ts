@@ -10,7 +10,6 @@ import type {
   FollowUp,
   LeadSource,
   Opportunity,
-  OpportunityQuery,
   SalesActivity,
   SalesActivityType,
 } from "../contracts/crm";
@@ -50,10 +49,10 @@ export function mapOpportunity(row: BackendOpportunity): Opportunity {
     id: row.id,
     accountId: row.client?.publicId ?? row.companyName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
     company: row.companyName,
-    city: "—",
-    industry: "—",
+    city: row.city ?? "",
+    industry: row.industry ?? "",
     contactName: row.contactName,
-    contactTitle: "",
+    contactTitle: row.contactTitle ?? "",
     contactEmail: row.contactEmail ?? "",
     contactMobile: row.contactPhone ?? "",
     stage: row.stage,
@@ -63,7 +62,7 @@ export function mapOpportunity(row: BackendOpportunity): Opportunity {
     weightedValue: Math.round((estimatedValue * row.probability) / 100),
     ownerId: row.owner?.publicId ?? null,
     ownerName: row.owner?.displayName ?? null,
-    expectedCloseDate: row.expectedCloseDate ?? row.updatedAt,
+    expectedCloseDate: row.expectedCloseDate ?? null,
     nextFollowUpAt: row.nextFollowUpAt ?? null,
     lastActivityAt: row.updatedAt,
     createdAt: row.createdAt,
@@ -71,6 +70,8 @@ export function mapOpportunity(row: BackendOpportunity): Opportunity {
     lostReason: row.lostReason ?? undefined,
     closedAt: row.closedAt ?? undefined,
     finalValue: row.stage === "WON" ? estimatedValue : undefined,
+    onboardingHandoff: Boolean(row.onboardingHandoffAt),
+    onboardingHandoffAt: row.onboardingHandoffAt ?? null,
   };
 }
 
@@ -99,16 +100,24 @@ export function metric(
   tone: CrmMetric["tone"],
   series: number[],
 ): CrmMetric {
+  const previousValue = series.at(-2) ?? value;
+  const currentPoint = series.at(-1) ?? value;
+  const deltaPercent =
+    previousValue === 0
+      ? currentPoint === 0
+        ? 0
+        : 100
+      : ((currentPoint - previousValue) / Math.abs(previousValue)) * 100;
   return {
     id,
     label,
     explanation,
     value,
     display,
-    previousValue: value,
-    previousDisplay: display,
-    deltaPercent: 0,
-    direction: "flat",
+    previousValue,
+    previousDisplay: metricDisplay(id, previousValue),
+    deltaPercent,
+    direction: deltaPercent > 0 ? "up" : deltaPercent < 0 ? "down" : "flat",
     tone,
     series,
   };
@@ -123,8 +132,22 @@ export function money(value: number): string {
 }
 
 export async function allOpportunities(): Promise<Opportunity[]> {
-  const response = await listOpportunities({ limit: 100 });
-  return response.items.map(mapOpportunity);
+  const rows: Opportunity[] = [];
+  let cursor: string | undefined;
+  do {
+    const response = await listOpportunities({ limit: 100, cursor });
+    rows.push(...response.items.map(mapOpportunity));
+    cursor = response.nextCursor ?? undefined;
+  } while (cursor);
+  return rows;
+}
+
+function metricDisplay(id: CrmMetric["id"], value: number) {
+  if (id === "winRate") return `${value.toFixed(1)}%`;
+  if (id === "overdueFollowUps" || id === "activeOwners") {
+    return new Intl.NumberFormat("en-IN").format(value);
+  }
+  return money(value);
 }
 
 export function followUpFrom(row: Opportunity): FollowUp | null {
@@ -156,37 +179,29 @@ export function paginate<T>(rows: T[], page = 1, pageSize = 10) {
   };
 }
 
-export function filterOpportunities(rows: Opportunity[], query: OpportunityQuery): Opportunity[] {
-  const search = query.search?.toLowerCase();
-  return rows.filter((row) => {
-    if (search && !`${row.company} ${row.contactName} ${row.city}`.toLowerCase().includes(search))
-      return false;
-    if (query.stage && query.stage !== "all" && row.stage !== query.stage) return false;
-    if (query.owner === "unassigned" && row.ownerId) return false;
-    if (query.owner && !["all", "unassigned"].includes(query.owner) && row.ownerId !== query.owner)
-      return false;
-    if (query.source && query.source !== "all" && row.source !== query.source) return false;
-    if (query.minValue !== undefined && row.estimatedValue < query.minValue) return false;
-    if (query.maxValue !== undefined && row.estimatedValue > query.maxValue) return false;
-    if (query.minProbability !== undefined && row.probability < query.minProbability) return false;
-    if (query.maxProbability !== undefined && row.probability > query.maxProbability) return false;
-    if (query.followUp === "none" && row.nextFollowUpAt) return false;
-    if (
-      query.followUp === "overdue" &&
-      (!row.nextFollowUpAt || Date.parse(row.nextFollowUpAt) >= Date.now())
-    )
-      return false;
-    return true;
-  });
-}
-
 export async function overview(): Promise<CrmOverview> {
   const data = await getCrmOverview();
   const values = data.trend.map((row) => row.pipelineValue);
   const weighted = data.trend.map((row) => row.weightedValue);
   const won = data.trend.map((row) => row.wonValue);
-  const opportunities = await allOpportunities();
-  const followUps = opportunities.map(followUpFrom).filter((row): row is FollowUp => row !== null);
+  const followUps = data.followUps.map((row): FollowUp => {
+    const hours = (Date.parse(row.dueAt) - Date.now()) / 3_600_000;
+    return {
+      id: row.opportunityId,
+      opportunityId: row.opportunityId,
+      company: row.companyName,
+      contactName: row.contactName,
+      ownerName: row.ownerName,
+      stage: row.stage,
+      estimatedValue: row.estimatedValue,
+      dueAt: row.dueAt,
+      completedAt: null,
+      priority: hours < 0 ? "high" : hours < 48 ? "medium" : "low",
+      notes: row.notes ?? "",
+      lastActivityAt: row.lastActivityAt,
+      suggestedAction: hours < 0 ? "Complete overdue follow-up" : "Contact prospect",
+    };
+  });
   return {
     generatedAt: data.generatedAt,
     metrics: [
@@ -211,7 +226,7 @@ export async function overview(): Promise<CrmOverview> {
       metric(
         "closedWon",
         "Closed won",
-        "Revenue won in the selected period",
+        "All-time recorded won revenue",
         data.summary.wonValue,
         money(data.summary.wonValue),
         "success",
@@ -221,19 +236,19 @@ export async function overview(): Promise<CrmOverview> {
         "winRate",
         "Win rate",
         "Won opportunities against closed deals",
-        0,
-        "0%",
+        data.summary.winRate,
+        `${data.summary.winRate.toFixed(1)}%`,
         "success",
-        data.trend.map(() => 0),
+        data.trend.map((row) => row.winRate),
       ),
       metric(
         "overdueFollowUps",
         "Overdue follow-ups",
         "Prospect actions past their due time",
-        followUps.filter((row) => Date.parse(row.dueAt) < Date.now()).length,
-        String(followUps.filter((row) => Date.parse(row.dueAt) < Date.now()).length),
+        data.summary.overdueFollowUps,
+        String(data.summary.overdueFollowUps),
         "warning",
-        data.trend.map(() => 0),
+        [data.summary.overdueFollowUps],
       ),
       metric(
         "activeOwners",
@@ -249,24 +264,10 @@ export async function overview(): Promise<CrmOverview> {
       stage: row.stage as CrmStage,
       count: row.count,
       value: row.value,
-      weightedValue: Math.round(
-        (row.value *
-          ((
-            { NEW: 10, QUALIFIED: 30, PROPOSAL: 50, NEGOTIATION: 75, WON: 100, LOST: 0 } as Record<
-              string,
-              number
-            >
-          )[row.stage] ?? 0)) /
-          100,
-      ),
-      averageAgeDays: 0,
-      conversionFromPrevious: 0,
-      overdueFollowUps: opportunities.filter(
-        (item) =>
-          item.stage === row.stage &&
-          item.nextFollowUpAt &&
-          Date.parse(item.nextFollowUpAt) < Date.now(),
-      ).length,
+      weightedValue: row.weightedValue,
+      averageAgeDays: row.averageAgeDays,
+      conversionFromPrevious: row.conversionFromPrevious,
+      overdueFollowUps: row.overdueFollowUps,
     })),
     trend: data.trend.map((row) => ({
       label: row.month,
@@ -278,12 +279,15 @@ export async function overview(): Promise<CrmOverview> {
       id: row.id,
       opportunityId: row.opportunity.publicId,
       company: row.opportunity.companyName,
-      contactName: "",
+      contactName: row.opportunity.contactName,
       actor: row.actor.displayName,
       type: activityType(row.type),
       summary: row.summary,
       occurredAt: row.occurredAt,
     })),
     followUps,
+    pendingFollowUpsTotal: data.summary.pendingFollowUps,
+    overdueFollowUpsTotal: data.summary.overdueFollowUps,
+    unassignedOpportunitiesTotal: data.summary.unassignedOpportunities,
   };
 }

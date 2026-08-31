@@ -4,6 +4,8 @@ export type Session = {
   id: string;
   tenantId: string;
   tenantName: string;
+  branchId?: string;
+  branchName?: string;
   clientId?: string;
   clientName?: string;
   email: string;
@@ -21,6 +23,11 @@ export type ActiveSession = {
   createdAt: string;
   expiresAt: string;
   current: boolean;
+};
+
+export type ActiveSessionsResponse = {
+  items: ActiveSession[];
+  passwordChangedAt: string;
 };
 
 export function getSession() {
@@ -46,7 +53,7 @@ export function changePassword(input: { currentPassword: string; newPassword: st
 }
 
 export function listActiveSessions() {
-  return apiRequest<{ items: ActiveSession[] }>("/auth/sessions");
+  return apiRequest<ActiveSessionsResponse>("/auth/sessions");
 }
 
 export function revokeActiveSession(sessionId: string) {

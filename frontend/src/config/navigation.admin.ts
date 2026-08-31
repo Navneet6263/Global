@@ -1,0 +1,171 @@
+import {
+  Activity,
+  BadgeCheck,
+  Building2,
+  ClipboardList,
+  FileSearch,
+  Gauge,
+  KeyRound,
+  LayoutDashboard,
+  LifeBuoy,
+  MapPin,
+  Receipt,
+  Settings2,
+  ShieldCheck,
+  TrendingUp,
+  Users,
+} from "lucide-react";
+import type { Role } from "./roles";
+import type { NavGroup, NavItem } from "./navigation.types";
+
+export const ADMIN_NAV_GROUPS: readonly NavGroup[] = [
+  { id: "command", label: "Command", defaultOpen: true },
+  { id: "delivery", label: "Delivery", defaultOpen: true },
+  { id: "stakeholders", label: "Stakeholders", defaultOpen: true },
+  { id: "platform", label: "Platform", defaultOpen: true },
+];
+
+const ADMIN: readonly Role[] = ["PLATFORM_ADMIN"];
+
+export const ADMIN_NAV_ITEMS: readonly NavItem[] = [
+  item(
+    "Control Tower",
+    "Live portfolio, SLA health and exceptions",
+    LayoutDashboard,
+    "/admin",
+    "command",
+    "dashboard:read",
+  ),
+  item(
+    "Executive Analytics",
+    "Trends, risk mix and seven-day forecast",
+    TrendingUp,
+    "/admin/analytics",
+    "command",
+    "report:read",
+  ),
+  item(
+    "Sales & CRM",
+    "Revenue oversight without execution controls",
+    Gauge,
+    "/admin/sales",
+    "command",
+    "crm:read",
+  ),
+  item(
+    "Cases & Delivery",
+    "Verification register",
+    ClipboardList,
+    "/admin/cases",
+    "delivery",
+    "case:read",
+    { key: "activeCases", tone: "info" },
+  ),
+  item(
+    "Verifier Operations",
+    "Allocation and verifier load",
+    BadgeCheck,
+    "/admin/verifier",
+    "delivery",
+    "task:read",
+  ),
+  item("QA Review", "Review and sign-off queue", FileSearch, "/admin/qa", "delivery", "qa:review", {
+    key: "qaQueue",
+    tone: "review",
+  }),
+  item(
+    "Exceptions",
+    "Blocked and at-risk work",
+    LifeBuoy,
+    "/admin/exceptions",
+    "delivery",
+    "case:read",
+    { key: "criticalExceptions", tone: "critical" },
+  ),
+  item(
+    "Field Operations",
+    "Visits, GPS and evidence",
+    MapPin,
+    "/admin/field",
+    "delivery",
+    "field-visit:read",
+  ),
+  item(
+    "Clients",
+    "Client organisations and SLAs",
+    Building2,
+    "/admin/clients",
+    "stakeholders",
+    "client:read",
+  ),
+  item(
+    "Client Portfolio",
+    "Client-facing volume and response risk",
+    Activity,
+    "/admin/client-portal",
+    "stakeholders",
+    "client:read",
+  ),
+  item(
+    "Finance & Billing",
+    "Billing and receivables exposure",
+    Receipt,
+    "/admin/finance",
+    "stakeholders",
+    "finance:read",
+  ),
+  item(
+    "User IDs & Access",
+    "Roles, scope and credentials",
+    Users,
+    "/admin/users",
+    "platform",
+    "user:read",
+  ),
+  item(
+    "Platform Settings",
+    "Branches, packages and policy",
+    Settings2,
+    "/admin/settings",
+    "platform",
+    "settings:manage",
+  ),
+  item(
+    "Audit Trail",
+    "Immutable platform activity",
+    ShieldCheck,
+    "/admin/audit",
+    "platform",
+    "audit:read",
+  ),
+  item(
+    "Account Security",
+    "Sessions and authentication events",
+    KeyRound,
+    "/admin/security",
+    "platform",
+    "notification:read",
+  ),
+];
+
+function item(
+  label: string,
+  description: string,
+  icon: NavItem["icon"],
+  route: string,
+  group: NavItem["group"],
+  permission: NavItem["permission"],
+  badge?: NavItem["badge"],
+): NavItem {
+  return {
+    workspace: "platform-admin",
+    label,
+    description,
+    icon,
+    route,
+    group,
+    roles: ADMIN,
+    permission,
+    ...(badge ? { badge } : {}),
+  };
+}

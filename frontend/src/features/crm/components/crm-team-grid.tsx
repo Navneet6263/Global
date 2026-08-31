@@ -32,7 +32,9 @@ export function CrmTeamGrid({ owners, onViewPipeline }: CrmTeamGridProps) {
               </span>
               <div className="min-w-0">
                 <p className="truncate text-[13.5px] font-semibold text-foreground">{owner.name}</p>
-                <p className="truncate text-[11px] text-muted-foreground">{owner.territory}</p>
+                <p className="truncate text-[11px] text-muted-foreground">
+                  {owner.territory ?? "No branch scope"}
+                </p>
               </div>
             </header>
 

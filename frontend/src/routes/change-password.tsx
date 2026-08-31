@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ResetPasswordCard } from "@/features/auth/components/reset-password-card";
+import { requirePasswordChangeSession } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/change-password")({
   ssr: false,
+  beforeLoad: () => requirePasswordChangeSession(),
   head: () => ({ meta: [{ title: "Change password — Sapling Global" }] }),
   component: ChangePasswordPage,
 });

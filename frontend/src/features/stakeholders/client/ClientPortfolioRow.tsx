@@ -17,29 +17,31 @@ export function ClientPortfolioRow({ item, onOpen }: { item: CaseListItem; onOpe
     Boolean(item.dueAt && new Date(item.dueAt).getTime() < Date.now()) &&
     !["COMPLETED", "CLOSED", "CANCELLED"].includes(item.status);
   return (
-    <tr className="group text-sm transition hover:bg-slate-50/70">
+    <tr className="group text-sm transition hover:bg-mint-soft/30">
       <td className="px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-orange-50 text-[10px] font-bold text-orange-700">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-mint-soft text-[10px] font-semibold text-mint-deep ring-1 ring-mint/15">
             {initials(item.subject.fullName)}
           </span>
           <div className="min-w-0">
             <button
               type="button"
               onClick={onOpen}
-              className="block max-w-48 truncate text-left text-xs font-semibold hover:text-orange-700"
+              className="block max-w-48 truncate text-left text-xs font-semibold text-foreground hover:text-primary"
             >
               {item.subject.fullName}
             </button>
-            <p className="mt-0.5 text-[10px] text-slate-500">
+            <p className="mt-0.5 text-[10px] text-muted-foreground">
               {item.subject.employeeCode || "Candidate record"}
             </p>
           </div>
         </div>
       </td>
       <td className="px-5 py-4">
-        <p className="text-xs font-medium text-slate-700">{item.caseNumber}</p>
-        <p className="mt-0.5 text-[10px] text-slate-400">Created {relativeTime(item.createdAt)}</p>
+        <p className="num text-xs font-medium text-foreground">{item.caseNumber}</p>
+        <p className="mt-0.5 text-[10px] text-muted-foreground">
+          Created {relativeTime(item.createdAt)}
+        </p>
       </td>
       <td className="px-5 py-4">
         <span
@@ -50,35 +52,37 @@ export function ClientPortfolioRow({ item, onOpen }: { item: CaseListItem; onOpe
       </td>
       <td className="px-5 py-4">
         <div className="w-32">
-          <div className="flex items-center justify-between text-[9px] font-semibold text-slate-500">
+          <div className="num flex items-center justify-between text-[9px] font-medium text-muted-foreground">
             <span>
               {complete}/{item.checks.length} checks
             </span>
             <span>{progress}%</span>
           </div>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
+          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-muted">
             <div
-              className={`h-full rounded-full ${progress === 100 ? "bg-emerald-500" : "bg-orange-400"}`}
+              className={`h-full rounded-full ${progress === 100 ? "bg-success" : "bg-primary"}`}
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
       </td>
       <td className="px-5 py-4">
-        <p className={`text-[11px] font-semibold ${overdue ? "text-red-600" : "text-slate-700"}`}>
+        <p className={`text-[11px] font-semibold ${overdue ? "text-critical" : "text-foreground"}`}>
           {slaText(item.dueAt, item.status)}
         </p>
-        <p className="mt-0.5 text-[9px] text-slate-400">
+        <p className="mt-0.5 text-[9px] text-muted-foreground">
           {item.dueAt ? formatDate(item.dueAt) : "No committed date"}
         </p>
       </td>
-      <td className="px-5 py-4 text-[11px] text-slate-500">{relativeTime(item.updatedAt)}</td>
+      <td className="px-5 py-4 text-[11px] text-muted-foreground">
+        {relativeTime(item.updatedAt)}
+      </td>
       <td className="px-5 py-4">
         <button
           type="button"
           onClick={onOpen}
           aria-label={`View ${item.caseNumber}`}
-          className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 transition group-hover:border-orange-200 group-hover:bg-white group-hover:text-orange-700"
+          className="grid size-8 place-items-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] transition group-hover:border-primary/30 group-hover:text-primary"
         >
           <Eye className="h-4 w-4" />
         </button>

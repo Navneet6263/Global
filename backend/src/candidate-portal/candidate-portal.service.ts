@@ -5,30 +5,56 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { ConfigService } from "@nestjs/config";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
+import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
 import type { UploadedBinary } from "../common/http/uploaded-binary";
 import { PrismaService } from "../database/prisma.service";
 import { DocumentsService } from "../documents/documents.service";
+import { SecretBoxService } from "../common/security/secret-box.service";
+import { SubjectPiiService } from "../common/security/subject-pii.service";
 
 @Injectable()
 export class CandidatePortalService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly documents: DocumentsService,
+    private readonly config: ConfigService,
+    private readonly secretBox: SecretBoxService,
+    private readonly pii: SubjectPiiService,
   ) {}
 
   async issue(actor: Actor, casePublicId: string) {
     const verificationCase = await this.prisma.verificationCase.findFirst({
       where: {
-        tenantId: actor.tenantId,
+        ...caseAccessScope(actor),
         publicId: casePublicId,
-        ...(actor.clientId ? { clientId: actor.clientId } : {}),
       },
-      select: { id: true, publicId: true },
+      select: {
+        id: true,
+        publicId: true,
+        subject: {
+          select: {
+            email: true,
+            phone: true,
+            employeeCode: true,
+            piiCiphertext: true,
+            piiKeyVersion: true,
+          },
+        },
+      },
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
     const token = randomBytes(32).toString("base64url");
     const expiresAt = new Date(Date.now() + 14 * 86_400_000);
+    const destination = this.pii.open(verificationCase.subject);
+    const channel = destination.email
+      ? "EMAIL"
+      : destination.phone
+        ? "SMS"
+        : undefined;
+    const address = destination.email ?? destination.phone;
     const access = await this.prisma.$transaction(async (tx) => {
       await tx.candidatePortalAccess.updateMany({
         where: { caseId: verificationCase.id, revokedAt: null },
@@ -53,9 +79,36 @@ export class CandidatePortalService {
           afterJson: JSON.stringify({ accessId: created.publicId, expiresAt }),
         },
       });
+      if (channel && address) {
+        await tx.outboxEvent.create({
+          data: {
+            tenantId: actor.tenantId,
+            topic: "candidate.access.issued",
+            aggregateType: "candidate-portal-access",
+            aggregateId: created.publicId,
+            payloadJson: JSON.stringify({
+              secret: this.secretBox.seal({
+                accessId: created.publicId,
+                channel,
+                destination: address,
+                portalUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/candidate/${created.publicId}#token=${encodeURIComponent(token)}`,
+                expiresAt,
+              }),
+            }),
+          },
+        });
+      }
       return created;
     });
-    return { id: access.publicId, token, expiresAt };
+    return {
+      id: access.publicId,
+      token,
+      expiresAt,
+      delivery:
+        channel && address
+          ? { queued: true, channel, destination: this.mask(address, channel) }
+          : { queued: false },
+    };
   }
 
   async get(publicId: string, token: string) {
@@ -114,10 +167,18 @@ export class CandidatePortalService {
         tenantPublicId: access.tenant.publicId,
         caseId: access.caseId,
         casePublicId: access.case.publicId,
+        caseStatus: access.case.status,
       },
       type.trim().toUpperCase(),
       file,
     );
+  }
+
+  private mask(value: string, channel: "EMAIL" | "SMS") {
+    if (channel === "SMS")
+      return `${value.slice(0, 3)}******${value.slice(-2)}`;
+    const [name, domain] = value.split("@");
+    return `${(name ?? "candidate").slice(0, 2)}***@${domain ?? "hidden"}`;
   }
 
   async respondToClarification(
@@ -158,16 +219,12 @@ export class CandidatePortalService {
           body: message.trim(),
         },
       });
-      const recipients = access.case.assignedOpsUserId
-        ? [{ id: access.case.assignedOpsUserId }]
-        : await tx.user.findMany({
-            where: {
-              tenantId: access.tenantId,
-              status: "ACTIVE",
-              userRoles: { some: { role: { code: "OPS_MANAGER" } } },
-            },
-            select: { id: true },
-          });
+      const recipients = await activeOperationsRecipients(tx, {
+        tenantId: access.tenantId,
+        branchId: access.case.branchId,
+        clientId: access.case.clientId,
+        assignedUserId: access.case.assignedOpsUserId,
+      });
       if (recipients.length) {
         await tx.notification.createMany({
           data: recipients.map((recipient) => ({

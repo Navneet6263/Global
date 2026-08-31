@@ -1,42 +1,69 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
-  ArrowLeft,
   CheckCircle2,
-  CloudUpload,
+  Loader2,
+  LogOut,
   MapPin,
   RefreshCw,
   ShieldAlert,
-  Wifi,
-  WifiOff,
+  ShieldCheck,
+  Sprout,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { FieldChecklist } from "@/features/field/FieldChecklist";
 import { FieldDayPlan } from "@/features/field/FieldDayPlan";
+import { FieldRouteSummary } from "@/features/field/FieldRouteSummary";
 import { FieldVisitCard } from "@/features/field/FieldVisitCard";
 import { useFieldWorkflow } from "@/features/field/useFieldWorkflow";
+import { endAuthenticatedSession } from "@/lib/auth/end-session";
+import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/field-executive")({
+  beforeLoad: () => requireRoleWorkspace(["FIELD_EXECUTIVE"]),
   head: () => ({
     links: [{ rel: "manifest", href: "/manifest.webmanifest" }],
     meta: [
       { title: "Field Visits — Sapling Global" },
       {
         name: "description",
-        content:
-          "Secure event-based GPS and evidence collection for assigned field verification visits.",
+        content: "Secure event-based GPS and evidence collection for assigned field visits.",
       },
-      { name: "theme-color", content: "#ffffff" },
+      { name: "theme-color", content: "#f7fbf8" },
     ],
   }),
   component: FieldExecutivePage,
 });
 
 const tabs = ["ACTIVE", "EXCEPTION", "COMPLETED", "ALL"] as const;
+type VisitTab = (typeof tabs)[number];
+type SummaryCounts = {
+  queued: number;
+  active: number;
+  exceptions: number;
+  completed: number;
+};
 
 function FieldExecutivePage() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const workflow = useFieldWorkflow();
-  const [tab, setTab] = useState<(typeof tabs)[number]>("ACTIVE");
+  const [tab, setTab] = useState<VisitTab>("ACTIVE");
+  const [signingOut, setSigningOut] = useState(false);
+  const counts = useMemo(() => {
+    const completed = workflow.visits.filter((visit) => visit.status === "COMPLETED").length;
+    const exceptions = workflow.visits.filter(
+      (visit) => visit.status === "EXCEPTION_REVIEW",
+    ).length;
+    return {
+      queued: workflow.visits.length,
+      active: workflow.visits.length - completed - exceptions,
+      exceptions,
+      completed,
+    };
+  }, [workflow.visits]);
   const visible = useMemo(
     () =>
       workflow.visits.filter(
@@ -48,112 +75,111 @@ function FieldExecutivePage() {
       ),
     [tab, workflow.visits],
   );
+  const { activeId, setActiveId } = workflow;
+
   useEffect(() => {
-    if (visible.length && !visible.some((visit) => visit.id === workflow.activeId))
-      workflow.setActiveId(visible[0]!.id);
-  }, [visible, workflow]);
-  const active = visible.find((visit) => visit.id === workflow.activeId) ?? visible[0];
-  const completed = workflow.visits.filter((visit) => visit.status === "COMPLETED").length;
-  const exceptions = workflow.visits.filter((visit) => visit.status === "EXCEPTION_REVIEW").length;
+    if (visible.length && !visible.some((visit) => visit.id === activeId)) {
+      setActiveId(visible[0]!.id);
+    }
+  }, [visible, activeId, setActiveId]);
+
+  const active = visible.find((visit) => visit.id === activeId) ?? visible[0];
+  const signOut = async () => {
+    setSigningOut(true);
+    try {
+      await queryClient.cancelQueries();
+      await endAuthenticatedSession();
+      queryClient.clear();
+      await navigate({ to: "/auth", replace: true });
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Sign out could not be completed");
+      setSigningOut(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white text-slate-950">
-      <div className="mx-auto w-full max-w-2xl space-y-4 px-4 pb-12 pt-5 sm:px-5">
-        <header className="flex items-center justify-between border-b border-slate-200 pb-4">
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-orange-700">
-              Delivery / Field
-            </p>
-            <h1 className="mt-1 text-2xl font-bold tracking-tight">My field route</h1>
-            <p className="mt-1 text-xs text-slate-500">
-              Event-based GPS, evidence and offline-safe completion.
-            </p>
+    <main className="min-h-screen bg-transparent px-3 py-3 text-foreground sm:px-5 sm:py-5">
+      <div className="mx-auto w-full max-w-[46rem] space-y-4 pb-10">
+        <header className="surface flex items-center justify-between gap-3 rounded-[1.5rem] px-4 py-3.5 sm:px-5">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-accent text-primary">
+              <Sprout className="size-5" aria-hidden />
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold">Sapling Global — Field Operations</p>
+              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                GPS, evidence and offline-safe completion
+              </p>
+            </div>
           </div>
-          <Link
-            to="/"
-            className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white"
-            aria-label="Back to operations"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <Link
+              to="/change-password"
+              className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-foreground"
+              aria-label="Account security"
+            >
+              <ShieldCheck className="size-4" />
+            </Link>
+            <button
+              type="button"
+              onClick={() => void signOut()}
+              disabled={signingOut}
+              className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-critical disabled:opacity-50"
+              aria-label="Sign out"
+            >
+              {signingOut ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <LogOut className="size-4" />
+              )}
+            </button>
+          </div>
         </header>
-        <div
-          className={`flex items-center gap-2 rounded-xl border px-4 py-3 ${workflow.online ? "border-emerald-100 bg-emerald-50 text-emerald-700" : "border-amber-100 bg-amber-50 text-amber-700"}`}
-        >
-          {workflow.online ? <Wifi className="h-4 w-4" /> : <WifiOff className="h-4 w-4" />}
-          <p className="flex-1 text-xs font-medium">
-            {workflow.online
-              ? `${workflow.pendingSync} visit draft${workflow.pendingSync === 1 ? "" : "s"} waiting to sync`
-              : "Offline capture is active on this device."}
-          </p>
-          {workflow.pendingSync > 0 && workflow.online ? (
-            <button
-              onClick={() => void workflow.syncAll()}
-              disabled={workflow.syncing}
-              className="inline-flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-[10px] font-semibold shadow-sm"
-            >
-              <CloudUpload className="h-3 w-3" /> {workflow.syncing ? "Syncing" : "Sync now"}
-            </button>
-          ) : null}
-        </div>
-        <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {[
-            { label: "Assigned", value: workflow.visits.length, tone: "bg-blue-50 text-blue-700" },
-            {
-              label: "Active",
-              value: workflow.visits.length - completed - exceptions,
-              tone: "bg-violet-50 text-violet-700",
-            },
-            { label: "Exceptions", value: exceptions, tone: "bg-amber-50 text-amber-700" },
-            { label: "Completed", value: completed, tone: "bg-emerald-50 text-emerald-700" },
-          ].map((item) => (
-            <article
-              key={item.label}
-              className={`rounded-xl border border-current/10 p-3 ${item.tone}`}
-            >
-              <p className="text-[9px] font-semibold">{item.label}</p>
-              <p className="mt-1 text-2xl font-bold">{item.value}</p>
-            </article>
-          ))}
+
+        <FieldRouteSummary
+          counts={counts}
+          online={workflow.online}
+          pendingSync={workflow.pendingSync}
+          syncing={workflow.syncing}
+          onSync={() => void workflow.syncAll()}
+        />
+
+        <section className="surface rounded-[1.5rem] p-2">
+          <div className="grid grid-cols-4 gap-1" role="tablist" aria-label="Visit status">
+            {tabs.map((value) => (
+              <button
+                key={value}
+                type="button"
+                role="tab"
+                aria-selected={tab === value}
+                onClick={() => setTab(value)}
+                className={`rounded-[1rem] px-2 py-2.5 text-[10px] font-semibold transition-colors ${tab === value ? "bg-mint-deep text-white shadow-[var(--shadow-card)]" : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"}`}
+              >
+                {tabLabel(value)}
+                <span className="num ml-1 opacity-65">{tabCount(value, counts)}</span>
+              </button>
+            ))}
+          </div>
         </section>
-        <div className="flex gap-2 overflow-x-auto border-b border-slate-200 pb-3">
-          {tabs.map((value) => (
-            <button
-              key={value}
-              onClick={() => setTab(value)}
-              className={`shrink-0 rounded-xl px-3 py-2 text-[10px] font-bold ${tab === value ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-700"}`}
-            >
-              {value === "EXCEPTION"
-                ? "Exceptions"
-                : value.charAt(0) + value.slice(1).toLowerCase()}
-            </button>
-          ))}
-        </div>
-        {workflow.visitsQuery.isLoading ? (
-          <div className="animate-pulse rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center text-xs text-slate-700">
-            Loading assigned visits…
-          </div>
-        ) : null}
+
+        {workflow.visitsQuery.isLoading ? <FieldLoading /> : null}
         {workflow.visitsQuery.isError ? (
-          <div className="rounded-2xl border border-red-100 bg-red-50 p-5 text-center text-sm text-red-700">
-            <ShieldAlert className="mx-auto h-5 w-5" />
-            <p className="mt-2 font-semibold">Visits could not be loaded</p>
+          <div className="surface rounded-[1.5rem] p-6 text-center">
+            <ShieldAlert className="mx-auto size-6 text-critical" />
+            <p className="mt-3 text-sm font-semibold">Visits could not be loaded</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Check your connection, then try the secure request again.
+            </p>
             <button
+              type="button"
               onClick={() => void workflow.visitsQuery.refetch()}
-              className="mt-3 inline-flex items-center gap-1 rounded-lg bg-white px-3 py-2 text-xs shadow-sm"
+              className="mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground"
             >
-              <RefreshCw className="h-3.5 w-3.5" /> Retry
+              <RefreshCw className="size-3.5" /> Retry
             </button>
           </div>
         ) : null}
-        {!workflow.visitsQuery.isLoading && !active ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center">
-            <MapPin className="mx-auto h-6 w-6 text-slate-400" />
-            <p className="mt-3 text-sm font-semibold">No visits in this view</p>
-            <p className="mt-1 text-xs text-slate-500">
-              New assignments and workflow updates appear automatically.
-            </p>
-          </div>
-        ) : null}
+        {!workflow.visitsQuery.isLoading && !active ? <FieldEmpty /> : null}
         {active ? (
           <>
             <FieldVisitCard
@@ -175,15 +201,49 @@ function FieldExecutivePage() {
               onChange={workflow.update}
               disabled={!["ASSIGNED", "IN_PROGRESS"].includes(active.status)}
             />
-            <FieldDayPlan visits={visible} activeId={active.id} onSelect={workflow.setActiveId} />
+            <FieldDayPlan visits={visible} activeId={active.id} onSelect={setActiveId} />
           </>
         ) : null}
-        <p className="px-2 text-center text-[10px] leading-5 text-slate-600">
-          <CheckCircle2 className="mr-1 inline h-3 w-3" />
-          Location is captured only on check-in, refresh and completion. Local drafts are cleared on
-          logout.
+
+        <p className="px-4 text-center text-[10px] leading-5 text-muted-foreground">
+          <CheckCircle2 className="mr-1 inline size-3" /> Location is captured only at check-in,
+          refresh and completion. Local drafts are cleared on logout.
         </p>
       </div>
+    </main>
+  );
+}
+
+function tabLabel(value: VisitTab) {
+  return value === "EXCEPTION" ? "Exceptions" : value.charAt(0) + value.slice(1).toLowerCase();
+}
+
+function tabCount(value: VisitTab, counts: SummaryCounts) {
+  if (value === "ACTIVE") return counts.active;
+  if (value === "EXCEPTION") return counts.exceptions;
+  if (value === "COMPLETED") return counts.completed;
+  return counts.queued;
+}
+
+function FieldLoading() {
+  return (
+    <div
+      className="surface h-72 animate-pulse rounded-[1.75rem]"
+      aria-label="Loading assigned visits"
+    />
+  );
+}
+
+function FieldEmpty() {
+  return (
+    <div className="surface rounded-[1.75rem] p-8 text-center">
+      <span className="mx-auto grid size-12 place-items-center rounded-full bg-mint-soft text-mint-deep">
+        <MapPin className="size-5" />
+      </span>
+      <p className="mt-4 text-sm font-semibold">No visits in this view</p>
+      <p className="mx-auto mt-1 max-w-xs text-xs leading-5 text-muted-foreground">
+        New assignments and workflow updates appear here automatically.
+      </p>
     </div>
   );
 }

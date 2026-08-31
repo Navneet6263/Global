@@ -1,4 +1,4 @@
-import type { Permission } from "./permissions";
+import { PERMISSIONS, type Permission } from "./permissions";
 
 export const ROLES = [
   "PLATFORM_ADMIN",
@@ -12,7 +12,6 @@ export const ROLES = [
 ] as const;
 
 export type Role = (typeof ROLES)[number];
-
 export type RoleScopeField = "branch" | "clientWorkspace" | "territory" | "queue";
 
 export interface RoleDefinition {
@@ -21,129 +20,131 @@ export interface RoleDefinition {
   description: string;
   permissions: readonly Permission[];
   scopeFields: readonly RoleScopeField[];
-  phase: "live" | "planned";
 }
 
-export const ROLE_DEFINITIONS: Record<Role, RoleDefinition> = {
+const definitions: Record<Role, Omit<RoleDefinition, "id">> = {
   PLATFORM_ADMIN: {
-    id: "PLATFORM_ADMIN",
     label: "Platform Admin",
-    description:
-      "Oversight of the platform: access, policy, audit and read-only delivery numbers. Case execution stays with the delivery roles.",
-    permissions: [
-      "dashboard:read",
-      "case:read",
-      "case:create",
-      "client:read",
-      "client:write",
-      "user:read",
-      "user:write",
-      "settings:manage",
-      "audit:read",
-      "report:read",
-      "finance:read",
-      "crm:read",
-      "crm:forecast",
-      "notification:read",
-      "qa:read",
-      "field:read",
-      "sla:read",
-      "team:read",
-      "security:manage",
-    ],
-    scopeFields: ["branch"],
-    phase: "live",
+    description: "Platform oversight, policy, access, audit and cross-workspace risk.",
+    permissions: PERMISSIONS,
+    scopeFields: [],
   },
   OPS_MANAGER: {
-    id: "OPS_MANAGER",
     label: "Operations Manager",
-    description: "Owns delivery throughput, verifier allocation, exceptions and SLA recovery.",
+    description: "Owns delivery, allocation, exceptions and SLA recovery.",
+    permissions: [
+      "dashboard:read",
+      "client:read",
+      "case:read",
+      "case:create",
+      "case:transition",
+      "consent:manage",
+      "document:read",
+      "document:write",
+      "task:read",
+      "task:write",
+      "clarification:read",
+      "clarification:write",
+      "report:read",
+      "field-visit:read",
+      "field-visit:write",
+      "field-evidence:read",
+      "user:read",
+      "notification:read",
+    ],
+    scopeFields: ["branch", "queue"],
+  },
+  VERIFIER: {
+    label: "Verifier",
+    description: "Executes assigned checks, findings and source verification.",
+    permissions: [
+      "dashboard:read",
+      "case:read",
+      "document:read",
+      "task:read",
+      "task:write",
+      "clarification:read",
+      "clarification:write",
+      "notification:read",
+    ],
+    scopeFields: ["branch", "queue"],
+  },
+  QA_REVIEWER: {
+    label: "QA Reviewer",
+    description: "Reviews evidence, returns rework and releases approved reports.",
+    permissions: [
+      "dashboard:read",
+      "case:read",
+      "document:read",
+      "clarification:read",
+      "qa:review",
+      "report:read",
+      "report:generate",
+      "field-evidence:read",
+      "notification:read",
+    ],
+    scopeFields: ["branch"],
+  },
+  CLIENT_ADMIN: {
+    label: "Client Admin",
+    description: "Raises client-scoped cases and resolves requested actions.",
     permissions: [
       "dashboard:read",
       "case:read",
       "case:create",
-      "case:assign",
-      "case:transition",
-      "case:escalate",
-      "clarification:manage",
-      "exception:manage",
-      "sla:read",
-      "team:read",
-      "field:read",
-      "field:manage",
-      "client:read",
+      "document:read",
+      "document:write",
+      "clarification:read",
       "report:read",
-      "qa:read",
+      "notification:read",
     ],
-    scopeFields: ["branch", "queue"],
-    phase: "live",
-  },
-  VERIFIER: {
-    id: "VERIFIER",
-    label: "Verifier",
-    description: "Executes assigned identity, employment, education and reference checks.",
-    permissions: ["case:read", "report:read"],
-    scopeFields: ["branch", "queue"],
-    phase: "planned",
-  },
-  QA_REVIEWER: {
-    id: "QA_REVIEWER",
-    label: "QA Reviewer",
-    description: "Reviews completed checks, returns corrections and signs off reports.",
-    permissions: ["case:read", "qa:read", "report:read"],
-    scopeFields: ["branch"],
-    phase: "planned",
-  },
-  CLIENT_ADMIN: {
-    id: "CLIENT_ADMIN",
-    label: "Client Admin",
-    description: "Client-side workspace owner: raises cases and resolves clarifications.",
-    permissions: ["case:read", "case:create", "report:read"],
     scopeFields: ["clientWorkspace"],
-    phase: "planned",
   },
   FIELD_EXECUTIVE: {
-    id: "FIELD_EXECUTIVE",
     label: "Field Executive",
-    description: "Performs address and on-site visits with GPS-tagged evidence capture.",
-    permissions: ["case:read", "field:read"],
+    description: "Completes assigned visits with GPS and integrity-checked evidence.",
+    permissions: [
+      "case:read",
+      "field-visit:read",
+      "field-visit:write",
+      "field-evidence:read",
+      "notification:read",
+    ],
     scopeFields: ["branch", "territory"],
-    phase: "planned",
   },
   SALES_MANAGER: {
-    id: "SALES_MANAGER",
     label: "Sales Manager",
-    description: "Owns CRM opportunities, proposals and client onboarding pipeline.",
+    description: "Owns opportunities, activities and client onboarding pipeline.",
     permissions: [
       "dashboard:read",
+      "client:read",
+      "client:write",
       "crm:read",
       "crm:write",
-      "crm:assign",
-      "crm:forecast",
-      "crm:export",
-      "client:read",
       "notification:read",
-      "report:read",
     ],
     scopeFields: ["territory"],
-    phase: "live",
   },
   FINANCE_MANAGER: {
-    id: "FINANCE_MANAGER",
     label: "Finance Manager",
-    description: "Manages invoicing, collections and package pricing compliance.",
-    permissions: ["finance:read", "client:read", "report:read"],
+    description: "Manages invoicing, collections, credits and receivables.",
+    permissions: [
+      "dashboard:read",
+      "client:read",
+      "finance:read",
+      "finance:write",
+      "notification:read",
+    ],
     scopeFields: ["branch"],
-    phase: "planned",
   },
 };
+
+export const ROLE_DEFINITIONS = Object.fromEntries(
+  ROLES.map((id) => [id, { id, ...definitions[id] }]),
+) as Record<Role, RoleDefinition>;
 
 export const ROLE_LIST: readonly RoleDefinition[] = ROLES.map((role) => ROLE_DEFINITIONS[role]);
 
 export function permissionsForRoles(roles: readonly Role[]): Permission[] {
-  const set = new Set<Permission>();
-  for (const role of roles) {
-    for (const permission of ROLE_DEFINITIONS[role].permissions) set.add(permission);
-  }
-  return [...set];
+  return [...new Set(roles.flatMap((role) => ROLE_DEFINITIONS[role].permissions))];
 }

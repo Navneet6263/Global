@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Inbox } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
@@ -21,12 +21,12 @@ export const Route = createFileRoute("/operations/assignments")({
       {
         name: "description",
         content:
-          "Allocate unassigned verification checks to verifiers using live capacity, skill and branch signals.",
+          "Allocate unassigned verification checks using live verifier workload and due-date pressure.",
       },
       { property: "og:title", content: "Assignment Workbench — Sapling Global Operations" },
       {
         property: "og:description",
-        content: "Match unassigned checks to the right verifier with capacity-aware allocation.",
+        content: "Allocate unassigned checks with current workload and SLA context.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -41,22 +41,31 @@ function AssignmentsPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [memberId, setMemberId] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (!data) return;
+    const available = new Set(data.items.map((item) => item.id));
+    setSelected((current) => current.filter((id) => available.has(id)));
+  }, [data]);
+
   const toggle = (id: string) =>
     setSelected((current) =>
-      current.includes(id) ? current.filter((entry) => entry !== id) : [...current, id],
+      current.includes(id)
+        ? current.filter((entry) => entry !== id)
+        : current.length < 50
+          ? [...current, id]
+          : current,
     );
 
   const submit = () => {
     if (!memberId || selected.length === 0) return;
-    assign.mutate({ itemIds: selected, memberId });
-    setSelected([]);
+    assign.mutate({ itemIds: selected, memberId }, { onSuccess: () => setSelected([]) });
   };
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Assignment workbench"
-        description="Pick the unassigned checks on the left, then allocate them to a verifier with the right skills and headroom."
+        description="Pick unassigned checks, then compare each verifier's open load, due work and overdue pressure before allocation."
         actions={
           <Button
             disabled={!memberId || selected.length === 0 || assign.isPending}
@@ -72,7 +81,7 @@ function AssignmentsPage() {
       <div className="grid gap-4 xl:grid-cols-[1.3fr_1fr]">
         <Section
           title="Unassigned checks"
-          description="Sorted by urgency; branch and skill mismatches are flagged when you assign."
+          description="Choose up to 50 checks. The whole selection commits together, or none changes."
           padded={false}
         >
           {isPending ? (
@@ -93,6 +102,9 @@ function AssignmentsPage() {
                 <li key={item.id} className="flex items-start gap-3 px-5 py-3">
                   <Checkbox
                     checked={selected.includes(item.id)}
+                    disabled={
+                      assign.isPending || (!selected.includes(item.id) && selected.length >= 50)
+                    }
                     onCheckedChange={() => toggle(item.id)}
                     aria-label={`Select ${item.checkLabel} for ${item.candidateName}`}
                     className="mt-1"

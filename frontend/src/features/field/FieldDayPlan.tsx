@@ -1,10 +1,12 @@
+import { ChevronRight, ListChecks, MapPin } from "lucide-react";
+
 import type { ApiFieldVisit } from "./types";
 
 const stateTone: Record<string, string> = {
-  ASSIGNED: "bg-blue-100 text-blue-700",
-  IN_PROGRESS: "bg-violet-100 text-violet-700",
-  COMPLETED: "bg-emerald-100 text-emerald-700",
-  EXCEPTION_REVIEW: "bg-amber-100 text-amber-700",
+  ASSIGNED: "bg-info-soft text-info-foreground",
+  IN_PROGRESS: "bg-review-soft text-review-foreground",
+  COMPLETED: "bg-success-soft text-success-foreground",
+  EXCEPTION_REVIEW: "bg-warning-soft text-warning-foreground",
 };
 
 export function FieldDayPlan({
@@ -17,10 +19,20 @@ export function FieldDayPlan({
   onSelect: (id: string) => void;
 }) {
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-semibold">Route queue</h2>
-        <span className="text-[10px] text-slate-400">{visits.length} visits</span>
+    <section className="surface rounded-[1.75rem] p-4 sm:p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <span className="grid size-9 place-items-center rounded-full bg-mint-soft text-mint-deep">
+            <ListChecks className="size-4" />
+          </span>
+          <div>
+            <h2 className="text-sm font-semibold">Route queue</h2>
+            <p className="text-[10px] text-muted-foreground">Select a visit to open its workflow</p>
+          </div>
+        </div>
+        <span className="num rounded-full bg-secondary px-2.5 py-1 text-[10px] text-muted-foreground">
+          {visits.length}
+        </span>
       </div>
       <div className="space-y-2">
         {visits.map((visit) => (
@@ -28,27 +40,38 @@ export function FieldDayPlan({
             key={visit.id}
             type="button"
             onClick={() => onSelect(visit.id)}
-            className={`w-full rounded-xl border p-3 text-left transition-colors ${visit.id === activeId ? "border-orange-200 bg-orange-50" : "border-slate-200 bg-slate-50 hover:bg-slate-100"}`}
+            className={`group w-full rounded-[1.1rem] border p-3 text-left transition-all ${visit.id === activeId ? "border-mint/25 bg-mint-soft/70 shadow-[var(--shadow-card)]" : "border-white/70 bg-secondary/45 hover:bg-secondary/70"}`}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
                 <p className="truncate text-xs font-semibold">{visit.case.subject.fullName}</p>
-                <p className="truncate text-[10px] text-slate-500">
+                <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
                   {visit.case.client.displayName}
                 </p>
               </div>
               <span
-                className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold ${stateTone[visit.status] ?? stateTone["ASSIGNED"]}`}
+                className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-semibold ${stateTone[visit.status] ?? stateTone["ASSIGNED"]}`}
               >
-                {visit.status.replaceAll("_", " ").toLowerCase()}
+                {humanize(visit.status)}
               </span>
             </div>
-            <p className="mt-1.5 truncate text-[10px] text-slate-500">
-              {visit.case.caseNumber} · {visit.address}
-            </p>
+            <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground">
+              <MapPin className="size-3 shrink-0 text-primary" />
+              <span className="truncate">
+                {visit.case.caseNumber} · {visit.address}
+              </span>
+              <ChevronRight className="ml-auto size-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
+            </div>
           </button>
         ))}
       </div>
     </section>
   );
+}
+
+function humanize(value: string) {
+  return value
+    .toLowerCase()
+    .replaceAll("_", " ")
+    .replace(/^./, (letter) => letter.toUpperCase());
 }

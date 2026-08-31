@@ -1,23 +1,24 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
+import { timingSafeEqual } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
-import { SecretBoxService } from "../common/security/secret-box.service";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
+import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
+import { ConsentIssuanceService } from "./consent-issuance.service";
 
 @Injectable()
 export class ConsentsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly config: ConfigService,
-    private readonly secretBox: SecretBoxService,
     private readonly pii: SubjectPiiService,
+    private readonly issuance: ConsentIssuanceService,
   ) {}
 
   async getPublic(publicId: string) {
@@ -57,9 +58,8 @@ export class ConsentsService {
     const consent = await this.prisma.consent.findFirst({
       where: {
         case: {
+          ...caseAccessScope(actor),
           publicId: casePublicId,
-          tenantId: actor.tenantId,
-          ...(actor.clientId ? { clientId: actor.clientId } : {}),
         },
       },
       include: { case: { include: { subject: true } } },
@@ -72,84 +72,22 @@ export class ConsentsService {
         `Consent is already ${consent.status.toLowerCase()}`,
       );
     }
-    const resendAvailableBefore = new Date(Date.now() - 60_000);
-    if (
-      consent.otpLastIssuedAt &&
-      consent.otpLastIssuedAt > resendAvailableBefore
-    ) {
-      throw new BadRequestException(
-        "Wait 60 seconds before requesting another OTP",
+    if (["COMPLETED", "CLOSED", "CANCELLED"].includes(consent.case.status)) {
+      throw new ConflictException(
+        "Consent cannot be reissued for a completed or cancelled case",
       );
     }
-
-    const otp = randomInt(100_000, 1_000_000).toString();
-    const expiresAt = new Date(Date.now() + 10 * 60_000);
-    const issuedAt = new Date();
-    await this.prisma.$transaction(async (tx) => {
-      const issued = await tx.consent.updateMany({
-        where: {
-          id: consent.id,
-          OR: [
-            { otpLastIssuedAt: null },
-            { otpLastIssuedAt: { lte: resendAvailableBefore } },
-          ],
-        },
-        data: {
-          otpHash: this.hashOtp(consent.publicId, otp),
-          otpExpiresAt: expiresAt,
-          otpAttempts: 0,
-          otpLastIssuedAt: issuedAt,
-          status: "REQUESTED",
-        },
-      });
-      if (issued.count !== 1) {
-        throw new BadRequestException(
-          "Wait 60 seconds before requesting another OTP",
-        );
-      }
-      await tx.consentEvent.create({
-        data: {
-          consentId: consent.id,
-          eventType: "OTP_ISSUED",
-          evidenceJson: JSON.stringify({ expiresAt }),
-        },
-      });
-      await tx.outboxEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          topic: "consent.otp.requested",
-          aggregateType: "consent",
-          aggregateId: consent.publicId,
-          payloadJson: JSON.stringify({
-            consentId: consent.publicId,
-            secret: this.secretBox.seal({
-              channel: subjectPii.phone ? "SMS" : "EMAIL",
-              destination: subjectPii.phone ?? subjectPii.email ?? null,
-              otp,
-              consentUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/consent/${consent.publicId}`,
-              expiresAt,
-            }),
-          }),
-        },
-      });
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "consent.otp-requested",
-          resourceType: "consent",
-          resourcePublicId: consent.publicId,
-          afterJson: JSON.stringify({ expiresAt }),
-        },
-      });
-    });
-    return {
-      consentId: consent.publicId,
-      expiresAt,
-      ...(this.config.get("NODE_ENV") === "development"
-        ? { developmentOtp: otp }
-        : {}),
-    };
+    return this.prisma.$transaction((tx) =>
+      this.issuance.issue(tx, {
+        consentId: consent.id,
+        consentPublicId: consent.publicId,
+        tenantId: actor.tenantId,
+        casePublicId: consent.case.publicId,
+        actorUserId: actor.userId,
+        email: subjectPii.email,
+        phone: subjectPii.phone,
+      }),
+    );
   }
 
   async confirm(
@@ -173,7 +111,7 @@ export class ConsentsService {
     ) {
       throw new UnauthorizedException("OTP is invalid or expired");
     }
-    const actual = Buffer.from(this.hashOtp(publicId, otp));
+    const actual = Buffer.from(this.issuance.hashOtp(publicId, otp));
     const expected = Buffer.from(consent.otpHash);
     if (
       actual.length !== expected.length ||
@@ -203,8 +141,14 @@ export class ConsentsService {
 
     const acceptedAt = new Date();
     await this.prisma.$transaction(async (tx) => {
-      await tx.consent.update({
-        where: { id: consent.id },
+      const accepted = await tx.consent.updateMany({
+        where: {
+          id: consent.id,
+          status: "REQUESTED",
+          otpHash: consent.otpHash,
+          otpAttempts: consent.otpAttempts,
+          otpExpiresAt: { gt: acceptedAt },
+        },
         data: {
           status: "ACCEPTED",
           acceptedAt,
@@ -215,6 +159,11 @@ export class ConsentsService {
           otpAttempts: 0,
         },
       });
+      if (accepted.count !== 1) {
+        throw new ConflictException(
+          "Consent changed while the OTP was being confirmed",
+        );
+      }
       await tx.consentEvent.create({
         data: {
           consentId: consent.id,
@@ -249,16 +198,12 @@ export class ConsentsService {
           payloadJson: JSON.stringify({ caseId: consent.case.publicId }),
         },
       });
-      const recipients = consent.case.assignedOpsUserId
-        ? [{ id: consent.case.assignedOpsUserId }]
-        : await tx.user.findMany({
-            where: {
-              tenantId: consent.case.tenantId,
-              status: "ACTIVE",
-              userRoles: { some: { role: { code: "OPS_MANAGER" } } },
-            },
-            select: { id: true },
-          });
+      const recipients = await activeOperationsRecipients(tx, {
+        tenantId: consent.case.tenantId,
+        branchId: consent.case.branchId,
+        clientId: consent.case.clientId,
+        assignedUserId: consent.case.assignedOpsUserId,
+      });
       if (recipients.length) {
         await tx.notification.createMany({
           data: recipients.map((recipient) => ({
@@ -285,14 +230,5 @@ export class ConsentsService {
       });
     });
     return { accepted: true, acceptedAt };
-  }
-
-  private hashOtp(publicId: string, otp: string): string {
-    return createHmac(
-      "sha256",
-      this.config.getOrThrow<string>("JWT_REFRESH_SECRET"),
-    )
-      .update(`${publicId}:${otp}`)
-      .digest("hex");
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,8 +19,6 @@ import type { ClientDraft } from "@/lib/contracts/client";
 
 const schema = z.object({
   name: z.string().min(3, "Enter the registered company name"),
-  industry: z.string().min(2, "Industry is required"),
-  city: z.string().min(2, "City is required"),
   slaCommitmentDays: z.coerce.number().int().min(1).max(30),
   primaryContactName: z.string().min(3, "Contact name is required"),
   primaryContactEmail: z.string().email("Enter a valid work email"),
@@ -44,13 +43,14 @@ export function CreateClientDialog({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      industry: "",
-      city: "",
       slaCommitmentDays: 5,
       primaryContactName: "",
       primaryContactEmail: "",
     },
   });
+  useEffect(() => {
+    if (!open) form.reset();
+  }, [form, open]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -58,7 +58,7 @@ export function CreateClientDialog({
         <DialogHeader>
           <DialogTitle>Onboard a client</DialogTitle>
           <DialogDescription>
-            Creates the account, default package catalogue and the primary contact record.
+            Creates a client workspace with its SLA commitment and primary contact.
           </DialogDescription>
         </DialogHeader>
 
@@ -66,7 +66,6 @@ export function CreateClientDialog({
           className="grid gap-4 sm:grid-cols-2"
           onSubmit={form.handleSubmit((values) => {
             onSubmit(schema.parse(values));
-            form.reset();
           })}
         >
           <Field
@@ -76,12 +75,6 @@ export function CreateClientDialog({
             error={form.formState.errors.name?.message}
           >
             <Input id="name" placeholder="Meridian Financial Services" {...form.register("name")} />
-          </Field>
-          <Field id="industry" label="Industry" error={form.formState.errors.industry?.message}>
-            <Input id="industry" placeholder="Banking" {...form.register("industry")} />
-          </Field>
-          <Field id="city" label="City" error={form.formState.errors.city?.message}>
-            <Input id="city" placeholder="Mumbai" {...form.register("city")} />
           </Field>
           <Field
             id="slaCommitmentDays"

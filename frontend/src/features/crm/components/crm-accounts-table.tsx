@@ -50,7 +50,7 @@ export function CrmAccountsTable({ rows, onOpen }: CrmAccountsTableProps) {
               <td className="px-5 py-3">
                 <span className="block text-[13px] font-medium text-foreground">{row.company}</span>
                 <span className="block text-[11px] text-muted-foreground">
-                  {row.industry} · {row.city}
+                  {[row.industry, row.city].filter(Boolean).join(" · ") || "Details not recorded"}
                 </span>
               </td>
               <td className="px-3 py-3">

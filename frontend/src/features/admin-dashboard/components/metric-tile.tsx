@@ -13,7 +13,7 @@ const DIRECTION_ICON = {
 
 export function MetricTile({ card }: { card: SummaryCardData }) {
   const accent = cardAccent(card.id);
-  const DeltaIcon = DIRECTION_ICON[card.comparison.direction];
+  const DeltaIcon = card.comparison ? DIRECTION_ICON[card.comparison.direction] : null;
   const values = card.series.map((point) => point.value);
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -43,13 +43,17 @@ export function MetricTile({ card }: { card: SummaryCardData }) {
           <span className="num text-[1.35rem] leading-none font-medium tracking-[-0.03em] text-foreground">
             {card.value}
           </span>
-          <span className="inline-flex items-center gap-0.5 text-[11px]">
-            <DeltaIcon className={cn("size-3", TONE_TEXT[card.tone])} aria-hidden />
-            <span className={cn("num font-medium", TONE_TEXT[card.tone])}>
-              {card.comparison.delta > 0 ? "+" : ""}
-              {card.comparison.delta}%
+          {card.comparison && DeltaIcon ? (
+            <span className="inline-flex items-center gap-0.5 text-[11px]">
+              <DeltaIcon className={cn("size-3", TONE_TEXT[card.tone])} aria-hidden />
+              <span className={cn("num font-medium", TONE_TEXT[card.tone])}>
+                {card.comparison.delta > 0 ? "+" : ""}
+                {card.comparison.delta}%
+              </span>
             </span>
-          </span>
+          ) : (
+            <span className="text-[10px] text-muted-foreground">Live</span>
+          )}
         </div>
       </div>
 

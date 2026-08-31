@@ -110,7 +110,7 @@ export function useCaseAction() {
       toast.success(result.message);
       invalidate();
     },
-    onError: () => toast.error("Action failed. Please retry."),
+    onError: (error: Error) => toast.error(error.message || "Action failed. Please retry."),
   });
 }
 
@@ -120,11 +120,20 @@ export function useAssignChecks() {
     mutationFn: (input: AssignInput) => operationsApi.assignCase(input),
     onSuccess: (result) => {
       toast.success(`${result.assigned} checks assigned to ${result.memberName}`, {
-        description: result.warnings.length > 0 ? result.warnings.join(" ") : undefined,
+        description:
+          result.warnings.length > 0
+            ? result.warnings.join(" ")
+            : "Every selected check was committed together.",
       });
       invalidate();
     },
-    onError: () => toast.error("Assignment failed. Please retry."),
+    onError: (error: Error) => {
+      invalidate();
+      toast.error(error.message || "Assignment failed. Please retry.", {
+        description:
+          "Partial assignment is blocked. The queue is refreshing to confirm the final state.",
+      });
+    },
   });
 }
 
@@ -163,6 +172,6 @@ export function useExceptionAction() {
       );
       invalidate();
     },
-    onError: () => toast.error("Could not update the exception."),
+    onError: (error: Error) => toast.error(error.message || "Could not update the exception."),
   });
 }

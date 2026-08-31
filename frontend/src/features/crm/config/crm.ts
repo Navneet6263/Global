@@ -98,7 +98,7 @@ export const FOLLOW_UP_VIEWS: readonly { id: FollowUpView; label: string }[] = [
   { id: "tomorrow", label: "Tomorrow" },
   { id: "week", label: "This week" },
   { id: "upcoming", label: "Upcoming" },
-  { id: "completed", label: "Completed" },
+  { id: "completed", label: "Completed activity" },
   { id: "none", label: "No next action" },
 ];
 
@@ -117,11 +117,3 @@ export const SAVED_VIEWS: readonly { id: string; label: string; description: str
   { id: "won-month", label: "Won this month", description: "Closed won in the current month" },
   { id: "lost-month", label: "Lost this month", description: "Closed lost in the current month" },
 ];
-
-export const CRM_TARGETS = {
-  monthly: 9_500_000,
-  quarterly: 27_000_000,
-  yearly: 105_000_000,
-} as const;
-
-export const CRM_SIGNED_IN_OWNER_ID = "own_crm_001";

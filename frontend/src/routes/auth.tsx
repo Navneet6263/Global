@@ -1,21 +1,31 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { AuthBrandPanel } from "@/features/auth/components/auth-brand-panel";
 import { LoginCard } from "@/features/auth/components/login-card";
+import { landingPathForRoles, loadIdentity } from "@/lib/auth/platform-session";
 
 export const Route = createFileRoute("/auth")({
+  ssr: false,
+  beforeLoad: async () => {
+    const identity = await loadIdentity();
+    if (!identity) return;
+    throw redirect({
+      to: (identity.mustChangePassword
+        ? "/change-password"
+        : landingPathForRoles(identity.roles)) as "/admin",
+    });
+  },
   head: () => ({
     meta: [
       { title: "Sign in — Sapling Global Verification Platform" },
       {
         name: "description",
-        content:
-          "Secure sign-in for Sapling Global verification teams: password, email OTP or mobile OTP access to admin, operations and sales workspaces.",
+        content: "Secure password sign-in for authorised Sapling Global verification workspaces.",
       },
       { property: "og:title", content: "Sign in — Sapling Global Verification Platform" },
       {
         property: "og:description",
         content:
-          "Role-scoped access for verification operations, delivery management and sales pipelines.",
+          "Role-scoped access for platform, delivery, client, field, sales and finance teams.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

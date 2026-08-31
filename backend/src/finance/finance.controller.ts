@@ -12,6 +12,7 @@ import {
 import {
   CurrentActor,
   RequirePermissions,
+  RequireRoles,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -23,6 +24,7 @@ import { RecordPaymentDto } from "./dto/record-payment.dto";
 import { FinanceService } from "./finance.service";
 
 @Controller("finance")
+@RequireRoles("PLATFORM_ADMIN", "FINANCE_MANAGER")
 export class FinanceController {
   constructor(private readonly finance: FinanceService) {}
 

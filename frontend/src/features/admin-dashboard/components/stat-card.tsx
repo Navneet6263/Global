@@ -12,7 +12,7 @@ const ICONS: Record<string, typeof Gauge> = {
 export function StatCard({ card }: { card: SummaryCardData }) {
   const accent = cardAccent(card.id);
   const Icon = ICONS[card.id] ?? Gauge;
-  const rising = card.comparison.direction !== "down";
+  const rising = card.comparison?.direction !== "down";
   const DeltaIcon = rising ? ArrowUpRight : ArrowDownRight;
 
   return (
@@ -46,14 +46,18 @@ export function StatCard({ card }: { card: SummaryCardData }) {
         <span className="num text-[1.7rem] leading-none font-medium tracking-[-0.04em] text-foreground">
           {card.value}
         </span>
-        <span
-          className="num mb-0.5 inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
-          style={{ background: accent.fill, borderColor: accent.edge, color: accent.colour }}
-        >
-          <DeltaIcon className="size-3" aria-hidden />
-          {card.comparison.delta > 0 ? "+" : ""}
-          {card.comparison.delta}%
-        </span>
+        {card.comparison ? (
+          <span
+            className="num mb-0.5 inline-flex items-center gap-0.5 rounded-full border px-2 py-0.5 text-[11px] font-medium"
+            style={{ background: accent.fill, borderColor: accent.edge, color: accent.colour }}
+          >
+            <DeltaIcon className="size-3" aria-hidden />
+            {card.comparison.delta > 0 ? "+" : ""}
+            {card.comparison.delta}%
+          </span>
+        ) : (
+          <span className="mb-0.5 text-[10px] text-muted-foreground">12-month cohort</span>
+        )}
       </div>
     </Link>
   );

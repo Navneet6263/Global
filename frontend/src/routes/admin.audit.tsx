@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AuditList } from "@/features/audit/components/audit-list";
+import { ObjectDeletionRecovery } from "@/features/audit/components/object-deletion-recovery";
+import { downloadCsv } from "@/lib/csv";
 
 const CATEGORIES = Object.keys(AUDIT_CATEGORY_META) as AuditCategory[];
 
@@ -32,12 +34,12 @@ export const Route = createFileRoute("/admin/audit")({
       {
         name: "description",
         content:
-          "Immutable, attributed record of every access, case, policy and report action across the platform.",
+          "Append-only, attributed record of every access, case, policy and report action across the platform.",
       },
       { property: "og:title", content: "Audit Trail — Sapling Global" },
       {
         property: "og:description",
-        content: "Immutable, attributed record of every action across the platform.",
+        content: "Append-only, attributed record of every action across the platform.",
       },
     ],
   }),
@@ -72,20 +74,34 @@ function AuditPage() {
       <PageHeader
         title="Audit trail"
         description="Every privileged action, with actor, request ID and the before/after values captured at write time."
-        meta={data ? `${data.total} audited events` : undefined}
+        meta={data ? `${data.total} matching audited events` : undefined}
         actions={
           <Button
             variant="outline"
             size="sm"
-            onClick={() =>
-              toast.success("Audit export queued", { description: "Signed CSV by email." })
-            }
+            onClick={() => {
+              downloadCsv(
+                `sapling-global-audit-${new Date().toISOString().slice(0, 10)}.csv`,
+                ["Timestamp", "Action", "Actor", "Resource", "Resource ID", "Request ID"],
+                events.map((event) => [
+                  event.at,
+                  event.action,
+                  event.actorName,
+                  event.resourceType,
+                  event.resourceId,
+                  event.requestId,
+                ]),
+              );
+              toast.success("Current audit page downloaded");
+            }}
           >
             <Download className="size-3.5" aria-hidden />
-            Export
+            Export current page
           </Button>
         }
       />
+
+      <ObjectDeletionRecovery />
 
       <div className="surface overflow-hidden">
         <div className="flex flex-wrap items-center gap-3 border-b border-border px-5 py-4">

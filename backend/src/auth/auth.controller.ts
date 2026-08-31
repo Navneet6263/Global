@@ -13,6 +13,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
+import { ConfigService } from "@nestjs/config";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import {
   AllowPasswordChangePending,
@@ -25,10 +26,14 @@ import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { ChangePasswordDto } from "./dto/change-password.dto";
 import { RenameSessionDto } from "./dto/rename-session.dto";
+import { ttlSeconds } from "../config/ttl";
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly auth: AuthService) {}
+  constructor(
+    private readonly auth: AuthService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Public()
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
@@ -133,13 +138,13 @@ export class AuthController {
       refreshExpiresAt: Date;
     },
   ): void {
-    const secure = process.env.COOKIE_SECURE === "true";
+    const secure = this.config.get<boolean>("COOKIE_SECURE", false);
     response.setCookie("sg_access", tokens.accessToken, {
       httpOnly: true,
       secure,
       sameSite: "strict",
       path: "/",
-      maxAge: 15 * 60,
+      maxAge: ttlSeconds(this.config.get<string>("JWT_ACCESS_TTL", "15m")),
     });
     response.setCookie("sg_refresh", tokens.refreshToken, {
       httpOnly: true,

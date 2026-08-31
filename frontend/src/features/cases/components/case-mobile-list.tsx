@@ -31,7 +31,8 @@ export function CaseMobileList({ rows, onOpenCase }: CaseMobileListProps) {
               <PriorityCell row={row} />
             </span>
             <span className="block text-xs text-muted-foreground">
-              {row.clientName} · {row.packageName}
+              {row.clientName}
+              {row.packageName ? ` · ${row.packageName}` : ""}
             </span>
             <span className="flex flex-wrap items-center gap-2">
               <StageCell row={row} />

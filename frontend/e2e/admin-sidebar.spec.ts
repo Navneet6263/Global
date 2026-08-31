@@ -37,7 +37,7 @@ test("Platform Admin wildcard access keeps every sidebar section visible", async
     "Exceptions",
     "Field Operations",
     "Clients",
-    "Client Portal Preview",
+    "Client Portfolio",
     "Finance & Billing",
     "User IDs & Access",
     "Platform Settings",

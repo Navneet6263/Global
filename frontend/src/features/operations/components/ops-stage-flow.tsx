@@ -12,7 +12,7 @@ export function OpsStageFlow({ stages }: { stages: readonly OpsStageSnapshot[] }
   return (
     <Section
       title="Verification flow"
-      description="Where open work is sitting right now, with average stage age and bottleneck flags."
+      description="Where open work is sitting right now, with oldest stage age and SLA-risk flags."
     >
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {visible.map((stage) => {
@@ -29,7 +29,7 @@ export function OpsStageFlow({ stages }: { stages: readonly OpsStageSnapshot[] }
                 {stage.bottleneck ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-critical-soft px-1.5 py-px text-[10px] font-medium text-critical-foreground">
                     <AlertTriangle className="size-3" aria-hidden />
-                    Bottleneck
+                    At risk
                   </span>
                 ) : null}
               </div>
@@ -51,17 +51,16 @@ export function OpsStageFlow({ stages }: { stages: readonly OpsStageSnapshot[] }
 
               <dl className="mt-3 space-y-1 text-[11px] text-muted-foreground">
                 <div className="flex justify-between gap-2">
-                  <dt>Avg age</dt>
-                  <dd className="num">{formatDuration(stage.averageAgeMinutes)}</dd>
-                </div>
-                <div className="flex justify-between gap-2">
                   <dt>Oldest</dt>
                   <dd className="num">{formatDuration(stage.oldestAgeMinutes)}</dd>
                 </div>
                 <div className="flex justify-between gap-2">
-                  <dt>SLA risk / unassigned</dt>
+                  <dt>
+                    {stage.unassignedCount === undefined ? "SLA risk" : "SLA risk / unassigned"}
+                  </dt>
                   <dd className="num">
-                    {stage.slaRiskCount} / {stage.unassignedCount}
+                    {stage.slaRiskCount}
+                    {stage.unassignedCount === undefined ? "" : ` / ${stage.unassignedCount}`}
                   </dd>
                 </div>
               </dl>
