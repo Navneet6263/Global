@@ -13,9 +13,10 @@ import {
   resolveApiException,
 } from "./api-operations-exceptions";
 import { getFieldOperations, getSlaPerformance, getTeamCapacity } from "./api-operations-insights";
-import { baseCase, clarificationState, detailCase } from "./api-operations-mappers";
+import { clarificationState, detailCase } from "./api-operations-mappers";
 import { getCase, listAllClients } from "@/lib/backend-api/cases";
-import { listAllOperationCases } from "./api-operations-cases";
+import { getOperationsRegister } from "./api-operations-register";
+import { ApiError } from "@/lib/backend-api/client";
 import { resolveClarification } from "@/lib/backend-api/clarifications";
 import { getExceptionsDashboard } from "@/lib/backend-api/dashboards";
 import {
@@ -32,7 +33,7 @@ export function createApiOperationsRepository(_baseUrl: string): OperationsRepos
       const [clients, users] = await Promise.all([listAllClients(), listAllUsers("OPS_MANAGER")]);
       return {
         clients: clients.map((row) => ({ value: row.publicId, label: row.displayName })),
-        owners: users.items.map((row) => ({ value: row.displayName, label: row.displayName })),
+        owners: users.items.map((row) => ({ value: row.id, label: row.displayName })),
         packages: [],
         branches: [
           ...new Map(
@@ -46,48 +47,13 @@ export function createApiOperationsRepository(_baseUrl: string): OperationsRepos
         ],
       };
     },
-    async getCases(query) {
-      const items = await listAllOperationCases({
-        search: query.search,
-        clientId: query.clientId === "all" ? undefined : query.clientId,
-      });
-      let rows = items.map(baseCase);
-      if (query.stage && query.stage !== "all")
-        rows = rows.filter((row) => row.stage === query.stage);
-      if (query.priority && query.priority !== "all")
-        rows = rows.filter((row) => row.priority === query.priority);
-      if (query.risk && query.risk !== "all") rows = rows.filter((row) => row.risk === query.risk);
-      if (query.sla && query.sla !== "all") rows = rows.filter((row) => row.slaState === query.sla);
-      if (query.owner && query.owner !== "all")
-        rows = rows.filter((row) => row.opsOwner === query.owner);
-      if (query.unassigned) rows = rows.filter((row) => !row.opsOwner);
-      if (query.dueToday) {
-        const end = new Date();
-        end.setHours(23, 59, 59, 999);
-        rows = rows.filter((row) => {
-          const minutesUntilEnd = (end.getTime() - Date.now()) / 60_000;
-          return row.slaMinutesRemaining >= 0 && row.slaMinutesRemaining <= minutesUntilEnd;
-        });
-      }
-      if (query.dueNext7Days) {
-        rows = rows.filter(
-          (row) => row.slaMinutesRemaining >= 0 && row.slaMinutesRemaining <= 7 * 24 * 60,
-        );
-      }
-      const page = query.page ?? 1;
-      const pageSize = query.pageSize ?? 10;
-      return {
-        rows: rows.slice((page - 1) * pageSize, page * pageSize),
-        total: rows.length,
-        page,
-        pageSize,
-      };
-    },
+    getCases: getOperationsRegister,
     async getCase(caseId) {
       try {
         return detailCase(await getCase(caseId));
-      } catch {
-        return null;
+      } catch (error) {
+        if (error instanceof ApiError && error.problem.status === 404) return null;
+        throw error;
       }
     },
     runCaseAction: runApiCaseAction,

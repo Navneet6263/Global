@@ -89,8 +89,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "theme-color", content: "#f7f6f1" },
     ],
     links: [
+      {
+        rel: "icon",
+        type: "image/png",
+        sizes: "1254x1254",
+        href: "/brand/sapling-global-mark.png?v=20260907",
+      },
+      {
+        rel: "shortcut icon",
+        type: "image/png",
+        href: "/brand/sapling-global-mark.png?v=20260907",
+      },
+      {
+        rel: "apple-touch-icon",
+        href: "/brand/sapling-global-mark.png?v=20260907",
+      },
       {
         rel: "stylesheet",
         href: appCss,

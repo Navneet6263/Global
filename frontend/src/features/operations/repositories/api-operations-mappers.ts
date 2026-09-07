@@ -90,7 +90,7 @@ export function baseCase(row: CaseListItem): OpsCase {
     candidateMobile: row.subject.phone ?? "",
     clientId: row.client.publicId,
     clientName: row.client.displayName,
-    packageName: `${row.checks.length}-check scope`,
+    packageName: row.servicePackage?.name ?? `${row.checks.length}-check scope`,
     stage,
     progress: progress[stage],
     checksCompleted: completed,
@@ -111,7 +111,21 @@ export function baseCase(row: CaseListItem): OpsCase {
       tasks.find((task) => task.status === "BLOCKED")?.instructions ??
       null,
     nextAction:
-      stage === "completed" ? "Closed" : verifier ? "Monitor verification" : "Assign verifier",
+      stage === "cancelled"
+        ? "Cancelled"
+        : stage === "completed"
+          ? "Review published report"
+          : stage === "consent"
+            ? "Await candidate consent"
+            : stage === "documents"
+              ? "Review required documents"
+              : stage === "clarification"
+                ? "Review clarification response"
+                : stage === "qa"
+                  ? "Await independent QA review"
+                  : verifier
+                    ? "Monitor verification"
+                    : "Assign verifier",
     stageAgeMinutes: Math.max(0, Math.round((Date.now() - Date.parse(row.updatedAt)) / 60_000)),
   };
 }

@@ -19,6 +19,7 @@ import {
 import { getSession } from "@/lib/api/auth";
 import { createCase, listAllClients, listCaseServicePackages } from "@/lib/api/cases";
 import { issueCandidateAccess } from "@/lib/api/candidate-portal";
+import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
 
 const steps = ["Candidate", "Checks", "Review"];
 
@@ -29,6 +30,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
   const [inviteCandidate, setInviteCandidate] = useState(true);
   const [completed, setCompleted] = useState<CreatedCaseAccess>();
   const issuingForCase = useRef<string | undefined>(undefined);
+  const createAttempt = useRef<{ fingerprint: string; key: string } | undefined>(undefined);
   const queryClient = useQueryClient();
   const session = useQuery({
     queryKey: ["session"],
@@ -70,9 +72,15 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
     );
   }, [fixedClient, open]);
   const createMutation = useMutation({
-    mutationFn: ({ caseDraft }: { caseDraft: CaseDraft; shouldInvite: boolean }) =>
-      createCase(caseDraft),
+    mutationFn: ({ caseDraft }: { caseDraft: CaseDraft; shouldInvite: boolean }) => {
+      const fingerprint = JSON.stringify(caseDraft);
+      if (createAttempt.current?.fingerprint !== fingerprint) {
+        createAttempt.current = { fingerprint, key: crypto.randomUUID() };
+      }
+      return createCase(caseDraft, createAttempt.current.key);
+    },
     onSuccess: (created, variables) => {
+      createAttempt.current = undefined;
       const shouldIssue = variables.shouldInvite;
       issuingForCase.current = shouldIssue ? created.id : undefined;
       setCompleted({
@@ -86,10 +94,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
         candidate: { status: shouldIssue ? "issuing" : "skipped" },
       });
       reset();
-      void Promise.all([
-        queryClient.invalidateQueries({ queryKey: ["cases"] }),
-        queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
-      ]);
+      void invalidateWorkflow(queryClient);
       toast.success(`${created.caseNumber} initiated`, {
         description: shouldIssue
           ? "Case saved. The candidate document link is being secured in the background."
@@ -120,7 +125,13 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
           });
         });
     },
-    onError: (error) => toast.error("Case could not be initiated", { description: error.message }),
+    onError: (error) =>
+      toast.error("Case submission needs attention", {
+        description:
+          error.name === "TimeoutError" || error instanceof TypeError
+            ? "The result was not confirmed. Keep this form unchanged and retry to safely check the saved result."
+            : error.message,
+      }),
   });
 
   const reset = () => {

@@ -60,6 +60,12 @@ import { Route as SalesCrmForecastRouteImport } from './routes/sales-crm.forecas
 import { Route as SalesCrmOpportunitiesRouteImport } from './routes/sales-crm.opportunities'
 import { Route as SalesCrmSettingsRouteImport } from './routes/sales-crm.settings'
 import { Route as SalesCrmTeamRouteImport } from './routes/sales-crm.team'
+import { Route as VerifierIndexRouteImport } from './routes/verifier.index'
+import { Route as VerifierBlockersRouteImport } from './routes/verifier.blockers'
+import { Route as VerifierHistoryRouteImport } from './routes/verifier.history'
+import { Route as VerifierPerformanceRouteImport } from './routes/verifier.performance'
+import { Route as VerifierQueueRouteImport } from './routes/verifier.queue'
+import { Route as VerifierSlaRouteImport } from './routes/verifier.sla'
 import { Route as ReportsVerifyAuthenticityCodeRouteImport } from './routes/reports.verify.$authenticityCode'
 
 const IndexRoute = IndexRouteImport.update({
@@ -320,6 +326,36 @@ const SalesCrmTeamRoute = SalesCrmTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => SalesCrmRoute,
 } as any)
+const VerifierIndexRoute = VerifierIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierBlockersRoute = VerifierBlockersRouteImport.update({
+  id: '/blockers',
+  path: '/blockers',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierHistoryRoute = VerifierHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierPerformanceRoute = VerifierPerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierQueueRoute = VerifierQueueRouteImport.update({
+  id: '/queue',
+  path: '/queue',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierSlaRoute = VerifierSlaRouteImport.update({
+  id: '/sla',
+  path: '/sla',
+  getParentRoute: () => VerifierRoute,
+} as any)
 const ReportsVerifyAuthenticityCodeRoute =
   ReportsVerifyAuthenticityCodeRouteImport.update({
     id: '/reports/verify/$authenticityCode',
@@ -338,7 +374,7 @@ export interface FileRoutesByFullPath {
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
-  '/verifier': typeof VerifierRoute
+  '/verifier': typeof VerifierRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cases': typeof AdminCasesRoute
@@ -375,10 +411,16 @@ export interface FileRoutesByFullPath {
   '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/verifier/blockers': typeof VerifierBlockersRoute
+  '/verifier/history': typeof VerifierHistoryRoute
+  '/verifier/performance': typeof VerifierPerformanceRoute
+  '/verifier/queue': typeof VerifierQueueRoute
+  '/verifier/sla': typeof VerifierSlaRoute
   '/admin/': typeof AdminIndexRoute
   '/client-portal/': typeof ClientPortalIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
+  '/verifier/': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
 export interface FileRoutesByTo {
@@ -388,7 +430,6 @@ export interface FileRoutesByTo {
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/qa-review': typeof QaReviewRoute
-  '/verifier': typeof VerifierRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cases': typeof AdminCasesRoute
@@ -425,10 +466,16 @@ export interface FileRoutesByTo {
   '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/verifier/blockers': typeof VerifierBlockersRoute
+  '/verifier/history': typeof VerifierHistoryRoute
+  '/verifier/performance': typeof VerifierPerformanceRoute
+  '/verifier/queue': typeof VerifierQueueRoute
+  '/verifier/sla': typeof VerifierSlaRoute
   '/admin': typeof AdminIndexRoute
   '/client-portal': typeof ClientPortalIndexRoute
   '/operations': typeof OperationsIndexRoute
   '/sales-crm': typeof SalesCrmIndexRoute
+  '/verifier': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
 export interface FileRoutesById {
@@ -443,7 +490,7 @@ export interface FileRoutesById {
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
-  '/verifier': typeof VerifierRoute
+  '/verifier': typeof VerifierRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cases': typeof AdminCasesRoute
@@ -480,10 +527,16 @@ export interface FileRoutesById {
   '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/verifier/blockers': typeof VerifierBlockersRoute
+  '/verifier/history': typeof VerifierHistoryRoute
+  '/verifier/performance': typeof VerifierPerformanceRoute
+  '/verifier/queue': typeof VerifierQueueRoute
+  '/verifier/sla': typeof VerifierSlaRoute
   '/admin/': typeof AdminIndexRoute
   '/client-portal/': typeof ClientPortalIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
+  '/verifier/': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
 export interface FileRouteTypes {
@@ -536,10 +589,16 @@ export interface FileRouteTypes {
     | '/sales-crm/opportunities'
     | '/sales-crm/settings'
     | '/sales-crm/team'
+    | '/verifier/blockers'
+    | '/verifier/history'
+    | '/verifier/performance'
+    | '/verifier/queue'
+    | '/verifier/sla'
     | '/admin/'
     | '/client-portal/'
     | '/operations/'
     | '/sales-crm/'
+    | '/verifier/'
     | '/reports/verify/$authenticityCode'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -549,7 +608,6 @@ export interface FileRouteTypes {
     | '/field-executive'
     | '/finance'
     | '/qa-review'
-    | '/verifier'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/cases'
@@ -586,10 +644,16 @@ export interface FileRouteTypes {
     | '/sales-crm/opportunities'
     | '/sales-crm/settings'
     | '/sales-crm/team'
+    | '/verifier/blockers'
+    | '/verifier/history'
+    | '/verifier/performance'
+    | '/verifier/queue'
+    | '/verifier/sla'
     | '/admin'
     | '/client-portal'
     | '/operations'
     | '/sales-crm'
+    | '/verifier'
     | '/reports/verify/$authenticityCode'
   id:
     | '__root__'
@@ -640,10 +704,16 @@ export interface FileRouteTypes {
     | '/sales-crm/opportunities'
     | '/sales-crm/settings'
     | '/sales-crm/team'
+    | '/verifier/blockers'
+    | '/verifier/history'
+    | '/verifier/performance'
+    | '/verifier/queue'
+    | '/verifier/sla'
     | '/admin/'
     | '/client-portal/'
     | '/operations/'
     | '/sales-crm/'
+    | '/verifier/'
     | '/reports/verify/$authenticityCode'
   fileRoutesById: FileRoutesById
 }
@@ -658,7 +728,7 @@ export interface RootRouteChildren {
   OperationsRoute: typeof OperationsRouteWithChildren
   QaReviewRoute: typeof QaReviewRoute
   SalesCrmRoute: typeof SalesCrmRouteWithChildren
-  VerifierRoute: typeof VerifierRoute
+  VerifierRoute: typeof VerifierRouteWithChildren
   CandidateAccessIdRoute: typeof CandidateAccessIdRoute
   CasesCaseIdRoute: typeof CasesCaseIdRoute
   ClarificationClarificationIdRoute: typeof ClarificationClarificationIdRoute
@@ -1025,6 +1095,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalesCrmTeamRouteImport
       parentRoute: typeof SalesCrmRoute
     }
+    '/verifier/': {
+      id: '/verifier/'
+      path: '/'
+      fullPath: '/verifier/'
+      preLoaderRoute: typeof VerifierIndexRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/blockers': {
+      id: '/verifier/blockers'
+      path: '/blockers'
+      fullPath: '/verifier/blockers'
+      preLoaderRoute: typeof VerifierBlockersRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/history': {
+      id: '/verifier/history'
+      path: '/history'
+      fullPath: '/verifier/history'
+      preLoaderRoute: typeof VerifierHistoryRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/performance': {
+      id: '/verifier/performance'
+      path: '/performance'
+      fullPath: '/verifier/performance'
+      preLoaderRoute: typeof VerifierPerformanceRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/queue': {
+      id: '/verifier/queue'
+      path: '/queue'
+      fullPath: '/verifier/queue'
+      preLoaderRoute: typeof VerifierQueueRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/sla': {
+      id: '/verifier/sla'
+      path: '/sla'
+      fullPath: '/verifier/sla'
+      preLoaderRoute: typeof VerifierSlaRouteImport
+      parentRoute: typeof VerifierRoute
+    }
     '/reports/verify/$authenticityCode': {
       id: '/reports/verify/$authenticityCode'
       path: '/reports/verify/$authenticityCode'
@@ -1145,6 +1257,28 @@ const SalesCrmRouteWithChildren = SalesCrmRoute._addFileChildren(
   SalesCrmRouteChildren,
 )
 
+interface VerifierRouteChildren {
+  VerifierBlockersRoute: typeof VerifierBlockersRoute
+  VerifierHistoryRoute: typeof VerifierHistoryRoute
+  VerifierPerformanceRoute: typeof VerifierPerformanceRoute
+  VerifierQueueRoute: typeof VerifierQueueRoute
+  VerifierSlaRoute: typeof VerifierSlaRoute
+  VerifierIndexRoute: typeof VerifierIndexRoute
+}
+
+const VerifierRouteChildren: VerifierRouteChildren = {
+  VerifierBlockersRoute: VerifierBlockersRoute,
+  VerifierHistoryRoute: VerifierHistoryRoute,
+  VerifierPerformanceRoute: VerifierPerformanceRoute,
+  VerifierQueueRoute: VerifierQueueRoute,
+  VerifierSlaRoute: VerifierSlaRoute,
+  VerifierIndexRoute: VerifierIndexRoute,
+}
+
+const VerifierRouteWithChildren = VerifierRoute._addFileChildren(
+  VerifierRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -1156,7 +1290,7 @@ const rootRouteChildren: RootRouteChildren = {
   OperationsRoute: OperationsRouteWithChildren,
   QaReviewRoute: QaReviewRoute,
   SalesCrmRoute: SalesCrmRouteWithChildren,
-  VerifierRoute: VerifierRoute,
+  VerifierRoute: VerifierRouteWithChildren,
   CandidateAccessIdRoute: CandidateAccessIdRoute,
   CasesCaseIdRoute: CasesCaseIdRoute,
   ClarificationClarificationIdRoute: ClarificationClarificationIdRoute,

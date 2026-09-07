@@ -1,54 +1,51 @@
-import { useMutation } from "@tanstack/react-query";
 import { CheckCircle2, FileSearch, Loader2, RotateCcw, ShieldCheck } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
-import { claimQaCase, submitQaDecision, type QaQueueItem } from "@/lib/api/qa";
+import type { QaQueueItem } from "@/lib/api/qa";
 import { humanize, qaChecklist } from "../utils";
 import { QaEvidencePanel } from "./QaEvidencePanel";
 import { QaClaimState, QaDecisionButton } from "./QaDecisionParts";
+import { QaReservation } from "./QaReservation";
+import { useQaClaim } from "./use-qa-claim";
+import { useQaActions } from "./use-qa-actions";
 
 export function QaReviewPanel({
   item,
   reviewerId,
   onRefresh,
+  refreshing = false,
 }: {
   item: QaQueueItem;
   reviewerId?: string | undefined;
   onRefresh: () => Promise<void>;
+  refreshing?: boolean;
 }) {
   const [checked, setChecked] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
   const [reworkIds, setReworkIds] = useState<string[]>([]);
   const [mode, setMode] = useState<"APPROVED" | "REWORK">("APPROVED");
-  const claimedByMe = item.qaReviewer?.publicId === reviewerId;
-  const claim = useMutation({
-    mutationFn: () => claimQaCase(item.id, item.version),
-    onSuccess: () => {
-      toast.success("Case reserved for your independent review");
-      void onRefresh();
+  const reservation = useQaClaim(item, reviewerId);
+  const claimedByMe = reservation.mine;
+  useEffect(() => {
+    setChecked([]);
+    setReworkIds([]);
+  }, [item.version]);
+  const {
+    claim,
+    decision,
+    reservation: reservationAction,
+    busy,
+  } = useQaActions(
+    item,
+    {
+      decision: mode,
+      caseVersion: item.version,
+      checklist: checked,
+      notes: notes.trim(),
+      reworkCheckIds: mode === "REWORK" ? reworkIds : [],
     },
-    onError: (error: Error) => toast.error(error.message),
-  });
-  const decision = useMutation({
-    mutationFn: () =>
-      submitQaDecision(item.id, {
-        decision: mode,
-        caseVersion: item.version,
-        checklist: checked,
-        notes: notes.trim(),
-        reworkCheckIds: mode === "REWORK" ? reworkIds : [],
-      }),
-    onSuccess: () => {
-      toast.success(
-        mode === "APPROVED"
-          ? "Case approved and report queued"
-          : "New verifier rework task created",
-      );
-      void onRefresh();
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
+    onRefresh,
+  );
   const ready =
     claimedByMe &&
     checked.length === qaChecklist.length &&
@@ -75,17 +72,24 @@ export function QaReviewPanel({
       </header>
       {!claimedByMe ? (
         <QaClaimState
-          owner={item.qaReviewer?.displayName}
-          busy={claim.isPending}
+          owner={reservation.active ? item.qaReviewer?.displayName : undefined}
+          busy={busy || refreshing}
           onClaim={() => claim.mutate()}
         />
       ) : (
-        <div className="mt-4 flex items-center gap-2 rounded-[1.15rem] border border-success/20 bg-success-soft/65 px-4 py-3 text-[11px] font-medium text-success-foreground">
-          <ShieldCheck className="h-4 w-4" /> Reserved for your review. It may be reassigned 30
-          minutes after the initial claim, so submit or reclaim before continuing.
-        </div>
+        <QaReservation
+          minutes={reservation.minutes}
+          onChange={(action) => reservationAction.mutate(action)}
+          disabled={busy || refreshing}
+        />
       )}
-      <div className={`mt-5 space-y-5 ${!claimedByMe ? "pointer-events-none opacity-55" : ""}`}>
+      <fieldset
+        disabled={!claimedByMe || busy || refreshing}
+        className={`mt-5 min-w-0 space-y-5 ${!claimedByMe ? "opacity-55" : ""}`}
+      >
+        <legend className="sr-only">
+          Independent review controls; an active reservation is required
+        </legend>
         <QaEvidencePanel
           item={item}
           selectedChecks={reworkIds}
@@ -184,7 +188,7 @@ export function QaReviewPanel({
         <button
           type="button"
           onClick={() => decision.mutate()}
-          disabled={!ready || decision.isPending}
+          disabled={!ready || busy}
           className="sticky bottom-3 z-10 inline-flex items-center gap-2 rounded-full bg-mint-deep px-5 py-3 text-[11px] font-medium text-white shadow-[var(--shadow-float)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {decision.isPending ? (
@@ -194,7 +198,7 @@ export function QaReviewPanel({
           )}{" "}
           Submit controlled decision
         </button>
-      </div>
+      </fieldset>
     </section>
   );
 }

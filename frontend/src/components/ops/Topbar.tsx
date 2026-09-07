@@ -113,7 +113,10 @@ function NotificationInbox() {
   const query = useQuery({
     queryKey: ["notifications"],
     queryFn: listNotifications,
-    refetchInterval: 30_000,
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    staleTime: 60_000,
   });
   const read = useMutation({
     mutationFn: markNotificationRead,

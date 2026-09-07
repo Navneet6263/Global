@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { IsIn, IsOptional } from "class-validator";
+import { IsIn, IsOptional, IsUUID } from "class-validator";
 import { PageQueryDto } from "../common/dto/page-query.dto";
 import {
   CurrentActor,
@@ -27,12 +27,20 @@ import { TasksService } from "./tasks.service";
 
 class TaskQueryDto extends PageQueryDto {
   @IsOptional()
+  @IsUUID()
+  taskId?: string;
+
+  @IsOptional()
   @IsIn(["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED", "COMPLETED"])
   status?: string;
 
   @IsOptional()
   @IsIn(["ACTIVE"])
   view?: string;
+
+  @IsOptional()
+  @IsIn(["OVERDUE", "DUE_TODAY", "DUE_SOON"])
+  sla?: "OVERDUE" | "DUE_TODAY" | "DUE_SOON";
 }
 
 @Controller()
@@ -50,6 +58,23 @@ export class TasksController {
     return this.tasks.mine(actor, query);
   }
 
+  @Get("tasks/mine/insights")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
+  @RequirePermissions(Permission.TaskRead)
+  insights(@CurrentActor() actor: Actor) {
+    return this.tasks.insights(actor);
+  }
+
+  @Get("tasks/:taskId/context")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
+  @RequirePermissions(Permission.TaskRead)
+  context(
+    @CurrentActor() actor: Actor,
+    @Param("taskId", ParseUUIDPipe) taskId: string,
+  ) {
+    return this.tasks.context(actor, taskId);
+  }
+
   @Post("checks/:checkId/tasks")
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   @RequirePermissions(Permission.TaskWrite)
@@ -64,10 +89,7 @@ export class TasksController {
   @Post("tasks/bulk-assignment")
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   @RequirePermissions(Permission.TaskWrite)
-  bulkAssign(
-    @CurrentActor() actor: Actor,
-    @Body() input: BulkAssignTasksDto,
-  ) {
+  bulkAssign(@CurrentActor() actor: Actor, @Body() input: BulkAssignTasksDto) {
     return this.bulkAssignments.assign(actor, input);
   }
 

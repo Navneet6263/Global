@@ -18,7 +18,7 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
-import { readUploadedBinary } from "../common/http/uploaded-binary";
+import { withUploadedBinary } from "../common/http/upload-capacity";
 import { RespondClarificationDto } from "../clarifications/dto/respond-clarification.dto";
 import { CandidatePortalService } from "./candidate-portal.service";
 
@@ -57,11 +57,12 @@ export class CandidatePortalController {
     @Headers("x-document-type") type: string,
     @Req() request: FastifyRequest,
   ) {
-    const file = await readUploadedBinary(
+    return withUploadedBinary(
       request,
-      this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
+      this.config,
+      `public:${request.ip}`,
+      (file) => this.portal.upload(accessId, token ?? "", type ?? "", file),
     );
-    return this.portal.upload(accessId, token ?? "", type ?? "", file);
   }
 
   @Post(

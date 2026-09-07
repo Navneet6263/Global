@@ -7,9 +7,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
-import { api } from "@/lib/api/client";
+import { notificationView } from "@/lib/api/notification-view";
 import { queryKeys } from "@/lib/api/query-keys";
-import { markAllNotificationsRead, markNotificationRead } from "@/lib/backend-api/notifications";
+import {
+  listNotifications,
+  markAllNotificationsRead,
+  markNotificationRead,
+} from "@/lib/backend-api/notifications";
 import { NOTIFICATION_TONE, type PlatformNotification } from "@/lib/contracts/notifications";
 import { formatRelativeToNow } from "@/lib/formatting";
 import { TONE_DOT } from "@/lib/formatting/tones";
@@ -22,15 +26,21 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
   const navigate = useNavigate();
   const query = useQuery({
     queryKey: queryKeys.notifications(),
-    queryFn: () => api.notifications.list(),
+    queryFn: listNotifications,
+    select: (data) => ({ unread: data.unread, items: data.items.map(notificationView) }),
     refetchInterval: 60_000,
     refetchIntervalInBackground: false,
-    refetchOnWindowFocus: true,
-    staleTime: 20_000,
+    refetchOnWindowFocus: false,
+    staleTime: 60_000,
   });
-  const unread = query.data?.filter((item) => !item.read).length ?? 0;
+  const unread = query.data?.unread ?? 0;
   const refresh = () => queryClient.invalidateQueries({ queryKey: queryKeys.notifications() });
-  const readOne = useMutation({ mutationFn: markNotificationRead, onSettled: refresh });
+  const readOne = useMutation({
+    mutationFn: markNotificationRead,
+    onSettled: refresh,
+    onError: (error: Error) =>
+      toast.error("Could not mark the alert as read", { description: error.message }),
+  });
   const readAll = useMutation({
     mutationFn: markAllNotificationsRead,
     onSettled: refresh,
@@ -40,13 +50,7 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
 
   const open = async (item: PlatformNotification) => {
     if (!item.read) {
-      try {
-        await readOne.mutateAsync(item.id);
-      } catch (error) {
-        toast.error("Notification could not be marked as read", {
-          description: error instanceof Error ? error.message : undefined,
-        });
-      }
+      readOne.mutate(item.id);
     }
     const caseId = item.route.match(/^\/cases\/([0-9a-f-]+)$/i)?.[1];
     if (caseId && workspace === "platform-admin") {
@@ -65,7 +69,7 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
       await navigate({ to: WORKSPACE_PRESENTATION[workspace].home as "/admin" });
       return;
     }
-    await navigate({ to: item.route as "/admin" });
+    await navigate({ to: (item.route || WORKSPACE_PRESENTATION[workspace].home) as "/admin" });
   };
 
   return (
@@ -112,12 +116,11 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
                   <Skeleton className="h-3 w-56" />
                 </div>
               ))
-            : query.data?.map((item) => (
+            : query.data?.items.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => void open(item)}
-                  disabled={readOne.isPending}
                   className="block w-full px-4 py-3 text-left transition-colors hover:bg-muted/60 disabled:opacity-60"
                 >
                   <span className="flex items-start gap-2.5">
@@ -139,7 +142,15 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
                   </span>
                 </button>
               ))}
-          {!query.isPending && !query.data?.length ? (
+          {query.isError ? (
+            <div className="p-4 text-center text-sm" role="alert">
+              Alerts could not be loaded.
+              <Button variant="ghost" onClick={() => void query.refetch()}>
+                Retry
+              </Button>
+            </div>
+          ) : null}
+          {!query.isPending && !query.isError && !query.data?.items.length ? (
             <p className="px-4 py-8 text-center text-xs text-muted-foreground">
               You are all caught up.
             </p>

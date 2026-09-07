@@ -2,7 +2,8 @@ import { getExecutiveDashboard } from "@/lib/backend-api/dashboards";
 import { listAllUsers } from "@/lib/backend-api/users";
 import { baseCase, fieldStatus, stages } from "./api-operations-mappers";
 import { listAllOperationCases } from "./api-operations-cases";
-import { buildVerifierTeam } from "./api-operations-team";
+import { apiRequest } from "@/lib/backend-api/client";
+import type { TeamCapacity } from "../contracts/operations";
 
 export async function getSlaPerformance() {
   const data = await getExecutiveDashboard({ months: 12 });
@@ -55,8 +56,7 @@ export async function getSlaPerformance() {
 }
 
 export async function getTeamCapacity() {
-  const [cases, users] = await Promise.all([listAllOperationCases(), listAllUsers("VERIFIER")]);
-  return buildVerifierTeam(cases, users.items);
+  return apiRequest<TeamCapacity>("/dashboards/verifier-capacity");
 }
 
 export async function getFieldOperations() {

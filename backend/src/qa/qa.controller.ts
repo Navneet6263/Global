@@ -18,12 +18,32 @@ import { QaDecisionDto } from "./dto/qa-decision.dto";
 import { QaQueryDto } from "./dto/qa-query.dto";
 import { ClaimQaCaseDto } from "./dto/claim-qa-case.dto";
 import { QaService } from "./qa.service";
+import { QaRegisterQueryDto } from "./dto/qa-register-query.dto";
 
 @Controller("qa")
 @RequirePermissions(Permission.QaReview)
 @RequireRoles("QA_REVIEWER")
 export class QaController {
   constructor(private readonly qa: QaService) {}
+
+  @Get("register")
+  @RequireRoles("PLATFORM_ADMIN", "QA_REVIEWER")
+  register(@CurrentActor() actor: Actor, @Query() query: QaRegisterQueryDto) {
+    return this.qa.register(actor, query);
+  }
+
+  @Get("history")
+  history(@CurrentActor() actor: Actor, @Query() query: QaRegisterQueryDto) {
+    return this.qa.history(actor, query);
+  }
+
+  @Get("cases/:caseId")
+  detail(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+  ) {
+    return this.qa.detail(actor, caseId);
+  }
 
   @Get("queue")
   @RequireRoles("PLATFORM_ADMIN", "QA_REVIEWER")
@@ -49,5 +69,23 @@ export class QaController {
     @Body() input: QaDecisionDto,
   ) {
     return this.qa.decide(actor, caseId, input);
+  }
+
+  @Post("cases/:caseId/release")
+  release(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Body() input: ClaimQaCaseDto,
+  ) {
+    return this.qa.reservation(actor, caseId, input.caseVersion, "release");
+  }
+
+  @Post("cases/:caseId/renew")
+  renew(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Body() input: ClaimQaCaseDto,
+  ) {
+    return this.qa.reservation(actor, caseId, input.caseVersion, "renew");
   }
 }

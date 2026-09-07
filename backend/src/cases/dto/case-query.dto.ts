@@ -1,10 +1,14 @@
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
   IsDateString,
   IsIn,
   IsInt,
   IsOptional,
   IsUUID,
+  IsBoolean,
+  ValidateIf,
+  IsString,
+  MaxLength,
   Max,
   Min,
 } from "class-validator";
@@ -19,6 +23,9 @@ export const CaseRegisterStages = [
   "clarification",
   "qa",
   "completed",
+  "cancelled",
+  "assignment",
+  "field_visit",
 ] as const;
 
 export const CaseRegisterPriorities = ["NORMAL", "HIGH", "URGENT"] as const;
@@ -31,9 +38,49 @@ export const CaseRegisterSortFields = [
   "updatedAt",
   "sla",
   "candidateName",
+  "priority",
+  "progress",
 ] as const;
 
 export class CaseQueryDto extends PageQueryDto {
+  @IsOptional()
+  @IsIn(["low", "medium", "high"])
+  risk?: "low" | "medium" | "high";
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(160)
+  owner?: string;
+
+  @IsOptional()
+  @IsUUID()
+  ownerId?: string;
+
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === "true" ? true : value === "false" ? false : value,
+  )
+  @IsBoolean()
+  unassigned?: boolean;
+
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === "true" ? true : value === "false" ? false : value,
+  )
+  @IsBoolean()
+  dueToday?: boolean;
+
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === "true" ? true : value === "false" ? false : value,
+  )
+  @IsBoolean()
+  dueNext7Days?: boolean;
+
+  @IsOptional()
+  @IsIn(["all", "operations"])
+  view?: "all" | "operations";
+
   @IsOptional()
   @IsIn(CaseStatuses)
   status?: string;
@@ -83,4 +130,14 @@ export class CaseQueryDto extends PageQueryDto {
   @IsOptional()
   @IsIn(["asc", "desc"])
   sortDir?: "asc" | "desc";
+
+  @ValidateIf(
+    (query: CaseQueryDto) =>
+      query.sortBy === "progress" || query.sortBy === "priority",
+  )
+  @IsInt()
+  @Min(1)
+  get rankedPage(): number | undefined {
+    return this.page;
+  }
 }

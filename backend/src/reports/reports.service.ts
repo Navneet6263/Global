@@ -284,17 +284,18 @@ export class ReportsService {
       select: { objectKey: true, version: true },
     });
     if (!version) throw new NotFoundException("Published report not found");
-    const contents = await this.storage.get(version.objectKey);
-    await this.prisma.auditEvent.create({
-      data: {
-        tenantId: actor.tenantId,
-        actorUserId: actor.userId,
-        action: "report.downloaded",
-        resourceType: "report",
-        resourcePublicId: reportPublicId,
-        afterJson: JSON.stringify({ version: version.version }),
-      },
-    });
+    const contents = await this.storage.auditedStream(version.objectKey, () =>
+      this.prisma.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "report.downloaded",
+          resourceType: "report",
+          resourcePublicId: reportPublicId,
+          afterJson: JSON.stringify({ version: version.version }),
+        },
+      }),
+    );
     return new StreamableFile(contents, {
       type: "application/pdf",
       disposition: `attachment; filename="Sapling-Global-report-v${version.version}.pdf"`,

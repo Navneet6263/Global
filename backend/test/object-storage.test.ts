@@ -30,6 +30,17 @@ void test("local object storage uses immutable keys", async () => {
       (await storage.get("tenant/case/document/v1-unique")).toString(),
       "first",
     );
+    const stream = await storage.openStream("tenant/case/document/v1-unique");
+    const chunks: Buffer[] = [];
+    for await (const chunk of stream) chunks.push(Buffer.from(chunk));
+    assert.equal(Buffer.concat(chunks).toString(), "first");
+    await assert.rejects(storage.openStream("../escape"), /Invalid object key/);
+    await assert.rejects(
+      storage.auditedStream("tenant/case/document/v1-unique", () =>
+        Promise.reject(new Error("audit unavailable")),
+      ),
+      /audit unavailable/,
+    );
     await assert.rejects(
       storage.put("../escape", Buffer.from("unsafe")),
       /Invalid object key/,

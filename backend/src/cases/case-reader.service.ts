@@ -8,83 +8,13 @@ import { caseAccessScope } from "../common/auth/access-scope";
 import type { Actor } from "../common/auth/actor";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { PrismaService } from "../database/prisma.service";
-import type { Prisma } from "../generated/prisma/client";
 import { presentCaseDetail, presentCaseListItem } from "./case.presenter";
 import { caseDetailSelect, caseListSelect } from "./case.selects";
 import type { CaseQueryDto } from "./dto/case-query.dto";
+import { rankedCasePage } from "./ranked-case-page";
 
-const stageStatuses: Record<NonNullable<CaseQueryDto["stage"]>, string[]> = {
-  intake: ["DRAFT"],
-  consent: ["CONSENT_PENDING"],
-  documents: ["DOCUMENT_PENDING"],
-  verification: ["IN_PROGRESS"],
-  clarification: ["CLARIFICATION_PENDING"],
-  qa: ["QA_REVIEW"],
-  completed: ["COMPLETED", "CLOSED", "CANCELLED"],
-};
-
-export function caseRegisterWhere(
-  actor: Actor,
-  query: CaseQueryDto,
-  now = new Date(),
-): Prisma.VerificationCaseWhereInput {
-  const and: Prisma.VerificationCaseWhereInput[] = [];
-  const search = query.search?.trim();
-  if (search) {
-    and.push({
-      OR: [
-        { caseNumber: { contains: search } },
-        { externalRef: { contains: search } },
-        { subject: { fullName: { contains: search } } },
-        { client: { displayName: { contains: search } } },
-        { assignedOpsUser: { displayName: { contains: search } } },
-      ],
-    });
-  }
-  if (query.sla) {
-    const approachingAt = new Date(now.getTime() + 8 * 60 * 60 * 1_000);
-    and.push(
-      query.sla === "overdue"
-        ? { dueAt: { lt: now } }
-        : query.sla === "approaching"
-          ? { dueAt: { gte: now, lte: approachingAt } }
-          : { OR: [{ dueAt: null }, { dueAt: { gt: approachingAt } }] },
-    );
-  }
-
-  return {
-    ...caseAccessScope(actor),
-    ...(query.status
-      ? { status: query.status }
-      : query.stage
-        ? { status: { in: stageStatuses[query.stage] } }
-        : {}),
-    ...(query.clientId ? { client: { publicId: query.clientId } } : {}),
-    ...(query.priority ? { priority: query.priority } : {}),
-    ...(query.from || query.to
-      ? {
-          createdAt: {
-            ...(query.from ? { gte: new Date(query.from) } : {}),
-            ...(query.to ? { lte: inclusiveDateEnd(query.to) } : {}),
-          },
-        }
-      : {}),
-    ...(and.length ? { AND: and } : {}),
-  };
-}
-
-export function caseRegisterOrder(
-  query: CaseQueryDto,
-): Prisma.VerificationCaseOrderByWithRelationInput[] {
-  const direction = query.sortDir ?? "desc";
-  if (query.sortBy === "candidateName") {
-    return [{ subject: { fullName: direction } }, { publicId: "desc" }];
-  }
-  if (query.sortBy === "sla") {
-    return [{ dueAt: direction }, { publicId: "desc" }];
-  }
-  return [{ updatedAt: direction }, { publicId: "desc" }];
-}
+import { caseRegisterWhere, caseRegisterOrder } from "./case-register-query";
+export { caseRegisterWhere, caseRegisterOrder } from "./case-register-query";
 
 @Injectable()
 export class CaseReaderService {
@@ -97,6 +27,26 @@ export class CaseReaderService {
     const where = caseRegisterWhere(actor, query);
     const orderBy = caseRegisterOrder(query);
     const pageSize = query.pageSize ?? query.limit;
+    if (
+      query.page &&
+      (query.sortBy === "priority" || query.sortBy === "progress")
+    ) {
+      const { rows, total } = await rankedCasePage(
+        this.prisma,
+        where,
+        query.sortBy,
+        query.sortDir ?? "desc",
+        query.page,
+        pageSize,
+      );
+      return {
+        items: rows.map((row) => presentCaseListItem(row, actor, this.pii)),
+        total,
+        page: query.page,
+        pageSize,
+        nextCursor: null,
+      };
+    }
     if (query.page) {
       const [rows, total] = await Promise.all([
         this.prisma.verificationCase.findMany({
@@ -219,12 +169,6 @@ export class CaseReaderService {
       disposition: `attachment; filename="sapling-global-cases-${new Date().toISOString().slice(0, 10)}.csv"`,
     });
   }
-}
-
-function inclusiveDateEnd(value: string) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ? new Date(`${value}T23:59:59.999Z`)
-    : new Date(value);
 }
 
 function csvCell(value: string | number | null | undefined) {

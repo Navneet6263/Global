@@ -41,7 +41,7 @@ void test("case register rejects unsupported client-side progress sorting", asyn
   const query = plainToInstance(CaseQueryDto, { sortBy: "progress" });
   const errors = await validate(query);
   assert.equal(
-    errors.some((error) => error.property === "sortBy"),
+    errors.some((error) => error.property === "rankedPage"),
     true,
   );
 });
@@ -69,5 +69,29 @@ void test("case register sorting is stable and server-backed", () => {
   assert.deepEqual(caseRegisterOrder(query), [
     { subject: { fullName: "asc" } },
     { publicId: "desc" },
+  ]);
+});
+
+void test("operations ranked pages accept validated filters without losing branch restrictions", async () => {
+  const query = plainToInstance(CaseQueryDto, {
+    page: "2",
+    pageSize: "10",
+    sortBy: "priority",
+    view: "operations",
+    stage: "completed",
+    ownerId: actor.userPublicId,
+    risk: "high",
+  });
+  assert.equal((await validate(query)).length, 0);
+  const where = caseRegisterWhere(
+    { ...actor, roles: ["OPS_MANAGER"], branchId: 7n },
+    query,
+  );
+  assert.equal(where.tenantId, 1n);
+  assert.deepEqual(where.OR, [{ branchId: 7n }, { branchId: null }]);
+  assert.deepEqual(where.AND, [
+    { status: { in: ["COMPLETED", "CLOSED"] } },
+    { riskLevel: { in: ["HIGH", "CRITICAL"] } },
+    { assignedOpsUser: { publicId: actor.userPublicId } },
   ]);
 });

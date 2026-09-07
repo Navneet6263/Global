@@ -179,22 +179,23 @@ export class DocumentsService {
     });
     if (!version)
       throw new NotFoundException("A safe document version is not available");
-    const contents = await this.storage.get(version.objectKey);
-    await this.prisma.auditEvent.create({
-      data: {
-        tenantId: actor.tenantId,
-        actorUserId: actor.userId,
-        action: "document.downloaded",
-        resourceType: "document",
-        resourcePublicId: publicId,
-        afterJson: JSON.stringify({
-          caseId: version.document.case.publicId,
-          caseNumber: version.document.case.caseNumber,
-          documentType: version.document.type,
-          version: version.version,
-        }),
-      },
-    });
+    const contents = await this.storage.auditedStream(version.objectKey, () =>
+      this.prisma.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "document.downloaded",
+          resourceType: "document",
+          resourcePublicId: publicId,
+          afterJson: JSON.stringify({
+            caseId: version.document.case.publicId,
+            caseNumber: version.document.case.caseNumber,
+            documentType: version.document.type,
+            version: version.version,
+          }),
+        },
+      }),
+    );
     return {
       file: new StreamableFile(contents, {
         type: version.contentType,

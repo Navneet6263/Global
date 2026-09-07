@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, RefreshCw, ShieldCheck } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "sonner";
 import { sessionForNav } from "@/lib/auth/session";
 import type { NavWorkspace } from "@/config/navigation";
 import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
@@ -14,6 +15,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { GlobalSearch } from "./global-search";
 import { NotificationsMenu } from "./notifications-menu";
 import { QuickCreateMenu } from "./quick-create-menu";
+import { HelpLauncher } from "@/features/help/help-launcher";
 
 interface TopToolbarProps {
   onOpenNav: () => void;
@@ -28,9 +30,16 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
 
   const refresh = async () => {
     setRefreshing(true);
-    await queryClient.refetchQueries({ type: "active" });
-    setRefreshing(false);
-    notifySuccess("Workspace refreshed", "Visible operational panels are up to date.");
+    try {
+      await queryClient.refetchQueries({ type: "active" }, { throwOnError: true });
+      notifySuccess("Workspace refreshed", "Visible operational panels are up to date.");
+    } catch {
+      toast.error("Some panels could not refresh", {
+        description: "Your existing data is kept. Retry the affected panel.",
+      });
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   return (
@@ -60,6 +69,7 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
         )}
 
         <div className="ml-auto flex items-center gap-1.5 md:ml-0">
+          <HelpLauncher />
           <Tooltip>
             <TooltipTrigger asChild>
               <Button

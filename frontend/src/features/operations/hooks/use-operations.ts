@@ -10,6 +10,9 @@ import type {
   SlaQuery,
 } from "../contracts/operations";
 import { operationsApi } from "@/lib/data-source/operations";
+import { getOperationsRegister } from "../repositories/api-operations-register";
+import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
+import { useDebouncedValue } from "@/lib/use-debounced-value";
 
 export const opsKeys = {
   all: ["operations"] as const,
@@ -41,7 +44,13 @@ export function useOpsFacets() {
 }
 
 export function useOpsCases(query: OpsCaseQuery) {
-  return useQuery({ queryKey: opsKeys.cases(query), queryFn: () => operationsApi.getCases(query) });
+  const search = useDebouncedValue(query.search?.trim() ?? "");
+  const filters = { ...query, search };
+  return useQuery({
+    queryKey: opsKeys.cases(filters),
+    queryFn: ({ signal }) => getOperationsRegister(filters, signal),
+    enabled: search === (query.search?.trim() ?? ""),
+  });
 }
 
 export function useOpsCase(caseId: string | undefined) {
@@ -98,7 +107,7 @@ export function useOpsNotifications() {
 function useOpsInvalidate() {
   const queryClient = useQueryClient();
   return () => {
-    void queryClient.invalidateQueries({ queryKey: opsKeys.all });
+    void invalidateWorkflow(queryClient);
   };
 }
 

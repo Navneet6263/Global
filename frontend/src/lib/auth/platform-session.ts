@@ -1,5 +1,5 @@
 import { getSession, type Session } from "@/lib/backend-api/auth";
-import { registerSessionExpiryHandler } from "@/lib/backend-api/client";
+import { registerSessionExpiryHandler, resetApiSession } from "@/lib/backend-api/client";
 import { ROLES, type Role } from "@/config/roles";
 import { clearDeviceOfflineData, prepareDeviceOfflineData } from "./device-offline-data";
 import {
@@ -26,6 +26,7 @@ export interface AuthenticatedIdentity {
 
 let currentIdentity: AuthenticatedIdentity | null = null;
 let identityLoad: Promise<AuthenticatedIdentity | null> | null = null;
+let identityVersion = 0;
 
 function asRole(value: string): Role | null {
   return (ROLES as readonly string[]).includes(value) ? (value as Role) : null;
@@ -54,43 +55,54 @@ export function cachedIdentity(): AuthenticatedIdentity | null {
 }
 
 export async function cacheIdentityFromSession(session: Session): Promise<AuthenticatedIdentity> {
+  const version = ++identityVersion;
+  resetApiSession();
   const identity = fromBackendSession(session);
-  currentIdentity = identity;
   const offlineWorkspace = identity.roles.some(
     (role) => role === "FIELD_EXECUTIVE" || role === "VERIFIER",
   );
   const preparation = prepareDeviceOfflineData(identity.deviceDataScope);
   if (offlineWorkspace) await preparation;
   else void preparation.catch(() => undefined);
+  if (identityVersion !== version) throw new DOMException("Session changed", "AbortError");
+  currentIdentity = identity;
   return identity;
 }
 
 export function clearIdentity(): void {
+  identityVersion += 1;
   currentIdentity = null;
+  identityLoad = null;
+  resetApiSession();
 }
 
 export async function loadIdentity(): Promise<AuthenticatedIdentity | null> {
   if (currentIdentity) return currentIdentity;
   if (!identityLoad) {
-    identityLoad = getSession()
-      .then(cacheIdentityFromSession)
+    const version = identityVersion;
+    const pending = getSession()
+      .then((session) => (version === identityVersion ? cacheIdentityFromSession(session) : null))
       .catch(() => {
-        currentIdentity = null;
+        if (version === identityVersion) currentIdentity = null;
         return null;
-      })
-      .finally(() => {
-        identityLoad = null;
       });
+    identityLoad = pending;
+    void pending.finally(() => {
+      if (identityLoad === pending) identityLoad = null;
+    });
   }
   return identityLoad;
 }
 
 registerSessionExpiryHandler(async () => {
+  clearIdentity();
+  const expiredVersion = identityVersion;
   try {
     await clearDeviceOfflineData();
-  } finally {
-    clearIdentity();
+  } catch {
+    // The identity is already unusable; a failed local cleanup must not restore it.
   }
+  if (expiredVersion !== identityVersion) return;
   if (typeof window !== "undefined" && window.location.pathname !== "/auth") {
     window.location.assign("/auth");
   }

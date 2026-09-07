@@ -7,12 +7,16 @@ import { TaskWorkflowService } from "./task-workflow.service";
 import { TasksController } from "./tasks.controller";
 import { TasksService } from "./tasks.service";
 import { QaReadinessService } from "./qa-readiness.service";
+import { TaskContextService } from "./task-context.service";
+import { TaskInsightsService } from "./task-insights.service";
 
 @Module({
   controllers: [TasksController],
   providers: [
     TasksService,
     TaskQueryService,
+    TaskInsightsService,
+    TaskContextService,
     TaskCreationService,
     TaskWorkflowService,
     TaskAssignmentService,

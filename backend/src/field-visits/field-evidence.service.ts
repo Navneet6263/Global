@@ -200,19 +200,20 @@ export class FieldEvidenceService {
       },
     });
     if (!evidence) throw new NotFoundException("Field evidence not found");
-    const contents = await this.storage.get(evidence.objectKey);
-    await this.prisma.auditEvent.create({
-      data: {
-        tenantId: actor.tenantId,
-        actorUserId: actor.userId,
-        action: "field_evidence.viewed",
-        resourceType: "field_evidence",
-        resourcePublicId: evidencePublicId,
-        afterJson: JSON.stringify({
-          fieldVisitId: evidence.fieldVisit.publicId,
-        }),
-      },
-    });
+    const contents = await this.storage.auditedStream(evidence.objectKey, () =>
+      this.prisma.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "field_evidence.viewed",
+          resourceType: "field_evidence",
+          resourcePublicId: evidencePublicId,
+          afterJson: JSON.stringify({
+            fieldVisitId: evidence.fieldVisit.publicId,
+          }),
+        },
+      }),
+    );
     return new StreamableFile(contents, {
       type: evidence.contentType,
       disposition: `inline; filename="field-${evidence.type.toLowerCase()}-${evidencePublicId}.jpg"`,

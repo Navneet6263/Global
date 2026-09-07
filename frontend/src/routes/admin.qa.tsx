@@ -16,7 +16,8 @@ import {
 } from "@/features/admin-dashboard/components/oversight-ui";
 import { oversightLabel } from "@/features/admin-dashboard/oversight-format";
 import { formatDateTime } from "@/lib/formatting";
-import { getQaQueue, type QaQueueItem } from "@/lib/backend-api/qa";
+import { getQaRegister, type QaRegisterItem } from "@/lib/backend-api/qa-register";
+import { useDebouncedValue } from "@/lib/use-debounced-value";
 
 const PAGE_SIZE = 8;
 
@@ -32,15 +33,16 @@ export const Route = createFileRoute("/admin/qa")({
 
 function QaOversightPage() {
   const [search, setSearch] = useState("");
-  const [cursors, setCursors] = useState<Array<string | undefined>>([undefined]);
-  const cursor = cursors.at(-1);
+  const [page, setPage] = useState(1);
+  const deferredSearch = useDebouncedValue(search.trim(), 250);
   const query = useQuery({
-    queryKey: ["admin", "qa-oversight", search, cursor],
-    queryFn: () => getQaQueue({ search: search.trim() || undefined, cursor, limit: PAGE_SIZE }),
+    queryKey: ["qa", "oversight", deferredSearch, page],
+    queryFn: ({ signal }) =>
+      getQaRegister({ search: deferredSearch, page, limit: PAGE_SIZE }, signal),
+    enabled: deferredSearch === search.trim(),
     placeholderData: keepPreviousData,
     staleTime: 20_000,
   });
-  const page = cursors.length;
 
   return (
     <div className="space-y-5">
@@ -93,13 +95,13 @@ function QaOversightPage() {
           <OversightPanel
             title="Review queue"
             description="Read-only platform view, ordered by backend review priority."
-            count={query.data.summary.awaiting}
+            count={query.data.total}
             toolbar={
               <OversightSearch
                 value={search}
                 onChange={(value) => {
                   setSearch(value);
-                  setCursors([undefined]);
+                  setPage(1);
                 }}
                 placeholder="Search case or candidate"
               />
@@ -119,12 +121,11 @@ function QaOversightPage() {
             )}
             <OversightPager
               page={page}
-              canPrevious={page > 1}
-              canNext={Boolean(query.data.nextCursor)}
-              onPrevious={() => setCursors((value) => value.slice(0, -1))}
+              canPrevious={page > 1 && !query.isFetching}
+              canNext={page * PAGE_SIZE < query.data.total && !query.isFetching}
+              onPrevious={() => setPage((value) => value - 1)}
               onNext={() => {
-                if (query.data.nextCursor)
-                  setCursors((value) => [...value, query.data.nextCursor!]);
+                setPage((value) => value + 1);
               }}
             />
           </OversightPanel>
@@ -134,7 +135,7 @@ function QaOversightPage() {
   );
 }
 
-function QaRow({ item }: { item: QaQueueItem }) {
+function QaRow({ item }: { item: QaRegisterItem }) {
   const risk = highestRisk(item);
   const overdue = Boolean(item.dueAt && Date.parse(item.dueAt) < Date.now());
   return (
@@ -159,17 +160,17 @@ function QaRow({ item }: { item: QaQueueItem }) {
           {item.dueAt ? formatDateTime(item.dueAt) : "Not committed"}
         </p>
       </div>
-      <Datum label="Checks" value={item.checks.length} />
-      <Datum label="Documents" value={item.documents.length} />
+      <Datum label="Checks" value={item.checkCount} />
+      <Datum label="Documents" value={item.documentCount} />
       <div>
         <p className="text-[10px] tracking-[0.07em] text-muted-foreground uppercase">
           Review owner
         </p>
         <p className="mt-1 truncate text-xs font-medium">
-          {item.qaReviewer?.displayName ?? "Unclaimed"}
+          {item.claimActive ? item.qaReviewer?.displayName : "Available to claim"}
         </p>
         <p className="mt-0.5 text-[11px] text-muted-foreground">
-          {item.qaClaimedAt
+          {item.claimActive && item.qaClaimedAt
             ? `Claimed ${formatDateTime(item.qaClaimedAt)}`
             : "Available to reviewers"}
         </p>
@@ -187,10 +188,9 @@ function Datum({ label, value }: { label: string; value: number }) {
   );
 }
 
-function highestRisk(item: QaQueueItem) {
-  const levels = item.checks.map((check) => check.riskLevel?.toLowerCase());
-  if (levels.includes("critical")) return "critical";
-  if (levels.includes("high")) return "high";
+function highestRisk(item: QaRegisterItem) {
+  if (item.highestRisk === "CRITICAL") return "critical";
+  if (item.highestRisk === "HIGH") return "high";
   return null;
 }
 

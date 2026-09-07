@@ -1,13 +1,20 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
-import { hasAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
+import {
+  startOfDay,
+  taskAccessScope,
+  taskSlaWhere,
+  type TaskSlaFilter,
+} from "./task-query.helpers";
 
 export type MineTaskQuery = {
   status?: string;
   view?: string;
   search?: string;
   cursor?: string;
+  taskId?: string;
+  sla?: TaskSlaFilter;
   limit: number;
 };
 
@@ -17,45 +24,31 @@ export class TaskQueryService {
 
   async mine(actor: Actor, query: MineTaskQuery) {
     const search = query.search?.trim();
-    const supervisor = hasAnyRole(actor, OPERATIONS_ROLES);
-    const access = {
-      tenantId: actor.tenantId,
-      ...(!supervisor ? { assigneeId: actor.userId } : {}),
-      ...(actor.branchId || actor.clientId
-        ? {
-            check: {
-              case: {
-                ...(actor.branchId ? { branchId: actor.branchId } : {}),
-                ...(actor.clientId ? { clientId: actor.clientId } : {}),
-              },
-            },
-          }
-        : {}),
-    };
+    const access = taskAccessScope(actor);
+    const slaConstraint = query.sla ? taskSlaWhere(query.sla) : undefined;
+    const searchConstraint = search
+      ? {
+          check: {
+            OR: [
+              { type: { contains: search } },
+              { case: { caseNumber: { contains: search } } },
+              { case: { subject: { fullName: { contains: search } } } },
+              { case: { client: { displayName: { contains: search } } } },
+            ],
+          },
+        }
+      : undefined;
+    const constraints = [slaConstraint, searchConstraint].filter(
+      (item) => item !== undefined,
+    );
     const where = {
       ...access,
+      ...(query.taskId ? { publicId: query.taskId } : {}),
       status:
         query.view === "ACTIVE"
           ? { in: ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"] }
           : query.status,
-      ...(search
-        ? {
-            AND: [
-              {
-                check: {
-                  OR: [
-                    { type: { contains: search } },
-                    { case: { caseNumber: { contains: search } } },
-                    { case: { subject: { fullName: { contains: search } } } },
-                    {
-                      case: { client: { displayName: { contains: search } } },
-                    },
-                  ],
-                },
-              },
-            ],
-          }
-        : {}),
+      ...(constraints.length ? { AND: constraints } : {}),
     };
     const rows = await this.prisma.checkTask.findMany({
       where,
@@ -100,7 +93,10 @@ export class TaskQueryService {
           },
         },
       },
-      orderBy: [{ dueAt: "asc" }, { createdAt: "asc" }, { publicId: "asc" }],
+      orderBy:
+        query.status === "COMPLETED"
+          ? [{ completedAt: "desc" }, { publicId: "asc" }]
+          : [{ dueAt: "asc" }, { createdAt: "asc" }, { publicId: "asc" }],
       take: query.limit + 1,
       ...(query.cursor ? { cursor: { publicId: query.cursor }, skip: 1 } : {}),
     });
@@ -125,7 +121,7 @@ export class TaskQueryService {
         where: {
           ...access,
           status: "COMPLETED",
-          completedAt: { gte: new Date(new Date().setHours(0, 0, 0, 0)) },
+          completedAt: { gte: startOfDay() },
         },
       }),
     ]);

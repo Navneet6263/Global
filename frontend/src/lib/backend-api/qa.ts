@@ -79,6 +79,17 @@ export function claimQaCase(caseId: string, caseVersion: number) {
   );
 }
 
+export function changeQaReservation(
+  caseId: string,
+  caseVersion: number,
+  action: "renew" | "release",
+) {
+  return apiRequest<{ id: string; caseVersion: number }>(`/qa/cases/${caseId}/${action}`, {
+    method: "POST",
+    body: JSON.stringify({ caseVersion }),
+  });
+}
+
 export function submitQaDecision(
   caseId: string,
   input: {

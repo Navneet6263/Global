@@ -19,6 +19,8 @@ import type { DocumentsService } from "../src/documents/documents.service";
 import { ClarificationsService } from "../src/clarifications/clarifications.service";
 import { ClarificationTokenService } from "../src/clarifications/clarification-token.service";
 import { QaReadinessService } from "../src/verification/qa-readiness.service";
+import { NavigationCountsService } from "../src/dashboards/navigation-counts.service";
+import { verifyQaSql } from "./qa-sql-checks";
 
 const databaseConfigured = [
   "DB_HOST",
@@ -119,6 +121,31 @@ void test(
               false,
             );
 
+            const rankedQuery = Object.assign(new CaseQueryDto(), {
+              page: 1,
+              pageSize: 1,
+              sortBy: "priority" as const,
+            });
+            const firstRankedPage = await caseReader.list(
+              tenantActor,
+              rankedQuery,
+            );
+            const secondRankedPage = await caseReader.list(tenantActor, {
+              ...rankedQuery,
+              page: 2,
+            } as CaseQueryDto);
+            assert.equal(firstRankedPage.total, 2);
+            assert.equal(firstRankedPage.items.length, 1);
+            assert.equal(secondRankedPage.items.length, 1);
+            assert.notEqual(
+              firstRankedPage.items[0]!.id,
+              secondRankedPage.items[0]!.id,
+            );
+            const badges = await new NavigationCountsService(scopedPrisma).get(
+              tenantActor,
+            );
+            assert.equal(badges.counts.activeCases, 2);
+
             const clientCases = await caseReader.list(
               clientActor,
               new CaseQueryDto(),
@@ -213,6 +240,11 @@ void test(
               UnauthorizedException,
             );
 
+            await verifyQaSql(tx, tenantActor, clientActor, [
+              caseA1,
+              caseA2,
+              caseB,
+            ]);
             throw rollback;
           },
           { maxWait: 30_000, timeout: 120_000 },

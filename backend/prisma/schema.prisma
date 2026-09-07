@@ -110,6 +110,7 @@ model User {
   @@index([tenantId, status])
   @@index([tenantId, branchId])
   @@index([tenantId, clientId])
+  @@index([tenantId, displayName, publicId])
 }
 
 model Role {
@@ -138,6 +139,7 @@ model UserRole {
   role Role @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@id([userId, roleId])
+  @@index([roleId, userId])
 }
 
 model RefreshSession {
@@ -276,6 +278,9 @@ model VerificationCase {
   @@index([tenantId, assignedOpsUserId, status])
   @@index([tenantId, qaReviewerId, status])
   @@index([tenantId, subjectId])
+  @@index([tenantId, updatedAt, publicId])
+  @@index([tenantId, createdAt])
+  @@index([tenantId, completedAt])
 }
 
 model CaseCheck {
@@ -836,6 +841,7 @@ model Notification {
   user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([tenantId, userId, readAt, createdAt])
+  @@index([tenantId, userId, createdAt])
 }
 
 model CandidatePortalAccess {

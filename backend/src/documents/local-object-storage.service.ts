@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, unlink, writeFile } from "node:fs/promises";
+import { Readable } from "node:stream";
 import { resolve, sep } from "node:path";
 import { randomUUID } from "node:crypto";
 import {
@@ -100,6 +101,50 @@ export class LocalObjectStorageService {
     return readFile(this.resolveSafe(key));
   }
 
+  /** Authenticated downloads use backpressure instead of buffering the entire original. */
+  async openStream(key: string): Promise<Readable> {
+    this.validateKey(key);
+    if (this.s3) {
+      const response = await this.s3.send(
+        new GetObjectCommand({ Bucket: this.bucket, Key: key }),
+      );
+      if (!(response.Body instanceof Readable))
+        throw new Error("Stored object has no readable content");
+      return response.Body;
+    }
+    if (this.azure) {
+      const response = await this.azure.getBlockBlobClient(key).download();
+      if (!(response.readableStreamBody instanceof Readable))
+        throw new Error("Stored object has no readable content");
+      return response.readableStreamBody;
+    }
+    const handle = await open(this.resolveSafe(key), "r");
+    return handle.createReadStream({
+      autoClose: true,
+      highWaterMark: 64 * 1024,
+    });
+  }
+
+  async auditedStream(
+    key: string,
+    audit: () => Promise<unknown>,
+  ): Promise<Readable> {
+    const stream = await this.openStream(key);
+    // Keep an early provider failure handled until Nest attaches its pipeline listener.
+    let failure: Error | undefined;
+    stream.on("error", (error: Error) => {
+      failure = error;
+    });
+    try {
+      await audit();
+      if (failure) throw failure;
+      return stream;
+    } catch (error) {
+      stream.destroy();
+      throw error;
+    }
+  }
+
   async delete(key: string): Promise<void> {
     this.validateKey(key);
     if (this.s3) {
@@ -125,7 +170,8 @@ export class LocalObjectStorageService {
     try {
       await this.put(key, expected);
       const actual = await this.get(key);
-      if (!actual.equals(expected)) throw new Error("Object storage probe mismatch");
+      if (!actual.equals(expected))
+        throw new Error("Object storage probe mismatch");
     } finally {
       await this.delete(key);
     }

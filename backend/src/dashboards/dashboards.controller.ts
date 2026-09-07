@@ -22,6 +22,8 @@ import {
   ExecutiveQueryDto,
   ExecutiveScheduleDto,
 } from "./dto/executive-query.dto";
+import { VerifierCapacityService } from "./verifier-capacity.service";
+import { NavigationCountsService } from "./navigation-counts.service";
 
 @Controller("dashboards")
 @RequirePermissions(Permission.DashboardRead)
@@ -31,7 +33,15 @@ export class DashboardsController {
     private readonly clientDashboard: DashboardClientService,
     private readonly executiveAnalytics: ExecutiveAnalyticsService,
     private readonly executiveExport: ExecutiveExportService,
+    private readonly verifierCapacity: VerifierCapacityService,
+    private readonly navigationCounts: NavigationCountsService,
   ) {}
+
+  @Get("navigation")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
+  navigation(@CurrentActor() actor: Actor) {
+    return this.navigationCounts.get(actor);
+  }
 
   @Get("operations")
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
@@ -73,5 +83,11 @@ export class DashboardsController {
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   exceptions(@CurrentActor() actor: Actor) {
     return this.dashboards.exceptions(actor);
+  }
+
+  @Get("verifier-capacity")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  verifierCapacityDashboard(@CurrentActor() actor: Actor) {
+    return this.verifierCapacity.get(actor);
   }
 }

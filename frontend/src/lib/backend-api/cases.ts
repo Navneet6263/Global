@@ -164,6 +164,13 @@ export interface CaseDetail extends CaseListItem {
 }
 
 export interface CaseListQueryInput {
+  risk?: string;
+  owner?: string;
+  ownerId?: string;
+  unassigned?: boolean;
+  dueToday?: boolean;
+  dueNext7Days?: boolean;
+  view?: "all" | "operations";
   search?: string;
   status?: string;
   stage?: string;
@@ -172,7 +179,7 @@ export interface CaseListQueryInput {
   sla?: string;
   from?: string;
   to?: string;
-  sortBy?: "updatedAt" | "sla" | "candidateName";
+  sortBy?: "updatedAt" | "sla" | "candidateName" | "priority" | "progress";
   sortDir?: "asc" | "desc";
   page?: number;
   pageSize?: number;
@@ -188,8 +195,19 @@ export interface CaseListResponse {
   pageSize?: number;
 }
 
-export function listCases(input: CaseListQueryInput = {}) {
+export function listCases(input: CaseListQueryInput = {}, signal?: AbortSignal) {
   const query = new URLSearchParams();
+  for (const key of [
+    "risk",
+    "owner",
+    "ownerId",
+    "unassigned",
+    "dueToday",
+    "dueNext7Days",
+    "view",
+  ] as const) {
+    if (input[key] !== undefined) query.set(key, String(input[key]));
+  }
   if (input.search) query.set("search", input.search);
   if (input.status) query.set("status", input.status);
   if (input.stage) query.set("stage", input.stage);
@@ -204,7 +222,7 @@ export function listCases(input: CaseListQueryInput = {}) {
   if (input.pageSize) query.set("pageSize", String(input.pageSize));
   if (input.cursor) query.set("cursor", input.cursor);
   query.set("limit", String(input.limit ?? 20));
-  return apiRequest<CaseListResponse>(`/cases?${query.toString()}`);
+  return apiRequest<CaseListResponse>(`/cases?${query.toString()}`, { signal });
 }
 
 export function getCase(caseId: string) {
@@ -213,6 +231,17 @@ export function getCase(caseId: string) {
 
 export async function exportCases(input: Omit<CaseListQueryInput, "cursor" | "limit"> = {}) {
   const query = new URLSearchParams();
+  for (const key of [
+    "risk",
+    "owner",
+    "ownerId",
+    "unassigned",
+    "dueToday",
+    "dueNext7Days",
+    "view",
+  ] as const) {
+    if (input[key] !== undefined) query.set(key, String(input[key]));
+  }
   if (input.search) query.set("search", input.search);
   if (input.status) query.set("status", input.status);
   if (input.stage) query.set("stage", input.stage);
@@ -320,7 +349,7 @@ export function listCaseServicePackages() {
   return apiRequest<{ items: CaseServicePackage[] }>("/cases/catalog");
 }
 
-export function createCase(draft: CaseDraft) {
+export function createCase(draft: CaseDraft, idempotencyKey?: string) {
   return apiRequest<{
     id: string;
     caseNumber: string;
@@ -332,6 +361,7 @@ export function createCase(draft: CaseDraft) {
     };
   }>("/cases", {
     method: "POST",
+    headers: idempotencyKey ? { "idempotency-key": idempotencyKey } : undefined,
     body: JSON.stringify({
       clientId: draft.clientId,
       servicePackageId: draft.servicePackageId,

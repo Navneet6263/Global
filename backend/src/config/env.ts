@@ -95,6 +95,13 @@ const envSchema = z
     AZURE_STORAGE_CONNECTION_STRING: z.string().optional(),
     AZURE_STORAGE_ACCOUNT_URL: optionalUrl,
     UPLOAD_MAX_BYTES: z.coerce.number().int().positive().default(10_485_760),
+    UPLOAD_CONCURRENCY: z.coerce.number().int().min(1).max(32).default(4),
+    UPLOAD_PER_ACTOR_CONCURRENCY: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(8)
+      .default(2),
     NOTIFICATION_WEBHOOK_URL: optionalUrl,
     NOTIFICATION_HEALTH_URL: optionalUrl,
     NOTIFICATION_WEBHOOK_SECRET: z.string().min(32).optional(),
@@ -129,7 +136,8 @@ const envSchema = z
     ] as const) {
       try {
         const seconds = ttlSeconds(ttl);
-        if (seconds < minimum || seconds > maximum) throw new Error("out of bounds");
+        if (seconds < minimum || seconds > maximum)
+          throw new Error("out of bounds");
       } catch {
         context.addIssue({
           code: "custom",
@@ -140,7 +148,9 @@ const envSchema = z
     }
     if (value.DATA_ENCRYPTION_PREVIOUS_KEYS) {
       try {
-        const previous = JSON.parse(value.DATA_ENCRYPTION_PREVIOUS_KEYS) as unknown;
+        const previous = JSON.parse(
+          value.DATA_ENCRYPTION_PREVIOUS_KEYS,
+        ) as unknown;
         if (
           !previous ||
           Array.isArray(previous) ||
@@ -158,14 +168,16 @@ const envSchema = z
           context.addIssue({
             code: "custom",
             path: ["DATA_ENCRYPTION_PREVIOUS_KEYS"],
-            message: "The active data-encryption version cannot also be previous",
+            message:
+              "The active data-encryption version cannot also be previous",
           });
         }
       } catch {
         context.addIssue({
           code: "custom",
           path: ["DATA_ENCRYPTION_PREVIOUS_KEYS"],
-          message: "Previous data-encryption keys must be a JSON version-to-key object",
+          message:
+            "Previous data-encryption keys must be a JSON version-to-key object",
         });
       }
     }
@@ -180,7 +192,8 @@ const envSchema = z
       context.addIssue({
         code: "custom",
         path: ["TRUST_PROXY"],
-        message: "Production must trust only an explicit proxy hop count or CIDR list",
+        message:
+          "Production must trust only an explicit proxy hop count or CIDR list",
       });
     }
     if (value.JWT_ACCESS_SECRET === value.JWT_REFRESH_SECRET) {
@@ -244,7 +257,7 @@ const envSchema = z
         [
           Boolean(
             value.NOTIFICATION_WEBHOOK_URL &&
-              new URL(value.NOTIFICATION_WEBHOOK_URL).protocol === "https:",
+            new URL(value.NOTIFICATION_WEBHOOK_URL).protocol === "https:",
           ),
           "NOTIFICATION_WEBHOOK_URL",
           "The production notification provider webhook must use HTTPS",
@@ -257,7 +270,7 @@ const envSchema = z
         [
           Boolean(
             value.NOTIFICATION_HEALTH_URL &&
-              new URL(value.NOTIFICATION_HEALTH_URL).protocol === "https:",
+            new URL(value.NOTIFICATION_HEALTH_URL).protocol === "https:",
           ),
           "NOTIFICATION_HEALTH_URL",
           "A production notification health endpoint must use HTTPS",
@@ -271,14 +284,16 @@ const envSchema = z
           context.addIssue({
             code: "custom",
             path: ["OUTBOX_WORKER_ENABLED"],
-            message: "The outbox worker is required for this production process role",
+            message:
+              "The outbox worker is required for this production process role",
           });
         }
         if (!value.RETENTION_WORKER_ENABLED) {
           context.addIssue({
             code: "custom",
             path: ["RETENTION_WORKER_ENABLED"],
-            message: "The retention worker is required for this production process role",
+            message:
+              "The retention worker is required for this production process role",
           });
         }
       }
@@ -347,11 +362,14 @@ const envSchema = z
           message: "S3_REGION is required for S3 storage",
         });
       }
-      if (Boolean(value.S3_ACCESS_KEY_ID) !== Boolean(value.S3_SECRET_ACCESS_KEY)) {
+      if (
+        Boolean(value.S3_ACCESS_KEY_ID) !== Boolean(value.S3_SECRET_ACCESS_KEY)
+      ) {
         context.addIssue({
           code: "custom",
           path: ["S3_ACCESS_KEY_ID"],
-          message: "Provide both static S3 credential fields or neither for workload identity",
+          message:
+            "Provide both static S3 credential fields or neither for workload identity",
         });
       }
     }

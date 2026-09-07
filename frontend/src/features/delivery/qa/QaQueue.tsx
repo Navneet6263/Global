@@ -7,12 +7,14 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-import type { QaQueueItem } from "@/lib/api/qa";
+import type { QaRegisterItem } from "@/lib/backend-api/qa-register";
 import { cn } from "@/lib/utils";
 import { formatDate, humanize } from "../utils";
 
 interface QaQueueProps {
-  items: QaQueueItem[];
+  items: QaRegisterItem[];
+  total: number;
+  corrections?: boolean;
   selectedId?: string;
   search: string;
   page: number;
@@ -30,13 +32,17 @@ export function QaQueue(props: QaQueueProps) {
       <header className="border-b border-border/70 p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-[15px] font-semibold tracking-[-0.02em]">Quality review queue</h2>
+            <h2 className="text-[15px] font-semibold tracking-[-0.02em]">
+              {props.corrections ? "Returned for correction" : "Quality review queue"}
+            </h2>
             <p className="mt-0.5 text-[10.5px] text-muted-foreground">
-              Claim one case before making a decision
+              {props.corrections
+                ? "Waiting on verification work before the next QA review"
+                : "Claim one case before making a decision"}
             </p>
           </div>
           <span className="num rounded-full bg-review-soft px-2.5 py-1 text-[10px] font-medium text-review-foreground">
-            {props.items.length} shown
+            {props.total} cases
           </span>
         </div>
         <div className="relative mt-3">
@@ -91,13 +97,11 @@ function QaQueueCard({
   active,
   onSelect,
 }: {
-  item: QaQueueItem;
+  item: QaRegisterItem;
   active: boolean;
   onSelect: () => void;
 }) {
-  const highRisk = item.checks.some((check) =>
-    ["HIGH", "CRITICAL"].includes(check.riskLevel ?? ""),
-  );
+  const highRisk = ["HIGH", "CRITICAL"].includes(item.highestRisk ?? "");
   const overdue = Boolean(item.dueAt && new Date(item.dueAt).getTime() < Date.now());
   return (
     <button
@@ -122,16 +126,20 @@ function QaQueueCard({
         <span
           className={cn(
             "shrink-0 rounded-full border px-2 py-1 text-[8.5px] font-semibold",
-            highRisk
+            highRisk || ["CRITICAL", "URGENT"].includes(item.priority)
               ? "border-critical/25 bg-critical-soft text-critical-foreground"
-              : "border-success/25 bg-success-soft text-success-foreground",
+              : item.priority === "HIGH"
+                ? "border-warning/25 bg-warning-soft text-warning-foreground"
+                : "border-border bg-muted text-muted-foreground",
           )}
         >
           {highRisk ? "High risk" : humanize(item.priority)}
         </span>
       </div>
       <div className="mt-3 flex items-center justify-between gap-2 text-[9.5px] text-muted-foreground">
-        <span>{item.checks.length} completed checks</span>
+        <span>
+          {item.completedCheckCount}/{item.checkCount} checks complete
+        </span>
         <span
           className={cn(
             "flex items-center gap-1",
@@ -142,7 +150,7 @@ function QaQueueCard({
           {item.dueAt ? formatDate(item.dueAt) : "No due date"}
         </span>
       </div>
-      {item.qaReviewer ? (
+      {item.qaReviewer && item.claimActive ? (
         <p className="mt-2 flex items-center gap-1 text-[9.5px] font-medium text-review-foreground">
           <ShieldCheck className="size-3" /> Claimed by {item.qaReviewer.displayName}
         </p>

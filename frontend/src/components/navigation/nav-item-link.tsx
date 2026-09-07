@@ -5,6 +5,7 @@ import { TONE_BADGE } from "@/lib/formatting/tones";
 import { cn } from "@/lib/utils";
 import { useNavBadge } from "./use-nav-badge";
 import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
+import { NavigationHint } from "@/features/help/navigation-hint";
 
 interface NavItemLinkProps {
   item: NavItem;
@@ -36,14 +37,15 @@ export function NavItemLink({ item, onNavigate }: NavItemLinkProps) {
   );
 
   return (
-    <Link
-      to={item.route as "/admin"}
-      onClick={onNavigate}
-      title={item.description}
-      activeOptions={{ exact: item.route === WORKSPACE_PRESENTATION[item.workspace].home }}
-      className="group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm text-sidebar-foreground/85 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:font-medium data-[status=active]:text-sidebar-accent-foreground"
-    >
-      {content}
-    </Link>
+    <NavigationHint title={item.label} description={item.description}>
+      <Link
+        to={item.route as "/admin"}
+        onClick={onNavigate}
+        activeOptions={{ exact: item.route === WORKSPACE_PRESENTATION[item.workspace].home }}
+        className="group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm text-sidebar-foreground/85 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:font-medium data-[status=active]:text-sidebar-accent-foreground"
+      >
+        {content}
+      </Link>
+    </NavigationHint>
   );
 }

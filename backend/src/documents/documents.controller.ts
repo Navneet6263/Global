@@ -17,7 +17,7 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
-import { readUploadedBinary } from "../common/http/uploaded-binary";
+import { withUploadedBinary } from "../common/http/upload-capacity";
 import { CreateDocumentDto } from "./dto/create-document.dto";
 import { DocumentsService } from "./documents.service";
 
@@ -47,11 +47,12 @@ export class DocumentsController {
     @Param("documentId", ParseUUIDPipe) documentId: string,
     @Req() request: FastifyRequest,
   ) {
-    const file = await readUploadedBinary(
+    return withUploadedBinary(
       request,
-      this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
+      this.config,
+      `${actor.tenantPublicId}:${actor.userPublicId}`,
+      (file) => this.documents.upload(actor, documentId, file),
     );
-    return this.documents.upload(actor, documentId, file);
   }
 
   @Get("documents/:documentId/content")

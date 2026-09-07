@@ -20,6 +20,8 @@ import { FieldVisitCard } from "@/features/field/FieldVisitCard";
 import { useFieldWorkflow } from "@/features/field/useFieldWorkflow";
 import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
+import { WorkspaceHelp } from "@/features/help/workspace-help";
+import { HelpLauncher, LearningIntro } from "@/features/help/help-launcher";
 
 export const Route = createFileRoute("/field-executive")({
   beforeLoad: () => requireRoleWorkspace(["FIELD_EXECUTIVE"]),
@@ -98,119 +100,123 @@ function FieldExecutivePage() {
   };
 
   return (
-    <main className="min-h-screen bg-transparent px-3 py-3 text-foreground sm:px-5 sm:py-5">
-      <div className="mx-auto w-full max-w-[46rem] space-y-4 pb-10">
-        <header className="surface flex items-center justify-between gap-3 rounded-[1.5rem] px-4 py-3.5 sm:px-5">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#fff9f3] ring-1 ring-primary/15">
-              <SaplingSymbol className="size-9" />
-            </span>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">Sapling Global — Field Operations</p>
-              <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
-                GPS, evidence and offline-safe completion
-              </p>
+    <WorkspaceHelp workspace="field-executive">
+      <main className="min-h-screen bg-transparent px-3 py-3 text-foreground sm:px-5 sm:py-5">
+        <div className="mx-auto w-full max-w-[46rem] space-y-4 pb-10">
+          <header className="surface flex items-center justify-between gap-3 rounded-[1.5rem] px-4 py-3.5 sm:px-5">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#fff9f3] ring-1 ring-primary/15">
+                <SaplingSymbol className="size-9" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold">Sapling Global — Field Operations</p>
+                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                  GPS, evidence and offline-safe completion
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="flex shrink-0 items-center gap-1.5">
-            <Link
-              to="/change-password"
-              className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-foreground"
-              aria-label="Account security"
-            >
-              <ShieldCheck className="size-4" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => void signOut()}
-              disabled={signingOut}
-              className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-critical disabled:opacity-50"
-              aria-label="Sign out"
-            >
-              {signingOut ? (
-                <Loader2 className="size-4 animate-spin" />
-              ) : (
-                <LogOut className="size-4" />
-              )}
-            </button>
-          </div>
-        </header>
-
-        <FieldRouteSummary
-          counts={counts}
-          online={workflow.online}
-          pendingSync={workflow.pendingSync}
-          syncing={workflow.syncing}
-          onSync={() => void workflow.syncAll()}
-        />
-
-        <section className="surface rounded-[1.5rem] p-2">
-          <div className="grid grid-cols-4 gap-1" role="tablist" aria-label="Visit status">
-            {tabs.map((value) => (
-              <button
-                key={value}
-                type="button"
-                role="tab"
-                aria-selected={tab === value}
-                onClick={() => setTab(value)}
-                className={`rounded-[1rem] px-2 py-2.5 text-[10px] font-semibold transition-colors ${tab === value ? "bg-mint-deep text-white shadow-[var(--shadow-card)]" : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"}`}
+            <div className="flex shrink-0 items-center gap-1.5">
+              <HelpLauncher />
+              <Link
+                to="/change-password"
+                className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-foreground"
+                aria-label="Account security"
               >
-                {tabLabel(value)}
-                <span className="num ml-1 opacity-65">{tabCount(value, counts)}</span>
+                <ShieldCheck className="size-4" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => void signOut()}
+                disabled={signingOut}
+                className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-critical disabled:opacity-50"
+                aria-label="Sign out"
+              >
+                {signingOut ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <LogOut className="size-4" />
+                )}
               </button>
-            ))}
-          </div>
-        </section>
+            </div>
+          </header>
 
-        {workflow.visitsQuery.isLoading ? <FieldLoading /> : null}
-        {workflow.visitsQuery.isError ? (
-          <div className="surface rounded-[1.5rem] p-6 text-center">
-            <ShieldAlert className="mx-auto size-6 text-critical" />
-            <p className="mt-3 text-sm font-semibold">Visits could not be loaded</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Check your connection, then try the secure request again.
-            </p>
-            <button
-              type="button"
-              onClick={() => void workflow.visitsQuery.refetch()}
-              className="mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground"
-            >
-              <RefreshCw className="size-3.5" /> Retry
-            </button>
-          </div>
-        ) : null}
-        {!workflow.visitsQuery.isLoading && !active ? <FieldEmpty /> : null}
-        {active ? (
-          <>
-            <FieldVisitCard
-              visit={active}
-              draft={workflow.draft}
-              fix={workflow.fix}
-              photoCount={workflow.photoCount}
-              geoError={workflow.geoError}
-              locating={workflow.locating}
-              syncing={workflow.syncing}
-              policy={workflow.policy}
-              onCapture={(kind) => void workflow.capture(kind)}
-              onCheckout={() => void workflow.checkout()}
-              onPhotos={workflow.addPhotos}
-              onRemovePhoto={workflow.removePhoto}
-            />
-            <FieldChecklist
-              draft={workflow.draft}
-              onChange={workflow.update}
-              disabled={!["ASSIGNED", "IN_PROGRESS"].includes(active.status)}
-            />
-            <FieldDayPlan visits={visible} activeId={active.id} onSelect={setActiveId} />
-          </>
-        ) : null}
+          <LearningIntro />
+          <FieldRouteSummary
+            counts={counts}
+            online={workflow.online}
+            pendingSync={workflow.pendingSync}
+            syncing={workflow.syncing}
+            onSync={() => void workflow.syncAll()}
+          />
 
-        <p className="px-4 text-center text-[10px] leading-5 text-muted-foreground">
-          <CheckCircle2 className="mr-1 inline size-3" /> Location is captured only at check-in,
-          refresh and completion. Local drafts are cleared on logout.
-        </p>
-      </div>
-    </main>
+          <section className="surface rounded-[1.5rem] p-2">
+            <div className="grid grid-cols-4 gap-1" role="tablist" aria-label="Visit status">
+              {tabs.map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="tab"
+                  aria-selected={tab === value}
+                  onClick={() => setTab(value)}
+                  className={`rounded-[1rem] px-2 py-2.5 text-[10px] font-semibold transition-colors ${tab === value ? "bg-mint-deep text-white shadow-[var(--shadow-card)]" : "text-muted-foreground hover:bg-secondary/70 hover:text-foreground"}`}
+                >
+                  {tabLabel(value)}
+                  <span className="num ml-1 opacity-65">{tabCount(value, counts)}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {workflow.visitsQuery.isLoading ? <FieldLoading /> : null}
+          {workflow.visitsQuery.isError ? (
+            <div className="surface rounded-[1.5rem] p-6 text-center">
+              <ShieldAlert className="mx-auto size-6 text-critical" />
+              <p className="mt-3 text-sm font-semibold">Visits could not be loaded</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Check your connection, then try the secure request again.
+              </p>
+              <button
+                type="button"
+                onClick={() => void workflow.visitsQuery.refetch()}
+                className="mt-4 inline-flex h-10 items-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground"
+              >
+                <RefreshCw className="size-3.5" /> Retry
+              </button>
+            </div>
+          ) : null}
+          {!workflow.visitsQuery.isLoading && !active ? <FieldEmpty /> : null}
+          {active ? (
+            <>
+              <FieldVisitCard
+                visit={active}
+                draft={workflow.draft}
+                fix={workflow.fix}
+                photoCount={workflow.photoCount}
+                geoError={workflow.geoError}
+                locating={workflow.locating}
+                syncing={workflow.syncing}
+                policy={workflow.policy}
+                onCapture={(kind) => void workflow.capture(kind)}
+                onCheckout={() => void workflow.checkout()}
+                onPhotos={workflow.addPhotos}
+                onRemovePhoto={workflow.removePhoto}
+              />
+              <FieldChecklist
+                draft={workflow.draft}
+                onChange={workflow.update}
+                disabled={!["ASSIGNED", "IN_PROGRESS"].includes(active.status)}
+              />
+              <FieldDayPlan visits={visible} activeId={active.id} onSelect={setActiveId} />
+            </>
+          ) : null}
+
+          <p className="px-4 text-center text-[10px] leading-5 text-muted-foreground">
+            <CheckCircle2 className="mr-1 inline size-3" /> Location is captured only at check-in,
+            refresh and completion. Local drafts are cleared on logout.
+          </p>
+        </div>
+      </main>
+    </WorkspaceHelp>
   );
 }
 

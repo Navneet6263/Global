@@ -19,7 +19,7 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
-import { readUploadedBinary } from "../common/http/uploaded-binary";
+import { withUploadedBinary } from "../common/http/upload-capacity";
 import { CompleteFieldVisitDto } from "./dto/complete-field-visit.dto";
 import { CheckInFieldVisitDto } from "./dto/check-in-field-visit.dto";
 import { CreateFieldVisitDto } from "./dto/create-field-visit.dto";
@@ -78,11 +78,12 @@ export class FieldVisitsController {
     @Headers("x-evidence-id") evidenceId: string | undefined,
     @Req() request: FastifyRequest,
   ) {
-    const file = await readUploadedBinary(
+    return withUploadedBinary(
       request,
-      this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
+      this.config,
+      `${actor.tenantPublicId}:${actor.userPublicId}`,
+      (file) => this.evidence.add(actor, visitId, file, capturedAt, evidenceId),
     );
-    return this.evidence.add(actor, visitId, file, capturedAt, evidenceId);
   }
 
   @Post("field-visits/:visitId/check-in")

@@ -5,7 +5,6 @@ import { LoginCard } from "@/features/auth/components/login-card";
 import { cachedIdentity, landingPathForRoles, loadIdentity } from "@/lib/auth/platform-session";
 
 export const Route = createFileRoute("/auth")({
-  ssr: false,
   head: () => ({
     meta: [
       { title: "Sign in — Sapling Global Verification Platform" },
