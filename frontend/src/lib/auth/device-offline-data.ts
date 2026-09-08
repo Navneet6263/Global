@@ -5,6 +5,7 @@ import {
 } from "@/features/delivery/verifier/verifier-draft";
 import {
   activateDeviceDataScope,
+  currentDeviceDataScope,
   deactivateDeviceDataScope,
   type DeviceDataScope,
 } from "./device-data-scope";
@@ -23,6 +24,12 @@ export function clearDeviceOfflineData(): Promise<void> {
 
 async function prepareScope(scope: DeviceDataScope): Promise<void> {
   if (typeof window === "undefined") return;
+  // Loading the same account in another tab is not an ownership change.
+  // Removing its shared marker would make every other tab redirect to sign-in.
+  if (currentDeviceDataScope() === scope) {
+    activateDeviceDataScope(scope);
+    return;
+  }
   deactivateDeviceDataScope();
   await purgePrivateAppShell();
   if (typeof indexedDB === "undefined") {

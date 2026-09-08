@@ -15,6 +15,14 @@ export function scopedDeviceRecordKey(scope: DeviceDataScope, recordId: string):
   return `v2:${scope.length}:${scope}:${recordId}`;
 }
 
+export function currentDeviceDataScope(): DeviceDataScope | null {
+  try {
+    return window.localStorage.getItem(deviceDataScopeStorageKey) as DeviceDataScope | null;
+  } catch {
+    return activeScope;
+  }
+}
+
 export function activateDeviceDataScope(scope: DeviceDataScope): void {
   activeScope = scope;
   try {
