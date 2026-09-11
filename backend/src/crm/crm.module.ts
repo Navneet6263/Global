@@ -8,9 +8,13 @@ import { CrmOverviewService } from "./crm-overview.service";
 import { CrmQueryService } from "./crm-query.service";
 import { CrmService } from "./crm.service";
 import { CrmSettingsService } from "./crm-settings.service";
+import { CrmSequenceController } from "./crm-sequence.controller";
+import { CrmProposalController } from "./crm-proposal.controller";
+import { CrmProposalService } from "./crm-proposal.service";
+import { CrmAutoAssignmentController } from "./crm-auto-assignment.controller";
 
 @Module({
-  controllers: [CrmController],
+  controllers: [CrmController, CrmSequenceController, CrmProposalController, CrmAutoAssignmentController],
   providers: [
     CrmService,
     CrmQueryService,
@@ -20,6 +24,7 @@ import { CrmSettingsService } from "./crm-settings.service";
     CrmFollowUpService,
     CrmHandoffService,
     CrmSettingsService,
+    CrmProposalService,
   ],
 })
 export class CrmModule {}

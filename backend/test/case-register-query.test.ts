@@ -22,6 +22,18 @@ const actor: Actor = {
   permissions: ["*"],
 };
 
+void test("controlled release stages remain individually filterable", async () => {
+  for (const [stage, status] of [
+    ["manager_review", "MANAGER_REVIEW"],
+    ["report_pending", "REPORT_PENDING"],
+    ["payment_pending", "PAYMENT_PENDING"],
+  ]) {
+    const query = plainToInstance(CaseQueryDto, { stage });
+    assert.equal((await validate(query)).length, 0);
+    assert.deepEqual(caseRegisterWhere(actor, query).status, { in: [status] });
+  }
+});
+
 void test("case register query validates page mode and server filters", async () => {
   const query = plainToInstance(CaseQueryDto, {
     page: "2",

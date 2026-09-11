@@ -7,6 +7,8 @@ import { OutboxClaimService } from "./outbox-claim.service";
 import { DataHousekeepingService } from "./data-housekeeping.service";
 import { ObjectDeletionRecoveryController } from "./object-deletion-recovery.controller";
 import { ObjectDeletionRecoveryService } from "./object-deletion-recovery.service";
+import { WorkflowReminderService } from "./workflow-reminder.service";
+import { CommercialReminderService } from "./commercial-reminder.service";
 
 @Module({
   imports: [ReportsModule, DocumentsModule],
@@ -17,6 +19,8 @@ import { ObjectDeletionRecoveryService } from "./object-deletion-recovery.servic
     OutboxWorkerService,
     RetentionWorkerService,
     DataHousekeepingService,
+    WorkflowReminderService,
+    CommercialReminderService,
   ],
 })
 export class OutboxModule {}

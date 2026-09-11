@@ -56,7 +56,12 @@ export function createUser(input: {
 
 export function updateUser(
   userId: string,
-  input: { version: number; status?: "ACTIVE" | "SUSPENDED"; roleCodes?: string[] },
+  input: {
+    version: number;
+    status?: "ACTIVE" | "SUSPENDED";
+    roleCodes?: string[];
+    additionalAccessConfirmed?: boolean;
+  },
 ) {
   return apiRequest<{ id: string; version: number }>(`/users/${userId}`, {
     method: "PATCH",

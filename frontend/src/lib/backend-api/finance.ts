@@ -85,6 +85,7 @@ export function createInvoice(input: {
   notes?: string;
   lines: Array<{
     caseId?: string;
+    reportId?: string;
     description: string;
     quantity: number;
     unitPrice: number;

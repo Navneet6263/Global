@@ -1,7 +1,11 @@
 import type { Page } from "@playwright/test";
+import type { QaQueueItem } from "../../src/lib/backend-api/qa";
 
 // Browser contract fixture only. It is not imported by the application or stored in the DB.
-export async function qaBrowserFixture(page: Page) {
+export async function qaBrowserFixture(
+  page: Page,
+  evidence: Partial<Pick<QaQueueItem, "documents" | "fieldVisits">> = {},
+) {
   const reviewerId = "00000000-0000-4000-8000-000000000077";
   const details: string[] = [];
   const unexpected: string[] = [];
@@ -106,8 +110,8 @@ export async function qaBrowserFixture(page: Page) {
             tasks: [],
           },
         ],
-        documents: [],
-        fieldVisits: [],
+        documents: evidence.documents ?? [],
+        fieldVisits: evidence.fieldVisits ?? [],
       });
     }
     if (/\/qa\/cases\/qa-case-\d\/(claim|renew|release)$/.test(path)) {

@@ -177,7 +177,7 @@ export function CrmOpportunityForm({
           <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" disabled={submitting} loading={submitting}>
             {opportunity ? "Save changes" : "Create opportunity"}
           </Button>
         </div>

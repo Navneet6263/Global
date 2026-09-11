@@ -77,6 +77,7 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
                 size="icon"
                 onClick={() => void refresh()}
                 disabled={refreshing}
+                loading={refreshing}
                 aria-label="Refresh workspace data"
               >
                 <RefreshCw className={refreshing ? "size-4 animate-spin" : "size-4"} aria-hidden />

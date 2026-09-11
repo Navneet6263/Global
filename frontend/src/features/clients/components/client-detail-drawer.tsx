@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { CLIENT_STATUS_META } from "../client-status-meta";
 import { formatDate, formatDateTime, formatNumber, formatPercent } from "@/lib/formatting";
+import { ClientCommercialPanel } from "./client-commercial-panel";
 
 interface ClientDetailDrawerProps {
   client: ClientOrganisation | undefined;
@@ -61,13 +62,22 @@ function ClientAccount({ client }: { client: ClientOrganisation }) {
         <Detail label="At-risk cases" value={formatNumber(client.outstandingActions)} />
       </dl>
 
-      <Tabs defaultValue="contacts">
+      {client.status === "onboarding" ? (
+        <p className="rounded-xl border border-warning/20 bg-warning-soft/40 p-3 text-xs text-muted-foreground">
+          Complete billing address, terms, enabled packages and signed agreement/DPA references
+          under Commercial. Then choose Activate client from the account actions.
+        </p>
+      ) : null}
+      <Tabs defaultValue={client.status === "onboarding" ? "commercial" : "contacts"}>
         <TabsList className="w-full justify-start">
           <TabsTrigger value="contacts" className="text-xs">
             Contacts ({client.contacts.length})
           </TabsTrigger>
           <TabsTrigger value="users" className="text-xs">
             Portal users ({client.users.length})
+          </TabsTrigger>
+          <TabsTrigger value="commercial" className="text-xs">
+            Commercial
           </TabsTrigger>
         </TabsList>
 
@@ -103,6 +113,9 @@ function ClientAccount({ client }: { client: ClientOrganisation }) {
               </li>
             ))}
           </AccountList>
+        </TabsContent>
+        <TabsContent value="commercial" className="pt-3">
+          <ClientCommercialPanel clientId={client.id} />
         </TabsContent>
       </Tabs>
     </div>

@@ -4,6 +4,7 @@ export type UserStatus = "active" | "suspended" | "invited";
 
 export interface PlatformUser {
   id: string;
+  version?: number;
   employeeId: string | null;
   fullName: string;
   email: string;

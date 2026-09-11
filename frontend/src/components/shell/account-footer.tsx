@@ -59,6 +59,7 @@ export function AccountFooter({ workspace = "platform-admin" }: { workspace?: Na
           size="sm"
           aria-label="Sign out"
           disabled={signingOut}
+          loading={signingOut}
           onClick={() => void signOut()}
         >
           {signingOut ? (

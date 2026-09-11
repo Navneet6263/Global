@@ -15,11 +15,12 @@ import { CLIENT_STATUS_META } from "../client-status-meta";
 
 interface ClientCardProps {
   client: ClientOrganisation;
+  busy?: boolean;
   onOpen: (id: string) => void;
   onToggleStatus: (client: ClientOrganisation) => void;
 }
 
-export function ClientCard({ client, onOpen, onToggleStatus }: ClientCardProps) {
+export function ClientCard({ client, onOpen, onToggleStatus, busy }: ClientCardProps) {
   const status = CLIENT_STATUS_META[client.status];
 
   return (
@@ -37,14 +38,23 @@ export function ClientCard({ client, onOpen, onToggleStatus }: ClientCardProps) 
         <StatusBadge label={status.label} tone={status.tone} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label={`Actions for ${client.name}`}>
+            <Button
+              variant="ghost"
+              size="icon"
+              loading={busy}
+              aria-label={`Actions for ${client.name}`}
+            >
               <MoreHorizontal className="size-4" aria-hidden />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 rounded-2xl">
             <DropdownMenuItem onSelect={() => onOpen(client.id)}>View account</DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => onToggleStatus(client)}>
-              {client.status === "suspended" ? "Reactivate client" : "Suspend client"}
+            <DropdownMenuItem disabled={busy} onSelect={() => onToggleStatus(client)}>
+              {client.status === "onboarding"
+                ? "Activate client"
+                : client.status === "suspended"
+                  ? "Reactivate client"
+                  : "Suspend client"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

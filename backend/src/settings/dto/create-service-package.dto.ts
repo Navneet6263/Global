@@ -14,6 +14,10 @@ import {
   Min,
 } from "class-validator";
 import { CheckTypes } from "../../cases/case.constants";
+import {
+  RequiredDocumentTypes,
+  ServiceFamilies,
+} from "../../cases/case-service-plan";
 
 export class CreateServicePackageDto {
   @IsString()
@@ -27,9 +31,17 @@ export class CreateServicePackageDto {
 
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(12)
+  @ArrayMaxSize(24)
   @IsIn(CheckTypes, { each: true })
   checks!: string[];
+
+  @IsIn(ServiceFamilies)
+  serviceFamily: string = "HIRECHECK";
+
+  @IsArray()
+  @ArrayMaxSize(8)
+  @IsIn(RequiredDocumentTypes, { each: true })
+  requiredDocuments: string[] = [];
 
   @IsOptional()
   @Type(() => Number)

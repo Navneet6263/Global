@@ -4,8 +4,8 @@ import type { SummaryCard as SummaryCardData } from "@/lib/contracts/dashboard";
 
 const ACTIONS = [
   { label: "Register", icon: Layers, route: "/admin/cases" as const },
-  { label: "Exceptions", icon: TriangleAlert, route: "/admin/cases" as const },
-  { label: "Reports", icon: FileBarChart, route: "/admin/analytics" as const },
+  { label: "Exceptions", icon: TriangleAlert, route: "/admin/exceptions" as const },
+  { label: "Reports", icon: FileBarChart, route: "/admin/reports" as const },
 ];
 
 interface PortfolioCardProps {

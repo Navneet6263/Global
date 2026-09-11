@@ -27,6 +27,15 @@ void test("a won opportunity creates one durable onboarding handoff", async () =
         writes.push("opportunity");
         return { count: 1 };
       },
+      update: () => {
+        writes.push("link");
+      },
+    },
+    client: {
+      create: () => {
+        writes.push("client");
+        return { id: 31n, publicId: "linked-client" };
+      },
     },
     salesActivity: { create: () => writes.push("activity") },
     auditEvent: { create: () => writes.push("audit") },
@@ -38,6 +47,9 @@ void test("a won opportunity creates one durable onboarding handoff", async () =
         stage: "WON",
         version: 3,
         onboardingHandoffAt: null,
+        clientId: null,
+        companyName: "New company",
+        contactName: "Contact",
       }),
     },
     $transaction: (operation: (client: typeof tx) => Promise<unknown>) =>
@@ -52,7 +64,15 @@ void test("a won opportunity creates one durable onboarding handoff", async () =
 
   assert.equal(result.version, 4);
   assert.ok(result.preparedAt instanceof Date);
-  assert.deepEqual(writes, ["opportunity", "activity", "audit"]);
+  assert.equal(result.clientId, "linked-client");
+  assert.deepEqual(writes, [
+    "opportunity",
+    "client",
+    "link",
+    "audit",
+    "activity",
+    "audit",
+  ]);
 });
 
 void test("repeating an existing handoff is idempotent", async () => {
@@ -65,6 +85,8 @@ void test("repeating an existing handoff is idempotent", async () => {
         stage: "WON",
         version: 4,
         onboardingHandoffAt: preparedAt,
+        clientId: 31n,
+        client: { publicId: "linked-client" },
       }),
     },
     $transaction: () => {

@@ -4,6 +4,8 @@ import { CardGridSkeleton, ListSkeleton } from "@/components/feedback/skeletons"
 import { OpsSummaryGrid } from "@/features/operations/components/ops-summary-grid";
 import { OpsStageFlow } from "@/features/operations/components/ops-stage-flow";
 import { OpsActionQueue } from "@/features/operations/components/ops-action-queue";
+import { OperationsActionInbox } from "@/features/operations/actions/operations-action-inbox";
+import { actionInboxSearch } from "@/features/operations/actions/action-inbox-model";
 import type { OpsMetricId } from "@/features/operations/contracts/operations";
 import {
   opsDashboardQueryOptions,
@@ -11,6 +13,7 @@ import {
 } from "@/features/operations/hooks/use-operations";
 
 export const Route = createFileRoute("/operations/")({
+  validateSearch: actionInboxSearch,
   head: () => ({
     meta: [
       { title: "Operations Dashboard — Sapling Global" },
@@ -79,6 +82,11 @@ function OperationsDashboard() {
             throughput={data.throughput}
             onSelectMetric={openMetric}
           />
+        </>
+      ) : null}
+      <OperationsActionInbox />
+      {data ? (
+        <>
           <OpsStageFlow stages={data.stages} />
           <OpsActionQueue items={data.actions} onOpenCase={openCase} />
         </>

@@ -2,6 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { AdminShell } from "@/components/shell/admin-shell";
 import type { NavWorkspace } from "@/config/navigation";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface StakeholderShellProps {
   children: ReactNode;
@@ -22,7 +23,6 @@ export function StakeholderShell(props: StakeholderShellProps) {
 }
 
 export function StakeholderHeader({
-  eyebrow,
   title,
   description,
   action,
@@ -32,20 +32,7 @@ export function StakeholderHeader({
   description: string;
   action?: ReactNode;
 }) {
-  return (
-    <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p className="text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
-          {eyebrow}
-        </p>
-        <h1 className="mt-1.5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          {title}
-        </h1>
-        <p className="mt-1.5 max-w-3xl text-sm text-muted-foreground">{description}</p>
-      </div>
-      {action ? <div className="shrink-0">{action}</div> : null}
-    </header>
-  );
+  return <PageHeader title={title} description={description} actions={action} />;
 }
 
 const tones = {

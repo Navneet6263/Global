@@ -65,9 +65,9 @@
   --shadow-card: 0 1px 2px oklch(0.36 0.03 60 / 0.04), 0 10px 28px oklch(0.5 0.05 60 / 0.06);
   --shadow-raise: 0 2px 6px oklch(0.36 0.03 60 / 0.05), 0 18px 44px oklch(0.5 0.06 60 / 0.1);
   --shadow-float: 0 1px 1px oklch(1 0 0 / 0.9) inset, 0 24px 60px -22px oklch(0.5 0.06 60 / 0.22);
-  --shadow-glow: 0 0 0 1px oklch(1 0 0 / 0.7) inset, 0 18px 45px -20px oklch(0.664 0.163 45.5 / 0.28);
+  --shadow-glow:
+    0 0 0 1px oklch(1 0 0 / 0.7) inset, 0 18px 45px -20px oklch(0.664 0.163 45.5 / 0.28);
 }
-
 
 :root {
   --radius: 1.25rem;
@@ -130,8 +130,6 @@
   --sidebar-border: oklch(0.94 0.008 140);
 }
 
-
-
 @layer base {
   * {
     border-color: var(--color-border);
@@ -152,7 +150,6 @@
     font-family: var(--font-sans);
     font-feature-settings: "cv11", "ss01";
   }
-
 
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]) {
@@ -196,4 +193,41 @@
   border: 1px solid oklch(1 0 0 / 0.8);
   box-shadow: var(--shadow-float);
   backdrop-filter: blur(14px);
+}
+/* Busy actions retain their labels and layout; links/invalid forms are never made busy by default. */
+button[aria-busy="true"],
+a[aria-busy="true"] {
+  cursor: wait;
+}
+button[aria-busy="true"]::before {
+  content: "";
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.9em;
+  height: 0.9em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: action-spin 0.75s linear infinite;
+}
+button[aria-busy="true"] > svg {
+  display: none;
+}
+@keyframes action-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes request-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(400%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  button[aria-busy="true"]::before {
+    animation: none;
+  }
 }

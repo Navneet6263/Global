@@ -7,6 +7,7 @@ const stateTone: Record<string, string> = {
   IN_PROGRESS: "bg-review-soft text-review-foreground",
   COMPLETED: "bg-success-soft text-success-foreground",
   EXCEPTION_REVIEW: "bg-warning-soft text-warning-foreground",
+  REVIEW_PENDING: "bg-review-soft text-review-foreground",
 };
 
 export function FieldDayPlan({

@@ -31,6 +31,7 @@ import { NotificationsModule } from "./notifications/notifications.module";
 import { CandidatePortalModule } from "./candidate-portal/candidate-portal.module";
 import { SecurityModule } from "./common/security/security.module";
 import { OutboxModule } from "./outbox/outbox.module";
+import { PrivacyModule } from "./privacy/privacy.module";
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { OutboxModule } from "./outbox/outbox.module";
     FieldVisitsModule,
     DashboardsModule,
     AuditModule,
+    PrivacyModule,
     HealthModule,
   ],
   providers: [

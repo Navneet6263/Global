@@ -1,22 +1,12 @@
 import "./lib/error-capture";
+import { createStartHandler, defaultStreamHandler } from "@tanstack/react-start/server";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 
-type ServerEntry = {
-  fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
-};
-
-let serverEntryPromise: Promise<ServerEntry> | undefined;
-
-async function getServerEntry(): Promise<ServerEntry> {
-  if (!serverEntryPromise) {
-    serverEntryPromise = import("@tanstack/react-start/server-entry").then(
-      (m) => (m.default ?? m) as ServerEntry,
-    );
-  }
-  return serverEntryPromise;
-}
+// Use the public handler directly. Namespace-importing the default server entry
+// creates a runtime-helper chunk cycle in the current Vite/Nitro production build.
+const handleStart = createStartHandler(defaultStreamHandler);
 
 // h3 swallows in-handler throws into a normal 500 Response with body
 // {"unhandled":true,"message":"HTTPError"} — try/catch alone never fires for those.
@@ -69,10 +59,10 @@ function withSecurityHeaders(response: Response, request?: Request): Response {
 }
 
 export default {
-  async fetch(request: Request, env: unknown, ctx: unknown) {
+  async fetch(...args: Parameters<typeof handleStart>) {
+    const [request] = args;
     try {
-      const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
+      const response = await handleStart(...args);
       return withSecurityHeaders(await normalizeCatastrophicSsrResponse(response), request);
     } catch (error) {
       console.error(error);

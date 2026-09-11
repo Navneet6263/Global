@@ -4,6 +4,8 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { api } from "@/lib/api/client";
 import { queryKeys } from "@/lib/api/query-keys";
 import type { CreateUserInput, UserQuery } from "@/lib/contracts/user";
+import { updateUser } from "@/lib/backend-api/users";
+import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
 
 export function useUsers(query: UserQuery) {
   return useQuery({
@@ -37,5 +39,26 @@ export function useSetUserStatus() {
 export function useResetUserPassword() {
   return useMutation({
     mutationFn: (id: string) => api.users.resetPassword(id),
+  });
+}
+
+export function useUpdateUserRoles() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: {
+      id: string;
+      version: number;
+      roleCodes: string[];
+      additionalAccessConfirmed: boolean;
+    }) => {
+      const { id, ...body } = input;
+      return updateUser(id, body);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["users"] });
+      void queryClient.invalidateQueries({ queryKey: ["case-dispatch-preview"] });
+      void queryClient.invalidateQueries({ queryKey: ["audit"] });
+      void invalidateWorkflow(queryClient);
+    },
   });
 }

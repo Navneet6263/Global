@@ -1,4 +1,6 @@
 import type { CaseDetail, CaseListItem } from "@/lib/backend-api/cases";
+import { casePackageName } from "@/lib/backend-api/case-services";
+import { checkLabel, normalizeCheckType } from "@/lib/contracts/check";
 import type {
   OpsCase,
   OpsCaseDetail,
@@ -19,6 +21,9 @@ export const stages: Record<string, OpsStage> = {
   IN_PROGRESS: "verification",
   CLARIFICATION_PENDING: "clarification",
   QA_REVIEW: "qa",
+  MANAGER_REVIEW: "manager_review",
+  REPORT_PENDING: "report_pending",
+  PAYMENT_PENDING: "payment_pending",
   COMPLETED: "completed",
   CLOSED: "completed",
   CANCELLED: "cancelled",
@@ -33,15 +38,15 @@ export const progress: Record<OpsStage, number> = {
   clarification: 68,
   field_visit: 72,
   qa: 88,
+  manager_review: 91,
+  report_pending: 94,
+  payment_pending: 97,
   completed: 100,
   cancelled: 100,
 };
 
 export function typeOf(value: string): OpsCheckType {
-  const type = value.toLowerCase();
-  return ["identity", "address", "employment", "education", "criminal", "reference"].includes(type)
-    ? (type as OpsCheckType)
-    : "identity";
+  return normalizeCheckType(value);
 }
 
 export function checkStatus(value: string): OpsCheckStatus {
@@ -90,7 +95,7 @@ export function baseCase(row: CaseListItem): OpsCase {
     candidateMobile: row.subject.phone ?? "",
     clientId: row.client.publicId,
     clientName: row.client.displayName,
-    packageName: row.servicePackage?.name ?? `${row.checks.length}-check scope`,
+    packageName: casePackageName(row) ?? `${row.checks.length}-check scope`,
     stage,
     progress: progress[stage],
     checksCompleted: completed,
@@ -111,21 +116,27 @@ export function baseCase(row: CaseListItem): OpsCase {
       tasks.find((task) => task.status === "BLOCKED")?.instructions ??
       null,
     nextAction:
-      stage === "cancelled"
-        ? "Cancelled"
-        : stage === "completed"
-          ? "Review published report"
-          : stage === "consent"
-            ? "Await candidate consent"
-            : stage === "documents"
-              ? "Review required documents"
-              : stage === "clarification"
-                ? "Review clarification response"
-                : stage === "qa"
-                  ? "Await independent QA review"
-                  : verifier
-                    ? "Monitor verification"
-                    : "Assign verifier",
+      stage === "manager_review"
+        ? "Review and approve the final outcome"
+        : stage === "report_pending"
+          ? "Monitor report generation"
+          : stage === "payment_pending"
+            ? "Confirm billing, settlement and report release"
+            : stage === "cancelled"
+              ? "Cancelled"
+              : stage === "completed"
+                ? "Review published report"
+                : stage === "consent"
+                  ? "Await candidate consent"
+                  : stage === "documents"
+                    ? "Review required documents"
+                    : stage === "clarification"
+                      ? "Review clarification response"
+                      : stage === "qa"
+                        ? "Await independent QA review"
+                        : verifier
+                          ? "Monitor verification"
+                          : "Assign verifier",
     stageAgeMinutes: Math.max(0, Math.round((Date.now() - Date.parse(row.updatedAt)) / 60_000)),
   };
 }
@@ -146,6 +157,7 @@ export function fieldStatus(status: string): OpsFieldVisit["status"] {
     EVIDENCE_PENDING: "evidence_pending",
     OUTSIDE_GEOFENCE: "outside_geofence",
     EXCEPTION_REVIEW: "exception_review",
+    REVIEW_PENDING: "review_pending",
     COMPLETED: "completed",
   };
   return map[status] ?? "scheduled";
@@ -192,7 +204,7 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
     checks: row.checks.map((check) => ({
       id: check.publicId,
       type: typeOf(check.type),
-      label: check.type.replaceAll("_", " "),
+      label: checkLabel(check.type),
       status: checkStatus(check.status),
       verifier: check.tasks?.find((task) => task.assignee)?.assignee?.displayName ?? null,
       startedAt: null,
@@ -212,11 +224,15 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
             ? ("verified" as const)
             : item.status === "REJECTED"
               ? ("rejected" as const)
-              : item.currentVersion
-                ? ("received" as const)
-                : ("pending" as const),
+              : item.status === "REUPLOAD_REQUIRED"
+                ? ("reupload_required" as const)
+                : item.currentVersion
+                  ? ("received" as const)
+                  : ("pending" as const),
         originalName: latest?.originalName ?? null,
         version: item.currentVersion,
+        revision: item.version,
+        expiresAt: item.expiresAt,
         available: Boolean(latest && item.currentVersion > 0),
         updatedAt: latest?.createdAt ?? row.updatedAt,
         ...(latest ? { note: `v${latest.version} · ${latest.malwareState.toLowerCase()}` } : {}),
@@ -238,7 +254,7 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
           id: task.publicId,
           assignee: task.assignee!.displayName,
           role: "Verifier",
-          checkLabel: check.type.replaceAll("_", " "),
+          checkLabel: checkLabel(check.type),
           assignedAt: row.updatedAt,
           assignedBy: "Operations",
         })),
@@ -275,6 +291,18 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
       actor: "Platform workflow",
     })),
     alerts: [
+      ...(row.checks.some((check) => check.type === "ADDRESS") &&
+      !row.fieldVisits.some((visit) => visit.status === "COMPLETED")
+        ? [
+            {
+              id: "physical-field",
+              tone: "warning" as const,
+              label: "Physical address visit required",
+              detail:
+                "Open full case workspace → Field visits. Assign a Field Executive and obtain supervisor approval before QA.",
+            },
+          ]
+        : []),
       ...(base.slaState === "overdue"
         ? [
             {

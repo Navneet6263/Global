@@ -16,7 +16,8 @@ import { isValidUserPassword, PASSWORD_REQUIREMENTS } from "@/lib/password-polic
 export function ResetPasswordCard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [busy, setBusy] = useState(false);
+  const [pendingAction, setPendingAction] = useState<"password" | "signOut" | null>(null);
+  const busy = pendingAction !== null;
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -30,7 +31,7 @@ export function ResetPasswordCard() {
       toast.error("Passwords do not match");
       return;
     }
-    setBusy(true);
+    setPendingAction("password");
     try {
       await changePassword({ currentPassword, newPassword: password });
       await queryClient.cancelQueries();
@@ -41,7 +42,7 @@ export function ResetPasswordCard() {
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not update the password");
     } finally {
-      setBusy(false);
+      setPendingAction(null);
     }
   };
 
@@ -104,13 +105,18 @@ export function ResetPasswordCard() {
             required
           />
         </div>
-        <Button type="submit" className="w-full" disabled={busy}>
-          {busy ? (
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={busy}
+          loading={pendingAction === "password"}
+        >
+          {pendingAction === "password" ? (
             <Loader2 className="size-4 animate-spin" aria-hidden />
           ) : (
             <ShieldCheck className="size-4" aria-hidden />
           )}
-          {busy ? "Updating…" : "Update password"}
+          {pendingAction === "password" ? "Updating…" : "Update password"}
         </Button>
         <Button
           type="button"
@@ -118,9 +124,10 @@ export function ResetPasswordCard() {
           size="sm"
           className="w-full"
           disabled={busy}
+          loading={pendingAction === "signOut"}
           onClick={() => {
             void (async () => {
-              setBusy(true);
+              setPendingAction("signOut");
               try {
                 await queryClient.cancelQueries();
                 await endAuthenticatedSession();
@@ -129,7 +136,7 @@ export function ResetPasswordCard() {
               } catch (error) {
                 toast.error(error instanceof Error ? error.message : "Could not sign out");
               } finally {
-                setBusy(false);
+                setPendingAction(null);
               }
             })();
           }}

@@ -98,7 +98,7 @@ export class ConsentsService {
   ) {
     const consent = await this.prisma.consent.findUnique({
       where: { publicId },
-      include: { case: true },
+      include: { case: { include: { subject: true } } },
     });
     if (!consent) throw new NotFoundException("Consent request not found");
     if (consent.status === "ACCEPTED")
@@ -197,6 +197,17 @@ export class ConsentsService {
           aggregateId: consent.case.publicId,
           payloadJson: JSON.stringify({ caseId: consent.case.publicId }),
         },
+      });
+      const contact = this.pii.open(consent.case.subject);
+      await this.issuance.receipt(tx, {
+        tenantId: consent.case.tenantId,
+        consentId: consent.publicId,
+        email: contact.email,
+        phone: contact.phone,
+        caseNumber: consent.case.caseNumber,
+        purpose: consent.purpose,
+        noticeVersion: consent.noticeVersion,
+        acceptedAt,
       });
       const recipients = await activeOperationsRecipients(tx, {
         tenantId: consent.case.tenantId,

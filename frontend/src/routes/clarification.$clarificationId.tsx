@@ -165,6 +165,7 @@ function ClarificationPage() {
                 ) : null}
                 <button
                   disabled={message.trim().length < 2 || respond.isPending}
+                  aria-busy={respond.isPending}
                   className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-card)] disabled:opacity-45"
                 >
                   {respond.isPending ? (

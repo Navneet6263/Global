@@ -76,7 +76,12 @@ export function PasswordPanel({ submitting, onSubmit }: PasswordPanelProps) {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" disabled={submitting || !hydrated}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={submitting || !hydrated}
+        loading={submitting}
+      >
         {submitting ? (
           <Loader2 className="size-4 animate-spin" aria-hidden />
         ) : (

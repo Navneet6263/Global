@@ -169,6 +169,7 @@ function OpportunitiesPage() {
           <CrmOpportunityBoard
             rows={listQuery.data.rows}
             canWrite={canWrite}
+            changingId={changeStage.isPending ? changeStage.variables?.opportunityId : undefined}
             onOpen={open}
             onAdvance={(row, stage) => changeStage.mutate({ opportunityId: row.id, stage })}
           />
@@ -200,6 +201,9 @@ function OpportunitiesPage() {
         loading={detailQuery.isPending}
         canWrite={canWrite}
         canAssign={canAssign}
+        assigning={assignOwner.isPending}
+        changingStage={changeStage.isPending}
+        preparingOnboarding={prepareOnboarding.isPending}
         onOpenChange={(next) => (next ? undefined : setSearch({ opportunityId: undefined }))}
         onStageChange={(stage) => {
           if (!detail) return;
@@ -270,6 +274,7 @@ function OpportunitiesPage() {
       />
 
       <CrmMarkWonDialog
+        submitting={changeStage.isPending}
         opportunity={detail}
         open={wonOpen}
         onOpenChange={setWonOpen}
@@ -283,6 +288,7 @@ function OpportunitiesPage() {
       />
 
       <CrmMarkLostDialog
+        submitting={changeStage.isPending}
         opportunity={detail}
         open={lostOpen}
         onOpenChange={setLostOpen}

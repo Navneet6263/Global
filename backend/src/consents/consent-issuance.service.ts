@@ -50,7 +50,9 @@ export class ConsentIssuanceService {
       },
     });
     if (issued.count !== 1) {
-      throw new BadRequestException("Wait 60 seconds before requesting another OTP");
+      throw new BadRequestException(
+        "Wait 60 seconds before requesting another OTP",
+      );
     }
 
     await tx.consentEvent.create({
@@ -115,5 +117,44 @@ export class ConsentIssuanceService {
     )
       .update(`${publicId}:${otp}`)
       .digest("hex");
+  }
+
+  async receipt(
+    tx: Prisma.TransactionClient,
+    target: {
+      tenantId: bigint;
+      consentId: string;
+      email?: string;
+      phone?: string;
+      caseNumber: string;
+      purpose: string;
+      noticeVersion: string;
+      acceptedAt: Date;
+    },
+  ) {
+    const destination = target.email ?? target.phone;
+    if (!destination) return;
+    await tx.outboxEvent.create({
+      data: {
+        tenantId: target.tenantId,
+        topic: "notification.requested",
+        aggregateType: "consent",
+        aggregateId: target.consentId,
+        payloadJson: JSON.stringify({
+          secret: this.secretBox.seal({
+            channel: target.email ? "EMAIL" : "SMS",
+            destination,
+            template: "candidate-consent-receipt",
+            variables: {
+              caseNumber: target.caseNumber,
+              purpose: target.purpose,
+              noticeVersion: target.noticeVersion,
+              acceptedAt: target.acceptedAt,
+              consentUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/consent/${target.consentId}`,
+            },
+          }),
+        }),
+      },
+    });
   }
 }

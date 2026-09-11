@@ -174,6 +174,9 @@ export class SettingsService {
         code: true,
         name: true,
         checksJson: true,
+        serviceFamily: true,
+        requiredDocumentsJson: true,
+        updatedAt: true,
         price: true,
         tatHours: true,
         isActive: true,
@@ -182,11 +185,14 @@ export class SettingsService {
       orderBy: [{ isActive: "desc" }, { name: "asc" }],
     });
     return {
-      items: rows.map(({ publicId, checksJson, ...item }) => ({
-        id: publicId,
-        ...item,
-        checks: this.parseChecks(checksJson),
-      })),
+      items: rows.map(
+        ({ publicId, checksJson, requiredDocumentsJson, ...item }) => ({
+          id: publicId,
+          ...item,
+          checks: this.parseChecks(checksJson),
+          requiredDocuments: this.parseChecks(requiredDocumentsJson),
+        }),
+      ),
     };
   }
 
@@ -207,6 +213,8 @@ export class SettingsService {
           code,
           name: input.name.trim(),
           checksJson: JSON.stringify(input.checks),
+          serviceFamily: input.serviceFamily,
+          requiredDocumentsJson: JSON.stringify(input.requiredDocuments),
           price: input.price,
           tatHours: input.tatHours,
         },
@@ -230,7 +238,13 @@ export class SettingsService {
         },
       });
       const { publicId, ...servicePackage } = row;
-      return { id: publicId, ...servicePackage, checks: input.checks };
+      return {
+        id: publicId,
+        ...servicePackage,
+        checks: input.checks,
+        serviceFamily: input.serviceFamily,
+        requiredDocuments: input.requiredDocuments,
+      };
     });
   }
 

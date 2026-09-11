@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { CheckCircle2, RotateCcw, Search } from "lucide-react";
 import { getQaHistory } from "@/lib/backend-api/qa-register";
@@ -15,6 +15,7 @@ export function QaHistory() {
   const query = useQuery({
     queryKey: ["qa", "history", search, page],
     queryFn: ({ signal }) => getQaHistory({ search, page, limit: 10 }, signal),
+    placeholderData: keepPreviousData,
     enabled: search === searchInput.trim(),
   });
   return (
@@ -37,6 +38,11 @@ export function QaHistory() {
           />
         </label>
       </header>
+      {query.isFetching ? (
+        <p className="mt-3 text-xs text-muted-foreground" role="status">
+          Updating decision history…
+        </p>
+      ) : null}
       {query.isPending ? <WorkspaceLoading label="Loading your decision history" /> : null}
       {query.isError ? (
         <WorkspaceError message={query.error.message} onRetry={() => void query.refetch()} />

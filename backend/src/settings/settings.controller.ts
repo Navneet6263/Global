@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Patch, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Patch,
+  Post,
+} from "@nestjs/common";
+import {
+  ServicePackagePolicyService,
+  UpdatePackageRequirementsDto,
+} from "./service-package-policy.service";
 import {
   CurrentActor,
   RequirePermissions,
@@ -15,7 +27,10 @@ import { SettingsService } from "./settings.service";
 @RequirePermissions(Permission.SettingsManage)
 @RequireRoles("PLATFORM_ADMIN")
 export class SettingsController {
-  constructor(private readonly settings: SettingsService) {}
+  constructor(
+    private readonly settings: SettingsService,
+    private readonly packagePolicy: ServicePackagePolicyService,
+  ) {}
   @Get("organisation") organisation(@CurrentActor() actor: Actor) {
     return this.settings.organisation(actor);
   }
@@ -45,5 +60,12 @@ export class SettingsController {
     @Body() input: CreateServicePackageDto,
   ) {
     return this.settings.createPackage(actor, input);
+  }
+  @Patch("service-packages/:id/requirements") updateRequirements(
+    @CurrentActor() actor: Actor,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() input: UpdatePackageRequirementsDto,
+  ) {
+    return this.packagePolicy.update(actor, id, input);
   }
 }

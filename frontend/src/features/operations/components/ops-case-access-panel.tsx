@@ -125,7 +125,13 @@ function AccessCard(props: {
       {props.secondaryValue ? (
         <CopyValue value={props.secondaryValue} label="Development OTP" code />
       ) : null}
-      <Button size="sm" className="mt-3 w-full" disabled={props.disabled} onClick={props.onAction}>
+      <Button
+        size="sm"
+        className="mt-3 w-full"
+        disabled={props.disabled}
+        loading={props.busy}
+        onClick={props.onAction}
+      >
         <Send className="size-3.5" aria-hidden />
         {props.busy ? "Issuing…" : props.actionLabel}
       </Button>

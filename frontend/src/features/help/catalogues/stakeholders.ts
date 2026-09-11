@@ -1,6 +1,8 @@
 import { guide, type GuideCatalogue } from "../help-types";
+import { financeGuides } from "./qa-finance";
 
 export default {
+  ...financeGuides,
   "/client-portal": guide(
     "Client portfolio",
     "Monitor your organisation's candidate verifications, outstanding corrections and published results.",
@@ -53,10 +55,20 @@ export default {
     "Access the verification outcomes released for your organisation.",
     [
       "Find the candidate and report version.",
-      "Confirm the report is Published.",
+      "Confirm the report is released and its download access has not expired.",
       "Download it and use its authenticity reference when verification is needed.",
     ],
-    "Only share reports with authorised recipients. A file still being generated is not yet a published result.",
+    "A prepared report is held until full report-specific payment and release. Partial payments and credit notes do not unlock it. For expired access, ask Operations to renew it. Only share reports with authorised recipients.",
+  ),
+  "/client-portal/billing": guide(
+    "Invoices & payments",
+    "See your organisation's invoices, recorded payments and outstanding balances.",
+    [
+      "Find the invoice and review its due date and remaining amount.",
+      "Download the invoice PDF or select an India calendar month for a statement CSV.",
+      "Contact Finance about payment discrepancies; check Reports after payment has been confirmed.",
+    ],
+    "This page does not take a bank payment. Only your organisation's billing records are shown. A statement reflects recorded entries at export time, including later backdated corrections.",
   ),
   "/sales-crm": guide(
     "Revenue command",
@@ -92,10 +104,10 @@ export default {
     "Finance workspace",
     "Maintain invoices, collections, credits and payment records.",
     [
-      "Find the correct client and invoice.",
+      "For a prepared report, use Ready for billing and review its snapshotted service charges.",
       "Review amount, due date, balance and current status.",
       "Record only confirmed payments or authorised credits with the required reference.",
     ],
-    "Recording a payment here does not move money through a bank. Reconcile real receipt evidence and never double-record a payment.",
+    "Recording a payment does not move money through a bank. Reconcile real receipt evidence and never double-record it. Only actual full payment of the report-linked invoice unlocks release; credits and partial payment do not. Zero-value scopes require commercial review.",
   ),
 } satisfies GuideCatalogue;

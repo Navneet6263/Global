@@ -1,6 +1,7 @@
 import type { CaseDraft } from "@/features/cases/new-case/model";
 import { toIndianMobileE164 } from "@/lib/indian-mobile";
 import { apiDownload, apiRequest, saveBlob } from "./client";
+import type { CaseServiceScope } from "./case-services";
 
 export type ClientOption = {
   publicId: string;
@@ -22,6 +23,8 @@ export type CaseServicePackage = {
   code: string;
   name: string;
   checks: string[];
+  serviceFamily?: string;
+  requiredDocuments?: string[];
   price?: string | number | null;
   tatHours: number;
 };
@@ -46,6 +49,7 @@ export interface CaseListItem {
     employeeCode?: string | null;
   };
   client: { publicId: string; code: string; displayName: string };
+  services?: CaseServiceScope[];
   servicePackage?: {
     publicId: string;
     code: string;
@@ -114,6 +118,9 @@ export interface CaseDetail extends CaseListItem {
     status: string;
     currentVersion: number;
     expiresAt?: string | null;
+    version: number;
+    reviewNote?: string | null;
+    reviewedAt?: string | null;
     versions: Array<{
       version: number;
       originalName: string;
@@ -345,8 +352,9 @@ export function updateClient(
 
 const priorityMap = { Standard: "NORMAL", Priority: "HIGH", Critical: "URGENT" } as const;
 
-export function listCaseServicePackages() {
-  return apiRequest<{ items: CaseServicePackage[] }>("/cases/catalog");
+export function listCaseServicePackages(clientId?: string) {
+  const query = clientId ? `?${new URLSearchParams({ clientId })}` : "";
+  return apiRequest<{ items: CaseServicePackage[] }>(`/cases/catalog${query}`);
 }
 
 export function createCase(draft: CaseDraft, idempotencyKey?: string) {
@@ -365,6 +373,19 @@ export function createCase(draft: CaseDraft, idempotencyKey?: string) {
     body: JSON.stringify({
       clientId: draft.clientId,
       servicePackageId: draft.servicePackageId,
+      services: draft.services?.length
+        ? draft.services.map((service) => ({
+            ...service,
+            details: Object.fromEntries(
+              Object.entries(service.details ?? {})
+                .filter(([, value]) => value.trim())
+                .map(([key, value]) => [
+                  key,
+                  key === "gstin" ? value.trim().toUpperCase() : value.trim(),
+                ]),
+            ),
+          }))
+        : undefined,
       fullName: draft.candidate,
       email: draft.email || undefined,
       phone: toIndianMobileE164(draft.phone),

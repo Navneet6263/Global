@@ -65,9 +65,22 @@ void test("operations notification fallback cannot cross branch or client scope"
 void test("all completed checks promote a resolved clarification case to QA atomically", async () => {
   const writes: string[] = [];
   let recipientWhere: unknown;
+  let notifications: Array<{ userId: bigint; href: string }> = [];
   const tx = {
-    caseCheck: { count: () => Promise.resolve(0) },
+    caseCheck: {
+      count: () => Promise.resolve(0),
+      findMany: () => Promise.resolve([]),
+    },
+    caseService: { findMany: () => Promise.resolve([]) },
+    clarification: { count: () => Promise.resolve(0) },
+    fieldVisit: { count: () => Promise.resolve(0) },
     verificationCase: {
+      findUnique: () =>
+        Promise.resolve({
+          servicePackage: { requiredDocumentsJson: "[]" },
+          documents: [],
+        }),
+      update: () => Promise.resolve({}),
       updateMany: () => {
         writes.push("case");
         return Promise.resolve({ count: 1 });
@@ -88,11 +101,17 @@ void test("all completed checks promote a resolved clarification case to QA atom
     user: {
       findMany: (input: { where: unknown }) => {
         recipientWhere = input.where;
-        return Promise.resolve([{ id: 30n }]);
+        return Promise.resolve([
+          { id: 30n, userRoles: [{ role: { code: "QA_REVIEWER" } }] },
+          { id: 31n, userRoles: [{ role: { code: "OPS_MANAGER" } }] },
+        ]);
       },
     },
     notification: {
-      createMany: () => {
+      createMany: (input: {
+        data: Array<{ userId: bigint; href: string }>;
+      }) => {
+        notifications = input.data;
         writes.push("notification");
         return Promise.resolve({ count: 1 });
       },
@@ -109,6 +128,13 @@ void test("all completed checks promote a resolved clarification case to QA atom
     reason: "All clarifications resolved",
   });
   assert.equal(promoted, true);
+  assert.deepEqual(
+    notifications.map(({ userId, href }) => ({ userId, href })),
+    [
+      { userId: 30n, href: "/qa-review" },
+      { userId: 31n, href: "/operations/cases" },
+    ],
+  );
   assert.deepEqual(writes, ["case", "history", "outbox", "notification"]);
   assert.deepEqual((recipientWhere as { OR: unknown[] }).OR, [
     { branchId: 5n },

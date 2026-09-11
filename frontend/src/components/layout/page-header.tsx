@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface PageHeaderProps {
@@ -10,18 +10,32 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ title, description, meta, actions, className }: PageHeaderProps) {
+  const descriptionId = useId();
   return (
-    <header className={cn("flex flex-wrap items-start justify-between gap-4", className)}>
-      <div className="min-w-0 space-y-1.5">
-        <h1 className="text-xl font-semibold tracking-[-0.01em] text-foreground sm:text-2xl">
+    <header
+      data-workspace-heading
+      className={cn(
+        "flex min-w-0 flex-wrap items-center justify-between gap-x-4 gap-y-2",
+        className,
+      )}
+    >
+      <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
+        <h1
+          aria-describedby={description ? descriptionId : undefined}
+          className="break-words text-lg font-semibold leading-7 tracking-[-0.02em] text-foreground sm:text-xl"
+        >
           {title}
         </h1>
         {description ? (
-          <p className="max-w-2xl text-sm text-muted-foreground">{description}</p>
+          <p id={descriptionId} className="sr-only">
+            {description}
+          </p>
         ) : null}
-        {meta ? <div className="pt-0.5 text-xs text-muted-foreground/85">{meta}</div> : null}
+        {meta ? (
+          <div className="border-l border-border pl-3 text-xs text-muted-foreground">{meta}</div>
+        ) : null}
       </div>
-      {actions ? <div className="flex flex-wrap items-center gap-2">{actions}</div> : null}
+      {actions ? <div className="flex min-w-0 flex-wrap items-center gap-2">{actions}</div> : null}
     </header>
   );
 }

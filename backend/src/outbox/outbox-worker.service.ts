@@ -98,9 +98,13 @@ export class OutboxWorkerService
         const caseId = this.requiredString(payload, "caseId");
         const reportId =
           this.optionalString(payload, "reportId") ?? event.aggregateId;
-        const actorUserId = this.optionalString(payload, "actorUserId");
-        const actor = await this.reportActor(event.tenantId, actorUserId);
-        await this.reports.generateRequested(actor, caseId, reportId);
+        await this.reports.generateRequested(event.tenantId, caseId, reportId);
+      } else if (event.topic === "notification.requested") {
+        const secret = this.requiredString(payload, "secret");
+        await this.deliverWebhook(
+          this.secretBox.open<object>(secret),
+          `sapling-notification-${event.id.toString()}`,
+        );
       } else if (event.topic === "consent.otp.requested") {
         const secret = this.requiredString(payload, "secret");
         const delivery = this.secretBox.open<ConsentDelivery>(secret);
@@ -125,6 +129,7 @@ export class OutboxWorkerService
         throw new Error(`Unsupported outbox topic: ${event.topic}`);
       }
       const sensitive = [
+        "notification.requested",
         "consent.otp.requested",
         "dashboard.executive.delivery",
         "candidate.access.issued",
@@ -161,6 +166,7 @@ export class OutboxWorkerService
           new Date(Date.now() + delayMs),
           failed &&
             [
+              "notification.requested",
               "consent.otp.requested",
               "dashboard.executive.delivery",
               "candidate.access.issued",
@@ -374,30 +380,6 @@ export class OutboxWorkerService
       roles,
       permissions,
     };
-  }
-
-  private async reportActor(tenantId: bigint, userPublicId?: string) {
-    const requested = userPublicId
-      ? await this.actor(userPublicId, tenantId)
-      : null;
-    return requested ?? this.fallbackReportActor(tenantId);
-  }
-
-  private async fallbackReportActor(tenantId: bigint): Promise<Actor> {
-    const user = await this.prisma.user.findFirst({
-      where: {
-        tenantId,
-        status: "ACTIVE",
-        userRoles: { some: { role: { code: "PLATFORM_ADMIN" } } },
-      },
-      select: { publicId: true },
-      orderBy: { id: "asc" },
-    });
-    if (!user)
-      throw new Error("No active report-generation actor is available");
-    const actor = await this.actor(user.publicId, tenantId);
-    if (!actor) throw new Error("Report-generation actor became unavailable");
-    return actor;
   }
 
   private requiredString(payload: Record<string, unknown>, key: string) {

@@ -264,6 +264,8 @@ export type TenantWhereInput = {
   creditNotes?: Prisma.CreditNoteListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
+  privacyRecords?: Prisma.PrivacyRecordListRelationFilter
+  vendorSharingRecords?: Prisma.VendorSharingRecordListRelationFilter
 }
 
 export type TenantOrderByWithRelationInput = {
@@ -299,6 +301,8 @@ export type TenantOrderByWithRelationInput = {
   creditNotes?: Prisma.CreditNoteOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   candidateAccess?: Prisma.CandidatePortalAccessOrderByRelationAggregateInput
+  privacyRecords?: Prisma.PrivacyRecordOrderByRelationAggregateInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordOrderByRelationAggregateInput
 }
 
 export type TenantWhereUniqueInput = Prisma.AtLeast<{
@@ -337,6 +341,8 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   creditNotes?: Prisma.CreditNoteListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
+  privacyRecords?: Prisma.PrivacyRecordListRelationFilter
+  vendorSharingRecords?: Prisma.VendorSharingRecordListRelationFilter
 }, "id" | "publicId" | "code">
 
 export type TenantOrderByWithAggregationInput = {
@@ -402,6 +408,8 @@ export type TenantCreateInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateInput = {
@@ -437,6 +445,8 @@ export type TenantUncheckedCreateInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUpdateInput = {
@@ -472,6 +482,8 @@ export type TenantUpdateInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateInput = {
@@ -507,6 +519,8 @@ export type TenantUncheckedUpdateInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateManyInput = {
@@ -629,6 +643,34 @@ export type TenantUpdateOneRequiredWithoutUsersNestedInput = {
   upsert?: Prisma.TenantUpsertWithoutUsersInput
   connect?: Prisma.TenantWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutUsersInput, Prisma.TenantUpdateWithoutUsersInput>, Prisma.TenantUncheckedUpdateWithoutUsersInput>
+}
+
+export type TenantCreateNestedOneWithoutVendorSharingRecordsInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVendorSharingRecordsInput, Prisma.TenantUncheckedCreateWithoutVendorSharingRecordsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVendorSharingRecordsInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutVendorSharingRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVendorSharingRecordsInput, Prisma.TenantUncheckedCreateWithoutVendorSharingRecordsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVendorSharingRecordsInput
+  upsert?: Prisma.TenantUpsertWithoutVendorSharingRecordsInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutVendorSharingRecordsInput, Prisma.TenantUpdateWithoutVendorSharingRecordsInput>, Prisma.TenantUncheckedUpdateWithoutVendorSharingRecordsInput>
+}
+
+export type TenantCreateNestedOneWithoutPrivacyRecordsInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutPrivacyRecordsInput, Prisma.TenantUncheckedCreateWithoutPrivacyRecordsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutPrivacyRecordsInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutPrivacyRecordsNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutPrivacyRecordsInput, Prisma.TenantUncheckedCreateWithoutPrivacyRecordsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutPrivacyRecordsInput
+  upsert?: Prisma.TenantUpsertWithoutPrivacyRecordsInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutPrivacyRecordsInput, Prisma.TenantUpdateWithoutPrivacyRecordsInput>, Prisma.TenantUncheckedUpdateWithoutPrivacyRecordsInput>
 }
 
 export type TenantCreateNestedOneWithoutRolesInput = {
@@ -971,6 +1013,8 @@ export type TenantCreateWithoutBranchesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutBranchesInput = {
@@ -1005,6 +1049,8 @@ export type TenantUncheckedCreateWithoutBranchesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutBranchesInput = {
@@ -1055,6 +1101,8 @@ export type TenantUpdateWithoutBranchesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutBranchesInput = {
@@ -1089,6 +1137,8 @@ export type TenantUncheckedUpdateWithoutBranchesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutUsersInput = {
@@ -1123,6 +1173,8 @@ export type TenantCreateWithoutUsersInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutUsersInput = {
@@ -1157,6 +1209,8 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutUsersInput = {
@@ -1207,6 +1261,8 @@ export type TenantUpdateWithoutUsersInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutUsersInput = {
@@ -1241,6 +1297,328 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutVendorSharingRecordsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutVendorSharingRecordsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectUncheckedCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutVendorSharingRecordsInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVendorSharingRecordsInput, Prisma.TenantUncheckedCreateWithoutVendorSharingRecordsInput>
+}
+
+export type TenantUpsertWithoutVendorSharingRecordsInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutVendorSharingRecordsInput, Prisma.TenantUncheckedUpdateWithoutVendorSharingRecordsInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVendorSharingRecordsInput, Prisma.TenantUncheckedCreateWithoutVendorSharingRecordsInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutVendorSharingRecordsInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutVendorSharingRecordsInput, Prisma.TenantUncheckedUpdateWithoutVendorSharingRecordsInput>
+}
+
+export type TenantUpdateWithoutVendorSharingRecordsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutVendorSharingRecordsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUncheckedUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutPrivacyRecordsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutPrivacyRecordsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectUncheckedCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutPrivacyRecordsInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutPrivacyRecordsInput, Prisma.TenantUncheckedCreateWithoutPrivacyRecordsInput>
+}
+
+export type TenantUpsertWithoutPrivacyRecordsInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutPrivacyRecordsInput, Prisma.TenantUncheckedUpdateWithoutPrivacyRecordsInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutPrivacyRecordsInput, Prisma.TenantUncheckedCreateWithoutPrivacyRecordsInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutPrivacyRecordsInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutPrivacyRecordsInput, Prisma.TenantUncheckedUpdateWithoutPrivacyRecordsInput>
+}
+
+export type TenantUpdateWithoutPrivacyRecordsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutPrivacyRecordsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUncheckedUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutRolesInput = {
@@ -1275,6 +1653,8 @@ export type TenantCreateWithoutRolesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutRolesInput = {
@@ -1309,6 +1689,8 @@ export type TenantUncheckedCreateWithoutRolesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutRolesInput = {
@@ -1359,6 +1741,8 @@ export type TenantUpdateWithoutRolesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutRolesInput = {
@@ -1393,6 +1777,8 @@ export type TenantUncheckedUpdateWithoutRolesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutClientsInput = {
@@ -1427,6 +1813,8 @@ export type TenantCreateWithoutClientsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutClientsInput = {
@@ -1461,6 +1849,8 @@ export type TenantUncheckedCreateWithoutClientsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutClientsInput = {
@@ -1511,6 +1901,8 @@ export type TenantUpdateWithoutClientsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutClientsInput = {
@@ -1545,6 +1937,8 @@ export type TenantUncheckedUpdateWithoutClientsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutServicePackagesInput = {
@@ -1579,6 +1973,8 @@ export type TenantCreateWithoutServicePackagesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutServicePackagesInput = {
@@ -1613,6 +2009,8 @@ export type TenantUncheckedCreateWithoutServicePackagesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutServicePackagesInput = {
@@ -1663,6 +2061,8 @@ export type TenantUpdateWithoutServicePackagesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutServicePackagesInput = {
@@ -1697,6 +2097,8 @@ export type TenantUncheckedUpdateWithoutServicePackagesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutSubjectsInput = {
@@ -1731,6 +2133,8 @@ export type TenantCreateWithoutSubjectsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutSubjectsInput = {
@@ -1765,6 +2169,8 @@ export type TenantUncheckedCreateWithoutSubjectsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutSubjectsInput = {
@@ -1815,6 +2221,8 @@ export type TenantUpdateWithoutSubjectsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutSubjectsInput = {
@@ -1849,6 +2257,8 @@ export type TenantUncheckedUpdateWithoutSubjectsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutCasesInput = {
@@ -1883,6 +2293,8 @@ export type TenantCreateWithoutCasesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutCasesInput = {
@@ -1917,6 +2329,8 @@ export type TenantUncheckedCreateWithoutCasesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutCasesInput = {
@@ -1967,6 +2381,8 @@ export type TenantUpdateWithoutCasesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutCasesInput = {
@@ -2001,6 +2417,8 @@ export type TenantUncheckedUpdateWithoutCasesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutChecksInput = {
@@ -2035,6 +2453,8 @@ export type TenantCreateWithoutChecksInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutChecksInput = {
@@ -2069,6 +2489,8 @@ export type TenantUncheckedCreateWithoutChecksInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutChecksInput = {
@@ -2119,6 +2541,8 @@ export type TenantUpdateWithoutChecksInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutChecksInput = {
@@ -2153,6 +2577,8 @@ export type TenantUncheckedUpdateWithoutChecksInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutDocumentsInput = {
@@ -2187,6 +2613,8 @@ export type TenantCreateWithoutDocumentsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutDocumentsInput = {
@@ -2221,6 +2649,8 @@ export type TenantUncheckedCreateWithoutDocumentsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutDocumentsInput = {
@@ -2271,6 +2701,8 @@ export type TenantUpdateWithoutDocumentsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutDocumentsInput = {
@@ -2305,6 +2737,8 @@ export type TenantUncheckedUpdateWithoutDocumentsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutTasksInput = {
@@ -2339,6 +2773,8 @@ export type TenantCreateWithoutTasksInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutTasksInput = {
@@ -2373,6 +2809,8 @@ export type TenantUncheckedCreateWithoutTasksInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutTasksInput = {
@@ -2423,6 +2861,8 @@ export type TenantUpdateWithoutTasksInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutTasksInput = {
@@ -2457,6 +2897,8 @@ export type TenantUncheckedUpdateWithoutTasksInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutClarificationsInput = {
@@ -2491,6 +2933,8 @@ export type TenantCreateWithoutClarificationsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutClarificationsInput = {
@@ -2525,6 +2969,8 @@ export type TenantUncheckedCreateWithoutClarificationsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutClarificationsInput = {
@@ -2575,6 +3021,8 @@ export type TenantUpdateWithoutClarificationsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutClarificationsInput = {
@@ -2609,6 +3057,8 @@ export type TenantUncheckedUpdateWithoutClarificationsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutReportsInput = {
@@ -2643,6 +3093,8 @@ export type TenantCreateWithoutReportsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutReportsInput = {
@@ -2677,6 +3129,8 @@ export type TenantUncheckedCreateWithoutReportsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutReportsInput = {
@@ -2727,6 +3181,8 @@ export type TenantUpdateWithoutReportsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutReportsInput = {
@@ -2761,6 +3217,8 @@ export type TenantUncheckedUpdateWithoutReportsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutFieldVisitsInput = {
@@ -2795,6 +3253,8 @@ export type TenantCreateWithoutFieldVisitsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutFieldVisitsInput = {
@@ -2829,6 +3289,8 @@ export type TenantUncheckedCreateWithoutFieldVisitsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutFieldVisitsInput = {
@@ -2879,6 +3341,8 @@ export type TenantUpdateWithoutFieldVisitsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutFieldVisitsInput = {
@@ -2913,6 +3377,8 @@ export type TenantUncheckedUpdateWithoutFieldVisitsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutAuditEventsInput = {
@@ -2947,6 +3413,8 @@ export type TenantCreateWithoutAuditEventsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutAuditEventsInput = {
@@ -2981,6 +3449,8 @@ export type TenantUncheckedCreateWithoutAuditEventsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutAuditEventsInput = {
@@ -3031,6 +3501,8 @@ export type TenantUpdateWithoutAuditEventsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutAuditEventsInput = {
@@ -3065,6 +3537,8 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutOutboxEventsInput = {
@@ -3099,6 +3573,8 @@ export type TenantCreateWithoutOutboxEventsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutOutboxEventsInput = {
@@ -3133,6 +3609,8 @@ export type TenantUncheckedCreateWithoutOutboxEventsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutOutboxEventsInput = {
@@ -3183,6 +3661,8 @@ export type TenantUpdateWithoutOutboxEventsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutOutboxEventsInput = {
@@ -3217,6 +3697,8 @@ export type TenantUncheckedUpdateWithoutOutboxEventsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutIdempotencyKeysInput = {
@@ -3251,6 +3733,8 @@ export type TenantCreateWithoutIdempotencyKeysInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutIdempotencyKeysInput = {
@@ -3285,6 +3769,8 @@ export type TenantUncheckedCreateWithoutIdempotencyKeysInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutIdempotencyKeysInput = {
@@ -3335,6 +3821,8 @@ export type TenantUpdateWithoutIdempotencyKeysInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutIdempotencyKeysInput = {
@@ -3369,6 +3857,8 @@ export type TenantUncheckedUpdateWithoutIdempotencyKeysInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutFieldPolicyInput = {
@@ -3403,6 +3893,8 @@ export type TenantCreateWithoutFieldPolicyInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutFieldPolicyInput = {
@@ -3437,6 +3929,8 @@ export type TenantUncheckedCreateWithoutFieldPolicyInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutFieldPolicyInput = {
@@ -3487,6 +3981,8 @@ export type TenantUpdateWithoutFieldPolicyInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutFieldPolicyInput = {
@@ -3521,6 +4017,8 @@ export type TenantUncheckedUpdateWithoutFieldPolicyInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutCrmSettingsInput = {
@@ -3555,6 +4053,8 @@ export type TenantCreateWithoutCrmSettingsInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutCrmSettingsInput = {
@@ -3589,6 +4089,8 @@ export type TenantUncheckedCreateWithoutCrmSettingsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutCrmSettingsInput = {
@@ -3639,6 +4141,8 @@ export type TenantUpdateWithoutCrmSettingsInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutCrmSettingsInput = {
@@ -3673,6 +4177,8 @@ export type TenantUncheckedUpdateWithoutCrmSettingsInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutOpportunitiesInput = {
@@ -3707,6 +4213,8 @@ export type TenantCreateWithoutOpportunitiesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutOpportunitiesInput = {
@@ -3741,6 +4249,8 @@ export type TenantUncheckedCreateWithoutOpportunitiesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutOpportunitiesInput = {
@@ -3791,6 +4301,8 @@ export type TenantUpdateWithoutOpportunitiesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutOpportunitiesInput = {
@@ -3825,6 +4337,8 @@ export type TenantUncheckedUpdateWithoutOpportunitiesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutSalesActivitiesInput = {
@@ -3859,6 +4373,8 @@ export type TenantCreateWithoutSalesActivitiesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutSalesActivitiesInput = {
@@ -3893,6 +4409,8 @@ export type TenantUncheckedCreateWithoutSalesActivitiesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutSalesActivitiesInput = {
@@ -3943,6 +4461,8 @@ export type TenantUpdateWithoutSalesActivitiesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutSalesActivitiesInput = {
@@ -3977,6 +4497,8 @@ export type TenantUncheckedUpdateWithoutSalesActivitiesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutInvoicesInput = {
@@ -4011,6 +4533,8 @@ export type TenantCreateWithoutInvoicesInput = {
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutInvoicesInput = {
@@ -4045,6 +4569,8 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutInvoicesInput = {
@@ -4095,6 +4621,8 @@ export type TenantUpdateWithoutInvoicesInput = {
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutInvoicesInput = {
@@ -4129,6 +4657,8 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutCreditNotesInput = {
@@ -4163,6 +4693,8 @@ export type TenantCreateWithoutCreditNotesInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutCreditNotesInput = {
@@ -4197,6 +4729,8 @@ export type TenantUncheckedCreateWithoutCreditNotesInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutCreditNotesInput = {
@@ -4247,6 +4781,8 @@ export type TenantUpdateWithoutCreditNotesInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutCreditNotesInput = {
@@ -4281,6 +4817,8 @@ export type TenantUncheckedUpdateWithoutCreditNotesInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutNotificationsInput = {
@@ -4315,6 +4853,8 @@ export type TenantCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutNotificationsInput = {
@@ -4349,6 +4889,8 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutNotificationsInput = {
@@ -4399,6 +4941,8 @@ export type TenantUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutNotificationsInput = {
@@ -4433,6 +4977,8 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantCreateWithoutCandidateAccessInput = {
@@ -4467,6 +5013,8 @@ export type TenantCreateWithoutCandidateAccessInput = {
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutCandidateAccessInput = {
@@ -4501,6 +5049,8 @@ export type TenantUncheckedCreateWithoutCandidateAccessInput = {
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutCandidateAccessInput = {
@@ -4551,6 +5101,8 @@ export type TenantUpdateWithoutCandidateAccessInput = {
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutCandidateAccessInput = {
@@ -4585,6 +5137,8 @@ export type TenantUncheckedUpdateWithoutCandidateAccessInput = {
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -4615,6 +5169,8 @@ export type TenantCountOutputType = {
   creditNotes: number
   notifications: number
   candidateAccess: number
+  privacyRecords: number
+  vendorSharingRecords: number
 }
 
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4640,6 +5196,8 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   creditNotes?: boolean | TenantCountOutputTypeCountCreditNotesArgs
   notifications?: boolean | TenantCountOutputTypeCountNotificationsArgs
   candidateAccess?: boolean | TenantCountOutputTypeCountCandidateAccessArgs
+  privacyRecords?: boolean | TenantCountOutputTypeCountPrivacyRecordsArgs
+  vendorSharingRecords?: boolean | TenantCountOutputTypeCountVendorSharingRecordsArgs
 }
 
 /**
@@ -4806,6 +5364,20 @@ export type TenantCountOutputTypeCountCandidateAccessArgs<ExtArgs extends runtim
   where?: Prisma.CandidatePortalAccessWhereInput
 }
 
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountPrivacyRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PrivacyRecordWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountVendorSharingRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorSharingRecordWhereInput
+}
+
 
 export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4840,6 +5412,8 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   creditNotes?: boolean | Prisma.Tenant$creditNotesArgs<ExtArgs>
   notifications?: boolean | Prisma.Tenant$notificationsArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.Tenant$candidateAccessArgs<ExtArgs>
+  privacyRecords?: boolean | Prisma.Tenant$privacyRecordsArgs<ExtArgs>
+  vendorSharingRecords?: boolean | Prisma.Tenant$vendorSharingRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
 
@@ -4882,6 +5456,8 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   creditNotes?: boolean | Prisma.Tenant$creditNotesArgs<ExtArgs>
   notifications?: boolean | Prisma.Tenant$notificationsArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.Tenant$candidateAccessArgs<ExtArgs>
+  privacyRecords?: boolean | Prisma.Tenant$privacyRecordsArgs<ExtArgs>
+  vendorSharingRecords?: boolean | Prisma.Tenant$vendorSharingRecordsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -4912,6 +5488,8 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     creditNotes: Prisma.$CreditNotePayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     candidateAccess: Prisma.$CandidatePortalAccessPayload<ExtArgs>[]
+    privacyRecords: Prisma.$PrivacyRecordPayload<ExtArgs>[]
+    vendorSharingRecords: Prisma.$VendorSharingRecordPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -5286,6 +5864,8 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   creditNotes<T extends Prisma.Tenant$creditNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$creditNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CreditNotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.Tenant$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   candidateAccess<T extends Prisma.Tenant$candidateAccessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$candidateAccessArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePortalAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  privacyRecords<T extends Prisma.Tenant$privacyRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$privacyRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PrivacyRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorSharingRecords<T extends Prisma.Tenant$vendorSharingRecordsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vendorSharingRecordsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorSharingRecordPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6233,6 +6813,54 @@ export type Tenant$candidateAccessArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.CandidatePortalAccessScalarFieldEnum | Prisma.CandidatePortalAccessScalarFieldEnum[]
+}
+
+/**
+ * Tenant.privacyRecords
+ */
+export type Tenant$privacyRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PrivacyRecord
+   */
+  select?: Prisma.PrivacyRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PrivacyRecord
+   */
+  omit?: Prisma.PrivacyRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PrivacyRecordInclude<ExtArgs> | null
+  where?: Prisma.PrivacyRecordWhereInput
+  orderBy?: Prisma.PrivacyRecordOrderByWithRelationInput | Prisma.PrivacyRecordOrderByWithRelationInput[]
+  cursor?: Prisma.PrivacyRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PrivacyRecordScalarFieldEnum | Prisma.PrivacyRecordScalarFieldEnum[]
+}
+
+/**
+ * Tenant.vendorSharingRecords
+ */
+export type Tenant$vendorSharingRecordsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorSharingRecord
+   */
+  select?: Prisma.VendorSharingRecordSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorSharingRecord
+   */
+  omit?: Prisma.VendorSharingRecordOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorSharingRecordInclude<ExtArgs> | null
+  where?: Prisma.VendorSharingRecordWhereInput
+  orderBy?: Prisma.VendorSharingRecordOrderByWithRelationInput | Prisma.VendorSharingRecordOrderByWithRelationInput[]
+  cursor?: Prisma.VendorSharingRecordWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorSharingRecordScalarFieldEnum | Prisma.VendorSharingRecordScalarFieldEnum[]
 }
 
 /**

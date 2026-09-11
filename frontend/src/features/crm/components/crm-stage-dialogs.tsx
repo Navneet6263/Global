@@ -24,18 +24,30 @@ import {
 } from "@/components/ui/select";
 
 interface WonDialogProps {
+  submitting?: boolean;
   opportunity?: Opportunity;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (payload: { finalValue: number; notes: string }) => void;
 }
 
-export function CrmMarkWonDialog({ opportunity, open, onOpenChange, onConfirm }: WonDialogProps) {
+export function CrmMarkWonDialog({
+  opportunity,
+  open,
+  onOpenChange,
+  onConfirm,
+  submitting,
+}: WonDialogProps) {
   const [finalValue, setFinalValue] = useState(String(opportunity?.estimatedValue ?? 0));
   const [notes, setNotes] = useState("");
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!submitting) onOpenChange(next);
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Mark {opportunity?.company} as won</DialogTitle>
@@ -65,10 +77,11 @@ export function CrmMarkWonDialog({ opportunity, open, onOpenChange, onConfirm }:
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" disabled={submitting} onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button
+            loading={submitting}
             onClick={() =>
               onConfirm({
                 finalValue: Number(finalValue) || (opportunity?.estimatedValue ?? 0),
@@ -76,7 +89,7 @@ export function CrmMarkWonDialog({ opportunity, open, onOpenChange, onConfirm }:
               })
             }
           >
-            Confirm win
+            {submitting ? "Confirming win…" : "Confirm win"}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -85,19 +98,31 @@ export function CrmMarkWonDialog({ opportunity, open, onOpenChange, onConfirm }:
 }
 
 interface LostDialogProps {
+  submitting?: boolean;
   opportunity?: Opportunity;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (payload: { lostReason: string; competitor: string; notes: string }) => void;
 }
 
-export function CrmMarkLostDialog({ opportunity, open, onOpenChange, onConfirm }: LostDialogProps) {
+export function CrmMarkLostDialog({
+  opportunity,
+  open,
+  onOpenChange,
+  onConfirm,
+  submitting,
+}: LostDialogProps) {
   const [lostReason, setLostReason] = useState(LOST_REASONS[0]!);
   const [competitor, setCompetitor] = useState("");
   const [notes, setNotes] = useState("");
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!submitting) onOpenChange(next);
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Mark {opportunity?.company} as lost</DialogTitle>
@@ -141,14 +166,15 @@ export function CrmMarkLostDialog({ opportunity, open, onOpenChange, onConfirm }
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+          <Button variant="outline" disabled={submitting} onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button
             variant="destructive"
+            loading={submitting}
             onClick={() => onConfirm({ lostReason, competitor, notes })}
           >
-            Confirm loss
+            {submitting ? "Confirming loss…" : "Confirm loss"}
           </Button>
         </DialogFooter>
       </DialogContent>

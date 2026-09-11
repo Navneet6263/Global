@@ -33,7 +33,10 @@ export function useFieldWorkflow() {
   const [drafts, setDrafts] = useState<Record<string, FieldDraft>>({});
   const [fix, setFix] = useState<GeoFix | null>(null);
   const [geoError, setGeoError] = useState<string | null>(null);
-  const [locating, setLocating] = useState(false);
+  const [captureAction, setCaptureAction] = useState<"checkIn" | "refresh" | "checkout" | null>(
+    null,
+  );
+  const locating = captureAction !== null;
   const [syncing, setSyncing] = useState(false);
   const [online, setOnline] = useState(true);
   useEffect(() => {
@@ -85,7 +88,7 @@ export function useFieldWorkflow() {
 
   const capture = useCallback(
     async (kind: "checkIn" | "refresh") => {
-      setLocating(true);
+      setCaptureAction(kind);
       setGeoError(null);
       try {
         const captured = await captureFix();
@@ -113,7 +116,7 @@ export function useFieldWorkflow() {
       } catch (error) {
         setGeoError(error instanceof Error ? error.message : "Location error");
       } finally {
-        setLocating(false);
+        setCaptureAction(null);
       }
     },
     [active, captureFix, draft, online, persist, policy.maxAccuracyMeters, queryClient],
@@ -157,8 +160,12 @@ export function useFieldWorkflow() {
           delete next[visit.id];
           return next;
         });
-        toast[result.insideFence ? "success" : "warning"](
-          result.insideFence ? "Visit completed" : "Sent for geofence exception review",
+        toast[result.status === "EXCEPTION_REVIEW" ? "warning" : "success"](
+          result.status === "COMPLETED"
+            ? "Visit completed"
+            : result.status === "EXCEPTION_REVIEW"
+              ? "Sent for geofence exception review"
+              : "Visit submitted for supervisor review",
           { description: `${result.distanceMeters} m from target` },
         );
       } else {
@@ -171,7 +178,7 @@ export function useFieldWorkflow() {
 
   const checkout = useCallback(async () => {
     if (!active) return;
-    setLocating(true);
+    setCaptureAction("checkout");
     setGeoError(null);
     try {
       const checkOut = policy.requireCheckout ? await captureFix() : draft.checkIn;
@@ -191,7 +198,7 @@ export function useFieldWorkflow() {
       setGeoError(message);
       toast.error(message);
     } finally {
-      setLocating(false);
+      setCaptureAction(null);
       setSyncing(false);
     }
   }, [
@@ -254,6 +261,7 @@ export function useFieldWorkflow() {
     fix,
     geoError,
     locating,
+    captureAction,
     syncing,
     online,
     photoCount,

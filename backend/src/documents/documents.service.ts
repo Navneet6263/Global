@@ -15,6 +15,13 @@ import { PrismaService } from "../database/prisma.service";
 import { ContentInspectionService } from "./content-inspection.service";
 import type { CreateDocumentDto } from "./dto/create-document.dto";
 import { LocalObjectStorageService } from "./local-object-storage.service";
+import {
+  assertNotDuplicateDocument,
+  documentExpiry,
+  lockMutableCaseEvidence,
+} from "./upload-document-policy";
+import { CANDIDATE_PRIVACY_NOTICE } from "./candidate-privacy-notice";
+import { assertCandidateDocumentType } from "./candidate-document-policy";
 
 export const DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES = new Set([
   "DRAFT",
@@ -53,11 +60,31 @@ export class DocumentsService {
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
     assertDocumentUploadAllowed(verificationCase.status);
+    const existing = await this.prisma.document.findFirst({
+      where: {
+        tenantId: actor.tenantId,
+        caseId: verificationCase.id,
+        type: input.type,
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        publicId: true,
+        type: true,
+        status: true,
+        currentVersion: true,
+        createdAt: true,
+      },
+    });
+    if (existing)
+      return { id: existing.publicId, ...existing, publicId: undefined };
     const document = await this.prisma.document.create({
       data: {
         tenantId: actor.tenantId,
         caseId: verificationCase.id,
         type: input.type,
+        expiresAt: input.expiresAt
+          ? documentExpiry(input.expiresAt)
+          : undefined,
       },
       select: {
         publicId: true,
@@ -79,7 +106,7 @@ export class DocumentsService {
         case: caseAccessScope(actor),
       },
       include: {
-        case: { select: { publicId: true, status: true } },
+        case: { select: { id: true, publicId: true, status: true } },
         tenant: { select: { publicId: true } },
       },
     });
@@ -93,15 +120,39 @@ export class DocumentsService {
     );
     const version = document.currentVersion + 1;
     const sha256 = createHash("sha256").update(file.buffer).digest("hex");
+    await assertNotDuplicateDocument(
+      this.prisma,
+      actor.tenantId,
+      document.case.id,
+      sha256,
+    );
     const objectKey = `${document.tenant.publicId}/${document.case.publicId}/${document.publicId}/v${version}-${randomUUID()}`;
     await this.storage.put(objectKey, file.buffer);
 
     let result;
     try {
       result = await this.prisma.$transaction(async (tx) => {
+        await lockMutableCaseEvidence(tx, document.case.id);
+        await assertNotDuplicateDocument(
+          tx,
+          actor.tenantId,
+          document.case.id,
+          sha256,
+        );
         const updated = await tx.document.updateMany({
-          where: { id: document.id, currentVersion: document.currentVersion },
-          data: { currentVersion: version, status: "AVAILABLE" },
+          where: {
+            id: document.id,
+            currentVersion: document.currentVersion,
+            version: document.version,
+          },
+          data: {
+            currentVersion: version,
+            status: "AVAILABLE",
+            version: { increment: 1 },
+            reviewedAt: null,
+            reviewedById: null,
+            reviewNote: null,
+          },
         });
         if (updated.count !== 1) {
           throw new ConflictException(
@@ -153,7 +204,11 @@ export class DocumentsService {
     return { ...result, sizeBytes: result.sizeBytes.toString() };
   }
 
-  async download(actor: Actor, publicId: string) {
+  async download(
+    actor: Actor,
+    publicId: string,
+    mode: "download" | "preview" = "download",
+  ) {
     const version = await this.prisma.documentVersion.findFirst({
       where: {
         document: {
@@ -179,12 +234,23 @@ export class DocumentsService {
     });
     if (!version)
       throw new NotFoundException("A safe document version is not available");
+    if (
+      mode === "preview" &&
+      !["application/pdf", "image/jpeg", "image/png"].includes(
+        version.contentType,
+      )
+    ) {
+      throw new BadRequestException(
+        "Preview is available for PDF, JPEG and PNG documents only",
+      );
+    }
     const contents = await this.storage.auditedStream(version.objectKey, () =>
       this.prisma.auditEvent.create({
         data: {
           tenantId: actor.tenantId,
           actorUserId: actor.userId,
-          action: "document.downloaded",
+          action:
+            mode === "preview" ? "document.previewed" : "document.downloaded",
           resourceType: "document",
           resourcePublicId: publicId,
           afterJson: JSON.stringify({
@@ -199,7 +265,7 @@ export class DocumentsService {
     return {
       file: new StreamableFile(contents, {
         type: version.contentType,
-        disposition: `attachment; filename="${this.safeName(version.originalName)}"`,
+        disposition: `${mode === "preview" ? "inline" : "attachment"}; filename="${this.safeName(version.originalName)}"`,
       }),
     };
   }
@@ -214,44 +280,74 @@ export class DocumentsService {
     },
     type: string,
     file: UploadedBinary,
+    expiry?: string,
   ) {
     assertDocumentUploadAllowed(access.caseStatus);
-    const allowed = new Set([
-      "AADHAAR",
-      "PAN",
-      "PASSPORT",
-      "DRIVING_LICENCE",
-      "ADDRESS_PROOF",
-      "EDUCATION_CERTIFICATE",
-      "EMPLOYMENT_PROOF",
-    ]);
-    if (!allowed.has(type))
-      throw new BadRequestException("Unsupported document type");
+    await assertCandidateDocumentType(this.prisma, access.caseId, type);
     await this.inspection.inspect(
       file,
       this.config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
       { documentType: type },
     );
     const sha256 = createHash("sha256").update(file.buffer).digest("hex");
+    const expiresAt = documentExpiry(expiry);
+    await assertNotDuplicateDocument(
+      this.prisma,
+      access.tenantId,
+      access.caseId,
+      sha256,
+    );
     const document = await this.prisma.document.findFirst({
       where: { tenantId: access.tenantId, caseId: access.caseId, type },
       orderBy: { createdAt: "desc" },
-      select: { id: true, publicId: true, currentVersion: true },
+      select: { id: true, publicId: true, currentVersion: true, version: true },
     });
     const target =
       document ??
-      (await this.prisma.document.create({
-        data: { tenantId: access.tenantId, caseId: access.caseId, type },
-        select: { id: true, publicId: true, currentVersion: true },
+      (await this.prisma.$transaction(async (tx) => {
+        await lockMutableCaseEvidence(tx, access.caseId);
+        return tx.document.create({
+          data: {
+            tenantId: access.tenantId,
+            caseId: access.caseId,
+            type,
+            expiresAt,
+          },
+          select: {
+            id: true,
+            publicId: true,
+            currentVersion: true,
+            version: true,
+          },
+        });
       }));
     const version = target.currentVersion + 1;
     const objectKey = `${access.tenantPublicId}/${access.casePublicId}/${target.publicId}/v${version}-${randomUUID()}`;
     await this.storage.put(objectKey, file.buffer);
     try {
       await this.prisma.$transaction(async (tx) => {
+        await lockMutableCaseEvidence(tx, access.caseId);
+        await assertNotDuplicateDocument(
+          tx,
+          access.tenantId,
+          access.caseId,
+          sha256,
+        );
         const updated = await tx.document.updateMany({
-          where: { id: target.id, currentVersion: target.currentVersion },
-          data: { currentVersion: version, status: "AVAILABLE" },
+          where: {
+            id: target.id,
+            currentVersion: target.currentVersion,
+            version: target.version,
+          },
+          data: {
+            currentVersion: version,
+            status: "AVAILABLE",
+            version: { increment: 1 },
+            reviewedAt: null,
+            reviewedById: null,
+            reviewNote: null,
+            expiresAt: expiresAt ?? null,
+          },
         });
         if (updated.count !== 1) {
           throw new ConflictException(
@@ -280,6 +376,7 @@ export class DocumentsService {
               version,
               sha256,
               sizeBytes: file.size,
+              privacyNoticeVersion: CANDIDATE_PRIVACY_NOTICE.version,
             }),
           },
         });

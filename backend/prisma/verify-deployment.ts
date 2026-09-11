@@ -28,6 +28,13 @@ const requiredMigrations = [
   "20260827170000_idempotency_security",
   "20260827180000_redact_location_audit",
   "20260827190000_invoice_statuses",
+  "20260827200000_tenant_crm_settings",
+  "20260831170000_session_device_location",
+  "20260831180000_read_path_performance",
+  "20260908180000_controlled_delivery_workflow",
+  "20260908190000_report_superseded_state",
+  "20260908203000_privacy_tracking",
+  "20260909120000_commercial_source_controls",
 ] as const;
 
 function required(name: string): string {
@@ -79,47 +86,104 @@ async function main(): Promise<void> {
     }
   }
 
-  const [userCount, platformAdminCount, persistedTables, migrations] = await Promise.all([
-    prisma.user.count({ where: { tenantId: tenant.id } }),
-    prisma.user.count({
-      where: {
-        tenantId: tenant.id,
-        status: "ACTIVE",
-        userRoles: { some: { role: { code: "PLATFORM_ADMIN" } } },
-      },
-    }),
-    Promise.all([
-      prisma.salesOpportunity.count({ where: { tenantId: tenant.id } }),
-      prisma.invoice.count({ where: { tenantId: tenant.id } }),
-      prisma.creditNote.count({ where: { tenantId: tenant.id } }),
-      prisma.notification.count({ where: { tenantId: tenant.id } }),
-      prisma.candidatePortalAccess.count({ where: { tenantId: tenant.id } }),
-      prisma.salesOpportunity.findFirst({
-        select: { contactPhone: true, onboardingHandoffAt: true },
-      }),
-      prisma.verificationCase.findFirst({ select: { servicePackageId: true } }),
-      prisma.outboxEvent.findFirst({ select: { claimedAt: true, claimToken: true } }),
-      prisma.idempotencyKey.findFirst({
-        select: {
-          responseCiphertext: true,
-          responseKeyVersion: true,
-          completedAt: true,
+  const [userCount, platformAdminCount, persistedTables, migrations] =
+    await Promise.all([
+      prisma.user.count({ where: { tenantId: tenant.id } }),
+      prisma.user.count({
+        where: {
+          tenantId: tenant.id,
+          status: "ACTIVE",
+          userRoles: { some: { role: { code: "PLATFORM_ADMIN" } } },
         },
       }),
-    ]),
-    prisma.$queryRawUnsafe<Array<{ migration_name: string }>>(
-      "SELECT [migration_name] FROM [_prisma_migrations] WHERE [finished_at] IS NOT NULL AND [rolled_back_at] IS NULL",
-    ),
-  ]);
+      Promise.all([
+        prisma.salesOpportunity.count({ where: { tenantId: tenant.id } }),
+        prisma.invoice.count({ where: { tenantId: tenant.id } }),
+        prisma.creditNote.count({ where: { tenantId: tenant.id } }),
+        prisma.notification.count({ where: { tenantId: tenant.id } }),
+        prisma.candidatePortalAccess.count({ where: { tenantId: tenant.id } }),
+        prisma.salesOpportunity.findFirst({
+          select: { contactPhone: true, onboardingHandoffAt: true },
+        }),
+        prisma.verificationCase.findFirst({
+          select: { servicePackageId: true },
+        }),
+        prisma.outboxEvent.findFirst({
+          select: { claimedAt: true, claimToken: true },
+        }),
+        prisma.idempotencyKey.findFirst({
+          select: {
+            responseCiphertext: true,
+            responseKeyVersion: true,
+            completedAt: true,
+          },
+        }),
+        prisma.caseService.findFirst({
+          where: { case: { tenantId: tenant.id } },
+          select: { serviceFamily: true, requiredDocumentsJson: true },
+        }),
+        prisma.verificationMethodRun.findFirst({
+          where: { check: { case: { tenantId: tenant.id } } },
+          select: { method: true, evidenceJson: true },
+        }),
+        prisma.managerReview.findFirst({
+          where: { case: { tenantId: tenant.id } },
+          select: { decision: true, snapshotJson: true },
+        }),
+        prisma.report.findFirst({
+          where: { tenantId: tenant.id },
+          select: {
+            workflowVersion: true,
+            downloadExpiresAt: true,
+            releasedAt: true,
+          },
+        }),
+        prisma.clientAgreement.findFirst({
+          where: { client: { tenantId: tenant.id } },
+          select: { type: true, reference: true },
+        }),
+        prisma.clientPackageRate.findFirst({
+          where: { client: { tenantId: tenant.id } },
+          select: { active: true, unitPrice: true },
+        }),
+        prisma.privacyRecord.findFirst({
+          where: { tenantId: tenant.id },
+          select: { kind: true, status: true, version: true },
+        }),
+        prisma.sourceOutreach.findFirst({ select: { publicId: true } }),
+        prisma.crmProposal.findFirst({
+          select: { publicId: true, status: true },
+        }),
+        prisma.clientAgreementFile.findFirst({
+          select: { publicId: true, status: true },
+        }),
+        prisma.vendorSharingRecord.findFirst({
+          select: { publicId: true, status: true },
+        }),
+        prisma.client.findFirst({
+          select: { creditHold: true, creditLimit: true },
+        }),
+        prisma.verificationCase.findFirst({
+          select: { retentionHoldAt: true },
+        }),
+      ]),
+      prisma.$queryRawUnsafe<Array<{ migration_name: string }>>(
+        "SELECT [migration_name] FROM [_prisma_migrations] WHERE [finished_at] IS NOT NULL AND [rolled_back_at] IS NULL",
+      ),
+    ]);
   if (userCount === 0 || platformAdminCount === 0) {
     throw new Error("An assigned platform administrator is required");
   }
-  const appliedMigrations = new Set(migrations.map((row) => row.migration_name));
+  const appliedMigrations = new Set(
+    migrations.map((row) => row.migration_name),
+  );
   const missingMigrations = requiredMigrations.filter(
     (migration) => !appliedMigrations.has(migration),
   );
   if (missingMigrations.length) {
-    throw new Error(`Missing database migrations: ${missingMigrations.join(", ")}`);
+    throw new Error(
+      `Missing database migrations: ${missingMigrations.join(", ")}`,
+    );
   }
 
   console.log(

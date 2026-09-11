@@ -29,6 +29,7 @@ export type AggregateClient = {
 export type ClientAvgAggregateOutputType = {
   id: number | null
   tenantId: number | null
+  creditLimit: runtime.Decimal | null
   slaHours: number | null
   version: number | null
 }
@@ -36,6 +37,7 @@ export type ClientAvgAggregateOutputType = {
 export type ClientSumAggregateOutputType = {
   id: bigint | null
   tenantId: bigint | null
+  creditLimit: runtime.Decimal | null
   slaHours: number | null
   version: number | null
 }
@@ -52,6 +54,11 @@ export type ClientMinAggregateOutputType = {
   contactPhone: string | null
   status: string | null
   billingTerms: string | null
+  creditLimit: runtime.Decimal | null
+  creditHold: boolean | null
+  creditControlReason: string | null
+  gstin: string | null
+  billingAddress: string | null
   slaHours: number | null
   version: number | null
   createdAt: Date | null
@@ -70,6 +77,11 @@ export type ClientMaxAggregateOutputType = {
   contactPhone: string | null
   status: string | null
   billingTerms: string | null
+  creditLimit: runtime.Decimal | null
+  creditHold: boolean | null
+  creditControlReason: string | null
+  gstin: string | null
+  billingAddress: string | null
   slaHours: number | null
   version: number | null
   createdAt: Date | null
@@ -88,6 +100,11 @@ export type ClientCountAggregateOutputType = {
   contactPhone: number
   status: number
   billingTerms: number
+  creditLimit: number
+  creditHold: number
+  creditControlReason: number
+  gstin: number
+  billingAddress: number
   slaHours: number
   version: number
   createdAt: number
@@ -99,6 +116,7 @@ export type ClientCountAggregateOutputType = {
 export type ClientAvgAggregateInputType = {
   id?: true
   tenantId?: true
+  creditLimit?: true
   slaHours?: true
   version?: true
 }
@@ -106,6 +124,7 @@ export type ClientAvgAggregateInputType = {
 export type ClientSumAggregateInputType = {
   id?: true
   tenantId?: true
+  creditLimit?: true
   slaHours?: true
   version?: true
 }
@@ -122,6 +141,11 @@ export type ClientMinAggregateInputType = {
   contactPhone?: true
   status?: true
   billingTerms?: true
+  creditLimit?: true
+  creditHold?: true
+  creditControlReason?: true
+  gstin?: true
+  billingAddress?: true
   slaHours?: true
   version?: true
   createdAt?: true
@@ -140,6 +164,11 @@ export type ClientMaxAggregateInputType = {
   contactPhone?: true
   status?: true
   billingTerms?: true
+  creditLimit?: true
+  creditHold?: true
+  creditControlReason?: true
+  gstin?: true
+  billingAddress?: true
   slaHours?: true
   version?: true
   createdAt?: true
@@ -158,6 +187,11 @@ export type ClientCountAggregateInputType = {
   contactPhone?: true
   status?: true
   billingTerms?: true
+  creditLimit?: true
+  creditHold?: true
+  creditControlReason?: true
+  gstin?: true
+  billingAddress?: true
   slaHours?: true
   version?: true
   createdAt?: true
@@ -263,6 +297,11 @@ export type ClientGroupByOutputType = {
   contactPhone: string | null
   status: string
   billingTerms: string | null
+  creditLimit: runtime.Decimal | null
+  creditHold: boolean
+  creditControlReason: string | null
+  gstin: string | null
+  billingAddress: string | null
   slaHours: number
   version: number
   createdAt: Date
@@ -304,6 +343,11 @@ export type ClientWhereInput = {
   contactPhone?: Prisma.StringNullableFilter<"Client"> | string | null
   status?: Prisma.StringFilter<"Client"> | string
   billingTerms?: Prisma.StringNullableFilter<"Client"> | string | null
+  creditLimit?: Prisma.DecimalNullableFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFilter<"Client"> | boolean
+  creditControlReason?: Prisma.StringNullableFilter<"Client"> | string | null
+  gstin?: Prisma.StringNullableFilter<"Client"> | string | null
+  billingAddress?: Prisma.StringNullableFilter<"Client"> | string | null
   slaHours?: Prisma.IntFilter<"Client"> | number
   version?: Prisma.IntFilter<"Client"> | number
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
@@ -313,6 +357,8 @@ export type ClientWhereInput = {
   users?: Prisma.UserListRelationFilter
   opportunities?: Prisma.SalesOpportunityListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  packageRates?: Prisma.ClientPackageRateListRelationFilter
+  agreements?: Prisma.ClientAgreementListRelationFilter
 }
 
 export type ClientOrderByWithRelationInput = {
@@ -327,6 +373,11 @@ export type ClientOrderByWithRelationInput = {
   contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   billingTerms?: Prisma.SortOrderInput | Prisma.SortOrder
+  creditLimit?: Prisma.SortOrderInput | Prisma.SortOrder
+  creditHold?: Prisma.SortOrder
+  creditControlReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  gstin?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -336,6 +387,8 @@ export type ClientOrderByWithRelationInput = {
   users?: Prisma.UserOrderByRelationAggregateInput
   opportunities?: Prisma.SalesOpportunityOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
+  packageRates?: Prisma.ClientPackageRateOrderByRelationAggregateInput
+  agreements?: Prisma.ClientAgreementOrderByRelationAggregateInput
 }
 
 export type ClientWhereUniqueInput = Prisma.AtLeast<{
@@ -354,6 +407,11 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   contactPhone?: Prisma.StringNullableFilter<"Client"> | string | null
   status?: Prisma.StringFilter<"Client"> | string
   billingTerms?: Prisma.StringNullableFilter<"Client"> | string | null
+  creditLimit?: Prisma.DecimalNullableFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFilter<"Client"> | boolean
+  creditControlReason?: Prisma.StringNullableFilter<"Client"> | string | null
+  gstin?: Prisma.StringNullableFilter<"Client"> | string | null
+  billingAddress?: Prisma.StringNullableFilter<"Client"> | string | null
   slaHours?: Prisma.IntFilter<"Client"> | number
   version?: Prisma.IntFilter<"Client"> | number
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
@@ -363,6 +421,8 @@ export type ClientWhereUniqueInput = Prisma.AtLeast<{
   users?: Prisma.UserListRelationFilter
   opportunities?: Prisma.SalesOpportunityListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
+  packageRates?: Prisma.ClientPackageRateListRelationFilter
+  agreements?: Prisma.ClientAgreementListRelationFilter
 }, "id" | "publicId" | "tenantId_code">
 
 export type ClientOrderByWithAggregationInput = {
@@ -377,6 +437,11 @@ export type ClientOrderByWithAggregationInput = {
   contactPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   billingTerms?: Prisma.SortOrderInput | Prisma.SortOrder
+  creditLimit?: Prisma.SortOrderInput | Prisma.SortOrder
+  creditHold?: Prisma.SortOrder
+  creditControlReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  gstin?: Prisma.SortOrderInput | Prisma.SortOrder
+  billingAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -403,6 +468,11 @@ export type ClientScalarWhereWithAggregatesInput = {
   contactPhone?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Client"> | string
   billingTerms?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
+  creditLimit?: Prisma.DecimalNullableWithAggregatesFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolWithAggregatesFilter<"Client"> | boolean
+  creditControlReason?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
+  gstin?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
+  billingAddress?: Prisma.StringNullableWithAggregatesFilter<"Client"> | string | null
   slaHours?: Prisma.IntWithAggregatesFilter<"Client"> | number
   version?: Prisma.IntWithAggregatesFilter<"Client"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Client"> | Date | string
@@ -420,6 +490,11 @@ export type ClientCreateInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -429,6 +504,8 @@ export type ClientCreateInput = {
   users?: Prisma.UserCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateInput = {
@@ -443,6 +520,11 @@ export type ClientUncheckedCreateInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -451,6 +533,8 @@ export type ClientUncheckedCreateInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientUpdateInput = {
@@ -464,6 +548,11 @@ export type ClientUpdateInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -473,6 +562,8 @@ export type ClientUpdateInput = {
   users?: Prisma.UserUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateInput = {
@@ -487,6 +578,11 @@ export type ClientUncheckedUpdateInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -495,6 +591,8 @@ export type ClientUncheckedUpdateInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateManyInput = {
@@ -508,6 +606,11 @@ export type ClientCreateManyInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -525,6 +628,11 @@ export type ClientUpdateManyMutationInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -543,6 +651,11 @@ export type ClientUncheckedUpdateManyInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -581,6 +694,11 @@ export type ClientCountOrderByAggregateInput = {
   contactPhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   billingTerms?: Prisma.SortOrder
+  creditLimit?: Prisma.SortOrder
+  creditHold?: Prisma.SortOrder
+  creditControlReason?: Prisma.SortOrder
+  gstin?: Prisma.SortOrder
+  billingAddress?: Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -590,6 +708,7 @@ export type ClientCountOrderByAggregateInput = {
 export type ClientAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
+  creditLimit?: Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
@@ -606,6 +725,11 @@ export type ClientMaxOrderByAggregateInput = {
   contactPhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   billingTerms?: Prisma.SortOrder
+  creditLimit?: Prisma.SortOrder
+  creditHold?: Prisma.SortOrder
+  creditControlReason?: Prisma.SortOrder
+  gstin?: Prisma.SortOrder
+  billingAddress?: Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -624,6 +748,11 @@ export type ClientMinOrderByAggregateInput = {
   contactPhone?: Prisma.SortOrder
   status?: Prisma.SortOrder
   billingTerms?: Prisma.SortOrder
+  creditLimit?: Prisma.SortOrder
+  creditHold?: Prisma.SortOrder
+  creditControlReason?: Prisma.SortOrder
+  gstin?: Prisma.SortOrder
+  billingAddress?: Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -633,6 +762,7 @@ export type ClientMinOrderByAggregateInput = {
 export type ClientSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
+  creditLimit?: Prisma.SortOrder
   slaHours?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
@@ -700,6 +830,14 @@ export type ClientUpdateOneWithoutUsersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutUsersInput, Prisma.ClientUpdateWithoutUsersInput>, Prisma.ClientUncheckedUpdateWithoutUsersInput>
 }
 
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type ClientCreateNestedOneWithoutCasesInput = {
   create?: Prisma.XOR<Prisma.ClientCreateWithoutCasesInput, Prisma.ClientUncheckedCreateWithoutCasesInput>
   connectOrCreate?: Prisma.ClientCreateOrConnectWithoutCasesInput
@@ -744,6 +882,34 @@ export type ClientUpdateOneRequiredWithoutInvoicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutInvoicesInput, Prisma.ClientUpdateWithoutInvoicesInput>, Prisma.ClientUncheckedUpdateWithoutInvoicesInput>
 }
 
+export type ClientCreateNestedOneWithoutPackageRatesInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutPackageRatesInput, Prisma.ClientUncheckedCreateWithoutPackageRatesInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutPackageRatesInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneRequiredWithoutPackageRatesNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutPackageRatesInput, Prisma.ClientUncheckedCreateWithoutPackageRatesInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutPackageRatesInput
+  upsert?: Prisma.ClientUpsertWithoutPackageRatesInput
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutPackageRatesInput, Prisma.ClientUpdateWithoutPackageRatesInput>, Prisma.ClientUncheckedUpdateWithoutPackageRatesInput>
+}
+
+export type ClientCreateNestedOneWithoutAgreementsInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutAgreementsInput, Prisma.ClientUncheckedCreateWithoutAgreementsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutAgreementsInput
+  connect?: Prisma.ClientWhereUniqueInput
+}
+
+export type ClientUpdateOneRequiredWithoutAgreementsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClientCreateWithoutAgreementsInput, Prisma.ClientUncheckedCreateWithoutAgreementsInput>
+  connectOrCreate?: Prisma.ClientCreateOrConnectWithoutAgreementsInput
+  upsert?: Prisma.ClientUpsertWithoutAgreementsInput
+  connect?: Prisma.ClientWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClientUpdateToOneWithWhereWithoutAgreementsInput, Prisma.ClientUpdateWithoutAgreementsInput>, Prisma.ClientUncheckedUpdateWithoutAgreementsInput>
+}
+
 export type ClientCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -755,6 +921,11 @@ export type ClientCreateWithoutTenantInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -763,6 +934,8 @@ export type ClientCreateWithoutTenantInput = {
   users?: Prisma.UserCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutTenantInput = {
@@ -776,6 +949,11 @@ export type ClientUncheckedCreateWithoutTenantInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -784,6 +962,8 @@ export type ClientUncheckedCreateWithoutTenantInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutTenantInput = {
@@ -826,6 +1006,11 @@ export type ClientScalarWhereInput = {
   contactPhone?: Prisma.StringNullableFilter<"Client"> | string | null
   status?: Prisma.StringFilter<"Client"> | string
   billingTerms?: Prisma.StringNullableFilter<"Client"> | string | null
+  creditLimit?: Prisma.DecimalNullableFilter<"Client"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFilter<"Client"> | boolean
+  creditControlReason?: Prisma.StringNullableFilter<"Client"> | string | null
+  gstin?: Prisma.StringNullableFilter<"Client"> | string | null
+  billingAddress?: Prisma.StringNullableFilter<"Client"> | string | null
   slaHours?: Prisma.IntFilter<"Client"> | number
   version?: Prisma.IntFilter<"Client"> | number
   createdAt?: Prisma.DateTimeFilter<"Client"> | Date | string
@@ -843,6 +1028,11 @@ export type ClientCreateWithoutUsersInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -851,6 +1041,8 @@ export type ClientCreateWithoutUsersInput = {
   cases?: Prisma.VerificationCaseCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutUsersInput = {
@@ -865,6 +1057,11 @@ export type ClientUncheckedCreateWithoutUsersInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -872,6 +1069,8 @@ export type ClientUncheckedCreateWithoutUsersInput = {
   cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutUsersInput = {
@@ -901,6 +1100,11 @@ export type ClientUpdateWithoutUsersInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -909,6 +1113,8 @@ export type ClientUpdateWithoutUsersInput = {
   cases?: Prisma.VerificationCaseUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutUsersInput = {
@@ -923,6 +1129,11 @@ export type ClientUncheckedUpdateWithoutUsersInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -930,6 +1141,8 @@ export type ClientUncheckedUpdateWithoutUsersInput = {
   cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutCasesInput = {
@@ -943,6 +1156,11 @@ export type ClientCreateWithoutCasesInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -951,6 +1169,8 @@ export type ClientCreateWithoutCasesInput = {
   users?: Prisma.UserCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutCasesInput = {
@@ -965,6 +1185,11 @@ export type ClientUncheckedCreateWithoutCasesInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -972,6 +1197,8 @@ export type ClientUncheckedCreateWithoutCasesInput = {
   users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutCasesInput = {
@@ -1001,6 +1228,11 @@ export type ClientUpdateWithoutCasesInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1009,6 +1241,8 @@ export type ClientUpdateWithoutCasesInput = {
   users?: Prisma.UserUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutCasesInput = {
@@ -1023,6 +1257,11 @@ export type ClientUncheckedUpdateWithoutCasesInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1030,6 +1269,8 @@ export type ClientUncheckedUpdateWithoutCasesInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutOpportunitiesInput = {
@@ -1043,6 +1284,11 @@ export type ClientCreateWithoutOpportunitiesInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -1051,6 +1297,8 @@ export type ClientCreateWithoutOpportunitiesInput = {
   cases?: Prisma.VerificationCaseCreateNestedManyWithoutClientInput
   users?: Prisma.UserCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutOpportunitiesInput = {
@@ -1065,6 +1313,11 @@ export type ClientUncheckedCreateWithoutOpportunitiesInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -1072,6 +1325,8 @@ export type ClientUncheckedCreateWithoutOpportunitiesInput = {
   cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutClientInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutOpportunitiesInput = {
@@ -1101,6 +1356,11 @@ export type ClientUpdateWithoutOpportunitiesInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1109,6 +1369,8 @@ export type ClientUpdateWithoutOpportunitiesInput = {
   cases?: Prisma.VerificationCaseUpdateManyWithoutClientNestedInput
   users?: Prisma.UserUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutOpportunitiesInput = {
@@ -1123,6 +1385,11 @@ export type ClientUncheckedUpdateWithoutOpportunitiesInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1130,6 +1397,8 @@ export type ClientUncheckedUpdateWithoutOpportunitiesInput = {
   cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutClientNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateWithoutInvoicesInput = {
@@ -1143,6 +1412,11 @@ export type ClientCreateWithoutInvoicesInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -1151,6 +1425,8 @@ export type ClientCreateWithoutInvoicesInput = {
   cases?: Prisma.VerificationCaseCreateNestedManyWithoutClientInput
   users?: Prisma.UserCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
 }
 
 export type ClientUncheckedCreateWithoutInvoicesInput = {
@@ -1165,6 +1441,11 @@ export type ClientUncheckedCreateWithoutInvoicesInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -1172,6 +1453,8 @@ export type ClientUncheckedCreateWithoutInvoicesInput = {
   cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutClientInput
   users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
 }
 
 export type ClientCreateOrConnectWithoutInvoicesInput = {
@@ -1201,6 +1484,11 @@ export type ClientUpdateWithoutInvoicesInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1209,6 +1497,8 @@ export type ClientUpdateWithoutInvoicesInput = {
   cases?: Prisma.VerificationCaseUpdateManyWithoutClientNestedInput
   users?: Prisma.UserUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutInvoicesInput = {
@@ -1223,6 +1513,11 @@ export type ClientUncheckedUpdateWithoutInvoicesInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1230,6 +1525,264 @@ export type ClientUncheckedUpdateWithoutInvoicesInput = {
   cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutClientNestedInput
   users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
+}
+
+export type ClientCreateWithoutPackageRatesInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  legalName: string
+  displayName: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  status?: string
+  billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
+  slaHours?: number
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutClientsInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutClientInput
+  users?: Prisma.UserCreateNestedManyWithoutClientInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementCreateNestedManyWithoutClientInput
+}
+
+export type ClientUncheckedCreateWithoutPackageRatesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  code: string
+  legalName: string
+  displayName: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  status?: string
+  billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
+  slaHours?: number
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutClientInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  agreements?: Prisma.ClientAgreementUncheckedCreateNestedManyWithoutClientInput
+}
+
+export type ClientCreateOrConnectWithoutPackageRatesInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutPackageRatesInput, Prisma.ClientUncheckedCreateWithoutPackageRatesInput>
+}
+
+export type ClientUpsertWithoutPackageRatesInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutPackageRatesInput, Prisma.ClientUncheckedUpdateWithoutPackageRatesInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutPackageRatesInput, Prisma.ClientUncheckedCreateWithoutPackageRatesInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutPackageRatesInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutPackageRatesInput, Prisma.ClientUncheckedUpdateWithoutPackageRatesInput>
+}
+
+export type ClientUpdateWithoutPackageRatesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slaHours?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutClientsNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutClientNestedInput
+  users?: Prisma.UserUpdateManyWithoutClientNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutPackageRatesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slaHours?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutClientNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
+}
+
+export type ClientCreateWithoutAgreementsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  legalName: string
+  displayName: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  status?: string
+  billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
+  slaHours?: number
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutClientsInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutClientInput
+  users?: Prisma.UserCreateNestedManyWithoutClientInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutClientInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateCreateNestedManyWithoutClientInput
+}
+
+export type ClientUncheckedCreateWithoutAgreementsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  code: string
+  legalName: string
+  displayName: string
+  contactName?: string | null
+  contactEmail?: string | null
+  contactPhone?: string | null
+  status?: string
+  billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
+  slaHours?: number
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutClientInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutClientInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutClientInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutClientInput
+  packageRates?: Prisma.ClientPackageRateUncheckedCreateNestedManyWithoutClientInput
+}
+
+export type ClientCreateOrConnectWithoutAgreementsInput = {
+  where: Prisma.ClientWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClientCreateWithoutAgreementsInput, Prisma.ClientUncheckedCreateWithoutAgreementsInput>
+}
+
+export type ClientUpsertWithoutAgreementsInput = {
+  update: Prisma.XOR<Prisma.ClientUpdateWithoutAgreementsInput, Prisma.ClientUncheckedUpdateWithoutAgreementsInput>
+  create: Prisma.XOR<Prisma.ClientCreateWithoutAgreementsInput, Prisma.ClientUncheckedCreateWithoutAgreementsInput>
+  where?: Prisma.ClientWhereInput
+}
+
+export type ClientUpdateToOneWithWhereWithoutAgreementsInput = {
+  where?: Prisma.ClientWhereInput
+  data: Prisma.XOR<Prisma.ClientUpdateWithoutAgreementsInput, Prisma.ClientUncheckedUpdateWithoutAgreementsInput>
+}
+
+export type ClientUpdateWithoutAgreementsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slaHours?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutClientsNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutClientNestedInput
+  users?: Prisma.UserUpdateManyWithoutClientNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+}
+
+export type ClientUncheckedUpdateWithoutAgreementsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  legalName?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  contactName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactEmail?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  slaHours?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutClientNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientCreateManyTenantInput = {
@@ -1242,6 +1795,11 @@ export type ClientCreateManyTenantInput = {
   contactPhone?: string | null
   status?: string
   billingTerms?: string | null
+  creditLimit?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: boolean
+  creditControlReason?: string | null
+  gstin?: string | null
+  billingAddress?: string | null
   slaHours?: number
   version?: number
   createdAt?: Date | string
@@ -1259,6 +1817,11 @@ export type ClientUpdateWithoutTenantInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1267,6 +1830,8 @@ export type ClientUpdateWithoutTenantInput = {
   users?: Prisma.UserUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateWithoutTenantInput = {
@@ -1280,6 +1845,11 @@ export type ClientUncheckedUpdateWithoutTenantInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1288,6 +1858,8 @@ export type ClientUncheckedUpdateWithoutTenantInput = {
   users?: Prisma.UserUncheckedUpdateManyWithoutClientNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutClientNestedInput
+  packageRates?: Prisma.ClientPackageRateUncheckedUpdateManyWithoutClientNestedInput
+  agreements?: Prisma.ClientAgreementUncheckedUpdateManyWithoutClientNestedInput
 }
 
 export type ClientUncheckedUpdateManyWithoutTenantInput = {
@@ -1301,6 +1873,11 @@ export type ClientUncheckedUpdateManyWithoutTenantInput = {
   contactPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   billingTerms?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  creditLimit?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  creditHold?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  creditControlReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gstin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  billingAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   slaHours?: Prisma.IntFieldUpdateOperationsInput | number
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1317,6 +1894,8 @@ export type ClientCountOutputType = {
   users: number
   opportunities: number
   invoices: number
+  packageRates: number
+  agreements: number
 }
 
 export type ClientCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1324,6 +1903,8 @@ export type ClientCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   users?: boolean | ClientCountOutputTypeCountUsersArgs
   opportunities?: boolean | ClientCountOutputTypeCountOpportunitiesArgs
   invoices?: boolean | ClientCountOutputTypeCountInvoicesArgs
+  packageRates?: boolean | ClientCountOutputTypeCountPackageRatesArgs
+  agreements?: boolean | ClientCountOutputTypeCountAgreementsArgs
 }
 
 /**
@@ -1364,6 +1945,20 @@ export type ClientCountOutputTypeCountInvoicesArgs<ExtArgs extends runtime.Types
   where?: Prisma.InvoiceWhereInput
 }
 
+/**
+ * ClientCountOutputType without action
+ */
+export type ClientCountOutputTypeCountPackageRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientPackageRateWhereInput
+}
+
+/**
+ * ClientCountOutputType without action
+ */
+export type ClientCountOutputTypeCountAgreementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientAgreementWhereInput
+}
+
 
 export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1377,6 +1972,11 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   contactPhone?: boolean
   status?: boolean
   billingTerms?: boolean
+  creditLimit?: boolean
+  creditHold?: boolean
+  creditControlReason?: boolean
+  gstin?: boolean
+  billingAddress?: boolean
   slaHours?: boolean
   version?: boolean
   createdAt?: boolean
@@ -1386,6 +1986,8 @@ export type ClientSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   users?: boolean | Prisma.Client$usersArgs<ExtArgs>
   opportunities?: boolean | Prisma.Client$opportunitiesArgs<ExtArgs>
   invoices?: boolean | Prisma.Client$invoicesArgs<ExtArgs>
+  packageRates?: boolean | Prisma.Client$packageRatesArgs<ExtArgs>
+  agreements?: boolean | Prisma.Client$agreementsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["client"]>
 
@@ -1403,19 +2005,26 @@ export type ClientSelectScalar = {
   contactPhone?: boolean
   status?: boolean
   billingTerms?: boolean
+  creditLimit?: boolean
+  creditHold?: boolean
+  creditControlReason?: boolean
+  gstin?: boolean
+  billingAddress?: boolean
   slaHours?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "legalName" | "displayName" | "contactName" | "contactEmail" | "contactPhone" | "status" | "billingTerms" | "slaHours" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+export type ClientOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "legalName" | "displayName" | "contactName" | "contactEmail" | "contactPhone" | "status" | "billingTerms" | "creditLimit" | "creditHold" | "creditControlReason" | "gstin" | "billingAddress" | "slaHours" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
 export type ClientInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   cases?: boolean | Prisma.Client$casesArgs<ExtArgs>
   users?: boolean | Prisma.Client$usersArgs<ExtArgs>
   opportunities?: boolean | Prisma.Client$opportunitiesArgs<ExtArgs>
   invoices?: boolean | Prisma.Client$invoicesArgs<ExtArgs>
+  packageRates?: boolean | Prisma.Client$packageRatesArgs<ExtArgs>
+  agreements?: boolean | Prisma.Client$agreementsArgs<ExtArgs>
   _count?: boolean | Prisma.ClientCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1427,6 +2036,8 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     users: Prisma.$UserPayload<ExtArgs>[]
     opportunities: Prisma.$SalesOpportunityPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
+    packageRates: Prisma.$ClientPackageRatePayload<ExtArgs>[]
+    agreements: Prisma.$ClientAgreementPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -1440,6 +2051,11 @@ export type $ClientPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     contactPhone: string | null
     status: string
     billingTerms: string | null
+    creditLimit: runtime.Decimal | null
+    creditHold: boolean
+    creditControlReason: string | null
+    gstin: string | null
+    billingAddress: string | null
     slaHours: number
     version: number
     createdAt: Date
@@ -1789,6 +2405,8 @@ export interface Prisma__ClientClient<T, Null = never, ExtArgs extends runtime.T
   users<T extends Prisma.Client$usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   opportunities<T extends Prisma.Client$opportunitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$opportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesOpportunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Client$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  packageRates<T extends Prisma.Client$packageRatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$packageRatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPackageRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  agreements<T extends Prisma.Client$agreementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Client$agreementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientAgreementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1829,6 +2447,11 @@ export interface ClientFieldRefs {
   readonly contactPhone: Prisma.FieldRef<"Client", 'String'>
   readonly status: Prisma.FieldRef<"Client", 'String'>
   readonly billingTerms: Prisma.FieldRef<"Client", 'String'>
+  readonly creditLimit: Prisma.FieldRef<"Client", 'Decimal'>
+  readonly creditHold: Prisma.FieldRef<"Client", 'Boolean'>
+  readonly creditControlReason: Prisma.FieldRef<"Client", 'String'>
+  readonly gstin: Prisma.FieldRef<"Client", 'String'>
+  readonly billingAddress: Prisma.FieldRef<"Client", 'String'>
   readonly slaHours: Prisma.FieldRef<"Client", 'Int'>
   readonly version: Prisma.FieldRef<"Client", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Client", 'DateTime'>
@@ -2273,6 +2896,54 @@ export type Client$invoicesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.InvoiceScalarFieldEnum | Prisma.InvoiceScalarFieldEnum[]
+}
+
+/**
+ * Client.packageRates
+ */
+export type Client$packageRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientPackageRate
+   */
+  select?: Prisma.ClientPackageRateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClientPackageRate
+   */
+  omit?: Prisma.ClientPackageRateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientPackageRateInclude<ExtArgs> | null
+  where?: Prisma.ClientPackageRateWhereInput
+  orderBy?: Prisma.ClientPackageRateOrderByWithRelationInput | Prisma.ClientPackageRateOrderByWithRelationInput[]
+  cursor?: Prisma.ClientPackageRateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientPackageRateScalarFieldEnum | Prisma.ClientPackageRateScalarFieldEnum[]
+}
+
+/**
+ * Client.agreements
+ */
+export type Client$agreementsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ClientAgreement
+   */
+  select?: Prisma.ClientAgreementSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ClientAgreement
+   */
+  omit?: Prisma.ClientAgreementOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientAgreementInclude<ExtArgs> | null
+  where?: Prisma.ClientAgreementWhereInput
+  orderBy?: Prisma.ClientAgreementOrderByWithRelationInput | Prisma.ClientAgreementOrderByWithRelationInput[]
+  cursor?: Prisma.ClientAgreementWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientAgreementScalarFieldEnum | Prisma.ClientAgreementScalarFieldEnum[]
 }
 
 /**

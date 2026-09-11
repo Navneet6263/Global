@@ -78,6 +78,8 @@ function SecurityPage() {
           <SessionsPanel
             overview={data}
             busy={revoke.isPending || revokeOthers.isPending}
+            revokingId={revoke.isPending ? revoke.variables : undefined}
+            revokingOthers={revokeOthers.isPending}
             onRevoke={(id) => revoke.mutate(id)}
             onRevokeOthers={() => revokeOthers.mutate()}
           />

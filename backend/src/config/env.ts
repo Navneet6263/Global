@@ -106,6 +106,12 @@ const envSchema = z
     NOTIFICATION_HEALTH_URL: optionalUrl,
     NOTIFICATION_WEBHOOK_SECRET: z.string().min(32).optional(),
     OUTBOX_WORKER_ENABLED: booleanString("true"),
+    REPORT_DOWNLOAD_TTL_DAYS: z.coerce
+      .number()
+      .int()
+      .min(1)
+      .max(3650)
+      .default(30),
     OUTBOX_POLL_INTERVAL_MS: z.coerce
       .number()
       .int()

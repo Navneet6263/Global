@@ -250,6 +250,7 @@ export type QaReviewWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"QaReview"> | Date | string
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   reviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  managerReviews?: Prisma.ManagerReviewListRelationFilter
 }
 
 export type QaReviewOrderByWithRelationInput = {
@@ -263,6 +264,7 @@ export type QaReviewOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   case?: Prisma.VerificationCaseOrderByWithRelationInput
   reviewer?: Prisma.UserOrderByWithRelationInput
+  managerReviews?: Prisma.ManagerReviewOrderByRelationAggregateInput
 }
 
 export type QaReviewWhereUniqueInput = Prisma.AtLeast<{
@@ -279,6 +281,7 @@ export type QaReviewWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"QaReview"> | Date | string
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   reviewer?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  managerReviews?: Prisma.ManagerReviewListRelationFilter
 }, "id" | "publicId">
 
 export type QaReviewOrderByWithAggregationInput = {
@@ -320,6 +323,7 @@ export type QaReviewCreateInput = {
   createdAt?: Date | string
   case: Prisma.VerificationCaseCreateNestedOneWithoutQaReviewsInput
   reviewer: Prisma.UserCreateNestedOneWithoutQaReviewsInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutQaReviewInput
 }
 
 export type QaReviewUncheckedCreateInput = {
@@ -331,6 +335,7 @@ export type QaReviewUncheckedCreateInput = {
   notes?: string | null
   checklistJson: string
   createdAt?: Date | string
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutQaReviewInput
 }
 
 export type QaReviewUpdateInput = {
@@ -342,6 +347,7 @@ export type QaReviewUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutQaReviewsNestedInput
   reviewer?: Prisma.UserUpdateOneRequiredWithoutQaReviewsNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutQaReviewNestedInput
 }
 
 export type QaReviewUncheckedUpdateInput = {
@@ -353,6 +359,7 @@ export type QaReviewUncheckedUpdateInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutQaReviewNestedInput
 }
 
 export type QaReviewCreateManyInput = {
@@ -440,6 +447,11 @@ export type QaReviewSumOrderByAggregateInput = {
   reviewerId?: Prisma.SortOrder
 }
 
+export type QaReviewScalarRelationFilter = {
+  is?: Prisma.QaReviewWhereInput
+  isNot?: Prisma.QaReviewWhereInput
+}
+
 export type QaReviewCreateNestedManyWithoutReviewerInput = {
   create?: Prisma.XOR<Prisma.QaReviewCreateWithoutReviewerInput, Prisma.QaReviewUncheckedCreateWithoutReviewerInput> | Prisma.QaReviewCreateWithoutReviewerInput[] | Prisma.QaReviewUncheckedCreateWithoutReviewerInput[]
   connectOrCreate?: Prisma.QaReviewCreateOrConnectWithoutReviewerInput | Prisma.QaReviewCreateOrConnectWithoutReviewerInput[]
@@ -524,6 +536,20 @@ export type QaReviewUncheckedUpdateManyWithoutCaseNestedInput = {
   deleteMany?: Prisma.QaReviewScalarWhereInput | Prisma.QaReviewScalarWhereInput[]
 }
 
+export type QaReviewCreateNestedOneWithoutManagerReviewsInput = {
+  create?: Prisma.XOR<Prisma.QaReviewCreateWithoutManagerReviewsInput, Prisma.QaReviewUncheckedCreateWithoutManagerReviewsInput>
+  connectOrCreate?: Prisma.QaReviewCreateOrConnectWithoutManagerReviewsInput
+  connect?: Prisma.QaReviewWhereUniqueInput
+}
+
+export type QaReviewUpdateOneRequiredWithoutManagerReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.QaReviewCreateWithoutManagerReviewsInput, Prisma.QaReviewUncheckedCreateWithoutManagerReviewsInput>
+  connectOrCreate?: Prisma.QaReviewCreateOrConnectWithoutManagerReviewsInput
+  upsert?: Prisma.QaReviewUpsertWithoutManagerReviewsInput
+  connect?: Prisma.QaReviewWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.QaReviewUpdateToOneWithWhereWithoutManagerReviewsInput, Prisma.QaReviewUpdateWithoutManagerReviewsInput>, Prisma.QaReviewUncheckedUpdateWithoutManagerReviewsInput>
+}
+
 export type QaReviewCreateWithoutReviewerInput = {
   id?: bigint | number
   publicId?: string
@@ -532,6 +558,7 @@ export type QaReviewCreateWithoutReviewerInput = {
   checklistJson: string
   createdAt?: Date | string
   case: Prisma.VerificationCaseCreateNestedOneWithoutQaReviewsInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutQaReviewInput
 }
 
 export type QaReviewUncheckedCreateWithoutReviewerInput = {
@@ -542,6 +569,7 @@ export type QaReviewUncheckedCreateWithoutReviewerInput = {
   notes?: string | null
   checklistJson: string
   createdAt?: Date | string
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutQaReviewInput
 }
 
 export type QaReviewCreateOrConnectWithoutReviewerInput = {
@@ -591,6 +619,7 @@ export type QaReviewCreateWithoutCaseInput = {
   checklistJson: string
   createdAt?: Date | string
   reviewer: Prisma.UserCreateNestedOneWithoutQaReviewsInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutQaReviewInput
 }
 
 export type QaReviewUncheckedCreateWithoutCaseInput = {
@@ -601,6 +630,7 @@ export type QaReviewUncheckedCreateWithoutCaseInput = {
   notes?: string | null
   checklistJson: string
   createdAt?: Date | string
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutQaReviewInput
 }
 
 export type QaReviewCreateOrConnectWithoutCaseInput = {
@@ -628,6 +658,66 @@ export type QaReviewUpdateManyWithWhereWithoutCaseInput = {
   data: Prisma.XOR<Prisma.QaReviewUpdateManyMutationInput, Prisma.QaReviewUncheckedUpdateManyWithoutCaseInput>
 }
 
+export type QaReviewCreateWithoutManagerReviewsInput = {
+  id?: bigint | number
+  publicId?: string
+  decision: string
+  notes?: string | null
+  checklistJson: string
+  createdAt?: Date | string
+  case: Prisma.VerificationCaseCreateNestedOneWithoutQaReviewsInput
+  reviewer: Prisma.UserCreateNestedOneWithoutQaReviewsInput
+}
+
+export type QaReviewUncheckedCreateWithoutManagerReviewsInput = {
+  id?: bigint | number
+  publicId?: string
+  caseId: bigint | number
+  reviewerId: bigint | number
+  decision: string
+  notes?: string | null
+  checklistJson: string
+  createdAt?: Date | string
+}
+
+export type QaReviewCreateOrConnectWithoutManagerReviewsInput = {
+  where: Prisma.QaReviewWhereUniqueInput
+  create: Prisma.XOR<Prisma.QaReviewCreateWithoutManagerReviewsInput, Prisma.QaReviewUncheckedCreateWithoutManagerReviewsInput>
+}
+
+export type QaReviewUpsertWithoutManagerReviewsInput = {
+  update: Prisma.XOR<Prisma.QaReviewUpdateWithoutManagerReviewsInput, Prisma.QaReviewUncheckedUpdateWithoutManagerReviewsInput>
+  create: Prisma.XOR<Prisma.QaReviewCreateWithoutManagerReviewsInput, Prisma.QaReviewUncheckedCreateWithoutManagerReviewsInput>
+  where?: Prisma.QaReviewWhereInput
+}
+
+export type QaReviewUpdateToOneWithWhereWithoutManagerReviewsInput = {
+  where?: Prisma.QaReviewWhereInput
+  data: Prisma.XOR<Prisma.QaReviewUpdateWithoutManagerReviewsInput, Prisma.QaReviewUncheckedUpdateWithoutManagerReviewsInput>
+}
+
+export type QaReviewUpdateWithoutManagerReviewsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  decision?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutQaReviewsNestedInput
+  reviewer?: Prisma.UserUpdateOneRequiredWithoutQaReviewsNestedInput
+}
+
+export type QaReviewUncheckedUpdateWithoutManagerReviewsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reviewerId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  decision?: Prisma.StringFieldUpdateOperationsInput | string
+  notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type QaReviewCreateManyReviewerInput = {
   publicId?: string
   caseId: bigint | number
@@ -645,6 +735,7 @@ export type QaReviewUpdateWithoutReviewerInput = {
   checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutQaReviewsNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutQaReviewNestedInput
 }
 
 export type QaReviewUncheckedUpdateWithoutReviewerInput = {
@@ -655,6 +746,7 @@ export type QaReviewUncheckedUpdateWithoutReviewerInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutQaReviewNestedInput
 }
 
 export type QaReviewUncheckedUpdateManyWithoutReviewerInput = {
@@ -684,6 +776,7 @@ export type QaReviewUpdateWithoutCaseInput = {
   checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reviewer?: Prisma.UserUpdateOneRequiredWithoutQaReviewsNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutQaReviewNestedInput
 }
 
 export type QaReviewUncheckedUpdateWithoutCaseInput = {
@@ -694,6 +787,7 @@ export type QaReviewUncheckedUpdateWithoutCaseInput = {
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   checklistJson?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutQaReviewNestedInput
 }
 
 export type QaReviewUncheckedUpdateManyWithoutCaseInput = {
@@ -707,6 +801,35 @@ export type QaReviewUncheckedUpdateManyWithoutCaseInput = {
 }
 
 
+/**
+ * Count Type QaReviewCountOutputType
+ */
+
+export type QaReviewCountOutputType = {
+  managerReviews: number
+}
+
+export type QaReviewCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  managerReviews?: boolean | QaReviewCountOutputTypeCountManagerReviewsArgs
+}
+
+/**
+ * QaReviewCountOutputType without action
+ */
+export type QaReviewCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the QaReviewCountOutputType
+   */
+  select?: Prisma.QaReviewCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * QaReviewCountOutputType without action
+ */
+export type QaReviewCountOutputTypeCountManagerReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ManagerReviewWhereInput
+}
+
 
 export type QaReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -719,6 +842,8 @@ export type QaReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  managerReviews?: boolean | Prisma.QaReview$managerReviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.QaReviewCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["qaReview"]>
 
 
@@ -738,6 +863,8 @@ export type QaReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type QaReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   reviewer?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  managerReviews?: boolean | Prisma.QaReview$managerReviewsArgs<ExtArgs>
+  _count?: boolean | Prisma.QaReviewCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $QaReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -745,6 +872,7 @@ export type $QaReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     case: Prisma.$VerificationCasePayload<ExtArgs>
     reviewer: Prisma.$UserPayload<ExtArgs>
+    managerReviews: Prisma.$ManagerReviewPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -1097,6 +1225,7 @@ export interface Prisma__QaReviewClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   reviewer<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  managerReviews<T extends Prisma.QaReview$managerReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.QaReview$managerReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ManagerReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1478,6 +1607,30 @@ export type QaReviewDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Limit how many QaReviews to delete.
    */
   limit?: number
+}
+
+/**
+ * QaReview.managerReviews
+ */
+export type QaReview$managerReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ManagerReview
+   */
+  select?: Prisma.ManagerReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ManagerReview
+   */
+  omit?: Prisma.ManagerReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ManagerReviewInclude<ExtArgs> | null
+  where?: Prisma.ManagerReviewWhereInput
+  orderBy?: Prisma.ManagerReviewOrderByWithRelationInput | Prisma.ManagerReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ManagerReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ManagerReviewScalarFieldEnum | Prisma.ManagerReviewScalarFieldEnum[]
 }
 
 /**

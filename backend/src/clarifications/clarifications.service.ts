@@ -10,6 +10,8 @@ import { caseAccessScope } from "../common/auth/access-scope";
 import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
 import { PrismaService } from "../database/prisma.service";
 import { QaReadinessService } from "../verification/qa-readiness.service";
+import { requestClarificationReverification } from "./clarification-reverification";
+import { lockMutableCaseEvidence } from "../documents/upload-document-policy";
 import type { CreateClarificationDto } from "./dto/create-clarification.dto";
 import {
   ClarificationTokenService,
@@ -63,7 +65,14 @@ export class ClarificationsService {
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
     if (
-      ["COMPLETED", "CLOSED", "CANCELLED"].includes(verificationCase.status)
+      [
+        "MANAGER_REVIEW",
+        "REPORT_PENDING",
+        "PAYMENT_PENDING",
+        "COMPLETED",
+        "CLOSED",
+        "CANCELLED",
+      ].includes(verificationCase.status)
     ) {
       throw new ConflictException(
         "A completed or cancelled case cannot receive a clarification",
@@ -76,7 +85,7 @@ export class ClarificationsService {
             publicId: input.checkId,
             caseId: verificationCase.id,
           },
-          select: { id: true },
+          select: { id: true, reviewCycle: true },
         })
       : null;
     if (input.checkId && !check)
@@ -85,11 +94,19 @@ export class ClarificationsService {
     const portalToken = randomBytes(32).toString("base64url");
     const tokenExpiresAt = new Date(Date.now() + 7 * 86_400_000);
     const clarification = await this.prisma.$transaction(async (tx) => {
+      await lockMutableCaseEvidence(tx, verificationCase.id, true);
+      const currentCheck = check
+        ? await tx.caseCheck.findUniqueOrThrow({
+            where: { id: check.id },
+            select: { reviewCycle: true },
+          })
+        : null;
       const created = await tx.clarification.create({
         data: {
           tenantId: actor.tenantId,
           caseId: verificationCase.id,
           checkId: check?.id,
+          checkCycle: currentCheck?.reviewCycle,
           subject: input.subject.trim(),
           dueAt: input.dueAt ? new Date(input.dueAt) : undefined,
           responseTokenHash: digestClarificationToken(portalToken),
@@ -110,15 +127,20 @@ export class ClarificationsService {
           createdAt: true,
         },
       });
-      if (verificationCase.status === "IN_PROGRESS") {
+      if (["IN_PROGRESS", "QA_REVIEW"].includes(verificationCase.status)) {
         await tx.verificationCase.update({
           where: { id: verificationCase.id },
-          data: { status: "CLARIFICATION_PENDING", version: { increment: 1 } },
+          data: {
+            status: "CLARIFICATION_PENDING",
+            qaReviewerId: null,
+            qaClaimedAt: null,
+            version: { increment: 1 },
+          },
         });
         await tx.caseStatusHistory.create({
           data: {
             caseId: verificationCase.id,
-            fromStatus: "IN_PROGRESS",
+            fromStatus: verificationCase.status,
             toStatus: "CLARIFICATION_PENDING",
             changedById: actor.userId,
             reason: input.subject,
@@ -252,6 +274,8 @@ export class ClarificationsService {
         id: true,
         status: true,
         subject: true,
+        checkId: true,
+        reverificationRequired: true,
         case: {
           select: {
             id: true,
@@ -278,6 +302,7 @@ export class ClarificationsService {
     }
 
     return this.prisma.$transaction(async (tx) => {
+      await lockMutableCaseEvidence(tx, clarification.case.id, true);
       const updated = await tx.clarification.updateMany({
         where: { id: clarification.id, status: "RESPONDED" },
         data: {
@@ -303,6 +328,13 @@ export class ClarificationsService {
         });
       }
 
+      if (clarification.reverificationRequired) {
+        await requestClarificationReverification(tx, actor, {
+          caseId: clarification.case.id,
+          checkId: clarification.checkId,
+          subject: clarification.subject,
+        });
+      }
       const remaining = await tx.clarification.count({
         where: {
           caseId: clarification.case.id,

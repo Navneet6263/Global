@@ -4,12 +4,19 @@ import { OPS_PRIORITY_META, OPS_SLA_META, OPS_STAGE_META } from "../contracts/ca
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { Button } from "@/components/ui/button";
 import { formatDuration, formatRelativeToNow } from "@/lib/formatting";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  canSelectForDispatch,
+  DISPATCH_LIMIT,
+  type DispatchSelectionProps,
+} from "../dispatch/dispatch-selection-model";
 
 interface OpsCaseTableProps {
   rows: readonly OpsCase[];
   query: OpsCaseQuery;
   onSort: (key: NonNullable<OpsCaseQuery["sortBy"]>) => void;
   onOpenCase: (caseId: string) => void;
+  selection?: DispatchSelectionProps;
 }
 
 const COLUMNS: readonly {
@@ -27,12 +34,33 @@ const COLUMNS: readonly {
   { key: null, label: "" },
 ];
 
-export function OpsCaseTable({ rows, query, onSort, onOpenCase }: OpsCaseTableProps) {
+export function OpsCaseTable({ rows, query, onSort, onOpenCase, selection }: OpsCaseTableProps) {
+  const selectable = rows.filter(canSelectForDispatch);
+  const selectedOnPage = selectable.filter((row) => selection?.selected.includes(row.id)).length;
   return (
     <div className="hidden overflow-x-auto lg:block">
       <table className="w-full min-w-[1080px] border-collapse text-sm">
         <thead>
           <tr className="border-b border-border bg-muted/40">
+            {selection ? (
+              <th scope="col" className="w-12 px-4 py-3">
+                <Checkbox
+                  aria-label="Select cases on this page"
+                  checked={
+                    selectable.length > 0 && selectedOnPage === selectable.length
+                      ? true
+                      : selectedOnPage > 0
+                        ? "indeterminate"
+                        : false
+                  }
+                  disabled={
+                    !selectable.length ||
+                    (selection.selected.length >= DISPATCH_LIMIT && selectedOnPage === 0)
+                  }
+                  onCheckedChange={selection.onTogglePage}
+                />
+              </th>
+            ) : null}
             {COLUMNS.map((column) => (
               <th
                 key={column.label}
@@ -64,6 +92,20 @@ export function OpsCaseTable({ rows, query, onSort, onOpenCase }: OpsCaseTablePr
               key={row.id}
               className="border-b border-border/70 transition-colors hover:bg-muted/35"
             >
+              {selection ? (
+                <td className="px-4 py-3">
+                  <Checkbox
+                    aria-label={`Select ${row.caseNumber}`}
+                    checked={selection.selected.includes(row.id)}
+                    disabled={
+                      !canSelectForDispatch(row) ||
+                      (!selection.selected.includes(row.id) &&
+                        selection.selected.length >= DISPATCH_LIMIT)
+                    }
+                    onCheckedChange={() => selection.onToggle(row.id)}
+                  />
+                </td>
+              ) : null}
               <td className="px-4 py-3">
                 <p className="font-medium text-foreground">{row.candidateName}</p>
                 <p className="num text-[11px] text-muted-foreground">{row.caseNumber}</p>

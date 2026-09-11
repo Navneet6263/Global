@@ -3,8 +3,18 @@ import type { CaseListItem } from "@/lib/api/cases";
 export const terminalCaseStatuses = new Set(["COMPLETED", "CLOSED", "CANCELLED"]);
 
 export function caseProgress(item: CaseListItem): number {
+  const finalStages: Record<string, number> = {
+    QA_REVIEW: 88,
+    MANAGER_REVIEW: 91,
+    REPORT_PENDING: 94,
+    PAYMENT_PENDING: 97,
+    COMPLETED: 100,
+    CLOSED: 100,
+    CANCELLED: 100,
+  };
+  if (finalStages[item.status] !== undefined) return finalStages[item.status]!;
   const completed = item.checks.filter((check) => check.status === "COMPLETED").length;
-  return item.checks.length ? Math.round((completed / item.checks.length) * 100) : 0;
+  return item.checks.length ? Math.round((completed / item.checks.length) * 85) : 0;
 }
 
 export function caseStatusLabel(value: string): string {
@@ -17,6 +27,9 @@ export function caseStatusLabel(value: string): string {
     CLARIFICATION_PENDING: "Information required",
     QA_PENDING: "Final quality review",
     QA_REVIEW: "Final quality review",
+    MANAGER_REVIEW: "Manager approval pending",
+    REPORT_PENDING: "Preparing final report",
+    PAYMENT_PENDING: "Payment and report release pending",
     APPROVED: "Approved",
     COMPLETED: "Verification completed",
     CLOSED: "Case closed",
@@ -32,10 +45,12 @@ export function statusTone(value: string): string {
   if (["CANCELLED", "REJECTED", "OVERDUE"].includes(value)) {
     return "bg-critical-soft text-critical-foreground ring-critical/20";
   }
-  if (["CLARIFICATION_PENDING", "OPEN", "DOCUMENT_PENDING"].includes(value)) {
+  if (["CLARIFICATION_PENDING", "OPEN", "DOCUMENT_PENDING", "PAYMENT_PENDING"].includes(value)) {
     return "bg-warning-soft text-warning-foreground ring-warning/20";
   }
-  if (["RESPONDED", "QA_PENDING", "QA_REVIEW"].includes(value)) {
+  if (
+    ["RESPONDED", "QA_PENDING", "QA_REVIEW", "MANAGER_REVIEW", "REVIEW_PENDING"].includes(value)
+  ) {
     return "bg-review-soft text-review-foreground ring-review/20";
   }
   return "bg-info-soft text-info-foreground ring-info/20";

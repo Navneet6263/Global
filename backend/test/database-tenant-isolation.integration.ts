@@ -83,27 +83,29 @@ void test(
               createCase(tx, tenantB.id, clientB.id, `ITB-${suffix}`),
             ]);
 
-            const pii = new SubjectPiiService(
-              new SecretBoxService(
-                new ConfigService({
-                  DATA_ENCRYPTION_KEY:
-                    "integration-data-key-0123456789abcdef0123456789",
-                  JWT_REFRESH_SECRET:
-                    "integration-refresh-key-0123456789abcdef012345",
-                }),
-              ),
-            );
+            const config = new ConfigService({
+              DATA_ENCRYPTION_KEY:
+                "integration-data-key-0123456789abcdef0123456789",
+              JWT_REFRESH_SECRET:
+                "integration-refresh-key-0123456789abcdef012345",
+              WEB_ORIGIN: "https://integration.example.invalid",
+            });
+            const secrets = new SecretBoxService(config);
+            const pii = new SubjectPiiService(secrets);
             const scopedPrisma = tx as unknown as PrismaService;
             const caseReader = new CaseReaderService(scopedPrisma, pii);
             const clientReader = new ClientsService(scopedPrisma);
             const candidatePortal = new CandidatePortalService(
               scopedPrisma,
               null as unknown as DocumentsService,
+              config,
+              secrets,
+              pii,
             );
             const clarifications = new ClarificationsService(
               scopedPrisma,
               new ClarificationTokenService(scopedPrisma),
-              new QaReadinessService(scopedPrisma),
+              new QaReadinessService(),
             );
             const tenantActor = actorFor(tenantA, undefined, "PLATFORM_ADMIN");
             const clientActor = actorFor(tenantA, clientA1, "CLIENT_ADMIN");

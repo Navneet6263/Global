@@ -75,6 +75,7 @@ export function ObjectDeletionRecovery() {
                 <Button
                   size="sm"
                   disabled={!failure.recoverable || requeue.isPending}
+                  loading={requeue.isPending && requeue.variables === failure.id}
                   onClick={() => requeue.mutate(failure.id)}
                 >
                   <RotateCcw className="size-3.5" aria-hidden /> Requeue safely

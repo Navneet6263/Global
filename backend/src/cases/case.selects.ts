@@ -2,6 +2,7 @@ import {
   checkPublicSelect,
   subjectPublicSelect,
 } from "../common/persistence/public-selects";
+import { caseServiceSummarySelect } from "./case-service.select";
 
 export const caseListSelect = {
   publicId: true,
@@ -19,6 +20,10 @@ export const caseListSelect = {
   client: { select: { publicId: true, code: true, displayName: true } },
   servicePackage: {
     select: { publicId: true, code: true, name: true, tatHours: true },
+  },
+  services: {
+    select: caseServiceSummarySelect,
+    orderBy: { createdAt: "asc" as const },
   },
   branch: { select: { publicId: true, name: true, city: true } },
   assignedOpsUser: { select: { publicId: true, displayName: true } },
@@ -121,6 +126,9 @@ export const caseDetailSelect = {
       status: true,
       currentVersion: true,
       expiresAt: true,
+      version: true,
+      reviewNote: true,
+      reviewedAt: true,
       versions: {
         select: {
           version: true,

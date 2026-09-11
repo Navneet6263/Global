@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
-import { caseAccessScope } from "../common/auth/access-scope";
+import {
+  clientBranchComparison,
+  clientDashboardScope,
+} from "./client-branch-comparison";
 import { PrismaService } from "../database/prisma.service";
 
 @Injectable()
@@ -8,9 +11,9 @@ export class DashboardClientService {
   constructor(private readonly prisma: PrismaService) {}
 
   async get(actor: Actor) {
-    const scope = caseAccessScope(actor);
+    const scope = clientDashboardScope(actor);
     const now = new Date();
-    const [stages, checks, documents, qaReviews] = await Promise.all([
+    const [stages, checks, documents, qaReviews, branches] = await Promise.all([
       this.prisma.verificationCase.groupBy({
         by: ["status"],
         where: scope,
@@ -32,6 +35,7 @@ export class DashboardClientService {
         where: { case: scope },
         _count: { _all: true },
       }),
+      clientBranchComparison(this.prisma, scope, now),
     ]);
 
     const checkHealth = aggregateChecks(checks);
@@ -80,6 +84,7 @@ export class DashboardClientService {
       },
       bottleneck: bottleneck ?? null,
       stageHealth,
+      branches,
       checkHealth,
       documentHealth,
       qaDecisions: Object.fromEntries(

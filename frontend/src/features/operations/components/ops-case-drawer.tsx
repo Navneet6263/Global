@@ -102,6 +102,7 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
                 variant="outline"
                 className="h-auto min-h-11 rounded-2xl px-4"
                 disabled={action.isPending}
+                loading={action.isPending}
                 onClick={() => action.mutate({ caseId: caseDetail.id, action: "escalate" })}
               >
                 Escalate to client

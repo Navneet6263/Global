@@ -8,6 +8,10 @@ import type { PrismaService } from "../database/prisma.service";
 import type { QaDecisionDto } from "./dto/qa-decision.dto";
 import { QA_REQUIRED_CHECKLIST } from "./qa.constants";
 import { assertLiveClaim, claimCutoff } from "./qa-claim";
+import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
+import { restartCheckMethods } from "../verification/restart-check-methods";
+import { updateCaseRisk } from "../verification/case-risk";
+import { hasRecordedCaseSource } from "../common/auth/review-independence";
 
 export async function decideQaCase(
   prisma: PrismaService,
@@ -102,8 +106,15 @@ export async function decideQaCase(
   }
 
   const nextStatus =
-    input.decision === "APPROVED" ? "COMPLETED" : "IN_PROGRESS";
+    input.decision === "APPROVED" ? "MANAGER_REVIEW" : "IN_PROGRESS";
   const review = await prisma.$transaction(async (tx) => {
+    if (await hasRecordedCaseSource(tx, actor, casePublicId)) {
+      throw new BadRequestException(
+        "A source-response author cannot independently QA the same case",
+      );
+    }
+    if (input.decision === "APPROVED")
+      await assertCaseEvidenceReady(tx, verificationCase.id);
     const created = await tx.qaReview.create({
       data: {
         caseId: verificationCase.id,
@@ -129,7 +140,7 @@ export async function decideQaCase(
       },
       data: {
         status: nextStatus,
-        completedAt: input.decision === "APPROVED" ? new Date() : null,
+        completedAt: null,
         qaReviewerId: null,
         qaClaimedAt: null,
         version: { increment: 1 },
@@ -143,7 +154,7 @@ export async function decideQaCase(
         fromStatus: "QA_REVIEW",
         toStatus: nextStatus,
         changedById: actor.userId,
-        reason: input.notes,
+        reason: input.notes.slice(0, 500),
       },
     });
     if (input.decision === "REWORK") {
@@ -151,6 +162,7 @@ export async function decideQaCase(
         rework.has(item.publicId),
       )) {
         const previousTask = check.tasks[0];
+        await restartCheckMethods(tx, check.id, actor.userId);
         await tx.caseCheck.update({
           where: { id: check.id },
           data: {
@@ -159,6 +171,7 @@ export async function decideQaCase(
             riskLevel: null,
             sourceSummary: null,
             completedAt: null,
+            reviewCycle: { increment: 1 },
             version: { increment: 1 },
           },
         });
@@ -203,24 +216,8 @@ export async function decideQaCase(
           },
         });
       }
-    } else {
-      const report = await tx.report.create({
-        data: { tenantId: actor.tenantId, caseId: verificationCase.id },
-      });
-      await tx.outboxEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          topic: "report.generate.requested",
-          aggregateType: "report",
-          aggregateId: report.publicId,
-          payloadJson: JSON.stringify({
-            reportId: report.publicId,
-            caseId: casePublicId,
-            actorUserId: actor.userPublicId,
-          }),
-        },
-      });
     }
+    await updateCaseRisk(tx, verificationCase.id);
     await tx.auditEvent.create({
       data: {
         tenantId: actor.tenantId,

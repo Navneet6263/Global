@@ -205,6 +205,7 @@ void test("repeated cancellation is idempotent and does not duplicate audit", as
 
 void test("paise arithmetic settles 0.10 plus 0.20 exactly", async () => {
   const tx = {
+    invoiceLine: { findMany: () => [] },
     invoice: { updateMany: () => ({ count: 1 }) },
     payment: {
       create: () => ({

@@ -34,6 +34,7 @@ import {
 import { listBranches } from "@/lib/backend-api/settings";
 import { listAllClients } from "@/lib/backend-api/cases";
 import { UserActivityDrawer } from "@/features/users/components/user-activity-drawer";
+import { EditUserRolesDialog } from "@/features/users/components/edit-user-roles-dialog";
 
 const STATUS_OPTIONS: { value: UserStatus | "all"; label: string }[] = [
   { value: "all", label: "All statuses" },
@@ -72,6 +73,7 @@ function UsersPage() {
   const [creating, setCreating] = useState(false);
   const [passwordReceipt, setPasswordReceipt] = useState<TemporaryPasswordReceipt | null>(null);
   const [activityUser, setActivityUser] = useState<PlatformUser | null>(null);
+  const [editingUser, setEditingUser] = useState<PlatformUser | null>(null);
 
   const { data, isPending, isError, isFetching, refetch } = useUsers(query);
   const createUser = useCreateUser();
@@ -169,7 +171,14 @@ function UsersPage() {
           <>
             <UserTable
               rows={rows}
+              busyUserIds={[
+                ...(setStatus.isPending && setStatus.variables ? [setStatus.variables.id] : []),
+                ...(resetPassword.isPending && resetPassword.variables
+                  ? [resetPassword.variables]
+                  : []),
+              ]}
               onViewActivity={setActivityUser}
+              onEditRoles={setEditingUser}
               onToggleStatus={(user) => {
                 const next = user.status === "suspended" ? "active" : "suspended";
                 setStatus.mutate(
@@ -248,6 +257,13 @@ function UsersPage() {
         }}
       />
       <UserActivityDrawer user={activityUser} onClose={() => setActivityUser(null)} />
+      {editingUser ? (
+        <EditUserRolesDialog
+          key={editingUser.id}
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+        />
+      ) : null}
     </div>
   );
 }

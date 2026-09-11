@@ -153,6 +153,7 @@ function ConsentPage() {
                 ) : null}
                 <button
                   disabled={!/^\d{6}$/.test(otp) || confirm.isPending}
+                  aria-busy={confirm.isPending}
                   className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-card)] disabled:opacity-45"
                 >
                   {confirm.isPending ? (

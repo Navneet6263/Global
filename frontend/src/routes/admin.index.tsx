@@ -4,7 +4,7 @@ import { CardGridSkeleton, ListSkeleton } from "@/components/feedback/skeletons"
 import { SummaryGrid } from "@/features/admin-dashboard/components/summary-grid";
 import { PipelineBoard } from "@/features/admin-dashboard/components/pipeline-board";
 import { ActionQueue } from "@/features/admin-dashboard/components/action-queue";
-import { PlatformHealthPanel } from "@/features/admin-dashboard/components/platform-health-panel";
+import { BusinessResults } from "@/features/admin-dashboard/components/business-results";
 import { AdminCrmSummary } from "@/features/admin-dashboard/components/admin-crm-summary";
 import { useCrmAdminSummary } from "@/features/crm/hooks/use-crm";
 import { useControlTower } from "@/features/admin-dashboard/hooks/use-control-tower";
@@ -47,14 +47,12 @@ function ControlTowerPage() {
       {data ? (
         <>
           <SummaryGrid cards={data.summary} pipeline={data.pipeline} />
+          {data.business ? <BusinessResults data={data.business} /> : null}
           <PipelineBoard stages={data.pipeline} />
-          <div className="grid gap-6 xl:grid-cols-[1.6fr_1fr]">
-            <ActionQueue
-              items={data.actions}
-              onOpenCase={(caseId) => void navigate({ to: "/admin/cases", search: { caseId } })}
-            />
-            <PlatformHealthPanel />
-          </div>
+          <ActionQueue
+            items={data.actions}
+            onOpenCase={(caseId) => void navigate({ to: "/admin/cases", search: { caseId } })}
+          />
           {crmSummary.data ? <AdminCrmSummary summary={crmSummary.data} /> : null}
         </>
       ) : null}

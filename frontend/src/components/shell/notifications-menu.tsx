@@ -69,6 +69,14 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
       await navigate({ to: WORKSPACE_PRESENTATION[workspace].home as "/admin" });
       return;
     }
+    if (workspace === "platform-admin" && item.route.startsWith("/sales-crm")) {
+      await navigate({ to: "/admin/sales" });
+      return;
+    }
+    if (workspace === "platform-admin" && item.route.startsWith("/finance")) {
+      await navigate({ to: "/admin/finance" });
+      return;
+    }
     await navigate({ to: (item.route || WORKSPACE_PRESENTATION[workspace].home) as "/admin" });
   };
 
@@ -96,6 +104,7 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
               variant="ghost"
               size="sm"
               disabled={readAll.isPending}
+              loading={readAll.isPending}
               onClick={() => readAll.mutate()}
               className="h-8 gap-1.5 rounded-full px-2.5 text-[11px]"
             >

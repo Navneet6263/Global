@@ -8,21 +8,21 @@ import { Sparkline } from "@/components/charts/sparkline";
 import { cn } from "@/lib/utils";
 
 const WINDOWS = [
-  { id: "week", label: "Week", take: 7 },
-  { id: "month", label: "Month", take: 5 },
-  { id: "year", label: "Year", take: 3 },
+  { id: "three", label: "3 months", take: 3 },
+  { id: "six", label: "6 months", take: 6 },
+  { id: "all", label: "Available history", take: Infinity },
 ] as const;
 
 export function TrendCard({ card }: { card: SummaryCardData }) {
-  const [windowId, setWindowId] = useState<(typeof WINDOWS)[number]["id"]>("week");
-  const take = WINDOWS.find((item) => item.id === windowId)?.take ?? 7;
+  const [windowId, setWindowId] = useState<(typeof WINDOWS)[number]["id"]>("six");
+  const take = WINDOWS.find((item) => item.id === windowId)?.take ?? 6;
   const data = card.series.slice(-take);
 
   return (
     <section className="flex flex-col rounded-[1.75rem] border border-white/80 bg-card/85 p-5 shadow-[var(--shadow-float)] backdrop-blur-sm">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-[1.35rem] font-semibold tracking-[-0.02em] text-foreground">
-          Throughput
+          Monthly case intake
         </h2>
         <Link
           to="/admin/analytics"

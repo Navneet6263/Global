@@ -46,8 +46,8 @@ export function OpsActionQueue({ items, onOpenCase }: OpsActionQueueProps) {
 
   return (
     <Section
-      title="Today's action queue"
-      description="Work that needs an operations decision, most urgent first."
+      title="SLA attention"
+      description="Delivery risks and ownership gaps, most urgent first."
       padded={false}
     >
       <ul className="divide-y divide-border">

@@ -179,7 +179,11 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
             <Button type="button" variant="ghost" onClick={() => props.onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={props.submitting || roles.length === 0}>
+            <Button
+              type="submit"
+              disabled={props.submitting || roles.length === 0}
+              loading={props.submitting}
+            >
               {props.submitting ? "Creating…" : "Create user ID"}
             </Button>
           </DialogFooter>

@@ -21,6 +21,12 @@ export class CrmHandoffService {
         stage: true,
         version: true,
         onboardingHandoffAt: true,
+        clientId: true,
+        companyName: true,
+        contactName: true,
+        contactEmail: true,
+        contactPhone: true,
+        client: { select: { publicId: true } },
       },
     });
     if (!opportunity) throw new NotFoundException("Opportunity not found");
@@ -29,11 +35,12 @@ export class CrmHandoffService {
         "Only a won opportunity can be handed to onboarding",
       );
     }
-    if (opportunity.onboardingHandoffAt) {
+    if (opportunity.onboardingHandoffAt && opportunity.clientId) {
       return handoffResponse(
         publicId,
         opportunity.onboardingHandoffAt,
         opportunity.version,
+        opportunity.client?.publicId,
       );
     }
     if (opportunity.version !== input.version) {
@@ -46,12 +53,45 @@ export class CrmHandoffService {
         where: {
           id: opportunity.id,
           version: input.version,
-          onboardingHandoffAt: null,
         },
         data: { onboardingHandoffAt: preparedAt, version: { increment: 1 } },
       });
       if (updated.count !== 1) {
         throw new ConflictException("Opportunity was updated concurrently");
+      }
+      let clientId = opportunity.client?.publicId;
+      if (!opportunity.clientId) {
+        const client = await tx.client.create({
+          data: {
+            tenantId: actor.tenantId,
+            code: `CRM-${publicId.replaceAll("-", "").slice(0, 24).toUpperCase()}`,
+            legalName: opportunity.companyName,
+            displayName: opportunity.companyName.slice(0, 120),
+            contactName: opportunity.contactName,
+            contactEmail: opportunity.contactEmail,
+            contactPhone: opportunity.contactPhone,
+            status: "ONBOARDING",
+          },
+          select: { id: true, publicId: true },
+        });
+        clientId = client.publicId;
+        await tx.salesOpportunity.update({
+          where: { id: opportunity.id },
+          data: { clientId: client.id },
+        });
+        await tx.auditEvent.create({
+          data: {
+            tenantId: actor.tenantId,
+            actorUserId: actor.userId,
+            action: "client.onboarding-created",
+            resourceType: "client",
+            resourcePublicId: client.publicId,
+            afterJson: JSON.stringify({
+              opportunityId: publicId,
+              status: "ONBOARDING",
+            }),
+          },
+        });
       }
       await tx.salesActivity.create({
         data: {
@@ -59,7 +99,8 @@ export class CrmHandoffService {
           opportunityId: opportunity.id,
           actorUserId: actor.userId,
           type: "ONBOARDING_HANDOFF",
-          summary: "Won opportunity handed to client onboarding",
+          summary:
+            "Client workspace linked; complete commercial settings before activation",
           occurredAt: preparedAt,
         },
       });
@@ -77,10 +118,11 @@ export class CrmHandoffService {
           afterJson: JSON.stringify({
             onboardingHandoffAt: preparedAt,
             version: input.version + 1,
+            clientId,
           }),
         },
       });
-      return handoffResponse(publicId, preparedAt, input.version + 1);
+      return handoffResponse(publicId, preparedAt, input.version + 1, clientId);
     });
   }
 }
@@ -89,6 +131,7 @@ function handoffResponse(
   opportunityId: string,
   preparedAt: Date,
   version: number,
+  clientId?: string,
 ) {
-  return { opportunityId, preparedAt, version };
+  return { opportunityId, preparedAt, version, clientId };
 }

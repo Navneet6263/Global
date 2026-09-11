@@ -58,12 +58,14 @@ export class RetentionWorkerService
         const visits = await this.prisma.fieldVisit.findMany({
           where: {
             tenantId: policy.tenantId,
+            case: { retentionHoldAt: null },
             completedAt: { lt: cutoff },
             capturedAt: { not: null },
           },
           select: {
             id: true,
             publicId: true,
+            caseId: true,
             evidence: { select: { objectKey: true } },
           },
           orderBy: { completedAt: "asc" },
@@ -72,6 +74,16 @@ export class RetentionWorkerService
         for (const visit of visits) {
           try {
             await this.prisma.$transaction(async (tx) => {
+              // Serialize with privacy holds before scheduling any irreversible deletion.
+              const unheld = await tx.verificationCase.updateMany({
+                where: {
+                  id: visit.caseId,
+                  tenantId: policy.tenantId,
+                  retentionHoldAt: null,
+                },
+                data: { version: { increment: 1 } },
+              });
+              if (!unheld.count) return;
               const claimed = await tx.fieldVisit.updateMany({
                 where: {
                   id: visit.id,

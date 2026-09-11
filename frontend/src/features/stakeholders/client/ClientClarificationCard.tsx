@@ -72,6 +72,7 @@ export function ClientClarificationCard({
             type="button"
             onClick={() => respond.mutate()}
             disabled={message.trim().length < 2 || respond.isPending}
+            aria-busy={respond.isPending}
             aria-label="Submit response"
             className="grid w-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-[var(--shadow-card)] disabled:opacity-40"
           >

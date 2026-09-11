@@ -117,6 +117,7 @@ export function MobileWorkspaceNav() {
           type="button"
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
+          aria-busy={logoutMutation.isPending}
           className="mt-3 flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
         >
           <LogOut className="h-4 w-4" /> {logoutMutation.isPending ? "Signing out…" : "Logout"}

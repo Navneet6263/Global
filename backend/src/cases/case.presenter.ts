@@ -18,7 +18,35 @@ function rowList(value: unknown): CaseRow[] {
     : [];
 }
 
-function base(row: CaseRow, subject: unknown) {
+function serviceScope(row: CaseRow, actor: Actor) {
+  const privileged = actor.roles.some((role) =>
+    ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role),
+  );
+  const fieldOnly = !privileged && actor.roles.includes("FIELD_EXECUTIVE");
+  const verifierOnly =
+    !privileged && !fieldOnly && actor.roles.includes("VERIFIER");
+  const visibleChecks = new Set(
+    verifierOnly
+      ? verifierChecks(row, actor).map((check) => check.publicId)
+      : [],
+  );
+  return rowList(row.services).map(
+    ({ requiredDocumentsJson, checks, ...service }) => ({
+      ...service,
+      checks: fieldOnly
+        ? []
+        : verifierOnly
+          ? rowList(checks).filter((check) => visibleChecks.has(check.publicId))
+          : checks,
+      requiredDocuments:
+        typeof requiredDocumentsJson === "string"
+          ? (JSON.parse(requiredDocumentsJson) as string[])
+          : [],
+    }),
+  );
+}
+
+function base(row: CaseRow, subject: unknown, actor: Actor) {
   return {
     id: row.publicId,
     caseNumber: row.caseNumber,
@@ -34,6 +62,7 @@ function base(row: CaseRow, subject: unknown) {
     subject,
     client: row.client,
     servicePackage: row.servicePackage,
+    services: serviceScope(row, actor),
     branch: row.branch,
   };
 }
@@ -62,11 +91,10 @@ function redactTask(task: CaseRow) {
   };
 }
 
-function verifierChecks(row: CaseRow, actor: Actor) {
+function verifierChecks(row: CaseRow, actor: Actor): CaseRow[] {
   return rowList(row.checks).flatMap((check) => {
     const tasks = rowList(check.tasks).filter(
-      (task) =>
-        objectRow(task.assignee).publicId === actor.userPublicId,
+      (task) => objectRow(task.assignee).publicId === actor.userPublicId,
     );
     return tasks.length ? [{ ...check, tasks: tasks.map(redactTask) }] : [];
   });
@@ -101,7 +129,7 @@ export function presentCaseListItem(
   actor: Actor,
   pii?: SubjectPiiService,
 ) {
-  const common = base(row, safeSubject(row, actor, pii));
+  const common = base(row, safeSubject(row, actor, pii), actor);
   if (
     actor.roles.some((role) => ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role))
   ) {
@@ -117,8 +145,7 @@ export function presentCaseListItem(
       ...common,
       fieldVisits: rowList(row.fieldVisits)
         .filter(
-          (visit) =>
-            objectRow(visit.assignee).publicId === actor.userPublicId,
+          (visit) => objectRow(visit.assignee).publicId === actor.userPublicId,
         )
         .map(redactVisit),
     };

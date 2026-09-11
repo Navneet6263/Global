@@ -137,6 +137,7 @@ void test("field and verifier case projections omit unrelated protected data", (
     actor(["FIELD_EXECUTIVE"], { userPublicId: "field-1" }),
   );
   assert.deepEqual(field.documents, []);
+  assert.ok("checks" in field);
   assert.deepEqual(field.checks, []);
   assert.equal(JSON.stringify(field).includes("sha256"), false);
   const verifier = presentCaseDetail(
@@ -163,7 +164,10 @@ void test("client case projection preserves safe drawer array contracts", () => 
     actor(["CLIENT_ADMIN"], { clientId: 31n }),
   );
   assert.equal(Array.isArray(result.statusHistory), true);
-  assert.deepEqual(result.documents[0]?.versions, []);
+  assert.ok(Array.isArray(result.documents));
+  const document: unknown = result.documents[0];
+  assert.ok(document && typeof document === "object" && "versions" in document);
+  assert.deepEqual(document.versions, []);
 });
 
 void test("client exception projection never exposes field location metadata", () => {

@@ -1,207 +1,152 @@
 import { Injectable } from "@nestjs/common";
-import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
+import { ReportWriter } from "../common/pdf/document-writer";
+export { wrapToWidth } from "../common/pdf/document-writer";
 import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
+import { serviceReportSections, type ReportData } from "./report-data";
+import {
+  groupedReportChecks,
+  reportTemplateConfig,
+} from "./report-template-config";
 
-interface ReportData {
-  caseNumber: string;
-  generatedAt: Date;
-  authenticityCode: string;
-  clientName: string;
-  candidateName: string;
-  completedAt: Date | null;
-  riskLevel: string | null;
-  checks: Array<{
-    type: string;
-    result: string | null;
-    riskLevel: string | null;
-    sourceSummary: string | null;
-    findings: Array<{ severity: string; title: string; description: string }>;
-  }>;
-}
+const muted = rgb(0.36, 0.4, 0.38);
 
 @Injectable()
 export class ReportPdfService {
   async render(data: ReportData): Promise<Buffer> {
     const document = await PDFDocument.create();
     const { regular, bold } = await embedUnicodeFonts(document);
-    let page = document.addPage([595, 842]);
-    let y = 790;
+    const writer = new ReportWriter(document, regular, bold);
+    writer.heading("VERIFICATION REPORT", 18);
+    writer.text(`Case: ${data.caseNumber}`);
+    writer.text(`Requesting organisation: ${data.clientName}`);
+    writer.text(`Subject: ${data.candidateName}`);
+    for (const [label, value] of data.identityDetails ?? [])
+      writer.text(`${label}: ${value}`);
+    writer.text(`Reviewed risk: ${data.riskLevel ?? "Not classified"}`);
+    writer.text(`Generated: ${data.generatedAt.toISOString()}`);
+    writer.space();
 
-    page.drawRectangle({
-      x: 0,
-      y: 790,
-      width: 595,
-      height: 52,
-      color: rgb(0.08, 0.09, 0.1),
-    });
-    page.drawText("Sapling Global", {
-      x: 38,
-      y: 813,
-      size: 19,
-      font: bold,
-      color: rgb(1, 1, 1),
-    });
-    page.drawText("VERIFICATION REPORT", {
-      x: 385,
-      y: 816,
-      size: 9,
-      font: bold,
-      color: rgb(0.7, 0.96, 0.24),
-    });
-    y = 755;
-
-    const summary: Array<[string, string]> = [
-      ["Case ID", data.caseNumber],
-      ["Client", data.clientName],
-      ["Candidate", data.candidateName],
-      ["Completed", data.completedAt?.toISOString() ?? "Pending"],
-      ["Overall risk", data.riskLevel ?? "Not classified"],
-    ];
-    summary.forEach(([label, value]) => {
-      page.drawText(this.safe(label), {
-        x: 38,
-        y,
-        size: 9,
-        font: bold,
-        color: rgb(0.38, 0.4, 0.43),
-      });
-      page.drawText(this.safe(value), {
-        x: 145,
-        y,
-        size: 10,
-        font: regular,
-        color: rgb(0.08, 0.09, 0.1),
-      });
-      y -= 22;
-    });
-
-    y -= 8;
-    page.drawText("CHECK OUTCOMES", {
-      x: 38,
-      y,
-      size: 11,
-      font: bold,
-      color: rgb(0.08, 0.09, 0.1),
-    });
-    y -= 22;
-    for (const check of data.checks) {
-      if (y < 145) ({ page, y } = this.nextPage(document, bold));
-      page.drawRectangle({
-        x: 34,
-        y: y - 10,
-        width: 527,
-        height: 26,
-        color: rgb(0.95, 0.96, 0.97),
-      });
-      page.drawText(this.safe(check.type.replaceAll("_", " ")), {
-        x: 42,
-        y,
-        size: 10,
-        font: bold,
-        color: rgb(0.08, 0.09, 0.1),
-      });
-      page.drawText(this.safe(check.result ?? "PENDING"), {
-        x: 425,
-        y,
-        size: 9,
-        font: bold,
-        color: this.resultColor(check.result),
-      });
-      y -= 28;
-      for (const line of this.wrap(
-        check.sourceSummary ?? "No source summary supplied.",
-        88,
-      )) {
-        page.drawText(this.safe(line), {
-          x: 42,
-          y,
-          size: 8.5,
-          font: regular,
-          color: rgb(0.28, 0.3, 0.32),
-        });
-        y -= 12;
+    const services = data.services?.length ? data.services : ["HIRECHECK"];
+    for (const family of services) {
+      const template = serviceReportSections[family];
+      const style = reportTemplateConfig[family];
+      writer.section(
+        template?.title ?? family,
+        style?.summary ?? "Approved service evidence",
+        style?.color ?? [0.08, 0.5, 0.38],
+      );
+      writer.text(
+        template?.focus ??
+          "Checks completed within the approved service scope.",
+      );
+      const checks = data.checks.filter(
+        (check) => check.serviceFamily === family || !check.serviceFamily,
+      );
+      writer.text(
+        `${checks.length} checks · ${checks.filter((check) => check.result === "CLEAR").length} clear · ${checks.filter((check) => check.result === "DISCREPANCY").length} discrepancy · ${checks.filter((check) => check.result === "UNABLE_TO_VERIFY").length} unable to verify`,
+        8,
+      );
+      for (const group of groupedReportChecks(family, checks)) {
+        writer.heading(group.heading.toUpperCase(), 10);
+        for (const check of group.items) this.renderCheck(writer, check);
       }
-      for (const finding of check.findings) {
-        for (const line of this.wrap(
-          `${finding.severity}: ${finding.title} — ${finding.description}`,
-          82,
-        )) {
-          if (y < 80) ({ page, y } = this.nextPage(document, bold));
-          page.drawText(this.safe(`• ${line}`), {
-            x: 48,
-            y,
-            size: 8,
-            font: regular,
-            color: rgb(0.45, 0.18, 0.12),
-          });
-          y -= 11;
-        }
-      }
-      y -= 12;
+      if (!checks.length)
+        writer.text("No check outcomes recorded in this service section.");
+      writer.space();
     }
 
-    const pages = document.getPages();
-    pages.forEach((item, index) => {
-      item.drawLine({
-        start: { x: 38, y: 48 },
-        end: { x: 557, y: 48 },
+    writer.heading("EVIDENCE REGISTER", 12);
+    for (const item of data.evidence ?? []) {
+      writer.text(`${item.type.replaceAll("_", " ")} — ${item.name}`);
+      writer.text(`SHA-256: ${item.sha256}`, 7.5);
+    }
+    if (!data.evidence?.length)
+      writer.text(
+        "No document attachments referenced in the approved snapshot.",
+      );
+    writer.space();
+    writer.heading("REVIEW AND RECOMMENDATION", 12);
+    writer.text(`QA reviewer: ${data.reviewerName ?? "Not recorded"}`);
+    writer.text(`QA reviewed at: ${data.reviewedAt ?? "Not recorded"}`);
+    writer.text(`Approving manager: ${data.managerName ?? "Not recorded"}`);
+    writer.text(`Manager approved at: ${data.approvedAt ?? "Not recorded"}`);
+    writer.text(
+      data.recommendation ??
+        "Use the recorded findings within the agreed verification scope.",
+    );
+    writer.space();
+    writer.text(
+      "Findings describe the verified scope and sources. They are not an automated hiring or character decision.",
+      8,
+    );
+    writer.text(
+      "Report release and current authenticity status must be checked through the Sapling Global portal.",
+      8,
+    );
+
+    document.getPages().forEach((page, index, pages) => {
+      page.drawLine({
+        start: { x: 38, y: 47 },
+        end: { x: 557, y: 47 },
         thickness: 0.5,
-        color: rgb(0.8, 0.82, 0.84),
+        color: rgb(0.82, 0.86, 0.83),
       });
-      item.drawText(`Authenticity: ${data.authenticityCode}`, {
+      page.drawText(`Authenticity: ${data.authenticityCode}`, {
         x: 38,
-        y: 30,
+        y: 31,
         size: 7.5,
         font: regular,
-        color: rgb(0.35, 0.37, 0.4),
+        color: muted,
       });
-      item.drawText(`Page ${index + 1} of ${pages.length}`, {
-        x: 500,
-        y: 30,
+      page.drawText(`Page ${index + 1} of ${pages.length}`, {
+        x: 488,
+        y: 31,
         size: 7.5,
         font: regular,
-        color: rgb(0.35, 0.37, 0.4),
+        color: muted,
       });
     });
     document.setTitle(`Sapling Global report ${data.caseNumber}`);
+    document.setSubject(
+      `Approved ${services.join(", ")} verification findings`,
+    );
     document.setCreationDate(data.generatedAt);
     return Buffer.from(await document.save());
   }
 
-  private nextPage(
-    document: PDFDocument,
-    bold: PDFFont,
-  ): { page: PDFPage; y: number } {
-    const page = document.addPage([595, 842]);
-    page.drawText("Sapling Global — verification report continued", {
-      x: 38,
-      y: 805,
-      size: 9,
-      font: bold,
-      color: rgb(0.25, 0.27, 0.3),
-    });
-    return { page, y: 775 };
-  }
-
-  private wrap(value: string, width: number): string[] {
-    const words = this.safe(value).split(/\s+/);
-    const lines: string[] = [];
-    for (const word of words) {
-      const current = lines.at(-1);
-      if (!current || current.length + word.length + 1 > width)
-        lines.push(word);
-      else lines[lines.length - 1] = `${current} ${word}`;
+  private renderCheck(
+    writer: ReportWriter,
+    check: ReportData["checks"][number],
+  ) {
+    writer.heading(
+      `${check.type.replaceAll("_", " ")} — ${check.result ?? "PENDING"}`,
+      10,
+    );
+    writer.text(`Check risk: ${check.riskLevel ?? "Not classified"}`, 8);
+    writer.text(check.sourceSummary ?? "No source summary supplied.");
+    for (const method of check.methods ?? []) {
+      writer.text(
+        `${method.method}: ${method.result ?? "Pending"}; source: ${method.provider ?? "Manual review"}; reference: ${method.reference ?? "Not supplied"}`,
+        8,
+      );
+      if (method.sourceContact)
+        writer.text(`Source contact: ${method.sourceContact}`, 8);
+      if (method.requestedAt)
+        writer.text(
+          `Requested: ${method.requestedAt} · Responded: ${method.respondedAt ?? "Not recorded"}`,
+          8,
+        );
+      if (method.summary)
+        writer.text(`Response findings: ${method.summary}`, 8);
     }
-    return lines;
-  }
-
-  private safe(value: string): string {
-    return value;
-  }
-
-  private resultColor(result: string | null) {
-    if (result === "CLEAR") return rgb(0.08, 0.48, 0.27);
-    if (result === "DISCREPANCY") return rgb(0.76, 0.16, 0.17);
-    return rgb(0.48, 0.4, 0.1);
+    for (const finding of check.findings) {
+      writer.text(
+        `${finding.severity}: ${finding.title} — ${finding.description}`,
+        8.5,
+      );
+      if (finding.source) writer.text(`Source: ${finding.source}`, 8);
+    }
+    writer.space(6);
   }
 }

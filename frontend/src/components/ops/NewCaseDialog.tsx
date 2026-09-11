@@ -3,9 +3,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Check, Mail, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { CandidateStep } from "@/features/cases/new-case/CandidateStep";
 import { ChecksStep } from "@/features/cases/new-case/ChecksStep";
+import { serviceSelectionError } from "@/features/cases/new-case/service-selection";
+import { updateCaseDraft } from "@/features/cases/new-case/case-draft-policy";
 import {
   CaseAccessSuccess,
   type CreatedCaseAccess,
@@ -53,10 +61,11 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
     enabled: open && session.isSuccess && !fixedClient,
     staleTime: 5 * 60_000,
   });
+  const catalogClientId = fixedClient?.publicId ?? draft.clientId;
   const servicePackages = useQuery({
-    queryKey: ["case-service-packages"],
-    queryFn: listCaseServicePackages,
-    enabled: open,
+    queryKey: ["case-service-packages", catalogClientId],
+    queryFn: () => listCaseServicePackages(catalogClientId),
+    enabled: open && session.isSuccess && Boolean(catalogClientId),
     staleTime: 5 * 60_000,
   });
   useEffect(() => {
@@ -64,11 +73,10 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
     setDraft((current) =>
       current.clientId === fixedClient.publicId && current.client === fixedClient.displayName
         ? current
-        : {
-            ...current,
+        : updateCaseDraft(current, {
             clientId: fixedClient.publicId,
             client: fixedClient.displayName,
-          },
+          }),
     );
   }, [fixedClient, open]);
   const createMutation = useMutation({
@@ -95,11 +103,6 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
       });
       reset();
       void invalidateWorkflow(queryClient);
-      toast.success(`${created.caseNumber} initiated`, {
-        description: shouldIssue
-          ? "Case saved. The candidate document link is being secured in the background."
-          : "Case and consent access are ready.",
-      });
       if (!shouldIssue) return;
 
       void issueCandidateAccess(created.id)
@@ -120,9 +123,6 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
               ? { ...current, candidate: { status: "failed", error: message } }
               : current,
           );
-          toast.error("Case created, but candidate link could not be issued", {
-            description: message,
-          });
         });
     },
     onError: (error) =>
@@ -140,16 +140,18 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
     setInviteCandidate(true);
   };
 
-  const update = (patch: Partial<CaseDraft>) => setDraft((current) => ({ ...current, ...patch }));
+  const update = (patch: Partial<CaseDraft>) =>
+    setDraft((current) => updateCaseDraft(current, patch));
   const candidateResult = candidateSchema.safeParse(draft);
+  const serviceError = serviceSelectionError(draft, servicePackages.data?.items ?? []);
   const canContinue =
-    step === 0
-      ? candidateResult.success
-      : Boolean(draft.servicePackageId && draft.checks.length > 0);
+    step === 0 ? candidateResult.success : !serviceError && !servicePackages.isError;
 
   const submit = () => {
-    if (!candidateResult.success || !draft.servicePackageId || draft.checks.length === 0) {
-      toast.error("Complete the required case information");
+    if (!candidateResult.success || serviceError || servicePackages.isError) {
+      toast.error(
+        servicePackages.error?.message ?? serviceError ?? "Complete the required case information",
+      );
       return;
     }
     createMutation.mutate({ caseDraft: draft, shouldInvite: inviteCandidate });
@@ -168,7 +170,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
       }}
     >
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="max-w-3xl gap-0 overflow-hidden rounded-3xl border-0 bg-card p-0 shadow-xl">
+      <DialogContent className="flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-3xl flex-col gap-0 overflow-hidden rounded-3xl border-0 bg-card p-0 shadow-xl">
         {completed ? (
           <CaseAccessSuccess
             result={completed}
@@ -180,18 +182,18 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
           />
         ) : (
           <>
-            <div className="flex flex-col gap-1 px-5 pt-5 sm:px-6 sm:pt-6">
-              <div className="flex items-center gap-2">
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-accent text-accent-foreground">
+            <div className="flex shrink-0 flex-col gap-1 px-5 pt-5 sm:px-6 sm:pt-6">
+              <div className="flex items-center gap-2 pr-6">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-accent text-accent-foreground">
                   <Sparkles className="h-4 w-4" />
                 </span>
                 <div>
-                  <h2 className="text-base font-semibold leading-tight">
+                  <DialogTitle className="text-base font-semibold leading-tight">
                     Initiate a verification case
-                  </h2>
-                  <p className="text-xs text-muted-foreground">
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground">
                     Candidate details → check package → review and consent
-                  </p>
+                  </DialogDescription>
                 </div>
               </div>
 
@@ -220,7 +222,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
               </div>
             </div>
 
-            <div className="mt-5 max-h-[60vh] overflow-y-auto px-5 pb-2 sm:px-6">
+            <div className="mt-5 min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 pb-2 sm:px-6">
               {step === 0 && (
                 <CandidateStep
                   draft={draft}
@@ -241,7 +243,15 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
                   onChange={update}
                 />
               )}
-              {step === 2 && <ReviewStep draft={draft} />}
+              {step === 2 && (
+                <ReviewStep draft={draft} packages={servicePackages.data?.items ?? []} />
+              )}
+              {step === 2 && servicePackages.isError && (
+                <p role="alert" className="mt-3 text-xs text-critical-foreground">
+                  {servicePackages.error.message} Go back to Checks and reload the client catalogue
+                  before submitting.
+                </p>
+              )}
               {step === 2 ? (
                 <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-2xl border border-primary/15 bg-accent/35 p-4">
                   <input
@@ -264,7 +274,7 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
               ) : null}
             </div>
 
-            <div className="mt-4 flex flex-col-reverse gap-3 bg-secondary/40 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="mt-4 flex shrink-0 flex-col-reverse gap-3 bg-secondary/40 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
               <p className="text-[11px] text-muted-foreground">
                 Case ID and audit entry are created only after backend acceptance.
               </p>
@@ -291,7 +301,10 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
                   <button
                     type="button"
                     onClick={submit}
-                    disabled={createMutation.isPending}
+                    disabled={
+                      createMutation.isPending || Boolean(serviceError) || servicePackages.isError
+                    }
+                    aria-busy={createMutation.isPending}
                     className="h-10 rounded-full bg-primary px-5 text-sm font-medium text-primary-foreground transition-transform hover:scale-[1.02]"
                   >
                     {createMutation.isPending ? "Initiating…" : "Initiate case"}

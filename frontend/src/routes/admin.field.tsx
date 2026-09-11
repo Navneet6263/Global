@@ -88,9 +88,9 @@ function FieldOversightPage() {
               tone="rose"
             />
             <OversightMetric
-              label="Exception review"
-              value={query.data.exceptionReview}
-              detail="Open field decisions"
+              label="Review decisions"
+              value={query.data.exceptionReview + query.data.reviewPending}
+              detail={`${query.data.reviewPending} evidence · ${query.data.exceptionReview} exceptions`}
               icon={CircleAlert}
               tone="violet"
             />
@@ -125,6 +125,7 @@ function FieldOversightPage() {
                   <option value="evidence_pending">Evidence pending</option>
                   <option value="outside_geofence">Outside geofence</option>
                   <option value="exception_review">Exception review</option>
+                  <option value="review_pending">Evidence review</option>
                   <option value="completed">Completed</option>
                 </select>
               </>
@@ -202,5 +203,6 @@ function statusTone(value: OpsFieldVisit["status"]): OversightTone {
   if (value === "checked_in") return "blue";
   if (value === "scheduled") return "neutral";
   if (value === "evidence_pending") return "amber";
+  if (value === "review_pending") return "violet";
   return "rose";
 }

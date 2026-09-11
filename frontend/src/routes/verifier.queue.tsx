@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Ban, CheckCircle2, ClipboardCheck, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -60,6 +60,7 @@ function VerifierWorkbench() {
   const queryStatus = filter === "ACTIVE" ? undefined : filter;
   const tasks = useQuery({
     queryKey: ["tasks", "mine", queryStatus, search, cursor, deepLink.taskId],
+    placeholderData: keepPreviousData,
     queryFn: () =>
       getMyTasks({
         search,
@@ -70,11 +71,12 @@ function VerifierWorkbench() {
         ...(cursor ? { cursor } : {}),
       }),
   });
+  const changingView = tasks.isPlaceholderData || tasks.isLoading || searchInput.trim() !== search;
   const items = tasks.data?.items ?? [];
   const selected = items.find((task) => task.id === selectedId) ?? items[0];
   useEffect(() => {
-    if (selected && selected.id !== selectedId) setSelectedId(selected.id);
-  }, [selected, selectedId]);
+    if (!changingView && selected && selected.id !== selectedId) setSelectedId(selected.id);
+  }, [changingView, selected, selectedId]);
   const summary = tasks.data?.summary ?? { active: 0, overdue: 0, blocked: 0, completedToday: 0 };
   const clearDeepLink = () =>
     void navigate({ search: { taskId: undefined, status: undefined }, replace: true });
@@ -129,54 +131,56 @@ function VerifierWorkbench() {
           ← Return to full queue
         </button>
       ) : null}
-      {tasks.isLoading ? <WorkspaceLoading label="Loading assigned checks" /> : null}
-      {tasks.isError ? (
-        <WorkspaceError message={tasks.error.message} onRetry={() => void tasks.refetch()} />
-      ) : null}
-      {!tasks.isLoading && !tasks.isError ? (
-        <div className="grid gap-5 xl:grid-cols-[minmax(20rem,0.72fr)_minmax(0,1.28fr)]">
-          <VerifierQueue
-            items={items}
-            selectedId={selected?.id}
-            search={searchInput}
-            filters={filters}
-            activeFilter={filter}
-            hasPrevious={cursorHistory.length > 0}
-            hasNext={Boolean(tasks.data?.nextCursor)}
-            onSearch={setSearchInput}
-            onFilter={(value) => {
-              setFilter(value);
-              setSelectedId(undefined);
-              setCursor(undefined);
-              setCursorHistory([]);
-              if (deepLink.taskId || deepLink.status) clearDeepLink();
-            }}
-            onPrevious={() => {
-              const history = [...cursorHistory];
-              setCursor(history.pop());
-              setCursorHistory(history);
-              setSelectedId(undefined);
-            }}
-            onNext={() => {
-              const nextCursor = tasks.data?.nextCursor;
-              if (!nextCursor) return;
-              setCursorHistory((current) => [...current, cursor]);
-              setCursor(nextCursor);
-              setSelectedId(undefined);
-            }}
-            onSelect={setSelectedId}
-          />
-          {selected ? (
-            <VerifierTaskDesk
-              task={selected}
-              onUpdated={async () => {
-                await Promise.all([
-                  queryClient.invalidateQueries({ queryKey: ["tasks", "mine"] }),
-                  queryClient.invalidateQueries({ queryKey: ["verifier", "insights"] }),
-                  queryClient.invalidateQueries({ queryKey: ["tasks", selected.id, "context"] }),
-                ]);
-              }}
-            />
+      <div className="grid gap-5 xl:grid-cols-[minmax(20rem,0.72fr)_minmax(0,1.28fr)]">
+        <VerifierQueue
+          items={items}
+          pending={changingView}
+          selectedId={selected?.id}
+          search={searchInput}
+          filters={filters}
+          activeFilter={filter}
+          hasPrevious={!changingView && cursorHistory.length > 0}
+          hasNext={!changingView && Boolean(tasks.data?.nextCursor)}
+          onSearch={setSearchInput}
+          onFilter={(value) => {
+            if (value === filter) return;
+            setFilter(value);
+            setCursor(undefined);
+            setCursorHistory([]);
+            if (deepLink.taskId || deepLink.status) clearDeepLink();
+          }}
+          onPrevious={() => {
+            if (changingView || !cursorHistory.length) return;
+            const history = [...cursorHistory];
+            setCursor(history.pop());
+            setCursorHistory(history);
+          }}
+          onNext={() => {
+            const nextCursor = tasks.data?.nextCursor;
+            if (changingView || !nextCursor) return;
+            setCursorHistory((current) => [...current, cursor]);
+            setCursor(nextCursor);
+          }}
+          onSelect={setSelectedId}
+        />
+        <div className="min-w-0 min-h-[28rem]" aria-busy={changingView}>
+          {tasks.isError ? (
+            <WorkspaceError message={tasks.error.message} onRetry={() => void tasks.refetch()} />
+          ) : selected ? (
+            <div inert={changingView} className={changingView ? "opacity-60" : undefined}>
+              <VerifierTaskDesk
+                task={selected}
+                onUpdated={async () => {
+                  await Promise.all([
+                    queryClient.invalidateQueries({ queryKey: ["tasks", "mine"] }),
+                    queryClient.invalidateQueries({ queryKey: ["verifier", "insights"] }),
+                    queryClient.invalidateQueries({ queryKey: ["tasks", selected.id, "context"] }),
+                  ]);
+                }}
+              />
+            </div>
+          ) : changingView ? (
+            <WorkspaceLoading label="Loading assigned checks" />
           ) : (
             <WorkspaceEmpty
               title="Queue is clear"
@@ -184,7 +188,7 @@ function VerifierWorkbench() {
             />
           )}
         </div>
-      ) : null}
+      </div>
     </div>
   );
 }

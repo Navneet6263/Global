@@ -118,7 +118,7 @@ export function CreateClientDialog({
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button type="submit" disabled={submitting} loading={submitting}>
               {submitting ? "Creating…" : "Create client"}
             </Button>
           </DialogFooter>

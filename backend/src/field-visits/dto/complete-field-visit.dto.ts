@@ -2,9 +2,11 @@ import { Type } from "class-transformer";
 import {
   ArrayMaxSize,
   ArrayMinSize,
+  ArrayUnique,
   IsArray,
   IsDateString,
   IsInt,
+  IsIn,
   IsLatitude,
   IsLongitude,
   IsNumber,
@@ -40,7 +42,16 @@ export class CompleteFieldVisitDto {
   @IsArray()
   @ArrayMinSize(2)
   @ArrayMaxSize(12)
-  @IsString({ each: true })
+  @ArrayUnique()
+  @IsIn(
+    [
+      "House / gate photo",
+      "Name plate close-up",
+      "Neighbour confirmation",
+      "Executive selfie at site",
+    ],
+    { each: true },
+  )
   checklist!: string[];
 
   @IsOptional()

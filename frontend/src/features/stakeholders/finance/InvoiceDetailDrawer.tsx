@@ -200,6 +200,7 @@ export function InvoiceDetailDrawer({
                   type="button"
                   onClick={() => cancel.mutate()}
                   disabled={reason.trim().length < 5 || cancel.isPending}
+                  aria-busy={cancel.isPending}
                   className="rounded-full bg-critical px-4 text-xs font-semibold text-white disabled:opacity-40"
                 >
                   Cancel invoice

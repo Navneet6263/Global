@@ -91,6 +91,7 @@ export function CrmSettingsWorkspace() {
           <Button
             size="sm"
             disabled={!isValid || saveMutation.isPending}
+            loading={saveMutation.isPending}
             onClick={() => saveMutation.mutate(draft)}
           >
             {saveMutation.isPending ? (

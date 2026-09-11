@@ -20,7 +20,21 @@ export type CheckKey =
   | "COURT_RECORD"
   | "REFERENCE"
   | "GLOBAL_DATABASE"
-  | "DRUG_TEST";
+  | "DRUG_TEST"
+  | "RESUME_CONSISTENCY"
+  | "CONFLICT_OF_INTEREST"
+  | "ANTI_BRIBERY"
+  | "MISCONDUCT"
+  | "ADVERSE_MEDIA"
+  | "DIRECTORSHIP"
+  | "BUSINESS_INTEREST"
+  | "SANCTIONS"
+  | "COMPANY_REGISTRATION"
+  | "GST_VALIDATION"
+  | "PAN_VALIDATION"
+  | "MCA_VALIDATION";
+
+export type ServiceSelection = { servicePackageId: string; details?: Record<string, string> };
 
 export type Priority = (typeof priorities)[number];
 
@@ -31,6 +45,7 @@ export type CaseDraft = {
   clientId: string;
   client: string;
   servicePackageId: string;
+  services?: ServiceSelection[];
   packageName: string;
   packageTatHours: number;
   priority: Priority;
@@ -84,6 +99,7 @@ export function createEmptyCaseDraft(): CaseDraft {
     clientId: "",
     client: "",
     servicePackageId: "",
+    services: [],
     packageName: "",
     packageTatHours: 0,
     priority: "Standard",

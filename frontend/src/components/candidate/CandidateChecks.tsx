@@ -143,6 +143,7 @@ function ClarificationCard({
                 type="button"
                 onClick={() => response.mutate()}
                 disabled={message.trim().length < 2 || response.isPending}
+                aria-busy={response.isPending}
                 className="mt-2 inline-flex h-9 items-center gap-2 rounded-full bg-primary px-4 text-[11px] font-semibold text-primary-foreground disabled:opacity-50"
               >
                 {response.isPending ? (

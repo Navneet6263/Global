@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -10,6 +11,7 @@ import type { Prisma } from "../generated/prisma/client";
 import type { ClientQueryDto } from "./dto/client-query.dto";
 import type { CreateClientDto } from "./dto/create-client.dto";
 import type { UpdateClientDto } from "./dto/update-client.dto";
+import { assertClientActivation } from "./client-activation.policy";
 
 @Injectable()
 export class ClientsService {
@@ -116,7 +118,38 @@ export class ClientsService {
     if (current.version !== input.version) {
       throw new ConflictException("Client changed; refresh and try again");
     }
+    if (current.status === "ONBOARDING" && input.status === "SUSPENDED") {
+      throw new BadRequestException(
+        "This client is already inactive during onboarding; complete onboarding before activation",
+      );
+    }
     return this.prisma.$transaction(async (tx) => {
+      if (current.status === "ONBOARDING" && input.status === "ACTIVE") {
+        const onboarding = await tx.client.findUniqueOrThrow({
+          where: { id: current.id },
+          select: {
+            billingTerms: true,
+            billingAddress: true,
+            packageRates: {
+              where: { servicePackage: { isActive: true } },
+              select: { active: true },
+            },
+            agreements: {
+              select: {
+                type: true,
+                signedAt: true,
+                expiresAt: true,
+                files: {
+                  orderBy: { revision: "desc" },
+                  take: 1,
+                  select: { status: true },
+                },
+              },
+            },
+          },
+        });
+        assertClientActivation(onboarding);
+      }
       const result = await tx.client.updateMany({
         where: {
           id: current.id,

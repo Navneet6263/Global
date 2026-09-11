@@ -8,6 +8,7 @@ import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import { clientScope } from "./crm-opportunity.shared";
 import type { CompleteFollowUpDto } from "./dto/complete-follow-up.dto";
+import { sequenceAfterCompletion } from "./crm-sequence.policy";
 
 @Injectable()
 export class CrmFollowUpService {
@@ -21,6 +22,8 @@ export class CrmFollowUpService {
         stage: true,
         version: true,
         nextFollowUpAt: true,
+        followUpSequenceStartedAt: true,
+        followUpSequenceStep: true,
       },
     });
     if (!opportunity) throw new NotFoundException("Opportunity not found");
@@ -40,9 +43,13 @@ export class CrmFollowUpService {
 
     return this.prisma.$transaction(async (tx) => {
       const completedAt = new Date();
+      const sequence = sequenceAfterCompletion(
+        opportunity.followUpSequenceStartedAt,
+        opportunity.followUpSequenceStep,
+      );
       const updated = await tx.salesOpportunity.updateMany({
         where: { id: opportunity.id, version: input.version },
-        data: { nextFollowUpAt: null, version: { increment: 1 } },
+        data: { ...sequence, version: { increment: 1 } },
       });
       if (updated.count !== 1) {
         throw new ConflictException("Opportunity was updated concurrently");
@@ -70,7 +77,7 @@ export class CrmFollowUpService {
             version: opportunity.version,
           }),
           afterJson: JSON.stringify({
-            nextFollowUpAt: null,
+            ...sequence,
             version: opportunity.version + 1,
           }),
         },

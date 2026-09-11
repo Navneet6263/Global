@@ -30,6 +30,9 @@ export type ReportAvgAggregateOutputType = {
   id: number | null
   tenantId: number | null
   caseId: number | null
+  managerReviewId: number | null
+  workflowVersion: number | null
+  releasedById: number | null
   currentVersion: number | null
 }
 
@@ -37,6 +40,9 @@ export type ReportSumAggregateOutputType = {
   id: bigint | null
   tenantId: bigint | null
   caseId: bigint | null
+  managerReviewId: bigint | null
+  workflowVersion: number | null
+  releasedById: bigint | null
   currentVersion: number | null
 }
 
@@ -45,6 +51,11 @@ export type ReportMinAggregateOutputType = {
   publicId: string | null
   tenantId: bigint | null
   caseId: bigint | null
+  managerReviewId: bigint | null
+  workflowVersion: number | null
+  releasedAt: Date | null
+  releasedById: bigint | null
+  downloadExpiresAt: Date | null
   status: string | null
   currentVersion: number | null
   publishedAt: Date | null
@@ -57,6 +68,11 @@ export type ReportMaxAggregateOutputType = {
   publicId: string | null
   tenantId: bigint | null
   caseId: bigint | null
+  managerReviewId: bigint | null
+  workflowVersion: number | null
+  releasedAt: Date | null
+  releasedById: bigint | null
+  downloadExpiresAt: Date | null
   status: string | null
   currentVersion: number | null
   publishedAt: Date | null
@@ -69,6 +85,11 @@ export type ReportCountAggregateOutputType = {
   publicId: number
   tenantId: number
   caseId: number
+  managerReviewId: number
+  workflowVersion: number
+  releasedAt: number
+  releasedById: number
+  downloadExpiresAt: number
   status: number
   currentVersion: number
   publishedAt: number
@@ -82,6 +103,9 @@ export type ReportAvgAggregateInputType = {
   id?: true
   tenantId?: true
   caseId?: true
+  managerReviewId?: true
+  workflowVersion?: true
+  releasedById?: true
   currentVersion?: true
 }
 
@@ -89,6 +113,9 @@ export type ReportSumAggregateInputType = {
   id?: true
   tenantId?: true
   caseId?: true
+  managerReviewId?: true
+  workflowVersion?: true
+  releasedById?: true
   currentVersion?: true
 }
 
@@ -97,6 +124,11 @@ export type ReportMinAggregateInputType = {
   publicId?: true
   tenantId?: true
   caseId?: true
+  managerReviewId?: true
+  workflowVersion?: true
+  releasedAt?: true
+  releasedById?: true
+  downloadExpiresAt?: true
   status?: true
   currentVersion?: true
   publishedAt?: true
@@ -109,6 +141,11 @@ export type ReportMaxAggregateInputType = {
   publicId?: true
   tenantId?: true
   caseId?: true
+  managerReviewId?: true
+  workflowVersion?: true
+  releasedAt?: true
+  releasedById?: true
+  downloadExpiresAt?: true
   status?: true
   currentVersion?: true
   publishedAt?: true
@@ -121,6 +158,11 @@ export type ReportCountAggregateInputType = {
   publicId?: true
   tenantId?: true
   caseId?: true
+  managerReviewId?: true
+  workflowVersion?: true
+  releasedAt?: true
+  releasedById?: true
+  downloadExpiresAt?: true
   status?: true
   currentVersion?: true
   publishedAt?: true
@@ -220,6 +262,11 @@ export type ReportGroupByOutputType = {
   publicId: string
   tenantId: bigint
   caseId: bigint
+  managerReviewId: bigint | null
+  workflowVersion: number
+  releasedAt: Date | null
+  releasedById: bigint | null
+  downloadExpiresAt: Date | null
   status: string
   currentVersion: number
   publishedAt: Date | null
@@ -255,6 +302,11 @@ export type ReportWhereInput = {
   publicId?: Prisma.StringFilter<"Report"> | string
   tenantId?: Prisma.BigIntFilter<"Report"> | bigint | number
   caseId?: Prisma.BigIntFilter<"Report"> | bigint | number
+  managerReviewId?: Prisma.BigIntNullableFilter<"Report"> | bigint | number | null
+  workflowVersion?: Prisma.IntFilter<"Report"> | number
+  releasedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  releasedById?: Prisma.BigIntNullableFilter<"Report"> | bigint | number | null
+  downloadExpiresAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   status?: Prisma.StringFilter<"Report"> | string
   currentVersion?: Prisma.IntFilter<"Report"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
@@ -263,6 +315,8 @@ export type ReportWhereInput = {
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   versions?: Prisma.ReportVersionListRelationFilter
+  managerReview?: Prisma.XOR<Prisma.ManagerReviewNullableScalarRelationFilter, Prisma.ManagerReviewWhereInput> | null
+  invoiceLines?: Prisma.InvoiceLineListRelationFilter
 }
 
 export type ReportOrderByWithRelationInput = {
@@ -270,6 +324,11 @@ export type ReportOrderByWithRelationInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrderInput | Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  releasedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  downloadExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -278,6 +337,8 @@ export type ReportOrderByWithRelationInput = {
   tenant?: Prisma.TenantOrderByWithRelationInput
   case?: Prisma.VerificationCaseOrderByWithRelationInput
   versions?: Prisma.ReportVersionOrderByRelationAggregateInput
+  managerReview?: Prisma.ManagerReviewOrderByWithRelationInput
+  invoiceLines?: Prisma.InvoiceLineOrderByRelationAggregateInput
 }
 
 export type ReportWhereUniqueInput = Prisma.AtLeast<{
@@ -288,6 +349,11 @@ export type ReportWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ReportWhereInput | Prisma.ReportWhereInput[]
   tenantId?: Prisma.BigIntFilter<"Report"> | bigint | number
   caseId?: Prisma.BigIntFilter<"Report"> | bigint | number
+  managerReviewId?: Prisma.BigIntNullableFilter<"Report"> | bigint | number | null
+  workflowVersion?: Prisma.IntFilter<"Report"> | number
+  releasedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  releasedById?: Prisma.BigIntNullableFilter<"Report"> | bigint | number | null
+  downloadExpiresAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   status?: Prisma.StringFilter<"Report"> | string
   currentVersion?: Prisma.IntFilter<"Report"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
@@ -296,6 +362,8 @@ export type ReportWhereUniqueInput = Prisma.AtLeast<{
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   versions?: Prisma.ReportVersionListRelationFilter
+  managerReview?: Prisma.XOR<Prisma.ManagerReviewNullableScalarRelationFilter, Prisma.ManagerReviewWhereInput> | null
+  invoiceLines?: Prisma.InvoiceLineListRelationFilter
 }, "id" | "publicId">
 
 export type ReportOrderByWithAggregationInput = {
@@ -303,6 +371,11 @@ export type ReportOrderByWithAggregationInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrderInput | Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  releasedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  downloadExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -323,6 +396,11 @@ export type ReportScalarWhereWithAggregatesInput = {
   publicId?: Prisma.StringWithAggregatesFilter<"Report"> | string
   tenantId?: Prisma.BigIntWithAggregatesFilter<"Report"> | bigint | number
   caseId?: Prisma.BigIntWithAggregatesFilter<"Report"> | bigint | number
+  managerReviewId?: Prisma.BigIntNullableWithAggregatesFilter<"Report"> | bigint | number | null
+  workflowVersion?: Prisma.IntWithAggregatesFilter<"Report"> | number
+  releasedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
+  releasedById?: Prisma.BigIntNullableWithAggregatesFilter<"Report"> | bigint | number | null
+  downloadExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
   status?: Prisma.StringWithAggregatesFilter<"Report"> | string
   currentVersion?: Prisma.IntWithAggregatesFilter<"Report"> | number
   publishedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Report"> | Date | string | null
@@ -333,6 +411,10 @@ export type ReportScalarWhereWithAggregatesInput = {
 export type ReportCreateInput = {
   id?: bigint | number
   publicId?: string
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -341,6 +423,8 @@ export type ReportCreateInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutReportsInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutReportsInput
   versions?: Prisma.ReportVersionCreateNestedManyWithoutReportInput
+  managerReview?: Prisma.ManagerReviewCreateNestedOneWithoutReportsInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateInput = {
@@ -348,17 +432,27 @@ export type ReportUncheckedCreateInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutReportInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportUpdateInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -367,6 +461,8 @@ export type ReportUpdateInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutReportsNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutReportsNestedInput
   versions?: Prisma.ReportVersionUpdateManyWithoutReportNestedInput
+  managerReview?: Prisma.ManagerReviewUpdateOneWithoutReportsNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateInput = {
@@ -374,18 +470,29 @@ export type ReportUncheckedUpdateInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.ReportVersionUncheckedUpdateManyWithoutReportNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportCreateManyInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -396,6 +503,10 @@ export type ReportCreateManyInput = {
 export type ReportUpdateManyMutationInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -408,6 +519,11 @@ export type ReportUncheckedUpdateManyInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -430,6 +546,11 @@ export type ReportCountOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
+  downloadExpiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -441,6 +562,9 @@ export type ReportAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
 }
 
@@ -449,6 +573,11 @@ export type ReportMaxOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
+  downloadExpiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -461,6 +590,11 @@ export type ReportMinOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedAt?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
+  downloadExpiresAt?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
   publishedAt?: Prisma.SortOrder
@@ -472,12 +606,20 @@ export type ReportSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  managerReviewId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  releasedById?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
 }
 
 export type ReportScalarRelationFilter = {
   is?: Prisma.ReportWhereInput
   isNot?: Prisma.ReportWhereInput
+}
+
+export type ReportNullableScalarRelationFilter = {
+  is?: Prisma.ReportWhereInput | null
+  isNot?: Prisma.ReportWhereInput | null
 }
 
 export type ReportCreateNestedManyWithoutTenantInput = {
@@ -578,9 +720,71 @@ export type ReportUpdateOneRequiredWithoutVersionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ReportUpdateToOneWithWhereWithoutVersionsInput, Prisma.ReportUpdateWithoutVersionsInput>, Prisma.ReportUncheckedUpdateWithoutVersionsInput>
 }
 
+export type ReportCreateNestedOneWithoutInvoiceLinesInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutInvoiceLinesInput, Prisma.ReportUncheckedCreateWithoutInvoiceLinesInput>
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutInvoiceLinesInput
+  connect?: Prisma.ReportWhereUniqueInput
+}
+
+export type ReportUpdateOneWithoutInvoiceLinesNestedInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutInvoiceLinesInput, Prisma.ReportUncheckedCreateWithoutInvoiceLinesInput>
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutInvoiceLinesInput
+  upsert?: Prisma.ReportUpsertWithoutInvoiceLinesInput
+  disconnect?: Prisma.ReportWhereInput | boolean
+  delete?: Prisma.ReportWhereInput | boolean
+  connect?: Prisma.ReportWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ReportUpdateToOneWithWhereWithoutInvoiceLinesInput, Prisma.ReportUpdateWithoutInvoiceLinesInput>, Prisma.ReportUncheckedUpdateWithoutInvoiceLinesInput>
+}
+
+export type ReportCreateNestedManyWithoutManagerReviewInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutManagerReviewInput, Prisma.ReportUncheckedCreateWithoutManagerReviewInput> | Prisma.ReportCreateWithoutManagerReviewInput[] | Prisma.ReportUncheckedCreateWithoutManagerReviewInput[]
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutManagerReviewInput | Prisma.ReportCreateOrConnectWithoutManagerReviewInput[]
+  createMany?: Prisma.ReportCreateManyManagerReviewInputEnvelope
+  connect?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+}
+
+export type ReportUncheckedCreateNestedManyWithoutManagerReviewInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutManagerReviewInput, Prisma.ReportUncheckedCreateWithoutManagerReviewInput> | Prisma.ReportCreateWithoutManagerReviewInput[] | Prisma.ReportUncheckedCreateWithoutManagerReviewInput[]
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutManagerReviewInput | Prisma.ReportCreateOrConnectWithoutManagerReviewInput[]
+  createMany?: Prisma.ReportCreateManyManagerReviewInputEnvelope
+  connect?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+}
+
+export type ReportUpdateManyWithoutManagerReviewNestedInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutManagerReviewInput, Prisma.ReportUncheckedCreateWithoutManagerReviewInput> | Prisma.ReportCreateWithoutManagerReviewInput[] | Prisma.ReportUncheckedCreateWithoutManagerReviewInput[]
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutManagerReviewInput | Prisma.ReportCreateOrConnectWithoutManagerReviewInput[]
+  upsert?: Prisma.ReportUpsertWithWhereUniqueWithoutManagerReviewInput | Prisma.ReportUpsertWithWhereUniqueWithoutManagerReviewInput[]
+  createMany?: Prisma.ReportCreateManyManagerReviewInputEnvelope
+  set?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  disconnect?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  delete?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  connect?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  update?: Prisma.ReportUpdateWithWhereUniqueWithoutManagerReviewInput | Prisma.ReportUpdateWithWhereUniqueWithoutManagerReviewInput[]
+  updateMany?: Prisma.ReportUpdateManyWithWhereWithoutManagerReviewInput | Prisma.ReportUpdateManyWithWhereWithoutManagerReviewInput[]
+  deleteMany?: Prisma.ReportScalarWhereInput | Prisma.ReportScalarWhereInput[]
+}
+
+export type ReportUncheckedUpdateManyWithoutManagerReviewNestedInput = {
+  create?: Prisma.XOR<Prisma.ReportCreateWithoutManagerReviewInput, Prisma.ReportUncheckedCreateWithoutManagerReviewInput> | Prisma.ReportCreateWithoutManagerReviewInput[] | Prisma.ReportUncheckedCreateWithoutManagerReviewInput[]
+  connectOrCreate?: Prisma.ReportCreateOrConnectWithoutManagerReviewInput | Prisma.ReportCreateOrConnectWithoutManagerReviewInput[]
+  upsert?: Prisma.ReportUpsertWithWhereUniqueWithoutManagerReviewInput | Prisma.ReportUpsertWithWhereUniqueWithoutManagerReviewInput[]
+  createMany?: Prisma.ReportCreateManyManagerReviewInputEnvelope
+  set?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  disconnect?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  delete?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  connect?: Prisma.ReportWhereUniqueInput | Prisma.ReportWhereUniqueInput[]
+  update?: Prisma.ReportUpdateWithWhereUniqueWithoutManagerReviewInput | Prisma.ReportUpdateWithWhereUniqueWithoutManagerReviewInput[]
+  updateMany?: Prisma.ReportUpdateManyWithWhereWithoutManagerReviewInput | Prisma.ReportUpdateManyWithWhereWithoutManagerReviewInput[]
+  deleteMany?: Prisma.ReportScalarWhereInput | Prisma.ReportScalarWhereInput[]
+}
+
 export type ReportCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -588,18 +792,26 @@ export type ReportCreateWithoutTenantInput = {
   updatedAt?: Date | string
   case: Prisma.VerificationCaseCreateNestedOneWithoutReportsInput
   versions?: Prisma.ReportVersionCreateNestedManyWithoutReportInput
+  managerReview?: Prisma.ManagerReviewCreateNestedOneWithoutReportsInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   caseId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutReportInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutTenantInput = {
@@ -635,6 +847,11 @@ export type ReportScalarWhereInput = {
   publicId?: Prisma.StringFilter<"Report"> | string
   tenantId?: Prisma.BigIntFilter<"Report"> | bigint | number
   caseId?: Prisma.BigIntFilter<"Report"> | bigint | number
+  managerReviewId?: Prisma.BigIntNullableFilter<"Report"> | bigint | number | null
+  workflowVersion?: Prisma.IntFilter<"Report"> | number
+  releasedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
+  releasedById?: Prisma.BigIntNullableFilter<"Report"> | bigint | number | null
+  downloadExpiresAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
   status?: Prisma.StringFilter<"Report"> | string
   currentVersion?: Prisma.IntFilter<"Report"> | number
   publishedAt?: Prisma.DateTimeNullableFilter<"Report"> | Date | string | null
@@ -645,6 +862,10 @@ export type ReportScalarWhereInput = {
 export type ReportCreateWithoutCaseInput = {
   id?: bigint | number
   publicId?: string
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -652,18 +873,26 @@ export type ReportCreateWithoutCaseInput = {
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutReportsInput
   versions?: Prisma.ReportVersionCreateNestedManyWithoutReportInput
+  managerReview?: Prisma.ManagerReviewCreateNestedOneWithoutReportsInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutCaseInput = {
   id?: bigint | number
   publicId?: string
   tenantId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutReportInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutCaseInput = {
@@ -694,6 +923,10 @@ export type ReportUpdateManyWithWhereWithoutCaseInput = {
 export type ReportCreateWithoutVersionsInput = {
   id?: bigint | number
   publicId?: string
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -701,6 +934,8 @@ export type ReportCreateWithoutVersionsInput = {
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutReportsInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutReportsInput
+  managerReview?: Prisma.ManagerReviewCreateNestedOneWithoutReportsInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutReportInput
 }
 
 export type ReportUncheckedCreateWithoutVersionsInput = {
@@ -708,11 +943,17 @@ export type ReportUncheckedCreateWithoutVersionsInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutReportInput
 }
 
 export type ReportCreateOrConnectWithoutVersionsInput = {
@@ -734,6 +975,10 @@ export type ReportUpdateToOneWithWhereWithoutVersionsInput = {
 export type ReportUpdateWithoutVersionsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -741,6 +986,8 @@ export type ReportUpdateWithoutVersionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutReportsNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutReportsNestedInput
+  managerReview?: Prisma.ManagerReviewUpdateOneWithoutReportsNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutVersionsInput = {
@@ -748,16 +995,176 @@ export type ReportUncheckedUpdateWithoutVersionsInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutReportNestedInput
+}
+
+export type ReportCreateWithoutInvoiceLinesInput = {
+  id?: bigint | number
+  publicId?: string
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
+  status?: string
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutReportsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutReportsInput
+  versions?: Prisma.ReportVersionCreateNestedManyWithoutReportInput
+  managerReview?: Prisma.ManagerReviewCreateNestedOneWithoutReportsInput
+}
+
+export type ReportUncheckedCreateWithoutInvoiceLinesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
+  status?: string
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  versions?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutReportInput
+}
+
+export type ReportCreateOrConnectWithoutInvoiceLinesInput = {
+  where: Prisma.ReportWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReportCreateWithoutInvoiceLinesInput, Prisma.ReportUncheckedCreateWithoutInvoiceLinesInput>
+}
+
+export type ReportUpsertWithoutInvoiceLinesInput = {
+  update: Prisma.XOR<Prisma.ReportUpdateWithoutInvoiceLinesInput, Prisma.ReportUncheckedUpdateWithoutInvoiceLinesInput>
+  create: Prisma.XOR<Prisma.ReportCreateWithoutInvoiceLinesInput, Prisma.ReportUncheckedCreateWithoutInvoiceLinesInput>
+  where?: Prisma.ReportWhereInput
+}
+
+export type ReportUpdateToOneWithWhereWithoutInvoiceLinesInput = {
+  where?: Prisma.ReportWhereInput
+  data: Prisma.XOR<Prisma.ReportUpdateWithoutInvoiceLinesInput, Prisma.ReportUncheckedUpdateWithoutInvoiceLinesInput>
+}
+
+export type ReportUpdateWithoutInvoiceLinesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutReportsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutReportsNestedInput
+  versions?: Prisma.ReportVersionUpdateManyWithoutReportNestedInput
+  managerReview?: Prisma.ManagerReviewUpdateOneWithoutReportsNestedInput
+}
+
+export type ReportUncheckedUpdateWithoutInvoiceLinesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  versions?: Prisma.ReportVersionUncheckedUpdateManyWithoutReportNestedInput
+}
+
+export type ReportCreateWithoutManagerReviewInput = {
+  id?: bigint | number
+  publicId?: string
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
+  status?: string
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutReportsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutReportsInput
+  versions?: Prisma.ReportVersionCreateNestedManyWithoutReportInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutReportInput
+}
+
+export type ReportUncheckedCreateWithoutManagerReviewInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
+  status?: string
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  versions?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutReportInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutReportInput
+}
+
+export type ReportCreateOrConnectWithoutManagerReviewInput = {
+  where: Prisma.ReportWhereUniqueInput
+  create: Prisma.XOR<Prisma.ReportCreateWithoutManagerReviewInput, Prisma.ReportUncheckedCreateWithoutManagerReviewInput>
+}
+
+export type ReportCreateManyManagerReviewInputEnvelope = {
+  data: Prisma.ReportCreateManyManagerReviewInput | Prisma.ReportCreateManyManagerReviewInput[]
+}
+
+export type ReportUpsertWithWhereUniqueWithoutManagerReviewInput = {
+  where: Prisma.ReportWhereUniqueInput
+  update: Prisma.XOR<Prisma.ReportUpdateWithoutManagerReviewInput, Prisma.ReportUncheckedUpdateWithoutManagerReviewInput>
+  create: Prisma.XOR<Prisma.ReportCreateWithoutManagerReviewInput, Prisma.ReportUncheckedCreateWithoutManagerReviewInput>
+}
+
+export type ReportUpdateWithWhereUniqueWithoutManagerReviewInput = {
+  where: Prisma.ReportWhereUniqueInput
+  data: Prisma.XOR<Prisma.ReportUpdateWithoutManagerReviewInput, Prisma.ReportUncheckedUpdateWithoutManagerReviewInput>
+}
+
+export type ReportUpdateManyWithWhereWithoutManagerReviewInput = {
+  where: Prisma.ReportScalarWhereInput
+  data: Prisma.XOR<Prisma.ReportUpdateManyMutationInput, Prisma.ReportUncheckedUpdateManyWithoutManagerReviewInput>
 }
 
 export type ReportCreateManyTenantInput = {
   publicId?: string
   caseId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -768,6 +1175,10 @@ export type ReportCreateManyTenantInput = {
 export type ReportUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -775,24 +1186,37 @@ export type ReportUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutReportsNestedInput
   versions?: Prisma.ReportVersionUpdateManyWithoutReportNestedInput
+  managerReview?: Prisma.ManagerReviewUpdateOneWithoutReportsNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.ReportVersionUncheckedUpdateManyWithoutReportNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -803,6 +1227,11 @@ export type ReportUncheckedUpdateManyWithoutTenantInput = {
 export type ReportCreateManyCaseInput = {
   publicId?: string
   tenantId: bigint | number
+  managerReviewId?: bigint | number | null
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
   status?: string
   currentVersion?: number
   publishedAt?: Date | string | null
@@ -813,6 +1242,10 @@ export type ReportCreateManyCaseInput = {
 export type ReportUpdateWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -820,24 +1253,104 @@ export type ReportUpdateWithoutCaseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutReportsNestedInput
   versions?: Prisma.ReportVersionUpdateManyWithoutReportNestedInput
+  managerReview?: Prisma.ManagerReviewUpdateOneWithoutReportsNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.ReportVersionUncheckedUpdateManyWithoutReportNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutReportNestedInput
 }
 
 export type ReportUncheckedUpdateManyWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  managerReviewId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ReportCreateManyManagerReviewInput = {
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  workflowVersion?: number
+  releasedAt?: Date | string | null
+  releasedById?: bigint | number | null
+  downloadExpiresAt?: Date | string | null
+  status?: string
+  currentVersion?: number
+  publishedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ReportUpdateWithoutManagerReviewInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutReportsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutReportsNestedInput
+  versions?: Prisma.ReportVersionUpdateManyWithoutReportNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutReportNestedInput
+}
+
+export type ReportUncheckedUpdateWithoutManagerReviewInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  versions?: Prisma.ReportVersionUncheckedUpdateManyWithoutReportNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutReportNestedInput
+}
+
+export type ReportUncheckedUpdateManyWithoutManagerReviewInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  releasedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  releasedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  downloadExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
   publishedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -852,10 +1365,12 @@ export type ReportUncheckedUpdateManyWithoutCaseInput = {
 
 export type ReportCountOutputType = {
   versions: number
+  invoiceLines: number
 }
 
 export type ReportCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   versions?: boolean | ReportCountOutputTypeCountVersionsArgs
+  invoiceLines?: boolean | ReportCountOutputTypeCountInvoiceLinesArgs
 }
 
 /**
@@ -875,12 +1390,24 @@ export type ReportCountOutputTypeCountVersionsArgs<ExtArgs extends runtime.Types
   where?: Prisma.ReportVersionWhereInput
 }
 
+/**
+ * ReportCountOutputType without action
+ */
+export type ReportCountOutputTypeCountInvoiceLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.InvoiceLineWhereInput
+}
+
 
 export type ReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   publicId?: boolean
   tenantId?: boolean
   caseId?: boolean
+  managerReviewId?: boolean
+  workflowVersion?: boolean
+  releasedAt?: boolean
+  releasedById?: boolean
+  downloadExpiresAt?: boolean
   status?: boolean
   currentVersion?: boolean
   publishedAt?: boolean
@@ -889,6 +1416,8 @@ export type ReportSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   versions?: boolean | Prisma.Report$versionsArgs<ExtArgs>
+  managerReview?: boolean | Prisma.Report$managerReviewArgs<ExtArgs>
+  invoiceLines?: boolean | Prisma.Report$invoiceLinesArgs<ExtArgs>
   _count?: boolean | Prisma.ReportCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["report"]>
 
@@ -899,6 +1428,11 @@ export type ReportSelectScalar = {
   publicId?: boolean
   tenantId?: boolean
   caseId?: boolean
+  managerReviewId?: boolean
+  workflowVersion?: boolean
+  releasedAt?: boolean
+  releasedById?: boolean
+  downloadExpiresAt?: boolean
   status?: boolean
   currentVersion?: boolean
   publishedAt?: boolean
@@ -906,11 +1440,13 @@ export type ReportSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "status" | "currentVersion" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["report"]>
+export type ReportOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "managerReviewId" | "workflowVersion" | "releasedAt" | "releasedById" | "downloadExpiresAt" | "status" | "currentVersion" | "publishedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["report"]>
 export type ReportInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   versions?: boolean | Prisma.Report$versionsArgs<ExtArgs>
+  managerReview?: boolean | Prisma.Report$managerReviewArgs<ExtArgs>
+  invoiceLines?: boolean | Prisma.Report$invoiceLinesArgs<ExtArgs>
   _count?: boolean | Prisma.ReportCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -920,12 +1456,19 @@ export type $ReportPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     tenant: Prisma.$TenantPayload<ExtArgs>
     case: Prisma.$VerificationCasePayload<ExtArgs>
     versions: Prisma.$ReportVersionPayload<ExtArgs>[]
+    managerReview: Prisma.$ManagerReviewPayload<ExtArgs> | null
+    invoiceLines: Prisma.$InvoiceLinePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
     publicId: string
     tenantId: bigint
     caseId: bigint
+    managerReviewId: bigint | null
+    workflowVersion: number
+    releasedAt: Date | null
+    releasedById: bigint | null
+    downloadExpiresAt: Date | null
     status: string
     currentVersion: number
     publishedAt: Date | null
@@ -1274,6 +1817,8 @@ export interface Prisma__ReportClient<T, Null = never, ExtArgs extends runtime.T
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   versions<T extends Prisma.Report$versionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  managerReview<T extends Prisma.Report$managerReviewArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$managerReviewArgs<ExtArgs>>): Prisma.Prisma__ManagerReviewClient<runtime.Types.Result.GetResult<Prisma.$ManagerReviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  invoiceLines<T extends Prisma.Report$invoiceLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Report$invoiceLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1307,6 +1852,11 @@ export interface ReportFieldRefs {
   readonly publicId: Prisma.FieldRef<"Report", 'String'>
   readonly tenantId: Prisma.FieldRef<"Report", 'BigInt'>
   readonly caseId: Prisma.FieldRef<"Report", 'BigInt'>
+  readonly managerReviewId: Prisma.FieldRef<"Report", 'BigInt'>
+  readonly workflowVersion: Prisma.FieldRef<"Report", 'Int'>
+  readonly releasedAt: Prisma.FieldRef<"Report", 'DateTime'>
+  readonly releasedById: Prisma.FieldRef<"Report", 'BigInt'>
+  readonly downloadExpiresAt: Prisma.FieldRef<"Report", 'DateTime'>
   readonly status: Prisma.FieldRef<"Report", 'String'>
   readonly currentVersion: Prisma.FieldRef<"Report", 'Int'>
   readonly publishedAt: Prisma.FieldRef<"Report", 'DateTime'>
@@ -1680,6 +2230,49 @@ export type Report$versionsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.ReportVersionScalarFieldEnum | Prisma.ReportVersionScalarFieldEnum[]
+}
+
+/**
+ * Report.managerReview
+ */
+export type Report$managerReviewArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ManagerReview
+   */
+  select?: Prisma.ManagerReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ManagerReview
+   */
+  omit?: Prisma.ManagerReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ManagerReviewInclude<ExtArgs> | null
+  where?: Prisma.ManagerReviewWhereInput
+}
+
+/**
+ * Report.invoiceLines
+ */
+export type Report$invoiceLinesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the InvoiceLine
+   */
+  select?: Prisma.InvoiceLineSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the InvoiceLine
+   */
+  omit?: Prisma.InvoiceLineOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.InvoiceLineInclude<ExtArgs> | null
+  where?: Prisma.InvoiceLineWhereInput
+  orderBy?: Prisma.InvoiceLineOrderByWithRelationInput | Prisma.InvoiceLineOrderByWithRelationInput[]
+  cursor?: Prisma.InvoiceLineWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.InvoiceLineScalarFieldEnum | Prisma.InvoiceLineScalarFieldEnum[]
 }
 
 /**

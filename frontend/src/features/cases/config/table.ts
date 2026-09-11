@@ -85,6 +85,9 @@ export const STAGE_OPTIONS: readonly { value: CaseStage | "all"; label: string }
   { value: "verification", label: "Verification" },
   { value: "clarification", label: "Clarification" },
   { value: "qa", label: "QA review" },
+  { value: "manager_review", label: "Manager approval" },
+  { value: "report_pending", label: "Report preparation" },
+  { value: "payment_pending", label: "Payment & release" },
   { value: "completed", label: "Completed" },
 ];
 

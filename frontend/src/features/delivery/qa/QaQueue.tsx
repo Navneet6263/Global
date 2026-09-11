@@ -3,6 +3,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock3,
+  Loader2,
   Search,
   ShieldCheck,
 } from "lucide-react";
@@ -14,6 +15,10 @@ import { formatDate, humanize } from "../utils";
 interface QaQueueProps {
   items: QaRegisterItem[];
   total: number;
+  pending?: boolean;
+  unavailable?: boolean;
+  availableOnly?: boolean;
+  onAvailableChange?: (value: boolean) => void;
   corrections?: boolean;
   selectedId?: string;
   search: string;
@@ -28,8 +33,11 @@ interface QaQueueProps {
 
 export function QaQueue(props: QaQueueProps) {
   return (
-    <section className="overflow-hidden rounded-[1.65rem] border border-white/80 bg-card/85 shadow-[var(--shadow-float)] backdrop-blur-sm xl:sticky xl:top-5 xl:self-start">
-      <header className="border-b border-border/70 p-4">
+    <section
+      aria-label="QA case list"
+      className="overflow-hidden rounded-[1.65rem] border border-white/80 bg-card/85 shadow-[var(--shadow-float)] backdrop-blur-sm xl:sticky xl:top-5 xl:self-start"
+    >
+      <header className="border-b border-review/15 border-t-4 border-t-review/35 bg-gradient-to-br from-review-soft via-review-soft/35 to-white p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-[15px] font-semibold tracking-[-0.02em]">
@@ -41,8 +49,18 @@ export function QaQueue(props: QaQueueProps) {
                 : "Claim one case before making a decision"}
             </p>
           </div>
-          <span className="num rounded-full bg-review-soft px-2.5 py-1 text-[10px] font-medium text-review-foreground">
-            {props.total} cases
+          <span
+            role="status"
+            className="num flex items-center gap-1 rounded-full bg-review-soft px-2.5 py-1 text-[10px] font-medium text-review-foreground"
+          >
+            {props.pending ? (
+              <>
+                <Loader2 className="size-3 animate-spin" />
+                Updating cases
+              </>
+            ) : (
+              `${props.total} cases`
+            )}
           </span>
         </div>
         <div className="relative mt-3">
@@ -55,9 +73,27 @@ export function QaQueue(props: QaQueueProps) {
             className="h-10 w-full rounded-full border border-border bg-background/75 pl-9 pr-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
           />
         </div>
+        {props.availableOnly !== undefined ? (
+          <label className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={props.availableOnly}
+              onChange={(event) => props.onAvailableChange?.(event.target.checked)}
+              className="size-4 accent-primary"
+            />
+            Available to claim only
+          </label>
+        ) : null}
       </header>
 
-      <div className="max-h-[720px] space-y-2 overflow-y-auto p-3">
+      <div
+        aria-busy={props.pending}
+        inert={props.pending || props.unavailable}
+        className={cn(
+          "min-h-40 max-h-[50vh] space-y-2 overflow-y-auto overscroll-y-auto p-3",
+          props.pending && "opacity-60",
+        )}
+      >
         {props.items.map((item) => (
           <QaQueueCard
             key={item.id}
@@ -66,7 +102,13 @@ export function QaQueue(props: QaQueueProps) {
             onSelect={() => props.onSelect(item.id)}
           />
         ))}
-        {!props.items.length ? <QaQueueEmpty /> : null}
+        {props.unavailable ? (
+          <p className="p-5 text-xs text-muted-foreground">
+            Queue unavailable. Retry using the message above.
+          </p>
+        ) : !props.items.length && !props.pending ? (
+          <QaQueueEmpty />
+        ) : null}
       </div>
 
       <footer className="flex items-center justify-between border-t border-border/70 px-4 py-3">
@@ -111,8 +153,10 @@ function QaQueueCard({
       className={cn(
         "relative w-full overflow-hidden rounded-[1.15rem] border p-3.5 text-left transition duration-200",
         active
-          ? "border-review/25 bg-review-soft/65 shadow-[var(--shadow-card)]"
-          : "border-transparent bg-background/55 hover:border-white hover:bg-white/85",
+          ? "border-review/40 bg-gradient-to-br from-review-soft to-review-soft/50 shadow-[var(--shadow-card)]"
+          : highRisk || overdue
+            ? "border-critical/20 bg-critical-soft/40 hover:bg-critical-soft/65"
+            : "border-mint/15 bg-mint-soft/35 hover:border-mint/30 hover:bg-mint-soft/60",
       )}
     >
       {active ? <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-review" /> : null}

@@ -190,6 +190,7 @@ export function Sidebar() {
           type="button"
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
+          aria-busy={logoutMutation.isPending}
           className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-60"
         >
           <LogOut className="h-4 w-4" /> {logoutMutation.isPending ? "Signing out…" : "Logout"}

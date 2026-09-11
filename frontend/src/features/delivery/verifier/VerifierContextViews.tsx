@@ -1,18 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  CheckCircle2,
-  Download,
-  FileText,
-  Loader2,
-  MessageSquarePlus,
-  ShieldCheck,
-} from "lucide-react";
+import { CheckCircle2, Loader2, MessageSquarePlus, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
-import { formatBytes, formatDateTime, humanize } from "@/features/cases/case-detail-formatting";
+import { formatDateTime, humanize } from "@/features/cases/case-detail-formatting";
 import { createClarification, listClarifications } from "@/lib/api/clarifications";
-import { downloadDocument } from "@/lib/api/documents";
 import type { VerifierTaskContext } from "@/lib/api/tasks";
 
 type Context = VerifierTaskContext;
@@ -48,68 +40,6 @@ export function CaseContextView({ context }: { context: Context }) {
           <p className="mt-1.5 break-words text-[11.5px] font-medium">{value}</p>
         </div>
       ))}
-    </div>
-  );
-}
-
-export function DocumentsView({ context }: { context: Context }) {
-  const download = useMutation({
-    mutationFn: (document: Context["check"]["case"]["documents"][number]) =>
-      downloadDocument(
-        document.publicId,
-        document.versions[0]?.originalName ?? `${humanize(document.type)}.pdf`,
-      ),
-    onError: (error: Error) => toast.error(error.message),
-  });
-  const documents = context.check.case.documents;
-  return (
-    <div className="space-y-2.5">
-      {documents.map((document) => {
-        const version = document.versions[0];
-        return (
-          <article
-            key={document.publicId}
-            className="flex flex-wrap items-center gap-3 rounded-[1.15rem] border border-border/70 bg-background/60 p-3.5"
-          >
-            <span className="grid size-10 place-items-center rounded-full bg-info-soft text-info-foreground">
-              <FileText className="size-4" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[12px] font-semibold">{humanize(document.type)}</p>
-              <p className="mt-0.5 truncate text-[9.5px] text-muted-foreground">
-                {version
-                  ? `v${version.version} · ${formatBytes(version.sizeBytes)} · ${humanize(version.malwareState)}`
-                  : "Awaiting document"}
-              </p>
-              {version ? (
-                <p className="mt-1 truncate font-mono text-[8px] text-muted-foreground">
-                  SHA-256 {version.sha256}
-                </p>
-              ) : null}
-            </div>
-            <button
-              type="button"
-              disabled={!version || download.isPending}
-              onClick={() => download.mutate(document)}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-white/85 px-3 py-2 text-[10px] font-semibold transition hover:bg-info-soft disabled:opacity-40"
-            >
-              {download.isPending ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : (
-                <Download className="size-3.5" />
-              )}{" "}
-              Open securely
-            </button>
-          </article>
-        );
-      })}
-      {!documents.length ? (
-        <EmptyContext
-          icon={FileText}
-          title="No documents available"
-          detail="The candidate or client has not uploaded supporting evidence yet."
-        />
-      ) : null}
     </div>
   );
 }
@@ -170,6 +100,7 @@ export function ClarificationsView({ context }: { context: Context }) {
           />
           <button
             disabled={create.isPending || subject.trim().length < 3 || message.trim().length < 3}
+            aria-busy={create.isPending}
             className="ml-auto inline-flex items-center gap-2 rounded-full bg-warning px-4 py-2 text-[10.5px] font-semibold text-warning-foreground disabled:opacity-45"
           >
             {create.isPending ? (

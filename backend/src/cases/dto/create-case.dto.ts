@@ -1,4 +1,4 @@
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import {
   IsEmail,
   IsIn,
@@ -8,7 +8,12 @@ import {
   Length,
   Matches,
   ValidateIf,
+  ValidateNested,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
 } from "class-validator";
+import { CaseServiceInputDto } from "./case-service-input.dto";
 import {
   INDIAN_MOBILE_MESSAGE,
   INDIAN_MOBILE_PATTERN,
@@ -23,11 +28,18 @@ export class CreateCaseDto {
   @Length(2, 160)
   fullName!: string;
 
-  @ValidateIf((input: CreateCaseDto) => !input.phone || input.email !== undefined)
-  @IsEmail({}, { message: "A valid candidate email or mobile number is required" })
+  @ValidateIf(
+    (input: CreateCaseDto) => !input.phone || input.email !== undefined,
+  )
+  @IsEmail(
+    {},
+    { message: "A valid candidate email or mobile number is required" },
+  )
   email?: string;
 
-  @ValidateIf((input: CreateCaseDto) => !input.email || input.phone !== undefined)
+  @ValidateIf(
+    (input: CreateCaseDto) => !input.email || input.phone !== undefined,
+  )
   @Transform(({ value }) => normalizeIndianMobile(value))
   @Matches(INDIAN_MOBILE_PATTERN, {
     message: `A candidate email or phone ${INDIAN_MOBILE_MESSAGE}`,
@@ -49,4 +61,12 @@ export class CreateCaseDto {
 
   @IsUUID()
   servicePackageId!: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(4)
+  @ValidateNested({ each: true })
+  @Type(() => CaseServiceInputDto)
+  services?: CaseServiceInputDto[];
 }

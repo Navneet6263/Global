@@ -4,6 +4,9 @@ import { Mail, Phone, Trophy, XCircle } from "lucide-react";
 import type { CrmStage, OpportunityDetail, SalesOwner } from "../contracts/crm";
 import { CRM_STAGES, STAGE_LABEL, STAGE_TONE } from "../config/crm";
 import { CrmActivityFeed } from "./crm-activity-feed";
+import { CrmClientCommercial } from "./crm-client-commercial";
+import { CrmCommercialWorkflow } from "./crm-commercial-workflow";
+import { CrmAutoAssignment } from "./crm-auto-assignment";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { Button } from "@/components/ui/button";
@@ -23,6 +26,9 @@ interface CrmOpportunityDrawerProps {
   loading?: boolean;
   canWrite: boolean;
   canAssign: boolean;
+  assigning?: boolean;
+  changingStage?: boolean;
+  preparingOnboarding?: boolean;
   onOpenChange: (open: boolean) => void;
   onStageChange: (stage: CrmStage) => void;
   onAssign: (ownerId: string | null) => void;
@@ -99,9 +105,9 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
               <Select
                 value={detail.stage}
                 onValueChange={(value) => props.onStageChange(value as CrmStage)}
-                disabled={!canWrite}
+                disabled={!canWrite || props.changingStage}
               >
-                <SelectTrigger aria-label="Change stage">
+                <SelectTrigger aria-label="Change stage" aria-busy={props.changingStage}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -116,9 +122,9 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
               <Select
                 value={detail.ownerId ?? "unassigned"}
                 onValueChange={(value) => props.onAssign(value === "unassigned" ? null : value)}
-                disabled={!canAssign}
+                disabled={!canAssign || props.assigning}
               >
-                <SelectTrigger aria-label="Assign owner">
+                <SelectTrigger aria-label="Assign owner" aria-busy={props.assigning}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,6 +139,9 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
             </div>
 
             <div className="flex flex-wrap gap-2">
+              {canAssign && !detail.ownerId && !["WON", "LOST"].includes(detail.stage) && (
+                <CrmAutoAssignment id={detail.id} />
+              )}
               <Button
                 size="sm"
                 variant="outline"
@@ -166,13 +175,22 @@ export function CrmOpportunityDrawer(props: CrmOpportunityDrawerProps) {
                   variant="secondary"
                   onClick={props.onHandoff}
                   disabled={!canWrite || detail.onboardingHandoff}
+                  loading={props.preparingOnboarding}
                 >
-                  {detail.onboardingHandoff ? "Handoff recorded" : "Hand to onboarding"}
+                  {props.preparingOnboarding
+                    ? "Linking client workspace…"
+                    : detail.onboardingHandoff
+                      ? "Client workspace linked"
+                      : "Create / link client workspace"}
                 </Button>
               ) : null}
             </div>
 
+            {detail.onboardingHandoff && canWrite ? (
+              <CrmClientCommercial clientId={detail.accountId} company={detail.company} />
+            ) : null}
             <CrmActivityFeed activities={detail.activities} limit={12} showLink={false} />
+            <CrmCommercialWorkflow key={detail.id} id={detail.id} canWrite={canWrite} />
           </div>
         )}
       </SheetContent>

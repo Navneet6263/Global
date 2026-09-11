@@ -9,6 +9,7 @@ import { FieldVisitCheckInService } from "./field-visit-check-in.service";
 import { FieldVisitCompletionService } from "./field-visit-completion.service";
 import { FieldVisitExceptionService } from "./field-visit-exception.service";
 import { FieldVisitQueryService } from "./field-visit-query.service";
+import type { FieldAssigneeQueryDto } from "./dto/field-assignee-query.dto";
 
 export { mergeFieldVisitQueue } from "./field-visit-query.service";
 
@@ -25,6 +26,14 @@ export class FieldVisitsService {
 
   mine(actor: Actor) {
     return this.queries.mine(actor);
+  }
+
+  eligibleAssignees(
+    actor: Actor,
+    casePublicId: string,
+    query: FieldAssigneeQueryDto,
+  ) {
+    return this.assignments.eligibleAssignees(actor, casePublicId, query);
   }
 
   create(actor: Actor, casePublicId: string, input: CreateFieldVisitDto) {

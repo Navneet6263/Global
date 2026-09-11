@@ -33,7 +33,28 @@ export default defineConfig(({ command, mode }) => {
   ];
 
   if (command === "build") {
-    plugins.push(nitro({ defaultPreset: "cloudflare-module" }));
+    // The deployed UAT runs this entry with Node/PM2. An explicit NITRO_PRESET
+    // can still select another supported target for a separate deployment.
+    plugins.push(
+      nitro({
+        defaultPreset: "node-server",
+        rolldownConfig: {
+          output: {
+            codeSplitting: {
+              groups: [
+                {
+                  // Keep Vite's prebundled helpers out of router/server chunks;
+                  // otherwise Nitro's second pass creates a helper import cycle.
+                  name: "_vite-runtime",
+                  test: /[\\/]rolldown-runtime-[^\\/]+\.js$/,
+                  priority: 100,
+                },
+              ],
+            },
+          },
+        },
+      }),
+    );
   }
 
   plugins.push(react());

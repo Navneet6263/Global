@@ -7,6 +7,7 @@ import {
   ArrowRightLeft,
   CheckCircle2,
   Download,
+  Eye,
   FileCheck2,
   LogIn,
   ShieldCheck,
@@ -167,11 +168,14 @@ function present(event: UserActivityEvent): {
       tone: "bg-success/15 text-success-foreground",
     };
   }
-  if (event.action === "document.downloaded") {
+  if (["document.downloaded", "document.previewed"].includes(event.action)) {
     return {
-      title: "Opened verification document",
+      title:
+        event.action === "document.previewed"
+          ? "Previewed verification document"
+          : "Downloaded verification document",
       detail: `${resource} · ${human(text(after["documentType"]))} · version ${text(after["version"]) || "latest"}`,
-      icon: Download,
+      icon: event.action === "document.previewed" ? Eye : Download,
       tone: "bg-info/15 text-info-foreground",
     };
   }

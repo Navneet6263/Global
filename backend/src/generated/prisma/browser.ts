@@ -33,6 +33,16 @@ export type Branch = Prisma.BranchModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model VendorSharingRecord
+ * 
+ */
+export type VendorSharingRecord = Prisma.VendorSharingRecordModel
+/**
+ * Model PrivacyRecord
+ * 
+ */
+export type PrivacyRecord = Prisma.PrivacyRecordModel
+/**
  * Model Role
  * 
  */
@@ -173,6 +183,11 @@ export type TenantCrmSettings = Prisma.TenantCrmSettingsModel
  */
 export type SalesOpportunity = Prisma.SalesOpportunityModel
 /**
+ * Model CrmProposal
+ * 
+ */
+export type CrmProposal = Prisma.CrmProposalModel
+/**
  * Model SalesActivity
  * 
  */
@@ -187,6 +202,41 @@ export type Invoice = Prisma.InvoiceModel
  * 
  */
 export type InvoiceLine = Prisma.InvoiceLineModel
+/**
+ * Model ManagerReview
+ * 
+ */
+export type ManagerReview = Prisma.ManagerReviewModel
+/**
+ * Model CaseService
+ * 
+ */
+export type CaseService = Prisma.CaseServiceModel
+/**
+ * Model VerificationMethodRun
+ * 
+ */
+export type VerificationMethodRun = Prisma.VerificationMethodRunModel
+/**
+ * Model SourceOutreach
+ * 
+ */
+export type SourceOutreach = Prisma.SourceOutreachModel
+/**
+ * Model ClientPackageRate
+ * 
+ */
+export type ClientPackageRate = Prisma.ClientPackageRateModel
+/**
+ * Model ClientAgreement
+ * 
+ */
+export type ClientAgreement = Prisma.ClientAgreementModel
+/**
+ * Model ClientAgreementFile
+ * 
+ */
+export type ClientAgreementFile = Prisma.ClientAgreementFileModel
 /**
  * Model Payment
  * 

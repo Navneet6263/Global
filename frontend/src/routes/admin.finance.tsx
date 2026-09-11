@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { Section } from "@/components/layout/section";
 import { getFinanceOverview } from "@/lib/api/finance";
 import { money } from "@/features/stakeholders/finance/finance-utils";
+import { MonthlyStatement } from "@/features/stakeholders/finance/MonthlyStatement";
 
 export const Route = createFileRoute("/admin/finance")({
   head: () => ({
@@ -31,6 +32,7 @@ function FinanceOversightPage() {
     <div className="space-y-6">
       <PageHeader
         title="Finance & billing oversight"
+        actions={<MonthlyStatement />}
         description="Commercial exposure only. Invoice issue, payment reconciliation and credit actions remain in the Finance workspace."
         meta={
           overview.data ? `Snapshot generated ${formatTime(overview.data.generatedAt)}` : undefined

@@ -123,6 +123,9 @@ function pipeline(operations: OperationsDashboard): PipelineStage[] {
     "verification",
     "clarification",
     "qa",
+    "manager_review",
+    "report_pending",
+    "payment_pending",
     "completed",
   ];
   const total = Math.max(
@@ -144,7 +147,9 @@ function pipeline(operations: OperationsDashboard): PipelineStage[] {
       mode:
         stage === "completed"
           ? "closed"
-          : ["consent", "documents", "clarification"].includes(stage)
+          : ["consent", "documents", "clarification", "manager_review", "payment_pending"].includes(
+                stage,
+              )
             ? "waiting"
             : "processing",
       oldestAgeMinutes: Math.round(health.oldestHours * 60),
@@ -186,6 +191,7 @@ export const dashboardRepository: DashboardRepository = {
       summary: summaryCards(data, operations, exceptions),
       pipeline: pipeline(operations),
       actions: actions(data),
+      business: { finance: data.businessHealth.finance, outcomes: data.outcomeMix },
     };
   },
   async getPlatformHealth() {

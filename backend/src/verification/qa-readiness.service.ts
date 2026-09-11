@@ -1,5 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import type { Prisma } from "../generated/prisma/client";
+import { caseEvidenceReadiness } from "../documents/evidence-readiness";
+import { updateCaseRisk } from "./case-risk";
 
 type QaReadinessTarget = {
   tenantId: bigint;
@@ -23,6 +25,8 @@ export class QaReadinessService {
       where: { caseId: target.caseId, status: { not: "COMPLETED" } },
     });
     if (unfinishedChecks) return false;
+    if (!(await caseEvidenceReadiness(tx, target.caseId)).ready) return false;
+    await updateCaseRisk(tx, target.caseId);
 
     const promoted = await tx.verificationCase.updateMany({
       where: { id: target.caseId, status: target.fromStatus },
@@ -70,7 +74,10 @@ export class QaReadinessService {
           some: { role: { code: { in: ["QA_REVIEWER", "OPS_MANAGER"] } } },
         },
       },
-      select: { id: true },
+      select: {
+        id: true,
+        userRoles: { select: { role: { select: { code: true } } } },
+      },
     });
     if (reviewers.length) {
       await tx.notification.createMany({
@@ -80,7 +87,11 @@ export class QaReadinessService {
           type: "QA_READY",
           title: "Case ready for QA",
           body: "All verification checks are complete and awaiting independent review.",
-          href: `/cases/${target.casePublicId}`,
+          href: reviewer.userRoles.some(
+            (entry) => entry.role.code === "QA_REVIEWER",
+          )
+            ? "/qa-review"
+            : "/operations/cases",
         })),
       });
     }

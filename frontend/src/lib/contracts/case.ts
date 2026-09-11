@@ -1,23 +1,23 @@
 import type { StatusTone } from "./common";
+import type { CheckType } from "./check";
+export type { CheckType } from "./check";
+export { CHECK_LABELS } from "./check";
 
 export type CaseStage =
-  "intake" | "consent" | "documents" | "verification" | "clarification" | "qa" | "completed";
+  | "intake"
+  | "consent"
+  | "documents"
+  | "verification"
+  | "clarification"
+  | "qa"
+  | "manager_review"
+  | "report_pending"
+  | "payment_pending"
+  | "completed";
 
 export type CasePriority = "standard" | "high" | "critical";
 
 export type SlaState = "healthy" | "approaching" | "overdue";
-
-export type CheckType =
-  | "identity"
-  | "address"
-  | "employment"
-  | "education"
-  | "criminal"
-  | "court_record"
-  | "reference"
-  | "global_database"
-  | "drug_test"
-  | "other";
 
 export type CheckStatus =
   | "not_started"
@@ -43,6 +43,8 @@ export interface CaseDocument {
   status: "pending" | "received" | "rejected" | "verified";
   updatedAt: string;
   rejectionReason?: string;
+  originalName?: string;
+  available?: boolean;
 }
 
 export interface CaseClarification {
@@ -127,20 +129,10 @@ export const STAGE_META: Record<CaseStage, { label: string; tone: StatusTone; mo
   verification: { label: "Verification", tone: "info", mode: "Processing" },
   clarification: { label: "Clarification", tone: "warning", mode: "Waiting on stakeholder" },
   qa: { label: "QA review", tone: "review", mode: "Processing" },
+  manager_review: { label: "Manager approval", tone: "review", mode: "Awaiting approval" },
+  report_pending: { label: "Report preparation", tone: "info", mode: "Processing" },
+  payment_pending: { label: "Payment & release", tone: "warning", mode: "Awaiting settlement" },
   completed: { label: "Completed", tone: "success", mode: "Closed" },
-};
-
-export const CHECK_LABELS: Record<CheckType, string> = {
-  identity: "Identity",
-  address: "Address",
-  employment: "Employment",
-  education: "Education",
-  criminal: "Criminal",
-  court_record: "Court record",
-  reference: "Reference",
-  global_database: "Global database",
-  drug_test: "Drug test",
-  other: "Other",
 };
 
 export const PRIORITY_META: Record<CasePriority, { label: string; tone: StatusTone }> = {

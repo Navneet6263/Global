@@ -41,6 +41,7 @@ export class TaskAssignmentService {
             case: {
               select: {
                 publicId: true,
+                id: true,
                 caseNumber: true,
                 branchId: true,
                 clientId: true,
@@ -100,6 +101,17 @@ export class TaskAssignmentService {
     const instructions = input.instructions?.trim();
     const auditAction = task.assignee ? "task.reassigned" : "task.assigned";
     await this.prisma.$transaction(async (tx) => {
+      const locked = await tx.verificationCase.updateMany({
+        where: {
+          id: task.check.case.id,
+          status: { in: ["IN_PROGRESS", "CLARIFICATION_PENDING"] },
+        },
+        data: { version: { increment: 1 } },
+      });
+      if (locked.count !== 1)
+        throw new ConflictException(
+          "Case changed; refresh before assigning work",
+        );
       const updated = await tx.checkTask.updateMany({
         where: {
           id: task.id,

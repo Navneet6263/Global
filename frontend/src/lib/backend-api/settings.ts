@@ -32,6 +32,9 @@ export interface ServicePackage {
   code: string;
   name: string;
   checks: string[];
+  serviceFamily: string;
+  requiredDocuments: string[];
+  updatedAt: string;
   price?: string | number | null;
   tatHours: number;
   isActive: boolean;
@@ -66,9 +69,21 @@ export function createServicePackage(input: {
   checks: string[];
   price?: number;
   tatHours: number;
+  serviceFamily?: string;
+  requiredDocuments?: string[];
 }) {
   return apiRequest<ServicePackage>("/settings/service-packages", {
     method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function updatePackageRequirements(
+  id: string,
+  input: { updatedAt: string; requiredDocuments: string[] },
+) {
+  return apiRequest(`/settings/service-packages/${id}/requirements`, {
+    method: "PATCH",
     body: JSON.stringify(input),
   });
 }

@@ -20,6 +20,7 @@ import { CaseOperationsService } from "./case-operations.service";
 import { CasesService } from "./cases.service";
 import { CaseReaderService } from "./case-reader.service";
 import { CaseQueryDto } from "./dto/case-query.dto";
+import { CaseCatalogQueryDto } from "./dto/case-catalog-query.dto";
 import { CreateCaseDto } from "./dto/create-case.dto";
 import { AssignCaseOwnerDto, EscalateCaseDto } from "./dto/case-operations.dto";
 import { TransitionCaseDto } from "./dto/transition-case.dto";
@@ -57,9 +58,10 @@ export class CasesController {
   }
 
   @Get("catalog")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
   @RequirePermissions(Permission.CaseCreate)
-  catalog(@CurrentActor() actor: Actor) {
-    return this.cases.catalog(actor);
+  catalog(@CurrentActor() actor: Actor, @Query() query: CaseCatalogQueryDto) {
+    return this.cases.catalog(actor, query.clientId);
   }
 
   @Get(":caseId")

@@ -66,6 +66,10 @@ export interface ControlTowerSnapshot {
   summary: readonly SummaryCard[];
   pipeline: readonly PipelineStage[];
   actions: readonly ActionItem[];
+  business?: {
+    finance: { billed: number; collected: number; outstanding: number; overdue: number };
+    outcomes: Record<string, number>;
+  };
 }
 
 export const ACTION_TREATMENT_META: Record<ActionTreatment, { label: string; tone: StatusTone }> = {

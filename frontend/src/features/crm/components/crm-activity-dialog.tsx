@@ -141,6 +141,7 @@ export function CrmActivityDialog({
           </Button>
           <Button
             disabled={invalid || submitting}
+            loading={submitting}
             onClick={() =>
               onSubmit({
                 type,

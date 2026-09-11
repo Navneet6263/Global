@@ -45,6 +45,7 @@ export function ClientPortfolio({
           type="button"
           onClick={() => exportMutation.mutate()}
           disabled={!items.length || exportMutation.isPending}
+          aria-busy={exportMutation.isPending}
           className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-[11px] font-medium text-muted-foreground shadow-[var(--shadow-card)] transition hover:border-border-strong hover:text-foreground disabled:opacity-40"
         >
           <Download className="h-3.5 w-3.5" />
@@ -143,6 +144,9 @@ const statuses = [
   "IN_PROGRESS",
   "CLARIFICATION_PENDING",
   "QA_REVIEW",
+  "MANAGER_REVIEW",
+  "REPORT_PENDING",
+  "PAYMENT_PENDING",
   "COMPLETED",
   "CLOSED",
   "CANCELLED",
@@ -153,6 +157,8 @@ const quickFilters = [
   { label: "Documents", value: "DOCUMENT_PENDING" },
   { label: "In progress", value: "IN_PROGRESS" },
   { label: "Quality review", value: "QA_REVIEW" },
+  { label: "Approval", value: "MANAGER_REVIEW" },
+  { label: "Payment & release", value: "PAYMENT_PENDING" },
   { label: "Completed", value: "COMPLETED" },
 ];
 

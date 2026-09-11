@@ -30,6 +30,8 @@ export type CaseCheckAvgAggregateOutputType = {
   id: number | null
   tenantId: number | null
   caseId: number | null
+  caseServiceId: number | null
+  reviewCycle: number | null
   version: number | null
 }
 
@@ -37,6 +39,8 @@ export type CaseCheckSumAggregateOutputType = {
   id: bigint | null
   tenantId: bigint | null
   caseId: bigint | null
+  caseServiceId: bigint | null
+  reviewCycle: number | null
   version: number | null
 }
 
@@ -45,6 +49,8 @@ export type CaseCheckMinAggregateOutputType = {
   publicId: string | null
   tenantId: bigint | null
   caseId: bigint | null
+  caseServiceId: bigint | null
+  reviewCycle: number | null
   type: string | null
   status: string | null
   result: string | null
@@ -62,6 +68,8 @@ export type CaseCheckMaxAggregateOutputType = {
   publicId: string | null
   tenantId: bigint | null
   caseId: bigint | null
+  caseServiceId: bigint | null
+  reviewCycle: number | null
   type: string | null
   status: string | null
   result: string | null
@@ -79,6 +87,8 @@ export type CaseCheckCountAggregateOutputType = {
   publicId: number
   tenantId: number
   caseId: number
+  caseServiceId: number
+  reviewCycle: number
   type: number
   status: number
   result: number
@@ -97,6 +107,8 @@ export type CaseCheckAvgAggregateInputType = {
   id?: true
   tenantId?: true
   caseId?: true
+  caseServiceId?: true
+  reviewCycle?: true
   version?: true
 }
 
@@ -104,6 +116,8 @@ export type CaseCheckSumAggregateInputType = {
   id?: true
   tenantId?: true
   caseId?: true
+  caseServiceId?: true
+  reviewCycle?: true
   version?: true
 }
 
@@ -112,6 +126,8 @@ export type CaseCheckMinAggregateInputType = {
   publicId?: true
   tenantId?: true
   caseId?: true
+  caseServiceId?: true
+  reviewCycle?: true
   type?: true
   status?: true
   result?: true
@@ -129,6 +145,8 @@ export type CaseCheckMaxAggregateInputType = {
   publicId?: true
   tenantId?: true
   caseId?: true
+  caseServiceId?: true
+  reviewCycle?: true
   type?: true
   status?: true
   result?: true
@@ -146,6 +164,8 @@ export type CaseCheckCountAggregateInputType = {
   publicId?: true
   tenantId?: true
   caseId?: true
+  caseServiceId?: true
+  reviewCycle?: true
   type?: true
   status?: true
   result?: true
@@ -250,6 +270,8 @@ export type CaseCheckGroupByOutputType = {
   publicId: string
   tenantId: bigint
   caseId: bigint
+  caseServiceId: bigint | null
+  reviewCycle: number
   type: string
   status: string
   result: string | null
@@ -290,6 +312,8 @@ export type CaseCheckWhereInput = {
   publicId?: Prisma.StringFilter<"CaseCheck"> | string
   tenantId?: Prisma.BigIntFilter<"CaseCheck"> | bigint | number
   caseId?: Prisma.BigIntFilter<"CaseCheck"> | bigint | number
+  caseServiceId?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  reviewCycle?: Prisma.IntFilter<"CaseCheck"> | number
   type?: Prisma.StringFilter<"CaseCheck"> | string
   status?: Prisma.StringFilter<"CaseCheck"> | string
   result?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
@@ -304,6 +328,8 @@ export type CaseCheckWhereInput = {
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   tasks?: Prisma.CheckTaskListRelationFilter
   findings?: Prisma.FindingListRelationFilter
+  caseService?: Prisma.XOR<Prisma.CaseServiceNullableScalarRelationFilter, Prisma.CaseServiceWhereInput> | null
+  methodRuns?: Prisma.VerificationMethodRunListRelationFilter
 }
 
 export type CaseCheckOrderByWithRelationInput = {
@@ -311,6 +337,8 @@ export type CaseCheckOrderByWithRelationInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   result?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -325,17 +353,21 @@ export type CaseCheckOrderByWithRelationInput = {
   case?: Prisma.VerificationCaseOrderByWithRelationInput
   tasks?: Prisma.CheckTaskOrderByRelationAggregateInput
   findings?: Prisma.FindingOrderByRelationAggregateInput
+  caseService?: Prisma.CaseServiceOrderByWithRelationInput
+  methodRuns?: Prisma.VerificationMethodRunOrderByRelationAggregateInput
 }
 
 export type CaseCheckWhereUniqueInput = Prisma.AtLeast<{
   id?: bigint | number
   publicId?: string
-  caseId_type?: Prisma.CaseCheckCaseIdTypeCompoundUniqueInput
+  caseId_caseServiceId_type?: Prisma.CaseCheckCaseIdCaseServiceIdTypeCompoundUniqueInput
   AND?: Prisma.CaseCheckWhereInput | Prisma.CaseCheckWhereInput[]
   OR?: Prisma.CaseCheckWhereInput[]
   NOT?: Prisma.CaseCheckWhereInput | Prisma.CaseCheckWhereInput[]
   tenantId?: Prisma.BigIntFilter<"CaseCheck"> | bigint | number
   caseId?: Prisma.BigIntFilter<"CaseCheck"> | bigint | number
+  caseServiceId?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  reviewCycle?: Prisma.IntFilter<"CaseCheck"> | number
   type?: Prisma.StringFilter<"CaseCheck"> | string
   status?: Prisma.StringFilter<"CaseCheck"> | string
   result?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
@@ -350,13 +382,17 @@ export type CaseCheckWhereUniqueInput = Prisma.AtLeast<{
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   tasks?: Prisma.CheckTaskListRelationFilter
   findings?: Prisma.FindingListRelationFilter
-}, "id" | "publicId" | "caseId_type">
+  caseService?: Prisma.XOR<Prisma.CaseServiceNullableScalarRelationFilter, Prisma.CaseServiceWhereInput> | null
+  methodRuns?: Prisma.VerificationMethodRunListRelationFilter
+}, "id" | "publicId" | "caseId_caseServiceId_type">
 
 export type CaseCheckOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   result?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -382,6 +418,8 @@ export type CaseCheckScalarWhereWithAggregatesInput = {
   publicId?: Prisma.StringWithAggregatesFilter<"CaseCheck"> | string
   tenantId?: Prisma.BigIntWithAggregatesFilter<"CaseCheck"> | bigint | number
   caseId?: Prisma.BigIntWithAggregatesFilter<"CaseCheck"> | bigint | number
+  caseServiceId?: Prisma.BigIntNullableWithAggregatesFilter<"CaseCheck"> | bigint | number | null
+  reviewCycle?: Prisma.IntWithAggregatesFilter<"CaseCheck"> | number
   type?: Prisma.StringWithAggregatesFilter<"CaseCheck"> | string
   status?: Prisma.StringWithAggregatesFilter<"CaseCheck"> | string
   result?: Prisma.StringNullableWithAggregatesFilter<"CaseCheck"> | string | null
@@ -397,6 +435,7 @@ export type CaseCheckScalarWhereWithAggregatesInput = {
 export type CaseCheckCreateInput = {
   id?: bigint | number
   publicId?: string
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -411,6 +450,8 @@ export type CaseCheckCreateInput = {
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckUncheckedCreateInput = {
@@ -418,6 +459,8 @@ export type CaseCheckUncheckedCreateInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -430,11 +473,13 @@ export type CaseCheckUncheckedCreateInput = {
   updatedAt?: Date | string
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckUpdateInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -449,6 +494,8 @@ export type CaseCheckUpdateInput = {
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateInput = {
@@ -456,6 +503,8 @@ export type CaseCheckUncheckedUpdateInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -468,12 +517,15 @@ export type CaseCheckUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckCreateManyInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -489,6 +541,7 @@ export type CaseCheckCreateManyInput = {
 export type CaseCheckUpdateManyMutationInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -506,6 +559,8 @@ export type CaseCheckUncheckedUpdateManyInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -528,8 +583,9 @@ export type CaseCheckOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type CaseCheckCaseIdTypeCompoundUniqueInput = {
+export type CaseCheckCaseIdCaseServiceIdTypeCompoundUniqueInput = {
   caseId: bigint | number
+  caseServiceId: bigint | number
   type: string
 }
 
@@ -538,6 +594,8 @@ export type CaseCheckCountOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   result?: Prisma.SortOrder
@@ -554,6 +612,8 @@ export type CaseCheckAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -562,6 +622,8 @@ export type CaseCheckMaxOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   result?: Prisma.SortOrder
@@ -579,6 +641,8 @@ export type CaseCheckMinOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   result?: Prisma.SortOrder
@@ -595,6 +659,8 @@ export type CaseCheckSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
+  caseServiceId?: Prisma.SortOrder
+  reviewCycle?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -715,9 +781,66 @@ export type CaseCheckUpdateOneRequiredWithoutFindingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutFindingsInput, Prisma.CaseCheckUpdateWithoutFindingsInput>, Prisma.CaseCheckUncheckedUpdateWithoutFindingsInput>
 }
 
+export type CaseCheckCreateNestedManyWithoutCaseServiceInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput> | Prisma.CaseCheckCreateWithoutCaseServiceInput[] | Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput | Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput[]
+  createMany?: Prisma.CaseCheckCreateManyCaseServiceInputEnvelope
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+}
+
+export type CaseCheckUncheckedCreateNestedManyWithoutCaseServiceInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput> | Prisma.CaseCheckCreateWithoutCaseServiceInput[] | Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput | Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput[]
+  createMany?: Prisma.CaseCheckCreateManyCaseServiceInputEnvelope
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+}
+
+export type CaseCheckUpdateManyWithoutCaseServiceNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput> | Prisma.CaseCheckCreateWithoutCaseServiceInput[] | Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput | Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput[]
+  upsert?: Prisma.CaseCheckUpsertWithWhereUniqueWithoutCaseServiceInput | Prisma.CaseCheckUpsertWithWhereUniqueWithoutCaseServiceInput[]
+  createMany?: Prisma.CaseCheckCreateManyCaseServiceInputEnvelope
+  set?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  disconnect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  delete?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  update?: Prisma.CaseCheckUpdateWithWhereUniqueWithoutCaseServiceInput | Prisma.CaseCheckUpdateWithWhereUniqueWithoutCaseServiceInput[]
+  updateMany?: Prisma.CaseCheckUpdateManyWithWhereWithoutCaseServiceInput | Prisma.CaseCheckUpdateManyWithWhereWithoutCaseServiceInput[]
+  deleteMany?: Prisma.CaseCheckScalarWhereInput | Prisma.CaseCheckScalarWhereInput[]
+}
+
+export type CaseCheckUncheckedUpdateManyWithoutCaseServiceNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput> | Prisma.CaseCheckCreateWithoutCaseServiceInput[] | Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput | Prisma.CaseCheckCreateOrConnectWithoutCaseServiceInput[]
+  upsert?: Prisma.CaseCheckUpsertWithWhereUniqueWithoutCaseServiceInput | Prisma.CaseCheckUpsertWithWhereUniqueWithoutCaseServiceInput[]
+  createMany?: Prisma.CaseCheckCreateManyCaseServiceInputEnvelope
+  set?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  disconnect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  delete?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  update?: Prisma.CaseCheckUpdateWithWhereUniqueWithoutCaseServiceInput | Prisma.CaseCheckUpdateWithWhereUniqueWithoutCaseServiceInput[]
+  updateMany?: Prisma.CaseCheckUpdateManyWithWhereWithoutCaseServiceInput | Prisma.CaseCheckUpdateManyWithWhereWithoutCaseServiceInput[]
+  deleteMany?: Prisma.CaseCheckScalarWhereInput | Prisma.CaseCheckScalarWhereInput[]
+}
+
+export type CaseCheckCreateNestedOneWithoutMethodRunsInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutMethodRunsInput, Prisma.CaseCheckUncheckedCreateWithoutMethodRunsInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutMethodRunsInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+}
+
+export type CaseCheckUpdateOneRequiredWithoutMethodRunsNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutMethodRunsInput, Prisma.CaseCheckUncheckedCreateWithoutMethodRunsInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutMethodRunsInput
+  upsert?: Prisma.CaseCheckUpsertWithoutMethodRunsInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutMethodRunsInput, Prisma.CaseCheckUpdateWithoutMethodRunsInput>, Prisma.CaseCheckUncheckedUpdateWithoutMethodRunsInput>
+}
+
 export type CaseCheckCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -731,12 +854,16 @@ export type CaseCheckCreateWithoutTenantInput = {
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckUncheckedCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -749,6 +876,7 @@ export type CaseCheckUncheckedCreateWithoutTenantInput = {
   updatedAt?: Date | string
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckCreateOrConnectWithoutTenantInput = {
@@ -784,6 +912,8 @@ export type CaseCheckScalarWhereInput = {
   publicId?: Prisma.StringFilter<"CaseCheck"> | string
   tenantId?: Prisma.BigIntFilter<"CaseCheck"> | bigint | number
   caseId?: Prisma.BigIntFilter<"CaseCheck"> | bigint | number
+  caseServiceId?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  reviewCycle?: Prisma.IntFilter<"CaseCheck"> | number
   type?: Prisma.StringFilter<"CaseCheck"> | string
   status?: Prisma.StringFilter<"CaseCheck"> | string
   result?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
@@ -799,6 +929,7 @@ export type CaseCheckScalarWhereInput = {
 export type CaseCheckCreateWithoutCaseInput = {
   id?: bigint | number
   publicId?: string
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -812,12 +943,16 @@ export type CaseCheckCreateWithoutCaseInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckUncheckedCreateWithoutCaseInput = {
   id?: bigint | number
   publicId?: string
   tenantId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -830,6 +965,7 @@ export type CaseCheckUncheckedCreateWithoutCaseInput = {
   updatedAt?: Date | string
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckCreateOrConnectWithoutCaseInput = {
@@ -860,6 +996,7 @@ export type CaseCheckUpdateManyWithWhereWithoutCaseInput = {
 export type CaseCheckCreateWithoutTasksInput = {
   id?: bigint | number
   publicId?: string
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -873,6 +1010,8 @@ export type CaseCheckCreateWithoutTasksInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckUncheckedCreateWithoutTasksInput = {
@@ -880,6 +1019,8 @@ export type CaseCheckUncheckedCreateWithoutTasksInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -891,6 +1032,7 @@ export type CaseCheckUncheckedCreateWithoutTasksInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckCreateOrConnectWithoutTasksInput = {
@@ -912,6 +1054,7 @@ export type CaseCheckUpdateToOneWithWhereWithoutTasksInput = {
 export type CaseCheckUpdateWithoutTasksInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -925,6 +1068,8 @@ export type CaseCheckUpdateWithoutTasksInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateWithoutTasksInput = {
@@ -932,6 +1077,8 @@ export type CaseCheckUncheckedUpdateWithoutTasksInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -943,11 +1090,13 @@ export type CaseCheckUncheckedUpdateWithoutTasksInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckCreateWithoutFindingsInput = {
   id?: bigint | number
   publicId?: string
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -961,6 +1110,8 @@ export type CaseCheckCreateWithoutFindingsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckUncheckedCreateWithoutFindingsInput = {
@@ -968,6 +1119,8 @@ export type CaseCheckUncheckedCreateWithoutFindingsInput = {
   publicId?: string
   tenantId: bigint | number
   caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -979,6 +1132,7 @@ export type CaseCheckUncheckedCreateWithoutFindingsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
 
 export type CaseCheckCreateOrConnectWithoutFindingsInput = {
@@ -1000,6 +1154,7 @@ export type CaseCheckUpdateToOneWithWhereWithoutFindingsInput = {
 export type CaseCheckUpdateWithoutFindingsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1013,6 +1168,8 @@ export type CaseCheckUpdateWithoutFindingsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateWithoutFindingsInput = {
@@ -1020,6 +1177,8 @@ export type CaseCheckUncheckedUpdateWithoutFindingsInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1031,11 +1190,181 @@ export type CaseCheckUncheckedUpdateWithoutFindingsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckCreateWithoutCaseServiceInput = {
+  id?: bigint | number
+  publicId?: string
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckUncheckedCreateWithoutCaseServiceInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckCreateOrConnectWithoutCaseServiceInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput>
+}
+
+export type CaseCheckCreateManyCaseServiceInputEnvelope = {
+  data: Prisma.CaseCheckCreateManyCaseServiceInput | Prisma.CaseCheckCreateManyCaseServiceInput[]
+}
+
+export type CaseCheckUpsertWithWhereUniqueWithoutCaseServiceInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  update: Prisma.XOR<Prisma.CaseCheckUpdateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedUpdateWithoutCaseServiceInput>
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedCreateWithoutCaseServiceInput>
+}
+
+export type CaseCheckUpdateWithWhereUniqueWithoutCaseServiceInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateWithoutCaseServiceInput, Prisma.CaseCheckUncheckedUpdateWithoutCaseServiceInput>
+}
+
+export type CaseCheckUpdateManyWithWhereWithoutCaseServiceInput = {
+  where: Prisma.CaseCheckScalarWhereInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateManyMutationInput, Prisma.CaseCheckUncheckedUpdateManyWithoutCaseServiceInput>
+}
+
+export type CaseCheckCreateWithoutMethodRunsInput = {
+  id?: bigint | number
+  publicId?: string
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+}
+
+export type CaseCheckUncheckedCreateWithoutMethodRunsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckCreateOrConnectWithoutMethodRunsInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutMethodRunsInput, Prisma.CaseCheckUncheckedCreateWithoutMethodRunsInput>
+}
+
+export type CaseCheckUpsertWithoutMethodRunsInput = {
+  update: Prisma.XOR<Prisma.CaseCheckUpdateWithoutMethodRunsInput, Prisma.CaseCheckUncheckedUpdateWithoutMethodRunsInput>
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutMethodRunsInput, Prisma.CaseCheckUncheckedCreateWithoutMethodRunsInput>
+  where?: Prisma.CaseCheckWhereInput
+}
+
+export type CaseCheckUpdateToOneWithWhereWithoutMethodRunsInput = {
+  where?: Prisma.CaseCheckWhereInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateWithoutMethodRunsInput, Prisma.CaseCheckUncheckedUpdateWithoutMethodRunsInput>
+}
+
+export type CaseCheckUpdateWithoutMethodRunsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+}
+
+export type CaseCheckUncheckedUpdateWithoutMethodRunsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckCreateManyTenantInput = {
   publicId?: string
   caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -1051,6 +1380,7 @@ export type CaseCheckCreateManyTenantInput = {
 export type CaseCheckUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1064,12 +1394,16 @@ export type CaseCheckUpdateWithoutTenantInput = {
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1082,12 +1416,15 @@ export type CaseCheckUncheckedUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1103,6 +1440,8 @@ export type CaseCheckUncheckedUpdateManyWithoutTenantInput = {
 export type CaseCheckCreateManyCaseInput = {
   publicId?: string
   tenantId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
   type: string
   status?: string
   result?: string | null
@@ -1118,6 +1457,7 @@ export type CaseCheckCreateManyCaseInput = {
 export type CaseCheckUpdateWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1131,12 +1471,16 @@ export type CaseCheckUpdateWithoutCaseInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1149,12 +1493,92 @@ export type CaseCheckUncheckedUpdateWithoutCaseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
 
 export type CaseCheckUncheckedUpdateManyWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CaseCheckCreateManyCaseServiceInput = {
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CaseCheckUpdateWithoutCaseServiceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateWithoutCaseServiceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateManyWithoutCaseServiceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1175,11 +1599,13 @@ export type CaseCheckUncheckedUpdateManyWithoutCaseInput = {
 export type CaseCheckCountOutputType = {
   tasks: number
   findings: number
+  methodRuns: number
 }
 
 export type CaseCheckCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tasks?: boolean | CaseCheckCountOutputTypeCountTasksArgs
   findings?: boolean | CaseCheckCountOutputTypeCountFindingsArgs
+  methodRuns?: boolean | CaseCheckCountOutputTypeCountMethodRunsArgs
 }
 
 /**
@@ -1206,12 +1632,21 @@ export type CaseCheckCountOutputTypeCountFindingsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.FindingWhereInput
 }
 
+/**
+ * CaseCheckCountOutputType without action
+ */
+export type CaseCheckCountOutputTypeCountMethodRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationMethodRunWhereInput
+}
+
 
 export type CaseCheckSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   publicId?: boolean
   tenantId?: boolean
   caseId?: boolean
+  caseServiceId?: boolean
+  reviewCycle?: boolean
   type?: boolean
   status?: boolean
   result?: boolean
@@ -1226,6 +1661,8 @@ export type CaseCheckSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.CaseCheck$tasksArgs<ExtArgs>
   findings?: boolean | Prisma.CaseCheck$findingsArgs<ExtArgs>
+  caseService?: boolean | Prisma.CaseCheck$caseServiceArgs<ExtArgs>
+  methodRuns?: boolean | Prisma.CaseCheck$methodRunsArgs<ExtArgs>
   _count?: boolean | Prisma.CaseCheckCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["caseCheck"]>
 
@@ -1236,6 +1673,8 @@ export type CaseCheckSelectScalar = {
   publicId?: boolean
   tenantId?: boolean
   caseId?: boolean
+  caseServiceId?: boolean
+  reviewCycle?: boolean
   type?: boolean
   status?: boolean
   result?: boolean
@@ -1248,12 +1687,14 @@ export type CaseCheckSelectScalar = {
   updatedAt?: boolean
 }
 
-export type CaseCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "type" | "status" | "result" | "riskLevel" | "dueAt" | "completedAt" | "sourceSummary" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["caseCheck"]>
+export type CaseCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "caseServiceId" | "reviewCycle" | "type" | "status" | "result" | "riskLevel" | "dueAt" | "completedAt" | "sourceSummary" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["caseCheck"]>
 export type CaseCheckInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.CaseCheck$tasksArgs<ExtArgs>
   findings?: boolean | Prisma.CaseCheck$findingsArgs<ExtArgs>
+  caseService?: boolean | Prisma.CaseCheck$caseServiceArgs<ExtArgs>
+  methodRuns?: boolean | Prisma.CaseCheck$methodRunsArgs<ExtArgs>
   _count?: boolean | Prisma.CaseCheckCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1264,12 +1705,16 @@ export type $CaseCheckPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     case: Prisma.$VerificationCasePayload<ExtArgs>
     tasks: Prisma.$CheckTaskPayload<ExtArgs>[]
     findings: Prisma.$FindingPayload<ExtArgs>[]
+    caseService: Prisma.$CaseServicePayload<ExtArgs> | null
+    methodRuns: Prisma.$VerificationMethodRunPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
     publicId: string
     tenantId: bigint
     caseId: bigint
+    caseServiceId: bigint | null
+    reviewCycle: number
     type: string
     status: string
     result: string | null
@@ -1624,6 +2069,8 @@ export interface Prisma__CaseCheckClient<T, Null = never, ExtArgs extends runtim
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   tasks<T extends Prisma.CaseCheck$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   findings<T extends Prisma.CaseCheck$findingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$findingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FindingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  caseService<T extends Prisma.CaseCheck$caseServiceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$caseServiceArgs<ExtArgs>>): Prisma.Prisma__CaseServiceClient<runtime.Types.Result.GetResult<Prisma.$CaseServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  methodRuns<T extends Prisma.CaseCheck$methodRunsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$methodRunsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationMethodRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1657,6 +2104,8 @@ export interface CaseCheckFieldRefs {
   readonly publicId: Prisma.FieldRef<"CaseCheck", 'String'>
   readonly tenantId: Prisma.FieldRef<"CaseCheck", 'BigInt'>
   readonly caseId: Prisma.FieldRef<"CaseCheck", 'BigInt'>
+  readonly caseServiceId: Prisma.FieldRef<"CaseCheck", 'BigInt'>
+  readonly reviewCycle: Prisma.FieldRef<"CaseCheck", 'Int'>
   readonly type: Prisma.FieldRef<"CaseCheck", 'String'>
   readonly status: Prisma.FieldRef<"CaseCheck", 'String'>
   readonly result: Prisma.FieldRef<"CaseCheck", 'String'>
@@ -2059,6 +2508,49 @@ export type CaseCheck$findingsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.FindingScalarFieldEnum | Prisma.FindingScalarFieldEnum[]
+}
+
+/**
+ * CaseCheck.caseService
+ */
+export type CaseCheck$caseServiceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CaseService
+   */
+  select?: Prisma.CaseServiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CaseService
+   */
+  omit?: Prisma.CaseServiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CaseServiceInclude<ExtArgs> | null
+  where?: Prisma.CaseServiceWhereInput
+}
+
+/**
+ * CaseCheck.methodRuns
+ */
+export type CaseCheck$methodRunsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationMethodRun
+   */
+  select?: Prisma.VerificationMethodRunSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationMethodRun
+   */
+  omit?: Prisma.VerificationMethodRunOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationMethodRunInclude<ExtArgs> | null
+  where?: Prisma.VerificationMethodRunWhereInput
+  orderBy?: Prisma.VerificationMethodRunOrderByWithRelationInput | Prisma.VerificationMethodRunOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationMethodRunWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationMethodRunScalarFieldEnum | Prisma.VerificationMethodRunScalarFieldEnum[]
 }
 
 /**

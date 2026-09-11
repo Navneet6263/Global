@@ -4,6 +4,10 @@ export interface ReportSummary {
   id: string;
   status: string;
   currentVersion: number;
+  workflowVersion?: number;
+  canDownload?: boolean;
+  releasedAt?: string | null;
+  downloadExpiresAt?: string | null;
   publishedAt?: string | null;
   createdAt: string;
   versions: Array<{
@@ -18,6 +22,8 @@ export interface PublishedReportSummary {
   id: string;
   status: string;
   currentVersion: number;
+  canDownload?: boolean;
+  downloadExpiresAt?: string | null;
   publishedAt?: string | null;
   case: {
     id: string;

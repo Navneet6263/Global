@@ -21,25 +21,32 @@ void test("every QA view composes search and ownership with tenant, branch and c
       view,
     });
     const where = qaRegisterWhere(actor, query, now);
+    const ownership = where.AND[2];
+    const search = where.AND[3];
+    assert.ok(ownership);
+    assert.ok(search);
     assert.deepEqual(where.AND[0], {
       tenantId: 1n,
       branchId: 3n,
       clientId: 4n,
     });
-    assert.ok(where.AND[3].OR);
-    if (view === "mine")
-      assert.deepEqual(where.AND[2], {
+    assert.ok(search.OR);
+    if (view === "mine") {
+      assert.deepEqual(ownership, {
         qaReviewerId: 2n,
         qaClaimedAt: { gt: new Date("2026-09-05T09:30:00Z") },
       });
-    if (view === "available")
-      assert.deepEqual(where.AND[2].OR?.at(-1), {
+    } else if (view === "available") {
+      assert.ok("OR" in ownership);
+      assert.deepEqual(ownership.OR?.at(-1), {
         qaClaimedAt: { lte: new Date("2026-09-05T09:30:00Z") },
       });
-    if (view === "corrections")
-      assert.deepEqual(where.AND[2].qaReviews, {
+    } else if (view === "corrections") {
+      assert.ok("qaReviews" in ownership);
+      assert.deepEqual(ownership.qaReviews, {
         some: { decision: "REWORK" },
       });
+    }
   }
 });
 
@@ -99,7 +106,12 @@ void test("QA register reads bounded summary rows without document payloads or f
 });
 
 void test("QA detail is scope checked and rejects a case that left the QA gate", async () => {
-  let row: { publicId: string; status: string } | null = null;
+  let row: {
+    publicId: string;
+    status: string;
+    checks?: { type: string }[];
+    fieldVisits?: { status: string }[];
+  } | null = null;
   const db = {
     verificationCase: {
       findFirst: (input: { where: { AND: unknown[] } }) => {
@@ -114,8 +126,18 @@ void test("QA detail is scope checked and rejects a case that left the QA gate",
   await assert.rejects(readQaDetail(db, actor, "case-1"), NotFoundException);
   row = { publicId: "case-1", status: "COMPLETED" };
   await assert.rejects(readQaDetail(db, actor, "case-1"), ConflictException);
-  row = { publicId: "case-1", status: "QA_REVIEW" };
+  row = {
+    publicId: "case-1",
+    status: "QA_REVIEW",
+    checks: [],
+    fieldVisits: [],
+  };
   assert.equal((await readQaDetail(db, actor, "case-1")).id, "case-1");
+  row = { ...row, checks: [{ type: "ADDRESS" }] };
+  await assert.rejects(
+    readQaDetail(db, actor, "case-1"),
+    /Physical address verification required/,
+  );
 });
 
 void test("decision history is bounded, scoped and belongs only to its reviewer", async () => {

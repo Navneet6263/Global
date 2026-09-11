@@ -150,7 +150,12 @@ function AssignmentsPage() {
                     className="min-h-20 rounded-xl bg-background"
                   />
                 </label>
-                <Button className="h-11 w-full" disabled={!canSubmit} onClick={submit}>
+                <Button
+                  className="h-11 w-full"
+                  disabled={!canSubmit}
+                  loading={assign.isPending}
+                  onClick={submit}
+                >
                   {assign.isPending
                     ? "Assigning securely…"
                     : selectedMember && selected.length > 0

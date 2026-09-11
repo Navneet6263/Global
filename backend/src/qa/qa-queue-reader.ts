@@ -3,6 +3,7 @@ import type { PrismaService } from "../database/prisma.service";
 import type { QaQueryDto } from "./dto/qa-query.dto";
 import { claimCutoff } from "./qa-claim";
 import { qaDetailSelect } from "./qa-projection";
+import { fieldQaWhere } from "../field-visits/physical-field-policy";
 
 export async function readQaQueue(
   prisma: PrismaService,
@@ -15,7 +16,8 @@ export async function readQaQueue(
     ...(actor.branchId ? { branchId: actor.branchId } : {}),
     ...(actor.clientId ? { clientId: actor.clientId } : {}),
     status: "QA_REVIEW",
-  } as const;
+    AND: [fieldQaWhere()],
+  };
   const search = query.search?.trim();
   const [rows, awaiting, overdue, highRisk, claimed] = await Promise.all([
     prisma.verificationCase.findMany({

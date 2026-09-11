@@ -8,10 +8,15 @@ import type { Actor } from "../common/auth/actor";
 import { assertAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
 import type { ReviewFieldExceptionDto } from "./dto/review-field-exception.dto";
+import { QaReadinessService } from "../verification/qa-readiness.service";
+import { lockMutableCaseEvidence } from "../documents/upload-document-policy";
 
 @Injectable()
 export class FieldVisitExceptionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly qaReadiness: QaReadinessService,
+  ) {}
 
   async review(
     actor: Actor,
@@ -27,30 +32,50 @@ export class FieldVisitExceptionService {
       where: {
         tenantId: actor.tenantId,
         publicId: visitPublicId,
-        status: "EXCEPTION_REVIEW",
+        status: { in: ["EXCEPTION_REVIEW", "REVIEW_PENDING"] },
         case: caseAccessScope(actor),
       },
       select: {
         id: true,
         version: true,
+        status: true,
         assigneeId: true,
         remarks: true,
-        case: { select: { publicId: true, caseNumber: true } },
+        case: {
+          select: {
+            id: true,
+            publicId: true,
+            caseNumber: true,
+            status: true,
+            branchId: true,
+            clientId: true,
+          },
+        },
       },
     });
     if (!visit) throw new NotFoundException("Field exception not found");
     if (visit.version !== input.version) {
       throw new ConflictException("Visit changed; refresh and try again");
     }
+    if (!["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(visit.case.status)) {
+      throw new ConflictException(
+        "Return the case to verification before reviewing field evidence",
+      );
+    }
+    if (visit.assigneeId === actor.userId)
+      throw new ConflictException(
+        "Another supervisor must review your field visit",
+      );
 
     const approved = input.decision === "APPROVE";
     const nextStatus = approved ? "COMPLETED" : "ASSIGNED";
     await this.prisma.$transaction(async (tx) => {
+      await lockMutableCaseEvidence(tx, visit.case.id);
       const updated = await tx.fieldVisit.updateMany({
         where: {
           id: visit.id,
           version: input.version,
-          status: "EXCEPTION_REVIEW",
+          status: { in: ["EXCEPTION_REVIEW", "REVIEW_PENDING"] },
         },
         data: approved
           ? {
@@ -84,16 +109,30 @@ export class FieldVisitExceptionService {
       if (updated.count !== 1) {
         throw new ConflictException("Visit was reviewed concurrently");
       }
+      if (approved && visit.case.status === "IN_PROGRESS") {
+        await this.qaReadiness.promoteIfReady(tx, {
+          tenantId: actor.tenantId,
+          caseId: visit.case.id,
+          casePublicId: visit.case.publicId,
+          branchId: visit.case.branchId,
+          clientId: visit.case.clientId,
+          changedById: actor.userId,
+          fromStatus: "IN_PROGRESS",
+          reason: "Required field evidence accepted by supervisor",
+        });
+      }
       await tx.auditEvent.create({
         data: {
           tenantId: actor.tenantId,
           actorUserId: actor.userId,
           action: approved
-            ? "field_visit.exception-approved"
+            ? visit.status === "REVIEW_PENDING"
+              ? "field_visit.supervisor-approved"
+              : "field_visit.exception-approved"
             : "field_visit.retry-requested",
           resourceType: "field_visit",
           resourcePublicId: visitPublicId,
-          beforeJson: JSON.stringify({ status: "EXCEPTION_REVIEW" }),
+          beforeJson: JSON.stringify({ status: visit.status }),
           afterJson: JSON.stringify({
             status: nextStatus,
             decision: input.decision,
@@ -108,9 +147,9 @@ export class FieldVisitExceptionService {
             userId: visit.assigneeId,
             type: approved ? "FIELD_VISIT_APPROVED" : "FIELD_VISIT_RETRY",
             title: approved
-              ? "Field exception approved"
+              ? "Field visit approved"
               : "Field visit retry required",
-            body: `${visit.case.caseNumber}: ${input.note?.trim() || (approved ? "Supervisor approved the geofence exception." : "Capture fresh location and evidence.")}`,
+            body: `${visit.case.caseNumber}: ${input.note?.trim() || (approved ? "Supervisor approved the field evidence." : "Capture fresh location and evidence.")}`,
             href: "/field-executive",
           },
         });

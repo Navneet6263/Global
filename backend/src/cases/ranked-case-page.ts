@@ -9,6 +9,9 @@ const statusGroups = [
   ["IN_PROGRESS"],
   ["CLARIFICATION_PENDING"],
   ["QA_REVIEW"],
+  ["MANAGER_REVIEW"],
+  ["REPORT_PENDING"],
+  ["PAYMENT_PENDING"],
   ["COMPLETED", "CLOSED", "CANCELLED"],
 ];
 const priorityGroups = [["NORMAL"], ["HIGH"], ["URGENT"]];

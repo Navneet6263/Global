@@ -6,8 +6,7 @@ import { toast } from "sonner";
 import { Empty, Panel, Status } from "@/features/cases/case-detail-ui";
 import { getSession } from "@/lib/api/auth";
 import type { CaseDetail } from "@/lib/api/cases";
-import { createFieldVisit, reviewFieldException } from "@/lib/api/field-visits";
-import { listAllUsers } from "@/lib/api/users";
+import { createFieldVisit, getFieldAssignees, reviewFieldException } from "@/lib/api/field-visits";
 
 export function FieldVisitPanel({ item }: { item: CaseDetail }) {
   const queryClient = useQueryClient();
@@ -22,23 +21,26 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
     session.data?.permissions.includes("*") ||
     session.data?.permissions.includes("field-visit:write");
   const directory = useQuery({
-    queryKey: ["users", "FIELD_EXECUTIVE"],
-    queryFn: () => listAllUsers("FIELD_EXECUTIVE"),
-    enabled: Boolean(canAssign && item.status === "IN_PROGRESS"),
-    staleTime: 60_000,
+    queryKey: ["users", "field-assignees", item.id, session.data?.id],
+    queryFn: () => getFieldAssignees(item.id),
+    enabled: Boolean(canAssign && ["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(item.status)),
+    staleTime: 0,
   });
   const lat = Number(latitude);
   const lng = Number(longitude);
   const radius = geofenceMeters ? Number(geofenceMeters) : undefined;
   const valid =
     address.trim().length >= 5 &&
+    latitude.trim().length > 0 &&
+    longitude.trim().length > 0 &&
     Number.isFinite(lat) &&
     lat >= -90 &&
     lat <= 90 &&
     Number.isFinite(lng) &&
     lng >= -180 &&
     lng <= 180 &&
-    Boolean(assigneeId) &&
+    Boolean(directory.data?.items.some((user) => user.id === assigneeId)) &&
+    !directory.isError &&
     (radius === undefined || (Number.isInteger(radius) && radius >= 50 && radius <= 1000));
   const mutation = useMutation({
     mutationFn: () =>
@@ -59,6 +61,7 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["field-visits"] }),
+        queryClient.invalidateQueries({ queryKey: ["operations"] }),
       ]);
     },
     onError: (error: Error) => toast.error(error.message),
@@ -81,6 +84,7 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["field-visits"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard", "exceptions"] }),
+        queryClient.invalidateQueries({ queryKey: ["operations"] }),
       ]);
     },
     onError: (error: Error) => toast.error(error.message),
@@ -108,7 +112,7 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
 
   return (
     <Panel title="Field verification" subtitle="Assign visits and monitor geofence outcomes">
-      {canAssign && item.status === "IN_PROGRESS" ? (
+      {canAssign && ["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(item.status) ? (
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -148,7 +152,9 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
               aria-label="Field executive assignee"
               className="h-10 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring/30"
             >
-              <option value="">Select field executive</option>
+              <option value="">
+                {directory.isPending ? "Loading field executives…" : "Select field executive"}
+              </option>
               {directory.data?.items.map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.displayName} · {user.email}
@@ -168,10 +174,18 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
             <p className="text-xs text-destructive">{directory.error.message}</p>
           ) : directory.data?.items.length === 0 ? (
             <p className="text-xs text-muted-foreground">
-              Add an active field executive in user management before assigning a visit.
+              No active field executive matches this case’s branch and client scope.
             </p>
           ) : null}
           <div className="flex flex-wrap justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => void directory.refetch()}
+              disabled={directory.isFetching}
+              className="rounded-xl border border-border bg-background px-3 py-2 text-sm disabled:opacity-50"
+            >
+              {directory.isFetching ? "Refreshing…" : "Refresh field executives"}
+            </button>
             <button
               type="button"
               onClick={useCurrentLocation}
@@ -183,6 +197,7 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
             </button>
             <button
               disabled={!valid || mutation.isPending}
+              aria-busy={mutation.isPending}
               className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-50"
             >
               <MapPin className="h-3.5 w-3.5" />
@@ -211,7 +226,9 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
                 </div>
                 <Status status={visit.status} />
               </div>
-              {canAssign && visit.status === "EXCEPTION_REVIEW" ? (
+              {canAssign &&
+              ["REVIEW_PENDING", "EXCEPTION_REVIEW"].includes(visit.status) &&
+              ["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(item.status) ? (
                 <div className="mt-3 flex flex-wrap justify-end gap-2">
                   <button
                     type="button"
@@ -223,6 +240,11 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
                       })
                     }
                     disabled={review.isPending}
+                    aria-busy={
+                      review.isPending &&
+                      review.variables?.visitId === visit.publicId &&
+                      review.variables.decision === "RETRY"
+                    }
                     className="rounded-full border border-border bg-background px-3 py-1.5 text-[11px] font-semibold disabled:opacity-50"
                   >
                     Request fresh visit
@@ -237,9 +259,16 @@ export function FieldVisitPanel({ item }: { item: CaseDetail }) {
                       })
                     }
                     disabled={review.isPending}
+                    aria-busy={
+                      review.isPending &&
+                      review.variables?.visitId === visit.publicId &&
+                      review.variables.decision === "APPROVE"
+                    }
                     className="rounded-full bg-accent px-3 py-1.5 text-[11px] font-semibold text-accent-foreground disabled:opacity-50"
                   >
-                    Approve exception
+                    {visit.status === "REVIEW_PENDING"
+                      ? "Approve field evidence"
+                      : "Approve exception"}
                   </button>
                 </div>
               ) : null}

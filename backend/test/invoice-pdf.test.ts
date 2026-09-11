@@ -22,6 +22,8 @@ void test("invoice renderer produces a paginated PDF with invoice metadata", asy
       displayName: "उद्यम क्लाइंट",
       code: "ENTERPRISE",
       billingTerms: "Net 30",
+      gstin: "09ABCDE1234F1Z5",
+      billingAddress: "Office 3, Sector 62, Noida, Uttar Pradesh",
     },
     lines: [
       {

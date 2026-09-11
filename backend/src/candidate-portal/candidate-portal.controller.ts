@@ -55,13 +55,23 @@ export class CandidatePortalController {
     @Param("accessId", ParseUUIDPipe) accessId: string,
     @Headers("x-portal-token") token: string,
     @Headers("x-document-type") type: string,
+    @Headers("x-document-expires-at") expiry: string,
+    @Headers("x-privacy-notice-version") noticeVersion: string,
     @Req() request: FastifyRequest,
   ) {
     return withUploadedBinary(
       request,
       this.config,
       `public:${request.ip}`,
-      (file) => this.portal.upload(accessId, token ?? "", type ?? "", file),
+      (file) =>
+        this.portal.upload(
+          accessId,
+          token ?? "",
+          type ?? "",
+          file,
+          expiry,
+          noticeVersion,
+        ),
     );
   }
 

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { PageHeader as CompactPageHeader } from "@/components/layout/page-header";
 
 export type Tone = "success" | "warning" | "destructive" | "info";
 
@@ -25,17 +26,7 @@ export function PageHeader({
   subtitle: string;
   chip: string;
 }) {
-  return (
-    <div className="flex flex-wrap items-end justify-between gap-2">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        <p className="text-sm text-muted-foreground">{subtitle}</p>
-      </div>
-      <span className="rounded-full bg-card px-3 py-1.5 text-xs text-muted-foreground shadow-sm">
-        {chip}
-      </span>
-    </div>
-  );
+  return <CompactPageHeader title={title} description={subtitle} meta={chip} />;
 }
 
 export function KpiStrip({

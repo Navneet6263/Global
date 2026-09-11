@@ -18,6 +18,10 @@ export class CreateInvoiceLineDto {
   @IsUUID()
   caseId?: string;
 
+  @IsOptional()
+  @IsUUID()
+  reportId?: string;
+
   @IsString()
   @Length(2, 300)
   description!: string;

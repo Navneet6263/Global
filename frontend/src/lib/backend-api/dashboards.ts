@@ -205,6 +205,19 @@ export interface ExceptionsDashboard {
 }
 
 export interface ClientAnalyticsDashboard {
+  branches: Array<{
+    id: string | null;
+    name: string;
+    city: string | null;
+    total: number;
+    active: number;
+    completed: number;
+    cancelled: number;
+    overdue: number;
+    pendingDocuments: number;
+    clarifications: number;
+    completionPercent: number;
+  }>;
   summary: {
     totalChecks: number;
     returnedOutcomes: number;

@@ -119,6 +119,7 @@ export function PaymentForm({ invoice, onClose }: { invoice: Invoice; onClose: (
         <footer className="mt-5 flex justify-end">
           <button
             disabled={!valid || mutation.isPending}
+            aria-busy={mutation.isPending}
             className="h-10 rounded-full bg-mint-deep px-5 text-xs font-semibold text-white shadow-[var(--shadow-card)] disabled:opacity-40"
           >
             {mutation.isPending ? "Recording…" : "Record payment"}

@@ -12,12 +12,14 @@ export function FieldRouteSummary({
   online,
   pendingSync,
   syncing,
+  busy,
   onSync,
 }: {
   counts: SummaryCounts;
   online: boolean;
   pendingSync: number;
   syncing: boolean;
+  busy: boolean;
   onSync: () => void;
 }) {
   return (
@@ -79,7 +81,8 @@ export function FieldRouteSummary({
             <button
               type="button"
               onClick={onSync}
-              disabled={syncing}
+              disabled={busy}
+              aria-busy={syncing}
               className="mt-4 inline-flex h-10 w-full items-center justify-center gap-2 rounded-full bg-white text-xs font-semibold text-mint-deep shadow-[var(--shadow-card)] disabled:opacity-50"
             >
               <CloudUpload className={`size-4 ${syncing ? "animate-pulse" : ""}`} />

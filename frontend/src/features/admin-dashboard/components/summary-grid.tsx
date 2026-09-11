@@ -21,18 +21,18 @@ export function SummaryGrid({ cards, pipeline }: SummaryGridProps) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 lg:grid-cols-[1.25fr_1fr]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)]">
         {portfolio ? <PortfolioCard portfolio={portfolio} completion={completion} /> : null}
         {portfolio ? <TrendCard card={portfolio} /> : null}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.4fr]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.4fr)]">
         {sla ? <StatCard card={sla} /> : null}
         {completion ? <StatCard card={completion} /> : null}
         <StageBarsCard stages={pipeline} />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {tiles.map((card) => (
           <MetricTile key={card.id} card={card} />
         ))}

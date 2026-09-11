@@ -1,4 +1,5 @@
 import type { StatusTone } from "@/lib/contracts/common";
+import { CHECK_LABELS, type CheckType } from "@/lib/contracts/check";
 
 export type OpsStage =
   | "intake"
@@ -9,6 +10,9 @@ export type OpsStage =
   | "clarification"
   | "field_visit"
   | "qa"
+  | "manager_review"
+  | "report_pending"
+  | "payment_pending"
   | "completed"
   | "cancelled";
 
@@ -16,8 +20,7 @@ export type OpsPriority = "standard" | "high" | "critical";
 export type OpsRisk = "low" | "medium" | "high";
 export type OpsSlaState = "healthy" | "approaching" | "overdue";
 
-export type OpsCheckType =
-  "identity" | "address" | "employment" | "education" | "criminal" | "reference";
+export type OpsCheckType = CheckType;
 
 export type OpsCheckStatus =
   | "not_started"
@@ -49,6 +52,8 @@ export interface OpsDocument {
   status: "pending" | "received" | "rejected" | "reupload_required" | "verified";
   originalName: string | null;
   version: number;
+  revision: number;
+  expiresAt?: string | null;
   available: boolean;
   updatedAt: string;
   note?: string;
@@ -115,6 +120,7 @@ export interface OpsFieldVisit {
     | "evidence_pending"
     | "outside_geofence"
     | "exception_review"
+    | "review_pending"
     | "completed";
   geofenceMetres: number | null;
   evidenceCount: number;
@@ -219,6 +225,9 @@ export const OPS_STAGE_META: Record<OpsStage, { label: string; tone: StatusTone;
     clarification: { label: "Clarification", tone: "warning", short: "Clarification" },
     field_visit: { label: "Field visit", tone: "info", short: "Field visit" },
     qa: { label: "QA review", tone: "review", short: "QA review" },
+    manager_review: { label: "Manager approval", tone: "review", short: "Approval" },
+    report_pending: { label: "Report preparation", tone: "info", short: "Report" },
+    payment_pending: { label: "Payment & release", tone: "warning", short: "Payment" },
     completed: { label: "Completed", tone: "success", short: "Completed" },
     cancelled: { label: "Cancelled", tone: "neutral", short: "Cancelled" },
   };
@@ -232,6 +241,9 @@ export const OPS_STAGE_ORDER: readonly OpsStage[] = [
   "clarification",
   "field_visit",
   "qa",
+  "manager_review",
+  "report_pending",
+  "payment_pending",
   "completed",
 ];
 
@@ -253,14 +265,7 @@ export const OPS_SLA_META: Record<OpsSlaState, { label: string; tone: StatusTone
   overdue: { label: "Overdue", tone: "critical" },
 };
 
-export const OPS_CHECK_LABELS: Record<OpsCheckType, string> = {
-  identity: "Identity",
-  address: "Address",
-  employment: "Employment",
-  education: "Education",
-  criminal: "Criminal / court",
-  reference: "Reference",
-};
+export const OPS_CHECK_LABELS = CHECK_LABELS;
 
 export const OPS_CHECK_STATUS_META: Record<OpsCheckStatus, { label: string; tone: StatusTone }> = {
   not_started: { label: "Not started", tone: "neutral" },
@@ -304,5 +309,6 @@ export const OPS_FIELD_STATUS_META: Record<
   evidence_pending: { label: "Evidence pending", tone: "warning" },
   outside_geofence: { label: "Outside geofence", tone: "critical" },
   exception_review: { label: "Exception review", tone: "critical" },
+  review_pending: { label: "Evidence review", tone: "review" },
   completed: { label: "Completed", tone: "success" },
 };

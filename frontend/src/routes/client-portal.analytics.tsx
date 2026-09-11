@@ -5,6 +5,7 @@ import { ErrorState } from "@/components/feedback/error-state";
 import { CardGridSkeleton, ListSkeleton } from "@/components/feedback/skeletons";
 import { ClientDeepAnalytics } from "@/features/stakeholders/client/ClientDeepAnalytics";
 import { ClientInsights } from "@/features/stakeholders/client/ClientInsights";
+import { ClientBranchComparison } from "@/features/stakeholders/client/ClientBranchComparison";
 import { ClientWorkspaceHeader } from "@/features/stakeholders/client/ClientWorkspaceHeader";
 import { getClientAnalyticsDashboard, getOperationsDashboard } from "@/lib/api/dashboards";
 
@@ -49,6 +50,7 @@ function ClientAnalyticsPage() {
       {operations.data && analytics.data ? (
         <div className="space-y-5">
           <ClientDeepAnalytics data={analytics.data} />
+          <ClientBranchComparison rows={analytics.data.branches ?? []} />
           <ClientInsights data={operations.data} />
         </div>
       ) : null}

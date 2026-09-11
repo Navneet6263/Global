@@ -7,9 +7,11 @@ import { ExecutiveAnalyticsService } from "./executive-analytics.service";
 import { ExecutiveExportService } from "./executive-export.service";
 import { VerifierCapacityService } from "./verifier-capacity.service";
 import { NavigationCountsService } from "./navigation-counts.service";
+import { OperationsActionsService } from "./operations-actions.service";
+import { OperationsActionsController } from "./operations-actions.controller";
 
 @Module({
-  controllers: [DashboardsController],
+  controllers: [DashboardsController, OperationsActionsController],
   providers: [
     DashboardsService,
     DashboardClientService,
@@ -18,6 +20,7 @@ import { NavigationCountsService } from "./navigation-counts.service";
     ExecutiveExportService,
     VerifierCapacityService,
     NavigationCountsService,
+    OperationsActionsService,
   ],
 })
 export class DashboardsModule {}

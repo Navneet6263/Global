@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { AdminShell } from "@/components/shell/admin-shell";
 import type { NavWorkspace } from "@/config/navigation";
+import { PageHeader } from "@/components/layout/page-header";
 
 interface DeliveryShellProps {
   children: ReactNode;
@@ -20,7 +21,6 @@ export function DeliveryShell(props: DeliveryShellProps) {
 }
 
 export function DeliveryHeader({
-  eyebrow,
   title,
   description,
   aside,
@@ -30,20 +30,7 @@ export function DeliveryHeader({
   description: string;
   aside?: ReactNode;
 }) {
-  return (
-    <header className="flex flex-wrap items-end justify-between gap-4">
-      <div>
-        <p className="text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
-          {eyebrow}
-        </p>
-        <h1 className="mt-1.5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          {title}
-        </h1>
-        <p className="mt-1.5 max-w-2xl text-sm text-muted-foreground">{description}</p>
-      </div>
-      {aside}
-    </header>
-  );
+  return <PageHeader title={title} description={description} actions={aside} />;
 }
 
 type Tone = "blue" | "emerald" | "amber" | "red" | "violet";

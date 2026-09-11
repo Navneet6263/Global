@@ -7,6 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { formatInr } from "@/lib/formatting";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { PackageRequirementsEditor } from "./package-requirements-editor";
 
 export function OrganisationPanel({ settings }: { settings: PlatformSettings }) {
   const org = settings.organisation;
@@ -114,6 +115,7 @@ export function PackagesPanel({
               label={pkg.status === "published" ? "Active" : "Inactive"}
               tone={pkg.status === "published" ? "success" : "neutral"}
             />
+            <PackageRequirementsEditor id={pkg.id} />
           </li>
         ))}
       </ul>

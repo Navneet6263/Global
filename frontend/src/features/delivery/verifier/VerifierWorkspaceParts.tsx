@@ -52,12 +52,14 @@ export function PrimaryButton({
   children,
   onClick,
   disabled,
+  loading = false,
   type = "button",
   extra = "",
 }: {
   children: ReactNode;
   onClick?: () => void;
   disabled?: boolean;
+  loading?: boolean;
   type?: "button" | "submit";
   extra?: string;
 }) {
@@ -65,7 +67,8 @@ export function PrimaryButton({
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || loading}
+      aria-busy={loading}
       className={`inline-flex items-center gap-2 rounded-full bg-mint-deep px-4 py-2.5 text-[11px] font-medium text-white shadow-[var(--shadow-card)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-45 ${extra}`}
     >
       {children}
@@ -75,14 +78,17 @@ export function PrimaryButton({
 export function SecondaryButton({
   children,
   onClick,
+  disabled = false,
 }: {
   children: ReactNode;
   onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
       className="inline-flex items-center gap-2 rounded-full border border-border bg-white/80 px-4 py-2.5 text-[11px] font-medium transition hover:bg-mint-soft"
     >
       {children}
@@ -93,12 +99,14 @@ export function SecondaryButton({
 export function BlockerEditor({
   value,
   busy,
+  loading,
   onChange,
   onClose,
   onSave,
 }: {
   value: string;
   busy: boolean;
+  loading: boolean;
   onChange: (value: string) => void;
   onClose: () => void;
   onSave: () => void;
@@ -115,8 +123,14 @@ export function BlockerEditor({
         />
       </label>
       <div className="mt-3 flex justify-end gap-2">
-        <SecondaryButton onClick={onClose}>Cancel</SecondaryButton>
-        <PrimaryButton onClick={onSave} disabled={busy || value.trim().length < 3}>
+        <SecondaryButton disabled={busy} onClick={onClose}>
+          Cancel
+        </SecondaryButton>
+        <PrimaryButton
+          onClick={onSave}
+          disabled={busy || value.trim().length < 3}
+          loading={loading}
+        >
           Record blocker
         </PrimaryButton>
       </div>

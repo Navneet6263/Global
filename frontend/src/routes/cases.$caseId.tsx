@@ -9,9 +9,12 @@ import { CaseWorkspaceTabs } from "@/features/cases/case-workspace-tabs";
 import { CaseActions } from "@/features/cases/case-workflow-panels";
 import { getCase, type CaseDetail } from "@/lib/api/cases";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
+import { caseWorkspaceSearch } from "@/features/cases/case-workspace-search";
 
 export const Route = createFileRoute("/cases/$caseId")({
-  beforeLoad: () => requireRoleWorkspace(["OPS_MANAGER"]),
+  validateSearch: caseWorkspaceSearch,
+  ssr: false,
+  beforeLoad: () => requireRoleWorkspace(["OPS_MANAGER", "PLATFORM_ADMIN"]),
   component: CaseWorkspace,
   head: () => ({ meta: [{ title: "Case 360 — Sapling Global" }] }),
 });
@@ -33,14 +36,25 @@ function CaseWorkspace() {
 }
 
 function CaseDetailView({ item }: { item: CaseDetail }) {
+  const { tab, inbox } = Route.useSearch();
   return (
     <div className="mx-auto max-w-[1500px] space-y-5">
-      <Link
-        to="/operations/cases"
-        className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" /> Back to operations
-      </Link>
+      {inbox ? (
+        <Link
+          to="/operations"
+          search={{ action: inbox }}
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to action inbox
+        </Link>
+      ) : (
+        <Link
+          to="/operations/cases"
+          className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> Back to operations
+        </Link>
+      )}
 
       <header className="ink-panel relative overflow-hidden rounded-[2rem] p-6 shadow-[var(--shadow-float)] sm:p-8">
         <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
@@ -83,7 +97,7 @@ function CaseDetailView({ item }: { item: CaseDetail }) {
       <WorkflowStrip item={item} />
       <CaseActions item={item} />
 
-      <CaseWorkspaceTabs item={item} />
+      <CaseWorkspaceTabs key={`${item.id}:${tab ?? "overview"}`} item={item} initialTab={tab} />
     </div>
   );
 }

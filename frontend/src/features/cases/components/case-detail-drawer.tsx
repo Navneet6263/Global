@@ -42,7 +42,7 @@ export function CaseDetailDrawer({ caseId, onClose }: CaseDetailDrawerProps) {
 
   return (
     <Sheet open={Boolean(caseId)} onOpenChange={(open) => (open ? undefined : onClose())}>
-      <SheetContent side="right" className="w-full gap-0 overflow-y-auto sm:max-w-xl">
+      <SheetContent side="right" className="w-full gap-0 overflow-y-auto sm:max-w-3xl">
         <SheetHeader className="border-b border-border">
           <SheetTitle className="text-base">Case 360</SheetTitle>
           <SheetDescription>
@@ -70,9 +70,16 @@ export function CaseDetailDrawer({ caseId, onClose }: CaseDetailDrawerProps) {
               <CaseCandidateInvite item={data} />
 
               <Tabs defaultValue="checks">
-                <TabsList className="w-full flex-wrap justify-start">
+                <TabsList
+                  className="grid h-auto w-full grid-cols-2 gap-1 rounded-2xl p-1.5 min-[400px]:grid-cols-3 sm:grid-cols-6"
+                  aria-label="Case sections"
+                >
                   {TABS.map((tab) => (
-                    <TabsTrigger key={tab.value} value={tab.value} className="text-xs">
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className="min-h-10 min-w-0 rounded-xl px-1.5 text-xs data-[state=active]:bg-emerald-900 data-[state=active]:text-white"
+                    >
                       {tab.label}
                     </TabsTrigger>
                   ))}

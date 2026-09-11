@@ -70,6 +70,7 @@ export function CaseCandidateInvite({ item }: { item: VerificationCase }) {
           type="button"
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
+          aria-busy={mutation.isPending}
           className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-primary px-3 text-[11px] font-semibold text-primary-foreground disabled:opacity-50"
         >
           {mutation.isPending ? (

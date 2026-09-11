@@ -171,6 +171,11 @@ function ExceptionsPage() {
                   key={row.id}
                   row={row}
                   busy={action.isPending}
+                  pendingAction={
+                    action.isPending && action.variables?.id === row.id
+                      ? action.variables.action
+                      : undefined
+                  }
                   onResolve={
                     row.type === "client_clarification" || row.type === "field_visit"
                       ? () =>
@@ -204,11 +209,13 @@ function ExceptionsPage() {
 function ExceptionRow({
   row,
   busy,
+  pendingAction,
   onResolve,
   onEscalate,
 }: {
   row: OpsException;
   busy: boolean;
+  pendingAction: string | undefined;
   onResolve?: () => void;
   onEscalate: () => void;
 }) {
@@ -233,11 +240,22 @@ function ExceptionRow({
       </p>
       {row.status === "open" ? (
         <div className="flex flex-wrap gap-2 pt-0.5">
-          <Button size="sm" variant="outline" disabled={busy} onClick={onEscalate}>
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={busy}
+            loading={pendingAction === "escalate"}
+            onClick={onEscalate}
+          >
             Escalate
           </Button>
           {onResolve ? (
-            <Button size="sm" disabled={busy} onClick={onResolve}>
+            <Button
+              size="sm"
+              disabled={busy}
+              loading={pendingAction === "resolve"}
+              onClick={onResolve}
+            >
               Resolve
             </Button>
           ) : null}

@@ -14,6 +14,7 @@ import {
   presentInvoice,
 } from "./finance.shared";
 import { InvoicePdfService } from "./invoice-pdf.service";
+import { allocateInvoiceReports } from "./invoice-report-allocation";
 
 @Injectable()
 export class InvoiceIssueService {
@@ -63,6 +64,7 @@ export class InvoiceIssueService {
       const taxCents = Math.round(baseCents * (line.taxRate / 100));
       return {
         caseId: line.caseId ? caseIds.get(line.caseId) : undefined,
+        reportPublicId: line.reportId,
         description: line.description.trim(),
         quantity: line.quantity,
         unitPrice: unitCents / 100,
@@ -80,6 +82,12 @@ export class InvoiceIssueService {
     const invoiceNumber = `SG-${dateToken()}-${randomToken()}`;
 
     return this.prisma.$transaction(async (tx) => {
+      const reportIds = await allocateInvoiceReports(
+        tx,
+        actor.tenantId,
+        client.id,
+        lines,
+      );
       const row = await tx.invoice.create({
         data: {
           tenantId: actor.tenantId,
@@ -93,8 +101,9 @@ export class InvoiceIssueService {
           totalAmount,
           notes: input.notes?.trim(),
           lines: {
-            create: lines.map((line) => ({
+            create: lines.map((line, index) => ({
               caseId: line.caseId,
+              reportId: reportIds[index],
               description: line.description,
               quantity: line.quantity,
               unitPrice: line.unitPrice,
@@ -148,6 +157,8 @@ export class InvoiceIssueService {
             displayName: true,
             code: true,
             billingTerms: true,
+            billingAddress: true,
+            gstin: true,
           },
         },
         lines: {

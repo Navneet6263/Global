@@ -12,6 +12,7 @@ interface CrmOpportunityBoardProps {
   onOpen: (opportunity: Opportunity) => void;
   onAdvance: (opportunity: Opportunity, stage: CrmStage) => void;
   canWrite: boolean;
+  changingId?: string;
 }
 
 function nextStage(stage: CrmStage): CrmStage | null {
@@ -25,6 +26,7 @@ export function CrmOpportunityBoard({
   onOpen,
   onAdvance,
   canWrite,
+  changingId,
 }: CrmOpportunityBoardProps) {
   return (
     <div className="grid gap-3 lg:grid-cols-3 xl:grid-cols-6">
@@ -79,6 +81,8 @@ export function CrmOpportunityBoard({
                         variant="ghost"
                         className="mt-1.5 h-7 w-full justify-between px-2 text-[11px]"
                         onClick={() => onAdvance(row, advance)}
+                        loading={changingId === row.id}
+                        disabled={!!changingId}
                       >
                         Move to {STAGE_LABEL[advance]}
                         <MoveRight className="size-3.5" aria-hidden />

@@ -167,6 +167,10 @@ export class CrmOpportunityService {
               : input.nextFollowUpAt
                 ? new Date(input.nextFollowUpAt)
                 : undefined,
+          ...((input.stage && ["WON", "LOST"].includes(input.stage)) ||
+          input.nextFollowUpAt
+            ? { followUpSequenceStartedAt: null, followUpSequenceStep: null }
+            : {}),
           notes: optionalText(input.notes),
           lostReason:
             input.stage === "LOST"

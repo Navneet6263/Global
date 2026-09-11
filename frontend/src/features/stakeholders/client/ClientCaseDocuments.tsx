@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import type { CaseDetail } from "@/lib/api/cases";
 import { uploadDocument } from "@/lib/api/documents";
 import { humanize, statusTone } from "./client-portal-utils";
+import { DocumentFileActions } from "@/features/cases/document-file-actions";
 
 type CaseDocument = CaseDetail["documents"][number];
 
@@ -80,7 +81,7 @@ function DocumentRow({
     },
     onError: (error: Error) => toast.error(error.message),
   });
-  const latest = item.versions.at(-1);
+  const latest = item.versions[0];
   return (
     <article className="rounded-2xl border border-border bg-card/70 p-3.5 shadow-[var(--shadow-card)]">
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -107,6 +108,16 @@ function DocumentRow({
           {humanize(item.status)}
         </span>
       </div>
+      {latest ? (
+        <div className="mt-3 flex justify-end">
+          <DocumentFileActions
+            documentId={item.publicId}
+            filename={latest.originalName}
+            label={humanize(item.type)}
+            compact={false}
+          />
+        </div>
+      ) : null}
       {canUpload ? (
         <div className="mt-3 flex flex-col gap-2 sm:flex-row">
           <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border-strong bg-card px-3 py-2 text-[10px] text-muted-foreground hover:border-primary/45 hover:text-foreground">
@@ -125,6 +136,7 @@ function DocumentRow({
             type="button"
             onClick={() => upload.mutate()}
             disabled={!file || upload.isPending}
+            aria-busy={upload.isPending}
             className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-primary px-4 text-[10px] font-semibold text-primary-foreground shadow-[var(--shadow-card)] disabled:opacity-35"
           >
             {upload.isPending ? (

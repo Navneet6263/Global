@@ -31,6 +31,8 @@ export type DocumentAvgAggregateOutputType = {
   tenantId: number | null
   caseId: number | null
   currentVersion: number | null
+  version: number | null
+  reviewedById: number | null
 }
 
 export type DocumentSumAggregateOutputType = {
@@ -38,6 +40,8 @@ export type DocumentSumAggregateOutputType = {
   tenantId: bigint | null
   caseId: bigint | null
   currentVersion: number | null
+  version: number | null
+  reviewedById: bigint | null
 }
 
 export type DocumentMinAggregateOutputType = {
@@ -48,6 +52,10 @@ export type DocumentMinAggregateOutputType = {
   type: string | null
   status: string | null
   currentVersion: number | null
+  version: number | null
+  reviewNote: string | null
+  reviewedAt: Date | null
+  reviewedById: bigint | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -61,6 +69,10 @@ export type DocumentMaxAggregateOutputType = {
   type: string | null
   status: string | null
   currentVersion: number | null
+  version: number | null
+  reviewNote: string | null
+  reviewedAt: Date | null
+  reviewedById: bigint | null
   expiresAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -74,6 +86,10 @@ export type DocumentCountAggregateOutputType = {
   type: number
   status: number
   currentVersion: number
+  version: number
+  reviewNote: number
+  reviewedAt: number
+  reviewedById: number
   expiresAt: number
   createdAt: number
   updatedAt: number
@@ -86,6 +102,8 @@ export type DocumentAvgAggregateInputType = {
   tenantId?: true
   caseId?: true
   currentVersion?: true
+  version?: true
+  reviewedById?: true
 }
 
 export type DocumentSumAggregateInputType = {
@@ -93,6 +111,8 @@ export type DocumentSumAggregateInputType = {
   tenantId?: true
   caseId?: true
   currentVersion?: true
+  version?: true
+  reviewedById?: true
 }
 
 export type DocumentMinAggregateInputType = {
@@ -103,6 +123,10 @@ export type DocumentMinAggregateInputType = {
   type?: true
   status?: true
   currentVersion?: true
+  version?: true
+  reviewNote?: true
+  reviewedAt?: true
+  reviewedById?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -116,6 +140,10 @@ export type DocumentMaxAggregateInputType = {
   type?: true
   status?: true
   currentVersion?: true
+  version?: true
+  reviewNote?: true
+  reviewedAt?: true
+  reviewedById?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -129,6 +157,10 @@ export type DocumentCountAggregateInputType = {
   type?: true
   status?: true
   currentVersion?: true
+  version?: true
+  reviewNote?: true
+  reviewedAt?: true
+  reviewedById?: true
   expiresAt?: true
   createdAt?: true
   updatedAt?: true
@@ -229,6 +261,10 @@ export type DocumentGroupByOutputType = {
   type: string
   status: string
   currentVersion: number
+  version: number
+  reviewNote: string | null
+  reviewedAt: Date | null
+  reviewedById: bigint | null
   expiresAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -265,6 +301,10 @@ export type DocumentWhereInput = {
   type?: Prisma.StringFilter<"Document"> | string
   status?: Prisma.StringFilter<"Document"> | string
   currentVersion?: Prisma.IntFilter<"Document"> | number
+  version?: Prisma.IntFilter<"Document"> | number
+  reviewNote?: Prisma.StringNullableFilter<"Document"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  reviewedById?: Prisma.BigIntNullableFilter<"Document"> | bigint | number | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
@@ -281,6 +321,10 @@ export type DocumentOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -300,6 +344,10 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.StringFilter<"Document"> | string
   status?: Prisma.StringFilter<"Document"> | string
   currentVersion?: Prisma.IntFilter<"Document"> | number
+  version?: Prisma.IntFilter<"Document"> | number
+  reviewNote?: Prisma.StringNullableFilter<"Document"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  reviewedById?: Prisma.BigIntNullableFilter<"Document"> | bigint | number | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
@@ -316,6 +364,10 @@ export type DocumentOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
   expiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -337,6 +389,10 @@ export type DocumentScalarWhereWithAggregatesInput = {
   type?: Prisma.StringWithAggregatesFilter<"Document"> | string
   status?: Prisma.StringWithAggregatesFilter<"Document"> | string
   currentVersion?: Prisma.IntWithAggregatesFilter<"Document"> | number
+  version?: Prisma.IntWithAggregatesFilter<"Document"> | number
+  reviewNote?: Prisma.StringNullableWithAggregatesFilter<"Document"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
+  reviewedById?: Prisma.BigIntNullableWithAggregatesFilter<"Document"> | bigint | number | null
   expiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Document"> | Date | string
@@ -348,6 +404,10 @@ export type DocumentCreateInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -364,6 +424,10 @@ export type DocumentUncheckedCreateInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -376,6 +440,10 @@ export type DocumentUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +460,10 @@ export type DocumentUncheckedUpdateInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -405,6 +477,10 @@ export type DocumentCreateManyInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -416,6 +492,10 @@ export type DocumentUpdateManyMutationInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -429,6 +509,10 @@ export type DocumentUncheckedUpdateManyInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -452,6 +536,10 @@ export type DocumentCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -462,6 +550,8 @@ export type DocumentAvgOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
 }
 
 export type DocumentMaxOrderByAggregateInput = {
@@ -472,6 +562,10 @@ export type DocumentMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -485,6 +579,10 @@ export type DocumentMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -495,6 +593,8 @@ export type DocumentSumOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   currentVersion?: Prisma.SortOrder
+  version?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
 }
 
 export type DocumentScalarRelationFilter = {
@@ -606,6 +706,10 @@ export type DocumentCreateWithoutTenantInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -620,6 +724,10 @@ export type DocumentUncheckedCreateWithoutTenantInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -662,6 +770,10 @@ export type DocumentScalarWhereInput = {
   type?: Prisma.StringFilter<"Document"> | string
   status?: Prisma.StringFilter<"Document"> | string
   currentVersion?: Prisma.IntFilter<"Document"> | number
+  version?: Prisma.IntFilter<"Document"> | number
+  reviewNote?: Prisma.StringNullableFilter<"Document"> | string | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
+  reviewedById?: Prisma.BigIntNullableFilter<"Document"> | bigint | number | null
   expiresAt?: Prisma.DateTimeNullableFilter<"Document"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Document"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Document"> | Date | string
@@ -673,6 +785,10 @@ export type DocumentCreateWithoutCaseInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -687,6 +803,10 @@ export type DocumentUncheckedCreateWithoutCaseInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -724,6 +844,10 @@ export type DocumentCreateWithoutVersionsInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -739,6 +863,10 @@ export type DocumentUncheckedCreateWithoutVersionsInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -766,6 +894,10 @@ export type DocumentUpdateWithoutVersionsInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -781,6 +913,10 @@ export type DocumentUncheckedUpdateWithoutVersionsInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -792,6 +928,10 @@ export type DocumentCreateManyTenantInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -803,6 +943,10 @@ export type DocumentUpdateWithoutTenantInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -817,6 +961,10 @@ export type DocumentUncheckedUpdateWithoutTenantInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -830,6 +978,10 @@ export type DocumentUncheckedUpdateManyWithoutTenantInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -841,6 +993,10 @@ export type DocumentCreateManyCaseInput = {
   type: string
   status?: string
   currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
   expiresAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -852,6 +1008,10 @@ export type DocumentUpdateWithoutCaseInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -866,6 +1026,10 @@ export type DocumentUncheckedUpdateWithoutCaseInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -879,6 +1043,10 @@ export type DocumentUncheckedUpdateManyWithoutCaseInput = {
   type?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -923,6 +1091,10 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   type?: boolean
   status?: boolean
   currentVersion?: boolean
+  version?: boolean
+  reviewNote?: boolean
+  reviewedAt?: boolean
+  reviewedById?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -942,12 +1114,16 @@ export type DocumentSelectScalar = {
   type?: boolean
   status?: boolean
   currentVersion?: boolean
+  version?: boolean
+  reviewNote?: boolean
+  reviewedAt?: boolean
+  reviewedById?: boolean
   expiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "type" | "status" | "currentVersion" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["document"]>
+export type DocumentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "type" | "status" | "currentVersion" | "version" | "reviewNote" | "reviewedAt" | "reviewedById" | "expiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["document"]>
 export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
@@ -970,6 +1146,10 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     type: string
     status: string
     currentVersion: number
+    version: number
+    reviewNote: string | null
+    reviewedAt: Date | null
+    reviewedById: bigint | null
     expiresAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1352,6 +1532,10 @@ export interface DocumentFieldRefs {
   readonly type: Prisma.FieldRef<"Document", 'String'>
   readonly status: Prisma.FieldRef<"Document", 'String'>
   readonly currentVersion: Prisma.FieldRef<"Document", 'Int'>
+  readonly version: Prisma.FieldRef<"Document", 'Int'>
+  readonly reviewNote: Prisma.FieldRef<"Document", 'String'>
+  readonly reviewedAt: Prisma.FieldRef<"Document", 'DateTime'>
+  readonly reviewedById: Prisma.FieldRef<"Document", 'BigInt'>
   readonly expiresAt: Prisma.FieldRef<"Document", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Document", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Document", 'DateTime'>

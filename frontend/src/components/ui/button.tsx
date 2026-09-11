@@ -34,13 +34,31 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
+  loading?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  (
+    { className, variant, size, asChild = false, loading = false, disabled, onClick, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : "button";
     return (
-      <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+        disabled={asChild ? undefined : disabled || loading}
+        aria-disabled={asChild && (disabled || loading) ? true : props["aria-disabled"]}
+        aria-busy={loading || props["aria-busy"]}
+        onClick={(event) => {
+          if (disabled || loading) {
+            event.preventDefault();
+            return;
+          }
+          onClick?.(event);
+        }}
+      />
     );
   },
 );

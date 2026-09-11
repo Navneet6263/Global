@@ -1,8 +1,13 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
 import { PrismaService } from "../database/prisma.service";
+import { assertManager } from "./manager-review.service";
 
 @Injectable()
 export class ReportRecoveryService {
@@ -25,11 +30,13 @@ export class ReportRecoveryService {
         },
       },
     });
-    if (!report || report.status === "PUBLISHED") return;
-    const detail = (error instanceof Error ? error.message : "Unknown error").slice(0, 500);
+    if (!report || !["QUEUED", "FAILED"].includes(report.status)) return;
+    const detail = (
+      error instanceof Error ? error.message : "Unknown error"
+    ).slice(0, 500);
     await this.prisma.$transaction(async (tx) => {
       const updated = await tx.report.updateMany({
-        where: { id: report.id, status: { not: "PUBLISHED" } },
+        where: { id: report.id, status: { in: ["QUEUED", "FAILED"] } },
         data: { status: "FAILED" },
       });
       if (updated.count !== 1) return;
@@ -64,15 +71,17 @@ export class ReportRecoveryService {
   }
 
   async retry(actor: Actor, casePublicId: string, reportPublicId: string) {
+    assertManager(actor);
     const report = await this.prisma.report.findFirst({
       where: {
         tenantId: actor.tenantId,
         publicId: reportPublicId,
         status: "FAILED",
+        workflowVersion: 2,
         case: {
           ...caseAccessScope(actor),
           publicId: casePublicId,
-          status: { in: ["COMPLETED", "CLOSED"] },
+          status: "REPORT_PENDING",
         },
       },
       select: { id: true },

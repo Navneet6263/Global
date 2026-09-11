@@ -16,16 +16,29 @@ import { formatDateTime, humanize } from "@/features/cases/case-detail-formattin
 import { Panel } from "@/features/cases/case-detail-ui";
 import { ConsentPanel, DocumentPanel, ReportsPanel } from "@/features/cases/case-evidence-panels";
 import { FieldVisitPanel } from "@/features/cases/case-field-visit-panel";
+import { CaseManagerReviewPanel } from "./case-manager-review-panel";
+import { CaseServiceScopePanel } from "./case-service-scope-panel";
+import { CaseActivityPanel } from "./case-activity-panel";
 import { CandidatePanel, CheckCard } from "@/features/cases/case-workflow-panels";
 import type { CaseDetail } from "@/lib/api/cases";
+import { useState } from "react";
+import { CasePhysicalFieldNotice } from "./case-physical-field-notice";
+import type { CaseWorkspaceTab } from "./case-workspace-search";
 
 const triggerClass =
   "gap-2 rounded-xl px-3 py-2 text-xs data-[state=active]:bg-primary data-[state=active]:text-primary-foreground";
 
-export function CaseWorkspaceTabs({ item }: { item: CaseDetail }) {
+export function CaseWorkspaceTabs({
+  item,
+  initialTab = "overview",
+}: {
+  item: CaseDetail;
+  initialTab?: CaseWorkspaceTab;
+}) {
+  const [tab, setTab] = useState<string>(initialTab);
   const completedChecks = item.checks.filter((check) => check.status === "COMPLETED").length;
   const availableDocuments = item.documents.filter(
-    (document) => document.status === "AVAILABLE",
+    (document) => document.status === "VERIFIED",
   ).length;
   const openClarifications = item.clarifications.filter(
     (clarification) => clarification.status !== "RESOLVED",
@@ -33,7 +46,8 @@ export function CaseWorkspaceTabs({ item }: { item: CaseDetail }) {
   const completedVisits = item.fieldVisits.filter((visit) => visit.status === "COMPLETED").length;
 
   return (
-    <Tabs defaultValue="overview" className="space-y-5">
+    <Tabs value={tab} onValueChange={setTab} className="space-y-5">
+      <CasePhysicalFieldNotice item={item} onOpen={() => setTab("field-visits")} />
       <nav className="surface overflow-x-auto rounded-2xl p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <TabsList className="flex h-auto w-max min-w-full justify-start gap-1 bg-transparent p-0">
           <TabsTrigger className={triggerClass} value="overview">
@@ -72,7 +86,7 @@ export function CaseWorkspaceTabs({ item }: { item: CaseDetail }) {
             icon={FileText}
             label="Documents ready"
             value={`${availableDocuments}/${item.documents.length}`}
-            detail="Uploaded and available"
+            detail="Evidence reviewed and accepted"
           />
           <WorkspaceMetric
             icon={MessageSquareText}
@@ -87,6 +101,12 @@ export function CaseWorkspaceTabs({ item }: { item: CaseDetail }) {
             detail="Assigned on-ground visits"
           />
         </section>
+        <CaseServiceScopePanel services={item.services} />
+        {item.status === "MANAGER_REVIEW" ||
+        item.status === "REPORT_PENDING" ||
+        item.status === "PAYMENT_PENDING" ? (
+          <CaseManagerReviewPanel item={item} />
+        ) : null}
         <div className="grid items-start gap-5 xl:grid-cols-3">
           <CandidatePanel item={item} />
           <ConsentPanel item={item} />
@@ -121,14 +141,16 @@ export function CaseWorkspaceTabs({ item }: { item: CaseDetail }) {
         <FieldVisitPanel item={item} />
       </TabsContent>
 
-      <TabsContent value="reports" className="mt-0">
+      <TabsContent value="reports" className="mt-0 space-y-5">
+        <CaseManagerReviewPanel item={item} />
         <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(22rem,0.7fr)]">
           <ReportsPanel item={item} />
           <ConsentPanel item={item} />
         </div>
       </TabsContent>
 
-      <TabsContent value="timeline" className="mt-0">
+      <TabsContent value="timeline" className="mt-0 space-y-5">
+        <CaseActivityPanel key={item.id} caseId={item.id} />
         <StatusHistory item={item} />
       </TabsContent>
     </Tabs>

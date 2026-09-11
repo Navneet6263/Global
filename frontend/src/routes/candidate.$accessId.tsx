@@ -57,6 +57,8 @@ function CandidatePortalPage() {
                 token={accessToken}
                 caseStatus={data.status}
                 documents={data.documents}
+                requiredTypes={data.requiredDocumentTypes}
+                privacyNotice={portal.data.privacyNotice}
               />
             </div>
           </div>

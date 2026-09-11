@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Download, Eye, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Eye, Loader2, Search } from "lucide-react";
 import { toast } from "sonner";
 
 import { Section } from "@/components/layout/section";
@@ -8,6 +8,8 @@ import { formatDate, humanize, money } from "./finance-utils";
 
 export function InvoiceRegister({
   items,
+  pending = false,
+  unavailable = false,
   search,
   status,
   page,
@@ -20,6 +22,8 @@ export function InvoiceRegister({
   onOpen,
 }: {
   items: Invoice[];
+  pending?: boolean;
+  unavailable?: boolean;
   search: string;
   status: string;
   page: number;
@@ -43,7 +47,8 @@ export function InvoiceRegister({
         <button
           type="button"
           onClick={() => exportMutation.mutate()}
-          disabled={!items.length || exportMutation.isPending}
+          disabled={pending || !items.length || exportMutation.isPending}
+          aria-busy={exportMutation.isPending}
           className="inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-3 text-[10px] font-medium text-muted-foreground shadow-[var(--shadow-card)] transition hover:border-border-strong hover:text-foreground disabled:opacity-40"
         >
           <Download className="h-3.5 w-3.5" />
@@ -59,6 +64,7 @@ export function InvoiceRegister({
             value={search}
             onChange={(event) => onSearch(event.target.value)}
             placeholder="Search invoice or client"
+            aria-label="Search invoices"
             className="h-10 w-full rounded-full border border-border bg-muted/45 pl-9 pr-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground focus:border-primary/45 focus:bg-card focus:ring-4 focus:ring-primary/8"
           />
         </label>
@@ -85,7 +91,16 @@ export function InvoiceRegister({
           ))}
         </select>
       </div>
-      <div className="overflow-x-auto">
+      {pending ? (
+        <p
+          className="flex items-center gap-2 px-5 py-2 text-xs text-muted-foreground"
+          role="status"
+        >
+          <Loader2 className="size-3 animate-spin" />
+          Updating invoices
+        </p>
+      ) : null}
+      <div className="min-h-48 overflow-x-auto" inert={pending || unavailable} aria-busy={pending}>
         <table className="w-full min-w-[820px] text-left">
           <thead className="bg-muted/35 text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
             <tr>
@@ -142,7 +157,11 @@ export function InvoiceRegister({
             })}
           </tbody>
         </table>
-        {!items.length ? (
+        {unavailable ? (
+          <p className="p-5 text-sm text-muted-foreground">
+            Invoice list unavailable. Retry using the message above.
+          </p>
+        ) : !items.length && !pending ? (
           <div className="m-5 rounded-2xl border border-dashed border-border-strong bg-muted/20 py-14 text-center">
             <p className="text-sm font-semibold text-foreground">No matching invoice</p>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -152,7 +171,7 @@ export function InvoiceRegister({
         ) : null}
       </div>
       <footer className="flex items-center justify-between border-t border-border px-5 py-3">
-        <span className="num text-[11px] text-muted-foreground">Server page {page}</span>
+        <span className="num text-[11px] text-muted-foreground">Page {page}</span>
         <div className="flex gap-2">
           <PageButton
             icon={ChevronLeft}

@@ -39,12 +39,13 @@ export const Route = createFileRoute("/field-executive")({
   component: FieldExecutivePage,
 });
 
-const tabs = ["ACTIVE", "EXCEPTION", "COMPLETED", "ALL"] as const;
+const tabs = ["ACTIVE", "REVIEW", "EXCEPTION", "COMPLETED", "ALL"] as const;
 type VisitTab = (typeof tabs)[number];
 type SummaryCounts = {
   queued: number;
   active: number;
   exceptions: number;
+  review: number;
   completed: number;
 };
 
@@ -61,7 +62,9 @@ function FieldExecutivePage() {
     ).length;
     return {
       queued: workflow.visits.length,
-      active: workflow.visits.length - completed - exceptions,
+      active: workflow.visits.filter((visit) => ["ASSIGNED", "IN_PROGRESS"].includes(visit.status))
+        .length,
+      review: workflow.visits.filter((visit) => visit.status === "REVIEW_PENDING").length,
       exceptions,
       completed,
     };
@@ -73,6 +76,7 @@ function FieldExecutivePage() {
           tab === "ALL" ||
           (tab === "ACTIVE" && ["ASSIGNED", "IN_PROGRESS"].includes(visit.status)) ||
           (tab === "EXCEPTION" && visit.status === "EXCEPTION_REVIEW") ||
+          (tab === "REVIEW" && visit.status === "REVIEW_PENDING") ||
           (tab === "COMPLETED" && visit.status === "COMPLETED"),
       ),
     [tab, workflow.visits],
@@ -128,6 +132,7 @@ function FieldExecutivePage() {
                 type="button"
                 onClick={() => void signOut()}
                 disabled={signingOut}
+                aria-busy={signingOut}
                 className="grid size-10 place-items-center rounded-full border border-white/80 bg-white/75 text-muted-foreground shadow-[var(--shadow-card)] transition-colors hover:text-critical disabled:opacity-50"
                 aria-label="Sign out"
               >
@@ -145,7 +150,8 @@ function FieldExecutivePage() {
             counts={counts}
             online={workflow.online}
             pendingSync={workflow.pendingSync}
-            syncing={workflow.syncing}
+            syncing={workflow.syncing && !workflow.locating}
+            busy={workflow.syncing || workflow.locating}
             onSync={() => void workflow.syncAll()}
           />
 
@@ -194,6 +200,7 @@ function FieldExecutivePage() {
                 photoCount={workflow.photoCount}
                 geoError={workflow.geoError}
                 locating={workflow.locating}
+                captureAction={workflow.captureAction}
                 syncing={workflow.syncing}
                 policy={workflow.policy}
                 onCapture={(kind) => void workflow.capture(kind)}
@@ -221,12 +228,14 @@ function FieldExecutivePage() {
 }
 
 function tabLabel(value: VisitTab) {
+  if (value === "REVIEW") return "Evidence review";
   return value === "EXCEPTION" ? "Exceptions" : value.charAt(0) + value.slice(1).toLowerCase();
 }
 
 function tabCount(value: VisitTab, counts: SummaryCounts) {
   if (value === "ACTIVE") return counts.active;
   if (value === "EXCEPTION") return counts.exceptions;
+  if (value === "REVIEW") return counts.review;
   if (value === "COMPLETED") return counts.completed;
   return counts.queued;
 }

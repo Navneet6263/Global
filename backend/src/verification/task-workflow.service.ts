@@ -9,6 +9,10 @@ import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
 import type { UpdateTaskDto } from "./dto/update-task.dto";
 import { QaReadinessService } from "./qa-readiness.service";
+import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
+import { updateCaseRisk } from "./case-risk";
+import { assertMethodOutcomesReady } from "./method-outcome.policy";
+import { lockMutableCaseEvidence } from "../documents/upload-document-policy";
 
 const ALLOWED_TRANSITIONS: Record<string, string[]> = {
   UNASSIGNED: ["IN_PROGRESS"],
@@ -65,7 +69,12 @@ export class TaskWorkflowService {
             publicId: true,
             caseId: true,
             case: {
-              select: { publicId: true, branchId: true, clientId: true },
+              select: {
+                publicId: true,
+                branchId: true,
+                clientId: true,
+                status: true,
+              },
             },
           },
         },
@@ -76,6 +85,13 @@ export class TaskWorkflowService {
     }
     if (task.version !== input.version) {
       throw new ConflictException("Task changed; refresh and try again");
+    }
+    if (
+      !["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(task.check.case.status)
+    ) {
+      throw new ConflictException(
+        "Verification work is locked for this case stage",
+      );
     }
     if (!(ALLOWED_TRANSITIONS[task.status] ?? []).includes(input.status)) {
       throw new ConflictException(
@@ -97,6 +113,13 @@ export class TaskWorkflowService {
     }
 
     await this.prisma.$transaction(async (tx) => {
+      await lockMutableCaseEvidence(tx, task.check.caseId);
+      if (input.status === "COMPLETED") {
+        await assertCaseEvidenceReady(tx, task.check.caseId, {
+          includeWork: false,
+        });
+        await assertMethodOutcomesReady(tx, task.check.id, input.result);
+      }
       const updated = await tx.checkTask.updateMany({
         where: { id: task.id, version: input.version },
         data: {
@@ -147,6 +170,7 @@ export class TaskWorkflowService {
         },
       });
       if (input.status === "COMPLETED") {
+        await updateCaseRisk(tx, task.check.caseId);
         await tx.finding.deleteMany({ where: { checkId: task.check.id } });
       }
       if (input.findings.length) {

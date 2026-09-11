@@ -91,6 +91,14 @@ export const ADMIN_NAV_ITEMS: readonly NavItem[] = [
     "field-visit:read",
   ),
   item(
+    "Released reports",
+    "Published report library and authenticity checks",
+    FileSearch,
+    "/admin/reports",
+    "delivery",
+    "report:read",
+  ),
+  item(
     "Clients",
     "Client organisations and SLAs",
     Building2,
@@ -145,6 +153,14 @@ export const ADMIN_NAV_ITEMS: readonly NavItem[] = [
     "/admin/security",
     "platform",
     "notification:read",
+  ),
+  item(
+    "Privacy desk",
+    "Data requests and incident decision tracking",
+    ShieldCheck,
+    "/admin/privacy",
+    "platform",
+    "settings:manage",
   ),
 ];
 

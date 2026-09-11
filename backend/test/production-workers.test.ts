@@ -41,9 +41,18 @@ void test("two outbox workers cannot claim the same event", async () => {
   const prisma = {
     outboxEvent: {
       findFirst: () => Promise.resolve({ ...state }),
-      updateMany: ({ where, data }: { where: { status: string }; data: Record<string, unknown> }) => {
+      updateMany: ({
+        where,
+        data,
+      }: {
+        where: { status: string };
+        data: Record<string, unknown>;
+      }) => {
         if (state.status !== where.status) return Promise.resolve({ count: 0 });
-        Object.assign(state, data, { status: "PROCESSING", attempts: state.attempts + 1 });
+        Object.assign(state, data, {
+          status: "PROCESSING",
+          attempts: state.attempts + 1,
+        });
         return Promise.resolve({ count: 1 });
       },
     },
@@ -120,7 +129,12 @@ void test("terminal report failure is visible and can be requeued atomically", a
       },
     },
     user: { findMany: () => Promise.resolve([{ id: 9n }]) },
-    notification: { createMany: () => (writes.push("notification"), Promise.resolve({ count: 1 })) },
+    notification: {
+      createMany: () => (
+        writes.push("notification"),
+        Promise.resolve({ count: 1 })
+      ),
+    },
     auditEvent: { create: () => (writes.push("audit"), Promise.resolve({})) },
     outboxEvent: { create: () => (writes.push("outbox"), Promise.resolve({})) },
   };
@@ -147,7 +161,11 @@ void test("terminal report failure is visible and can be requeued atomically", a
   } as unknown as PrismaService;
   const service = new ReportRecoveryService(prisma);
   await service.markFailed(2n, "report-id", new Error("render failed"));
-  assert.deepEqual(writes.slice(0, 3), ["report:FAILED", "notification", "audit"]);
+  assert.deepEqual(writes.slice(0, 3), [
+    "report:FAILED",
+    "notification",
+    "audit",
+  ]);
   const actor = {
     tenantId: 2n,
     userId: 3n,
@@ -165,6 +183,12 @@ void test("retention removes both GPS fixes and queues one object deletion", asy
   let scrubbed: Record<string, unknown> | undefined;
   let deletes = 0;
   const tx = {
+    verificationCase: {
+      updateMany: ({ where }: { where: Record<string, unknown> }) => {
+        assert.equal(where.retentionHoldAt, null);
+        return Promise.resolve({ count: 1 });
+      },
+    },
     fieldVisit: {
       updateMany: ({ data }: { data: Record<string, unknown> }) => {
         scrubbed = data;
@@ -181,16 +205,27 @@ void test("retention removes both GPS fixes and queues one object deletion", asy
     },
   };
   const prisma = {
-    tenantFieldPolicy: { findMany: () => Promise.resolve([{ tenantId: 1n, retentionDays: 30 }]) },
+    tenantFieldPolicy: {
+      findMany: () => Promise.resolve([{ tenantId: 1n, retentionDays: 30 }]),
+    },
     fieldVisit: {
       findMany: () =>
         Promise.resolve([
-          { id: 2n, publicId: "visit-id", evidence: [{ objectKey: "private/object" }] },
+          {
+            id: 2n,
+            caseId: 3n,
+            publicId: "visit-id",
+            evidence: [{ objectKey: "private/object" }],
+          },
         ]),
     },
     $transaction: (work: (client: typeof tx) => Promise<unknown>) => work(tx),
   } as unknown as PrismaService;
-  const worker = new RetentionWorkerService(prisma, config(), new RuntimeHealthService());
+  const worker = new RetentionWorkerService(
+    prisma,
+    config(),
+    new RuntimeHealthService(),
+  );
   await (worker as unknown as { run(): Promise<void> }).run();
   for (const field of [
     "capturedLatitude",

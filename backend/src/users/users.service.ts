@@ -181,7 +181,7 @@ export class UsersService {
   }
 
   async update(actor: Actor, publicId: string, input: UpdateUserDto) {
-    this.assertDirectoryRole(actor);
+    assertAnyRole(actor, ["PLATFORM_ADMIN"], "Only platform administrators can change account access");
     const user = await this.prisma.user.findFirst({
       where: {
         tenantId: actor.tenantId,
@@ -214,6 +214,8 @@ export class UsersService {
       throw new NotFoundException("One or more roles were not found");
     const currentRoleCodes = user.userRoles.map(({ role }) => role.code);
     const nextRoleCodes = input.roleCodes ?? currentRoleCodes;
+    const rolesChanged = currentRoleCodes.length !== nextRoleCodes.length ||
+      currentRoleCodes.some((role) => !nextRoleCodes.includes(role));
     if (input.roleCodes) {
       assertSafeRoleCombination(nextRoleCodes, input.additionalAccessConfirmed);
     }
@@ -256,7 +258,7 @@ export class UsersService {
             data: roles.map((role) => ({ userId: user.id, roleId: role.id })),
           });
         }
-        if (input.status === "SUSPENDED")
+        if (input.status === "SUSPENDED" || rolesChanged)
           await tx.refreshSession.updateMany({
             where: { userId: user.id, revokedAt: null },
             data: { revokedAt: new Date() },
@@ -268,6 +270,7 @@ export class UsersService {
             action: "user.updated",
             resourceType: "user",
             resourcePublicId: publicId,
+            beforeJson: JSON.stringify({ status: user.status, roles: currentRoleCodes, version: user.version }),
             afterJson: JSON.stringify({
               status: input.status ?? user.status,
               roles: nextRoleCodes,

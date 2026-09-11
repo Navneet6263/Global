@@ -8,6 +8,7 @@ import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CompleteFieldVisitDto } from "./dto/complete-field-visit.dto";
 import { haversineMeters } from "./geo";
+import { lockMutableCaseEvidence } from "../documents/upload-document-policy";
 
 @Injectable()
 export class FieldVisitCompletionService {
@@ -35,11 +36,22 @@ export class FieldVisitCompletionService {
       include: {
         evidence: { select: { id: true, capturedAt: true } },
         case: {
-          select: { publicId: true, caseNumber: true, assignedOpsUserId: true },
+          select: {
+            id: true,
+            status: true,
+            publicId: true,
+            caseNumber: true,
+            assignedOpsUserId: true,
+          },
         },
       },
     });
     if (!visit) throw new NotFoundException("Assigned field visit not found");
+    if (!["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(visit.case.status)) {
+      throw new ConflictException(
+        "The case is not open for field verification",
+      );
+    }
     if (!["ASSIGNED", "IN_PROGRESS"].includes(visit.status)) {
       throw new ConflictException("This visit cannot be completed again");
     }
@@ -104,9 +116,10 @@ export class FieldVisitCompletionService {
     const allowAndFlag =
       !insideFence && policy?.outsideGeofencePolicy === "ALLOW_AND_FLAG";
     const status =
-      insideFence || allowAndFlag ? "COMPLETED" : "EXCEPTION_REVIEW";
+      insideFence || allowAndFlag ? "REVIEW_PENDING" : "EXCEPTION_REVIEW";
 
     await this.prisma.$transaction(async (tx) => {
+      await lockMutableCaseEvidence(tx, visit.case.id);
       const result = await tx.fieldVisit.updateMany({
         where: {
           id: visit.id,
@@ -120,8 +133,8 @@ export class FieldVisitCompletionService {
           accuracyMeters: input.accuracyMeters,
           distanceMeters: distance,
           capturedAt,
-          completedAt: status === "COMPLETED" ? new Date() : null,
-          completedById: status === "COMPLETED" ? actor.userId : null,
+          completedAt: null,
+          completedById: null,
           checklistJson: JSON.stringify(input.checklist),
           remarks: input.remarks?.trim(),
           version: { increment: 1 },
@@ -135,9 +148,9 @@ export class FieldVisitCompletionService {
           tenantId: actor.tenantId,
           actorUserId: actor.userId,
           action: insideFence
-            ? "field_visit.completed"
+            ? "field_visit.review-requested"
             : allowAndFlag
-              ? "field_visit.completed-outside-geofence"
+              ? "field_visit.flagged-review-requested"
               : "field_visit.geofence_exception",
           resourceType: "field_visit",
           resourcePublicId: visitPublicId,
@@ -154,13 +167,13 @@ export class FieldVisitCompletionService {
           }),
         },
       });
-      if (allowAndFlag && visit.case.assignedOpsUserId) {
+      if (visit.case.assignedOpsUserId) {
         await tx.notification.create({
           data: {
             tenantId: actor.tenantId,
             userId: visit.case.assignedOpsUserId,
-            type: "FIELD_VISIT_OUTSIDE_GEOFENCE",
-            title: "Field visit completed outside geofence",
+            type: "FIELD_VISIT_REVIEW_REQUIRED",
+            title: "Field visit needs supervisor review",
             body: `${visit.case.caseNumber}: captured ${Math.round(distance)} m from target.`,
             href: `/cases/${visit.case.publicId}`,
           },

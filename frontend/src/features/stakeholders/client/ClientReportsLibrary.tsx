@@ -47,7 +47,7 @@ export function ClientReportsLibrary() {
   return (
     <Section
       title="Published report library"
-      description="Signed final reports available only inside your organisation scope"
+      description="Released reports available only within your authorised scope"
       padded={false}
     >
       <div className="border-b border-border bg-card/45 p-4">
@@ -88,7 +88,7 @@ export function ClientReportsLibrary() {
             </div>
             <div>
               <p className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                Signed version
+                Released version
               </p>
               <p className="num mt-1 text-xs font-medium">
                 v{report.latestVersion?.version ?? report.currentVersion}
@@ -112,6 +112,7 @@ export function ClientReportsLibrary() {
                   download.mutate({ reportId: report.id, caseNumber: report.case.caseNumber })
                 }
                 disabled={download.isPending}
+                aria-busy={download.isPending && download.variables?.reportId === report.id}
                 className="inline-flex h-9 items-center gap-2 rounded-full bg-primary px-3 text-[10px] font-semibold text-primary-foreground disabled:opacity-50"
               >
                 <Download className="size-3.5" aria-hidden /> Download PDF
@@ -123,7 +124,8 @@ export function ClientReportsLibrary() {
           <div className="px-5 py-16 text-center">
             <p className="text-sm font-semibold">No published report found</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Reports appear here automatically after QA approval and publication.
+              Reports appear here after quality review, manager approval and payment-controlled
+              release.
             </p>
           </div>
         ) : null}

@@ -13,6 +13,16 @@ export function WorkflowStrip({ item }: { item: CaseDetail }) {
       label: "Checks",
       complete: item.checks.length > 0 && item.checks.every((c) => c.status === "COMPLETED"),
     },
+    ...(item.checks.some((check) => check.type === "ADDRESS") || item.fieldVisits.length
+      ? [
+          {
+            label: "Field visit",
+            complete:
+              item.fieldVisits.some((visit) => visit.status === "COMPLETED") &&
+              item.fieldVisits.every((visit) => ["COMPLETED", "CANCELLED"].includes(visit.status)),
+          },
+        ]
+      : []),
     { label: "QA review", complete: item.qaReviews.some((q) => q.decision === "APPROVED") },
     { label: "Report", complete: item.reports.some((r) => r.status === "PUBLISHED") },
   ];

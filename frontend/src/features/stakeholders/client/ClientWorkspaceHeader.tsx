@@ -5,6 +5,7 @@ import { NewCaseDialog } from "@/components/ops/NewCaseDialog";
 import { getSession } from "@/lib/api/auth";
 import { StakeholderHeader } from "../StakeholderShell";
 import { PortfolioTrustNote } from "./ClientOverview";
+import { ClientBulkIntake } from "./ClientBulkIntake";
 
 export function ClientWorkspaceHeader({
   title,
@@ -30,6 +31,7 @@ export function ClientWorkspaceHeader({
       action={
         <div className="flex flex-wrap items-center gap-3">
           <PortfolioTrustNote />
+          {canCreate ? <ClientBulkIntake /> : null}
           {canCreate ? (
             <NewCaseDialog
               trigger={

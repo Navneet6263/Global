@@ -42,6 +42,8 @@ model Tenant {
   creditNotes     CreditNote[]
   notifications   Notification[]
   candidateAccess CandidatePortalAccess[]
+  privacyRecords  PrivacyRecord[]
+  vendorSharingRecords VendorSharingRecord[]
 }
 
 model Branch {
@@ -94,6 +96,7 @@ model User {
   completedTasks      CheckTask[]            @relation("TaskCompletedBy")
   clarificationSender ClarificationMessage[]
   qaReviews           QaReview[]
+  managerReviews      ManagerReview[]
   generatedReports    ReportVersion[]
   assignedVisits      FieldVisit[]           @relation("VisitAssignee")
   completedVisits     FieldVisit[]           @relation("VisitCompletedBy")
@@ -101,16 +104,77 @@ model User {
   auditEvents         AuditEvent[]
   ownedOpportunities  SalesOpportunity[]     @relation("OpportunityOwner")
   salesActivities     SalesActivity[]
+  sourceOutreach      SourceOutreach[]
+  authoredProposals CrmProposal[] @relation("ProposalAuthor")
+  approvedProposals CrmProposal[] @relation("ProposalApprover")
+  uploadedAgreements ClientAgreementFile[] @relation("AgreementUploader")
+  reviewedAgreements ClientAgreementFile[] @relation("AgreementReviewer")
+  proposedSharing VendorSharingRecord[] @relation("SharingAuthor")
+  decidedSharing VendorSharingRecord[] @relation("SharingReviewer")
   recordedPayments    Payment[]
   createdCreditNotes  CreditNote[]
   notifications       Notification[]
   qaClaimedCases      VerificationCase[]     @relation("CaseQaReviewer")
+  createdPrivacyRecords PrivacyRecord[] @relation("PrivacyRecordCreator")
+  updatedPrivacyRecords PrivacyRecord[] @relation("PrivacyRecordUpdater")
 
   @@unique([tenantId, normalizedEmail])
   @@index([tenantId, status])
   @@index([tenantId, branchId])
   @@index([tenantId, clientId])
   @@index([tenantId, displayName, publicId])
+}
+
+model VendorSharingRecord {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId BigInt
+  recipient String @db.NVarChar(160)
+  purpose String @db.NVarChar(1000)
+  agreementReference String @db.NVarChar(300)
+  scopeReference String @db.NVarChar(200)
+  categoriesJson String @db.NVarChar(500)
+  expiresAt DateTime @db.DateTime2
+  status String @default("PROPOSED") @db.VarChar(24)
+  createdById BigInt
+  decidedById BigInt?
+  decisionReason String? @db.NVarChar(1000)
+  version Int @default(1)
+  createdAt DateTime @default(now()) @db.DateTime2
+  updatedAt DateTime @updatedAt @db.DateTime2
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdBy User @relation("SharingAuthor", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  decidedBy User? @relation("SharingReviewer", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@index([tenantId, status, expiresAt])
+}
+
+model PrivacyRecord {
+  id                BigInt   @id @default(autoincrement())
+  publicId          String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId          BigInt
+  kind              String   @db.VarChar(24)
+  requestType       String?  @db.VarChar(24)
+  subjectReference  String?  @db.NVarChar(200)
+  title             String   @db.NVarChar(160)
+  description       String   @db.NVarChar(2000)
+  status            String   @db.VarChar(24)
+  severity          String?  @db.VarChar(16)
+  dueAt             DateTime? @db.DateTime2
+  resolutionNote    String?  @db.NVarChar(2000)
+  evidenceReference String?  @db.NVarChar(300)
+  completedAt       DateTime? @db.DateTime2
+  createdById       BigInt
+  updatedById       BigInt
+  version           Int      @default(1)
+  createdAt         DateTime @default(now()) @db.DateTime2
+  updatedAt         DateTime @updatedAt @db.DateTime2
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdBy User   @relation("PrivacyRecordCreator", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  updatedBy User   @relation("PrivacyRecordUpdater", fields: [updatedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenantId, kind, status, createdAt])
+  @@index([tenantId, dueAt])
 }
 
 model Role {
@@ -176,6 +240,11 @@ model Client {
   contactPhone String?  @db.VarChar(24)
   status       String   @default("ACTIVE") @db.VarChar(24)
   billingTerms String?  @db.NVarChar(200)
+  creditLimit Decimal? @db.Decimal(18, 2)
+  creditHold Boolean @default(false)
+  creditControlReason String? @db.NVarChar(500)
+  gstin        String?  @db.VarChar(15)
+  billingAddress String? @db.NVarChar(500)
   slaHours     Int      @default(72)
   version      Int      @default(1)
   createdAt    DateTime @default(now()) @db.DateTime2
@@ -186,6 +255,8 @@ model Client {
   users         User[]
   opportunities SalesOpportunity[]
   invoices      Invoice[]
+  packageRates  ClientPackageRate[]
+  agreements    ClientAgreement[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status, displayName])
@@ -198,6 +269,8 @@ model ServicePackage {
   code       String   @db.VarChar(40)
   name       String   @db.NVarChar(120)
   checksJson String   @db.NVarChar(Max)
+  serviceFamily String @default("HIRECHECK") @db.VarChar(32)
+  requiredDocumentsJson String @default("[]") @db.NVarChar(Max)
   price      Decimal? @db.Decimal(18, 2)
   tatHours   Int      @default(72)
   isActive   Boolean  @default(true)
@@ -206,6 +279,8 @@ model ServicePackage {
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   cases  VerificationCase[]
+  caseServices CaseService[]
+  clientRates ClientPackageRate[]
 
   @@unique([tenantId, code])
 }
@@ -242,6 +317,8 @@ model VerificationCase {
   assignedOpsUserId BigInt?
   qaReviewerId      BigInt?
   qaClaimedAt       DateTime? @db.DateTime2
+  retentionHoldAt DateTime? @db.DateTime2
+  retentionHoldReason String? @db.NVarChar(500)
   caseNumber        String    @db.VarChar(32)
   externalRef       String?   @db.VarChar(80)
   status            String    @default("DRAFT") @db.VarChar(32)
@@ -266,6 +343,8 @@ model VerificationCase {
   documents       Document[]
   clarifications  Clarification[]
   qaReviews       QaReview[]
+  managerReviews  ManagerReview[]
+  services        CaseService[]
   reports         Report[]
   fieldVisits     FieldVisit[]
   invoiceLines    InvoiceLine[]
@@ -288,6 +367,8 @@ model CaseCheck {
   publicId      String    @unique @default(uuid()) @db.UniqueIdentifier
   tenantId      BigInt
   caseId        BigInt
+  caseServiceId BigInt?
+  reviewCycle Int @default(1)
   type          String    @db.VarChar(40)
   status        String    @default("PENDING") @db.VarChar(32)
   result        String?   @db.VarChar(24)
@@ -303,8 +384,10 @@ model CaseCheck {
   case     VerificationCase @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   tasks    CheckTask[]
   findings Finding[]
+  caseService CaseService? @relation(fields: [caseServiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  methodRuns VerificationMethodRun[]
 
-  @@unique([caseId, type])
+  @@unique([caseId, caseServiceId, type])
   @@index([tenantId, status, dueAt])
 }
 
@@ -366,6 +449,10 @@ model Document {
   type           String    @db.VarChar(48)
   status         String    @default("REQUESTED") @db.VarChar(24)
   currentVersion Int       @default(0)
+  version        Int       @default(1)
+  reviewNote     String?   @db.NVarChar(2000)
+  reviewedAt     DateTime? @db.DateTime2
+  reviewedById   BigInt?
   expiresAt      DateTime? @db.Date
   createdAt      DateTime  @default(now()) @db.DateTime2
   updatedAt      DateTime  @updatedAt @db.DateTime2
@@ -445,10 +532,12 @@ model Clarification {
   tenantId               BigInt
   caseId                 BigInt
   checkId                BigInt?
+  checkCycle             Int?
   status                 String    @default("OPEN") @db.VarChar(24)
   subject                String    @db.NVarChar(180)
   dueAt                  DateTime? @db.DateTime2
   resolvedAt             DateTime? @db.DateTime2
+  reverificationRequired Boolean @default(true)
   responseTokenHash      String?   @db.Char(64)
   responseTokenExpiresAt DateTime? @db.DateTime2
   createdAt              DateTime  @default(now()) @db.DateTime2
@@ -487,6 +576,7 @@ model QaReview {
 
   case     VerificationCase @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   reviewer User             @relation(fields: [reviewerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  managerReviews ManagerReview[]
 
   @@index([caseId, createdAt])
   @@index([reviewerId, createdAt])
@@ -497,6 +587,11 @@ model Report {
   publicId       String    @unique @default(uuid()) @db.UniqueIdentifier
   tenantId       BigInt
   caseId         BigInt
+  managerReviewId BigInt?
+  workflowVersion Int @default(1)
+  releasedAt DateTime? @db.DateTime2
+  releasedById BigInt?
+  downloadExpiresAt DateTime? @db.DateTime2
   status         String    @default("QUEUED") @db.VarChar(24)
   currentVersion Int       @default(0)
   publishedAt    DateTime? @db.DateTime2
@@ -506,6 +601,8 @@ model Report {
   tenant   Tenant           @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   case     VerificationCase @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   versions ReportVersion[]
+  managerReview ManagerReview? @relation(fields: [managerReviewId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  invoiceLines InvoiceLine[]
 
   @@index([tenantId, caseId, status])
 }
@@ -702,6 +799,8 @@ model SalesOpportunity {
   probability       Int       @default(10)
   expectedCloseDate DateTime? @db.Date
   nextFollowUpAt    DateTime? @db.DateTime2
+  followUpSequenceStartedAt DateTime? @db.DateTime2
+  followUpSequenceStep Int?
   notes             String?   @db.NVarChar(2000)
   lostReason        String?   @db.NVarChar(500)
   closedAt          DateTime? @db.DateTime2
@@ -714,10 +813,33 @@ model SalesOpportunity {
   client     Client?         @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   owner      User?           @relation("OpportunityOwner", fields: [ownerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   activities SalesActivity[]
+  proposals CrmProposal[]
 
   @@index([tenantId, stage, updatedAt])
   @@index([tenantId, ownerId, stage])
   @@index([tenantId, ownerId, nextFollowUpAt])
+}
+
+model CrmProposal {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  opportunityId BigInt
+  revision Int
+  status String @default("DRAFT") @db.VarChar(24)
+  snapshotJson String @db.NVarChar(Max)
+  createdById BigInt
+  approvedById BigInt?
+  approvedAt DateTime? @db.DateTime2
+  validUntil DateTime @db.DateTime2
+  version Int @default(1)
+  createdAt DateTime @default(now()) @db.DateTime2
+  updatedAt DateTime @updatedAt @db.DateTime2
+
+  opportunity SalesOpportunity @relation(fields: [opportunityId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdBy User @relation("ProposalAuthor", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  approvedBy User? @relation("ProposalApprover", fields: [approvedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@unique([opportunityId, revision])
+  @@index([opportunityId, createdAt])
 }
 
 model SalesActivity {
@@ -774,6 +896,7 @@ model InvoiceLine {
   id          BigInt   @id @default(autoincrement())
   invoiceId   BigInt
   caseId      BigInt?
+  reportId    BigInt?
   description String   @db.NVarChar(300)
   quantity    Int      @default(1)
   unitPrice   Decimal  @db.Decimal(18, 2)
@@ -783,9 +906,153 @@ model InvoiceLine {
 
   invoice Invoice           @relation(fields: [invoiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   case    VerificationCase? @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  report Report? @relation(fields: [reportId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([invoiceId])
   @@index([caseId])
+  @@index([reportId])
+}
+
+model ManagerReview {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  caseId BigInt
+  reviewerId BigInt
+  qaReviewId BigInt
+  decision String @db.VarChar(24)
+  notes String @db.NVarChar(2000)
+  snapshotJson String @db.NVarChar(Max)
+  createdAt DateTime @default(now()) @db.DateTime2
+
+  case VerificationCase @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  qaReview QaReview @relation(fields: [qaReviewId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reports Report[]
+
+  @@index([caseId, createdAt])
+}
+
+model CaseService {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  caseId BigInt
+  servicePackageId BigInt
+  serviceFamily String @db.VarChar(32)
+  configurationJson String @default("{}") @db.NVarChar(Max)
+  requiredDocumentsJson String @default("[]") @db.NVarChar(Max)
+  unitPrice Decimal @default(0) @db.Decimal(18, 2)
+  taxRate Decimal @default(0) @db.Decimal(5, 2)
+  tatHours Int @default(72)
+  createdAt DateTime @default(now()) @db.DateTime2
+
+  case VerificationCase @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  servicePackage ServicePackage @relation(fields: [servicePackageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  checks CaseCheck[]
+
+  @@unique([caseId, servicePackageId])
+}
+
+model VerificationMethodRun {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  checkId BigInt
+  method String @db.VarChar(24)
+  status String @default("REQUESTED") @db.VarChar(24)
+  result String? @db.VarChar(24)
+  provider String? @db.NVarChar(160)
+  reference String? @db.NVarChar(180)
+  sourceContact String? @db.NVarChar(300)
+  requestedAt DateTime @default(now()) @db.DateTime2
+  respondedAt DateTime? @db.DateTime2
+  dueAt DateTime? @db.DateTime2
+  nextFollowUpAt DateTime? @db.DateTime2
+  summary String? @db.NVarChar(2000)
+  evidenceJson String @default("[]") @db.NVarChar(Max)
+  createdById BigInt
+  version Int @default(1)
+  createdAt DateTime @default(now()) @db.DateTime2
+  updatedAt DateTime @updatedAt @db.DateTime2
+
+  check CaseCheck @relation(fields: [checkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  outreach SourceOutreach[]
+
+  @@index([checkId, status])
+  @@index([status, dueAt])
+}
+
+model SourceOutreach {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  methodRunId BigInt
+  actorUserId BigInt
+  channel String @db.VarChar(24)
+  outcome String @db.VarChar(32)
+  notes String @db.NVarChar(1500)
+  occurredAt DateTime @db.DateTime2
+  nextFollowUpAt DateTime? @db.DateTime2
+  createdAt DateTime @default(now()) @db.DateTime2
+
+  methodRun VerificationMethodRun @relation(fields: [methodRunId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  actor User @relation(fields: [actorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([methodRunId, id])
+}
+
+model ClientPackageRate {
+  id BigInt @id @default(autoincrement())
+  clientId BigInt
+  servicePackageId BigInt
+  unitPrice Decimal @db.Decimal(18, 2)
+  taxRate Decimal @default(0) @db.Decimal(5, 2)
+  tatHours Int?
+  active Boolean @default(true)
+  createdAt DateTime @default(now()) @db.DateTime2
+  updatedAt DateTime @updatedAt @db.DateTime2
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  servicePackage ServicePackage @relation(fields: [servicePackageId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([clientId, servicePackageId])
+}
+
+model ClientAgreement {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  clientId BigInt
+  type String @db.VarChar(24)
+  reference String @db.NVarChar(500)
+  signedAt DateTime? @db.DateTime2
+  expiresAt DateTime? @db.DateTime2
+  createdAt DateTime @default(now()) @db.DateTime2
+  updatedAt DateTime @updatedAt @db.DateTime2
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  files ClientAgreementFile[]
+
+  @@index([clientId, type])
+}
+
+model ClientAgreementFile {
+  id BigInt @id @default(autoincrement())
+  publicId String @unique @default(uuid()) @db.UniqueIdentifier
+  agreementId BigInt
+  revision Int
+  objectKey String @db.NVarChar(600)
+  originalName String @db.NVarChar(255)
+  mimeType String @db.VarChar(100)
+  sizeBytes Int
+  sha256 String @db.Char(64)
+  status String @default("PENDING") @db.VarChar(24)
+  uploadedById BigInt
+  reviewedById BigInt?
+  reviewedAt DateTime? @db.DateTime2
+  reviewNotes String? @db.NVarChar(1000)
+  version Int @default(1)
+  createdAt DateTime @default(now()) @db.DateTime2
+  agreement ClientAgreement @relation(fields: [agreementId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  uploadedBy User @relation("AgreementUploader", fields: [uploadedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviewedBy User? @relation("AgreementReviewer", fields: [reviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  @@unique([agreementId, revision])
 }
 
 model Payment {

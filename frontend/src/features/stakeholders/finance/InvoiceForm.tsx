@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { createInvoice } from "@/lib/api/finance";
 import { InvoiceCaseSearch, InvoiceClientSearch } from "./InvoiceEntitySelectors";
 import { money } from "./finance-utils";
+import type { BillingReadyReport } from "@/lib/backend-api/billing-ready";
 
 type DraftLine = {
   description: string;
@@ -14,6 +15,7 @@ type DraftLine = {
   taxRate: string;
   caseId: string;
   caseLabel: string;
+  reportId?: string;
 };
 const emptyLine = (): DraftLine => ({
   description: "",
@@ -24,16 +26,33 @@ const emptyLine = (): DraftLine => ({
   caseLabel: "",
 });
 
-export function InvoiceForm({ onClose }: { onClose: () => void }) {
+export function InvoiceForm({
+  onClose,
+  prepared,
+}: {
+  onClose: () => void;
+  prepared?: BillingReadyReport;
+}) {
   const queryClient = useQueryClient();
-  const [clientId, setClientId] = useState("");
-  const [clientLabel, setClientLabel] = useState("");
+  const [clientId, setClientId] = useState(prepared?.client.id ?? "");
+  const [clientLabel, setClientLabel] = useState(prepared?.client.displayName ?? "");
   const [dueAt, setDueAt] = useState("");
   const [notes, setNotes] = useState("");
-  const [lines, setLines] = useState<DraftLine[]>([emptyLine()]);
+  const [lines, setLines] = useState<DraftLine[]>(
+    prepared
+      ? prepared.lines.map((line) => ({
+          ...line,
+          unitPrice: String(line.unitPrice),
+          taxRate: String(line.taxRate),
+          caseLabel: prepared.caseNumber,
+        }))
+      : [emptyLine()],
+  );
   const valid = Boolean(
     clientId &&
     dueAt &&
+    lines.length > 0 &&
+    (!prepared || lines.some((line) => line.quantity > 0 && Number(line.unitPrice) > 0)) &&
     lines.every(
       (line) =>
         line.description.trim() &&
@@ -50,6 +69,7 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
         ...(notes.trim() ? { notes: notes.trim() } : {}),
         lines: lines.map((line) => ({
           ...(line.caseId ? { caseId: line.caseId } : {}),
+          ...(line.reportId ? { reportId: line.reportId } : {}),
           description: line.description.trim(),
           quantity: line.quantity,
           unitPrice: Number(line.unitPrice),
@@ -61,6 +81,7 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
       void Promise.all([
         queryClient.invalidateQueries({ queryKey: ["finance", "overview"] }),
         queryClient.invalidateQueries({ queryKey: ["finance", "invoices"] }),
+        queryClient.invalidateQueries({ queryKey: ["finance", "billing-ready"] }),
       ]);
       onClose();
     },
@@ -115,17 +136,23 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
           </button>
         </header>
         <div className="mt-5 grid gap-3 md:grid-cols-3">
-          <InvoiceClientSearch
-            value={clientId}
-            label={clientLabel}
-            onChange={(id, label) => {
-              setClientId(id);
-              setClientLabel(label);
-              setLines((current) =>
-                current.map((line) => ({ ...line, caseId: "", caseLabel: "" })),
-              );
-            }}
-          />
+          {prepared ? (
+            <Field label="Client">
+              <p className="rounded-xl bg-mint-soft/40 p-3 text-sm">{clientLabel}</p>
+            </Field>
+          ) : (
+            <InvoiceClientSearch
+              value={clientId}
+              label={clientLabel}
+              onChange={(id, label) => {
+                setClientId(id);
+                setClientLabel(label);
+                setLines((current) =>
+                  current.map((line) => ({ ...line, caseId: "", caseLabel: "" })),
+                );
+              }}
+            />
+          )}
           <Field label="Payment due date">
             <input
               type="date"
@@ -159,20 +186,28 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
             >
               <input
                 value={line.description}
+                readOnly={Boolean(prepared)}
                 onChange={(event) => updateLine(index, { description: event.target.value })}
                 placeholder="Service description"
                 className={lineClass}
               />
-              <InvoiceCaseSearch
-                clientId={clientId}
-                value={line.caseId}
-                label={line.caseLabel}
-                onChange={(caseId, caseLabel) => updateLine(index, { caseId, caseLabel })}
-              />
+              {prepared ? (
+                <p className="self-center text-xs">
+                  {prepared.caseNumber} · Report v{prepared.reportVersion}
+                </p>
+              ) : (
+                <InvoiceCaseSearch
+                  clientId={clientId}
+                  value={line.caseId}
+                  label={line.caseLabel}
+                  onChange={(caseId, caseLabel) => updateLine(index, { caseId, caseLabel })}
+                />
+              )}
               <input
                 type="number"
                 min="1"
                 value={line.quantity}
+                readOnly={Boolean(prepared)}
                 aria-label="Quantity"
                 onChange={(event) => updateLine(index, { quantity: Number(event.target.value) })}
                 className={lineClass}
@@ -182,6 +217,7 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
                 min="0"
                 step="0.01"
                 value={line.unitPrice}
+                readOnly={Boolean(prepared)}
                 onChange={(event) => updateLine(index, { unitPrice: event.target.value })}
                 placeholder="Rate"
                 className={lineClass}
@@ -192,6 +228,7 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
                 max="100"
                 step="0.01"
                 value={line.taxRate}
+                readOnly={Boolean(prepared)}
                 onChange={(event) => updateLine(index, { taxRate: event.target.value })}
                 placeholder="Tax %"
                 className={lineClass}
@@ -201,7 +238,7 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
                 onClick={() =>
                   setLines((current) => current.filter((_, lineIndex) => lineIndex !== index))
                 }
-                disabled={lines.length === 1}
+                disabled={Boolean(prepared) || lines.length === 1}
                 aria-label="Remove line"
                 className="grid size-10 place-items-center rounded-xl text-muted-foreground hover:bg-critical-soft hover:text-critical disabled:opacity-30"
               >
@@ -214,12 +251,14 @@ export function InvoiceForm({ onClose }: { onClose: () => void }) {
           <button
             type="button"
             onClick={() => setLines((current) => [...current, emptyLine()])}
+            disabled={Boolean(prepared)}
             className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-card px-4 text-xs font-semibold text-foreground shadow-[var(--shadow-card)]"
           >
             <Plus className="h-4 w-4" /> Add line
           </button>
           <button
             disabled={!valid || mutation.isPending}
+            aria-busy={mutation.isPending}
             className="h-10 rounded-full bg-primary px-5 text-xs font-semibold text-primary-foreground shadow-[var(--shadow-card)] disabled:opacity-40"
           >
             {mutation.isPending ? "Issuing…" : "Issue invoice"}

@@ -61,6 +61,8 @@ export type VerificationCaseMinAggregateOutputType = {
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
   qaClaimedAt: Date | null
+  retentionHoldAt: Date | null
+  retentionHoldReason: string | null
   caseNumber: string | null
   externalRef: string | null
   status: string | null
@@ -84,6 +86,8 @@ export type VerificationCaseMaxAggregateOutputType = {
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
   qaClaimedAt: Date | null
+  retentionHoldAt: Date | null
+  retentionHoldReason: string | null
   caseNumber: string | null
   externalRef: string | null
   status: string | null
@@ -107,6 +111,8 @@ export type VerificationCaseCountAggregateOutputType = {
   assignedOpsUserId: number
   qaReviewerId: number
   qaClaimedAt: number
+  retentionHoldAt: number
+  retentionHoldReason: number
   caseNumber: number
   externalRef: number
   status: number
@@ -156,6 +162,8 @@ export type VerificationCaseMinAggregateInputType = {
   assignedOpsUserId?: true
   qaReviewerId?: true
   qaClaimedAt?: true
+  retentionHoldAt?: true
+  retentionHoldReason?: true
   caseNumber?: true
   externalRef?: true
   status?: true
@@ -179,6 +187,8 @@ export type VerificationCaseMaxAggregateInputType = {
   assignedOpsUserId?: true
   qaReviewerId?: true
   qaClaimedAt?: true
+  retentionHoldAt?: true
+  retentionHoldReason?: true
   caseNumber?: true
   externalRef?: true
   status?: true
@@ -202,6 +212,8 @@ export type VerificationCaseCountAggregateInputType = {
   assignedOpsUserId?: true
   qaReviewerId?: true
   qaClaimedAt?: true
+  retentionHoldAt?: true
+  retentionHoldReason?: true
   caseNumber?: true
   externalRef?: true
   status?: true
@@ -312,6 +324,8 @@ export type VerificationCaseGroupByOutputType = {
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
   qaClaimedAt: Date | null
+  retentionHoldAt: Date | null
+  retentionHoldReason: string | null
   caseNumber: string
   externalRef: string | null
   status: string
@@ -358,6 +372,8 @@ export type VerificationCaseWhereInput = {
   assignedOpsUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaClaimedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  retentionHoldAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  retentionHoldReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   status?: Prisma.StringFilter<"VerificationCase"> | string
@@ -381,6 +397,8 @@ export type VerificationCaseWhereInput = {
   documents?: Prisma.DocumentListRelationFilter
   clarifications?: Prisma.ClarificationListRelationFilter
   qaReviews?: Prisma.QaReviewListRelationFilter
+  managerReviews?: Prisma.ManagerReviewListRelationFilter
+  services?: Prisma.CaseServiceListRelationFilter
   reports?: Prisma.ReportListRelationFilter
   fieldVisits?: Prisma.FieldVisitListRelationFilter
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
@@ -398,6 +416,8 @@ export type VerificationCaseOrderByWithRelationInput = {
   assignedOpsUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   qaClaimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  retentionHoldAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  retentionHoldReason?: Prisma.SortOrderInput | Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -421,6 +441,8 @@ export type VerificationCaseOrderByWithRelationInput = {
   documents?: Prisma.DocumentOrderByRelationAggregateInput
   clarifications?: Prisma.ClarificationOrderByRelationAggregateInput
   qaReviews?: Prisma.QaReviewOrderByRelationAggregateInput
+  managerReviews?: Prisma.ManagerReviewOrderByRelationAggregateInput
+  services?: Prisma.CaseServiceOrderByRelationAggregateInput
   reports?: Prisma.ReportOrderByRelationAggregateInput
   fieldVisits?: Prisma.FieldVisitOrderByRelationAggregateInput
   invoiceLines?: Prisma.InvoiceLineOrderByRelationAggregateInput
@@ -442,6 +464,8 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   assignedOpsUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaClaimedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  retentionHoldAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  retentionHoldReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   status?: Prisma.StringFilter<"VerificationCase"> | string
@@ -465,6 +489,8 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   documents?: Prisma.DocumentListRelationFilter
   clarifications?: Prisma.ClarificationListRelationFilter
   qaReviews?: Prisma.QaReviewListRelationFilter
+  managerReviews?: Prisma.ManagerReviewListRelationFilter
+  services?: Prisma.CaseServiceListRelationFilter
   reports?: Prisma.ReportListRelationFilter
   fieldVisits?: Prisma.FieldVisitListRelationFilter
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
@@ -482,6 +508,8 @@ export type VerificationCaseOrderByWithAggregationInput = {
   assignedOpsUserId?: Prisma.SortOrderInput | Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrderInput | Prisma.SortOrder
   qaClaimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  retentionHoldAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  retentionHoldReason?: Prisma.SortOrderInput | Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -513,6 +541,8 @@ export type VerificationCaseScalarWhereWithAggregatesInput = {
   assignedOpsUserId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
   qaClaimedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
+  retentionHoldAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
+  retentionHoldReason?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringWithAggregatesFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"VerificationCase"> | string
@@ -529,6 +559,8 @@ export type VerificationCaseCreateInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -552,6 +584,8 @@ export type VerificationCaseCreateInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -569,6 +603,8 @@ export type VerificationCaseUncheckedCreateInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -585,6 +621,8 @@ export type VerificationCaseUncheckedCreateInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -595,6 +633,8 @@ export type VerificationCaseUpdateInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -618,6 +658,8 @@ export type VerificationCaseUpdateInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -635,6 +677,8 @@ export type VerificationCaseUncheckedUpdateInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -651,6 +695,8 @@ export type VerificationCaseUncheckedUpdateInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -667,6 +713,8 @@ export type VerificationCaseCreateManyInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -683,6 +731,8 @@ export type VerificationCaseUpdateManyMutationInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -706,6 +756,8 @@ export type VerificationCaseUncheckedUpdateManyInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -744,6 +796,8 @@ export type VerificationCaseCountOrderByAggregateInput = {
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
   qaClaimedAt?: Prisma.SortOrder
+  retentionHoldAt?: Prisma.SortOrder
+  retentionHoldReason?: Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -779,6 +833,8 @@ export type VerificationCaseMaxOrderByAggregateInput = {
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
   qaClaimedAt?: Prisma.SortOrder
+  retentionHoldAt?: Prisma.SortOrder
+  retentionHoldReason?: Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -802,6 +858,8 @@ export type VerificationCaseMinOrderByAggregateInput = {
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
   qaClaimedAt?: Prisma.SortOrder
+  retentionHoldAt?: Prisma.SortOrder
+  retentionHoldReason?: Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -1258,6 +1316,34 @@ export type VerificationCaseUpdateOneWithoutInvoiceLinesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutInvoiceLinesInput, Prisma.VerificationCaseUpdateWithoutInvoiceLinesInput>, Prisma.VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput>
 }
 
+export type VerificationCaseCreateNestedOneWithoutManagerReviewsInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutManagerReviewsInput, Prisma.VerificationCaseUncheckedCreateWithoutManagerReviewsInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutManagerReviewsInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+}
+
+export type VerificationCaseUpdateOneRequiredWithoutManagerReviewsNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutManagerReviewsInput, Prisma.VerificationCaseUncheckedCreateWithoutManagerReviewsInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutManagerReviewsInput
+  upsert?: Prisma.VerificationCaseUpsertWithoutManagerReviewsInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutManagerReviewsInput, Prisma.VerificationCaseUpdateWithoutManagerReviewsInput>, Prisma.VerificationCaseUncheckedUpdateWithoutManagerReviewsInput>
+}
+
+export type VerificationCaseCreateNestedOneWithoutServicesInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicesInput, Prisma.VerificationCaseUncheckedCreateWithoutServicesInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutServicesInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+}
+
+export type VerificationCaseUpdateOneRequiredWithoutServicesNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicesInput, Prisma.VerificationCaseUncheckedCreateWithoutServicesInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutServicesInput
+  upsert?: Prisma.VerificationCaseUpsertWithoutServicesInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutServicesInput, Prisma.VerificationCaseUpdateWithoutServicesInput>, Prisma.VerificationCaseUncheckedUpdateWithoutServicesInput>
+}
+
 export type VerificationCaseCreateNestedOneWithoutCandidateAccessInput = {
   create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutCandidateAccessInput, Prisma.VerificationCaseUncheckedCreateWithoutCandidateAccessInput>
   connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutCandidateAccessInput
@@ -1276,6 +1362,8 @@ export type VerificationCaseCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1298,6 +1386,8 @@ export type VerificationCaseCreateWithoutTenantInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1314,6 +1404,8 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1330,6 +1422,8 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1375,6 +1469,8 @@ export type VerificationCaseScalarWhereInput = {
   assignedOpsUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaReviewerId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
   qaClaimedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  retentionHoldAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  retentionHoldReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   status?: Prisma.StringFilter<"VerificationCase"> | string
@@ -1391,6 +1487,8 @@ export type VerificationCaseCreateWithoutBranchInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1413,6 +1511,8 @@ export type VerificationCaseCreateWithoutBranchInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1429,6 +1529,8 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1445,6 +1547,8 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1480,6 +1584,8 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1502,6 +1608,8 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1518,6 +1626,8 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   subjectId: bigint | number
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1534,6 +1644,8 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1553,6 +1665,8 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1575,6 +1689,8 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1591,6 +1707,8 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1607,6 +1725,8 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1658,6 +1778,8 @@ export type VerificationCaseCreateWithoutClientInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1680,6 +1802,8 @@ export type VerificationCaseCreateWithoutClientInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1696,6 +1820,8 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1712,6 +1838,8 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1747,6 +1875,8 @@ export type VerificationCaseCreateWithoutServicePackageInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1769,6 +1899,8 @@ export type VerificationCaseCreateWithoutServicePackageInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1785,6 +1917,8 @@ export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1801,6 +1935,8 @@ export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1836,6 +1972,8 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1858,6 +1996,8 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1874,6 +2014,8 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1890,6 +2032,8 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -1925,6 +2069,8 @@ export type VerificationCaseCreateWithoutChecksInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1947,6 +2093,8 @@ export type VerificationCaseCreateWithoutChecksInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -1964,6 +2112,8 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -1979,6 +2129,8 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -2005,6 +2157,8 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2027,6 +2181,8 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -2044,6 +2200,8 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2059,6 +2217,8 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -2069,6 +2229,8 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2091,6 +2253,8 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -2108,6 +2272,8 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2123,6 +2289,8 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -2149,6 +2317,8 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2171,6 +2341,8 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -2188,6 +2360,8 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2203,6 +2377,8 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -2213,6 +2389,8 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2235,6 +2413,8 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -2252,6 +2432,8 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2267,6 +2449,8 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -2293,6 +2477,8 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2315,6 +2501,8 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -2332,6 +2520,8 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2347,6 +2537,8 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -2357,6 +2549,8 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2379,6 +2573,8 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -2396,6 +2592,8 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2411,6 +2609,8 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -2437,6 +2637,8 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2459,6 +2661,8 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -2476,6 +2680,8 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2491,6 +2697,8 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -2501,6 +2709,8 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2523,6 +2733,8 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -2540,6 +2752,8 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2555,6 +2769,8 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -2581,6 +2797,8 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2603,6 +2821,8 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -2620,6 +2840,8 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2635,6 +2857,8 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -2645,6 +2869,8 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2667,6 +2893,8 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
@@ -2684,6 +2912,8 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2699,6 +2929,8 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -2725,6 +2957,8 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2747,6 +2981,8 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -2764,6 +3000,8 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2779,6 +3017,8 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -2789,6 +3029,8 @@ export type VerificationCaseCreateWithoutReportsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2812,6 +3054,8 @@ export type VerificationCaseCreateWithoutReportsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
@@ -2828,6 +3072,8 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2844,6 +3090,8 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
@@ -2869,6 +3117,8 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2892,6 +3142,8 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
@@ -2908,6 +3160,8 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -2924,6 +3178,8 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
@@ -2933,6 +3189,8 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2956,6 +3214,8 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
@@ -2972,6 +3232,8 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -2988,6 +3250,8 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
@@ -3013,6 +3277,8 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3036,6 +3302,8 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
@@ -3052,6 +3320,8 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3068,6 +3338,8 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
@@ -3077,6 +3349,8 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3100,6 +3374,8 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
@@ -3116,6 +3392,8 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3132,6 +3410,8 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
@@ -3157,6 +3437,8 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3180,6 +3462,8 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
@@ -3196,6 +3480,8 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3212,15 +3498,19 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
 }
 
-export type VerificationCaseCreateWithoutCandidateAccessInput = {
+export type VerificationCaseCreateWithoutManagerReviewsInput = {
   id?: bigint | number
   publicId?: string
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3244,12 +3534,14 @@ export type VerificationCaseCreateWithoutCandidateAccessInput = {
   documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
 }
 
-export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
+export type VerificationCaseUncheckedCreateWithoutManagerReviewsInput = {
   id?: bigint | number
   publicId?: string
   tenantId: bigint | number
@@ -3260,6 +3552,8 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3276,6 +3570,328 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
   clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
   qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutManagerReviewsInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutManagerReviewsInput, Prisma.VerificationCaseUncheckedCreateWithoutManagerReviewsInput>
+}
+
+export type VerificationCaseUpsertWithoutManagerReviewsInput = {
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutManagerReviewsInput, Prisma.VerificationCaseUncheckedUpdateWithoutManagerReviewsInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutManagerReviewsInput, Prisma.VerificationCaseUncheckedCreateWithoutManagerReviewsInput>
+  where?: Prisma.VerificationCaseWhereInput
+}
+
+export type VerificationCaseUpdateToOneWithWhereWithoutManagerReviewsInput = {
+  where?: Prisma.VerificationCaseWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutManagerReviewsInput, Prisma.VerificationCaseUncheckedUpdateWithoutManagerReviewsInput>
+}
+
+export type VerificationCaseUpdateWithoutManagerReviewsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutManagerReviewsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseCreateWithoutServicesInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutServicesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutServicesInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicesInput, Prisma.VerificationCaseUncheckedCreateWithoutServicesInput>
+}
+
+export type VerificationCaseUpsertWithoutServicesInput = {
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutServicesInput, Prisma.VerificationCaseUncheckedUpdateWithoutServicesInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutServicesInput, Prisma.VerificationCaseUncheckedCreateWithoutServicesInput>
+  where?: Prisma.VerificationCaseWhereInput
+}
+
+export type VerificationCaseUpdateToOneWithWhereWithoutServicesInput = {
+  where?: Prisma.VerificationCaseWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutServicesInput, Prisma.VerificationCaseUncheckedUpdateWithoutServicesInput>
+}
+
+export type VerificationCaseUpdateWithoutServicesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutServicesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseCreateWithoutCandidateAccessInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
@@ -3301,6 +3917,8 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3324,6 +3942,8 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3340,6 +3960,8 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3356,6 +3978,8 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3370,6 +3994,8 @@ export type VerificationCaseCreateManyTenantInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3386,6 +4012,8 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3408,6 +4036,8 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3424,6 +4054,8 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3440,6 +4072,8 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3456,6 +4090,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutTenantInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3477,6 +4113,8 @@ export type VerificationCaseCreateManyBranchInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3493,6 +4131,8 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3515,6 +4155,8 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3531,6 +4173,8 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3547,6 +4191,8 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3563,6 +4209,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutBranchInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3584,6 +4232,8 @@ export type VerificationCaseCreateManyAssignedOpsUserInput = {
   subjectId: bigint | number
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3605,6 +4255,8 @@ export type VerificationCaseCreateManyQaReviewerInput = {
   subjectId: bigint | number
   assignedOpsUserId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3621,6 +4273,8 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3643,6 +4297,8 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3659,6 +4315,8 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3675,6 +4333,8 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3691,6 +4351,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserInput = {
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3707,6 +4369,8 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3729,6 +4393,8 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3745,6 +4411,8 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3761,6 +4429,8 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3777,6 +4447,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutQaReviewerInput = {
   subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3798,6 +4470,8 @@ export type VerificationCaseCreateManyClientInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3814,6 +4488,8 @@ export type VerificationCaseUpdateWithoutClientInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3836,6 +4512,8 @@ export type VerificationCaseUpdateWithoutClientInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3852,6 +4530,8 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3868,6 +4548,8 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3884,6 +4566,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutClientInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3905,6 +4589,8 @@ export type VerificationCaseCreateManyServicePackageInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -3921,6 +4607,8 @@ export type VerificationCaseUpdateWithoutServicePackageInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3943,6 +4631,8 @@ export type VerificationCaseUpdateWithoutServicePackageInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -3959,6 +4649,8 @@ export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -3975,6 +4667,8 @@ export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3991,6 +4685,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutServicePackageInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4012,6 +4708,8 @@ export type VerificationCaseCreateManySubjectInput = {
   assignedOpsUserId?: bigint | number | null
   qaReviewerId?: bigint | number | null
   qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
   status?: string
@@ -4028,6 +4726,8 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4050,6 +4750,8 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
@@ -4066,6 +4768,8 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4082,6 +4786,8 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -4098,6 +4804,8 @@ export type VerificationCaseUncheckedUpdateManyWithoutSubjectInput = {
   assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
@@ -4122,6 +4830,8 @@ export type VerificationCaseCountOutputType = {
   documents: number
   clarifications: number
   qaReviews: number
+  managerReviews: number
+  services: number
   reports: number
   fieldVisits: number
   invoiceLines: number
@@ -4135,6 +4845,8 @@ export type VerificationCaseCountOutputTypeSelect<ExtArgs extends runtime.Types.
   documents?: boolean | VerificationCaseCountOutputTypeCountDocumentsArgs
   clarifications?: boolean | VerificationCaseCountOutputTypeCountClarificationsArgs
   qaReviews?: boolean | VerificationCaseCountOutputTypeCountQaReviewsArgs
+  managerReviews?: boolean | VerificationCaseCountOutputTypeCountManagerReviewsArgs
+  services?: boolean | VerificationCaseCountOutputTypeCountServicesArgs
   reports?: boolean | VerificationCaseCountOutputTypeCountReportsArgs
   fieldVisits?: boolean | VerificationCaseCountOutputTypeCountFieldVisitsArgs
   invoiceLines?: boolean | VerificationCaseCountOutputTypeCountInvoiceLinesArgs
@@ -4196,6 +4908,20 @@ export type VerificationCaseCountOutputTypeCountQaReviewsArgs<ExtArgs extends ru
 /**
  * VerificationCaseCountOutputType without action
  */
+export type VerificationCaseCountOutputTypeCountManagerReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ManagerReviewWhereInput
+}
+
+/**
+ * VerificationCaseCountOutputType without action
+ */
+export type VerificationCaseCountOutputTypeCountServicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CaseServiceWhereInput
+}
+
+/**
+ * VerificationCaseCountOutputType without action
+ */
 export type VerificationCaseCountOutputTypeCountReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ReportWhereInput
 }
@@ -4233,6 +4959,8 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   assignedOpsUserId?: boolean
   qaReviewerId?: boolean
   qaClaimedAt?: boolean
+  retentionHoldAt?: boolean
+  retentionHoldReason?: boolean
   caseNumber?: boolean
   externalRef?: boolean
   status?: boolean
@@ -4256,6 +4984,8 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   documents?: boolean | Prisma.VerificationCase$documentsArgs<ExtArgs>
   clarifications?: boolean | Prisma.VerificationCase$clarificationsArgs<ExtArgs>
   qaReviews?: boolean | Prisma.VerificationCase$qaReviewsArgs<ExtArgs>
+  managerReviews?: boolean | Prisma.VerificationCase$managerReviewsArgs<ExtArgs>
+  services?: boolean | Prisma.VerificationCase$servicesArgs<ExtArgs>
   reports?: boolean | Prisma.VerificationCase$reportsArgs<ExtArgs>
   fieldVisits?: boolean | Prisma.VerificationCase$fieldVisitsArgs<ExtArgs>
   invoiceLines?: boolean | Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>
@@ -4276,6 +5006,8 @@ export type VerificationCaseSelectScalar = {
   assignedOpsUserId?: boolean
   qaReviewerId?: boolean
   qaClaimedAt?: boolean
+  retentionHoldAt?: boolean
+  retentionHoldReason?: boolean
   caseNumber?: boolean
   externalRef?: boolean
   status?: boolean
@@ -4288,7 +5020,7 @@ export type VerificationCaseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
+export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "retentionHoldAt" | "retentionHoldReason" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
 export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   branch?: boolean | Prisma.VerificationCase$branchArgs<ExtArgs>
@@ -4303,6 +5035,8 @@ export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.Int
   documents?: boolean | Prisma.VerificationCase$documentsArgs<ExtArgs>
   clarifications?: boolean | Prisma.VerificationCase$clarificationsArgs<ExtArgs>
   qaReviews?: boolean | Prisma.VerificationCase$qaReviewsArgs<ExtArgs>
+  managerReviews?: boolean | Prisma.VerificationCase$managerReviewsArgs<ExtArgs>
+  services?: boolean | Prisma.VerificationCase$servicesArgs<ExtArgs>
   reports?: boolean | Prisma.VerificationCase$reportsArgs<ExtArgs>
   fieldVisits?: boolean | Prisma.VerificationCase$fieldVisitsArgs<ExtArgs>
   invoiceLines?: boolean | Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>
@@ -4326,6 +5060,8 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     documents: Prisma.$DocumentPayload<ExtArgs>[]
     clarifications: Prisma.$ClarificationPayload<ExtArgs>[]
     qaReviews: Prisma.$QaReviewPayload<ExtArgs>[]
+    managerReviews: Prisma.$ManagerReviewPayload<ExtArgs>[]
+    services: Prisma.$CaseServicePayload<ExtArgs>[]
     reports: Prisma.$ReportPayload<ExtArgs>[]
     fieldVisits: Prisma.$FieldVisitPayload<ExtArgs>[]
     invoiceLines: Prisma.$InvoiceLinePayload<ExtArgs>[]
@@ -4342,6 +5078,8 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     assignedOpsUserId: bigint | null
     qaReviewerId: bigint | null
     qaClaimedAt: Date | null
+    retentionHoldAt: Date | null
+    retentionHoldReason: string | null
     caseNumber: string
     externalRef: string | null
     status: string
@@ -4705,6 +5443,8 @@ export interface Prisma__VerificationCaseClient<T, Null = never, ExtArgs extends
   documents<T extends Prisma.VerificationCase$documentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   clarifications<T extends Prisma.VerificationCase$clarificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$clarificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClarificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   qaReviews<T extends Prisma.VerificationCase$qaReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$qaReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$QaReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  managerReviews<T extends Prisma.VerificationCase$managerReviewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$managerReviewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ManagerReviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  services<T extends Prisma.VerificationCase$servicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$servicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CaseServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reports<T extends Prisma.VerificationCase$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fieldVisits<T extends Prisma.VerificationCase$fieldVisitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$fieldVisitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FieldVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoiceLines<T extends Prisma.VerificationCase$invoiceLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4748,6 +5488,8 @@ export interface VerificationCaseFieldRefs {
   readonly assignedOpsUserId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly qaReviewerId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
   readonly qaClaimedAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
+  readonly retentionHoldAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
+  readonly retentionHoldReason: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly caseNumber: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly externalRef: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly status: Prisma.FieldRef<"VerificationCase", 'String'>
@@ -5322,6 +6064,54 @@ export type VerificationCase$qaReviewsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.QaReviewScalarFieldEnum | Prisma.QaReviewScalarFieldEnum[]
+}
+
+/**
+ * VerificationCase.managerReviews
+ */
+export type VerificationCase$managerReviewsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ManagerReview
+   */
+  select?: Prisma.ManagerReviewSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ManagerReview
+   */
+  omit?: Prisma.ManagerReviewOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ManagerReviewInclude<ExtArgs> | null
+  where?: Prisma.ManagerReviewWhereInput
+  orderBy?: Prisma.ManagerReviewOrderByWithRelationInput | Prisma.ManagerReviewOrderByWithRelationInput[]
+  cursor?: Prisma.ManagerReviewWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ManagerReviewScalarFieldEnum | Prisma.ManagerReviewScalarFieldEnum[]
+}
+
+/**
+ * VerificationCase.services
+ */
+export type VerificationCase$servicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CaseService
+   */
+  select?: Prisma.CaseServiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CaseService
+   */
+  omit?: Prisma.CaseServiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CaseServiceInclude<ExtArgs> | null
+  where?: Prisma.CaseServiceWhereInput
+  orderBy?: Prisma.CaseServiceOrderByWithRelationInput | Prisma.CaseServiceOrderByWithRelationInput[]
+  cursor?: Prisma.CaseServiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CaseServiceScalarFieldEnum | Prisma.CaseServiceScalarFieldEnum[]
 }
 
 /**

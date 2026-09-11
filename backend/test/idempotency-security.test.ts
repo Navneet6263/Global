@@ -104,8 +104,10 @@ void test("idempotent responses are encrypted and replay without plaintext token
     } as CallHandler),
   );
   assert.deepEqual(first, secretResponse);
-  assert.equal((record as RecordShape).responseJson, null);
-  assert.doesNotMatch((record as RecordShape).responseCiphertext ?? "", /raw-portal-token/);
+  const stored = await store.findUnique();
+  assert.ok(stored, "the encrypted response must be persisted before replay");
+  assert.equal(stored.responseJson, null);
+  assert.doesNotMatch(stored.responseCiphertext ?? "", /raw-portal-token/);
 
   const replay = await lastValueFrom(
     await interceptor.intercept(context, {
@@ -122,7 +124,9 @@ void test("multipart idempotency requires and verifies a payload digest", async 
   const interceptor = new IdempotencyInterceptor(
     { idempotencyKey: {} } as PrismaService,
     new SecretBoxService(
-      config({ DATA_ENCRYPTION_KEY: "data-key-0123456789abcdef0123456789abcd" }),
+      config({
+        DATA_ENCRYPTION_KEY: "data-key-0123456789abcdef0123456789abcd",
+      }),
     ),
   );
   const context = {
@@ -195,7 +199,9 @@ void test("field evidence semantic headers are part of the idempotency identity"
   const interceptor = new IdempotencyInterceptor(
     { idempotencyKey: store } as unknown as PrismaService,
     new SecretBoxService(
-      config({ DATA_ENCRYPTION_KEY: "data-key-0123456789abcdef0123456789abcd" }),
+      config({
+        DATA_ENCRYPTION_KEY: "data-key-0123456789abcdef0123456789abcd",
+      }),
     ),
   );
   const request = {
@@ -222,11 +228,15 @@ void test("field evidence semantic headers are part of the idempotency identity"
     }),
   } as unknown as ExecutionContext;
   await lastValueFrom(
-    await interceptor.intercept(context, { handle: () => of({ id: "evidence" }) } as CallHandler),
+    await interceptor.intercept(context, {
+      handle: () => of({ id: "evidence" }),
+    } as CallHandler),
   );
   request.headers["x-captured-at"] = "2026-08-27T10:01:00.000Z";
   await assert.rejects(
-    interceptor.intercept(context, { handle: () => of({ id: "evidence" }) } as CallHandler),
+    interceptor.intercept(context, {
+      handle: () => of({ id: "evidence" }),
+    } as CallHandler),
     ConflictException,
   );
 });

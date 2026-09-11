@@ -1,4 +1,5 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 import type { NavItem } from "@/config/navigation";
 import { BADGE_TONE_MAP } from "@/features/shell/nav-badge-tones";
 import { TONE_BADGE } from "@/lib/formatting/tones";
@@ -15,11 +16,18 @@ interface NavItemLinkProps {
 export function NavItemLink({ item, onNavigate }: NavItemLinkProps) {
   const Icon = item.icon;
   const badgeCount = useNavBadge(item);
+  const pending = useRouterState({
+    select: (state) => state.isLoading && state.location.pathname === item.route,
+  });
+  const DisplayIcon = pending ? Loader2 : Icon;
 
   const content = (
     <>
-      <Icon
-        className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-sidebar-accent-foreground group-data-[status=active]:text-primary"
+      <DisplayIcon
+        className={cn(
+          "size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-sidebar-accent-foreground group-data-[status=active]:text-primary",
+          pending && "motion-safe:animate-spin",
+        )}
         aria-hidden
       />
       <span className="min-w-0 flex-1 truncate">{item.label}</span>
@@ -41,6 +49,7 @@ export function NavItemLink({ item, onNavigate }: NavItemLinkProps) {
       <Link
         to={item.route as "/admin"}
         onClick={onNavigate}
+        aria-busy={pending || undefined}
         activeOptions={{ exact: item.route === WORKSPACE_PRESENTATION[item.workspace].home }}
         className="group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm text-sidebar-foreground/85 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:font-medium data-[status=active]:text-sidebar-accent-foreground"
       >

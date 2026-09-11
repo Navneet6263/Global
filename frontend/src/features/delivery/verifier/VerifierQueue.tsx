@@ -1,4 +1,4 @@
-import { AlertCircle, ChevronLeft, ChevronRight, Clock3, Search } from "lucide-react";
+import { AlertCircle, ChevronLeft, ChevronRight, Clock3, Loader2, Search } from "lucide-react";
 
 import type { VerificationTask } from "@/lib/api/tasks";
 import { cn } from "@/lib/utils";
@@ -8,6 +8,7 @@ export type VerifierQueueFilter = "ACTIVE" | "OPEN" | "IN_PROGRESS" | "BLOCKED" 
 
 interface VerifierQueueProps {
   items: VerificationTask[];
+  pending?: boolean;
   selectedId?: string;
   search: string;
   filters: readonly VerifierQueueFilter[];
@@ -32,8 +33,18 @@ export function VerifierQueue(props: VerifierQueueProps) {
               Select a task to continue verification
             </p>
           </div>
-          <span className="num rounded-full bg-mint-soft px-2.5 py-1 text-[10px] font-medium text-mint-deep">
-            {props.items.length} shown
+          <span
+            role="status"
+            className="num flex items-center gap-1.5 rounded-full bg-mint-soft px-2.5 py-1 text-[10px] font-medium text-mint-deep"
+          >
+            {props.pending ? (
+              <>
+                <Loader2 className="size-3 animate-spin" aria-hidden="true" />
+                Updating checks
+              </>
+            ) : (
+              `${props.items.length} shown`
+            )}
           </span>
         </div>
         <div className="relative mt-3">
@@ -47,8 +58,9 @@ export function VerifierQueue(props: VerifierQueueProps) {
           />
         </div>
         <div
-          className="mt-3 flex gap-1 overflow-x-auto rounded-full bg-mint-soft/65 p-1"
+          className="mt-3 flex flex-wrap gap-1.5 rounded-2xl bg-mint-soft/65 p-1.5"
           aria-label="Task status"
+          role="group"
         >
           {props.filters.map((filter) => (
             <button
@@ -57,7 +69,7 @@ export function VerifierQueue(props: VerifierQueueProps) {
               onClick={() => props.onFilter(filter)}
               aria-pressed={props.activeFilter === filter}
               className={cn(
-                "shrink-0 rounded-full px-3 py-1.5 text-[10px] font-medium transition",
+                "min-w-0 flex-[1_1_100px] rounded-xl px-3 py-2 text-[11px] font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint",
                 props.activeFilter === filter
                   ? "bg-white text-foreground shadow-[var(--shadow-card)]"
                   : "text-mint-deep hover:bg-white/55",
@@ -69,7 +81,14 @@ export function VerifierQueue(props: VerifierQueueProps) {
         </div>
       </header>
 
-      <div className="max-h-[690px] space-y-2 overflow-y-auto p-3">
+      <div
+        aria-busy={props.pending}
+        inert={props.pending}
+        className={cn(
+          "min-h-40 max-h-[690px] space-y-2 overflow-y-auto p-3",
+          props.pending && "opacity-60",
+        )}
+      >
         {props.items.map((task) => (
           <QueueItem
             key={task.id}
@@ -78,7 +97,7 @@ export function VerifierQueue(props: VerifierQueueProps) {
             onSelect={() => props.onSelect(task.id)}
           />
         ))}
-        {!props.items.length ? <QueueEmpty /> : null}
+        {!props.items.length && !props.pending ? <QueueEmpty /> : null}
       </div>
 
       <QueuePagination {...props} />
@@ -156,7 +175,7 @@ function QueuePagination(
   return (
     <footer className="flex items-center justify-between border-t border-border/70 px-4 py-3">
       <span className="text-[10px] text-muted-foreground">
-        Cursor pagination · {props.items.length} checks
+        {props.items.length} {props.items.length === 1 ? "check" : "checks"} on this page
       </span>
       <div className="flex gap-1.5">
         <PageButton

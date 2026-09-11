@@ -70,7 +70,7 @@ export function mapOpportunity(row: BackendOpportunity): Opportunity {
     lostReason: row.lostReason ?? undefined,
     closedAt: row.closedAt ?? undefined,
     finalValue: row.stage === "WON" ? estimatedValue : undefined,
-    onboardingHandoff: Boolean(row.onboardingHandoffAt),
+    onboardingHandoff: Boolean(row.onboardingHandoffAt && row.client),
     onboardingHandoffAt: row.onboardingHandoffAt ?? null,
   };
 }

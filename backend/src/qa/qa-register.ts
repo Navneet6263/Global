@@ -5,6 +5,10 @@ import type { Prisma } from "../generated/prisma/client";
 import type { QaRegisterQueryDto } from "./dto/qa-register-query.dto";
 import { claimCutoff } from "./qa-claim";
 import { qaDetailSelect } from "./qa-projection";
+import {
+  fieldQaWhere,
+  physicalFieldIssues,
+} from "../field-visits/physical-field-policy";
 
 export function qaScope(actor: Actor): Prisma.VerificationCaseWhereInput {
   return {
@@ -56,6 +60,7 @@ export function qaRegisterWhere(
       { status: query.view === "corrections" ? "IN_PROGRESS" : "QA_REVIEW" },
       view,
       qaSearch(query.search),
+      ...(query.view === "corrections" ? [] : [fieldQaWhere()]),
     ],
   } satisfies Prisma.VerificationCaseWhereInput;
 }
@@ -67,7 +72,11 @@ export async function readQaRegister(
 ) {
   const now = new Date();
   const where = qaRegisterWhere(actor, query, now);
-  const base = { ...qaScope(actor), status: "QA_REVIEW" };
+  const base = {
+    ...qaScope(actor),
+    status: "QA_REVIEW",
+    AND: [fieldQaWhere()],
+  };
   const [rows, total, awaiting, overdue, highRisk, claimed] = await Promise.all(
     [
       prisma.verificationCase.findMany({
@@ -156,5 +165,7 @@ export async function readQaDetail(
       "This case left the review queue. Refresh to see its current stage.",
     );
   const { publicId, ...detail } = row;
+  const fieldIssues = physicalFieldIssues(row.checks, row.fieldVisits);
+  if (fieldIssues.length) throw new ConflictException(fieldIssues.join("; "));
   return { id: publicId, ...detail };
 }

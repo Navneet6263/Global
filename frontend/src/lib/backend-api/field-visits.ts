@@ -13,6 +13,17 @@ export function getMyFieldVisits() {
   return apiRequest<{ items: ApiFieldVisit[]; policy: FieldExecutionPolicy }>("/field-visits/mine");
 }
 
+export async function getFieldAssignees(caseId: string) {
+  const items: Array<{ id: string; displayName: string; email: string }> = [];
+  for (let page = 1; ; page += 1) {
+    const result = await apiRequest<{ items: typeof items; total: number }>(
+      `/cases/${caseId}/field-assignees?page=${page}&pageSize=100`,
+    );
+    items.push(...result.items);
+    if (result.items.length === 0 || items.length >= result.total) return { items };
+  }
+}
+
 export function createFieldVisit(
   caseId: string,
   input: {

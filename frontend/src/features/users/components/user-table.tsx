@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, MoreHorizontal, ShieldCheck, ShieldOff } from "lucide-react";
+import { Activity, MoreHorizontal, ShieldCheck, ShieldOff, Pencil } from "lucide-react";
 import type { PlatformUser } from "@/lib/contracts/user";
 import { ROLE_DEFINITIONS } from "@/config/roles";
 import { StatusBadge } from "@/components/feedback/status-badge";
@@ -16,16 +16,20 @@ import { USER_STATUS_META } from "../user-status-meta";
 
 interface UserTableProps {
   rows: readonly PlatformUser[];
+  busyUserIds?: readonly string[];
   onToggleStatus: (user: PlatformUser) => void;
   onResetPassword: (user: PlatformUser) => void;
   onViewActivity: (user: PlatformUser) => void;
+  onEditRoles: (user: PlatformUser) => void;
 }
 
 export function UserTable({
   rows,
+  busyUserIds = [],
   onToggleStatus,
   onResetPassword,
   onViewActivity,
+  onEditRoles,
 }: UserTableProps) {
   const showMfa = rows.some((user) => user.mfaEnabled !== null);
   return (
@@ -127,19 +131,37 @@ export function UserTable({
               <td className="px-3 py-3">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" aria-label={`Actions for ${user.fullName}`}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      loading={busyUserIds.includes(user.id)}
+                      aria-label={`Actions for ${user.fullName}`}
+                    >
                       <MoreHorizontal className="size-4" aria-hidden />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52 rounded-2xl">
+                    <DropdownMenuItem
+                      disabled={busyUserIds.includes(user.id)}
+                      onSelect={() => onEditRoles(user)}
+                    >
+                      <Pencil className="size-3.5" aria-hidden />
+                      Edit roles
+                    </DropdownMenuItem>
                     <DropdownMenuItem onSelect={() => onViewActivity(user)}>
                       <Activity className="size-3.5" aria-hidden />
                       View activity timeline
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onResetPassword(user)}>
+                    <DropdownMenuItem
+                      disabled={busyUserIds.includes(user.id)}
+                      onSelect={() => onResetPassword(user)}
+                    >
                       Reset password
                     </DropdownMenuItem>
-                    <DropdownMenuItem onSelect={() => onToggleStatus(user)}>
+                    <DropdownMenuItem
+                      disabled={busyUserIds.includes(user.id)}
+                      onSelect={() => onToggleStatus(user)}
+                    >
                       {user.status === "suspended" ? "Reactivate access" : "Suspend access"}
                     </DropdownMenuItem>
                   </DropdownMenuContent>

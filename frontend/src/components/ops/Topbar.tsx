@@ -163,6 +163,7 @@ function NotificationInbox() {
                 type="button"
                 onClick={() => readAll.mutate()}
                 disabled={readAll.isPending}
+                aria-busy={readAll.isPending}
                 className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-[10px] font-semibold"
               >
                 <CheckCheck className="h-3.5 w-3.5" /> Mark all read

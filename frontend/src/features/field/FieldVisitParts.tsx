@@ -15,7 +15,7 @@ export function FieldStepStrip({
     { number: "1", label: "Arrive", done: checkedIn },
     { number: "2", label: "Evidence", done: photoReady },
     { number: "3", label: "Checklist", done: checklistReady },
-    { number: "4", label: "Complete", done: complete },
+    { number: "4", label: "Approved", done: complete },
   ];
   return (
     <div className="grid grid-cols-4 border-y border-white/70 bg-secondary/45 px-2 py-3.5">
@@ -47,9 +47,11 @@ export function FieldVisitStatus({ status }: { status: string }) {
   const tone =
     status === "COMPLETED"
       ? "bg-success-soft text-success-foreground"
-      : status === "EXCEPTION_REVIEW"
-        ? "bg-warning-soft text-warning-foreground"
-        : "bg-info-soft text-info-foreground";
+      : status === "REVIEW_PENDING"
+        ? "bg-review-soft text-review-foreground"
+        : status === "EXCEPTION_REVIEW"
+          ? "bg-warning-soft text-warning-foreground"
+          : "bg-info-soft text-info-foreground";
   return (
     <span className={`rounded-full px-2.5 py-1 text-[9px] font-semibold ${tone}`}>
       {status
@@ -66,6 +68,7 @@ export function FieldControl({
   onClick,
   disabled,
   primary,
+  loading = false,
   href,
 }: {
   icon: typeof Clock3;
@@ -73,6 +76,7 @@ export function FieldControl({
   onClick?: () => void;
   disabled?: boolean;
   primary?: boolean;
+  loading?: boolean;
   href?: string | undefined;
 }) {
   const classes = `flex h-11 items-center justify-center gap-2 rounded-full text-xs font-semibold transition-all ${primary ? "bg-mint-deep text-white shadow-[var(--shadow-card)] hover:-translate-y-0.5" : "border border-white/80 bg-white/85 text-foreground shadow-[var(--shadow-card)] hover:bg-white"} disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0`;
@@ -82,7 +86,13 @@ export function FieldControl({
       {label}
     </a>
   ) : (
-    <button type="button" onClick={onClick} disabled={disabled} className={classes}>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled || loading}
+      aria-busy={loading}
+      className={classes}
+    >
       <Icon className="h-4 w-4" />
       {label}
     </button>

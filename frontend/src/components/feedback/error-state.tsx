@@ -10,7 +10,7 @@ interface ErrorStateProps {
 
 export function ErrorState({
   title = "We couldn't load this data",
-  description = "The request failed before it completed. Retry, or check the platform health panel for service status.",
+  description = "The request could not be completed. Please retry; if it keeps failing, contact your administrator.",
   onRetry,
   retrying = false,
 }: ErrorStateProps) {
@@ -22,7 +22,7 @@ export function ErrorState({
       </div>
       <p className="max-w-2xl text-sm text-critical-foreground/85">{description}</p>
       {onRetry ? (
-        <Button variant="outline" size="sm" onClick={onRetry} disabled={retrying}>
+        <Button variant="outline" size="sm" onClick={onRetry} loading={retrying}>
           <RotateCcw className="size-3.5" aria-hidden />
           {retrying ? "Retrying…" : "Retry"}
         </Button>

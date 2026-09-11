@@ -18,6 +18,7 @@ import { issueCandidateAccess } from "@/lib/api/candidate-portal";
 import { transitionCase, type CaseDetail } from "@/lib/api/cases";
 import { createTask } from "@/lib/api/tasks";
 import { listAllUsers } from "@/lib/api/users";
+import { CaseMethodsDialog } from "./case-methods-dialog";
 
 export function CaseActions({ item }: { item: CaseDetail }) {
   const queryClient = useQueryClient();
@@ -42,6 +43,7 @@ export function CaseActions({ item }: { item: CaseDetail }) {
         queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
         queryClient.invalidateQueries({ queryKey: ["cases"] }),
         queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
+        queryClient.invalidateQueries({ queryKey: ["operations"] }),
       ]);
     },
     onError: (error: Error) => toast.error(error.message),
@@ -60,6 +62,7 @@ export function CaseActions({ item }: { item: CaseDetail }) {
         type="button"
         onClick={() => mutation.mutate()}
         disabled={mutation.isPending}
+        aria-busy={mutation.isPending}
         className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-50"
       >
         <Play className="h-4 w-4" />
@@ -101,6 +104,7 @@ export function CandidatePanel({ item }: { item: CaseDetail }) {
           type="button"
           onClick={() => mutation.mutate()}
           disabled={mutation.isPending}
+          aria-busy={mutation.isPending}
           className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground disabled:opacity-50"
         >
           <ShieldCheck className="h-4 w-4" />
@@ -209,6 +213,12 @@ export function CheckCard({
       {check.sourceSummary ? (
         <p className="mt-3 text-xs leading-5 text-muted-foreground">{check.sourceSummary}</p>
       ) : null}
+      <CaseMethodsDialog
+        caseId={caseId}
+        checkId={check.publicId}
+        checkType={check.type}
+        checkStatus={check.status}
+      />
 
       {!task && canAssign && caseStatus === "IN_PROGRESS" ? (
         <div className="mt-4 space-y-2.5 border-t border-[var(--hairline)] pt-4">
@@ -245,6 +255,7 @@ export function CheckCard({
             type="button"
             onClick={() => mutation.mutate()}
             disabled={!assigneeId || mutation.isPending}
+            aria-busy={mutation.isPending}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-50"
           >
             <ClipboardCheck className="h-3.5 w-3.5" />

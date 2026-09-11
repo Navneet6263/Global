@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { ReportPdfService } from "../src/reports/report-pdf.service";
+import { PDFDocument } from "pdf-lib";
 
 void test("report renderer produces a PDF with authenticity metadata", async () => {
   const result = await new ReportPdfService().render({
@@ -24,4 +25,40 @@ void test("report renderer produces a PDF with authenticity metadata", async () 
 
   assert.equal(result.subarray(0, 5).toString(), "%PDF-");
   assert.ok(result.length > 1000);
+});
+
+void test("long source and evidence text paginate across service templates", async () => {
+  const pdf = await new ReportPdfService().render({
+    caseNumber: "SG-REPORT-LAYOUT",
+    generatedAt: new Date(),
+    authenticityCode: "SG-LAYOUT",
+    clientName: "Layout test client",
+    candidateName: "Report layout subject",
+    completedAt: null,
+    riskLevel: "LOW",
+    services: ["HIRECHECK", "INTEGRITYCHECK", "LEADERCHECK", "VENDORCHECK"],
+    reviewerName: "Independent QA",
+    managerName: "Independent manager",
+    recommendation:
+      "The factual findings and sources were independently reviewed.",
+    evidence: [
+      { type: "IDENTITY", name: "a".repeat(500), sha256: "a".repeat(64) },
+    ],
+    checks: [
+      {
+        type: "IDENTITY",
+        result: "CLEAR",
+        riskLevel: "LOW",
+        sourceSummary:
+          "Long source explanation with factual confirmation. ".repeat(400),
+        findings: [],
+      },
+    ],
+  });
+  const document = await PDFDocument.load(pdf);
+  assert.ok(document.getPageCount() > 4);
+  assert.equal(
+    document.getSubject(),
+    "Approved HIRECHECK, INTEGRITYCHECK, LEADERCHECK, VENDORCHECK verification findings",
+  );
 });

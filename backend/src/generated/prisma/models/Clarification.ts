@@ -31,6 +31,7 @@ export type ClarificationAvgAggregateOutputType = {
   tenantId: number | null
   caseId: number | null
   checkId: number | null
+  checkCycle: number | null
 }
 
 export type ClarificationSumAggregateOutputType = {
@@ -38,6 +39,7 @@ export type ClarificationSumAggregateOutputType = {
   tenantId: bigint | null
   caseId: bigint | null
   checkId: bigint | null
+  checkCycle: number | null
 }
 
 export type ClarificationMinAggregateOutputType = {
@@ -46,10 +48,12 @@ export type ClarificationMinAggregateOutputType = {
   tenantId: bigint | null
   caseId: bigint | null
   checkId: bigint | null
+  checkCycle: number | null
   status: string | null
   subject: string | null
   dueAt: Date | null
   resolvedAt: Date | null
+  reverificationRequired: boolean | null
   responseTokenHash: string | null
   responseTokenExpiresAt: Date | null
   createdAt: Date | null
@@ -62,10 +66,12 @@ export type ClarificationMaxAggregateOutputType = {
   tenantId: bigint | null
   caseId: bigint | null
   checkId: bigint | null
+  checkCycle: number | null
   status: string | null
   subject: string | null
   dueAt: Date | null
   resolvedAt: Date | null
+  reverificationRequired: boolean | null
   responseTokenHash: string | null
   responseTokenExpiresAt: Date | null
   createdAt: Date | null
@@ -78,10 +84,12 @@ export type ClarificationCountAggregateOutputType = {
   tenantId: number
   caseId: number
   checkId: number
+  checkCycle: number
   status: number
   subject: number
   dueAt: number
   resolvedAt: number
+  reverificationRequired: number
   responseTokenHash: number
   responseTokenExpiresAt: number
   createdAt: number
@@ -95,6 +103,7 @@ export type ClarificationAvgAggregateInputType = {
   tenantId?: true
   caseId?: true
   checkId?: true
+  checkCycle?: true
 }
 
 export type ClarificationSumAggregateInputType = {
@@ -102,6 +111,7 @@ export type ClarificationSumAggregateInputType = {
   tenantId?: true
   caseId?: true
   checkId?: true
+  checkCycle?: true
 }
 
 export type ClarificationMinAggregateInputType = {
@@ -110,10 +120,12 @@ export type ClarificationMinAggregateInputType = {
   tenantId?: true
   caseId?: true
   checkId?: true
+  checkCycle?: true
   status?: true
   subject?: true
   dueAt?: true
   resolvedAt?: true
+  reverificationRequired?: true
   responseTokenHash?: true
   responseTokenExpiresAt?: true
   createdAt?: true
@@ -126,10 +138,12 @@ export type ClarificationMaxAggregateInputType = {
   tenantId?: true
   caseId?: true
   checkId?: true
+  checkCycle?: true
   status?: true
   subject?: true
   dueAt?: true
   resolvedAt?: true
+  reverificationRequired?: true
   responseTokenHash?: true
   responseTokenExpiresAt?: true
   createdAt?: true
@@ -142,10 +156,12 @@ export type ClarificationCountAggregateInputType = {
   tenantId?: true
   caseId?: true
   checkId?: true
+  checkCycle?: true
   status?: true
   subject?: true
   dueAt?: true
   resolvedAt?: true
+  reverificationRequired?: true
   responseTokenHash?: true
   responseTokenExpiresAt?: true
   createdAt?: true
@@ -245,10 +261,12 @@ export type ClarificationGroupByOutputType = {
   tenantId: bigint
   caseId: bigint
   checkId: bigint | null
+  checkCycle: number | null
   status: string
   subject: string
   dueAt: Date | null
   resolvedAt: Date | null
+  reverificationRequired: boolean
   responseTokenHash: string | null
   responseTokenExpiresAt: Date | null
   createdAt: Date
@@ -284,10 +302,12 @@ export type ClarificationWhereInput = {
   tenantId?: Prisma.BigIntFilter<"Clarification"> | bigint | number
   caseId?: Prisma.BigIntFilter<"Clarification"> | bigint | number
   checkId?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  checkCycle?: Prisma.IntNullableFilter<"Clarification"> | number | null
   status?: Prisma.StringFilter<"Clarification"> | string
   subject?: Prisma.StringFilter<"Clarification"> | string
   dueAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
   resolvedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  reverificationRequired?: Prisma.BoolFilter<"Clarification"> | boolean
   responseTokenHash?: Prisma.StringNullableFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
@@ -303,10 +323,12 @@ export type ClarificationOrderByWithRelationInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkCycle?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reverificationRequired?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -325,10 +347,12 @@ export type ClarificationWhereUniqueInput = Prisma.AtLeast<{
   tenantId?: Prisma.BigIntFilter<"Clarification"> | bigint | number
   caseId?: Prisma.BigIntFilter<"Clarification"> | bigint | number
   checkId?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  checkCycle?: Prisma.IntNullableFilter<"Clarification"> | number | null
   status?: Prisma.StringFilter<"Clarification"> | string
   subject?: Prisma.StringFilter<"Clarification"> | string
   dueAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
   resolvedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  reverificationRequired?: Prisma.BoolFilter<"Clarification"> | boolean
   responseTokenHash?: Prisma.StringNullableFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
@@ -344,10 +368,12 @@ export type ClarificationOrderByWithAggregationInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrderInput | Prisma.SortOrder
+  checkCycle?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   resolvedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  reverificationRequired?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -368,10 +394,12 @@ export type ClarificationScalarWhereWithAggregatesInput = {
   tenantId?: Prisma.BigIntWithAggregatesFilter<"Clarification"> | bigint | number
   caseId?: Prisma.BigIntWithAggregatesFilter<"Clarification"> | bigint | number
   checkId?: Prisma.BigIntNullableWithAggregatesFilter<"Clarification"> | bigint | number | null
+  checkCycle?: Prisma.IntNullableWithAggregatesFilter<"Clarification"> | number | null
   status?: Prisma.StringWithAggregatesFilter<"Clarification"> | string
   subject?: Prisma.StringWithAggregatesFilter<"Clarification"> | string
   dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
   resolvedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
+  reverificationRequired?: Prisma.BoolWithAggregatesFilter<"Clarification"> | boolean
   responseTokenHash?: Prisma.StringNullableWithAggregatesFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Clarification"> | Date | string
@@ -382,10 +410,12 @@ export type ClarificationCreateInput = {
   id?: bigint | number
   publicId?: string
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -401,10 +431,12 @@ export type ClarificationUncheckedCreateInput = {
   tenantId: bigint | number
   caseId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -416,10 +448,12 @@ export type ClarificationUpdateInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -435,10 +469,12 @@ export type ClarificationUncheckedUpdateInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -451,10 +487,12 @@ export type ClarificationCreateManyInput = {
   tenantId: bigint | number
   caseId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -465,10 +503,12 @@ export type ClarificationUpdateManyMutationInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -481,10 +521,12 @@ export type ClarificationUncheckedUpdateManyInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -507,10 +549,12 @@ export type ClarificationCountOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrder
+  checkCycle?: Prisma.SortOrder
   status?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  reverificationRequired?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -522,6 +566,7 @@ export type ClarificationAvgOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrder
+  checkCycle?: Prisma.SortOrder
 }
 
 export type ClarificationMaxOrderByAggregateInput = {
@@ -530,10 +575,12 @@ export type ClarificationMaxOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrder
+  checkCycle?: Prisma.SortOrder
   status?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  reverificationRequired?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -546,10 +593,12 @@ export type ClarificationMinOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrder
+  checkCycle?: Prisma.SortOrder
   status?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
   resolvedAt?: Prisma.SortOrder
+  reverificationRequired?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -561,6 +610,7 @@ export type ClarificationSumOrderByAggregateInput = {
   tenantId?: Prisma.SortOrder
   caseId?: Prisma.SortOrder
   checkId?: Prisma.SortOrder
+  checkCycle?: Prisma.SortOrder
 }
 
 export type ClarificationScalarRelationFilter = {
@@ -652,6 +702,14 @@ export type ClarificationUncheckedUpdateManyWithoutCaseNestedInput = {
   deleteMany?: Prisma.ClarificationScalarWhereInput | Prisma.ClarificationScalarWhereInput[]
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type ClarificationCreateNestedOneWithoutMessagesInput = {
   create?: Prisma.XOR<Prisma.ClarificationCreateWithoutMessagesInput, Prisma.ClarificationUncheckedCreateWithoutMessagesInput>
   connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutMessagesInput
@@ -670,10 +728,12 @@ export type ClarificationCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -687,10 +747,12 @@ export type ClarificationUncheckedCreateWithoutTenantInput = {
   publicId?: string
   caseId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -732,10 +794,12 @@ export type ClarificationScalarWhereInput = {
   tenantId?: Prisma.BigIntFilter<"Clarification"> | bigint | number
   caseId?: Prisma.BigIntFilter<"Clarification"> | bigint | number
   checkId?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  checkCycle?: Prisma.IntNullableFilter<"Clarification"> | number | null
   status?: Prisma.StringFilter<"Clarification"> | string
   subject?: Prisma.StringFilter<"Clarification"> | string
   dueAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
   resolvedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  reverificationRequired?: Prisma.BoolFilter<"Clarification"> | boolean
   responseTokenHash?: Prisma.StringNullableFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
@@ -746,10 +810,12 @@ export type ClarificationCreateWithoutCaseInput = {
   id?: bigint | number
   publicId?: string
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -763,10 +829,12 @@ export type ClarificationUncheckedCreateWithoutCaseInput = {
   publicId?: string
   tenantId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -803,10 +871,12 @@ export type ClarificationCreateWithoutMessagesInput = {
   id?: bigint | number
   publicId?: string
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -821,10 +891,12 @@ export type ClarificationUncheckedCreateWithoutMessagesInput = {
   tenantId: bigint | number
   caseId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -851,10 +923,12 @@ export type ClarificationUpdateWithoutMessagesInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -869,10 +943,12 @@ export type ClarificationUncheckedUpdateWithoutMessagesInput = {
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -883,10 +959,12 @@ export type ClarificationCreateManyTenantInput = {
   publicId?: string
   caseId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -897,10 +975,12 @@ export type ClarificationUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -914,10 +994,12 @@ export type ClarificationUncheckedUpdateWithoutTenantInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -930,10 +1012,12 @@ export type ClarificationUncheckedUpdateManyWithoutTenantInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -944,10 +1028,12 @@ export type ClarificationCreateManyCaseInput = {
   publicId?: string
   tenantId: bigint | number
   checkId?: bigint | number | null
+  checkCycle?: number | null
   status?: string
   subject: string
   dueAt?: Date | string | null
   resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
   createdAt?: Date | string
@@ -958,10 +1044,12 @@ export type ClarificationUpdateWithoutCaseInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -975,10 +1063,12 @@ export type ClarificationUncheckedUpdateWithoutCaseInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -991,10 +1081,12 @@ export type ClarificationUncheckedUpdateManyWithoutCaseInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1038,10 +1130,12 @@ export type ClarificationSelect<ExtArgs extends runtime.Types.Extensions.Interna
   tenantId?: boolean
   caseId?: boolean
   checkId?: boolean
+  checkCycle?: boolean
   status?: boolean
   subject?: boolean
   dueAt?: boolean
   resolvedAt?: boolean
+  reverificationRequired?: boolean
   responseTokenHash?: boolean
   responseTokenExpiresAt?: boolean
   createdAt?: boolean
@@ -1060,17 +1154,19 @@ export type ClarificationSelectScalar = {
   tenantId?: boolean
   caseId?: boolean
   checkId?: boolean
+  checkCycle?: boolean
   status?: boolean
   subject?: boolean
   dueAt?: boolean
   resolvedAt?: boolean
+  reverificationRequired?: boolean
   responseTokenHash?: boolean
   responseTokenExpiresAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClarificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "checkId" | "status" | "subject" | "dueAt" | "resolvedAt" | "responseTokenHash" | "responseTokenExpiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["clarification"]>
+export type ClarificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "checkId" | "checkCycle" | "status" | "subject" | "dueAt" | "resolvedAt" | "reverificationRequired" | "responseTokenHash" | "responseTokenExpiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["clarification"]>
 export type ClarificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
@@ -1091,10 +1187,12 @@ export type $ClarificationPayload<ExtArgs extends runtime.Types.Extensions.Inter
     tenantId: bigint
     caseId: bigint
     checkId: bigint | null
+    checkCycle: number | null
     status: string
     subject: string
     dueAt: Date | null
     resolvedAt: Date | null
+    reverificationRequired: boolean
     responseTokenHash: string | null
     responseTokenExpiresAt: Date | null
     createdAt: Date
@@ -1476,10 +1574,12 @@ export interface ClarificationFieldRefs {
   readonly tenantId: Prisma.FieldRef<"Clarification", 'BigInt'>
   readonly caseId: Prisma.FieldRef<"Clarification", 'BigInt'>
   readonly checkId: Prisma.FieldRef<"Clarification", 'BigInt'>
+  readonly checkCycle: Prisma.FieldRef<"Clarification", 'Int'>
   readonly status: Prisma.FieldRef<"Clarification", 'String'>
   readonly subject: Prisma.FieldRef<"Clarification", 'String'>
   readonly dueAt: Prisma.FieldRef<"Clarification", 'DateTime'>
   readonly resolvedAt: Prisma.FieldRef<"Clarification", 'DateTime'>
+  readonly reverificationRequired: Prisma.FieldRef<"Clarification", 'Boolean'>
   readonly responseTokenHash: Prisma.FieldRef<"Clarification", 'String'>
   readonly responseTokenExpiresAt: Prisma.FieldRef<"Clarification", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Clarification", 'DateTime'>

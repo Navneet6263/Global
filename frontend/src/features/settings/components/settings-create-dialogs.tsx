@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RequiredDocumentFields, ServiceFamilyField } from "./service-policy-fields";
+import { SERVICE_CHECKS } from "./service-policy-options";
 
 export interface BranchDraft {
   code: string;
@@ -25,6 +27,8 @@ export interface PackageDraft {
   checks: string[];
   price?: number;
   tatHours: number;
+  serviceFamily: string;
+  requiredDocuments: string[];
 }
 
 interface DialogProps<T> {
@@ -77,6 +81,7 @@ export function AddBranchDialog(props: DialogProps<BranchDraft>) {
           </Button>
           <Button
             disabled={!valid || props.submitting}
+            loading={props.submitting}
             onClick={() => props.onSubmit({ ...draft, city: draft.city?.trim() || undefined })}
           >
             {props.submitting ? "Adding…" : "Add branch"}
@@ -87,7 +92,7 @@ export function AddBranchDialog(props: DialogProps<BranchDraft>) {
   );
 }
 
-const CHECKS = ["IDENTITY", "ADDRESS", "EMPLOYMENT", "EDUCATION", "CRIMINAL", "REFERENCE"];
+const CHECKS = SERVICE_CHECKS;
 
 export function AddPackageDialog(props: DialogProps<PackageDraft>) {
   const [draft, setDraft] = useState({
@@ -96,6 +101,8 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
     checks: [] as string[],
     price: "",
     tatHours: "72",
+    serviceFamily: "HIRECHECK",
+    requiredDocuments: [] as string[],
   });
   const toggle = (check: string) =>
     setDraft((current) => ({
@@ -111,7 +118,7 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
     Number(draft.tatHours) > 0;
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="max-h-[88dvh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Add service package</DialogTitle>
           <DialogDescription>
@@ -151,6 +158,14 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
             />
           </Field>
         </div>
+        <ServiceFamilyField
+          value={draft.serviceFamily}
+          onChange={(serviceFamily) => setDraft({ ...draft, serviceFamily })}
+        />
+        <RequiredDocumentFields
+          value={draft.requiredDocuments}
+          onChange={(requiredDocuments) => setDraft({ ...draft, requiredDocuments })}
+        />
         <fieldset className="space-y-2">
           <legend className="text-xs font-medium">Included checks</legend>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -174,6 +189,7 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
           </Button>
           <Button
             disabled={!valid || props.submitting}
+            loading={props.submitting}
             onClick={() =>
               props.onSubmit({
                 code: draft.code,
@@ -181,6 +197,8 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
                 checks: draft.checks,
                 price: draft.price ? Number(draft.price) : undefined,
                 tatHours: Number(draft.tatHours),
+                serviceFamily: draft.serviceFamily,
+                requiredDocuments: draft.requiredDocuments,
               })
             }
           >

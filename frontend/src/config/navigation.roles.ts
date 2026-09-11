@@ -2,7 +2,6 @@ import {
   BarChart3,
   BellRing,
   BriefcaseBusiness,
-  FileCheck2,
   Files,
   Gauge,
   History,
@@ -17,6 +16,7 @@ import {
 } from "lucide-react";
 import type { NavGroup, NavItem, NavWorkspace, WorkspaceNavigation } from "./navigation.types";
 import type { Role } from "./roles";
+import { QA_FINANCE_NAVIGATION } from "./navigation.qa-finance";
 
 const ROLE_GROUPS: readonly NavGroup[] = [
   { id: "command", label: "Workspace", defaultOpen: true },
@@ -106,6 +106,13 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
         "/client-portal/analytics",
         "dashboard:read",
       ),
+      clientItem(
+        "Invoices & payments",
+        "Invoices, received payments and outstanding balances",
+        ReceiptIndianRupee,
+        "/client-portal/billing",
+        "case:read",
+      ),
       {
         workspace: "client-admin",
         label: "Account Security",
@@ -182,15 +189,7 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
       },
     ],
   },
-  "qa-reviewer": roleNav(
-    "qa-reviewer",
-    "QA_REVIEWER",
-    "Independent QA Review",
-    "Evidence review, rework and approval",
-    "/qa-review",
-    FileCheck2,
-    "qa:review",
-  ),
+  "qa-reviewer": QA_FINANCE_NAVIGATION["qa-reviewer"]!,
   "field-executive": roleNav(
     "field-executive",
     "FIELD_EXECUTIVE",
@@ -200,15 +199,7 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
     MapPinned,
     "field-visit:read",
   ),
-  finance: roleNav(
-    "finance",
-    "FINANCE_MANAGER",
-    "Revenue Control",
-    "Invoices, collections and credits",
-    "/finance",
-    ReceiptIndianRupee,
-    "finance:read",
-  ),
+  finance: QA_FINANCE_NAVIGATION.finance!,
 };
 
 export const ROLE_WORKSPACE_ICON = BriefcaseBusiness;

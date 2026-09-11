@@ -24,9 +24,18 @@ interface SessionsPanelProps {
   onRevoke: (id: string) => void;
   onRevokeOthers: () => void;
   busy: boolean;
+  revokingId: string | undefined;
+  revokingOthers: boolean;
 }
 
-export function SessionsPanel({ overview, onRevoke, onRevokeOthers, busy }: SessionsPanelProps) {
+export function SessionsPanel({
+  overview,
+  onRevoke,
+  onRevokeOthers,
+  busy,
+  revokingId,
+  revokingOthers,
+}: SessionsPanelProps) {
   const otherSessionCount = overview.sessions.filter((session) => !session.isCurrent).length;
   return (
     <Section
@@ -39,6 +48,7 @@ export function SessionsPanel({ overview, onRevoke, onRevokeOthers, busy }: Sess
           size="sm"
           onClick={onRevokeOthers}
           disabled={busy || otherSessionCount === 0}
+          loading={revokingOthers}
         >
           Revoke all other sessions
         </Button>
@@ -73,6 +83,7 @@ export function SessionsPanel({ overview, onRevoke, onRevokeOthers, busy }: Sess
                 size="sm"
                 onClick={() => onRevoke(session.id)}
                 disabled={busy}
+                loading={busy && revokingId === session.id}
               >
                 Revoke
               </Button>

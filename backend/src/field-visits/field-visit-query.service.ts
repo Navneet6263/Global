@@ -54,7 +54,14 @@ export class FieldVisitQueryService {
       this.prisma.fieldVisit.findMany({
         where: {
           ...scope,
-          status: { in: ["ASSIGNED", "IN_PROGRESS", "EXCEPTION_REVIEW"] },
+          status: {
+            in: [
+              "ASSIGNED",
+              "IN_PROGRESS",
+              "EXCEPTION_REVIEW",
+              "REVIEW_PENDING",
+            ],
+          },
         },
         select: mineSelect,
         orderBy: { createdAt: "asc" },

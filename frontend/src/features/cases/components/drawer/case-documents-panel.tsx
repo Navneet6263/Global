@@ -4,6 +4,7 @@ import type { StatusTone } from "@/lib/contracts/common";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { EmptyState } from "@/components/feedback/empty-state";
 import { formatRelativeToNow } from "@/lib/formatting";
+import { DocumentFileActions } from "@/features/cases/document-file-actions";
 
 const DOC_TONE: Record<CaseDocument["status"], StatusTone> = {
   pending: "warning",
@@ -24,8 +25,8 @@ export function CaseDocumentsPanel({ item }: { item: VerificationCase }) {
     return (
       <EmptyState
         icon={FileCheck2}
-        title="No documents requested yet"
-        description="Document requests are raised automatically once consent is captured."
+        title="No documents uploaded yet"
+        description="Open the full case workspace to review the required evidence and candidate upload link."
       />
     );
   }
@@ -44,6 +45,13 @@ export function CaseDocumentsPanel({ item }: { item: VerificationCase }) {
             ) : null}
           </div>
           <StatusBadge label={DOC_LABEL[doc.status]} tone={DOC_TONE[doc.status]} />
+          {doc.available ? (
+            <DocumentFileActions
+              documentId={doc.id}
+              filename={doc.originalName ?? `${doc.label}.pdf`}
+              label={doc.label}
+            />
+          ) : null}
         </li>
       ))}
     </ul>

@@ -69,15 +69,15 @@ const workspaces: readonly Workspace[] = [
     key: "qa",
     localPart: "qa",
     path: "/qa-review",
-    title: /^QA Review \u2014 Sapling Global$/i,
-    uiText: /Independent QA review/i,
+    title: /^Review queue \u2014 Sapling Global$/i,
+    uiText: /Review queue/i,
   },
   {
     key: "finance",
     localPart: "finance",
     path: "/finance",
-    title: /^Finance & Billing \u2014 Sapling Global$/i,
-    uiText: /Revenue control/i,
+    title: /^Finance overview \u2014 Sapling Global$/i,
+    uiText: /Finance overview/i,
   },
 ];
 

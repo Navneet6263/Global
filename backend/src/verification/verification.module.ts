@@ -1,4 +1,8 @@
 import { Module } from "@nestjs/common";
+import { VerificationMethodsController } from "./verification-methods.controller";
+import { VerificationMethodsService } from "./verification-methods.service";
+import { SourceOutreachService } from "./source-outreach.service";
+import { SourceOutreachController } from "./source-outreach.controller";
 import { BulkTaskAssignmentService } from "./bulk-task-assignment.service";
 import { TaskAssignmentService } from "./task-assignment.service";
 import { TaskCreationService } from "./task-creation.service";
@@ -11,9 +15,15 @@ import { TaskContextService } from "./task-context.service";
 import { TaskInsightsService } from "./task-insights.service";
 
 @Module({
-  controllers: [TasksController],
+  controllers: [
+    TasksController,
+    VerificationMethodsController,
+    SourceOutreachController,
+  ],
   providers: [
     TasksService,
+    VerificationMethodsService,
+    SourceOutreachService,
     TaskQueryService,
     TaskInsightsService,
     TaskContextService,

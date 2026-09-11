@@ -1,11 +1,12 @@
 import type { CaseRepository } from "../repositories";
+import { casePackageName } from "@/lib/backend-api/case-services";
 import type { CaseDetail, CaseListItem } from "@/lib/backend-api/cases";
 import { getCase, listAllClients, listCases } from "@/lib/backend-api/cases";
+import { checkLabel, normalizeCheckType as checkType } from "@/lib/contracts/check";
 import type {
   CasePriority,
   CaseStage,
   CheckStatus,
-  CheckType,
   SlaState,
   VerificationCase,
 } from "@/lib/contracts/case";
@@ -17,6 +18,9 @@ const caseStatus: Record<string, CaseStage> = {
   IN_PROGRESS: "verification",
   CLARIFICATION_PENDING: "clarification",
   QA_REVIEW: "qa",
+  MANAGER_REVIEW: "manager_review",
+  REPORT_PENDING: "report_pending",
+  PAYMENT_PENDING: "payment_pending",
   COMPLETED: "completed",
   CLOSED: "completed",
   CANCELLED: "completed",
@@ -29,6 +33,9 @@ const stageProgress: Record<CaseStage, number> = {
   verification: 62,
   clarification: 68,
   qa: 88,
+  manager_review: 91,
+  report_pending: 94,
+  payment_pending: 97,
   completed: 100,
 };
 
@@ -37,23 +44,6 @@ const priorityQuery: Record<CasePriority, string> = {
   high: "HIGH",
   critical: "URGENT",
 };
-
-const supportedChecks = new Set<CheckType>([
-  "identity",
-  "address",
-  "employment",
-  "education",
-  "criminal",
-  "court_record",
-  "reference",
-  "global_database",
-  "drug_test",
-]);
-
-function checkType(value: string): CheckType {
-  const normalized = value.toLowerCase() as CheckType;
-  return supportedChecks.has(normalized) ? normalized : "other";
-}
 
 function checkStatus(value: string): CheckStatus {
   const statuses: Record<string, CheckStatus> = {
@@ -96,7 +86,7 @@ export function mapCase(row: CaseListItem | CaseDetail): VerificationCase {
     candidateMobile: row.subject.phone ?? "",
     clientId: row.client.publicId,
     clientName: row.client.displayName,
-    packageName: row.servicePackage?.name ?? null,
+    packageName: casePackageName(row),
     checkBundle: row.checks.map((check) => checkType(check.type)),
     stage,
     progress: stageProgress[stage],
@@ -110,8 +100,13 @@ export function mapCase(row: CaseListItem | CaseDetail): VerificationCase {
     checks: row.checks.map((check) => ({
       id: check.publicId,
       type: checkType(check.type),
-      label: check.type.replaceAll("_", " "),
-      status: checkStatus(check.status),
+      label: checkLabel(check.type),
+      status: checkStatus(
+        check.status === "COMPLETED" &&
+          ["DISCREPANCY", "UNABLE_TO_VERIFY"].includes(check.result ?? "")
+          ? check.result!
+          : check.status,
+      ),
       assignee: check.tasks?.find((task) => task.assignee)?.assignee?.displayName ?? "Unassigned",
       updatedAt: check.completedAt ?? row.updatedAt,
       note: check.sourceSummary ?? undefined,
@@ -122,12 +117,15 @@ export function mapCase(row: CaseListItem | CaseDetail): VerificationCase {
       status:
         document.status === "VERIFIED"
           ? "verified"
-          : document.status === "REJECTED"
+          : ["REJECTED", "REUPLOAD_REQUIRED"].includes(document.status)
             ? "rejected"
             : document.currentVersion > 0
               ? "received"
               : "pending",
       updatedAt: document.versions.at(0)?.createdAt ?? row.updatedAt,
+      rejectionReason: document.reviewNote ?? undefined,
+      originalName: document.versions[0]?.originalName,
+      available: Boolean(document.currentVersion > 0 && document.versions[0]),
     })),
     clarifications: (detail.clarifications ?? []).map((item) => ({
       id: item.publicId,

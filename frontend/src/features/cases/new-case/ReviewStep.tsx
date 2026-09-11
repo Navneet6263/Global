@@ -1,9 +1,18 @@
 import { BadgeCheck, Clock3, FileText } from "lucide-react";
 
-import { estimatedTatDays, type CaseDraft } from "./model";
+import type { CaseDraft } from "./model";
+import type { CaseServicePackage } from "@/lib/api/cases";
+import { estimatedServiceHours } from "./case-draft-policy";
 
-export function ReviewStep({ draft }: { draft: CaseDraft }) {
-  const estimatedTat = estimatedTatDays(draft.packageTatHours, draft.priority);
+export function ReviewStep({
+  draft,
+  packages,
+}: {
+  draft: CaseDraft;
+  packages: CaseServicePackage[];
+}) {
+  const hours = estimatedServiceHours(draft, packages);
+  const estimatedTat = hours === null ? "—" : hours % 24 === 0 ? `${hours / 24}d` : `${hours}h`;
 
   return (
     <div className="space-y-3">
@@ -35,8 +44,8 @@ export function ReviewStep({ draft }: { draft: CaseDraft }) {
         </div>
         <div className="rounded-2xl bg-secondary/70 p-4">
           <Clock3 className="size-4 text-muted-foreground" />
-          <p className="mt-2 text-2xl font-semibold tabular-nums">{estimatedTat}d</p>
-          <p className="text-[11px] text-muted-foreground">committed package TAT</p>
+          <p className="mt-2 text-2xl font-semibold tabular-nums">{estimatedTat}</p>
+          <p className="text-[11px] text-muted-foreground">estimated turnaround</p>
         </div>
         <div className="rounded-2xl bg-secondary/70 p-4">
           <FileText className="size-4 text-muted-foreground" />
@@ -46,6 +55,10 @@ export function ReviewStep({ draft }: { draft: CaseDraft }) {
           </p>
         </div>
       </div>
+      <p className="text-[11px] text-muted-foreground">
+        Estimate includes the selected client SLA, service TAT and priority. The final due date is
+        confirmed when the case is created.
+      </p>
     </div>
   );
 }

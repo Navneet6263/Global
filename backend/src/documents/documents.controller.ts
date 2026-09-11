@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   Param,
+  Patch,
   ParseUUIDPipe,
   Post,
   Req,
@@ -20,13 +22,36 @@ import { Permission } from "../common/auth/permissions";
 import { withUploadedBinary } from "../common/http/upload-capacity";
 import { CreateDocumentDto } from "./dto/create-document.dto";
 import { DocumentsService } from "./documents.service";
+import { DocumentReviewService } from "./document-review.service";
+import { ReviewDocumentDto } from "./dto/review-document.dto";
 
 @Controller()
 export class DocumentsController {
   constructor(
     private readonly documents: DocumentsService,
     private readonly config: ConfigService,
+    private readonly reviews: DocumentReviewService,
   ) {}
+
+  @Get("cases/:caseId/evidence-readiness")
+  @RequirePermissions(Permission.DocumentRead)
+  readiness(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+  ) {
+    return this.reviews.readiness(actor, caseId);
+  }
+
+  @Patch("documents/:documentId/review")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER", "QA_REVIEWER")
+  @RequirePermissions(Permission.DocumentRead)
+  review(
+    @CurrentActor() actor: Actor,
+    @Param("documentId", ParseUUIDPipe) documentId: string,
+    @Body() input: ReviewDocumentDto,
+  ) {
+    return this.reviews.review(actor, documentId, input);
+  }
 
   @Post("cases/:caseId/documents")
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
@@ -56,6 +81,7 @@ export class DocumentsController {
   }
 
   @Get("documents/:documentId/content")
+  @Header("Cache-Control", "private, no-store")
   @RequireRoles(
     "PLATFORM_ADMIN",
     "OPS_MANAGER",
@@ -69,5 +95,23 @@ export class DocumentsController {
     @Param("documentId", ParseUUIDPipe) documentId: string,
   ): Promise<StreamableFile> {
     return (await this.documents.download(actor, documentId)).file;
+  }
+
+  @Get("documents/:documentId/preview")
+  @Header("Cache-Control", "private, no-store")
+  @Header("X-Content-Type-Options", "nosniff")
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "CLIENT_ADMIN",
+    "VERIFIER",
+    "QA_REVIEWER",
+  )
+  @RequirePermissions(Permission.DocumentRead)
+  async preview(
+    @CurrentActor() actor: Actor,
+    @Param("documentId", ParseUUIDPipe) documentId: string,
+  ): Promise<StreamableFile> {
+    return (await this.documents.download(actor, documentId, "preview")).file;
   }
 }

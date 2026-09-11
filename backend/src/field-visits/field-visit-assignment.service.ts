@@ -8,10 +8,47 @@ import type { Actor } from "../common/auth/actor";
 import { assertAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
 import type { CreateFieldVisitDto } from "./dto/create-field-visit.dto";
+import { lockMutableCaseEvidence } from "../documents/upload-document-policy";
+import { fieldAssigneeScope } from "./field-assignee-scope";
+import type { FieldAssigneeQueryDto } from "./dto/field-assignee-query.dto";
 
 @Injectable()
 export class FieldVisitAssignmentService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async eligibleAssignees(
+    actor: Actor,
+    casePublicId: string,
+    query: FieldAssigneeQueryDto,
+  ) {
+    assertAnyRole(
+      actor,
+      OPERATIONS_ROLES,
+      "Only operations can assign field visits",
+    );
+    const scope = await this.prisma.verificationCase.findFirst({
+      where: { ...caseAccessScope(actor), publicId: casePublicId },
+      select: { branchId: true, clientId: true },
+    });
+    if (!scope) throw new NotFoundException("Case not found");
+    const where = fieldAssigneeScope(actor.tenantId, scope);
+    const [rows, total] = await Promise.all([
+      this.prisma.user.findMany({
+        where,
+        select: { publicId: true, displayName: true, email: true },
+        orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+      this.prisma.user.count({ where }),
+    ]);
+    return {
+      items: rows.map(({ publicId, ...user }) => ({ id: publicId, ...user })),
+      total,
+      page: query.page,
+      pageSize: query.pageSize,
+    };
+  }
 
   async create(actor: Actor, casePublicId: string, input: CreateFieldVisitDto) {
     assertAnyRole(
@@ -43,23 +80,8 @@ export class FieldVisitAssignmentService {
 
     const assignee = await this.prisma.user.findFirst({
       where: {
-        tenantId: actor.tenantId,
+        ...fieldAssigneeScope(actor.tenantId, verificationCase),
         publicId: input.assigneeId,
-        status: "ACTIVE",
-        AND: [
-          verificationCase.branchId
-            ? {
-                OR: [
-                  { branchId: verificationCase.branchId },
-                  { branchId: null },
-                ],
-              }
-            : { branchId: null },
-          {
-            OR: [{ clientId: null }, { clientId: verificationCase.clientId }],
-          },
-        ],
-        userRoles: { some: { role: { code: "FIELD_EXECUTIVE" } } },
       },
       select: { id: true },
     });
@@ -71,6 +93,8 @@ export class FieldVisitAssignmentService {
       select: { defaultRadiusMeters: true },
     });
     const visit = await this.prisma.$transaction(async (tx) => {
+      // Serialize with check completion and invalidate stale QA decisions.
+      await lockMutableCaseEvidence(tx, verificationCase.id);
       const created = await tx.fieldVisit.create({
         data: {
           tenantId: actor.tenantId,

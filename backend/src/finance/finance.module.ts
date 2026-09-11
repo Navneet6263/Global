@@ -7,10 +7,22 @@ import { InvoiceCancellationService } from "./invoice-cancellation.service";
 import { InvoiceCreditService } from "./invoice-credit.service";
 import { InvoiceIssueService } from "./invoice-issue.service";
 import { InvoicePaymentService } from "./invoice-payment.service";
+import { ClientFinanceController } from "./client-finance.controller";
+import { ClientFinanceService } from "./client-finance.service";
+import { MonthlyStatementController } from "./monthly-statement.controller";
+import { MonthlyStatementService } from "./monthly-statement.service";
+import { CreditControlController } from "./credit-control.controller";
 
 @Module({
-  controllers: [FinanceController],
+  controllers: [
+    FinanceController,
+    ClientFinanceController,
+    MonthlyStatementController,
+    CreditControlController,
+  ],
   providers: [
+    ClientFinanceService,
+    MonthlyStatementService,
     FinanceService,
     FinanceQueryService,
     InvoiceIssueService,

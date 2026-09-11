@@ -160,8 +160,9 @@ export function usePrepareOnboarding() {
   return useCrmMutation<string, unknown>(
     (id) => crmApi.prepareOnboarding(id),
     () => ({
-      title: "Onboarding handoff recorded",
-      description: "The won opportunity is now marked for client onboarding.",
+      title: "Client workspace linked",
+      description:
+        "Complete the client's commercial settings and activate it from Client Management.",
     }),
   );
 }

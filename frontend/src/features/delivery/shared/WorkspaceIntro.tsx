@@ -1,9 +1,9 @@
 import type { ComponentType, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
+import { PageHeader } from "@/components/layout/page-header";
 
 export function WorkspaceIntro({
-  eyebrow,
   title,
   description,
   signal,
@@ -13,27 +13,7 @@ export function WorkspaceIntro({
   description: string;
   signal?: ReactNode;
 }) {
-  return (
-    <header className="flex flex-wrap items-end justify-between gap-4">
-      <div className="max-w-3xl">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-primary">
-          {eyebrow}
-        </p>
-        <h1 className="mt-1 text-[1.7rem] font-semibold tracking-[-0.035em] text-foreground sm:text-[2rem]">
-          {title}
-        </h1>
-        <p className="mt-1 max-w-2xl text-[12.5px] leading-relaxed text-muted-foreground">
-          {description}
-        </p>
-      </div>
-      {signal ? (
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/80 bg-card/80 px-3 py-2 text-[11px] font-medium text-muted-foreground shadow-[var(--shadow-card)] backdrop-blur-sm">
-          <span className="size-1.5 rounded-full bg-success shadow-[0_0_0_4px_var(--success-soft)]" />
-          {signal}
-        </div>
-      ) : null}
-    </header>
-  );
+  return <PageHeader title={title} description={description} meta={signal} />;
 }
 
 export type WorkspaceMetricTone = "mint" | "blue" | "amber" | "red" | "violet";

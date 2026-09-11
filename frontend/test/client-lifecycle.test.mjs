@@ -15,6 +15,9 @@ const asModule = (source) =>
 const scope = asModule(
   await readFile(new URL("../src/lib/backend-api/request-scope.ts", import.meta.url), "utf8"),
 );
+const activity = asModule(
+  await readFile(new URL("../src/lib/backend-api/request-activity.ts", import.meta.url), "utf8"),
+);
 async function client() {
   const source = (
     await readFile(new URL("../src/lib/backend-api/client.ts", import.meta.url), "utf8")
@@ -23,7 +26,8 @@ async function client() {
       'import { API_BASE_URL as apiBase } from "@/config/api";',
       'const apiBase = "http://test.invalid/api/v1";',
     )
-    .replace('from "./request-scope"', `from "${scope}"`);
+    .replace('from "./request-scope"', `from "${scope}"`)
+    .replace('from "./request-activity"', `from "${activity}"`);
   return import(asModule(source + `\n// isolated test ${crypto.randomUUID()}`));
 }
 
@@ -90,4 +94,42 @@ test("a late error body from a previous session cannot expire a newly signed-in 
   finish({ status: 401, detail: "Old session expired" });
   await assert.rejects(pending, { name: "AbortError" });
   assert.equal(expired, false);
+});
+
+test("foreground feedback starts immediately and clears after a failed write", async () => {
+  globalThis.window = {};
+  const { requestActivity } = await import(activity);
+  requestActivity.reset();
+  let finish;
+  globalThis.fetch = () =>
+    new Promise((resolve) => {
+      finish = resolve;
+    });
+  const api = await client();
+  const pending = api.apiRequest("/cases", { method: "POST", body: "{}" });
+  assert.equal(requestActivity.getSnapshot().write, 1);
+  finish(new Response('{"status":400,"detail":"Review your input"}', { status: 400 }));
+  await assert.rejects(pending, /Review your input/);
+  assert.equal(requestActivity.getSnapshot().write, 0);
+});
+
+test("polling reads and token refresh stay quiet; downloads track response completion", async () => {
+  globalThis.window = {};
+  const { requestActivity } = await import(activity);
+  requestActivity.reset();
+  const api = await client();
+  globalThis.fetch = async () => new Response("{}");
+  await api.apiRequest("/notifications");
+  await api.apiRequest("/auth/refresh", { method: "POST" });
+  assert.deepEqual(requestActivity.getSnapshot(), { write: 0, upload: 0, download: 0 });
+  let finish;
+  globalThis.fetch = () =>
+    new Promise((resolve) => {
+      finish = resolve;
+    });
+  const download = api.apiDownload("/reports/test/content");
+  assert.equal(requestActivity.getSnapshot().download, 1);
+  finish(new Response("synthetic report"));
+  assert.equal(await (await download).text(), "synthetic report");
+  assert.equal(requestActivity.getSnapshot().download, 0);
 });

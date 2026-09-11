@@ -22,6 +22,12 @@ const actor: Actor = {
 void test("task reassignment updates the active task with audit and notifications", async () => {
   const writes: Array<{ kind: string; data: unknown }> = [];
   const tx = {
+    verificationCase: {
+      updateMany: (input: unknown) => {
+        writes.push({ kind: "case-lock", data: input });
+        return Promise.resolve({ count: 1 });
+      },
+    },
     checkTask: {
       updateMany: (input: unknown) => {
         writes.push({ kind: "task", data: input });
@@ -53,6 +59,7 @@ void test("task reassignment updates the active task with audit and notification
             id: 8n,
             publicId: "00000000-0000-4000-8000-000000000008",
             case: {
+              id: 9n,
               publicId: "00000000-0000-4000-8000-000000000009",
               caseNumber: "SG-TEST-1",
               status: "IN_PROGRESS",
@@ -84,6 +91,7 @@ void test("task reassignment updates the active task with audit and notification
   assert.equal(result.version, 4);
   assert.equal(result.assignee.displayName, "New Verifier");
   assert.equal(writes.filter((entry) => entry.kind === "task").length, 1);
+  assert.equal(writes[0]?.kind, "case-lock");
   const audit = writes.find((entry) => entry.kind === "audit")?.data as {
     data?: { action?: string };
   };

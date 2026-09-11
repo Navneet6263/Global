@@ -29,6 +29,7 @@ type FieldVisitCardProps = {
   photoCount: number;
   geoError: string | null;
   locating: boolean;
+  captureAction: "checkIn" | "refresh" | "checkout" | null;
   syncing: boolean;
   policy: FieldExecutionPolicy;
   onCapture: (kind: "checkIn" | "refresh") => void;
@@ -44,6 +45,7 @@ export function FieldVisitCard({
   photoCount,
   geoError,
   locating,
+  captureAction,
   syncing,
   policy,
   onCapture,
@@ -130,10 +132,11 @@ export function FieldVisitCard({
               <button
                 type="button"
                 onClick={() => onCapture("refresh")}
-                disabled={locating}
+                disabled={locating || syncing}
+                aria-busy={captureAction === "refresh"}
                 className="rounded-full bg-white px-3 py-2 text-[10px] font-semibold text-info-foreground shadow-sm disabled:opacity-50"
               >
-                {locating ? "Locating…" : "Refresh GPS"}
+                {captureAction === "refresh" ? "Locating…" : "Refresh GPS"}
               </button>
             </div>
             {reference ? (
@@ -176,7 +179,8 @@ export function FieldVisitCard({
               primary
               icon={LogIn}
               label={checkedIn ? "Checked in" : "GPS check-in"}
-              disabled={checkedIn || locating}
+              disabled={checkedIn || locating || syncing}
+              loading={captureAction === "checkIn"}
               onClick={() => onCapture("checkIn")}
             />
             <FieldControl
@@ -196,8 +200,9 @@ export function FieldVisitCard({
             />
             <FieldControl
               icon={LogOut}
-              label={syncing ? "Submitting…" : "Complete visit"}
+              label={captureAction === "checkout" ? "Submitting…" : "Submit for review"}
               disabled={!canCheckout || locating || syncing}
+              loading={captureAction === "checkout"}
               onClick={onCheckout}
             />
           </div>

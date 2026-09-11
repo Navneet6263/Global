@@ -29,7 +29,9 @@ import { Route as AdminClientsRouteImport } from './routes/admin.clients'
 import { Route as AdminExceptionsRouteImport } from './routes/admin.exceptions'
 import { Route as AdminFieldRouteImport } from './routes/admin.field'
 import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
+import { Route as AdminPrivacyRouteImport } from './routes/admin.privacy'
 import { Route as AdminQaRouteImport } from './routes/admin.qa'
+import { Route as AdminReportsRouteImport } from './routes/admin.reports'
 import { Route as AdminSalesRouteImport } from './routes/admin.sales'
 import { Route as AdminSecurityRouteImport } from './routes/admin.security'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -41,9 +43,15 @@ import { Route as ClarificationClarificationIdRouteImport } from './routes/clari
 import { Route as ClientPortalIndexRouteImport } from './routes/client-portal.index'
 import { Route as ClientPortalActionsRouteImport } from './routes/client-portal.actions'
 import { Route as ClientPortalAnalyticsRouteImport } from './routes/client-portal.analytics'
+import { Route as ClientPortalBillingRouteImport } from './routes/client-portal.billing'
 import { Route as ClientPortalReportsRouteImport } from './routes/client-portal.reports'
 import { Route as ClientPortalVerificationsRouteImport } from './routes/client-portal.verifications'
 import { Route as ConsentConsentIdRouteImport } from './routes/consent.$consentId'
+import { Route as FinanceBillingRouteImport } from './routes/finance_.billing'
+import { Route as FinanceCollectionsRouteImport } from './routes/finance_.collections'
+import { Route as FinanceCreditRouteImport } from './routes/finance_.credit'
+import { Route as FinanceInvoicesRouteImport } from './routes/finance_.invoices'
+import { Route as FinanceStatementsRouteImport } from './routes/finance_.statements'
 import { Route as OperationsIndexRouteImport } from './routes/operations.index'
 import { Route as OperationsAssignmentsRouteImport } from './routes/operations.assignments'
 import { Route as OperationsCasesRouteImport } from './routes/operations.cases'
@@ -52,6 +60,10 @@ import { Route as OperationsExceptionsRouteImport } from './routes/operations.ex
 import { Route as OperationsFieldRouteImport } from './routes/operations.field'
 import { Route as OperationsSlaRouteImport } from './routes/operations.sla'
 import { Route as OperationsTeamRouteImport } from './routes/operations.team'
+import { Route as QaReviewCorrectionsRouteImport } from './routes/qa-review_.corrections'
+import { Route as QaReviewHistoryRouteImport } from './routes/qa-review_.history'
+import { Route as QaReviewMineRouteImport } from './routes/qa-review_.mine'
+import { Route as QaReviewOverviewRouteImport } from './routes/qa-review_.overview'
 import { Route as SalesCrmIndexRouteImport } from './routes/sales-crm.index'
 import { Route as SalesCrmAccountsRouteImport } from './routes/sales-crm.accounts'
 import { Route as SalesCrmActivitiesRouteImport } from './routes/sales-crm.activities'
@@ -168,9 +180,19 @@ const AdminFinanceRoute = AdminFinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPrivacyRoute = AdminPrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminQaRoute = AdminQaRouteImport.update({
   id: '/qa',
   path: '/qa',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminReportsRoute = AdminReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSalesRoute = AdminSalesRouteImport.update({
@@ -229,6 +251,11 @@ const ClientPortalAnalyticsRoute = ClientPortalAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => ClientPortalRoute,
 } as any)
+const ClientPortalBillingRoute = ClientPortalBillingRouteImport.update({
+  id: '/billing',
+  path: '/billing',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
 const ClientPortalReportsRoute = ClientPortalReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
@@ -243,6 +270,31 @@ const ClientPortalVerificationsRoute =
 const ConsentConsentIdRoute = ConsentConsentIdRouteImport.update({
   id: '/consent/$consentId',
   path: '/consent/$consentId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceBillingRoute = FinanceBillingRouteImport.update({
+  id: '/finance_/billing',
+  path: '/finance/billing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceCollectionsRoute = FinanceCollectionsRouteImport.update({
+  id: '/finance_/collections',
+  path: '/finance/collections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceCreditRoute = FinanceCreditRouteImport.update({
+  id: '/finance_/credit',
+  path: '/finance/credit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceInvoicesRoute = FinanceInvoicesRouteImport.update({
+  id: '/finance_/invoices',
+  path: '/finance/invoices',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceStatementsRoute = FinanceStatementsRouteImport.update({
+  id: '/finance_/statements',
+  path: '/finance/statements',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OperationsIndexRoute = OperationsIndexRouteImport.update({
@@ -285,6 +337,26 @@ const OperationsTeamRoute = OperationsTeamRouteImport.update({
   id: '/team',
   path: '/team',
   getParentRoute: () => OperationsRoute,
+} as any)
+const QaReviewCorrectionsRoute = QaReviewCorrectionsRouteImport.update({
+  id: '/qa-review_/corrections',
+  path: '/qa-review/corrections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QaReviewHistoryRoute = QaReviewHistoryRouteImport.update({
+  id: '/qa-review_/history',
+  path: '/qa-review/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QaReviewMineRoute = QaReviewMineRouteImport.update({
+  id: '/qa-review_/mine',
+  path: '/qa-review/mine',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QaReviewOverviewRoute = QaReviewOverviewRouteImport.update({
+  id: '/qa-review_/overview',
+  path: '/qa-review/overview',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SalesCrmIndexRoute = SalesCrmIndexRouteImport.update({
   id: '/',
@@ -383,7 +455,9 @@ export interface FileRoutesByFullPath {
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
+  '/admin/privacy': typeof AdminPrivacyRoute
   '/admin/qa': typeof AdminQaRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -394,9 +468,15 @@ export interface FileRoutesByFullPath {
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
   '/client-portal/actions': typeof ClientPortalActionsRoute
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
+  '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/finance/billing': typeof FinanceBillingRoute
+  '/finance/collections': typeof FinanceCollectionsRoute
+  '/finance/credit': typeof FinanceCreditRoute
+  '/finance/invoices': typeof FinanceInvoicesRoute
+  '/finance/statements': typeof FinanceStatementsRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
   '/operations/cases': typeof OperationsCasesRoute
   '/operations/clarifications': typeof OperationsClarificationsRoute
@@ -404,6 +484,10 @@ export interface FileRoutesByFullPath {
   '/operations/field': typeof OperationsFieldRoute
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
+  '/qa-review/corrections': typeof QaReviewCorrectionsRoute
+  '/qa-review/history': typeof QaReviewHistoryRoute
+  '/qa-review/mine': typeof QaReviewMineRoute
+  '/qa-review/overview': typeof QaReviewOverviewRoute
   '/sales-crm/accounts': typeof SalesCrmAccountsRoute
   '/sales-crm/activities': typeof SalesCrmActivitiesRoute
   '/sales-crm/follow-ups': typeof SalesCrmFollowUpsRoute
@@ -438,7 +522,9 @@ export interface FileRoutesByTo {
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
+  '/admin/privacy': typeof AdminPrivacyRoute
   '/admin/qa': typeof AdminQaRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -449,9 +535,15 @@ export interface FileRoutesByTo {
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
   '/client-portal/actions': typeof ClientPortalActionsRoute
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
+  '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/finance/billing': typeof FinanceBillingRoute
+  '/finance/collections': typeof FinanceCollectionsRoute
+  '/finance/credit': typeof FinanceCreditRoute
+  '/finance/invoices': typeof FinanceInvoicesRoute
+  '/finance/statements': typeof FinanceStatementsRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
   '/operations/cases': typeof OperationsCasesRoute
   '/operations/clarifications': typeof OperationsClarificationsRoute
@@ -459,6 +551,10 @@ export interface FileRoutesByTo {
   '/operations/field': typeof OperationsFieldRoute
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
+  '/qa-review/corrections': typeof QaReviewCorrectionsRoute
+  '/qa-review/history': typeof QaReviewHistoryRoute
+  '/qa-review/mine': typeof QaReviewMineRoute
+  '/qa-review/overview': typeof QaReviewOverviewRoute
   '/sales-crm/accounts': typeof SalesCrmAccountsRoute
   '/sales-crm/activities': typeof SalesCrmActivitiesRoute
   '/sales-crm/follow-ups': typeof SalesCrmFollowUpsRoute
@@ -499,7 +595,9 @@ export interface FileRoutesById {
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
+  '/admin/privacy': typeof AdminPrivacyRoute
   '/admin/qa': typeof AdminQaRoute
+  '/admin/reports': typeof AdminReportsRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -510,9 +608,15 @@ export interface FileRoutesById {
   '/clarification/$clarificationId': typeof ClarificationClarificationIdRoute
   '/client-portal/actions': typeof ClientPortalActionsRoute
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
+  '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/finance_/billing': typeof FinanceBillingRoute
+  '/finance_/collections': typeof FinanceCollectionsRoute
+  '/finance_/credit': typeof FinanceCreditRoute
+  '/finance_/invoices': typeof FinanceInvoicesRoute
+  '/finance_/statements': typeof FinanceStatementsRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
   '/operations/cases': typeof OperationsCasesRoute
   '/operations/clarifications': typeof OperationsClarificationsRoute
@@ -520,6 +624,10 @@ export interface FileRoutesById {
   '/operations/field': typeof OperationsFieldRoute
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
+  '/qa-review_/corrections': typeof QaReviewCorrectionsRoute
+  '/qa-review_/history': typeof QaReviewHistoryRoute
+  '/qa-review_/mine': typeof QaReviewMineRoute
+  '/qa-review_/overview': typeof QaReviewOverviewRoute
   '/sales-crm/accounts': typeof SalesCrmAccountsRoute
   '/sales-crm/activities': typeof SalesCrmActivitiesRoute
   '/sales-crm/follow-ups': typeof SalesCrmFollowUpsRoute
@@ -561,7 +669,9 @@ export interface FileRouteTypes {
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
+    | '/admin/privacy'
     | '/admin/qa'
+    | '/admin/reports'
     | '/admin/sales'
     | '/admin/security'
     | '/admin/settings'
@@ -572,9 +682,15 @@ export interface FileRouteTypes {
     | '/clarification/$clarificationId'
     | '/client-portal/actions'
     | '/client-portal/analytics'
+    | '/client-portal/billing'
     | '/client-portal/reports'
     | '/client-portal/verifications'
     | '/consent/$consentId'
+    | '/finance/billing'
+    | '/finance/collections'
+    | '/finance/credit'
+    | '/finance/invoices'
+    | '/finance/statements'
     | '/operations/assignments'
     | '/operations/cases'
     | '/operations/clarifications'
@@ -582,6 +698,10 @@ export interface FileRouteTypes {
     | '/operations/field'
     | '/operations/sla'
     | '/operations/team'
+    | '/qa-review/corrections'
+    | '/qa-review/history'
+    | '/qa-review/mine'
+    | '/qa-review/overview'
     | '/sales-crm/accounts'
     | '/sales-crm/activities'
     | '/sales-crm/follow-ups'
@@ -616,7 +736,9 @@ export interface FileRouteTypes {
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
+    | '/admin/privacy'
     | '/admin/qa'
+    | '/admin/reports'
     | '/admin/sales'
     | '/admin/security'
     | '/admin/settings'
@@ -627,9 +749,15 @@ export interface FileRouteTypes {
     | '/clarification/$clarificationId'
     | '/client-portal/actions'
     | '/client-portal/analytics'
+    | '/client-portal/billing'
     | '/client-portal/reports'
     | '/client-portal/verifications'
     | '/consent/$consentId'
+    | '/finance/billing'
+    | '/finance/collections'
+    | '/finance/credit'
+    | '/finance/invoices'
+    | '/finance/statements'
     | '/operations/assignments'
     | '/operations/cases'
     | '/operations/clarifications'
@@ -637,6 +765,10 @@ export interface FileRouteTypes {
     | '/operations/field'
     | '/operations/sla'
     | '/operations/team'
+    | '/qa-review/corrections'
+    | '/qa-review/history'
+    | '/qa-review/mine'
+    | '/qa-review/overview'
     | '/sales-crm/accounts'
     | '/sales-crm/activities'
     | '/sales-crm/follow-ups'
@@ -676,7 +808,9 @@ export interface FileRouteTypes {
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
+    | '/admin/privacy'
     | '/admin/qa'
+    | '/admin/reports'
     | '/admin/sales'
     | '/admin/security'
     | '/admin/settings'
@@ -687,9 +821,15 @@ export interface FileRouteTypes {
     | '/clarification/$clarificationId'
     | '/client-portal/actions'
     | '/client-portal/analytics'
+    | '/client-portal/billing'
     | '/client-portal/reports'
     | '/client-portal/verifications'
     | '/consent/$consentId'
+    | '/finance_/billing'
+    | '/finance_/collections'
+    | '/finance_/credit'
+    | '/finance_/invoices'
+    | '/finance_/statements'
     | '/operations/assignments'
     | '/operations/cases'
     | '/operations/clarifications'
@@ -697,6 +837,10 @@ export interface FileRouteTypes {
     | '/operations/field'
     | '/operations/sla'
     | '/operations/team'
+    | '/qa-review_/corrections'
+    | '/qa-review_/history'
+    | '/qa-review_/mine'
+    | '/qa-review_/overview'
     | '/sales-crm/accounts'
     | '/sales-crm/activities'
     | '/sales-crm/follow-ups'
@@ -733,6 +877,15 @@ export interface RootRouteChildren {
   CasesCaseIdRoute: typeof CasesCaseIdRoute
   ClarificationClarificationIdRoute: typeof ClarificationClarificationIdRoute
   ConsentConsentIdRoute: typeof ConsentConsentIdRoute
+  FinanceBillingRoute: typeof FinanceBillingRoute
+  FinanceCollectionsRoute: typeof FinanceCollectionsRoute
+  FinanceCreditRoute: typeof FinanceCreditRoute
+  FinanceInvoicesRoute: typeof FinanceInvoicesRoute
+  FinanceStatementsRoute: typeof FinanceStatementsRoute
+  QaReviewCorrectionsRoute: typeof QaReviewCorrectionsRoute
+  QaReviewHistoryRoute: typeof QaReviewHistoryRoute
+  QaReviewMineRoute: typeof QaReviewMineRoute
+  QaReviewOverviewRoute: typeof QaReviewOverviewRoute
   ReportsVerifyAuthenticityCodeRoute: typeof ReportsVerifyAuthenticityCodeRoute
 }
 
@@ -878,11 +1031,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFinanceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/privacy': {
+      id: '/admin/privacy'
+      path: '/privacy'
+      fullPath: '/admin/privacy'
+      preLoaderRoute: typeof AdminPrivacyRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/qa': {
       id: '/admin/qa'
       path: '/qa'
       fullPath: '/admin/qa'
       preLoaderRoute: typeof AdminQaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/reports': {
+      id: '/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AdminReportsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/sales': {
@@ -962,6 +1129,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientPortalAnalyticsRouteImport
       parentRoute: typeof ClientPortalRoute
     }
+    '/client-portal/billing': {
+      id: '/client-portal/billing'
+      path: '/billing'
+      fullPath: '/client-portal/billing'
+      preLoaderRoute: typeof ClientPortalBillingRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
     '/client-portal/reports': {
       id: '/client-portal/reports'
       path: '/reports'
@@ -981,6 +1155,41 @@ declare module '@tanstack/react-router' {
       path: '/consent/$consentId'
       fullPath: '/consent/$consentId'
       preLoaderRoute: typeof ConsentConsentIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance_/billing': {
+      id: '/finance_/billing'
+      path: '/finance/billing'
+      fullPath: '/finance/billing'
+      preLoaderRoute: typeof FinanceBillingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance_/collections': {
+      id: '/finance_/collections'
+      path: '/finance/collections'
+      fullPath: '/finance/collections'
+      preLoaderRoute: typeof FinanceCollectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance_/credit': {
+      id: '/finance_/credit'
+      path: '/finance/credit'
+      fullPath: '/finance/credit'
+      preLoaderRoute: typeof FinanceCreditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance_/invoices': {
+      id: '/finance_/invoices'
+      path: '/finance/invoices'
+      fullPath: '/finance/invoices'
+      preLoaderRoute: typeof FinanceInvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/finance_/statements': {
+      id: '/finance_/statements'
+      path: '/finance/statements'
+      fullPath: '/finance/statements'
+      preLoaderRoute: typeof FinanceStatementsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/operations/': {
@@ -1038,6 +1247,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/operations/team'
       preLoaderRoute: typeof OperationsTeamRouteImport
       parentRoute: typeof OperationsRoute
+    }
+    '/qa-review_/corrections': {
+      id: '/qa-review_/corrections'
+      path: '/qa-review/corrections'
+      fullPath: '/qa-review/corrections'
+      preLoaderRoute: typeof QaReviewCorrectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qa-review_/history': {
+      id: '/qa-review_/history'
+      path: '/qa-review/history'
+      fullPath: '/qa-review/history'
+      preLoaderRoute: typeof QaReviewHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qa-review_/mine': {
+      id: '/qa-review_/mine'
+      path: '/qa-review/mine'
+      fullPath: '/qa-review/mine'
+      preLoaderRoute: typeof QaReviewMineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qa-review_/overview': {
+      id: '/qa-review_/overview'
+      path: '/qa-review/overview'
+      fullPath: '/qa-review/overview'
+      preLoaderRoute: typeof QaReviewOverviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/sales-crm/': {
       id: '/sales-crm/'
@@ -1156,7 +1393,9 @@ interface AdminRouteChildren {
   AdminExceptionsRoute: typeof AdminExceptionsRoute
   AdminFieldRoute: typeof AdminFieldRoute
   AdminFinanceRoute: typeof AdminFinanceRoute
+  AdminPrivacyRoute: typeof AdminPrivacyRoute
   AdminQaRoute: typeof AdminQaRoute
+  AdminReportsRoute: typeof AdminReportsRoute
   AdminSalesRoute: typeof AdminSalesRoute
   AdminSecurityRoute: typeof AdminSecurityRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
@@ -1174,7 +1413,9 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminExceptionsRoute: AdminExceptionsRoute,
   AdminFieldRoute: AdminFieldRoute,
   AdminFinanceRoute: AdminFinanceRoute,
+  AdminPrivacyRoute: AdminPrivacyRoute,
   AdminQaRoute: AdminQaRoute,
+  AdminReportsRoute: AdminReportsRoute,
   AdminSalesRoute: AdminSalesRoute,
   AdminSecurityRoute: AdminSecurityRoute,
   AdminSettingsRoute: AdminSettingsRoute,
@@ -1188,6 +1429,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 interface ClientPortalRouteChildren {
   ClientPortalActionsRoute: typeof ClientPortalActionsRoute
   ClientPortalAnalyticsRoute: typeof ClientPortalAnalyticsRoute
+  ClientPortalBillingRoute: typeof ClientPortalBillingRoute
   ClientPortalReportsRoute: typeof ClientPortalReportsRoute
   ClientPortalVerificationsRoute: typeof ClientPortalVerificationsRoute
   ClientPortalIndexRoute: typeof ClientPortalIndexRoute
@@ -1196,6 +1438,7 @@ interface ClientPortalRouteChildren {
 const ClientPortalRouteChildren: ClientPortalRouteChildren = {
   ClientPortalActionsRoute: ClientPortalActionsRoute,
   ClientPortalAnalyticsRoute: ClientPortalAnalyticsRoute,
+  ClientPortalBillingRoute: ClientPortalBillingRoute,
   ClientPortalReportsRoute: ClientPortalReportsRoute,
   ClientPortalVerificationsRoute: ClientPortalVerificationsRoute,
   ClientPortalIndexRoute: ClientPortalIndexRoute,
@@ -1295,6 +1538,15 @@ const rootRouteChildren: RootRouteChildren = {
   CasesCaseIdRoute: CasesCaseIdRoute,
   ClarificationClarificationIdRoute: ClarificationClarificationIdRoute,
   ConsentConsentIdRoute: ConsentConsentIdRoute,
+  FinanceBillingRoute: FinanceBillingRoute,
+  FinanceCollectionsRoute: FinanceCollectionsRoute,
+  FinanceCreditRoute: FinanceCreditRoute,
+  FinanceInvoicesRoute: FinanceInvoicesRoute,
+  FinanceStatementsRoute: FinanceStatementsRoute,
+  QaReviewCorrectionsRoute: QaReviewCorrectionsRoute,
+  QaReviewHistoryRoute: QaReviewHistoryRoute,
+  QaReviewMineRoute: QaReviewMineRoute,
+  QaReviewOverviewRoute: QaReviewOverviewRoute,
   ReportsVerifyAuthenticityCodeRoute: ReportsVerifyAuthenticityCodeRoute,
 }
 export const routeTree = rootRouteImport

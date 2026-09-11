@@ -1,5 +1,6 @@
 import { apiDownload, apiRequest, saveBlob } from "./client";
 import { fileSha256 } from "./file-digest";
+import { openDocumentPreview } from "./document-preview";
 
 export const documentTypes = [
   "AADHAAR",
@@ -34,4 +35,30 @@ export async function uploadDocument(documentId: string, file: File) {
 export async function downloadDocument(documentId: string, filename: string) {
   const blob = await apiDownload(`/documents/${documentId}/content`);
   saveBlob(blob, filename);
+}
+
+export function previewDocument(documentId: string) {
+  return openDocumentPreview(() => apiDownload(`/documents/${documentId}/preview`));
+}
+
+export function reviewDocument(
+  documentId: string,
+  input: {
+    version: number;
+    documentVersion: number;
+    decision: "VERIFIED" | "REJECTED" | "REUPLOAD_REQUIRED";
+    note: string;
+    expiresAt?: string;
+  },
+) {
+  return apiRequest(`/documents/${documentId}/review`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
+export function getEvidenceReadiness(caseId: string) {
+  return apiRequest<{ ready: boolean; issues: string[]; requiredTypes: string[] }>(
+    `/cases/${caseId}/evidence-readiness`,
+  );
 }

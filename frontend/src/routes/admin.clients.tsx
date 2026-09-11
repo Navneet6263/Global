@@ -126,9 +126,10 @@ function ClientsPage() {
               <ClientCard
                 key={client.id}
                 client={client}
+                busy={setStatus.isPending && setStatus.variables?.id === client.id}
                 onOpen={setOpenId}
                 onToggleStatus={(target) => {
-                  const next = target.status === "suspended" ? "active" : "suspended";
+                  const next = target.status === "active" ? "suspended" : "active";
                   setStatus.mutate(
                     { id: target.id, status: next },
                     {

@@ -12,6 +12,13 @@ import { OpsCaseFilters } from "@/features/operations/components/ops-case-filter
 import { OpsCaseTable } from "@/features/operations/components/ops-case-table";
 import { OpsCaseDrawer } from "@/features/operations/components/ops-case-drawer";
 import { useOpsCase, useOpsCases, useOpsFacets } from "@/features/operations/hooks/use-operations";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DispatchDialog } from "@/features/operations/dispatch/dispatch-dialog";
+import { DispatchSelectionBar } from "@/features/operations/dispatch/dispatch-selection";
+import {
+  canSelectForDispatch,
+  DISPATCH_LIMIT,
+} from "@/features/operations/dispatch/dispatch-selection-model";
 
 interface CasesSearch {
   caseId?: string;
@@ -73,6 +80,23 @@ function OperationsCasesPage() {
   const facets = useOpsFacets();
   const detail = useOpsCase(search.caseId);
   const rows = data?.rows ?? [];
+  const [selected, setSelected] = useState<string[]>([]);
+  const [dispatchOpen, setDispatchOpen] = useState(false);
+  const toggle = (id: string) =>
+    setSelected((current) =>
+      current.includes(id)
+        ? current.filter((item) => item !== id)
+        : current.length < DISPATCH_LIMIT
+          ? [...current, id]
+          : current,
+    );
+  const togglePage = () =>
+    setSelected((current) => {
+      const ids = rows.filter(canSelectForDispatch).map((row) => row.id);
+      return ids.every((id) => current.includes(id))
+        ? current.filter((id) => !ids.includes(id))
+        : [...new Set([...current, ...ids])].slice(0, DISPATCH_LIMIT);
+    });
 
   const setCaseId = (caseId: string | undefined) => {
     void navigate({ to: ".", search: (prev) => ({ ...prev, caseId }) });
@@ -89,6 +113,11 @@ function OperationsCasesPage() {
       />
 
       {isError ? <ErrorState onRetry={() => void refetch()} retrying={isFetching} /> : null}
+      <DispatchSelectionBar
+        selected={selected}
+        onClear={() => setSelected([])}
+        onStart={() => setDispatchOpen(true)}
+      />
 
       <div className="surface overflow-hidden">
         <OpsCaseFilters
@@ -134,10 +163,20 @@ function OperationsCasesPage() {
                 })
               }
               onOpenCase={setCaseId}
+              selection={{ selected, onToggle: toggle, onTogglePage: togglePage }}
             />
             <ul className="divide-y divide-border lg:hidden">
               {rows.map((row) => (
                 <li key={row.id} className="flex items-center justify-between gap-3 px-5 py-3">
+                  <Checkbox
+                    aria-label={`Select ${row.caseNumber}`}
+                    checked={selected.includes(row.id)}
+                    onCheckedChange={() => toggle(row.id)}
+                    disabled={
+                      !canSelectForDispatch(row) ||
+                      (!selected.includes(row.id) && selected.length >= DISPATCH_LIMIT)
+                    }
+                  />
                   <div className="min-w-0">
                     <p className="truncate text-[13px] font-medium text-foreground">
                       {row.candidateName}
@@ -169,6 +208,16 @@ function OperationsCasesPage() {
         open={Boolean(search.caseId)}
         onClose={() => setCaseId(undefined)}
       />
+      {dispatchOpen ? (
+        <DispatchDialog
+          caseIds={selected}
+          onClose={() => {
+            setDispatchOpen(false);
+            setSelected([]);
+          }}
+          onOpenCase={setCaseId}
+        />
+      ) : null}
     </div>
   );
 }

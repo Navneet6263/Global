@@ -3,6 +3,7 @@ import { apiRequest } from "./client";
 export interface CandidatePortalData {
   id: string;
   expiresAt: string;
+  privacyNotice: { version: string; title: string; paragraphs: string[] };
   case: {
     caseNumber: string;
     status: string;
@@ -10,7 +11,14 @@ export interface CandidatePortalData {
     clientName: string;
     dueAt?: string | null;
     checks: Array<{ type: string; status: string }>;
-    documents: Array<{ type: string; status: string; currentVersion: number }>;
+    documents: Array<{
+      type: string;
+      status: string;
+      currentVersion: number;
+      reviewNote?: string | null;
+      expiresAt?: string | null;
+    }>;
+    requiredDocumentTypes: string[];
     clarifications: Array<{
       id: string;
       subject: string;
@@ -42,12 +50,28 @@ export function getCandidatePortal(accessId: string, token: string) {
   });
 }
 
-export function uploadCandidateDocument(accessId: string, token: string, type: string, file: File) {
+export function uploadCandidateDocument(
+  accessId: string,
+  token: string,
+  type: string,
+  file: File,
+  noticeVersion: string,
+  expiresAt?: string,
+) {
   const body = new FormData();
   body.append("file", file, file.name);
   return apiRequest<{ id: string; type: string; version: number; sha256: string }>(
     `/public/candidate-access/${accessId}/documents`,
-    { method: "POST", headers: { "x-portal-token": token, "x-document-type": type }, body },
+    {
+      method: "POST",
+      headers: {
+        "x-portal-token": token,
+        "x-document-type": type,
+        "x-privacy-notice-version": noticeVersion,
+        ...(expiresAt ? { "x-document-expires-at": expiresAt } : {}),
+      },
+      body,
+    },
   );
 }
 

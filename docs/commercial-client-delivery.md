@@ -1,0 +1,51 @@
+# Commercial and client workflow implementation
+
+9 September 2026. Implementation evidence for the consolidated gap register; not a deployment or compliance certification.
+
+## Implemented in this change
+
+- **C05:** a won CRM opportunity creates/links one real client workspace. New handoffs are `ONBOARDING`; duplicate handoffs reuse the link. Activation requires billing address/terms, an enabled active package and current signed agreement/DPA references with independently approved latest uploaded originals. An onboarding client cannot bypass the checklist through suspension. Existing active clients are not suspended or retroactively blocked.
+- **C07 / B03:** per-client package entitlement, unit price, tax percentage, optional package TAT and editable billing terms. Updates use a client version check, a transaction and an audit record. Root case-intake changes consume these mappings and snapshot the contracted charges.
+- **C07 intake catalogue:** Ops/Admin package choices now follow the selected active client, while Client Admin remains bound to its own workspace. Effective service TAT includes tighter client SLA. Changing the actual client clears old services/checks/declarations; review displays an estimated turnaround using current catalogue and priority. Contracted prices remain visible only to authorised commercial/own-client users, not newly exposed to ordinary Ops.
+- **C08:** Client Admin CSV intake, maximum 50 rows / 200 KB. Validate template columns, contact/name/mobile, duplicates and priorities. Each row reuses normal case validation and a stable idempotency key while the import window remains open. Successful rows are not resubmitted on Retry. No browser persistence of candidate data.
+- **C09:** client-scoped invoice register, outstanding/overdue totals and invoice PDF download. Client APIs require a Client Admin with a client ID and apply tenant/client scope explicitly. Internal notes and bank references are not exposed.
+- **C10:** client analytics compares assigned delivery branches, including unassigned cases, active/completed/cancelled totals, overdue active cases, document waits and clarifications. Search and pagination keep the comparison compact. The branch scope is enforced server-side.
+- **B05:** client/Finance/Admin monthly statement CSV with opening balance, invoice/payment/credit/cancellation movements, running balance and closing balance. Uses India calendar-month boundaries, stored invoice issue dates, actual payment dates and cancellation audit dates; exact integer-paise balance calculations. The bounded export uses a consistent serializable transaction and a 15-second timeout. It refuses more than 5,000 historical invoices or 10,000 payment/credit entries, mixed currency, or missing cancellation history rather than returning incomplete totals. Statements reflect the recorded ledger at export time; later backdated entries can revise a historical month.
+- **B01 usability:** Finance has a prepared-report billing queue and a prefilled invoice form with report-bound lines. Report allocation/payment-release enforcement is implemented in the separate report workflow change. This is an explicit Finance issue step, not silent automatic invoice issuance.
+- **P02 / part of P03:** Platform Admin has a tenant-scoped Privacy desk for `DATA_REQUEST` and `INCIDENT` records, with search, pagination, target dates, controlled status transitions, version checks and actor/time decision history. Requests record access/correction/erasure/other review; incidents record severity, investigation, containment and closure. Completion requires an evidence reference. This records human work; it does not perform that work automatically.
+- **X06 / X07 presentation:** Control Tower Reports opens a released-report library; Exceptions opens the exception view. The misleading Week/Month/Year slicing is replaced with honestly labelled monthly-history windows. New manager/report/payment stages and specialised check labels propagate through generic, operations and client views. Routine field review is labelled separately from completion. X03 is the separate report approval-snapshot control, not a dashboard gap.
+
+## Entry points for testing
+
+1. Sales & CRM -> won opportunity -> Create / link client workspace -> Client agreements & rates.
+2. Platform Admin -> Clients -> onboarding client -> Commercial -> save both agreement and DPA references, dates, billing details and a package -> upload signed originals -> independent file review -> Activate client.
+3. Client Admin -> new verification header -> Import CSV -> download template -> select package -> review/import -> retry failures without closing the window.
+4. Client Admin -> Portfolio analytics -> Delivery branch comparison.
+5. Client Admin -> Invoices & payments -> invoice PDF / Monthly statement.
+6. Finance -> Reports ready for billing -> Prepare invoice -> choose due date -> Issue invoice. Bound charges come from the case service snapshot. Monthly statement is also available here and in admin Finance oversight.
+7. Platform Admin -> Privacy desk -> Record request / Record incident -> open record -> record a permitted decision and rationale -> inspect its paginated event history. Record an evidence reference before final fulfilment/closure; no automatic erasure or regulator notification occurs.
+
+## Partial or deliberately not simulated
+
+- **C06:** private inspected agreement/DPA/confidentiality/proposal originals and independent latest-file human signature review are now implemented. This is not provider-backed electronic signing or cryptographic signature verification. See the completion guide for upload/review limits.
+- **C08:** CSV exported from Excel is supported, not native XLS/XLSX workbooks or a background resumable enterprise-import job. Closing/reloading and starting a new import creates new idempotency keys. Service-specific declarations remain subject to the normal case-intake requirements; the CSV does not invent vendor/director declarations.
+- **C10:** comparison groups the client's existing cases by assigned delivery branch, including an unassigned group. It is not geographical geocoding or a separate office-onboarding workflow. Completion percentages use all cases in that branch cohort, including cancelled cases in the denominator.
+- **B01 / B05:** report invoices require a positive contracted charge; all-zero scopes are blocked for commercial review, not released free. Monthly statements are on-demand bounded INR CSV exports, not scheduled delivery, immutable accounting-period snapshots, native accounting integration or tax-certified statements. Historical backdated entries can change a later export of the same month.
+- **B04:** client GSTIN and billing address are recorded and displayed on invoices. GST verification/e-invoice integration, place-of-supply handling and supplier tax configuration remain separate work; no tax-compliance claim is made.
+- **C01-C04:** proposals, explicit least-loaded allocation and opt-in 24h/day-3/day-7 in-app follow-up sequences are now implemented. Public website inquiry ingestion, deck acknowledgements, campaign delivery and automatic inbound-source ingestion remain absent.
+- **B06:** Finance credit-limit warnings, explicit new-case holds and bounded overdue in-app reminders/escalations are now implemented. Thresholds do not automatically suspend intake; real debt collection/payment delivery and configurable external campaigns are not supplied.
+- **P01:** retention preview and audited case holds are implemented. Whole-case candidate-document/report/subject deletion is deferred with user approval; preview days are not an approved policy. Existing field-retention behaviour is preserved, excluding held cases; already queued deletions cannot be reversed by a hold.
+- **P02:** admin-operated intake, review, decision and closure tracking now exists. Public self-service request intake, identity verification, automatic subject export/correction/erasure and enforcement of legal response deadlines are not supplied by the desk. A `FULFILLED` record reports a human decision with an evidence reference; it is not proof that an automated deletion ran.
+- **P03:** incident tracking and a vendor/subcontractor sharing-authority register now exist, with independent unexpired authorisation, revocation and history. It does not provide actual vendor accounts, document transfer, automated containment or regulator/candidate notifications.
+- Marketing/campaign/newsletter providers, external verification/OCR, AI and optional commission handling require their own agreed scope and, where applicable, credentials. No fake integration or fixture data was added.
+- Consent withdrawal is excluded from this implementation because the revised clarification conflicts with the earlier Kaagaz requirement. Client self-service account creation is not inferred from generic “user access control.”
+
+## Verification boundary
+
+Targeted tests cover commercial activation/scoping, CRM handoff, CSV parsing, stage/check display mappings, branch counts, monthly date/balance rules, cancellation history, route permissions and invoice PDF generation. Privacy tracking has separate unit and rollback-integration test files. Test existence is not a claim that every test or browser flow was executed; confirmed runs belong in the main handoff.
+
+The commercial/documentation task did not start servers, deploy, or mutate live client/candidate/business records. Build/typecheck results, database migration state and any SQL rollback checks are recorded by the main implementation handoff. Real-browser role journeys, realistic upload load, high-volume exports and configured notification/storage/scanner/provider delivery still require UAT validation. No unlimited-scale or all-complete claim is made.
+
+## 9 September additions
+
+Source contact history/templates, controlled proposals, follow-up sequences, assisted ownership, private contract originals, richer report sections, credit holds/collections and privacy governance are covered in the [step-by-step completion testing guide](workflow-completion-testing.md). They use the existing pastel design and real API persistence. Confirmed execution results belong in the [verification record](workflow-upgrade-verification.md).

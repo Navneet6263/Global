@@ -2,6 +2,7 @@ import { ConflictException } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import type { PrismaService } from "../database/prisma.service";
 import { claimCutoff } from "./qa-claim";
+import { fieldQaWhere } from "../field-visits/physical-field-policy";
 
 export async function changeReservation(
   prisma: PrismaService,
@@ -22,7 +23,7 @@ export async function changeReservation(
         ...(actor.branchId ? { branchId: actor.branchId } : {}),
         ...(actor.clientId ? { clientId: actor.clientId } : {}),
         ...(action === "renew"
-          ? { qaClaimedAt: { gt: claimCutoff(now) } }
+          ? { qaClaimedAt: { gt: claimCutoff(now) }, AND: [fieldQaWhere()] }
           : {}),
       },
       data: {

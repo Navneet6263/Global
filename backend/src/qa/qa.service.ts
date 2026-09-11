@@ -14,6 +14,7 @@ import { claimCutoff } from "./qa-claim";
 import type { QaRegisterQueryDto } from "./dto/qa-register-query.dto";
 import { readQaDetail, readQaRegister } from "./qa-register";
 import { readQaHistory } from "./qa-history-reader";
+import { fieldQaWhere } from "../field-visits/physical-field-policy";
 
 @Injectable()
 export class QaService {
@@ -68,7 +69,12 @@ export class QaService {
     }
     await this.prisma.$transaction(async (tx) => {
       const updated = await tx.verificationCase.updateMany({
-        where: { id: record.id, version: caseVersion, status: "QA_REVIEW" },
+        where: {
+          id: record.id,
+          version: caseVersion,
+          status: "QA_REVIEW",
+          AND: [fieldQaWhere()],
+        },
         data: {
           qaReviewerId: actor.userId,
           qaClaimedAt: new Date(),
@@ -76,7 +82,9 @@ export class QaService {
         },
       });
       if (updated.count !== 1)
-        throw new ConflictException("Case was claimed by another reviewer");
+        throw new ConflictException(
+          "Case changed or required field verification is incomplete. Ask Operations to complete the field work before QA.",
+        );
       await tx.auditEvent.create({
         data: {
           tenantId: actor.tenantId,

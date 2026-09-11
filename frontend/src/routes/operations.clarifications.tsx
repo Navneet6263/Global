@@ -104,6 +104,7 @@ function ClarificationsPage() {
                 key={thread.id}
                 thread={thread}
                 busy={action.isPending}
+                loading={action.isPending && action.variables?.clarificationId === thread.id}
                 onAction={(kind) => action.mutate({ clarificationId: thread.id, action: kind })}
               />
             ))}
@@ -117,10 +118,12 @@ function ClarificationsPage() {
 function ClarificationRow({
   thread,
   busy,
+  loading,
   onAction,
 }: {
   thread: OpsClarification;
   busy: boolean;
+  loading: boolean;
   onAction: (kind: "resolve") => void;
 }) {
   const [open, setOpen] = useState(false);
@@ -190,7 +193,7 @@ function ClarificationRow({
           {open ? "Hide thread" : "View complete thread"}
         </Button>
         {thread.state === "response_received" ? (
-          <Button size="sm" disabled={busy} onClick={() => onAction("resolve")}>
+          <Button size="sm" disabled={busy} loading={loading} onClick={() => onAction("resolve")}>
             Resolve response
           </Button>
         ) : null}

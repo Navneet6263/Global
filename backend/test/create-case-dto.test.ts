@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { plainToInstance } from "class-transformer";
@@ -60,5 +61,8 @@ void test("case intake requires at least one candidate contact channel", async (
 });
 
 void test("case intake accepts email without a mobile number", async () => {
-  assert.equal((await validate(caseInput(undefined, "candidate@example.com"))).length, 0);
+  assert.equal(
+    (await validate(caseInput(undefined, "candidate@example.com"))).length,
+    0,
+  );
 });

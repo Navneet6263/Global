@@ -10,6 +10,9 @@ const stageStatuses: Record<NonNullable<CaseQueryDto["stage"]>, string[]> = {
   verification: ["IN_PROGRESS"],
   clarification: ["CLARIFICATION_PENDING"],
   qa: ["QA_REVIEW"],
+  manager_review: ["MANAGER_REVIEW"],
+  report_pending: ["REPORT_PENDING"],
+  payment_pending: ["PAYMENT_PENDING"],
   completed: ["COMPLETED", "CLOSED", "CANCELLED"],
   cancelled: ["CANCELLED"],
   assignment: ["IN_PROGRESS"],
@@ -63,7 +66,14 @@ export function caseRegisterWhere(
     and.push({
       fieldVisits: {
         some: {
-          status: { in: ["ASSIGNED", "IN_PROGRESS", "EXCEPTION_REVIEW"] },
+          status: {
+            in: [
+              "ASSIGNED",
+              "IN_PROGRESS",
+              "EXCEPTION_REVIEW",
+              "REVIEW_PENDING",
+            ],
+          },
         },
       },
     });

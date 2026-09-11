@@ -69,8 +69,19 @@ test("help fits a narrow viewport and changes instructions with the page", async
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto(candidate);
   await page.getByRole("button", { name: "Help with this page" }).click();
-  const bounds = await page.getByRole("dialog").boundingBox();
-  expect(bounds?.width).toBeLessThanOrEqual(360);
+  // Wait for the slide-in animation, not an arbitrary timeout. Chromium may
+  // report 360.00003 CSS px, so allow only subpixel numeric noise once settled.
+  await expect
+    .poll(async () => {
+      const bounds = await page.getByRole("dialog").boundingBox();
+      return Boolean(
+        bounds && bounds.width <= 360.01 && bounds.x >= -0.01 && bounds.x + bounds.width <= 360.01,
+      );
+    })
+    .toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
   await page.screenshot({ path: "test-results/page-help-mobile.png" });
   await page.goto("/consent/00000000-0000-4000-8000-000000000099");
   await page.getByRole("button", { name: "Help with this page" }).click();

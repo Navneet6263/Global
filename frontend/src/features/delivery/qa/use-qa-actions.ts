@@ -33,7 +33,7 @@ export function useQaActions(
     onSuccess: async (result) => {
       toast.success(
         result.decision === "APPROVED"
-          ? "Case approved and report queued"
+          ? "QA approved; case sent to independent Manager Review"
           : "New verifier rework task created",
       );
       await onRefresh();

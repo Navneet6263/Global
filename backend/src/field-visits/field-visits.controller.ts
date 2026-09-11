@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   Req,
   StreamableFile,
 } from "@nestjs/common";
@@ -26,6 +27,7 @@ import { CreateFieldVisitDto } from "./dto/create-field-visit.dto";
 import { ReviewFieldExceptionDto } from "./dto/review-field-exception.dto";
 import { FieldEvidenceService } from "./field-evidence.service";
 import { FieldVisitsService } from "./field-visits.service";
+import { FieldAssigneeQueryDto } from "./dto/field-assignee-query.dto";
 
 @Controller()
 export class FieldVisitsController {
@@ -55,6 +57,17 @@ export class FieldVisitsController {
     @Param("evidenceId", ParseUUIDPipe) evidenceId: string,
   ): Promise<StreamableFile> {
     return this.evidence.download(actor, evidenceId);
+  }
+
+  @Get("cases/:caseId/field-assignees")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  @RequirePermissions(Permission.FieldVisitWrite)
+  eligibleAssignees(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Query() query: FieldAssigneeQueryDto,
+  ) {
+    return this.visits.eligibleAssignees(actor, caseId, query);
   }
 
   @Post("cases/:caseId/field-visits")

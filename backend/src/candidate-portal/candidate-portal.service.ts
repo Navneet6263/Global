@@ -14,6 +14,8 @@ import { PrismaService } from "../database/prisma.service";
 import { DocumentsService } from "../documents/documents.service";
 import { SecretBoxService } from "../common/security/secret-box.service";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
+import { caseEvidenceReadiness } from "../documents/evidence-readiness";
+import { CANDIDATE_PRIVACY_NOTICE } from "../documents/candidate-privacy-notice";
 
 @Injectable()
 export class CandidatePortalService {
@@ -120,12 +122,18 @@ export class CandidatePortalService {
     return {
       id: access.publicId,
       expiresAt: access.expiresAt,
+      privacyNotice: CANDIDATE_PRIVACY_NOTICE,
       case: {
         caseNumber: access.case.caseNumber,
         status: access.case.status,
         candidateName: access.case.subject.fullName,
         clientName: access.case.client.displayName,
         dueAt: access.case.dueAt,
+        requiredDocumentTypes: (
+          await caseEvidenceReadiness(this.prisma, access.caseId, {
+            includeWork: false,
+          })
+        ).requiredTypes,
         checks: access.case.checks.map((check) => ({
           type: check.type,
           status: check.status,
@@ -134,6 +142,8 @@ export class CandidatePortalService {
           type: document.type,
           status: document.status,
           currentVersion: document.currentVersion,
+          reviewNote: document.reviewNote,
+          expiresAt: document.expiresAt,
         })),
         clarifications: access.case.clarifications.map((item) => ({
           id: item.publicId,
@@ -159,8 +169,15 @@ export class CandidatePortalService {
     token: string,
     type: string,
     file: UploadedBinary,
+    expiry?: string,
+    noticeVersion?: string,
   ) {
     const access = await this.authorize(publicId, token);
+    if (noticeVersion !== CANDIDATE_PRIVACY_NOTICE.version) {
+      throw new ConflictException(
+        "Read and acknowledge the current privacy notice before uploading",
+      );
+    }
     return this.documents.uploadForCandidate(
       {
         tenantId: access.tenantId,
@@ -171,6 +188,7 @@ export class CandidatePortalService {
       },
       type.trim().toUpperCase(),
       file,
+      expiry,
     );
   }
 
@@ -264,7 +282,13 @@ export class CandidatePortalService {
               orderBy: { createdAt: "asc" },
             },
             documents: {
-              select: { type: true, status: true, currentVersion: true },
+              select: {
+                type: true,
+                status: true,
+                currentVersion: true,
+                reviewNote: true,
+                expiresAt: true,
+              },
               orderBy: { createdAt: "desc" },
             },
             clarifications: {

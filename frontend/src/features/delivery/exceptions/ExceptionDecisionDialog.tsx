@@ -64,6 +64,7 @@ export function ExceptionDecisionDialog({
           </button>
           <button
             disabled={note.trim().length < 5 || busy}
+            aria-busy={busy}
             className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2 text-xs font-semibold text-white disabled:opacity-40"
           >
             {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}

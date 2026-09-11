@@ -1,6 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
 import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
+import {
+  drawInvoiceRecipient,
+  type InvoiceRecipient,
+} from "./invoice-recipient";
 
 interface InvoicePdfData {
   invoiceNumber: string;
@@ -15,12 +19,7 @@ interface InvoicePdfData {
   creditedAmount: unknown;
   notes: string | null;
   createdAt: Date;
-  client: {
-    legalName: string;
-    displayName: string;
-    code: string;
-    billingTerms: string | null;
-  };
+  client: InvoiceRecipient;
   lines: Array<{
     description: string;
     quantity: number;
@@ -46,36 +45,13 @@ export class InvoicePdfService {
     let page = document.addPage([595, 842]);
     let y = this.header(page, bold, data);
 
-    page.drawText("BILL TO", {
-      x: 40,
+    const recipientBottom = drawInvoiceRecipient(
+      page,
       y,
-      size: 8,
-      font: bold,
-      color: rgb(0.39, 0.42, 0.46),
-    });
-    page.drawText(this.safe(data.client.legalName || data.client.displayName), {
-      x: 40,
-      y: y - 19,
-      size: 12,
-      font: bold,
-      color: rgb(0.08, 0.09, 0.1),
-    });
-    page.drawText(this.safe(`Client code: ${data.client.code}`), {
-      x: 40,
-      y: y - 36,
-      size: 8.5,
-      font: regular,
-      color: rgb(0.35, 0.38, 0.42),
-    });
-    if (data.client.billingTerms) {
-      page.drawText(this.safe(data.client.billingTerms), {
-        x: 40,
-        y: y - 52,
-        size: 8.5,
-        font: regular,
-        color: rgb(0.35, 0.38, 0.42),
-      });
-    }
+      data.client,
+      regular,
+      bold,
+    );
 
     const meta: Array<[string, string]> = [
       ["Issued", this.date(data.issuedAt ?? data.createdAt)],
@@ -99,7 +75,7 @@ export class InvoicePdfService {
         color: rgb(0.08, 0.09, 0.1),
       });
     });
-    y -= 82;
+    y = Math.min(y - 82, recipientBottom - 24);
 
     ({ page, y } = this.tableHeader(page, y, bold));
     for (const [index, line] of data.lines.entries()) {

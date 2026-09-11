@@ -10,7 +10,11 @@ type DomainCheck = {
 
 const checks: readonly DomainCheck[] = [
   { table: "User", column: "status", allowed: ["ACTIVE", "SUSPENDED"] },
-  { table: "Client", column: "status", allowed: ["ACTIVE", "SUSPENDED"] },
+  {
+    table: "Client",
+    column: "status",
+    allowed: ["ONBOARDING", "ACTIVE", "SUSPENDED"],
+  },
   {
     table: "VerificationCase",
     column: "status",
@@ -21,6 +25,9 @@ const checks: readonly DomainCheck[] = [
       "IN_PROGRESS",
       "CLARIFICATION_PENDING",
       "QA_REVIEW",
+      "MANAGER_REVIEW",
+      "REPORT_PENDING",
+      "PAYMENT_PENDING",
       "COMPLETED",
       "CLOSED",
       "CANCELLED",
@@ -56,7 +63,14 @@ const checks: readonly DomainCheck[] = [
   {
     table: "Document",
     column: "status",
-    allowed: ["REQUESTED", "AVAILABLE", "REJECTED", "EXPIRED"],
+    allowed: [
+      "REQUESTED",
+      "AVAILABLE",
+      "VERIFIED",
+      "REJECTED",
+      "REUPLOAD_REQUIRED",
+      "EXPIRED",
+    ],
   },
   {
     table: "Clarification",
@@ -70,6 +84,7 @@ const checks: readonly DomainCheck[] = [
       "ASSIGNED",
       "IN_PROGRESS",
       "EXCEPTION_REVIEW",
+      "REVIEW_PENDING",
       "COMPLETED",
       "CANCELLED",
     ],
@@ -97,7 +112,7 @@ const checks: readonly DomainCheck[] = [
   {
     table: "Report",
     column: "status",
-    allowed: ["QUEUED", "PUBLISHED", "FAILED"],
+    allowed: ["QUEUED", "PREPARED", "PUBLISHED", "FAILED", "SUPERSEDED"],
   },
 ];
 
@@ -126,7 +141,9 @@ async function main(): Promise<void> {
     "SELECT COUNT(*) AS [count] FROM sys.tables WHERE [name] = 'Tenant' AND [schema_id] = SCHEMA_ID('dbo')",
   );
   if (Number(baseline[0]?.count ?? 0) === 0) {
-    console.log("Migration preflight skipped: fresh database has no application schema yet.");
+    console.log(
+      "Migration preflight skipped: fresh database has no application schema yet.",
+    );
     return;
   }
   const violations: string[] = [];

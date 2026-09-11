@@ -1,5 +1,6 @@
 import { API_BASE_URL as apiBase } from "@/config/api";
 import { ApiRequestScope } from "./request-scope";
+import { beginRequestActivity, requestActivity } from "./request-activity";
 
 export type ProblemDetails = {
   status: number;
@@ -29,6 +30,7 @@ export function resetApiSession(): void {
   requestScope.reset();
   pendingGetRequests.clear();
   refreshPromise = null;
+  requestActivity.reset();
 }
 
 export function registerSessionExpiryHandler(handler: () => Promise<void> | void): void {
@@ -118,7 +120,11 @@ export function apiRequest<T>(
     typeof window !== "undefined" && method === "GET" && !init.body && !init.signal;
   if (!mayDeduplicate) {
     if (method !== "GET") pendingGetRequests.clear();
-    const request = executeApiRequest<T>(path, init, allowRefresh);
+    const finish =
+      method !== "GET" && path !== "/auth/refresh"
+        ? beginRequestActivity(init.body instanceof FormData ? "upload" : "write")
+        : () => undefined;
+    const request = executeApiRequest<T>(path, init, allowRefresh).finally(finish);
     if (method !== "GET") {
       const clear = () => pendingGetRequests.clear();
       void request.then(clear, clear);
@@ -202,6 +208,15 @@ async function executeApiRequest<T>(
 }
 
 export async function apiDownload(path: string, allowRefresh = true): Promise<Blob> {
+  const finish = beginRequestActivity("download");
+  try {
+    return await executeApiDownload(path, allowRefresh);
+  } finally {
+    finish();
+  }
+}
+
+async function executeApiDownload(path: string, allowRefresh: boolean): Promise<Blob> {
   const context = requestScope.capture(undefined, 120_000);
   const response = await fetch(`${apiBase}${path}`, {
     credentials: "include",
@@ -212,7 +227,7 @@ export async function apiDownload(path: string, allowRefresh = true): Promise<Bl
   if (response.status === 401 && allowRefresh && !path.startsWith("/public/")) {
     const refreshed = await refreshSession();
     context.assertCurrent();
-    if (refreshed) return apiDownload(path, false);
+    if (refreshed) return executeApiDownload(path, false);
   }
   if (!response.ok) {
     const error = await toApiError(response);

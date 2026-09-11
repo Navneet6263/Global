@@ -1,6 +1,18 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ page }) => {
+  // This public UI suite has no backend. Resolve the anonymous session rather
+  // than racing a real connection timeout while testing keyboard tab order.
+  await page.route("**/api/v1/auth/me", (route) =>
+    route.fulfill({
+      status: 401,
+      contentType: "application/json",
+      body: JSON.stringify({ message: "Unauthenticated test session" }),
+    }),
+  );
+});
+
 test("sign-in is keyboard operable and has no serious accessibility violations", async ({
   page,
 }) => {
@@ -26,6 +38,7 @@ test("sign-in is keyboard operable and has no serious accessibility violations",
   ).toEqual([]);
 
   const email = page.getByLabel("Work email");
+  await expect(page.getByRole("button", { name: "Sign in" })).toBeEnabled();
   await expect(email).toBeEnabled();
   await email.focus();
   await expect(email).toBeFocused();

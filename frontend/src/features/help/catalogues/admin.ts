@@ -60,7 +60,7 @@ export default {
       {
         question: "What is a service package?",
         answer:
-          "A reusable bundle of verification checks with commercial and turnaround defaults. It is selected during case intake; it is not a public website publication.",
+          "A reusable service-family bundle of checks, required reviewed documents, charges and turnaround defaults. Case intake can select multiple permitted packages and preserves their settings as a snapshot. Later edits apply to new cases, not existing work. A package is not a public website publication.",
       },
       {
         question: "What do geofence and check-out switches do?",
@@ -84,9 +84,19 @@ export default {
     "Manage organisations requesting verification and their commercial scope.",
     [
       "Search before adding an organisation.",
-      "Check its name, code, SLA and account status.",
+      "Check its identity, SLA, billing terms, package rates and agreement/DPA references.",
       "Assign Client Admin IDs to the correct organisation.",
     ],
-    "The requesting organisation is the customer, not automatically Sapling Global. Suspending it can affect its users and new work.",
+    "The requesting organisation is the customer, not automatically Sapling Global. New onboarding clients must satisfy the commercial checklist before activation. Agreement references are not uploaded or independently verified signatures. Suspending a client can affect its users and new work.",
+  ),
+  "/admin/privacy": guide(
+    "Privacy desk",
+    "Record and trace human handling of data-subject requests and privacy incidents.",
+    [
+      "Create a request or incident with a short reference, scope and target date.",
+      "Open the record and record each permitted review or investigation decision with a reason.",
+      "Add a supporting evidence reference before fulfilment or closure and review the actor timeline.",
+    ],
+    "This is controlled tracking, not automatic data export, deletion, identity verification or regulator notification. Do not paste passwords, document images or unnecessary sensitive data here. Operational consent withdrawal is not an action in this flow.",
   ),
 } satisfies GuideCatalogue;

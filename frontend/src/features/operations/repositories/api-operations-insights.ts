@@ -101,6 +101,7 @@ export async function getFieldOperations() {
           Number(visit.distanceMeters) > visit.geofenceMeters),
     ).length,
     exceptionReview: records.filter(({ visit }) => visit.status === "EXCEPTION_REVIEW").length,
+    reviewPending: records.filter(({ visit }) => visit.status === "REVIEW_PENDING").length,
     completed: records.filter(({ visit }) => visit.status === "COMPLETED").length,
     visits,
     executiveLoad: users.items

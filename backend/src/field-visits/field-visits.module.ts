@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { DocumentsModule } from "../documents/documents.module";
+import { VerificationModule } from "../verification/verification.module";
 import { FieldEvidenceService } from "./field-evidence.service";
 import { FieldVisitAssignmentService } from "./field-visit-assignment.service";
 import { FieldVisitCheckInService } from "./field-visit-check-in.service";
@@ -10,7 +11,7 @@ import { FieldVisitsController } from "./field-visits.controller";
 import { FieldVisitsService } from "./field-visits.service";
 
 @Module({
-  imports: [DocumentsModule],
+  imports: [DocumentsModule, VerificationModule],
   controllers: [FieldVisitsController],
   providers: [
     FieldVisitsService,

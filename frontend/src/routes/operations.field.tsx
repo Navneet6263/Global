@@ -50,6 +50,7 @@ function FieldOperationsPage() {
         <Tile label="Evidence pending" value={data?.evidencePending} tone="warning" />
         <Tile label="Outside geofence" value={data?.outsideGeofence} tone="critical" />
         <Tile label="Exception review" value={data?.exceptionReview} tone="critical" />
+        <Tile label="Evidence review" value={data?.reviewPending} tone="warning" />
         <Tile label="Completed" value={data?.completed} tone="success" />
       </div>
 

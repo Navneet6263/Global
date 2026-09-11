@@ -150,6 +150,7 @@ export function VerifierTaskWorkspace({
           <div className="mt-3 flex flex-wrap gap-2">
             <PrimaryButton
               disabled={mutation.isPending}
+              loading={mutation.isPending && mutation.variables?.status === "IN_PROGRESS"}
               onClick={() =>
                 mutation.mutate({ status: "IN_PROGRESS", version: task.version, findings: [] })
               }
@@ -208,15 +209,19 @@ export function VerifierTaskWorkspace({
           </label>
           <FindingEditor value={findings} onChange={setFindings} />
           <div className="sticky bottom-3 z-10 flex flex-wrap items-center gap-3 rounded-[1.25rem] border border-white/90 bg-white/90 p-3 shadow-[var(--shadow-float)] backdrop-blur-xl">
-            <PrimaryButton disabled={!ready || mutation.isPending} type="submit">
-              {mutation.isPending ? (
+            <PrimaryButton
+              disabled={!ready || mutation.isPending}
+              loading={mutation.isPending && mutation.variables?.status === "COMPLETED"}
+              type="submit"
+            >
+              {mutation.isPending && mutation.variables?.status === "COMPLETED" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <CheckCircle2 className="h-4 w-4" />
               )}{" "}
               Complete check
             </PrimaryButton>
-            <SecondaryButton onClick={() => setShowBlock(true)}>
+            <SecondaryButton disabled={mutation.isPending} onClick={() => setShowBlock(true)}>
               <Ban className="h-4 w-4" /> Block
             </SecondaryButton>
             <span className="ml-auto text-[9.5px] text-muted-foreground">
@@ -229,6 +234,7 @@ export function VerifierTaskWorkspace({
         <BlockerEditor
           value={blockReason}
           busy={mutation.isPending}
+          loading={mutation.isPending && mutation.variables?.status === "BLOCKED"}
           onChange={setBlockReason}
           onClose={() => setShowBlock(false)}
           onSave={() =>
@@ -254,6 +260,7 @@ export function VerifierTaskWorkspace({
               mutation.mutate({ status: "IN_PROGRESS", version: task.version, findings: [] })
             }
             disabled={mutation.isPending}
+            loading={mutation.isPending && mutation.variables?.status === "IN_PROGRESS"}
             extra="mt-3"
           >
             <Play className="h-4 w-4" /> Resume work

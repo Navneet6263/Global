@@ -207,6 +207,7 @@ export interface FieldOperations {
   evidencePending: number;
   outsideGeofence: number;
   exceptionReview: number;
+  reviewPending: number;
   completed: number;
   visits: readonly OpsFieldVisit[];
   executiveLoad: readonly { name: string; city: string; visitsToday: number; open: number }[];
