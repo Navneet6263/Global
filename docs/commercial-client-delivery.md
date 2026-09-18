@@ -37,7 +37,7 @@
 - **P01:** retention preview and audited case holds are implemented. Whole-case candidate-document/report/subject deletion is deferred with user approval; preview days are not an approved policy. Existing field-retention behaviour is preserved, excluding held cases; already queued deletions cannot be reversed by a hold.
 - **P02:** admin-operated intake, review, decision and closure tracking now exists. Public self-service request intake, identity verification, automatic subject export/correction/erasure and enforcement of legal response deadlines are not supplied by the desk. A `FULFILLED` record reports a human decision with an evidence reference; it is not proof that an automated deletion ran.
 - **P03:** incident tracking and a vendor/subcontractor sharing-authority register now exist, with independent unexpired authorisation, revocation and history. It does not provide actual vendor accounts, document transfer, automated containment or regulator/candidate notifications.
-- Marketing/campaign/newsletter providers, external verification/OCR, AI and optional commission handling require their own agreed scope and, where applicable, credentials. No fake integration or fixture data was added.
+- Marketing/campaign/newsletter providers, external verification/OCR, automated decision-support integrations and optional commission handling require their own agreed scope and, where applicable, credentials. No simulated integration or fixture data was added.
 - Consent withdrawal is excluded from this implementation because the revised clarification conflicts with the earlier Kaagaz requirement. Client self-service account creation is not inferred from generic “user access control.”
 
 ## Verification boundary

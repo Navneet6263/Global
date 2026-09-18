@@ -3,6 +3,7 @@
 import type { VerificationCase } from "@/lib/contracts/case";
 import { PriorityCell, ProgressCell, SlaCell, StageCell } from "./case-cells";
 import { formatRelativeToNow } from "@/lib/formatting";
+import { PendingCaseLabel } from "../case-progress-summary";
 
 interface CaseMobileListProps {
   rows: readonly VerificationCase[];
@@ -38,6 +39,7 @@ export function CaseMobileList({ rows, onOpenCase }: CaseMobileListProps) {
               <StageCell row={row} />
               <SlaCell row={row} />
             </span>
+            <PendingCaseLabel summary={row.workflow} />
             <span className="flex items-center justify-between gap-3">
               <ProgressCell row={row} />
               <span className="text-[11px] text-muted-foreground">

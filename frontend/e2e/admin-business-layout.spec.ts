@@ -113,6 +113,12 @@ for (const width of [1440, 390]) {
     await page.goto("/admin/cases?caseId=inbox-case-1");
     const tabs = page.getByRole("tablist", { name: "Case sections" });
     await expect(tabs).toBeVisible();
+    // Measure the drawer after its opening animation, not between moving frames.
+    await tabs.evaluate(async () => {
+      await Promise.all(
+        document.getAnimations().map((animation) => animation.finished.catch(() => {})),
+      );
+    });
     const strip = await tabs.boundingBox();
     for (const tab of await tabs.getByRole("tab").all()) {
       const bounds = await tab.boundingBox();

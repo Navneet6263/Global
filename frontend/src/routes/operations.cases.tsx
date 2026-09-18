@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { PendingCaseLabel } from "@/features/cases/case-progress-summary";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FolderSearch } from "lucide-react";
 import type { OpsCaseQuery, OpsSlaState, OpsStage } from "@/features/operations/contracts/case";
@@ -184,6 +185,7 @@ function OperationsCasesPage() {
                     <p className="num truncate text-[11px] text-muted-foreground">
                       {row.caseNumber} · {row.clientName}
                     </p>
+                    <PendingCaseLabel summary={row.workflow} />
                   </div>
                   <Button variant="outline" size="sm" onClick={() => setCaseId(row.id)}>
                     Open

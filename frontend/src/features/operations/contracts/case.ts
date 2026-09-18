@@ -155,6 +155,7 @@ export interface OpsTimelineEvent {
 }
 
 export interface OpsCase {
+  workflow?: import("@/features/cases/case-workflow-summary").CaseWorkflowSummary;
   id: string;
   caseNumber: string;
   candidateName: string;
@@ -184,6 +185,7 @@ export interface OpsCase {
 }
 
 export interface OpsCaseDetail extends OpsCase {
+  fieldEvidence?: import("@/lib/backend-api/cases").CaseDetail["fieldVisits"];
   checks: readonly OpsCheck[];
   documents: readonly OpsDocument[];
   consent: OpsConsent;

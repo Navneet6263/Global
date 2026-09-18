@@ -6,7 +6,8 @@ import type {
 } from "@/features/field/types";
 import type { GeoFix } from "@/components/field/geo";
 import { apiRequest } from "./client";
-import { apiDownload } from "./client";
+import { apiDownload, saveBlob } from "./client";
+import { openDocumentPreview } from "./document-preview";
 import { fileSha256 } from "./file-digest";
 
 export function getMyFieldVisits() {
@@ -58,16 +59,14 @@ export function reviewFieldException(
 }
 
 export async function viewFieldEvidence(evidenceId: string) {
+  return openDocumentPreview(() => apiDownload(`/field-evidence/${evidenceId}/content`));
+}
+
+export async function downloadFieldEvidence(evidenceId: string) {
   const blob = await apiDownload(`/field-evidence/${evidenceId}/content`);
-  const url = URL.createObjectURL(blob);
-  const opened = window.open(url, "_blank", "noopener,noreferrer");
-  if (!opened) {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `field-evidence-${evidenceId}.jpg`;
-    link.click();
-  }
-  window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
+  const extension =
+    blob.type === "image/png" ? "png" : blob.type === "application/pdf" ? "pdf" : "jpg";
+  saveBlob(blob, `field-evidence-${evidenceId}.${extension}`);
 }
 
 export async function uploadVisitEvidence(visitId: string, photo: OfflinePhoto) {

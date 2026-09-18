@@ -19,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateTime, formatDuration } from "@/lib/formatting";
 import { useCaseAction } from "../hooks/use-operations";
+import { CaseProgressSummary } from "@/features/cases/case-progress-summary";
+import { FieldEvidenceGallery } from "@/features/cases/field-evidence-gallery";
 
 interface OpsCaseDrawerProps {
   caseDetail: OpsCaseDetail | null | undefined;
@@ -110,7 +112,8 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
             </div>
 
             <Tabs defaultValue="summary" className="px-5 py-4 sm:px-6">
-              <TabsList className="grid h-auto w-full grid-cols-3 gap-1 rounded-2xl p-1.5 sm:grid-cols-6">
+              {caseDetail.workflow ? <CaseProgressSummary summary={caseDetail.workflow} /> : null}
+              <TabsList className="grid h-auto w-full grid-cols-2 gap-1 rounded-2xl p-1.5 sm:grid-cols-4">
                 <TabsTrigger className="px-2 py-2 text-xs" value="summary">
                   Summary
                 </TabsTrigger>
@@ -122,6 +125,9 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
                 </TabsTrigger>
                 <TabsTrigger className="px-2 py-2 text-xs" value="documents">
                   Documents
+                </TabsTrigger>
+                <TabsTrigger className="px-2 py-2 text-xs" value="field-photos">
+                  Field photos
                 </TabsTrigger>
                 <TabsTrigger className="px-2 py-2 text-xs" value="clarifications">
                   Clarifications
@@ -190,6 +196,9 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
 
               <TabsContent value="documents">
                 <OpsCaseDocuments documents={caseDetail.documents} />
+              </TabsContent>
+              <TabsContent value="field-photos">
+                <FieldEvidenceGallery visits={caseDetail.fieldEvidence ?? []} />
               </TabsContent>
 
               <TabsContent value="clarifications" className="space-y-2 pt-4">

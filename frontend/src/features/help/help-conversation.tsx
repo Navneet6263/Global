@@ -39,8 +39,8 @@ export default function HelpConversation() {
         <div className="rounded-2xl rounded-tl-sm bg-secondary/70 p-4 text-sm leading-6">
           {help.guide?.purpose ?? help.purpose}
           <p className="mt-2 text-xs text-muted-foreground">
-            Choose a question below. This is an authored guide, not an AI assistant or live support
-            chat.
+            Choose a question below to read the page guide. Answers are prewritten; this is not live
+            support chat.
           </p>
         </div>
         {help.error ? (

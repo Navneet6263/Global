@@ -1,4 +1,6 @@
 import type { StatusTone } from "./common";
+import type { CaseWorkflowSummary } from "@/features/cases/case-workflow-summary";
+import type { CaseDetail } from "@/lib/backend-api/cases";
 import type { CheckType } from "./check";
 export type { CheckType } from "./check";
 export { CHECK_LABELS } from "./check";
@@ -82,6 +84,8 @@ export interface CaseReport {
 }
 
 export interface VerificationCase {
+  workflow?: CaseWorkflowSummary;
+  fieldVisits?: CaseDetail["fieldVisits"];
   id: string;
   caseNumber: string;
   candidateName: string;

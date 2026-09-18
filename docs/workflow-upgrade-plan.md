@@ -30,4 +30,4 @@ Additional completed checks: scoped case activity pagination, client-specific ca
 
 ## External/special scope
 
-OCR/provider verification, marketing website delivery, provider-backed electronic signatures, full privacy request/deletion execution and AI must not be simulated as completed integrations. Original contract files and independent human signature review are now implemented. The user explicitly deferred provider lookup/OCR as Coming soon and approved retention preview/hold without activating whole-case deletion. See the [9 September completion guide](workflow-completion-testing.md) for the added commercial/source controls.
+OCR/provider verification, marketing website delivery, provider-backed electronic signatures, full privacy request/deletion execution and automated decision-support integrations must not be presented as completed integrations. Original contract files and independent human signature review are implemented. Provider lookup/OCR remains Coming soon; retention supports preview/hold without activating whole-case deletion. See the [9 September completion guide](workflow-completion-testing.md) for the added commercial/source controls.

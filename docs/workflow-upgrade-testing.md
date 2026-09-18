@@ -53,7 +53,7 @@ For proposals, source contact history, private contract originals, credit holds 
 - **Branch analytics:** compare the client's assigned delivery branches, including unassigned cases. Branch assignment is not automatic city geocoding.
 - **Monthly statement:** select an India calendar month; verify opening balance, movements and closing balance against recorded invoices/payments/credits/cancellations. Later backdated entries can change a subsequent export.
 - **Privacy desk:** Admin can track requests/incidents and record controlled decisions with evidence references. Fulfilled/Closed records describe human actions, not automatic erasure or regulator notification.
-- **Help / learning mode:** confirm the page-specific guide explains manager review, payment release and field review accurately. It is authored guidance, not an AI assistant.
+- **Help / learning mode:** confirm the page-specific guide explains manager review, payment release and field review accurately. It provides prewritten guidance, not live support.
 
 ## What these checks do not certify
 

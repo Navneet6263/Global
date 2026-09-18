@@ -1,4 +1,5 @@
 import type { CaseDetail, CaseListItem } from "@/lib/backend-api/cases";
+import { caseWorkflowSummary } from "@/features/cases/case-workflow-summary";
 import { casePackageName } from "@/lib/backend-api/case-services";
 import { checkLabel, normalizeCheckType } from "@/lib/contracts/check";
 import type {
@@ -89,6 +90,7 @@ export function baseCase(row: CaseListItem): OpsCase {
   const completed = row.checks.filter((check) => check.status === "COMPLETED").length;
   return {
     id: row.id,
+    workflow: caseWorkflowSummary(row),
     caseNumber: row.caseNumber,
     candidateName: row.subject.fullName,
     candidateEmail: row.subject.email ?? "",
@@ -261,6 +263,7 @@ export function detailCase(row: CaseDetail): OpsCaseDetail {
     ),
     clarifications,
     fieldVisits,
+    fieldEvidence: row.fieldVisits,
     qaHistory: row.qaReviews.map((review, index) => ({
       id: `${row.id}-qa-${index}`,
       reviewer: "QA reviewer",

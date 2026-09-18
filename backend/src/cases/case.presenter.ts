@@ -193,6 +193,7 @@ export function presentCaseDetail(
   ) {
     return {
       ...summary,
+      qaReviewer: row.qaReviewer ?? null,
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
       documents: row.documents ?? [],

@@ -36,6 +36,7 @@ export const caseListSelect = {
           status: true,
           instructions: true,
           blockerReason: true,
+          createdAt: true,
           dueAt: true,
           startedAt: true,
           completedAt: true,
@@ -72,6 +73,7 @@ export const caseListSelect = {
 
 export const caseDetailSelect = {
   ...caseListSelect,
+  qaReviewer: { select: { publicId: true, displayName: true, email: true } },
   checks: {
     select: {
       ...checkPublicSelect,
@@ -93,6 +95,10 @@ export const caseDetailSelect = {
           status: true,
           instructions: true,
           dueAt: true,
+          blockerReason: true,
+          startedAt: true,
+          completedAt: true,
+          createdAt: true,
           version: true,
           assignee: {
             select: { publicId: true, displayName: true, email: true },

@@ -43,7 +43,7 @@ Existing dirty-worktree changes are preserved. No commit/push or paid infrastruc
 
 - Header Help opens a responsive conversational page guide in all shared role shells, standalone Field and public candidate/consent/clarification/report pages.
 - Purpose, first steps, prerequisites and role-specific questions come from typed, lazy-loaded local catalogues. Other navigation pages use their authorised title/description and safe workflow guidance.
-- Search finds authored help topics; this is explicitly not an AI/live-support chatbot. No candidate data, tokens or questions are sent to an external service.
+- Search finds prewritten help topics, not live-support responses. No candidate data, tokens or questions are sent to an external service.
 - Learning Mode is opt-in. It adds page introductions and delayed hover/keyboard sidebar hints; switching it off removes those additions.
 - Staff preferences are tenant/user/workspace-scoped; public preferences are session-scoped. No private link tokens are used in preference keys.
 - Public Help does not import staff navigation/offline-store dependencies. Controls support keyboard focus, Escape and mobile layouts.

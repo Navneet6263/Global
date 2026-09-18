@@ -13,6 +13,8 @@ import { ListSkeleton } from "@/components/feedback/skeletons";
 import { Button } from "@/components/ui/button";
 import { useCaseDetail } from "../hooks/use-cases";
 import { CaseSummaryPanel } from "./drawer/case-summary-panel";
+import { CaseProgressSummary } from "../case-progress-summary";
+import { FieldEvidenceGallery } from "../field-evidence-gallery";
 import { CaseCandidateInvite } from "./drawer/case-candidate-invite";
 import { CaseChecksPanel } from "./drawer/case-checks-panel";
 import { CaseDocumentsPanel } from "./drawer/case-documents-panel";
@@ -34,6 +36,7 @@ const TABS = [
   { value: "clarifications", label: "Clarifications" },
   { value: "timeline", label: "Timeline" },
   { value: "assignments", label: "Assignments" },
+  { value: "field", label: "Field photos" },
   { value: "reports", label: "Reports" },
 ] as const;
 
@@ -66,12 +69,13 @@ export function CaseDetailDrawer({ caseId, onClose }: CaseDetailDrawerProps) {
           ) : null}
           {data ? (
             <>
+              {data.workflow ? <CaseProgressSummary summary={data.workflow} /> : null}
               <CaseSummaryPanel item={data} />
               <CaseCandidateInvite item={data} />
 
               <Tabs defaultValue="checks">
                 <TabsList
-                  className="grid h-auto w-full grid-cols-2 gap-1 rounded-2xl p-1.5 min-[400px]:grid-cols-3 sm:grid-cols-6"
+                  className="grid h-auto w-full grid-cols-2 gap-1 rounded-2xl p-1.5 min-[400px]:grid-cols-3 sm:grid-cols-4 lg:grid-cols-7"
                   aria-label="Case sections"
                 >
                   {TABS.map((tab) => (
@@ -101,6 +105,9 @@ export function CaseDetailDrawer({ caseId, onClose }: CaseDetailDrawerProps) {
                 </TabsContent>
                 <TabsContent value="reports" className="pt-3">
                   <CaseReportsPanel item={data} />
+                </TabsContent>
+                <TabsContent value="field" className="pt-3">
+                  <FieldEvidenceGallery visits={data.fieldVisits ?? []} />
                 </TabsContent>
               </Tabs>
             </>

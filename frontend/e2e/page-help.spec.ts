@@ -14,9 +14,7 @@ test("page help explains the workflow without a candidate token or business requ
   await expect(page.getByRole("region", { name: "Page learning guide" })).toHaveCount(0);
   const launcher = page.getByRole("button", { name: "Help with this page" });
   await launcher.click();
-  await expect(
-    page.getByText("authored guide, not an AI assistant", { exact: false }),
-  ).toBeVisible();
+  await expect(page.getByText("Answers are prewritten", { exact: false })).toBeVisible();
   await page
     .getByRole("button", { name: "Where do I enter the consent OTP?", exact: true })
     .click();

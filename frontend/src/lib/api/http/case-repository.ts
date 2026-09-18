@@ -1,4 +1,5 @@
 import type { CaseRepository } from "../repositories";
+import { caseWorkflowSummary } from "@/features/cases/case-workflow-summary";
 import { casePackageName } from "@/lib/backend-api/case-services";
 import type { CaseDetail, CaseListItem } from "@/lib/backend-api/cases";
 import { getCase, listAllClients, listCases } from "@/lib/backend-api/cases";
@@ -80,6 +81,8 @@ export function mapCase(row: CaseListItem | CaseDetail): VerificationCase {
   const detail = row as CaseDetail;
   return {
     id: row.id,
+    workflow: caseWorkflowSummary(row),
+    fieldVisits: detail.fieldVisits,
     caseNumber: row.caseNumber,
     candidateName: row.subject.fullName,
     candidateEmail: row.subject.email ?? "",

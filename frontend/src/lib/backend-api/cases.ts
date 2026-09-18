@@ -75,6 +75,7 @@ export interface CaseListItem {
       blockerReason?: string | null;
       dueAt?: string | null;
       startedAt?: string | null;
+      createdAt?: string;
       completedAt?: string | null;
       version: number;
       assignee?: { publicId: string; displayName: string; email: string } | null;
@@ -97,6 +98,7 @@ export interface CaseListItem {
 }
 
 export interface CaseDetail extends CaseListItem {
+  qaReviewer?: { publicId: string; displayName: string; email: string } | null;
   statusHistory: Array<{
     fromStatus?: string | null;
     toStatus: string;
@@ -166,7 +168,13 @@ export interface CaseDetail extends CaseListItem {
     createdAt: string;
     assignee?: { publicId: string; displayName: string; email: string } | null;
     _count?: { evidence: number };
-    evidence?: Array<{ publicId: string }>;
+    evidence?: Array<{
+      publicId: string;
+      type?: string;
+      contentType?: string;
+      capturedAt?: string;
+      createdAt?: string;
+    }>;
   }>;
 }
 

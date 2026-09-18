@@ -6,6 +6,7 @@ export type CaseColumnId =
   | "client"
   | "package"
   | "stage"
+  | "pending"
   | "progress"
   | "priority"
   | "sla"
@@ -26,6 +27,7 @@ export const CASE_COLUMNS: readonly CaseColumn[] = [
   { id: "client", label: "Client" },
   { id: "package", label: "Package" },
   { id: "stage", label: "Stage", alwaysVisible: true },
+  { id: "pending", label: "Pending with", alwaysVisible: true, className: "min-w-52" },
   { id: "progress", label: "Progress" },
   { id: "priority", label: "Priority" },
   { id: "sla", label: "SLA remaining", sortKey: "sla" },

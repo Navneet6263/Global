@@ -1,4 +1,5 @@
 import { ArrowUpDown } from "lucide-react";
+import { PendingCaseLabel } from "@/features/cases/case-progress-summary";
 import type { OpsCase, OpsCaseQuery } from "../contracts/case";
 import { OPS_PRIORITY_META, OPS_SLA_META, OPS_STAGE_META } from "../contracts/case";
 import { StatusBadge } from "@/components/feedback/status-badge";
@@ -29,7 +30,7 @@ const COLUMNS: readonly {
   { key: "progress", label: "Checks" },
   { key: "priority", label: "Priority" },
   { key: "sla", label: "SLA" },
-  { key: null, label: "Owner / verifier" },
+  { key: null, label: "Pending with / owner" },
   { key: "updatedAt", label: "Updated" },
   { key: null, label: "" },
 ];
@@ -149,11 +150,16 @@ export function OpsCaseTable({ rows, query, onSort, onOpenCase, selection }: Ops
                     : `${formatDuration(row.slaMinutesRemaining)} left`}
                 </p>
               </td>
-              <td className="px-4 py-3">
-                <p className="text-[13px] text-foreground">{row.opsOwner ?? "Unassigned"}</p>
+              <td className="min-w-52 px-4 py-3">
+                <PendingCaseLabel summary={row.workflow} />
                 <p className="text-[11px] text-muted-foreground">
-                  {row.verifier ?? "No verifier allocated"}
+                  Ops: {row.opsOwner ?? "Unassigned"}
                 </p>
+                {!row.workflow ? (
+                  <p className="text-[11px] text-muted-foreground">
+                    {row.verifier ?? "No verifier allocated"}
+                  </p>
+                ) : null}
               </td>
               <td className="px-4 py-3 text-[12px] text-muted-foreground">
                 {formatRelativeToNow(row.updatedAt)}

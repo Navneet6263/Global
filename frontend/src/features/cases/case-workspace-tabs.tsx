@@ -23,6 +23,9 @@ import { CandidatePanel, CheckCard } from "@/features/cases/case-workflow-panels
 import type { CaseDetail } from "@/lib/api/cases";
 import { useState } from "react";
 import { CasePhysicalFieldNotice } from "./case-physical-field-notice";
+import { CaseProgressSummary } from "./case-progress-summary";
+import { caseWorkflowSummary } from "./case-workflow-summary";
+import { FieldEvidenceGallery } from "./field-evidence-gallery";
 import type { CaseWorkspaceTab } from "./case-workspace-search";
 
 const triggerClass =
@@ -47,6 +50,7 @@ export function CaseWorkspaceTabs({
 
   return (
     <Tabs value={tab} onValueChange={setTab} className="space-y-5">
+      <CaseProgressSummary summary={caseWorkflowSummary(item)} />
       <CasePhysicalFieldNotice item={item} onOpen={() => setTab("field-visits")} />
       <nav className="surface overflow-x-auto rounded-2xl p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <TabsList className="flex h-auto w-max min-w-full justify-start gap-1 bg-transparent p-0">
@@ -137,7 +141,8 @@ export function CaseWorkspaceTabs({
         <ClarificationPanel item={item} />
       </TabsContent>
 
-      <TabsContent value="field-visits" className="mt-0">
+      <TabsContent value="field-visits" className="mt-0 space-y-4">
+        <FieldEvidenceGallery visits={item.fieldVisits} />
         <FieldVisitPanel item={item} />
       </TabsContent>
 

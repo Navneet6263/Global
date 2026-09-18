@@ -65,3 +65,51 @@ void test("operations retain the complete selected service checklist", () => {
   const result = presentCaseDetail(row, actor("OPS_MANAGER"));
   assert.deepEqual(result.services[0]?.checks, row.services[0]?.checks);
 });
+
+void test("only admin and operations receive the QA owner contact in case details", () => {
+  const qaReviewer = {
+    publicId: "qa-1",
+    displayName: "Test QA",
+    email: "qa@example.invalid",
+  };
+  const withOwner = { ...row, qaReviewer };
+  for (const role of ["PLATFORM_ADMIN", "OPS_MANAGER"]) {
+    const result = presentCaseDetail(withOwner, actor(role));
+    assert.ok("qaReviewer" in result);
+    assert.deepEqual(result.qaReviewer, qaReviewer);
+  }
+  for (const role of [
+    "CLIENT_ADMIN",
+    "VERIFIER",
+    "FIELD_EXECUTIVE",
+    "QA_REVIEWER",
+  ]) {
+    const result = presentCaseDetail(withOwner, actor(role));
+    assert.equal("qaReviewer" in result, false);
+    assert.equal(JSON.stringify(result).includes(qaReviewer.email), false);
+  }
+});
+
+void test("admin and operations retain field photo metadata; clients never receive it", () => {
+  const evidence = [
+    {
+      publicId: "photo-1",
+      contentType: "image/jpeg",
+      capturedAt: "2026-09-14T06:00:00Z",
+    },
+  ];
+  const withPhotos = {
+    ...row,
+    fieldVisits: [{ publicId: "visit-1", status: "COMPLETED", evidence }],
+  };
+  for (const role of ["PLATFORM_ADMIN", "OPS_MANAGER"]) {
+    const result = presentCaseDetail(withPhotos, actor(role));
+    assert.ok(JSON.stringify(result.fieldVisits).includes("photo-1"));
+  }
+  assert.equal(
+    JSON.stringify(
+      presentCaseDetail(withPhotos, actor("CLIENT_ADMIN")),
+    ).includes("photo-1"),
+    false,
+  );
+});

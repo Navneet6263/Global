@@ -144,7 +144,7 @@ Deliver the whole agreed scope; report any dependency requiring actual infrastru
 
 - Use a typed local help catalogue keyed by workspace, route and stable action ID, with role-specific content modules.
 - Suggested modules: learning-provider, learning-toggle, contextual-help, page-guide, walkthrough and content/{admin,operations,verifier,qa,field,client,crm,finance,candidate}.
-- Lazy-load role content; ordinary hover/focus help performs no API or AI calls. Avoid eagerly mounting dozens of popovers or recalculating whole pages.
+- Lazy-load role content; ordinary hover/focus help performs no API or external-service calls. Avoid eagerly mounting dozens of popovers or recalculating whole pages.
 - Reuse accessible tooltip/popover/dialog primitives, stable anchors and existing design tokens; remove duplicated ad-hoc help as replacements become verified.
 - Example: Assignment Workbench explains eligibility, workload and selecting a named verifier; it does not imply random automatic assignment.
 - Example: Start verification explains current consent/document prerequisites and the resulting stage; Service Package explains selected checks and turnaround defaults.

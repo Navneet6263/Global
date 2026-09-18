@@ -22,6 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { PendingCaseLabel } from "../case-progress-summary";
 
 interface CaseTableProps {
   rows: readonly VerificationCase[];
@@ -44,7 +45,9 @@ export function CaseTable({
   onToggleAll,
   onOpenCase,
 }: CaseTableProps) {
-  const columns = CASE_COLUMNS.filter((column) => visibleColumns.includes(column.id));
+  const columns = CASE_COLUMNS.filter(
+    (column) => column.alwaysVisible || visibleColumns.includes(column.id),
+  );
   const allSelected = rows.length > 0 && rows.every((row) => selected.includes(row.id));
 
   return (
@@ -164,6 +167,8 @@ function CellContent({ id, row }: { id: CaseColumnId; row: VerificationCase }) {
       );
     case "stage":
       return <StageCell row={row} />;
+    case "pending":
+      return <PendingCaseLabel summary={row.workflow} />;
     case "progress":
       return <ProgressCell row={row} />;
     case "priority":
