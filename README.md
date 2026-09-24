@@ -208,6 +208,7 @@ Browser tests live in `frontend/e2e/`. Review each test's fixture and environmen
 
 ## Workflow and deployment references
 
+- [Developer workflow handover](docs/developer-workflow-handover.md): target role flow, current functionality, required changes and planning estimates. The target workflow is not yet implemented.
 - [Production runbook](docs/PRODUCTION_RUNBOOK.md): migration, storage, notification providers, secrets, backups, monitoring and rollback.
 - [Backend startup troubleshooting](docs/BACKEND_STARTUP.md): build and startup issues.
 - [Case dispatch](docs/case-dispatch-workflow.md), [Operations action inbox](docs/operations-action-inbox.md), [Physical address verification](docs/physical-address-verification.md).

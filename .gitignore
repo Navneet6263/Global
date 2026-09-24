@@ -16,10 +16,16 @@ dist-ssr
 .nitro
 *.local
 .env
+.env.*
 !.env.example
 .data/
 frontend/playwright-report/
 frontend/test-results/
+
+# Local handover exports (keep the Markdown source in docs/)
+*.[pP][dD][fF]
+/BGV-*.html
+/BGV-*.png
 
 # Wrangler / Cloudflare
 .wrangler/
