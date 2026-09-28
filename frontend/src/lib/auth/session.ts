@@ -41,6 +41,7 @@ export function workspaceForPath(pathname: string): WorkspaceId {
   if (pathname.startsWith("/qa-review")) return "qa";
   if (pathname.startsWith("/field-executive")) return "field";
   if (pathname.startsWith("/finance")) return "finance";
+  if (pathname.startsWith("/spoc-rm")) return "spoc";
   return "platform-admin";
 }
 
@@ -53,6 +54,7 @@ const NAV_TO_WORKSPACE: Record<NavWorkspace, WorkspaceId> = {
   "qa-reviewer": "qa",
   "field-executive": "field",
   finance: "finance",
+  "spoc-rm": "spoc",
 };
 
 export function sessionForNav(nav: NavWorkspace): PlatformSession {

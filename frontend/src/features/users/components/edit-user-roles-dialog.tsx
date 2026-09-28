@@ -15,7 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useUpdateUserRoles } from "../hooks/use-users";
 
-const EXCLUSIVE: readonly Role[] = ["PLATFORM_ADMIN", "CLIENT_ADMIN"];
+const EXCLUSIVE: readonly Role[] = ["PLATFORM_ADMIN", "CLIENT_ADMIN", "SPOC_RM"];
 
 export function EditUserRolesDialog({
   user,
@@ -136,7 +136,8 @@ export function EditUserRolesDialog({
             <div className="grid gap-2 sm:grid-cols-2">
               {ROLES.map((role) => {
                 const clientUnavailable =
-                  role === "CLIENT_ADMIN" && !user.clientWorkspaceScope.length;
+                  ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace") &&
+                  !user.clientWorkspaceScope.length;
                 const maxReached =
                   mode === "multiple" &&
                   selected.length >= 3 &&

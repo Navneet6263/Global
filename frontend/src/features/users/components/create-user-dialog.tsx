@@ -47,15 +47,25 @@ interface CreateUserDialogProps {
   submitting: boolean;
   branches: readonly ScopeOption[];
   clients: readonly ScopeOption[];
+  /** Roles this caller may assign; omitted means every role (Platform Admin). */
+  roles?: readonly Role[];
+  /** False when the caller may only assign the listed branches, never all branches. */
+  allowTenantWide?: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (input: CreateUserInput) => void;
 }
 
 export function CreateUserDialog(props: CreateUserDialogProps) {
+  const defaultBranch = props.allowTenantWide === false ? (props.branches[0]?.id ?? "all") : "all";
   const [roles, setRoles] = useState<Role[]>([]);
-  const [branchId, setBranchId] = useState("all");
+  const [branchId, setBranchId] = useState(defaultBranch);
   const [clientId, setClientId] = useState("none");
   const [scopeError, setScopeError] = useState("");
+  // Client Admin and SPOC-RM are scoped to one client workspace (scopeFields "clientWorkspace").
+  const clientRole = roles.find((role) =>
+    ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace"),
+  );
+  const needsBranch = roles.some((role) => ROLE_DEFINITIONS[role].scopeFields.includes("branch"));
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { fullName: "", email: "", mobile: "" },
@@ -63,14 +73,13 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
 
   const submit = (values: FormValues) => {
     if (!roles.length) return;
-    if (roles.includes("CLIENT_ADMIN") && clientId === "none") {
-      setScopeError("Select the client workspace for this Client Admin.");
+    if (clientRole && clientId === "none") {
+      setScopeError(`Select the client workspace for this ${ROLE_DEFINITIONS[clientRole].label}.`);
       return;
     }
-    const branch = props.branches.find((item) => item.id === branchId);
-    const client = roles.includes("CLIENT_ADMIN")
-      ? props.clients.find((item) => item.id === clientId)
-      : undefined;
+    // Only a visible scope field is submitted, so a hidden branch never narrows a client role.
+    const branch = needsBranch ? props.branches.find((item) => item.id === branchId) : undefined;
+    const client = clientRole ? props.clients.find((item) => item.id === clientId) : undefined;
     props.onSubmit({
       fullName: values.fullName,
       email: values.email,
@@ -88,12 +97,10 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
     if (props.open) return;
     form.reset({ fullName: "", email: "", mobile: "" });
     setRoles([]);
-    setBranchId("all");
+    setBranchId(defaultBranch);
     setClientId("none");
     setScopeError("");
-  }, [form, props.open]);
-
-  const needsBranch = roles.some((role) => ROLE_DEFINITIONS[role].scopeFields.includes("branch"));
+  }, [defaultBranch, form, props.open]);
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
@@ -107,9 +114,15 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
         <form className="space-y-5" onSubmit={form.handleSubmit(submit)}>
           <UserRolePicker
             selected={roles}
+            roles={props.roles}
             onChange={(value) => {
               setRoles(value);
-              if (!value.includes("CLIENT_ADMIN")) setScopeError("");
+              if (
+                !value.some((role) =>
+                  ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace"),
+                )
+              )
+                setScopeError("");
             }}
           />
           <div className="grid gap-4 border-t border-border pt-5 sm:grid-cols-2">
@@ -136,7 +149,9 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">Tenant-wide / all branches</SelectItem>
+                    {props.allowTenantWide === false ? null : (
+                      <SelectItem value="all">Tenant-wide / all branches</SelectItem>
+                    )}
                     {props.branches.map((item) => (
                       <SelectItem key={item.id} value={item.id}>
                         {item.label}
@@ -146,7 +161,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
                 </Select>
               </Field>
             ) : null}
-            {roles.includes("CLIENT_ADMIN") ? (
+            {clientRole ? (
               <div className="sm:col-span-2">
                 <Field label="Client workspace" error={scopeError}>
                   <Select

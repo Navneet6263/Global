@@ -45,6 +45,25 @@ export function getOrganisation() {
   return apiRequest<Organisation>("/settings/organisation");
 }
 
+export interface AccessPolicy {
+  publicId: string;
+  opsUserCreationEnabled: boolean;
+  version: number;
+  updatedAt: string;
+}
+
+export function getAccessPolicy() {
+  return apiRequest<AccessPolicy>("/settings/access-policy");
+}
+export function updateAccessPolicy(
+  input: Pick<AccessPolicy, "opsUserCreationEnabled" | "version">,
+) {
+  return apiRequest<AccessPolicy>("/settings/access-policy", {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
 export function getFieldPolicy() {
   return apiRequest<FieldPolicy>("/settings/field-policy");
 }

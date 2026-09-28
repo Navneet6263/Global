@@ -429,6 +429,7 @@ export const ModelName = {
   IdempotencyKey: 'IdempotencyKey',
   TenantFieldPolicy: 'TenantFieldPolicy',
   TenantCrmSettings: 'TenantCrmSettings',
+  TenantAccessPolicy: 'TenantAccessPolicy',
   SalesOpportunity: 'SalesOpportunity',
   CrmProposal: 'CrmProposal',
   SalesActivity: 'SalesActivity',
@@ -460,7 +461,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "sourceOutreach" | "clientPackageRate" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess"
+    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "sourceOutreach" | "clientPackageRate" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2576,6 +2577,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TenantAccessPolicy: {
+      payload: Prisma.$TenantAccessPolicyPayload<ExtArgs>
+      fields: Prisma.TenantAccessPolicyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TenantAccessPolicyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TenantAccessPolicyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>
+        }
+        findFirst: {
+          args: Prisma.TenantAccessPolicyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TenantAccessPolicyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>
+        }
+        findMany: {
+          args: Prisma.TenantAccessPolicyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>[]
+        }
+        create: {
+          args: Prisma.TenantAccessPolicyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>
+        }
+        createMany: {
+          args: Prisma.TenantAccessPolicyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TenantAccessPolicyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>
+        }
+        update: {
+          args: Prisma.TenantAccessPolicyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>
+        }
+        deleteMany: {
+          args: Prisma.TenantAccessPolicyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TenantAccessPolicyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TenantAccessPolicyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TenantAccessPolicyPayload>
+        }
+        aggregate: {
+          args: Prisma.TenantAccessPolicyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTenantAccessPolicy>
+        }
+        groupBy: {
+          args: Prisma.TenantAccessPolicyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantAccessPolicyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TenantAccessPolicyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TenantAccessPolicyCountAggregateOutputType> | number
+        }
+      }
+    }
     SalesOpportunity: {
       payload: Prisma.$SalesOpportunityPayload<ExtArgs>
       fields: Prisma.SalesOpportunityFieldRefs
@@ -4273,6 +4340,19 @@ export const TenantCrmSettingsScalarFieldEnum = {
 export type TenantCrmSettingsScalarFieldEnum = (typeof TenantCrmSettingsScalarFieldEnum)[keyof typeof TenantCrmSettingsScalarFieldEnum]
 
 
+export const TenantAccessPolicyScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  opsUserCreationEnabled: 'opsUserCreationEnabled',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantAccessPolicyScalarFieldEnum = (typeof TenantAccessPolicyScalarFieldEnum)[keyof typeof TenantAccessPolicyScalarFieldEnum]
+
+
 export const SalesOpportunityScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -4819,6 +4899,7 @@ export type GlobalOmitConfig = {
   idempotencyKey?: Prisma.IdempotencyKeyOmit
   tenantFieldPolicy?: Prisma.TenantFieldPolicyOmit
   tenantCrmSettings?: Prisma.TenantCrmSettingsOmit
+  tenantAccessPolicy?: Prisma.TenantAccessPolicyOmit
   salesOpportunity?: Prisma.SalesOpportunityOmit
   crmProposal?: Prisma.CrmProposalOmit
   salesActivity?: Prisma.SalesActivityOmit

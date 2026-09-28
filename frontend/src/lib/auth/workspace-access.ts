@@ -9,6 +9,7 @@ const AUTHENTICATED_ROLES: readonly string[] = [
   "VERIFIER",
   "QA_REVIEWER",
   "FINANCE_MANAGER",
+  "SPOC_RM",
 ];
 
 const accessRules: readonly { prefix: string; roles: readonly string[] }[] = [
@@ -21,6 +22,7 @@ const accessRules: readonly { prefix: string; roles: readonly string[] }[] = [
   { prefix: "/verifier", roles: ["VERIFIER"] },
   { prefix: "/qa-review", roles: ["QA_REVIEWER"] },
   { prefix: "/finance", roles: ["FINANCE_MANAGER"] },
+  { prefix: "/spoc-rm", roles: ["SPOC_RM", "PLATFORM_ADMIN"] },
   { prefix: "/change-password", roles: AUTHENTICATED_ROLES },
 ];
 
@@ -47,5 +49,6 @@ export function homeForSession(session: Session): string {
   if (session.roles.includes("VERIFIER")) return "/verifier";
   if (session.roles.includes("SALES_MANAGER")) return "/sales-crm";
   if (session.roles.includes("FINANCE_MANAGER")) return "/finance";
+  if (session.roles.includes("SPOC_RM")) return "/spoc-rm";
   return "/";
 }

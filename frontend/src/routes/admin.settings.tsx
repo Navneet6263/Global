@@ -17,7 +17,12 @@ import {
   SlaDefaultsPanel,
 } from "@/features/settings/components/settings-panels";
 import type { PolicyToggle } from "@/lib/contracts/settings";
-import { createBranch, createServicePackage, updateFieldPolicy } from "@/lib/backend-api/settings";
+import {
+  createBranch,
+  createServicePackage,
+  updateAccessPolicy,
+  updateFieldPolicy,
+} from "@/lib/backend-api/settings";
 import {
   AddBranchDialog,
   AddPackageDialog,
@@ -77,6 +82,23 @@ function SettingsPage() {
     },
     onError: (error: Error) => toast.error("Policy update failed", { description: error.message }),
   });
+  const accessMutation = useMutation({
+    mutationFn: async (policy: PolicyToggle) => {
+      if (!data) throw new Error("Settings are still loading");
+      return updateAccessPolicy({
+        opsUserCreationEnabled: !policy.enabled,
+        version: data.accessPolicyConfig.version,
+      });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });
+      toast.success("Access policy updated", {
+        description: "The API recorded the audited change.",
+      });
+    },
+    onError: (error: Error) =>
+      toast.error("Access policy update failed", { description: error.message }),
+  });
   const branchMutation = useMutation({
     mutationFn: createBranch,
     onSuccess: () => {
@@ -125,6 +147,13 @@ function SettingsPage() {
 
           <TabsContent value="organisation" className="space-y-6 pt-4">
             <OrganisationPanel settings={data} />
+            <PolicyPanel
+              title="User ID delegation"
+              description="Who besides Platform Admin may create user IDs. Every change is audited."
+              policies={data.accessPolicy}
+              busy={accessMutation.isPending}
+              onToggle={(policy) => accessMutation.mutate(policy)}
+            />
           </TabsContent>
 
           <TabsContent value="catalogue" className="space-y-6 pt-4">

@@ -22,6 +22,8 @@ import { CreateBranchDto } from "./dto/create-branch.dto";
 import { CreateServicePackageDto } from "./dto/create-service-package.dto";
 import { UpdateFieldPolicyDto } from "./dto/update-field-policy.dto";
 import { SettingsService } from "./settings.service";
+import { AccessPolicyService } from "./access-policy.service";
+import { UpdateAccessPolicyDto } from "./dto/update-access-policy.dto";
 
 @Controller("settings")
 @RequirePermissions(Permission.SettingsManage)
@@ -30,7 +32,17 @@ export class SettingsController {
   constructor(
     private readonly settings: SettingsService,
     private readonly packagePolicy: ServicePackagePolicyService,
+    private readonly access: AccessPolicyService,
   ) {}
+  @Get("access-policy") accessPolicy(@CurrentActor() actor: Actor) {
+    return this.access.get(actor);
+  }
+  @Patch("access-policy") updateAccessPolicy(
+    @CurrentActor() actor: Actor,
+    @Body() input: UpdateAccessPolicyDto,
+  ) {
+    return this.access.update(actor, input);
+  }
   @Get("organisation") organisation(@CurrentActor() actor: Actor) {
     return this.settings.organisation(actor);
   }

@@ -1,3 +1,4 @@
+import { ForbiddenException } from "@nestjs/common";
 import type { Actor } from "./actor";
 
 export function caseAccessScope(actor: Actor) {
@@ -35,4 +36,19 @@ export function caseAccessScope(actor: Actor) {
     };
   }
   return { ...base, id: -1n };
+}
+
+/**
+ * Read-only case scope for the SPOC-RM monitor (/spoc). Platform admins see the
+ * whole tenant; a SPOC-RM sees only its assigned client (User.clientId) and fails
+ * closed without one. Kept separate from caseAccessScope, which also guards writes.
+ */
+export function spocScope(actor: Actor) {
+  if (actor.roles.includes("PLATFORM_ADMIN"))
+    return { tenantId: actor.tenantId };
+  if (!actor.clientId)
+    throw new ForbiddenException(
+      "SPOC-RM access requires an assigned client workspace",
+    );
+  return { tenantId: actor.tenantId, clientId: actor.clientId };
 }

@@ -96,6 +96,9 @@ const rolePermissions: Record<string, string[]> = {
     Permission.FinanceWrite,
     Permission.NotificationRead,
   ],
+  // View-only central monitor. Data comes only from the role-gated /spoc module;
+  // never grant write permissions (PATCH /cases/:id/status is permission-gated only).
+  SPOC_RM: [Permission.DashboardRead, Permission.NotificationRead],
 };
 
 async function main(): Promise<void> {

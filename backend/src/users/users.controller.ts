@@ -49,9 +49,16 @@ export class UsersController {
     return this.users.activity(actor, userId, query);
   }
 
+  @Get("creation-policy")
+  creationPolicy(@CurrentActor() actor: Actor) {
+    return this.users.creationPolicy(actor);
+  }
+
+  // Ops Managers reach create only through the admin toggle, role and branch checks
+  // in assertCanCreateUser; platform admins still need user:write there.
   @Post()
-  @RequireRoles("PLATFORM_ADMIN")
-  @RequirePermissions(Permission.UserWrite)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  @RequirePermissions(Permission.UserRead)
   create(@CurrentActor() actor: Actor, @Body() input: CreateUserDto) {
     return this.users.create(actor, input);
   }

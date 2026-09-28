@@ -4,14 +4,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
 
-const EXCLUSIVE_ROLES: readonly Role[] = ["PLATFORM_ADMIN", "CLIENT_ADMIN"];
+const EXCLUSIVE_ROLES: readonly Role[] = ["PLATFORM_ADMIN", "CLIENT_ADMIN", "SPOC_RM"];
 
 export function UserRolePicker({
   selected,
   onChange,
+  roles = ROLES,
 }: {
   selected: readonly Role[];
   onChange: (roles: Role[]) => void;
+  /** Roles this caller may assign; defaults to every role (Platform Admin). */
+  roles?: readonly Role[];
 }) {
   const [advanced, setAdvanced] = useState(false);
   const primary = selected[0];
@@ -49,7 +52,7 @@ export function UserRolePicker({
         onValueChange={(value) => choosePrimary(value as Role)}
         className="grid gap-2 sm:grid-cols-2"
       >
-        {ROLES.map((role) => (
+        {roles.map((role) => (
           <label
             key={role}
             className="flex cursor-pointer items-start gap-2.5 rounded-2xl border border-border bg-muted/35 px-3 py-2.5 transition-colors hover:bg-muted/60 has-[[data-state=checked]]:border-primary/35 has-[[data-state=checked]]:bg-primary/5"
@@ -86,8 +89,9 @@ export function UserRolePicker({
           </button>
           {advanced ? (
             <div className="grid gap-2 border-t border-border p-3 sm:grid-cols-2">
-              {ROLES.filter((role) => role !== primary && !EXCLUSIVE_ROLES.includes(role)).map(
-                (role) => (
+              {roles
+                .filter((role) => role !== primary && !EXCLUSIVE_ROLES.includes(role))
+                .map((role) => (
                   <label
                     key={role}
                     className="flex cursor-pointer items-start gap-2 rounded-xl bg-muted/40 px-3 py-2"
@@ -98,8 +102,7 @@ export function UserRolePicker({
                     />
                     <RoleCopy role={role} compact />
                   </label>
-                ),
-              )}
+                ))}
               <p className="sm:col-span-2 text-[10px] leading-4 text-warning-foreground">
                 Use this only when one employee genuinely performs both jobs. Platform Admin and
                 Client Admin stay exclusive to prevent cross-scope access.

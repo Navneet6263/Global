@@ -28,6 +28,18 @@ export function listRoles() {
   return apiRequest<{ items: DirectoryRole[] }>("/users/roles");
 }
 
+export interface UserCreationPolicy {
+  enabled: boolean;
+  roles: string[];
+  branches: Array<{ id: string; name: string; city?: string | null }>;
+  tenantWideAllowed: boolean;
+}
+
+/** Roles and branches the signed-in actor may assign; the API enforces every rule. */
+export function getUserCreationPolicy() {
+  return apiRequest<UserCreationPolicy>("/users/creation-policy");
+}
+
 export function createUser(input: {
   email: string;
   displayName: string;

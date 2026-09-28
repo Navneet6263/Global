@@ -9,6 +9,7 @@ export const ROLES = [
   "FIELD_EXECUTIVE",
   "SALES_MANAGER",
   "FINANCE_MANAGER",
+  "SPOC_RM",
 ] as const;
 
 export type Role = (typeof ROLES)[number];
@@ -136,6 +137,12 @@ const definitions: Record<Role, Omit<RoleDefinition, "id">> = {
       "notification:read",
     ],
     scopeFields: ["branch"],
+  },
+  SPOC_RM: {
+    label: "SPOC-RM",
+    description: "View-only monitor of one client workspace across every operational role.",
+    permissions: ["dashboard:read", "notification:read"],
+    scopeFields: ["clientWorkspace"],
   },
 };
 

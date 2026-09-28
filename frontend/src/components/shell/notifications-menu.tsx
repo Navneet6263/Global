@@ -65,6 +65,10 @@ export function NotificationsMenu({ workspace }: { workspace: NavWorkspace }) {
       await navigate({ to: "/client-portal", search: { caseId } });
       return;
     }
+    if (caseId && workspace === "spoc-rm") {
+      await navigate({ to: "/spoc-rm/records", search: { domain: "cases", caseId } });
+      return;
+    }
     if (caseId) {
       await navigate({ to: WORKSPACE_PRESENTATION[workspace].home as "/admin" });
       return;

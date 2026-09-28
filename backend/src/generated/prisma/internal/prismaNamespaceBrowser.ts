@@ -83,6 +83,7 @@ export const ModelName = {
   IdempotencyKey: 'IdempotencyKey',
   TenantFieldPolicy: 'TenantFieldPolicy',
   TenantCrmSettings: 'TenantCrmSettings',
+  TenantAccessPolicy: 'TenantAccessPolicy',
   SalesOpportunity: 'SalesOpportunity',
   CrmProposal: 'CrmProposal',
   SalesActivity: 'SalesActivity',
@@ -717,6 +718,19 @@ export const TenantCrmSettingsScalarFieldEnum = {
 } as const
 
 export type TenantCrmSettingsScalarFieldEnum = (typeof TenantCrmSettingsScalarFieldEnum)[keyof typeof TenantCrmSettingsScalarFieldEnum]
+
+
+export const TenantAccessPolicyScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  opsUserCreationEnabled: 'opsUserCreationEnabled',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TenantAccessPolicyScalarFieldEnum = (typeof TenantAccessPolicyScalarFieldEnum)[keyof typeof TenantAccessPolicyScalarFieldEnum]
 
 
 export const SalesOpportunityScalarFieldEnum = {

@@ -200,6 +200,11 @@ export type TenantFieldPolicy = Prisma.TenantFieldPolicyModel
  */
 export type TenantCrmSettings = Prisma.TenantCrmSettingsModel
 /**
+ * Model TenantAccessPolicy
+ * Platform Admin controlled delegation switches. Defaults keep every delegation OFF.
+ */
+export type TenantAccessPolicy = Prisma.TenantAccessPolicyModel
+/**
  * Model SalesOpportunity
  * 
  */

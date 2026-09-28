@@ -36,6 +36,7 @@ model Tenant {
   servicePackages ServicePackage[]
   fieldPolicy     TenantFieldPolicy?
   crmSettings     TenantCrmSettings?
+  accessPolicy    TenantAccessPolicy?
   opportunities   SalesOpportunity[]
   salesActivities SalesActivity[]
   invoices        Invoice[]
@@ -773,6 +774,19 @@ model TenantCrmSettings {
   wonProbability         Int      @default(100)
   lostProbability        Int      @default(0)
   leadSourcesJson        String   @default("[\"INBOUND\",\"OUTBOUND\",\"REFERRAL\",\"EVENT\",\"PARTNER\",\"MARKETPLACE\"]") @db.NVarChar(Max)
+  version                Int      @default(1)
+  createdAt              DateTime @default(now()) @db.DateTime2
+  updatedAt              DateTime @updatedAt @db.DateTime2
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// Platform Admin controlled delegation switches. Defaults keep every delegation OFF.
+model TenantAccessPolicy {
+  id                     BigInt   @id @default(autoincrement())
+  publicId               String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId               BigInt   @unique
+  opsUserCreationEnabled Boolean  @default(false)
   version                Int      @default(1)
   createdAt              DateTime @default(now()) @db.DateTime2
   updatedAt              DateTime @updatedAt @db.DateTime2

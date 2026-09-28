@@ -1,0 +1,15 @@
+# Keep every text file LF on every machine, whatever core.autocrlf says.
+# Prettier (endOfLine: "lf") otherwise reports "Delete ␍" after a Windows checkout.
+* text=auto eol=lf
+
+# Binary assets: never convert.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.pdf binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

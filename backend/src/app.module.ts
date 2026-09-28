@@ -32,6 +32,7 @@ import { CandidatePortalModule } from "./candidate-portal/candidate-portal.modul
 import { SecurityModule } from "./common/security/security.module";
 import { OutboxModule } from "./outbox/outbox.module";
 import { PrivacyModule } from "./privacy/privacy.module";
+import { SpocModule } from "./spoc/spoc.module";
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { PrivacyModule } from "./privacy/privacy.module";
     UsersModule,
     CrmModule,
     FinanceModule,
+    SpocModule,
     SettingsModule,
     NotificationsModule,
     CandidatePortalModule,

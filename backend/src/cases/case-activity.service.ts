@@ -46,7 +46,20 @@ export class CaseActivityService {
       select: { id: true },
     });
     if (!row) throw new NotFoundException("Case not found");
-    const scope = caseActivityScope(actor.tenantId, row.id, publicId);
+    return this.listForCase(actor.tenantId, row.id, publicId, query);
+  }
+
+  /**
+   * Timeline for a case the caller has already authorised and resolved.
+   * Shared by the operations endpoint above and the read-only /spoc monitor.
+   */
+  async listForCase(
+    tenantId: bigint,
+    caseId: bigint,
+    publicId: string,
+    query: CaseActivityQuery,
+  ) {
+    const scope = caseActivityScope(tenantId, caseId, publicId);
     const filter = query.resource
       ? Prisma.sql`AND a.[resourceType] = ${query.resource}`
       : Prisma.empty;

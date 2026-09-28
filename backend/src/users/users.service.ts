@@ -13,6 +13,7 @@ import type { UpdateUserDto } from "./dto/update-user.dto";
 import type { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 import type { Prisma } from "../generated/prisma/client";
 import { assertSafeRoleCombination } from "./role-combination";
+import { assertCanCreateUser, userCreationPolicy } from "./ops-user-creation";
 import { networkLocationLabel } from "../common/http/network-location";
 import type { UserActivityQueryDto } from "./dto/user-activity-query.dto";
 
@@ -88,8 +89,14 @@ export class UsersService {
     };
   }
 
+  creationPolicy(actor: Actor) {
+    this.assertDirectoryRole(actor);
+    return userCreationPolicy(this.prisma, actor);
+  }
+
   async create(actor: Actor, input: CreateUserDto) {
     this.assertDirectoryRole(actor);
+    const createdVia = await assertCanCreateUser(this.prisma, actor, input);
     assertSafeRoleCombination(input.roleCodes, input.additionalAccessConfirmed);
     const normalizedEmail = input.email.trim().toLowerCase();
     const exists = await this.prisma.user.findFirst({
@@ -137,6 +144,10 @@ export class UsersService {
       throw new ConflictException(
         "Client administrators must be assigned to a client",
       );
+    if (input.roleCodes.includes("SPOC_RM") && !client)
+      throw new ConflictException(
+        "SPOC-RM users must be assigned to a client workspace",
+      );
     const passwordHash = await hashPassword(input.temporaryPassword);
     return this.prisma.$transaction(async (tx) => {
       const row = await tx.user.create({
@@ -172,6 +183,7 @@ export class UsersService {
           afterJson: JSON.stringify({
             email: row.email,
             roles: roles.map((role) => role.code),
+            ...(createdVia === "OPERATIONS" ? { createdVia } : {}),
           }),
         },
       });
@@ -222,6 +234,11 @@ export class UsersService {
     if (nextRoleCodes.includes("CLIENT_ADMIN") && !user.clientId) {
       throw new ConflictException(
         "Client administrators must be assigned to a client",
+      );
+    }
+    if (nextRoleCodes.includes("SPOC_RM") && !user.clientId) {
+      throw new ConflictException(
+        "SPOC-RM users must be assigned to a client workspace",
       );
     }
     const mayRemovePlatformAdmin =

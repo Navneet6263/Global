@@ -131,6 +131,7 @@ export function landingPathForRoles(roles: readonly Role[]): string {
   if (roles.includes("VERIFIER")) return "/verifier";
   if (roles.includes("QA_REVIEWER")) return "/qa-review";
   if (roles.includes("FINANCE_MANAGER")) return "/finance";
+  if (roles.includes("SPOC_RM")) return "/spoc-rm";
   return "/auth";
 }
 

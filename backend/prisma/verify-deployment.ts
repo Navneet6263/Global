@@ -11,6 +11,7 @@ const requiredRoleCodes = [
   "FIELD_EXECUTIVE",
   "SALES_MANAGER",
   "FINANCE_MANAGER",
+  "SPOC_RM",
 ] as const;
 
 const requiredMigrations = [
@@ -35,6 +36,8 @@ const requiredMigrations = [
   "20260908190000_report_superseded_state",
   "20260908203000_privacy_tracking",
   "20260909120000_commercial_source_controls",
+  "20260925120000_spoc_rm_role",
+  "20260926090000_tenant_access_policy",
 ] as const;
 
 function required(name: string): string {

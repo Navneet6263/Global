@@ -258,6 +258,7 @@ export type TenantWhereInput = {
   servicePackages?: Prisma.ServicePackageListRelationFilter
   fieldPolicy?: Prisma.XOR<Prisma.TenantFieldPolicyNullableScalarRelationFilter, Prisma.TenantFieldPolicyWhereInput> | null
   crmSettings?: Prisma.XOR<Prisma.TenantCrmSettingsNullableScalarRelationFilter, Prisma.TenantCrmSettingsWhereInput> | null
+  accessPolicy?: Prisma.XOR<Prisma.TenantAccessPolicyNullableScalarRelationFilter, Prisma.TenantAccessPolicyWhereInput> | null
   opportunities?: Prisma.SalesOpportunityListRelationFilter
   salesActivities?: Prisma.SalesActivityListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
@@ -295,6 +296,7 @@ export type TenantOrderByWithRelationInput = {
   servicePackages?: Prisma.ServicePackageOrderByRelationAggregateInput
   fieldPolicy?: Prisma.TenantFieldPolicyOrderByWithRelationInput
   crmSettings?: Prisma.TenantCrmSettingsOrderByWithRelationInput
+  accessPolicy?: Prisma.TenantAccessPolicyOrderByWithRelationInput
   opportunities?: Prisma.SalesOpportunityOrderByRelationAggregateInput
   salesActivities?: Prisma.SalesActivityOrderByRelationAggregateInput
   invoices?: Prisma.InvoiceOrderByRelationAggregateInput
@@ -335,6 +337,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   servicePackages?: Prisma.ServicePackageListRelationFilter
   fieldPolicy?: Prisma.XOR<Prisma.TenantFieldPolicyNullableScalarRelationFilter, Prisma.TenantFieldPolicyWhereInput> | null
   crmSettings?: Prisma.XOR<Prisma.TenantCrmSettingsNullableScalarRelationFilter, Prisma.TenantCrmSettingsWhereInput> | null
+  accessPolicy?: Prisma.XOR<Prisma.TenantAccessPolicyNullableScalarRelationFilter, Prisma.TenantAccessPolicyWhereInput> | null
   opportunities?: Prisma.SalesOpportunityListRelationFilter
   salesActivities?: Prisma.SalesActivityListRelationFilter
   invoices?: Prisma.InvoiceListRelationFilter
@@ -402,6 +405,7 @@ export type TenantCreateInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -439,6 +443,7 @@ export type TenantUncheckedCreateInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -476,6 +481,7 @@ export type TenantUpdateInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -513,6 +519,7 @@ export type TenantUncheckedUpdateInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -897,6 +904,20 @@ export type TenantUpdateOneRequiredWithoutCrmSettingsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutCrmSettingsInput, Prisma.TenantUpdateWithoutCrmSettingsInput>, Prisma.TenantUncheckedUpdateWithoutCrmSettingsInput>
 }
 
+export type TenantCreateNestedOneWithoutAccessPolicyInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutAccessPolicyInput, Prisma.TenantUncheckedCreateWithoutAccessPolicyInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutAccessPolicyInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutAccessPolicyNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutAccessPolicyInput, Prisma.TenantUncheckedCreateWithoutAccessPolicyInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutAccessPolicyInput
+  upsert?: Prisma.TenantUpsertWithoutAccessPolicyInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutAccessPolicyInput, Prisma.TenantUpdateWithoutAccessPolicyInput>, Prisma.TenantUncheckedUpdateWithoutAccessPolicyInput>
+}
+
 export type TenantCreateNestedOneWithoutOpportunitiesInput = {
   create?: Prisma.XOR<Prisma.TenantCreateWithoutOpportunitiesInput, Prisma.TenantUncheckedCreateWithoutOpportunitiesInput>
   connectOrCreate?: Prisma.TenantCreateOrConnectWithoutOpportunitiesInput
@@ -1007,6 +1028,7 @@ export type TenantCreateWithoutBranchesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -1043,6 +1065,7 @@ export type TenantUncheckedCreateWithoutBranchesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -1095,6 +1118,7 @@ export type TenantUpdateWithoutBranchesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -1131,6 +1155,7 @@ export type TenantUncheckedUpdateWithoutBranchesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1167,6 +1192,7 @@ export type TenantCreateWithoutUsersInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -1203,6 +1229,7 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -1255,6 +1282,7 @@ export type TenantUpdateWithoutUsersInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -1291,6 +1319,7 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1328,6 +1357,7 @@ export type TenantCreateWithoutVendorSharingRecordsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -1364,6 +1394,7 @@ export type TenantUncheckedCreateWithoutVendorSharingRecordsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -1416,6 +1447,7 @@ export type TenantUpdateWithoutVendorSharingRecordsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -1452,6 +1484,7 @@ export type TenantUncheckedUpdateWithoutVendorSharingRecordsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1488,6 +1521,7 @@ export type TenantCreateWithoutPrivacyRecordsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -1524,6 +1558,7 @@ export type TenantUncheckedCreateWithoutPrivacyRecordsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -1576,6 +1611,7 @@ export type TenantUpdateWithoutPrivacyRecordsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -1612,6 +1648,7 @@ export type TenantUncheckedUpdateWithoutPrivacyRecordsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1647,6 +1684,7 @@ export type TenantCreateWithoutRolesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -1683,6 +1721,7 @@ export type TenantUncheckedCreateWithoutRolesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -1735,6 +1774,7 @@ export type TenantUpdateWithoutRolesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -1771,6 +1811,7 @@ export type TenantUncheckedUpdateWithoutRolesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1807,6 +1848,7 @@ export type TenantCreateWithoutClientsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -1843,6 +1885,7 @@ export type TenantUncheckedCreateWithoutClientsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -1895,6 +1938,7 @@ export type TenantUpdateWithoutClientsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -1931,6 +1975,7 @@ export type TenantUncheckedUpdateWithoutClientsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1967,6 +2012,7 @@ export type TenantCreateWithoutServicePackagesInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2003,6 +2049,7 @@ export type TenantUncheckedCreateWithoutServicePackagesInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -2055,6 +2102,7 @@ export type TenantUpdateWithoutServicePackagesInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -2091,6 +2139,7 @@ export type TenantUncheckedUpdateWithoutServicePackagesInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -2127,6 +2176,7 @@ export type TenantCreateWithoutSubjectsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2163,6 +2213,7 @@ export type TenantUncheckedCreateWithoutSubjectsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -2215,6 +2266,7 @@ export type TenantUpdateWithoutSubjectsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -2251,6 +2303,7 @@ export type TenantUncheckedUpdateWithoutSubjectsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -2287,6 +2340,7 @@ export type TenantCreateWithoutCasesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2323,6 +2377,7 @@ export type TenantUncheckedCreateWithoutCasesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -2375,6 +2430,7 @@ export type TenantUpdateWithoutCasesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -2411,6 +2467,7 @@ export type TenantUncheckedUpdateWithoutCasesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -2447,6 +2504,7 @@ export type TenantCreateWithoutChecksInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2483,6 +2541,7 @@ export type TenantUncheckedCreateWithoutChecksInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -2535,6 +2594,7 @@ export type TenantUpdateWithoutChecksInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -2571,6 +2631,7 @@ export type TenantUncheckedUpdateWithoutChecksInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -2607,6 +2668,7 @@ export type TenantCreateWithoutDocumentsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2643,6 +2705,7 @@ export type TenantUncheckedCreateWithoutDocumentsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -2695,6 +2758,7 @@ export type TenantUpdateWithoutDocumentsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -2731,6 +2795,7 @@ export type TenantUncheckedUpdateWithoutDocumentsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -2767,6 +2832,7 @@ export type TenantCreateWithoutTasksInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2803,6 +2869,7 @@ export type TenantUncheckedCreateWithoutTasksInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -2855,6 +2922,7 @@ export type TenantUpdateWithoutTasksInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -2891,6 +2959,7 @@ export type TenantUncheckedUpdateWithoutTasksInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -2927,6 +2996,7 @@ export type TenantCreateWithoutClarificationsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -2963,6 +3033,7 @@ export type TenantUncheckedCreateWithoutClarificationsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3015,6 +3086,7 @@ export type TenantUpdateWithoutClarificationsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -3051,6 +3123,7 @@ export type TenantUncheckedUpdateWithoutClarificationsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -3087,6 +3160,7 @@ export type TenantCreateWithoutReportsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -3123,6 +3197,7 @@ export type TenantUncheckedCreateWithoutReportsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3175,6 +3250,7 @@ export type TenantUpdateWithoutReportsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -3211,6 +3287,7 @@ export type TenantUncheckedUpdateWithoutReportsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -3247,6 +3324,7 @@ export type TenantCreateWithoutFieldVisitsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -3283,6 +3361,7 @@ export type TenantUncheckedCreateWithoutFieldVisitsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3335,6 +3414,7 @@ export type TenantUpdateWithoutFieldVisitsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -3371,6 +3451,7 @@ export type TenantUncheckedUpdateWithoutFieldVisitsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -3407,6 +3488,7 @@ export type TenantCreateWithoutAuditEventsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -3443,6 +3525,7 @@ export type TenantUncheckedCreateWithoutAuditEventsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3495,6 +3578,7 @@ export type TenantUpdateWithoutAuditEventsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -3531,6 +3615,7 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -3567,6 +3652,7 @@ export type TenantCreateWithoutOutboxEventsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -3603,6 +3689,7 @@ export type TenantUncheckedCreateWithoutOutboxEventsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3655,6 +3742,7 @@ export type TenantUpdateWithoutOutboxEventsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -3691,6 +3779,7 @@ export type TenantUncheckedUpdateWithoutOutboxEventsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -3727,6 +3816,7 @@ export type TenantCreateWithoutIdempotencyKeysInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -3763,6 +3853,7 @@ export type TenantUncheckedCreateWithoutIdempotencyKeysInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3815,6 +3906,7 @@ export type TenantUpdateWithoutIdempotencyKeysInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -3851,6 +3943,7 @@ export type TenantUncheckedUpdateWithoutIdempotencyKeysInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -3887,6 +3980,7 @@ export type TenantCreateWithoutFieldPolicyInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -3923,6 +4017,7 @@ export type TenantUncheckedCreateWithoutFieldPolicyInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -3975,6 +4070,7 @@ export type TenantUpdateWithoutFieldPolicyInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -4011,6 +4107,7 @@ export type TenantUncheckedUpdateWithoutFieldPolicyInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -4047,6 +4144,7 @@ export type TenantCreateWithoutCrmSettingsInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -4083,6 +4181,7 @@ export type TenantUncheckedCreateWithoutCrmSettingsInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -4135,6 +4234,7 @@ export type TenantUpdateWithoutCrmSettingsInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -4171,6 +4271,171 @@ export type TenantUncheckedUpdateWithoutCrmSettingsInput = {
   idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutAccessPolicyInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutAccessPolicyInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectUncheckedCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutAccessPolicyInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutAccessPolicyInput, Prisma.TenantUncheckedCreateWithoutAccessPolicyInput>
+}
+
+export type TenantUpsertWithoutAccessPolicyInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutAccessPolicyInput, Prisma.TenantUncheckedUpdateWithoutAccessPolicyInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutAccessPolicyInput, Prisma.TenantUncheckedCreateWithoutAccessPolicyInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutAccessPolicyInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutAccessPolicyInput, Prisma.TenantUncheckedUpdateWithoutAccessPolicyInput>
+}
+
+export type TenantUpdateWithoutAccessPolicyInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutAccessPolicyInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUncheckedUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -4208,6 +4473,7 @@ export type TenantCreateWithoutOpportunitiesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
@@ -4244,6 +4510,7 @@ export type TenantUncheckedCreateWithoutOpportunitiesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
@@ -4296,6 +4563,7 @@ export type TenantUpdateWithoutOpportunitiesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
@@ -4332,6 +4600,7 @@ export type TenantUncheckedUpdateWithoutOpportunitiesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
@@ -4368,6 +4637,7 @@ export type TenantCreateWithoutSalesActivitiesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
@@ -4404,6 +4674,7 @@ export type TenantUncheckedCreateWithoutSalesActivitiesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
@@ -4456,6 +4727,7 @@ export type TenantUpdateWithoutSalesActivitiesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
@@ -4492,6 +4764,7 @@ export type TenantUncheckedUpdateWithoutSalesActivitiesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
@@ -4528,6 +4801,7 @@ export type TenantCreateWithoutInvoicesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
@@ -4564,6 +4838,7 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
@@ -4616,6 +4891,7 @@ export type TenantUpdateWithoutInvoicesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
@@ -4652,6 +4928,7 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
@@ -4688,6 +4965,7 @@ export type TenantCreateWithoutCreditNotesInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -4724,6 +5002,7 @@ export type TenantUncheckedCreateWithoutCreditNotesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -4776,6 +5055,7 @@ export type TenantUpdateWithoutCreditNotesInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -4812,6 +5092,7 @@ export type TenantUncheckedUpdateWithoutCreditNotesInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -4848,6 +5129,7 @@ export type TenantCreateWithoutNotificationsInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -4884,6 +5166,7 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -4936,6 +5219,7 @@ export type TenantUpdateWithoutNotificationsInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -4972,6 +5256,7 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -5008,6 +5293,7 @@ export type TenantCreateWithoutCandidateAccessInput = {
   servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
@@ -5044,6 +5330,7 @@ export type TenantUncheckedCreateWithoutCandidateAccessInput = {
   servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
   opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
   salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
   invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
@@ -5096,6 +5383,7 @@ export type TenantUpdateWithoutCandidateAccessInput = {
   servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
@@ -5132,6 +5420,7 @@ export type TenantUncheckedUpdateWithoutCandidateAccessInput = {
   servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
   fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
   crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
   opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
   salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
   invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
@@ -5406,6 +5695,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   servicePackages?: boolean | Prisma.Tenant$servicePackagesArgs<ExtArgs>
   fieldPolicy?: boolean | Prisma.Tenant$fieldPolicyArgs<ExtArgs>
   crmSettings?: boolean | Prisma.Tenant$crmSettingsArgs<ExtArgs>
+  accessPolicy?: boolean | Prisma.Tenant$accessPolicyArgs<ExtArgs>
   opportunities?: boolean | Prisma.Tenant$opportunitiesArgs<ExtArgs>
   salesActivities?: boolean | Prisma.Tenant$salesActivitiesArgs<ExtArgs>
   invoices?: boolean | Prisma.Tenant$invoicesArgs<ExtArgs>
@@ -5450,6 +5740,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   servicePackages?: boolean | Prisma.Tenant$servicePackagesArgs<ExtArgs>
   fieldPolicy?: boolean | Prisma.Tenant$fieldPolicyArgs<ExtArgs>
   crmSettings?: boolean | Prisma.Tenant$crmSettingsArgs<ExtArgs>
+  accessPolicy?: boolean | Prisma.Tenant$accessPolicyArgs<ExtArgs>
   opportunities?: boolean | Prisma.Tenant$opportunitiesArgs<ExtArgs>
   salesActivities?: boolean | Prisma.Tenant$salesActivitiesArgs<ExtArgs>
   invoices?: boolean | Prisma.Tenant$invoicesArgs<ExtArgs>
@@ -5482,6 +5773,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     servicePackages: Prisma.$ServicePackagePayload<ExtArgs>[]
     fieldPolicy: Prisma.$TenantFieldPolicyPayload<ExtArgs> | null
     crmSettings: Prisma.$TenantCrmSettingsPayload<ExtArgs> | null
+    accessPolicy: Prisma.$TenantAccessPolicyPayload<ExtArgs> | null
     opportunities: Prisma.$SalesOpportunityPayload<ExtArgs>[]
     salesActivities: Prisma.$SalesActivityPayload<ExtArgs>[]
     invoices: Prisma.$InvoicePayload<ExtArgs>[]
@@ -5858,6 +6150,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   servicePackages<T extends Prisma.Tenant$servicePackagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$servicePackagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePackagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fieldPolicy<T extends Prisma.Tenant$fieldPolicyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$fieldPolicyArgs<ExtArgs>>): Prisma.Prisma__TenantFieldPolicyClient<runtime.Types.Result.GetResult<Prisma.$TenantFieldPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   crmSettings<T extends Prisma.Tenant$crmSettingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$crmSettingsArgs<ExtArgs>>): Prisma.Prisma__TenantCrmSettingsClient<runtime.Types.Result.GetResult<Prisma.$TenantCrmSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  accessPolicy<T extends Prisma.Tenant$accessPolicyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$accessPolicyArgs<ExtArgs>>): Prisma.Prisma__TenantAccessPolicyClient<runtime.Types.Result.GetResult<Prisma.$TenantAccessPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   opportunities<T extends Prisma.Tenant$opportunitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$opportunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesOpportunityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   salesActivities<T extends Prisma.Tenant$salesActivitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$salesActivitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SalesActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoices<T extends Prisma.Tenant$invoicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$invoicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -6669,6 +6962,25 @@ export type Tenant$crmSettingsArgs<ExtArgs extends runtime.Types.Extensions.Inte
    */
   include?: Prisma.TenantCrmSettingsInclude<ExtArgs> | null
   where?: Prisma.TenantCrmSettingsWhereInput
+}
+
+/**
+ * Tenant.accessPolicy
+ */
+export type Tenant$accessPolicyArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the TenantAccessPolicy
+   */
+  select?: Prisma.TenantAccessPolicySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the TenantAccessPolicy
+   */
+  omit?: Prisma.TenantAccessPolicyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.TenantAccessPolicyInclude<ExtArgs> | null
+  where?: Prisma.TenantAccessPolicyWhereInput
 }
 
 /**

@@ -19,6 +19,7 @@ import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as QaReviewRouteImport } from './routes/qa-review'
 import { Route as SalesCrmRouteImport } from './routes/sales-crm'
+import { Route as SpocRmRouteImport } from './routes/spoc-rm'
 import { Route as VerifierRouteImport } from './routes/verifier'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
@@ -72,6 +73,9 @@ import { Route as SalesCrmForecastRouteImport } from './routes/sales-crm.forecas
 import { Route as SalesCrmOpportunitiesRouteImport } from './routes/sales-crm.opportunities'
 import { Route as SalesCrmSettingsRouteImport } from './routes/sales-crm.settings'
 import { Route as SalesCrmTeamRouteImport } from './routes/sales-crm.team'
+import { Route as SpocRmIndexRouteImport } from './routes/spoc-rm.index'
+import { Route as SpocRmClientsRouteImport } from './routes/spoc-rm.clients'
+import { Route as SpocRmRecordsRouteImport } from './routes/spoc-rm.records'
 import { Route as VerifierIndexRouteImport } from './routes/verifier.index'
 import { Route as VerifierBlockersRouteImport } from './routes/verifier.blockers'
 import { Route as VerifierHistoryRouteImport } from './routes/verifier.history'
@@ -128,6 +132,11 @@ const QaReviewRoute = QaReviewRouteImport.update({
 const SalesCrmRoute = SalesCrmRouteImport.update({
   id: '/sales-crm',
   path: '/sales-crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpocRmRoute = SpocRmRouteImport.update({
+  id: '/spoc-rm',
+  path: '/spoc-rm',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VerifierRoute = VerifierRouteImport.update({
@@ -398,6 +407,21 @@ const SalesCrmTeamRoute = SalesCrmTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => SalesCrmRoute,
 } as any)
+const SpocRmIndexRoute = SpocRmIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SpocRmRoute,
+} as any)
+const SpocRmClientsRoute = SpocRmClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => SpocRmRoute,
+} as any)
+const SpocRmRecordsRoute = SpocRmRecordsRouteImport.update({
+  id: '/records',
+  path: '/records',
+  getParentRoute: () => SpocRmRoute,
+} as any)
 const VerifierIndexRoute = VerifierIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -446,6 +470,7 @@ export interface FileRoutesByFullPath {
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
+  '/spoc-rm': typeof SpocRmRouteWithChildren
   '/verifier': typeof VerifierRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -495,6 +520,8 @@ export interface FileRoutesByFullPath {
   '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/records': typeof SpocRmRecordsRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
@@ -504,6 +531,7 @@ export interface FileRoutesByFullPath {
   '/client-portal/': typeof ClientPortalIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
+  '/spoc-rm/': typeof SpocRmIndexRoute
   '/verifier/': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
@@ -562,6 +590,8 @@ export interface FileRoutesByTo {
   '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/records': typeof SpocRmRecordsRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
@@ -571,6 +601,7 @@ export interface FileRoutesByTo {
   '/client-portal': typeof ClientPortalIndexRoute
   '/operations': typeof OperationsIndexRoute
   '/sales-crm': typeof SalesCrmIndexRoute
+  '/spoc-rm': typeof SpocRmIndexRoute
   '/verifier': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
@@ -586,6 +617,7 @@ export interface FileRoutesById {
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
+  '/spoc-rm': typeof SpocRmRouteWithChildren
   '/verifier': typeof VerifierRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
@@ -635,6 +667,8 @@ export interface FileRoutesById {
   '/sales-crm/opportunities': typeof SalesCrmOpportunitiesRoute
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
+  '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/records': typeof SpocRmRecordsRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
@@ -644,6 +678,7 @@ export interface FileRoutesById {
   '/client-portal/': typeof ClientPortalIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
+  '/spoc-rm/': typeof SpocRmIndexRoute
   '/verifier/': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
 }
@@ -660,6 +695,7 @@ export interface FileRouteTypes {
     | '/operations'
     | '/qa-review'
     | '/sales-crm'
+    | '/spoc-rm'
     | '/verifier'
     | '/admin/analytics'
     | '/admin/audit'
@@ -709,6 +745,8 @@ export interface FileRouteTypes {
     | '/sales-crm/opportunities'
     | '/sales-crm/settings'
     | '/sales-crm/team'
+    | '/spoc-rm/clients'
+    | '/spoc-rm/records'
     | '/verifier/blockers'
     | '/verifier/history'
     | '/verifier/performance'
@@ -718,6 +756,7 @@ export interface FileRouteTypes {
     | '/client-portal/'
     | '/operations/'
     | '/sales-crm/'
+    | '/spoc-rm/'
     | '/verifier/'
     | '/reports/verify/$authenticityCode'
   fileRoutesByTo: FileRoutesByTo
@@ -776,6 +815,8 @@ export interface FileRouteTypes {
     | '/sales-crm/opportunities'
     | '/sales-crm/settings'
     | '/sales-crm/team'
+    | '/spoc-rm/clients'
+    | '/spoc-rm/records'
     | '/verifier/blockers'
     | '/verifier/history'
     | '/verifier/performance'
@@ -785,6 +826,7 @@ export interface FileRouteTypes {
     | '/client-portal'
     | '/operations'
     | '/sales-crm'
+    | '/spoc-rm'
     | '/verifier'
     | '/reports/verify/$authenticityCode'
   id:
@@ -799,6 +841,7 @@ export interface FileRouteTypes {
     | '/operations'
     | '/qa-review'
     | '/sales-crm'
+    | '/spoc-rm'
     | '/verifier'
     | '/admin/analytics'
     | '/admin/audit'
@@ -848,6 +891,8 @@ export interface FileRouteTypes {
     | '/sales-crm/opportunities'
     | '/sales-crm/settings'
     | '/sales-crm/team'
+    | '/spoc-rm/clients'
+    | '/spoc-rm/records'
     | '/verifier/blockers'
     | '/verifier/history'
     | '/verifier/performance'
@@ -857,6 +902,7 @@ export interface FileRouteTypes {
     | '/client-portal/'
     | '/operations/'
     | '/sales-crm/'
+    | '/spoc-rm/'
     | '/verifier/'
     | '/reports/verify/$authenticityCode'
   fileRoutesById: FileRoutesById
@@ -872,6 +918,7 @@ export interface RootRouteChildren {
   OperationsRoute: typeof OperationsRouteWithChildren
   QaReviewRoute: typeof QaReviewRoute
   SalesCrmRoute: typeof SalesCrmRouteWithChildren
+  SpocRmRoute: typeof SpocRmRouteWithChildren
   VerifierRoute: typeof VerifierRouteWithChildren
   CandidateAccessIdRoute: typeof CandidateAccessIdRoute
   CasesCaseIdRoute: typeof CasesCaseIdRoute
@@ -959,6 +1006,13 @@ declare module '@tanstack/react-router' {
       path: '/sales-crm'
       fullPath: '/sales-crm'
       preLoaderRoute: typeof SalesCrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/spoc-rm': {
+      id: '/spoc-rm'
+      path: '/spoc-rm'
+      fullPath: '/spoc-rm'
+      preLoaderRoute: typeof SpocRmRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/verifier': {
@@ -1332,6 +1386,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SalesCrmTeamRouteImport
       parentRoute: typeof SalesCrmRoute
     }
+    '/spoc-rm/': {
+      id: '/spoc-rm/'
+      path: '/'
+      fullPath: '/spoc-rm/'
+      preLoaderRoute: typeof SpocRmIndexRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
+    '/spoc-rm/clients': {
+      id: '/spoc-rm/clients'
+      path: '/clients'
+      fullPath: '/spoc-rm/clients'
+      preLoaderRoute: typeof SpocRmClientsRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
+    '/spoc-rm/records': {
+      id: '/spoc-rm/records'
+      path: '/records'
+      fullPath: '/spoc-rm/records'
+      preLoaderRoute: typeof SpocRmRecordsRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
     '/verifier/': {
       id: '/verifier/'
       path: '/'
@@ -1500,6 +1575,21 @@ const SalesCrmRouteWithChildren = SalesCrmRoute._addFileChildren(
   SalesCrmRouteChildren,
 )
 
+interface SpocRmRouteChildren {
+  SpocRmClientsRoute: typeof SpocRmClientsRoute
+  SpocRmRecordsRoute: typeof SpocRmRecordsRoute
+  SpocRmIndexRoute: typeof SpocRmIndexRoute
+}
+
+const SpocRmRouteChildren: SpocRmRouteChildren = {
+  SpocRmClientsRoute: SpocRmClientsRoute,
+  SpocRmRecordsRoute: SpocRmRecordsRoute,
+  SpocRmIndexRoute: SpocRmIndexRoute,
+}
+
+const SpocRmRouteWithChildren =
+  SpocRmRoute._addFileChildren(SpocRmRouteChildren)
+
 interface VerifierRouteChildren {
   VerifierBlockersRoute: typeof VerifierBlockersRoute
   VerifierHistoryRoute: typeof VerifierHistoryRoute
@@ -1533,6 +1623,7 @@ const rootRouteChildren: RootRouteChildren = {
   OperationsRoute: OperationsRouteWithChildren,
   QaReviewRoute: QaReviewRoute,
   SalesCrmRoute: SalesCrmRouteWithChildren,
+  SpocRmRoute: SpocRmRouteWithChildren,
   VerifierRoute: VerifierRouteWithChildren,
   CandidateAccessIdRoute: CandidateAccessIdRoute,
   CasesCaseIdRoute: CasesCaseIdRoute,

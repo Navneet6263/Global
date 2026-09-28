@@ -7,6 +7,7 @@ import { ChartSkeleton } from "@/components/feedback/skeletons";
 import { OPS_CHECK_LABELS } from "@/features/operations/contracts/case";
 import { OpsCapacityList } from "@/features/operations/components/ops-capacity-list";
 import { useOpsTeam } from "@/features/operations/hooks/use-operations";
+import { OpsCreateUserAction } from "@/features/operations/user-creation/ops-create-user-action";
 import { formatPercent } from "@/lib/formatting";
 
 export const Route = createFileRoute("/operations/team")({
@@ -40,6 +41,7 @@ function TeamCapacityPage() {
         title="Team workload"
         description="Balance assigned checks across verifiers and branches before SLAs start slipping."
         meta={data ? `${data.openAssignments} checks awaiting allocation` : undefined}
+        actions={<OpsCreateUserAction />}
       />
 
       {isError ? <ErrorState onRetry={() => void refetch()} retrying={isFetching} /> : null}

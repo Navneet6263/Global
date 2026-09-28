@@ -21,4 +21,9 @@ export function assertSafeRoleCombination(
       "Client Admin is client-scoped and cannot be combined with an internal role",
     );
   }
+  if (unique.includes("SPOC_RM")) {
+    throw new ConflictException(
+      "SPOC-RM is a view-only monitoring role and cannot be combined with a workflow role",
+    );
+  }
 }

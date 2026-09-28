@@ -10,7 +10,8 @@ export type WorkspaceId =
   | "field"
   | "client"
   | "sales"
-  | "finance";
+  | "finance"
+  | "spoc";
 
 export interface WorkspaceDefinition {
   id: WorkspaceId;
@@ -93,6 +94,14 @@ export const WORKSPACES: readonly WorkspaceDefinition[] = [
     basePath: "/finance",
     roles: ["FINANCE_MANAGER"],
     requiredPermission: "finance:read",
+  },
+  {
+    id: "spoc",
+    label: "SPOC-RM",
+    summary: "View-only monitoring of work across every operational role.",
+    basePath: "/spoc-rm",
+    roles: ["SPOC_RM"],
+    requiredPermission: "dashboard:read",
   },
 ];
 

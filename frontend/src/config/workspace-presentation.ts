@@ -67,4 +67,11 @@ export const WORKSPACE_PRESENTATION: Record<NavWorkspace, WorkspacePresentation>
     security: "/change-password",
     quickCreate: false,
   },
+  "spoc-rm": {
+    label: "SPOC-RM",
+    heading: "Sapling Global — Central Monitoring",
+    home: "/spoc-rm",
+    security: "/change-password",
+    quickCreate: false,
+  },
 };

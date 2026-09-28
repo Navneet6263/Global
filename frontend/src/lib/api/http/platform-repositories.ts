@@ -13,6 +13,7 @@ import {
 } from "@/lib/backend-api/auth";
 import { listNotifications } from "@/lib/backend-api/notifications";
 import {
+  getAccessPolicy,
   getFieldPolicy,
   getOrganisation,
   listBranches,
@@ -168,11 +169,12 @@ export const notificationRepository: NotificationRepository = {
 
 export const settingsRepository: SettingsRepository = {
   async get() {
-    const [organisation, field, branches, packages] = await Promise.all([
+    const [organisation, field, branches, packages, access] = await Promise.all([
       getOrganisation(),
       getFieldPolicy(),
       listBranches(),
       listServicePackages(),
+      getAccessPolicy(),
     ]);
     return {
       organisation: {
@@ -228,6 +230,19 @@ export const settingsRepository: SettingsRepository = {
           enabled: field.minimumPhotos > 0,
         },
       ],
+      accessPolicy: [
+        {
+          id: "ops-create-users",
+          label: "Allow Operations Manager to Create Users",
+          description:
+            "Ops Managers can create operational, client and commercial user IDs inside their own branch scope. Admin roles and account administration stay with Platform Admin.",
+          enabled: access.opsUserCreationEnabled,
+        },
+      ],
+      accessPolicyConfig: {
+        opsUserCreationEnabled: access.opsUserCreationEnabled,
+        version: access.version,
+      },
       slaDefaults: packages.items.map((item) => ({
         id: item.id,
         checkLabel: item.name,
