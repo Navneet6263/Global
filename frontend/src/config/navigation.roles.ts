@@ -5,6 +5,7 @@ import {
   Files,
   Gauge,
   History,
+  Inbox,
   KeyRound,
   LayoutDashboard,
   ListChecks,
@@ -200,6 +201,15 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
     "field-visit:read",
   ),
   finance: QA_FINANCE_NAVIGATION.finance!,
+  vendor: roleNav(
+    "vendor",
+    "VENDOR",
+    "Vendor requests",
+    "Documents assigned to you for review",
+    "/vendor",
+    Inbox,
+    "vendor:review",
+  ),
 };
 
 export const ROLE_WORKSPACE_ICON = BriefcaseBusiness;

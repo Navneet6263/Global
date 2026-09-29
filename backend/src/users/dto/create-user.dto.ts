@@ -2,6 +2,7 @@ import { Transform } from "class-transformer";
 import {
   ArrayMaxSize,
   ArrayMinSize,
+  ArrayUnique,
   IsArray,
   IsBoolean,
   IsEmail,
@@ -31,6 +32,14 @@ export class CreateUserDto {
   phone?: string;
   @IsOptional() @IsUUID() branchId?: string;
   @IsOptional() @IsUUID() clientId?: string;
+  /** SPOC-RM only: the client workspaces it may monitor (at least one). */
+  @IsOptional()
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(200)
+  @ArrayUnique()
+  @IsUUID("all", { each: true })
+  spocClientIds?: string[];
   @IsArray()
   @ArrayMinSize(1)
   @ArrayMaxSize(3)

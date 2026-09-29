@@ -16,6 +16,17 @@ export interface Actor {
   mustChangePassword: boolean;
   roles: string[];
   permissions: string[];
+  /**
+   * SPOC-RM only: the clients it may monitor (SpocClientScope), reloaded on every
+   * request. Undefined for every other role, which keep the single clientId above.
+   */
+  spocClients?: readonly SpocClient[];
+}
+
+export interface SpocClient {
+  id: bigint;
+  publicId: string;
+  name: string;
 }
 
 export interface AccessTokenPayload {

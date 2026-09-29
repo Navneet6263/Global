@@ -21,6 +21,8 @@ export interface AuthenticatedIdentity {
   branchId?: string;
   branchName?: string;
   clientName?: string;
+  /** SPOC-RM only: names of its assigned client workspaces. */
+  clientScope?: readonly string[];
   mustChangePassword: boolean;
 }
 
@@ -46,6 +48,7 @@ function fromBackendSession(session: Session): AuthenticatedIdentity {
     branchId: session.branchId,
     branchName: session.branchName,
     clientName: session.clientName,
+    clientScope: session.clientScope?.map((client) => client.name),
     mustChangePassword: session.mustChangePassword,
   };
 }
@@ -132,6 +135,8 @@ export function landingPathForRoles(roles: readonly Role[]): string {
   if (roles.includes("QA_REVIEWER")) return "/qa-review";
   if (roles.includes("FINANCE_MANAGER")) return "/finance";
   if (roles.includes("SPOC_RM")) return "/spoc-rm";
+  if (roles.includes("VENDOR")) return "/vendor";
+  if (roles.includes("SUPPORT_AGENT")) return "/support";
   return "/auth";
 }
 

@@ -1,4 +1,4 @@
-import { Building2, KeyRound, LayoutDashboard, TableProperties } from "lucide-react";
+import { Building2, Handshake, KeyRound, LayoutDashboard, TableProperties } from "lucide-react";
 import type { NavGroup, NavItem } from "./navigation.types";
 import type { Role } from "./roles";
 
@@ -43,6 +43,14 @@ export const SPOC_NAV_ITEMS: readonly NavItem[] = [
     "/spoc-rm/records",
   ),
   item("Clients", "Per-client progress, exceptions and receivables", Building2, "/spoc-rm/clients"),
+  item(
+    "Vendors",
+    "Assign client documents to vendors and track decisions",
+    Handshake,
+    "/spoc-rm/vendors",
+    "command",
+    "vendor:assign",
+  ),
   item(
     "Account Security",
     "Password, sessions and sign-in activity",

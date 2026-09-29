@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { CreateUserInput } from "@/lib/contracts/user";
+import type { ScopeOption } from "../client-scope";
+import { ClientScopePicker } from "./client-scope-picker";
 import { UserRolePicker } from "./user-role-picker";
 
 const schema = z.object({
@@ -37,10 +39,7 @@ const schema = z.object({
 });
 
 type FormValues = z.infer<typeof schema>;
-export interface ScopeOption {
-  id: string;
-  label: string;
-}
+export type { ScopeOption };
 
 interface CreateUserDialogProps {
   open: boolean;
@@ -60,10 +59,14 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
   const [roles, setRoles] = useState<Role[]>([]);
   const [branchId, setBranchId] = useState(defaultBranch);
   const [clientId, setClientId] = useState("none");
+  const [clientIds, setClientIds] = useState<string[]>([]);
   const [scopeError, setScopeError] = useState("");
-  // Client Admin and SPOC-RM are scoped to one client workspace (scopeFields "clientWorkspace").
+  // Client Admin: one client workspace. SPOC-RM: several (scopeFields "clientWorkspaces").
   const clientRole = roles.find((role) =>
     ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace"),
+  );
+  const multiClientRole = roles.find((role) =>
+    ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspaces"),
   );
   const needsBranch = roles.some((role) => ROLE_DEFINITIONS[role].scopeFields.includes("branch"));
   const form = useForm<FormValues>({
@@ -77,6 +80,13 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
       setScopeError(`Select the client workspace for this ${ROLE_DEFINITIONS[clientRole].label}.`);
       return;
     }
+    if (multiClientRole && !clientIds.length) {
+      setScopeError("Select at least one client workspace for this SPOC-RM.");
+      return;
+    }
+    const scoped = multiClientRole
+      ? props.clients.filter((item) => clientIds.includes(item.id))
+      : [];
     // Only a visible scope field is submitted, so a hidden branch never narrows a client role.
     const branch = needsBranch ? props.branches.find((item) => item.id === branchId) : undefined;
     const client = clientRole ? props.clients.find((item) => item.id === clientId) : undefined;
@@ -89,6 +99,12 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
       branchLabel: branch?.label,
       clientId: client?.id,
       clientLabel: client?.label,
+      ...(multiClientRole
+        ? {
+            clientIds: scoped.map((item) => item.id),
+            clientLabels: scoped.map((item) => item.label),
+          }
+        : {}),
       additionalAccessConfirmed: roles.length > 1,
     });
   };
@@ -99,6 +115,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
     setRoles([]);
     setBranchId(defaultBranch);
     setClientId("none");
+    setClientIds([]);
     setScopeError("");
   }, [defaultBranch, form, props.open]);
 
@@ -117,12 +134,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
             roles={props.roles}
             onChange={(value) => {
               setRoles(value);
-              if (
-                !value.some((role) =>
-                  ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace"),
-                )
-              )
-                setScopeError("");
+              setScopeError("");
             }}
           />
           <div className="grid gap-4 border-t border-border pt-5 sm:grid-cols-2">
@@ -184,6 +196,19 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
                     </SelectContent>
                   </Select>
                 </Field>
+              </div>
+            ) : null}
+            {multiClientRole ? (
+              <div className="sm:col-span-2">
+                <ClientScopePicker
+                  options={props.clients}
+                  value={clientIds}
+                  onChange={(ids) => {
+                    setClientIds(ids);
+                    setScopeError("");
+                  }}
+                  error={scopeError}
+                />
               </div>
             ) : null}
           </div>

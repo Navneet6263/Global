@@ -50,6 +50,7 @@ export function useUpdateUserRoles() {
       version: number;
       roleCodes: string[];
       additionalAccessConfirmed: boolean;
+      spocClientIds?: string[];
     }) => {
       const { id, ...body } = input;
       return updateUser(id, body);

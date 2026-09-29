@@ -70,10 +70,8 @@ export function roleStatus(
   prisma: PrismaService,
   ctx: BucketContext,
 ): Promise<SpocRoleStatus[]> {
-  const { tenantId, caseWhere, clientPublicId } = ctx;
-  const byClient = clientPublicId
-    ? { client: { publicId: clientPublicId } }
-    : {};
+  const { tenantId, caseWhere, clients } = ctx;
+  const { byClient } = clients;
   const cases = (where: object) =>
     prisma.verificationCase.count({ where: { AND: [caseWhere, where] } });
   const visits = (where: object) =>
@@ -125,7 +123,7 @@ export function roleStatus(
             where: {
               tenantId,
               creditHold: true,
-              ...(clientPublicId ? { publicId: clientPublicId } : {}),
+              ...clients.clientRow,
             },
           })
         : prisma.invoice.count({

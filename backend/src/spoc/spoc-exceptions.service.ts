@@ -11,7 +11,12 @@ import {
   settledInvoiceStatuses,
   terminalCaseStatuses,
 } from "./spoc-holder";
-import { pageResult, paging, spocCaseWhere } from "./spoc-scope";
+import {
+  pageResult,
+  paging,
+  resolveSpocClients,
+  spocCaseWhere,
+} from "./spoc-scope";
 
 export const SpocExceptionCategories = [
   "overdue",
@@ -96,9 +101,8 @@ export class SpocExceptionsService {
     const tenantId = actor.tenantId;
     const scope = spocCaseWhere(actor, query);
     const live = { ...scope, status: { notIn: terminalCaseStatuses } };
-    const clientFilter = query.clientId
-      ? { client: { publicId: query.clientId } }
-      : {};
+    const clients = resolveSpocClients(actor, query.clientId);
+    const clientFilter = clients.byClient;
     const p = paging(query.page, query.pageSize);
     const order = [
       { updatedAt: "desc" as const },
@@ -381,7 +385,7 @@ export class SpocExceptionsService {
             where: {
               tenantId,
               creditHold: true,
-              ...(query.clientId ? { publicId: query.clientId } : {}),
+              ...clients.clientRow,
             },
           }),
         list: async () =>
@@ -390,7 +394,7 @@ export class SpocExceptionsService {
               where: {
                 tenantId,
                 creditHold: true,
-                ...(query.clientId ? { publicId: query.clientId } : {}),
+                ...clients.clientRow,
               },
               orderBy: order,
               ...p,

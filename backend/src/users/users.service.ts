@@ -14,8 +14,21 @@ import type { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 import type { Prisma } from "../generated/prisma/client";
 import { assertSafeRoleCombination } from "./role-combination";
 import { assertCanCreateUser, userCreationPolicy } from "./ops-user-creation";
+import {
+  assertSpocClientInput,
+  resolveScopeClients,
+  type ScopeClient,
+} from "./spoc-client-scope";
 import { networkLocationLabel } from "../common/http/network-location";
 import type { UserActivityQueryDto } from "./dto/user-activity-query.dto";
+
+const toSpocClient = ({
+  publicId,
+  displayName,
+}: {
+  publicId: string;
+  displayName: string;
+}) => ({ id: publicId, displayName });
 
 export function userDirectoryBranchScope(actor: Actor) {
   return !actor.roles.includes("PLATFORM_ADMIN") && actor.branchId
@@ -48,6 +61,12 @@ export class UsersService {
           userRoles: {
             select: { role: { select: { code: true, name: true } } },
           },
+          spocClientScopes: {
+            select: {
+              client: { select: { publicId: true, displayName: true } },
+            },
+            orderBy: { client: { displayName: "asc" } },
+          },
         },
         orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
         skip: (query.page - 1) * query.pageSize,
@@ -56,11 +75,16 @@ export class UsersService {
       this.prisma.user.count({ where }),
     ]);
     return {
-      items: users.map(({ publicId, userRoles, ...user }) => ({
-        id: publicId,
-        ...user,
-        roles: userRoles.map(({ role: assignedRole }) => assignedRole),
-      })),
+      items: users.map(
+        ({ publicId, userRoles, spocClientScopes, ...user }) => ({
+          id: publicId,
+          ...user,
+          roles: userRoles.map(({ role: assignedRole }) => assignedRole),
+          spocClients: spocClientScopes.map(({ client }) =>
+            toSpocClient(client),
+          ),
+        }),
+      ),
       total,
       page: query.page,
       pageSize: query.pageSize,
@@ -98,6 +122,7 @@ export class UsersService {
     this.assertDirectoryRole(actor);
     const createdVia = await assertCanCreateUser(this.prisma, actor, input);
     assertSafeRoleCombination(input.roleCodes, input.additionalAccessConfirmed);
+    assertSpocClientInput(input.roleCodes, input);
     const normalizedEmail = input.email.trim().toLowerCase();
     const exists = await this.prisma.user.findFirst({
       where: { tenantId: actor.tenantId, normalizedEmail },
@@ -105,7 +130,7 @@ export class UsersService {
     });
     if (exists)
       throw new ConflictException("A user with this email already exists");
-    const [roles, branch, client] = await Promise.all([
+    const [roles, branch, client, scopeClients] = await Promise.all([
       this.prisma.role.findMany({
         where: {
           tenantId: actor.tenantId,
@@ -133,6 +158,9 @@ export class UsersService {
             select: { id: true },
           })
         : null,
+      input.spocClientIds
+        ? resolveScopeClients(this.prisma, actor.tenantId, input.spocClientIds)
+        : ([] as ScopeClient[]),
     ]);
     if (roles.length !== new Set(input.roleCodes).size)
       throw new NotFoundException("One or more roles were not found");
@@ -144,9 +172,13 @@ export class UsersService {
       throw new ConflictException(
         "Client administrators must be assigned to a client",
       );
-    if (input.roleCodes.includes("SPOC_RM") && !client)
+    if (input.roleCodes.includes("VENDOR") && input.clientId)
       throw new ConflictException(
-        "SPOC-RM users must be assigned to a client workspace",
+        "Vendor accounts cannot be tied to a client workspace",
+      );
+    if (input.roleCodes.includes("SUPPORT_AGENT") && input.clientId)
+      throw new ConflictException(
+        "Support Agent accounts see every client and cannot be tied to one client workspace",
       );
     const passwordHash = await hashPassword(input.temporaryPassword);
     return this.prisma.$transaction(async (tx) => {
@@ -162,6 +194,13 @@ export class UsersService {
           passwordHash,
           mustChangePassword: true,
           userRoles: { create: roles.map((role) => ({ roleId: role.id })) },
+          ...(scopeClients.length
+            ? {
+                spocClientScopes: {
+                  create: scopeClients.map((scope) => ({ clientId: scope.id })),
+                },
+              }
+            : {}),
         },
         select: {
           publicId: true,
@@ -183,17 +222,31 @@ export class UsersService {
           afterJson: JSON.stringify({
             email: row.email,
             roles: roles.map((role) => role.code),
+            ...(scopeClients.length
+              ? { clients: scopeClients.map((scope) => scope.publicId) }
+              : {}),
             ...(createdVia === "OPERATIONS" ? { createdVia } : {}),
           }),
         },
       });
       const { publicId, ...user } = row;
-      return { id: publicId, ...user, roles: roles.map((role) => role.code) };
+      return {
+        id: publicId,
+        ...user,
+        roles: roles.map((role) => role.code),
+        ...(scopeClients.length
+          ? { spocClients: scopeClients.map(toSpocClient) }
+          : {}),
+      };
     });
   }
 
   async update(actor: Actor, publicId: string, input: UpdateUserDto) {
-    assertAnyRole(actor, ["PLATFORM_ADMIN"], "Only platform administrators can change account access");
+    assertAnyRole(
+      actor,
+      ["PLATFORM_ADMIN"],
+      "Only platform administrators can change account access",
+    );
     const user = await this.prisma.user.findFirst({
       where: {
         tenantId: actor.tenantId,
@@ -206,6 +259,13 @@ export class UsersService {
         status: true,
         clientId: true,
         userRoles: { select: { role: { select: { code: true } } } },
+        spocClientScopes: {
+          select: {
+            client: {
+              select: { id: true, publicId: true, displayName: true },
+            },
+          },
+        },
       },
     });
     if (!user) throw new NotFoundException("User not found");
@@ -226,7 +286,8 @@ export class UsersService {
       throw new NotFoundException("One or more roles were not found");
     const currentRoleCodes = user.userRoles.map(({ role }) => role.code);
     const nextRoleCodes = input.roleCodes ?? currentRoleCodes;
-    const rolesChanged = currentRoleCodes.length !== nextRoleCodes.length ||
+    const rolesChanged =
+      currentRoleCodes.length !== nextRoleCodes.length ||
       currentRoleCodes.some((role) => !nextRoleCodes.includes(role));
     if (input.roleCodes) {
       assertSafeRoleCombination(nextRoleCodes, input.additionalAccessConfirmed);
@@ -236,9 +297,42 @@ export class UsersService {
         "Client administrators must be assigned to a client",
       );
     }
-    if (nextRoleCodes.includes("SPOC_RM") && !user.clientId) {
+    // SPOC-RM client scope lives only in SpocClientScope (never User.clientId).
+    const currentScope: ScopeClient[] = user.spocClientScopes.map(
+      ({ client }) => client,
+    );
+    const nextIsSpoc = nextRoleCodes.includes("SPOC_RM");
+    if (!nextIsSpoc && input.spocClientIds !== undefined)
       throw new ConflictException(
-        "SPOC-RM users must be assigned to a client workspace",
+        "Only SPOC-RM users can be assigned multiple client workspaces",
+      );
+    const nextScope = !nextIsSpoc
+      ? []
+      : input.spocClientIds
+        ? await resolveScopeClients(
+            this.prisma,
+            actor.tenantId,
+            input.spocClientIds,
+            currentScope.map((client) => client.id),
+          )
+        : currentScope;
+    if (nextIsSpoc && !nextScope.length)
+      throw new ConflictException(
+        "SPOC-RM users must be assigned at least one client workspace",
+      );
+    const scopeChanged =
+      nextScope.length !== currentScope.length ||
+      nextScope.some(
+        (client) => !currentScope.some((current) => current.id === client.id),
+      );
+    if (nextRoleCodes.includes("VENDOR") && user.clientId) {
+      throw new ConflictException(
+        "Vendor accounts cannot be tied to a client workspace",
+      );
+    }
+    if (nextRoleCodes.includes("SUPPORT_AGENT") && user.clientId) {
+      throw new ConflictException(
+        "Support Agent accounts see every client and cannot be tied to one client workspace",
       );
     }
     const mayRemovePlatformAdmin =
@@ -265,7 +359,11 @@ export class UsersService {
         }
         const updated = await tx.user.updateMany({
           where: { id: user.id, version: input.version },
-          data: { status: input.status, version: { increment: 1 } },
+          data: {
+            status: input.status,
+            version: { increment: 1 },
+            ...(nextIsSpoc && user.clientId ? { clientId: null } : {}),
+          },
         });
         if (updated.count !== 1)
           throw new ConflictException("User was updated concurrently");
@@ -274,6 +372,18 @@ export class UsersService {
           await tx.userRole.createMany({
             data: roles.map((role) => ({ userId: user.id, roleId: role.id })),
           });
+        }
+        // Replaced in the same transaction; the actor reloads it on every request,
+        // so a removed client stops working on that user's next API call.
+        if (scopeChanged) {
+          await tx.spocClientScope.deleteMany({ where: { userId: user.id } });
+          if (nextScope.length)
+            await tx.spocClientScope.createMany({
+              data: nextScope.map((client) => ({
+                userId: user.id,
+                clientId: client.id,
+              })),
+            });
         }
         if (input.status === "SUSPENDED" || rolesChanged)
           await tx.refreshSession.updateMany({
@@ -287,11 +397,21 @@ export class UsersService {
             action: "user.updated",
             resourceType: "user",
             resourcePublicId: publicId,
-            beforeJson: JSON.stringify({ status: user.status, roles: currentRoleCodes, version: user.version }),
+            beforeJson: JSON.stringify({
+              status: user.status,
+              roles: currentRoleCodes,
+              version: user.version,
+              ...(currentScope.length
+                ? { clients: currentScope.map((client) => client.publicId) }
+                : {}),
+            }),
             afterJson: JSON.stringify({
               status: input.status ?? user.status,
               roles: nextRoleCodes,
               version: input.version + 1,
+              ...(currentScope.length || nextScope.length
+                ? { clients: nextScope.map((client) => client.publicId) }
+                : {}),
             }),
           },
         });
@@ -300,6 +420,7 @@ export class UsersService {
           status: input.status ?? user.status,
           roleCodes: nextRoleCodes,
           version: input.version + 1,
+          ...(nextIsSpoc ? { spocClients: nextScope.map(toSpocClient) } : {}),
         };
       },
       { isolationLevel: "Serializable" },
@@ -455,6 +576,11 @@ export function userDirectoryWhere(
             { phone: { contains: search } },
             { branch: { name: { contains: search } } },
             { client: { displayName: { contains: search } } },
+            {
+              spocClientScopes: {
+                some: { client: { displayName: { contains: search } } },
+              },
+            },
           ],
         }
       : {}),

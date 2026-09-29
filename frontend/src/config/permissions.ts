@@ -27,6 +27,11 @@ export const PERMISSIONS = [
   "user:read",
   "user:write",
   "notification:read",
+  "vendor:assign",
+  "vendor:review",
+  "support:read",
+  "support:handle",
+  "support:request",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -59,5 +64,10 @@ export const PERMISSION_LABELS: Record<Permission, string> = {
   "finance:write": "Issue invoices and record collections",
   "user:read": "View user IDs and role access",
   "user:write": "Create, suspend and reset user IDs",
+  "vendor:assign": "Assign client documents to vendors",
+  "vendor:review": "Approve or reject documents assigned as a vendor",
+  "support:read": "View client and employee progress for support",
+  "support:handle": "Work the support request inbox",
+  "support:request": "Raise support requests",
   "notification:read": "Read workspace notifications",
 };

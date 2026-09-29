@@ -1,13 +1,62 @@
 import { ForbiddenException } from "@nestjs/common";
-import type { Actor } from "../common/auth/actor";
-import { spocScope } from "../common/auth/access-scope";
+import type { Actor, SpocClient } from "../common/auth/actor";
+import { spocClientIds } from "../common/auth/access-scope";
 import type { SpocScopeQueryDto } from "./dto/spoc-query.dto";
 
-/** Tenant-wide case filter plus the optional client / branch / priority filters. */
+/** Where fragments for one request's client scope. */
+export interface SpocClientFilters {
+  /** Rows that carry a clientId: cases, opportunities, invoices, vendor assignments. */
+  byClient:
+    | { clientId: { in: bigint[] } }
+    | { client: { publicId: string } }
+    | Record<string, never>;
+  /** Client rows themselves. */
+  clientRow:
+    { id: { in: bigint[] } } | { publicId: string } | Record<string, never>;
+}
+
+function assignedClient(actor: Actor, requested: string): SpocClient {
+  const wanted = requested.toLowerCase();
+  const match = actor.spocClients?.find(
+    (client) => client.publicId.toLowerCase() === wanted,
+  );
+  if (!match)
+    throw new ForbiddenException("This client is outside your SPOC-RM scope");
+  return match;
+}
+
+/**
+ * The one place a SPOC request's client scope is decided. A SPOC-RM always gets
+ * `IN (assigned clients)`, narrowed to the requested client only when that client
+ * is assigned (anything else is 403). No filter means all assigned clients, never
+ * the whole tenant. Platform admins keep the whole tenant or the chosen client.
+ */
+export function resolveSpocClients(
+  actor: Actor,
+  requestedClientId?: string,
+): SpocClientFilters {
+  const assigned = spocClientIds(actor);
+  if (!assigned)
+    return requestedClientId
+      ? {
+          byClient: { client: { publicId: requestedClientId } },
+          clientRow: { publicId: requestedClientId },
+        }
+      : { byClient: {}, clientRow: {} };
+  const ids = requestedClientId
+    ? [assignedClient(actor, requestedClientId).id]
+    : assigned;
+  return {
+    byClient: { clientId: { in: ids } },
+    clientRow: { id: { in: ids } },
+  };
+}
+
+/** Case filter: client scope plus the optional branch / priority filters. */
 export function spocCaseWhere(actor: Actor, query: SpocScopeQueryDto) {
   return {
-    ...spocScope(actor),
-    ...(query.clientId ? { client: { publicId: query.clientId } } : {}),
+    tenantId: actor.tenantId,
+    ...resolveSpocClients(actor, query.clientId).byClient,
     ...(query.branchId ? { branch: { publicId: query.branchId } } : {}),
     ...(query.priority ? { priority: query.priority } : {}),
   };
@@ -36,22 +85,14 @@ export function spocRange(query: { from?: string; to?: string }, now: Date) {
 }
 
 /**
- * The one place a request's client filter is decided. A SPOC-RM is pinned to its
- * assigned client: a missing clientId defaults to it and any other client is
- * refused (URL / query / API manipulation). Platform admins may pick any client.
+ * First gate in every /spoc handler: refuses a client outside the SPOC-RM's
+ * assigned clients (URL / query / API manipulation) and a SPOC-RM with no client.
+ * It never rewrites the filter; services apply the scope via resolveSpocClients.
  */
 export function enforceSpocClient<T extends { clientId?: string }>(
   actor: Actor,
   query: T,
 ): T {
-  if (actor.roles.includes("PLATFORM_ADMIN")) return query;
-  const own = actor.clientPublicId?.toLowerCase();
-  if (!own)
-    throw new ForbiddenException(
-      "SPOC-RM access requires an assigned client workspace",
-    );
-  if (query.clientId && query.clientId.toLowerCase() !== own)
-    throw new ForbiddenException("This client is outside your SPOC-RM scope");
-  query.clientId = own;
+  resolveSpocClients(actor, query.clientId);
   return query;
 }

@@ -445,7 +445,10 @@ export const ModelName = {
   Payment: 'Payment',
   CreditNote: 'CreditNote',
   Notification: 'Notification',
-  CandidatePortalAccess: 'CandidatePortalAccess'
+  CandidatePortalAccess: 'CandidatePortalAccess',
+  VendorAssignment: 'VendorAssignment',
+  SpocClientScope: 'SpocClientScope',
+  SupportRequest: 'SupportRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -461,7 +464,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "sourceOutreach" | "clientPackageRate" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess"
+    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "sourceOutreach" | "clientPackageRate" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3699,6 +3702,204 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VendorAssignment: {
+      payload: Prisma.$VendorAssignmentPayload<ExtArgs>
+      fields: Prisma.VendorAssignmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorAssignmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorAssignmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorAssignmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorAssignmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>
+        }
+        findMany: {
+          args: Prisma.VendorAssignmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>[]
+        }
+        create: {
+          args: Prisma.VendorAssignmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>
+        }
+        createMany: {
+          args: Prisma.VendorAssignmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VendorAssignmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>
+        }
+        update: {
+          args: Prisma.VendorAssignmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorAssignmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorAssignmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VendorAssignmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorAssignmentPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorAssignmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorAssignment>
+        }
+        groupBy: {
+          args: Prisma.VendorAssignmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorAssignmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorAssignmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorAssignmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    SpocClientScope: {
+      payload: Prisma.$SpocClientScopePayload<ExtArgs>
+      fields: Prisma.SpocClientScopeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SpocClientScopeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SpocClientScopeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>
+        }
+        findFirst: {
+          args: Prisma.SpocClientScopeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SpocClientScopeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>
+        }
+        findMany: {
+          args: Prisma.SpocClientScopeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>[]
+        }
+        create: {
+          args: Prisma.SpocClientScopeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>
+        }
+        createMany: {
+          args: Prisma.SpocClientScopeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.SpocClientScopeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>
+        }
+        update: {
+          args: Prisma.SpocClientScopeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>
+        }
+        deleteMany: {
+          args: Prisma.SpocClientScopeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SpocClientScopeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.SpocClientScopeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SpocClientScopePayload>
+        }
+        aggregate: {
+          args: Prisma.SpocClientScopeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSpocClientScope>
+        }
+        groupBy: {
+          args: Prisma.SpocClientScopeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SpocClientScopeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SpocClientScopeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SpocClientScopeCountAggregateOutputType> | number
+        }
+      }
+    }
+    SupportRequest: {
+      payload: Prisma.$SupportRequestPayload<ExtArgs>
+      fields: Prisma.SupportRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SupportRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SupportRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.SupportRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SupportRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        findMany: {
+          args: Prisma.SupportRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>[]
+        }
+        create: {
+          args: Prisma.SupportRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        createMany: {
+          args: Prisma.SupportRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.SupportRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        update: {
+          args: Prisma.SupportRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.SupportRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SupportRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.SupportRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SupportRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.SupportRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSupportRequest>
+        }
+        groupBy: {
+          args: Prisma.SupportRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupportRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SupportRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SupportRequestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4646,6 +4847,63 @@ export const CandidatePortalAccessScalarFieldEnum = {
 export type CandidatePortalAccessScalarFieldEnum = (typeof CandidatePortalAccessScalarFieldEnum)[keyof typeof CandidatePortalAccessScalarFieldEnum]
 
 
+export const VendorAssignmentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  clientId: 'clientId',
+  caseId: 'caseId',
+  documentId: 'documentId',
+  documentVersion: 'documentVersion',
+  attempt: 'attempt',
+  vendorUserId: 'vendorUserId',
+  assignedById: 'assignedById',
+  assignmentNote: 'assignmentNote',
+  resolutionNote: 'resolutionNote',
+  status: 'status',
+  decisionReason: 'decisionReason',
+  decidedById: 'decidedById',
+  decidedAt: 'decidedAt',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorAssignmentScalarFieldEnum = (typeof VendorAssignmentScalarFieldEnum)[keyof typeof VendorAssignmentScalarFieldEnum]
+
+
+export const SpocClientScopeScalarFieldEnum = {
+  userId: 'userId',
+  clientId: 'clientId',
+  createdAt: 'createdAt'
+} as const
+
+export type SpocClientScopeScalarFieldEnum = (typeof SpocClientScopeScalarFieldEnum)[keyof typeof SpocClientScopeScalarFieldEnum]
+
+
+export const SupportRequestScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  requestNumber: 'requestNumber',
+  requesterType: 'requesterType',
+  requesterUserId: 'requesterUserId',
+  clientId: 'clientId',
+  caseId: 'caseId',
+  subject: 'subject',
+  message: 'message',
+  status: 'status',
+  assignedToId: 'assignedToId',
+  resolutionNote: 'resolutionNote',
+  resolvedAt: 'resolvedAt',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportRequestScalarFieldEnum = (typeof SupportRequestScalarFieldEnum)[keyof typeof SupportRequestScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4916,6 +5174,9 @@ export type GlobalOmitConfig = {
   creditNote?: Prisma.CreditNoteOmit
   notification?: Prisma.NotificationOmit
   candidatePortalAccess?: Prisma.CandidatePortalAccessOmit
+  vendorAssignment?: Prisma.VendorAssignmentOmit
+  spocClientScope?: Prisma.SpocClientScopeOmit
+  supportRequest?: Prisma.SupportRequestOmit
 }
 
 /* Types for Logging */

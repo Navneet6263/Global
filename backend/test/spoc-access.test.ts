@@ -20,6 +20,7 @@ import { SpocController } from "../src/spoc/spoc.controller";
 import { currentOwner } from "../src/spoc/spoc-case-records.service";
 import { holderOf, statusesHeldBy } from "../src/spoc/spoc-holder";
 import { assertSafeRoleCombination } from "../src/users/role-combination";
+import { SpocVendorsController } from "../src/vendor-requests/spoc-vendors.controller";
 
 function actor(roles: string[], extra: Partial<Actor> = {}): Actor {
   return {
@@ -90,16 +91,26 @@ void test("every /spoc handler is a read-only GET", () => {
   }
 });
 
-void test("the SPOC_RM role migration grants no write permission", () => {
-  const sql = readFileSync(
-    join(
-      __dirname,
-      "../prisma/migrations/20260925120000_spoc_rm_role/migration.sql",
-    ),
-    "utf8",
-  );
-  const granted = JSON.parse(/'(\[[^']*\])'/.exec(sql)![1]!) as string[];
-  assert.deepEqual(granted, ["dashboard:read", "notification:read"]);
+void test("SPOC_RM migrations grant no write permission except vendor assignment", () => {
+  const read = (name: string) =>
+    readFileSync(
+      join(__dirname, `../prisma/migrations/${name}/migration.sql`),
+      "utf8",
+    );
+  const original = JSON.parse(
+    /'(\[[^']*\])'/.exec(read("20260925120000_spoc_rm_role"))![1]!,
+  ) as string[];
+  assert.deepEqual(original, ["dashboard:read", "notification:read"]);
+  const granted = JSON.parse(
+    /SET \[permissionsJson\] = '(\[[^']*\])'[^;]*WHERE \[code\] = 'SPOC_RM'/.exec(
+      read("20260928100000_vendor_assignments"),
+    )![1]!,
+  ) as string[];
+  assert.deepEqual(granted, [
+    "dashboard:read",
+    "notification:read",
+    "vendor:assign",
+  ]);
   assert.ok(
     granted.every(
       (permission) =>
@@ -141,7 +152,21 @@ void test("current owner follows the role that holds the case", () => {
   assert.equal(currentOwner({ ...base, status: "COMPLETED" }), null);
 });
 
-void test("SPOC_RM is not allowed on any route outside the read-only /spoc controller", async () => {
+void test("the only SPOC_RM write handlers are vendor assign, re-assign and re-upload", () => {
+  const prototype = SpocVendorsController.prototype as unknown as Record<
+    string,
+    object
+  >;
+  const writes = Object.getOwnPropertyNames(prototype).filter(
+    (name) =>
+      name !== "constructor" &&
+      Reflect.getMetadata(METHOD_METADATA, prototype[name]!) !==
+        RequestMethod.GET,
+  );
+  assert.deepEqual(writes.sort(), ["assign", "reassign", "requestReupload"]);
+});
+
+void test("SPOC_RM is allowed only on /spoc and the /spoc/vendors assignment controller", async () => {
   const files: string[] = [];
   const walk = (dir: string) =>
     readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
@@ -157,7 +182,12 @@ void test("SPOC_RM is not allowed on any route outside the read-only /spoc contr
       unknown
     >;
     for (const value of Object.values(exported)) {
-      if (typeof value !== "function" || value === SpocController) continue;
+      if (
+        typeof value !== "function" ||
+        value === SpocController ||
+        value === SpocVendorsController
+      )
+        continue;
       const targets = [
         value,
         ...Object.getOwnPropertyNames(value.prototype ?? {}).map(

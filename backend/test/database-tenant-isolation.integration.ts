@@ -21,6 +21,8 @@ import { ClarificationTokenService } from "../src/clarifications/clarification-t
 import { QaReadinessService } from "../src/verification/qa-readiness.service";
 import { NavigationCountsService } from "../src/dashboards/navigation-counts.service";
 import { verifyQaSql } from "./qa-sql-checks";
+import { RequesterSupportRequestsService } from "../src/support/services/requester-support-requests.service";
+import { SupportRepository } from "../src/support/support.repository";
 
 const databaseConfigured = [
   "DB_HOST",
@@ -101,6 +103,9 @@ void test(
               config,
               secrets,
               pii,
+              new RequesterSupportRequestsService(
+                new SupportRepository(scopedPrisma),
+              ),
             );
             const clarifications = new ClarificationsService(
               scopedPrisma,

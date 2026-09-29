@@ -21,7 +21,12 @@ function mapUser(row: DirectoryUser): PlatformUser & { version: number } {
     status:
       row.status === "SUSPENDED" ? "suspended" : row.mustChangePassword ? "invited" : "active",
     branchScope: row.branch ? [row.branch.name] : ["All branches"],
-    clientWorkspaceScope: row.client ? [row.client.displayName] : [],
+    clientWorkspaceScope: row.spocClients?.length
+      ? row.spocClients.map((client) => client.displayName)
+      : row.client
+        ? [row.client.displayName]
+        : [],
+    clientWorkspaceIds: row.spocClients?.map((client) => client.id) ?? [],
     lastLoginAt: row.lastLoginAt ?? null,
     createdAt: row.createdAt,
     mfaEnabled: null,
@@ -66,6 +71,7 @@ export const userRepository: UserRepository = {
       phone: input.mobile,
       branchId: input.branchId,
       clientId: input.clientId,
+      spocClientIds: input.clientIds?.length ? [...input.clientIds] : undefined,
       roleCodes: [...input.roles],
       additionalAccessConfirmed: input.additionalAccessConfirmed,
       temporaryPassword: password,
@@ -79,7 +85,12 @@ export const userRepository: UserRepository = {
       roles: input.roles,
       status: result.mustChangePassword ? "invited" : "active",
       branchScope: input.branchLabel ? [input.branchLabel] : ["All branches"],
-      clientWorkspaceScope: input.clientLabel ? [input.clientLabel] : [],
+      clientWorkspaceScope: input.clientLabels?.length
+        ? [...input.clientLabels]
+        : input.clientLabel
+          ? [input.clientLabel]
+          : [],
+      clientWorkspaceIds: input.clientIds ? [...input.clientIds] : [],
       lastLoginAt: null,
       createdAt: result.createdAt,
       mfaEnabled: null,

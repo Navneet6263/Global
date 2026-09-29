@@ -261,6 +261,10 @@ function UsersPage() {
         <EditUserRolesDialog
           key={editingUser.id}
           user={editingUser}
+          clients={(scopes.data?.clients ?? []).map((client) => ({
+            id: client.publicId,
+            label: client.displayName,
+          }))}
           onClose={() => setEditingUser(null)}
         />
       ) : null}

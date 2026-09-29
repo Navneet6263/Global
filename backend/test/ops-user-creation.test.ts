@@ -125,8 +125,19 @@ void test("the toggle is OFF by default and OFF refuses every Ops creation", asy
   }
 });
 
-void test("with the toggle ON an Ops Manager may create exactly the seven delegated roles", async () => {
+void test("with the toggle ON an Ops Manager may create exactly the nine delegated roles", async () => {
   const { prisma } = policyPrisma(true);
+  assert.deepEqual([...OPS_CREATABLE_ROLES].sort(), [
+    "CLIENT_ADMIN",
+    "FIELD_EXECUTIVE",
+    "FINANCE_MANAGER",
+    "QA_REVIEWER",
+    "SALES_MANAGER",
+    "SPOC_RM",
+    "SUPPORT_AGENT",
+    "VENDOR",
+    "VERIFIER",
+  ]);
   for (const code of OPS_CREATABLE_ROLES) {
     assert.equal(
       await assertCanCreateUser(prisma, opsTenantWide, { roleCodes: [code] }),

@@ -10,10 +10,14 @@ export const ROLES = [
   "SALES_MANAGER",
   "FINANCE_MANAGER",
   "SPOC_RM",
+  "VENDOR",
+  "SUPPORT_AGENT",
 ] as const;
 
 export type Role = (typeof ROLES)[number];
-export type RoleScopeField = "branch" | "clientWorkspace" | "territory" | "queue";
+/** clientWorkspace = one client (Client Admin); clientWorkspaces = several (SPOC-RM). */
+export type RoleScopeField =
+  "branch" | "clientWorkspace" | "clientWorkspaces" | "territory" | "queue";
 
 export interface RoleDefinition {
   id: Role;
@@ -98,6 +102,7 @@ const definitions: Record<Role, Omit<RoleDefinition, "id">> = {
       "clarification:read",
       "report:read",
       "notification:read",
+      "support:request",
     ],
     scopeFields: ["clientWorkspace"],
   },
@@ -140,9 +145,23 @@ const definitions: Record<Role, Omit<RoleDefinition, "id">> = {
   },
   SPOC_RM: {
     label: "SPOC-RM",
-    description: "View-only monitor of one client workspace across every operational role.",
-    permissions: ["dashboard:read", "notification:read"],
-    scopeFields: ["clientWorkspace"],
+    description:
+      "Monitors its assigned client workspaces across every role and assigns their documents to vendors.",
+    permissions: ["dashboard:read", "notification:read", "vendor:assign"],
+    scopeFields: ["clientWorkspaces"],
+  },
+  VENDOR: {
+    label: "Vendor",
+    description: "External partner that approves or rejects only the documents assigned to it.",
+    permissions: ["vendor:review", "notification:read"],
+    scopeFields: [],
+  },
+  SUPPORT_AGENT: {
+    label: "Support Agent",
+    description:
+      "Answers support requests with read-only visibility of every client's employee progress.",
+    permissions: ["support:read", "support:handle", "notification:read"],
+    scopeFields: [],
   },
 };
 

@@ -11,7 +11,9 @@ export type WorkspaceId =
   | "client"
   | "sales"
   | "finance"
-  | "spoc";
+  | "spoc"
+  | "vendor"
+  | "support";
 
 export interface WorkspaceDefinition {
   id: WorkspaceId;
@@ -102,6 +104,22 @@ export const WORKSPACES: readonly WorkspaceDefinition[] = [
     basePath: "/spoc-rm",
     roles: ["SPOC_RM"],
     requiredPermission: "dashboard:read",
+  },
+  {
+    id: "vendor",
+    label: "Vendor",
+    summary: "Documents assigned to you for review, approval or rejection.",
+    basePath: "/vendor",
+    roles: ["VENDOR"],
+    requiredPermission: "vendor:review",
+  },
+  {
+    id: "support",
+    label: "Support Desk",
+    summary: "Client and employee progress, and the support request inbox.",
+    basePath: "/support",
+    roles: ["SUPPORT_AGENT"],
+    requiredPermission: "support:read",
   },
 ];
 

@@ -19,7 +19,7 @@ import type {
 } from "../contracts/spoc";
 
 /** Drops empty values so the backend's strict DTO whitelist never sees blanks. */
-function queryString(query: SpocQuery | SpocOverviewFilters): string {
+export function queryString(query: SpocQuery | SpocOverviewFilters): string {
   const params = new URLSearchParams();
   Object.entries(query).forEach(([key, value]) => {
     if (value !== undefined && value !== "" && value !== false) params.set(key, String(value));

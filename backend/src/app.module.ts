@@ -33,6 +33,8 @@ import { SecurityModule } from "./common/security/security.module";
 import { OutboxModule } from "./outbox/outbox.module";
 import { PrivacyModule } from "./privacy/privacy.module";
 import { SpocModule } from "./spoc/spoc.module";
+import { VendorRequestsModule } from "./vendor-requests/vendor-requests.module";
+import { SupportModule } from "./support/support.module";
 
 @Module({
   imports: [
@@ -54,6 +56,8 @@ import { SpocModule } from "./spoc/spoc.module";
     CrmModule,
     FinanceModule,
     SpocModule,
+    VendorRequestsModule,
+    SupportModule,
     SettingsModule,
     NotificationsModule,
     CandidatePortalModule,

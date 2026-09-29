@@ -12,24 +12,26 @@ import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import type { UploadedBinary } from "../common/http/uploaded-binary";
 import { PrismaService } from "../database/prisma.service";
+import type { Prisma } from "../generated/prisma/client";
 import { ContentInspectionService } from "./content-inspection.service";
 import type { CreateDocumentDto } from "./dto/create-document.dto";
 import { LocalObjectStorageService } from "./local-object-storage.service";
 import {
   assertNotDuplicateDocument,
+  DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES,
   documentExpiry,
   lockMutableCaseEvidence,
 } from "./upload-document-policy";
+
+export { DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES };
 import { CANDIDATE_PRIVACY_NOTICE } from "./candidate-privacy-notice";
 import { assertCandidateDocumentType } from "./candidate-document-policy";
+import { notifyNewVersionForVendorChain } from "../vendor-requests/services/vendor-notify";
 
-export const DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES = new Set([
-  "DRAFT",
-  "CONSENT_PENDING",
-  "DOCUMENT_PENDING",
-  "IN_PROGRESS",
-  "CLARIFICATION_PENDING",
-]);
+export interface DocumentStreamAccess {
+  caseScope: Prisma.VerificationCaseWhereInput;
+  version?: number;
+}
 
 export function assertDocumentUploadAllowed(status: string) {
   if (!DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES.has(status)) {
@@ -195,6 +197,11 @@ export class DocumentsService {
             }),
           },
         });
+        await notifyNewVersionForVendorChain(tx, {
+          tenantId: actor.tenantId,
+          documentId: document.id,
+          version,
+        });
         return created;
       });
     } catch (error) {
@@ -204,19 +211,26 @@ export class DocumentsService {
     return { ...result, sizeBytes: result.sizeBytes.toString() };
   }
 
+  /**
+   * `access` is for callers that authorise the document themselves (the vendor and
+   * SPOC-RM vendor paths): their case scope replaces caseAccessScope, and `version`
+   * pins the file version that was assigned instead of the latest one.
+   */
   async download(
     actor: Actor,
     publicId: string,
     mode: "download" | "preview" = "download",
+    access?: DocumentStreamAccess,
   ) {
     const version = await this.prisma.documentVersion.findFirst({
       where: {
         document: {
           publicId,
           tenantId: actor.tenantId,
-          case: caseAccessScope(actor),
+          case: access?.caseScope ?? caseAccessScope(actor),
         },
         malwareState: "CLEAN",
+        ...(access?.version !== undefined ? { version: access.version } : {}),
       },
       orderBy: { version: "desc" },
       select: {
@@ -379,6 +393,11 @@ export class DocumentsService {
               privacyNoticeVersion: CANDIDATE_PRIVACY_NOTICE.version,
             }),
           },
+        });
+        await notifyNewVersionForVendorChain(tx, {
+          tenantId: access.tenantId,
+          documentId: target.id,
+          version,
         });
       });
     } catch (error) {

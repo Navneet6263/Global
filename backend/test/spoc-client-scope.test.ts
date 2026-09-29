@@ -14,6 +14,7 @@ import { UsersService } from "../src/users/users.service";
 
 const CLIENT_A = "0f8fad5b-d9cb-469f-a165-70867728950e";
 const CLIENT_B = "7c9e6679-7425-40de-944b-e07fc1f90ae7";
+const CLIENT_D = "3b241101-e2bb-4255-8caf-4136c566a962";
 
 function actor(roles: string[], extra: Partial<Actor> = {}): Actor {
   return {
@@ -31,39 +32,50 @@ function actor(roles: string[], extra: Partial<Actor> = {}): Actor {
   };
 }
 
-const spocA = actor(["SPOC_RM"], {
-  clientId: 41n,
-  clientPublicId: CLIENT_A.toUpperCase(),
+/** A SPOC-RM assigned clients A and B (SpocClientScope); D is not assigned. */
+const spocAB = actor(["SPOC_RM"], {
+  spocClients: [
+    { id: 41n, publicId: CLIENT_A.toUpperCase(), name: "Client A" },
+    { id: 42n, publicId: CLIENT_B, name: "Client B" },
+  ],
 });
 
-void test("a SPOC-RM case scope is pinned to its own client", () => {
-  assert.deepEqual(spocScope(spocA), { tenantId: 7n, clientId: 41n });
+void test("a SPOC-RM case scope covers exactly its assigned clients", () => {
+  assert.deepEqual(spocScope(spocAB), {
+    tenantId: 7n,
+    clientId: { in: [41n, 42n] },
+  });
   assert.deepEqual(spocScope(actor(["PLATFORM_ADMIN"])), { tenantId: 7n });
 });
 
 void test("a SPOC-RM without a client workspace fails closed", () => {
-  assert.throws(() => spocScope(actor(["SPOC_RM"])), ForbiddenException);
-  assert.throws(
-    () => enforceSpocClient(actor(["SPOC_RM"]), {}),
-    ForbiddenException,
-  );
+  for (const empty of [
+    actor(["SPOC_RM"]),
+    actor(["SPOC_RM"], { spocClients: [] }),
+  ]) {
+    assert.throws(() => spocScope(empty), ForbiddenException);
+    assert.throws(() => enforceSpocClient(empty, {}), ForbiddenException);
+  }
 });
 
-void test("the request client defaults to the SPOC's own client and cannot be switched", () => {
+void test("a request may narrow to an assigned client but never reach another one", () => {
   const noClient: { clientId?: string } = {};
-  assert.equal(enforceSpocClient(spocA, noClient).clientId, CLIENT_A);
+  assert.equal(enforceSpocClient(spocAB, noClient).clientId, undefined);
   assert.equal(
-    enforceSpocClient(spocA, { clientId: CLIENT_A }).clientId,
+    enforceSpocClient(spocAB, { clientId: CLIENT_A }).clientId,
     CLIENT_A,
   );
+  assert.doesNotThrow(() =>
+    enforceSpocClient(spocAB, { clientId: CLIENT_B.toUpperCase() }),
+  );
   assert.throws(
-    () => enforceSpocClient(spocA, { clientId: CLIENT_B }),
+    () => enforceSpocClient(spocAB, { clientId: CLIENT_D }),
     ForbiddenException,
   );
   const admin = actor(["PLATFORM_ADMIN"]);
   assert.equal(
-    enforceSpocClient(admin, { clientId: CLIENT_B }).clientId,
-    CLIENT_B,
+    enforceSpocClient(admin, { clientId: CLIENT_D }).clientId,
+    CLIENT_D,
   );
 });
 
@@ -99,18 +111,19 @@ void test("every /spoc query handler enforces the SPOC client before reaching a 
     "invoices",
   ];
   for (const handler of handlers) {
-    await controller[handler]!(spocA, {});
+    await controller[handler]!(spocAB, {});
     assert.throws(
-      () => controller[handler]!(spocA, { clientId: CLIENT_B }),
+      () => controller[handler]!(spocAB, { clientId: CLIENT_D }),
       ForbiddenException,
-      `${handler} must refuse another client`,
+      `${handler} must refuse an unassigned client`,
     );
   }
   assert.equal(seen.length, handlers.length);
-  assert.ok(seen.every((call) => call.clientId === CLIENT_A));
+  // No client chosen stays "all assigned"; services apply the scope themselves.
+  assert.ok(seen.every((call) => call.clientId === undefined));
 });
 
-function usersPrisma(client: { id: bigint } | null) {
+function usersPrisma(clients: Array<{ id: bigint; publicId: string }>) {
   return {
     user: { findFirst: () => Promise.resolve(null) },
     role: {
@@ -120,7 +133,17 @@ function usersPrisma(client: { id: bigint } | null) {
         ),
     },
     branch: { findFirst: () => Promise.resolve(null) },
-    client: { findFirst: () => Promise.resolve(client) },
+    client: {
+      findFirst: () => Promise.resolve(clients[0] ?? null),
+      findMany: () =>
+        Promise.resolve(
+          clients.map((client) => ({
+            ...client,
+            displayName: `Client ${client.id}`,
+            status: "ACTIVE",
+          })),
+        ),
+    },
   } as unknown as PrismaService;
 }
 
@@ -131,26 +154,39 @@ const createInput = {
   temporaryPassword: "Temporary#Pass2026",
 } as CreateUserDto;
 
-void test("creating a SPOC-RM without a client workspace is refused", async () => {
-  const service = new UsersService(usersPrisma(null));
+void test("creating a SPOC-RM without client workspaces, or with a single clientId, is refused", async () => {
+  const service = new UsersService(
+    usersPrisma([{ id: 41n, publicId: CLIENT_A }]),
+  );
   await assert.rejects(
     service.create(actor(["PLATFORM_ADMIN"]), createInput),
     ConflictException,
   );
+  await assert.rejects(
+    service.create(actor(["PLATFORM_ADMIN"]), {
+      ...createInput,
+      clientId: CLIENT_A,
+    }),
+    ConflictException,
+  );
 });
 
-void test("creating a SPOC-RM with a client stores the role and the client", async () => {
+void test("creating a SPOC-RM stores every selected client as scope rows, never User.clientId", async () => {
   let created:
     | {
         data: {
           clientId?: bigint;
           mustChangePassword: boolean;
           userRoles: { create: Array<{ roleId: bigint }> };
+          spocClientScopes?: { create: Array<{ clientId: bigint }> };
         };
       }
     | undefined;
   const prisma = {
-    ...(usersPrisma({ id: 41n }) as unknown as Record<string, unknown>),
+    ...(usersPrisma([
+      { id: 41n, publicId: CLIENT_A },
+      { id: 42n, publicId: CLIENT_B },
+    ]) as unknown as Record<string, unknown>),
     $transaction: (work: (tx: unknown) => Promise<unknown>) =>
       work(
         new Proxy(
@@ -173,14 +209,19 @@ void test("creating a SPOC-RM with a client stores the role and the client", asy
         ),
       ),
   } as unknown as PrismaService;
-  await new UsersService(prisma)
-    .create(actor(["PLATFORM_ADMIN"]), { ...createInput, clientId: CLIENT_A })
-    .catch(() => undefined);
+  await new UsersService(prisma).create(actor(["PLATFORM_ADMIN"]), {
+    ...createInput,
+    spocClientIds: [CLIENT_A, CLIENT_B],
+  });
   assert.equal(
     created?.data.clientId,
-    41n,
-    "client scope is persisted on the user",
+    undefined,
+    "no single client for SPOC-RM",
   );
+  assert.deepEqual(created?.data.spocClientScopes?.create, [
+    { clientId: 41n },
+    { clientId: 42n },
+  ]);
   // The only role requested is SPOC_RM (fake role id 1), linked in the same write.
   assert.deepEqual(created?.data.userRoles.create, [{ roleId: 1n }]);
   assert.equal(

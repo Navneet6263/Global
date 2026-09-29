@@ -403,6 +403,8 @@ export type VerificationCaseWhereInput = {
   fieldVisits?: Prisma.FieldVisitListRelationFilter
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
+  vendorAssignments?: Prisma.VendorAssignmentListRelationFilter
+  supportRequests?: Prisma.SupportRequestListRelationFilter
 }
 
 export type VerificationCaseOrderByWithRelationInput = {
@@ -447,6 +449,8 @@ export type VerificationCaseOrderByWithRelationInput = {
   fieldVisits?: Prisma.FieldVisitOrderByRelationAggregateInput
   invoiceLines?: Prisma.InvoiceLineOrderByRelationAggregateInput
   candidateAccess?: Prisma.CandidatePortalAccessOrderByRelationAggregateInput
+  vendorAssignments?: Prisma.VendorAssignmentOrderByRelationAggregateInput
+  supportRequests?: Prisma.SupportRequestOrderByRelationAggregateInput
 }
 
 export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
@@ -495,6 +499,8 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   fieldVisits?: Prisma.FieldVisitListRelationFilter
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
+  vendorAssignments?: Prisma.VendorAssignmentListRelationFilter
+  supportRequests?: Prisma.SupportRequestListRelationFilter
 }, "id" | "publicId" | "tenantId_caseNumber">
 
 export type VerificationCaseOrderByWithAggregationInput = {
@@ -590,6 +596,8 @@ export type VerificationCaseCreateInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateInput = {
@@ -627,6 +635,8 @@ export type VerificationCaseUncheckedCreateInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUpdateInput = {
@@ -664,6 +674,8 @@ export type VerificationCaseUpdateInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateInput = {
@@ -701,6 +713,8 @@ export type VerificationCaseUncheckedUpdateInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateManyInput = {
@@ -1358,6 +1372,36 @@ export type VerificationCaseUpdateOneRequiredWithoutCandidateAccessNestedInput =
   update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutCandidateAccessInput, Prisma.VerificationCaseUpdateWithoutCandidateAccessInput>, Prisma.VerificationCaseUncheckedUpdateWithoutCandidateAccessInput>
 }
 
+export type VerificationCaseCreateNestedOneWithoutVendorAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorAssignmentsInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutVendorAssignmentsInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+}
+
+export type VerificationCaseUpdateOneRequiredWithoutVendorAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorAssignmentsInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutVendorAssignmentsInput
+  upsert?: Prisma.VerificationCaseUpsertWithoutVendorAssignmentsInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutVendorAssignmentsInput, Prisma.VerificationCaseUpdateWithoutVendorAssignmentsInput>, Prisma.VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput>
+}
+
+export type VerificationCaseCreateNestedOneWithoutSupportRequestsInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutSupportRequestsInput, Prisma.VerificationCaseUncheckedCreateWithoutSupportRequestsInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutSupportRequestsInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+}
+
+export type VerificationCaseUpdateOneWithoutSupportRequestsNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutSupportRequestsInput, Prisma.VerificationCaseUncheckedCreateWithoutSupportRequestsInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutSupportRequestsInput
+  upsert?: Prisma.VerificationCaseUpsertWithoutSupportRequestsInput
+  disconnect?: Prisma.VerificationCaseWhereInput | boolean
+  delete?: Prisma.VerificationCaseWhereInput | boolean
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutSupportRequestsInput, Prisma.VerificationCaseUpdateWithoutSupportRequestsInput>, Prisma.VerificationCaseUncheckedUpdateWithoutSupportRequestsInput>
+}
+
 export type VerificationCaseCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -1392,6 +1436,8 @@ export type VerificationCaseCreateWithoutTenantInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutTenantInput = {
@@ -1428,6 +1474,8 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutTenantInput = {
@@ -1517,6 +1565,8 @@ export type VerificationCaseCreateWithoutBranchInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutBranchInput = {
@@ -1553,6 +1603,8 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutBranchInput = {
@@ -1614,6 +1666,8 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
@@ -1650,6 +1704,8 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutAssignedOpsUserInput = {
@@ -1695,6 +1751,8 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
@@ -1731,6 +1789,8 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutQaReviewerInput = {
@@ -1808,6 +1868,8 @@ export type VerificationCaseCreateWithoutClientInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutClientInput = {
@@ -1844,6 +1906,8 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutClientInput = {
@@ -1905,6 +1969,8 @@ export type VerificationCaseCreateWithoutServicePackageInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
@@ -1941,6 +2007,8 @@ export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutServicePackageInput = {
@@ -2002,6 +2070,8 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
@@ -2038,6 +2108,8 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutSubjectInput = {
@@ -2099,6 +2171,8 @@ export type VerificationCaseCreateWithoutChecksInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutChecksInput = {
@@ -2135,6 +2209,8 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutChecksInput = {
@@ -2187,6 +2263,8 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
@@ -2223,6 +2301,8 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutStatusHistoryInput = {
@@ -2259,6 +2339,8 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
@@ -2295,6 +2377,8 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutStatusHistoryInput = {
@@ -2347,6 +2431,8 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
@@ -2383,6 +2469,8 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutConsentsInput = {
@@ -2419,6 +2507,8 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
@@ -2455,6 +2545,8 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutConsentsInput = {
@@ -2507,6 +2599,8 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
@@ -2543,6 +2637,8 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutDocumentsInput = {
@@ -2579,6 +2675,8 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
@@ -2615,6 +2713,8 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutDocumentsInput = {
@@ -2667,6 +2767,8 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
@@ -2703,6 +2805,8 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutClarificationsInput = {
@@ -2739,6 +2843,8 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
@@ -2775,6 +2881,8 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutClarificationsInput = {
@@ -2827,6 +2935,8 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
@@ -2863,6 +2973,8 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutQaReviewsInput = {
@@ -2899,6 +3011,8 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
@@ -2935,6 +3049,8 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutQaReviewsInput = {
@@ -2987,6 +3103,8 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
@@ -3023,6 +3141,8 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutReportsInput = {
@@ -3059,6 +3179,8 @@ export type VerificationCaseCreateWithoutReportsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutReportsInput = {
@@ -3095,6 +3217,8 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutReportsInput = {
@@ -3147,6 +3271,8 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
@@ -3183,6 +3309,8 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutFieldVisitsInput = {
@@ -3219,6 +3347,8 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
@@ -3255,6 +3385,8 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutFieldVisitsInput = {
@@ -3307,6 +3439,8 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
@@ -3343,6 +3477,8 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutInvoiceLinesInput = {
@@ -3379,6 +3515,8 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
@@ -3415,6 +3553,8 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutInvoiceLinesInput = {
@@ -3467,6 +3607,8 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
@@ -3503,6 +3645,8 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutManagerReviewsInput = {
@@ -3539,6 +3683,8 @@ export type VerificationCaseCreateWithoutManagerReviewsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutManagerReviewsInput = {
@@ -3575,6 +3721,8 @@ export type VerificationCaseUncheckedCreateWithoutManagerReviewsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutManagerReviewsInput = {
@@ -3627,6 +3775,8 @@ export type VerificationCaseUpdateWithoutManagerReviewsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutManagerReviewsInput = {
@@ -3663,6 +3813,8 @@ export type VerificationCaseUncheckedUpdateWithoutManagerReviewsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutServicesInput = {
@@ -3699,6 +3851,8 @@ export type VerificationCaseCreateWithoutServicesInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutServicesInput = {
@@ -3735,6 +3889,8 @@ export type VerificationCaseUncheckedCreateWithoutServicesInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutServicesInput = {
@@ -3787,6 +3943,8 @@ export type VerificationCaseUpdateWithoutServicesInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutServicesInput = {
@@ -3823,6 +3981,8 @@ export type VerificationCaseUncheckedUpdateWithoutServicesInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateWithoutCandidateAccessInput = {
@@ -3859,6 +4019,8 @@ export type VerificationCaseCreateWithoutCandidateAccessInput = {
   reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
@@ -3895,6 +4057,8 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutCandidateAccessInput = {
@@ -3947,6 +4111,8 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
@@ -3983,6 +4149,344 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseCreateWithoutVendorAssignmentsInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutVendorAssignmentsInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorAssignmentsInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput>
+}
+
+export type VerificationCaseUpsertWithoutVendorAssignmentsInput = {
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutVendorAssignmentsInput, Prisma.VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorAssignmentsInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput>
+  where?: Prisma.VerificationCaseWhereInput
+}
+
+export type VerificationCaseUpdateToOneWithWhereWithoutVendorAssignmentsInput = {
+  where?: Prisma.VerificationCaseWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutVendorAssignmentsInput, Prisma.VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput>
+}
+
+export type VerificationCaseUpdateWithoutVendorAssignmentsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseCreateWithoutSupportRequestsInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutSupportRequestsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutSupportRequestsInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutSupportRequestsInput, Prisma.VerificationCaseUncheckedCreateWithoutSupportRequestsInput>
+}
+
+export type VerificationCaseUpsertWithoutSupportRequestsInput = {
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutSupportRequestsInput, Prisma.VerificationCaseUncheckedUpdateWithoutSupportRequestsInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutSupportRequestsInput, Prisma.VerificationCaseUncheckedCreateWithoutSupportRequestsInput>
+  where?: Prisma.VerificationCaseWhereInput
+}
+
+export type VerificationCaseUpdateToOneWithWhereWithoutSupportRequestsInput = {
+  where?: Prisma.VerificationCaseWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutSupportRequestsInput, Prisma.VerificationCaseUncheckedUpdateWithoutSupportRequestsInput>
+}
+
+export type VerificationCaseUpdateWithoutSupportRequestsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutSupportRequestsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateManyTenantInput = {
@@ -4042,6 +4546,8 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
@@ -4078,6 +4584,8 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutTenantInput = {
@@ -4161,6 +4669,8 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
@@ -4197,6 +4707,8 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutBranchInput = {
@@ -4303,6 +4815,8 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
@@ -4339,6 +4853,8 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserInput = {
@@ -4399,6 +4915,8 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
@@ -4435,6 +4953,8 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutQaReviewerInput = {
@@ -4518,6 +5038,8 @@ export type VerificationCaseUpdateWithoutClientInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutClientInput = {
@@ -4554,6 +5076,8 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutClientInput = {
@@ -4637,6 +5161,8 @@ export type VerificationCaseUpdateWithoutServicePackageInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
@@ -4673,6 +5199,8 @@ export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutServicePackageInput = {
@@ -4756,6 +5284,8 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
@@ -4792,6 +5322,8 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateManyWithoutSubjectInput = {
@@ -4836,6 +5368,8 @@ export type VerificationCaseCountOutputType = {
   fieldVisits: number
   invoiceLines: number
   candidateAccess: number
+  vendorAssignments: number
+  supportRequests: number
 }
 
 export type VerificationCaseCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -4851,6 +5385,8 @@ export type VerificationCaseCountOutputTypeSelect<ExtArgs extends runtime.Types.
   fieldVisits?: boolean | VerificationCaseCountOutputTypeCountFieldVisitsArgs
   invoiceLines?: boolean | VerificationCaseCountOutputTypeCountInvoiceLinesArgs
   candidateAccess?: boolean | VerificationCaseCountOutputTypeCountCandidateAccessArgs
+  vendorAssignments?: boolean | VerificationCaseCountOutputTypeCountVendorAssignmentsArgs
+  supportRequests?: boolean | VerificationCaseCountOutputTypeCountSupportRequestsArgs
 }
 
 /**
@@ -4947,6 +5483,20 @@ export type VerificationCaseCountOutputTypeCountCandidateAccessArgs<ExtArgs exte
   where?: Prisma.CandidatePortalAccessWhereInput
 }
 
+/**
+ * VerificationCaseCountOutputType without action
+ */
+export type VerificationCaseCountOutputTypeCountVendorAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorAssignmentWhereInput
+}
+
+/**
+ * VerificationCaseCountOutputType without action
+ */
+export type VerificationCaseCountOutputTypeCountSupportRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SupportRequestWhereInput
+}
+
 
 export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4990,6 +5540,8 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   fieldVisits?: boolean | Prisma.VerificationCase$fieldVisitsArgs<ExtArgs>
   invoiceLines?: boolean | Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.VerificationCase$candidateAccessArgs<ExtArgs>
+  vendorAssignments?: boolean | Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs>
+  supportRequests?: boolean | Prisma.VerificationCase$supportRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.VerificationCaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["verificationCase"]>
 
@@ -5041,6 +5593,8 @@ export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.Int
   fieldVisits?: boolean | Prisma.VerificationCase$fieldVisitsArgs<ExtArgs>
   invoiceLines?: boolean | Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.VerificationCase$candidateAccessArgs<ExtArgs>
+  vendorAssignments?: boolean | Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs>
+  supportRequests?: boolean | Prisma.VerificationCase$supportRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.VerificationCaseCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -5066,6 +5620,8 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     fieldVisits: Prisma.$FieldVisitPayload<ExtArgs>[]
     invoiceLines: Prisma.$InvoiceLinePayload<ExtArgs>[]
     candidateAccess: Prisma.$CandidatePortalAccessPayload<ExtArgs>[]
+    vendorAssignments: Prisma.$VendorAssignmentPayload<ExtArgs>[]
+    supportRequests: Prisma.$SupportRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -5449,6 +6005,8 @@ export interface Prisma__VerificationCaseClient<T, Null = never, ExtArgs extends
   fieldVisits<T extends Prisma.VerificationCase$fieldVisitsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$fieldVisitsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FieldVisitPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   invoiceLines<T extends Prisma.VerificationCase$invoiceLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   candidateAccess<T extends Prisma.VerificationCase$candidateAccessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$candidateAccessArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePortalAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorAssignments<T extends Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  supportRequests<T extends Prisma.VerificationCase$supportRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$supportRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6208,6 +6766,54 @@ export type VerificationCase$candidateAccessArgs<ExtArgs extends runtime.Types.E
   take?: number
   skip?: number
   distinct?: Prisma.CandidatePortalAccessScalarFieldEnum | Prisma.CandidatePortalAccessScalarFieldEnum[]
+}
+
+/**
+ * VerificationCase.vendorAssignments
+ */
+export type VerificationCase$vendorAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorAssignment
+   */
+  select?: Prisma.VendorAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorAssignment
+   */
+  omit?: Prisma.VendorAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorAssignmentWhereInput
+  orderBy?: Prisma.VendorAssignmentOrderByWithRelationInput | Prisma.VendorAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorAssignmentScalarFieldEnum | Prisma.VendorAssignmentScalarFieldEnum[]
+}
+
+/**
+ * VerificationCase.supportRequests
+ */
+export type VerificationCase$supportRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SupportRequest
+   */
+  select?: Prisma.SupportRequestSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SupportRequest
+   */
+  omit?: Prisma.SupportRequestOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SupportRequestInclude<ExtArgs> | null
+  where?: Prisma.SupportRequestWhereInput
+  orderBy?: Prisma.SupportRequestOrderByWithRelationInput | Prisma.SupportRequestOrderByWithRelationInput[]
+  cursor?: Prisma.SupportRequestWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SupportRequestScalarFieldEnum | Prisma.SupportRequestScalarFieldEnum[]
 }
 
 /**

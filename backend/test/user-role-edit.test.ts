@@ -24,6 +24,7 @@ function fixture(current = ["SALES_MANAGER", "OPS_MANAGER", "VERIFIER"]) {
     status: "ACTIVE",
     clientId: null,
     userRoles: current.map((code) => ({ role: { code } })),
+    spocClientScopes: [],
   };
   const capture = (kind: string, input: unknown) => {
     writes.push({ kind, input });

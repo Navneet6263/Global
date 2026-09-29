@@ -2,9 +2,8 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from "@nestjs/common";
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { ConfigService } from "@nestjs/config";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
@@ -16,6 +15,12 @@ import { SecretBoxService } from "../common/security/secret-box.service";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { caseEvidenceReadiness } from "../documents/evidence-readiness";
 import { CANDIDATE_PRIVACY_NOTICE } from "../documents/candidate-privacy-notice";
+import { RequesterSupportRequestsService } from "../support/services/requester-support-requests.service";
+import {
+  authorizeCandidateAccess,
+  digestPortalToken,
+  maskDestination,
+} from "./candidate-access-authorizer";
 
 @Injectable()
 export class CandidatePortalService {
@@ -25,6 +30,7 @@ export class CandidatePortalService {
     private readonly config: ConfigService,
     private readonly secretBox: SecretBoxService,
     private readonly pii: SubjectPiiService,
+    private readonly supportRequests: RequesterSupportRequestsService,
   ) {}
 
   async issue(actor: Actor, casePublicId: string) {
@@ -66,7 +72,7 @@ export class CandidatePortalService {
         data: {
           tenantId: actor.tenantId,
           caseId: verificationCase.id,
-          tokenHash: this.digest(token),
+          tokenHash: digestPortalToken(token),
           expiresAt,
         },
         select: { publicId: true },
@@ -108,17 +114,25 @@ export class CandidatePortalService {
       expiresAt,
       delivery:
         channel && address
-          ? { queued: true, channel, destination: this.mask(address, channel) }
+          ? {
+              queued: true,
+              channel,
+              destination: maskDestination(address, channel),
+            }
           : { queued: false },
     };
   }
 
   async get(publicId: string, token: string) {
-    const access = await this.authorize(publicId, token);
+    const access = await authorizeCandidateAccess(this.prisma, publicId, token);
     await this.prisma.candidatePortalAccess.update({
       where: { id: access.id },
       data: { lastAccessedAt: new Date() },
     });
+    const supportRequests = await this.supportRequests.forCandidate(
+      access.tenantId,
+      access.caseId,
+    );
     return {
       id: access.publicId,
       expiresAt: access.expiresAt,
@@ -160,6 +174,7 @@ export class CandidatePortalService {
         reportAvailable: access.case.reports.some(
           (report) => report.status === "PUBLISHED",
         ),
+        supportRequests,
       },
     };
   }
@@ -172,7 +187,7 @@ export class CandidatePortalService {
     expiry?: string,
     noticeVersion?: string,
   ) {
-    const access = await this.authorize(publicId, token);
+    const access = await authorizeCandidateAccess(this.prisma, publicId, token);
     if (noticeVersion !== CANDIDATE_PRIVACY_NOTICE.version) {
       throw new ConflictException(
         "Read and acknowledge the current privacy notice before uploading",
@@ -192,20 +207,17 @@ export class CandidatePortalService {
     );
   }
 
-  private mask(value: string, channel: "EMAIL" | "SMS") {
-    if (channel === "SMS")
-      return `${value.slice(0, 3)}******${value.slice(-2)}`;
-    const [name, domain] = value.split("@");
-    return `${(name ?? "candidate").slice(0, 2)}***@${domain ?? "hidden"}`;
-  }
-
   async respondToClarification(
     accessPublicId: string,
     token: string,
     clarificationPublicId: string,
     message: string,
   ) {
-    const access = await this.authorize(accessPublicId, token);
+    const access = await authorizeCandidateAccess(
+      this.prisma,
+      accessPublicId,
+      token,
+    );
     const clarification = access.case.clarifications.find(
       (item) => item.publicId === clarificationPublicId,
     );
@@ -266,69 +278,5 @@ export class CandidatePortalService {
       });
     });
     return { received: true, respondedAt };
-  }
-
-  private async authorize(publicId: string, token: string) {
-    const access = await this.prisma.candidatePortalAccess.findUnique({
-      where: { publicId },
-      include: {
-        tenant: { select: { publicId: true } },
-        case: {
-          include: {
-            subject: { select: { fullName: true } },
-            client: { select: { displayName: true } },
-            checks: {
-              select: { type: true, status: true },
-              orderBy: { createdAt: "asc" },
-            },
-            documents: {
-              select: {
-                type: true,
-                status: true,
-                currentVersion: true,
-                reviewNote: true,
-                expiresAt: true,
-              },
-              orderBy: { createdAt: "desc" },
-            },
-            clarifications: {
-              select: {
-                id: true,
-                publicId: true,
-                subject: true,
-                status: true,
-                dueAt: true,
-                messages: {
-                  select: { senderType: true, body: true, createdAt: true },
-                  orderBy: { createdAt: "asc" },
-                },
-              },
-              orderBy: { createdAt: "desc" },
-            },
-            consents: {
-              select: { status: true },
-              orderBy: { createdAt: "desc" },
-              take: 1,
-            },
-            reports: { select: { status: true } },
-          },
-        },
-      },
-    });
-    if (!access || access.revokedAt || access.expiresAt <= new Date())
-      throw new UnauthorizedException(
-        "Candidate access link is invalid or expired",
-      );
-    const expected = Buffer.from(access.tokenHash);
-    const actual = Buffer.from(this.digest(token));
-    if (expected.length !== actual.length || !timingSafeEqual(expected, actual))
-      throw new UnauthorizedException(
-        "Candidate access link is invalid or expired",
-      );
-    return access;
-  }
-
-  private digest(token: string) {
-    return createHash("sha256").update(token).digest("hex");
   }
 }

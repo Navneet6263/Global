@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
-import { spocScope } from "../common/auth/access-scope";
 import { CaseStatuses } from "../cases/case.constants";
 import { PrismaService } from "../database/prisma.service";
 import { attentionQueue } from "../dashboards/executive-analytics.helpers";
@@ -13,7 +12,7 @@ import {
   terminalCaseStatuses,
 } from "./spoc-holder";
 import { roleStatus } from "./spoc-role-status";
-import { spocCaseWhere, spocRange } from "./spoc-scope";
+import { resolveSpocClients, spocCaseWhere, spocRange } from "./spoc-scope";
 
 const activeCaseSelect = {
   publicId: true,
@@ -50,9 +49,8 @@ export class SpocOverviewService {
     const now = new Date();
     const range = spocRange(query, now);
     const caseWhere = spocCaseWhere(actor, query);
-    const clientScope = query.clientId
-      ? { client: { publicId: query.clientId } }
-      : {};
+    const clients = resolveSpocClients(actor, query.clientId);
+    const clientScope = clients.byClient;
     // Only live work is loaded row-by-row; every other figure is a database count.
     const [
       activeRows,
@@ -76,7 +74,7 @@ export class SpocOverviewService {
       roleStatus(this.prisma, {
         tenantId: actor.tenantId,
         caseWhere,
-        clientPublicId: query.clientId,
+        clients,
         range,
         now,
       }),
@@ -156,12 +154,11 @@ export class SpocOverviewService {
   }
 
   async filters(actor: Actor) {
-    // A SPOC-RM only sees its own client and the branches that serve it.
-    const scope = spocScope(actor);
-    const own = "clientId" in scope ? scope.clientId : undefined;
+    // A SPOC-RM only sees its assigned clients and the branches that serve them.
+    const { byClient, clientRow } = resolveSpocClients(actor);
     const [clients, branches, users] = await Promise.all([
       this.prisma.client.findMany({
-        where: { tenantId: actor.tenantId, ...(own ? { id: own } : {}) },
+        where: { tenantId: actor.tenantId, ...clientRow },
         select: { publicId: true, displayName: true, status: true },
         orderBy: { displayName: "asc" },
       }),
@@ -169,7 +166,7 @@ export class SpocOverviewService {
         where: {
           tenantId: actor.tenantId,
           isActive: true,
-          ...(own ? { cases: { some: { clientId: own } } } : {}),
+          ...("clientId" in byClient ? { cases: { some: byClient } } : {}),
         },
         select: { publicId: true, name: true, city: true },
         orderBy: { name: "asc" },

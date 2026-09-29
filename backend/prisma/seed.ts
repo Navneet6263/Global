@@ -1,8 +1,8 @@
 import "dotenv/config";
 import { PrismaMssql } from "@prisma/adapter-mssql";
 import { PrismaClient } from "../src/generated/prisma/client";
-import { Permission } from "../src/common/auth/permissions";
 import { hashPassword } from "../src/auth/password";
+import { rolePermissions } from "./seed-roles";
 import {
   isValidUserPassword,
   USER_PASSWORD_REQUIREMENTS,
@@ -20,86 +20,6 @@ const adapter = new PrismaMssql({
   },
 });
 const prisma = new PrismaClient({ adapter });
-
-const rolePermissions: Record<string, string[]> = {
-  PLATFORM_ADMIN: ["*"],
-  OPS_MANAGER: [
-    Permission.DashboardRead,
-    Permission.ClientRead,
-    Permission.CaseRead,
-    Permission.CaseCreate,
-    Permission.CaseTransition,
-    Permission.ConsentManage,
-    Permission.DocumentRead,
-    Permission.DocumentWrite,
-    Permission.TaskRead,
-    Permission.TaskWrite,
-    Permission.ClarificationRead,
-    Permission.ClarificationWrite,
-    Permission.ReportRead,
-    Permission.FieldVisitRead,
-    Permission.FieldVisitWrite,
-    Permission.FieldEvidenceRead,
-    Permission.UserRead,
-    Permission.NotificationRead,
-  ],
-  VERIFIER: [
-    Permission.DashboardRead,
-    Permission.CaseRead,
-    Permission.DocumentRead,
-    Permission.TaskRead,
-    Permission.TaskWrite,
-    Permission.ClarificationRead,
-    Permission.ClarificationWrite,
-    Permission.NotificationRead,
-  ],
-  QA_REVIEWER: [
-    Permission.DashboardRead,
-    Permission.CaseRead,
-    Permission.DocumentRead,
-    Permission.ClarificationRead,
-    Permission.QaReview,
-    Permission.ReportRead,
-    Permission.ReportGenerate,
-    Permission.FieldEvidenceRead,
-    Permission.NotificationRead,
-  ],
-  CLIENT_ADMIN: [
-    Permission.DashboardRead,
-    Permission.CaseRead,
-    Permission.CaseCreate,
-    Permission.DocumentRead,
-    Permission.DocumentWrite,
-    Permission.ClarificationRead,
-    Permission.ReportRead,
-    Permission.NotificationRead,
-  ],
-  FIELD_EXECUTIVE: [
-    Permission.CaseRead,
-    Permission.FieldVisitRead,
-    Permission.FieldVisitWrite,
-    Permission.FieldEvidenceRead,
-    Permission.NotificationRead,
-  ],
-  SALES_MANAGER: [
-    Permission.DashboardRead,
-    Permission.ClientRead,
-    Permission.ClientWrite,
-    Permission.CrmRead,
-    Permission.CrmWrite,
-    Permission.NotificationRead,
-  ],
-  FINANCE_MANAGER: [
-    Permission.DashboardRead,
-    Permission.ClientRead,
-    Permission.FinanceRead,
-    Permission.FinanceWrite,
-    Permission.NotificationRead,
-  ],
-  // View-only central monitor. Data comes only from the role-gated /spoc module;
-  // never grant write permissions (PATCH /cases/:id/status is permission-gated only).
-  SPOC_RM: [Permission.DashboardRead, Permission.NotificationRead],
-};
 
 async function main(): Promise<void> {
   const configuredAdminEmail =

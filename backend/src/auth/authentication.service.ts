@@ -31,6 +31,12 @@ export class AuthenticationService {
           branch: true,
           client: true,
           userRoles: { include: { role: true } },
+          spocClientScopes: {
+            select: {
+              client: { select: { publicId: true, displayName: true } },
+            },
+            orderBy: { client: { displayName: "asc" } },
+          },
         },
       }),
     );
@@ -89,6 +95,14 @@ export class AuthenticationService {
         branchName: user.branch?.name,
         clientId: user.client?.publicId,
         clientName: user.client?.displayName,
+        ...(user.spocClientScopes.length
+          ? {
+              clientScope: user.spocClientScopes.map(({ client }) => ({
+                id: client.publicId,
+                name: client.displayName,
+              })),
+            }
+          : {}),
         email: user.email,
         displayName: user.displayName,
         mustChangePassword: user.mustChangePassword,
@@ -107,6 +121,14 @@ export class AuthenticationService {
       branchName: actor.branchName,
       clientId: actor.clientPublicId,
       clientName: actor.clientName,
+      ...(actor.spocClients
+        ? {
+            clientScope: actor.spocClients.map((client) => ({
+              id: client.publicId,
+              name: client.name,
+            })),
+          }
+        : {}),
       email: actor.email,
       displayName: actor.displayName,
       mustChangePassword: actor.mustChangePassword,

@@ -99,7 +99,10 @@ export const ModelName = {
   Payment: 'Payment',
   CreditNote: 'CreditNote',
   Notification: 'Notification',
-  CandidatePortalAccess: 'CandidatePortalAccess'
+  CandidatePortalAccess: 'CandidatePortalAccess',
+  VendorAssignment: 'VendorAssignment',
+  SpocClientScope: 'SpocClientScope',
+  SupportRequest: 'SupportRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1024,6 +1027,63 @@ export const CandidatePortalAccessScalarFieldEnum = {
 } as const
 
 export type CandidatePortalAccessScalarFieldEnum = (typeof CandidatePortalAccessScalarFieldEnum)[keyof typeof CandidatePortalAccessScalarFieldEnum]
+
+
+export const VendorAssignmentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  clientId: 'clientId',
+  caseId: 'caseId',
+  documentId: 'documentId',
+  documentVersion: 'documentVersion',
+  attempt: 'attempt',
+  vendorUserId: 'vendorUserId',
+  assignedById: 'assignedById',
+  assignmentNote: 'assignmentNote',
+  resolutionNote: 'resolutionNote',
+  status: 'status',
+  decisionReason: 'decisionReason',
+  decidedById: 'decidedById',
+  decidedAt: 'decidedAt',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorAssignmentScalarFieldEnum = (typeof VendorAssignmentScalarFieldEnum)[keyof typeof VendorAssignmentScalarFieldEnum]
+
+
+export const SpocClientScopeScalarFieldEnum = {
+  userId: 'userId',
+  clientId: 'clientId',
+  createdAt: 'createdAt'
+} as const
+
+export type SpocClientScopeScalarFieldEnum = (typeof SpocClientScopeScalarFieldEnum)[keyof typeof SpocClientScopeScalarFieldEnum]
+
+
+export const SupportRequestScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  requestNumber: 'requestNumber',
+  requesterType: 'requesterType',
+  requesterUserId: 'requesterUserId',
+  clientId: 'clientId',
+  caseId: 'caseId',
+  subject: 'subject',
+  message: 'message',
+  status: 'status',
+  assignedToId: 'assignedToId',
+  resolutionNote: 'resolutionNote',
+  resolvedAt: 'resolvedAt',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SupportRequestScalarFieldEnum = (typeof SupportRequestScalarFieldEnum)[keyof typeof SupportRequestScalarFieldEnum]
 
 
 export const SortOrder = {

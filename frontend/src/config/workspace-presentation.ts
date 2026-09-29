@@ -74,4 +74,18 @@ export const WORKSPACE_PRESENTATION: Record<NavWorkspace, WorkspacePresentation>
     security: "/change-password",
     quickCreate: false,
   },
+  vendor: {
+    label: "Vendor",
+    heading: "Sapling Global — Vendor Reviews",
+    home: "/vendor",
+    security: "/change-password",
+    quickCreate: false,
+  },
+  support: {
+    label: "Support Agent",
+    heading: "Sapling Global — Support Desk",
+    home: "/support",
+    security: "/change-password",
+    quickCreate: false,
+  },
 };

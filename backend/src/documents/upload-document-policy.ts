@@ -1,6 +1,16 @@
 import { BadRequestException, ConflictException } from "@nestjs/common";
 import type { Prisma } from "../generated/prisma/client";
 
+/** Case stages in which documents (and new versions) may still be uploaded. */
+export const DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES: ReadonlySet<string> =
+  new Set([
+    "DRAFT",
+    "CONSENT_PENDING",
+    "DOCUMENT_PENDING",
+    "IN_PROGRESS",
+    "CLARIFICATION_PENDING",
+  ]);
+
 export function documentExpiry(value?: string): Date | undefined {
   if (!value) return undefined;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value))

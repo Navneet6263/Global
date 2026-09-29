@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDateTime, initialsOf } from "@/lib/formatting";
 import { USER_STATUS_META } from "../user-status-meta";
+import { summarizeClientScope } from "../client-scope";
 
 interface UserTableProps {
   rows: readonly PlatformUser[];
@@ -99,9 +100,19 @@ export function UserTable({
                   ))}
                 </div>
               </td>
-              <td className="px-3 py-3 text-[12px] text-muted-foreground">
-                {user.branchScope.length > 0 ? user.branchScope.join(", ") : "All branches"}
-              </td>
+              {user.roles.includes("SPOC_RM") ? (
+                // SPOC-RM scope is its client workspaces, not a branch.
+                <td
+                  className="px-3 py-3 text-[12px] text-muted-foreground"
+                  title={user.clientWorkspaceScope.join(", ")}
+                >
+                  {summarizeClientScope(user.clientWorkspaceScope)}
+                </td>
+              ) : (
+                <td className="px-3 py-3 text-[12px] text-muted-foreground">
+                  {user.branchScope.length > 0 ? user.branchScope.join(", ") : "All branches"}
+                </td>
+              )}
               {showMfa ? (
                 <td className="px-3 py-3">
                   {user.mfaEnabled === true ? (

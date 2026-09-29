@@ -76,6 +76,7 @@ void test("directory list uses database pagination and returns the exact total",
             branch: null,
             client: null,
             userRoles: [{ role: { code: "VERIFIER", name: "Verifier" } }],
+            spocClientScopes: [],
           },
         ]);
       },

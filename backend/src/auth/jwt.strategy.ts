@@ -125,6 +125,25 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       mustChangePassword: user.mustChangePassword,
       roles,
       permissions,
+      ...(roles.includes("SPOC_RM")
+        ? { spocClients: await this.spocClients(user.userId, user.tenantId) }
+        : {}),
     };
+  }
+
+  /** Live SPOC-RM client scope: a client removed by an admin stops working on the next request. */
+  private async spocClients(userId: bigint, tenantId: bigint) {
+    const rows = await this.prisma.spocClientScope.findMany({
+      where: { userId, client: { tenantId } },
+      select: {
+        client: { select: { id: true, publicId: true, displayName: true } },
+      },
+      orderBy: { client: { displayName: "asc" } },
+    });
+    return rows.map(({ client }) => ({
+      id: client.id,
+      publicId: client.publicId,
+      name: client.displayName,
+    }));
   }
 }

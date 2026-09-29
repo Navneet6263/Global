@@ -16,6 +16,8 @@ void test("implicit, platform-admin and client-admin combinations are rejected",
     [["SALES_MANAGER", "FINANCE_MANAGER"], false],
     [["PLATFORM_ADMIN", "SALES_MANAGER"], true],
     [["CLIENT_ADMIN", "VERIFIER"], true],
+    [["VENDOR", "VERIFIER"], true],
+    [["VENDOR", "OPS_MANAGER"], true],
   ] as const) {
     assert.throws(
       () => assertSafeRoleCombination(roles, confirmed),

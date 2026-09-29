@@ -26,4 +26,14 @@ export function assertSafeRoleCombination(
       "SPOC-RM is a view-only monitoring role and cannot be combined with a workflow role",
     );
   }
+  if (unique.includes("VENDOR")) {
+    throw new ConflictException(
+      "Vendor is an external role and cannot be combined with an internal role",
+    );
+  }
+  if (unique.includes("SUPPORT_AGENT")) {
+    throw new ConflictException(
+      "Support Agent is a read-only support role and cannot be combined with a workflow role",
+    );
+  }
 }

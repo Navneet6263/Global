@@ -27,6 +27,11 @@ export const Permission = {
   UserRead: "user:read",
   UserWrite: "user:write",
   NotificationRead: "notification:read",
+  VendorAssign: "vendor:assign",
+  VendorReview: "vendor:review",
+  SupportRead: "support:read",
+  SupportHandle: "support:handle",
+  SupportRequest: "support:request",
 } as const;
 
 export type PermissionName = (typeof Permission)[keyof typeof Permission];

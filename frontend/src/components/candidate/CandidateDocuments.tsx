@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, FileText, Loader2, ShieldCheck, UploadCloud } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import type { CandidateCase } from "@/lib/api/candidate-portal";
 import { uploadCandidateDocument } from "@/lib/api/candidate-portal";
 import { documentTypes, type DocumentType } from "@/lib/api/documents";
 import { humanize } from "./candidate-utils";
+import { CandidateReuploadNotice } from "./CandidateReuploadNotice";
 
 const photoDocumentTypes = new Set<DocumentType>(["AADHAAR", "PAN", "PASSPORT", "DRIVING_LICENCE"]);
 
@@ -40,6 +41,9 @@ export function CandidateDocuments({
   const [fileError, setFileError] = useState("");
   const [acknowledged, setAcknowledged] = useState(false);
   const [expiresAt, setExpiresAt] = useState("");
+  const uploadForm = useRef<HTMLDivElement>(null);
+  const uploadable = (value: string): value is DocumentType =>
+    candidateDocumentTypes.some((option) => option === value);
   const upload = useMutation({
     mutationFn: () => {
       if (!file) throw new Error("Select a file first");
@@ -90,6 +94,16 @@ export function CandidateDocuments({
           I have read this notice ({privacyNotice.version}).
         </label>
       </div>
+      <CandidateReuploadNotice
+        documents={documents}
+        canUpload={canUpload}
+        isUploadable={uploadable}
+        onUpload={(value) => {
+          if (!uploadable(value)) return;
+          setType(value);
+          uploadForm.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }}
+      />
       {requiredTypes.length ? (
         <div className="mt-3 rounded-2xl border border-border p-3 text-xs">
           <p className="font-semibold">Required for your selected checks</p>
@@ -112,7 +126,7 @@ export function CandidateDocuments({
       ) : null}
 
       {canUpload ? (
-        <div className="mt-4 space-y-3">
+        <div ref={uploadForm} className="mt-4 space-y-3">
           <label className="block">
             <span className="mb-1.5 block text-[10px] font-medium text-muted-foreground">
               Document type

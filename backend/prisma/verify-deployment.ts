@@ -12,6 +12,7 @@ const requiredRoleCodes = [
   "SALES_MANAGER",
   "FINANCE_MANAGER",
   "SPOC_RM",
+  "VENDOR",
 ] as const;
 
 const requiredMigrations = [
@@ -38,6 +39,9 @@ const requiredMigrations = [
   "20260909120000_commercial_source_controls",
   "20260925120000_spoc_rm_role",
   "20260926090000_tenant_access_policy",
+  "20260928100000_vendor_assignments",
+  "20260929100000_spoc_client_scope",
+  "20260930100000_support_requests",
 ] as const;
 
 function required(name: string): string {

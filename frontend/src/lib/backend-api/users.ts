@@ -14,6 +14,8 @@ export interface DirectoryUser {
   branch?: { publicId: string; code: string; name: string } | null;
   client?: { publicId: string; displayName: string } | null;
   roles: Array<{ code: string; name: string }>;
+  /** SPOC-RM client workspaces (empty for every other role). */
+  spocClients?: Array<{ id: string; displayName: string }>;
 }
 
 export interface DirectoryRole {
@@ -46,6 +48,7 @@ export function createUser(input: {
   phone?: string;
   branchId?: string;
   clientId?: string;
+  spocClientIds?: string[];
   roleCodes: string[];
   additionalAccessConfirmed?: boolean;
   temporaryPassword: string;
@@ -73,6 +76,7 @@ export function updateUser(
     status?: "ACTIVE" | "SUSPENDED";
     roleCodes?: string[];
     additionalAccessConfirmed?: boolean;
+    spocClientIds?: string[];
   },
 ) {
   return apiRequest<{ id: string; version: number }>(`/users/${userId}`, {

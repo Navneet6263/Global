@@ -20,12 +20,16 @@ import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
 import { withUploadedBinary } from "../common/http/upload-capacity";
 import { RespondClarificationDto } from "../clarifications/dto/respond-clarification.dto";
+import { SUPPORT_ROUTES } from "../support/support.routes";
+import { RaiseSupportRequestDto } from "../support/support.validation";
 import { CandidatePortalService } from "./candidate-portal.service";
+import { CandidateSupportService } from "./candidate-support.service";
 
 @Controller()
 export class CandidatePortalController {
   constructor(
     private readonly portal: CandidatePortalService,
+    private readonly support: CandidateSupportService,
     private readonly config: ConfigService,
   ) {}
 
@@ -92,5 +96,16 @@ export class CandidatePortalController {
       clarificationId,
       input.message,
     );
+  }
+
+  @Post(SUPPORT_ROUTES.candidateRequests)
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  raiseSupportRequest(
+    @Param("accessId", ParseUUIDPipe) accessId: string,
+    @Headers("x-portal-token") token: string,
+    @Body() input: RaiseSupportRequestDto,
+  ) {
+    return this.support.raise(accessId, token ?? "", input);
   }
 }

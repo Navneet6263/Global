@@ -28,7 +28,21 @@ export interface CandidatePortalData {
     }>;
     consentStatus: string;
     reportAvailable: boolean;
+    /** The candidate's own support requests for this case, with the team's reply. */
+    supportRequests: CandidateSupportRequest[];
   };
+}
+
+export interface CandidateSupportRequest {
+  id: string;
+  requestNumber: string;
+  subject: string;
+  caseNumber: string | null;
+  status: "OPEN" | "IN_PROGRESS" | "RESOLVED";
+  reply: string | null;
+  resolvedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type CandidateCase = CandidatePortalData["case"];
@@ -87,6 +101,22 @@ export function respondToCandidateClarification(
       method: "POST",
       headers: { "x-portal-token": token },
       body: JSON.stringify({ message }),
+    },
+  );
+}
+
+/** "Raise a support request" from the candidate link; the server resolves the case. */
+export function raiseCandidateSupportRequest(
+  accessId: string,
+  token: string,
+  input: { subject: string; message: string },
+) {
+  return apiRequest<CandidateSupportRequest>(
+    `/public/candidate-access/${accessId}/support-requests`,
+    {
+      method: "POST",
+      headers: { "x-portal-token": token },
+      body: JSON.stringify(input),
     },
   );
 }

@@ -8,6 +8,7 @@ import { CandidatePortalService } from "../src/candidate-portal/candidate-portal
 import type { PrismaService } from "../src/database/prisma.service";
 import type { DocumentsService } from "../src/documents/documents.service";
 import type { CandidateAccessDelivery } from "../src/outbox/outbox-worker.types";
+import type { RequesterSupportRequestsService } from "../src/support/services/requester-support-requests.service";
 
 const actor = {
   tenantId: 7n,
@@ -66,6 +67,7 @@ void test("candidate access queues an encrypted, expiring delivery", async () =>
     config,
     secrets,
     new SubjectPiiService(secrets),
+    {} as RequesterSupportRequestsService,
   );
 
   const result = await service.issue(

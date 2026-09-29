@@ -1,4 +1,7 @@
-/** Public surface of the SPOC-RM central monitoring feature (view-only). */
+/**
+ * Public surface of the SPOC-RM central monitoring feature. Everything is view-only
+ * except the Vendors capability (assign / re-assign documents to vendors).
+ */
 export { SpocAttentionQueue } from "./components/SpocAttentionQueue";
 export { SpocCaseDrawer } from "./components/SpocCaseDrawer";
 export { SpocClientTable } from "./components/SpocClientTable";
@@ -12,8 +15,13 @@ export {
   spocClientsSearch,
   spocOverviewSearch,
   spocRecordsSearch,
+  spocVendorsSearch,
   type SpocClientsSearch,
   type SpocOverviewSearch,
   type SpocRecordsSearch,
+  type SpocVendorsSearch,
 } from "./config/spoc-search";
 export { useSpocOverview } from "./hooks/use-spoc";
+export { SpocVendorClients } from "./vendors/SpocVendorClients";
+export { SpocVendorDocumentDrawer } from "./vendors/SpocVendorDocumentDrawer";
+export { SpocVendorDocuments } from "./vendors/SpocVendorDocuments";

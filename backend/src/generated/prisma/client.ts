@@ -284,3 +284,23 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type CandidatePortalAccess = Prisma.CandidatePortalAccessModel
+/**
+ * Model VendorAssignment
+ * One attempt to have a Vendor review one uploaded document. A rejected attempt is
+ * never edited: re-assignment adds attempt n+1, so the rows are the full history.
+ * Vendor decisions never change Document.status or the case workflow.
+ */
+export type VendorAssignment = Prisma.VendorAssignmentModel
+/**
+ * Model SpocClientScope
+ * Clients a SPOC-RM may monitor and manage vendor work for. SPOC-RM only: every
+ * other role keeps its single User.clientId, which stays null for SPOC-RM users.
+ */
+export type SpocClientScope = Prisma.SpocClientScopeModel
+/**
+ * Model SupportRequest
+ * A help request raised by a candidate (through their portal link) or a Client
+ * Admin, worked by Support Agents. The client and case are always resolved on the
+ * server from the requester, never from the request body.
+ */
+export type SupportRequest = Prisma.SupportRequestModel

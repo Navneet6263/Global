@@ -3,6 +3,7 @@ import { CRM_NAV_GROUPS, CRM_NAV_ITEMS } from "./navigation.crm";
 import { OPS_NAV_GROUPS, OPS_NAV_ITEMS } from "./navigation.operations";
 import { ROLE_NAVIGATION } from "./navigation.roles";
 import { SPOC_NAV_GROUPS, SPOC_NAV_ITEMS } from "./navigation.spoc";
+import { SUPPORT_NAV_GROUPS, SUPPORT_NAV_ITEMS } from "./navigation.support";
 import type { NavWorkspace, WorkspaceNavigation } from "./navigation.types";
 
 export type {
@@ -24,6 +25,8 @@ const NAVIGATION: Record<NavWorkspace, WorkspaceNavigation> = {
   "field-executive": ROLE_NAVIGATION["field-executive"]!,
   finance: ROLE_NAVIGATION.finance!,
   "spoc-rm": { groups: SPOC_NAV_GROUPS, items: SPOC_NAV_ITEMS },
+  vendor: ROLE_NAVIGATION.vendor!,
+  support: { groups: SUPPORT_NAV_GROUPS, items: SUPPORT_NAV_ITEMS },
 };
 
 export function navFor(workspace: NavWorkspace): WorkspaceNavigation {

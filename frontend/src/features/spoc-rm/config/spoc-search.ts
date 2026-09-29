@@ -78,3 +78,16 @@ export const spocClientsSearch = z.object({
   status: z.enum(["ONBOARDING", "ACTIVE", "SUSPENDED"]).optional().catch(undefined),
 });
 export type SpocClientsSearch = z.infer<typeof spocClientsSearch>;
+
+/** Vendors page: client list, or one client's documents when clientId is set. */
+export const spocVendorsSearch = z.object({
+  clientId: uuid,
+  documentId: uuid,
+  page,
+  search: text,
+  vendorStatus: z
+    .enum(["NOT_ASSIGNED", "PENDING", "APPROVED", "REJECTED"])
+    .optional()
+    .catch(undefined),
+});
+export type SpocVendorsSearch = z.infer<typeof spocVendorsSearch>;

@@ -4,7 +4,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
 
-const EXCLUSIVE_ROLES: readonly Role[] = ["PLATFORM_ADMIN", "CLIENT_ADMIN", "SPOC_RM"];
+const EXCLUSIVE_ROLES: readonly Role[] = [
+  "PLATFORM_ADMIN",
+  "CLIENT_ADMIN",
+  "SPOC_RM",
+  "VENDOR",
+  "SUPPORT_AGENT",
+];
 
 export function UserRolePicker({
   selected,

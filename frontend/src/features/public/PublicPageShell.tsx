@@ -8,10 +8,13 @@ export function PublicPageShell({
   context,
   children,
   width = "wide",
+  actions,
 }: {
   context: string;
   children: ReactNode;
   width?: "compact" | "wide";
+  /** Page-specific header buttons (the candidate page adds Support). */
+  actions?: ReactNode;
 }) {
   return (
     <PageHelpProvider workspace="candidate">
@@ -30,6 +33,7 @@ export function PublicPageShell({
               </div>
             </div>
             <div className="flex items-center gap-1">
+              {actions}
               <HelpLauncher />
               <div className="flex shrink-0 items-center gap-2 rounded-full bg-mint-soft px-3 py-2 text-[10px] font-semibold text-mint-deep">
                 <ShieldCheck className="size-3.5" aria-hidden />

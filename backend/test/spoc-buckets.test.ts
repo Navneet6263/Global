@@ -40,6 +40,7 @@ void test("verifier matrix counts use the same where-clause as the drill-down li
   await roleStatus(matrix.prisma, {
     tenantId: 7n,
     caseWhere: { tenantId: 7n },
+    clients: { byClient: {}, clientRow: {} },
     range,
     now,
   });

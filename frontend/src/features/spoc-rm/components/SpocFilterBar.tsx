@@ -25,10 +25,11 @@ export function SpocFilterBar({
 }) {
   const options = useSpocFilters();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
-  const pinnedClient =
-    session.data && !session.data.roles.includes("PLATFORM_ADMIN")
-      ? session.data.clientName
-      : undefined;
+  const spoc = Boolean(session.data && !session.data.roles.includes("PLATFORM_ADMIN"));
+  const assigned = spoc ? (session.data?.clientScope ?? []) : [];
+  // One assigned client is shown locked; several can be switched between, and the
+  // options come from /spoc/filters, which the server limits to the assigned clients.
+  const pinnedClient = spoc && assigned.length === 1 ? assigned[0]?.name : undefined;
   const set = (patch: Partial<SpocScopeFilters>) => onChange({ ...value, ...patch });
   const active = Object.entries(value).some(
     ([key, entry]) => Boolean(entry) && !(pinnedClient && key === "clientId"),
@@ -40,7 +41,7 @@ export function SpocFilterBar({
       className="flex flex-wrap items-center gap-2 rounded-[1.35rem] border border-white/80 bg-card/85 p-3 shadow-[var(--shadow-card)]"
     >
       {pinnedClient ? (
-        // The server pins a SPOC-RM to its client; this only mirrors that scope in the UI.
+        // The server limits a SPOC-RM to its clients; this only mirrors that scope in the UI.
         <span className={`${control} inline-flex items-center gap-1.5`}>
           <Lock className="size-3.5 text-muted-foreground" aria-hidden />
           {pinnedClient}
@@ -52,7 +53,7 @@ export function SpocFilterBar({
           value={value.clientId ?? ""}
           onChange={(event) => set({ clientId: event.target.value || undefined })}
         >
-          <option value="">All clients</option>
+          <option value="">{spoc ? "All assigned clients" : "All clients"}</option>
           {options.data?.clients.map((client) => (
             <option key={client.id} value={client.id}>
               {client.displayName}

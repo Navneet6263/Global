@@ -13,15 +13,26 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { sameClientSet, type ScopeOption } from "../client-scope";
 import { useUpdateUserRoles } from "../hooks/use-users";
+import { ClientScopePicker } from "./client-scope-picker";
 
-const EXCLUSIVE: readonly Role[] = ["PLATFORM_ADMIN", "CLIENT_ADMIN", "SPOC_RM"];
+const EXCLUSIVE: readonly Role[] = [
+  "PLATFORM_ADMIN",
+  "CLIENT_ADMIN",
+  "SPOC_RM",
+  "VENDOR",
+  "SUPPORT_AGENT",
+];
 
 export function EditUserRolesDialog({
   user,
+  clients,
   onClose,
 }: {
   user: PlatformUser;
+  /** Client workspaces a SPOC-RM can be given (the server re-checks each one). */
+  clients: readonly ScopeOption[];
   onClose: () => void;
 }) {
   const [mode, setMode] = useState<"single" | "multiple">(
@@ -29,11 +40,25 @@ export function EditUserRolesDialog({
   );
   const [selected, setSelected] = useState<Role[]>([...user.roles]);
   const [confirmed, setConfirmed] = useState(false);
+  const initialClients = user.clientWorkspaceIds ?? [];
+  const [clientIds, setClientIds] = useState<string[]>([...initialClients]);
   const update = useUpdateUserRoles();
   const busy = useRef(false);
   const added = selected.filter((role) => !user.roles.includes(role));
   const removed = user.roles.filter((role) => !selected.includes(role));
-  const changed = Boolean(added.length || removed.length);
+  // SPOC-RM client workspaces are edited here too; other roles keep their scope.
+  const spoc = selected.includes("SPOC_RM");
+  const rolesChanged = Boolean(added.length || removed.length);
+  const clientsChanged = spoc && !sameClientSet(clientIds, initialClients);
+  const clientsMissing = spoc && !clientIds.length;
+  const changed = rolesChanged || clientsChanged;
+  // Keep every currently assigned client visible, even if the list omits it.
+  const options = [
+    ...clients,
+    ...initialClients
+      .map((id, index) => ({ id, label: user.clientWorkspaceScope[index] ?? id }))
+      .filter((own) => !clients.some((option) => option.id.toLowerCase() === own.id.toLowerCase())),
+  ];
   const choose = (role: Role) => {
     setConfirmed(false);
     if (mode === "single" || EXCLUSIVE.includes(role)) setSelected([role]);
@@ -49,6 +74,7 @@ export function EditUserRolesDialog({
       busy.current ||
       !user.version ||
       !changed ||
+      clientsMissing ||
       !selected.length ||
       (selected.length > 1 && !confirmed)
     )
@@ -60,11 +86,14 @@ export function EditUserRolesDialog({
         version: user.version,
         roleCodes: selected,
         additionalAccessConfirmed: selected.length > 1 && confirmed,
+        ...(spoc ? { spocClientIds: clientIds } : {}),
       },
       {
         onSuccess: () => {
-          toast.success("User roles updated", {
-            description: "The user must sign in again with their updated access.",
+          toast.success(rolesChanged ? "User roles updated" : "Client access updated", {
+            description: rolesChanged
+              ? "The user must sign in again with their updated access."
+              : "The new client access applies from the user's next request.",
           });
           onClose();
         },
@@ -95,15 +124,25 @@ export function EditUserRolesDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="min-h-0 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
-          <div className="rounded-2xl border border-sky-100 bg-sky-50/60 p-4 text-sm">
-            <p className="font-medium">Branch and client scope stay unchanged</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {user.branchScope.join(", ") || "All branches"}
-              {user.clientWorkspaceScope.length
-                ? ` · ${user.clientWorkspaceScope.join(", ")}`
-                : " · No client restriction"}
-            </p>
-          </div>
+          {spoc ? (
+            <ClientScopePicker
+              options={options}
+              value={clientIds}
+              onChange={setClientIds}
+              disabled={update.isPending}
+              error={clientsMissing ? "Select at least one client workspace." : undefined}
+            />
+          ) : (
+            <div className="rounded-2xl border border-sky-100 bg-sky-50/60 p-4 text-sm">
+              <p className="font-medium">Branch and client scope stay unchanged</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {user.branchScope.join(", ") || "All branches"}
+                {user.clientWorkspaceScope.length
+                  ? ` · ${user.clientWorkspaceScope.join(", ")}`
+                  : " · No client restriction"}
+              </p>
+            </div>
+          )}
           <fieldset disabled={update.isPending} className="space-y-4">
             <legend className="mb-2 text-sm font-semibold">Access mode</legend>
             <RadioGroup
@@ -224,11 +263,15 @@ export function EditUserRolesDialog({
               type="button"
               loading={update.isPending}
               disabled={
-                !changed || !user.version || !selected.length || (selected.length > 1 && !confirmed)
+                !changed ||
+                clientsMissing ||
+                !user.version ||
+                !selected.length ||
+                (selected.length > 1 && !confirmed)
               }
               onClick={save}
             >
-              Save roles
+              Save access
             </Button>
           </div>
         </footer>

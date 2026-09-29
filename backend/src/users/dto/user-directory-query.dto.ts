@@ -19,6 +19,8 @@ export const DirectoryRoleCodes = [
   "SALES_MANAGER",
   "FINANCE_MANAGER",
   "SPOC_RM",
+  "VENDOR",
+  "SUPPORT_AGENT",
 ] as const;
 
 export const DirectoryStatuses = ["ACTIVE", "SUSPENDED", "INVITED"] as const;

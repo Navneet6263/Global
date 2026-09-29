@@ -4,6 +4,7 @@ import {
   statusesHeldBy,
   terminalCaseStatuses,
 } from "./spoc-holder";
+import type { SpocClientFilters } from "./spoc-scope";
 
 /**
  * Single source of truth for the SPOC role matrix. The overview counts and the
@@ -23,7 +24,8 @@ export interface BucketContext {
   tenantId: bigint;
   /** Tenant-wide case filter incl. client / branch / priority. */
   caseWhere: Record<string, unknown>;
-  clientPublicId?: string;
+  /** Client scope for non-case rows (opportunities, invoices, clients). */
+  clients: SpocClientFilters;
   range: { from: Date; to: Date };
   now: Date;
 }

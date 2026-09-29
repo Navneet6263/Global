@@ -45,6 +45,8 @@ model Tenant {
   candidateAccess CandidatePortalAccess[]
   privacyRecords  PrivacyRecord[]
   vendorSharingRecords VendorSharingRecord[]
+  vendorAssignments VendorAssignment[]
+  supportRequests SupportRequest[]
 }
 
 model Branch {
@@ -118,6 +120,12 @@ model User {
   qaClaimedCases      VerificationCase[]     @relation("CaseQaReviewer")
   createdPrivacyRecords PrivacyRecord[] @relation("PrivacyRecordCreator")
   updatedPrivacyRecords PrivacyRecord[] @relation("PrivacyRecordUpdater")
+  vendorRequests        VendorAssignment[] @relation("VendorAssignee")
+  vendorAssignmentsMade VendorAssignment[] @relation("VendorAssigner")
+  vendorDecisions       VendorAssignment[] @relation("VendorDecider")
+  spocClientScopes      SpocClientScope[]
+  supportRequestsRaised SupportRequest[] @relation("SupportRequester")
+  supportRequestsTaken  SupportRequest[] @relation("SupportAssignee")
 
   @@unique([tenantId, normalizedEmail])
   @@index([tenantId, status])
@@ -258,6 +266,9 @@ model Client {
   invoices      Invoice[]
   packageRates  ClientPackageRate[]
   agreements    ClientAgreement[]
+  vendorAssignments VendorAssignment[]
+  spocScopes    SpocClientScope[]
+  supportRequests SupportRequest[]
 
   @@unique([tenantId, code])
   @@index([tenantId, status, displayName])
@@ -350,6 +361,8 @@ model VerificationCase {
   fieldVisits     FieldVisit[]
   invoiceLines    InvoiceLine[]
   candidateAccess CandidatePortalAccess[]
+  vendorAssignments VendorAssignment[]
+  supportRequests SupportRequest[]
 
   @@unique([tenantId, caseNumber])
   @@index([tenantId, status, dueAt])
@@ -461,6 +474,7 @@ model Document {
   tenant   Tenant            @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   case     VerificationCase  @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   versions DocumentVersion[]
+  vendorAssignments VendorAssignment[]
 
   @@index([tenantId, caseId, status])
 }
@@ -1140,4 +1154,91 @@ model CandidatePortalAccess {
   case   VerificationCase @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([tenantId, caseId, expiresAt])
+}
+
+/// One attempt to have a Vendor review one uploaded document. A rejected attempt is
+/// never edited: re-assignment adds attempt n+1, so the rows are the full history.
+/// Vendor decisions never change Document.status or the case workflow.
+model VendorAssignment {
+  id              BigInt    @id @default(autoincrement())
+  publicId        String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId        BigInt
+  clientId        BigInt
+  caseId          BigInt
+  documentId      BigInt
+  documentVersion Int
+  attempt         Int
+  vendorUserId    BigInt
+  assignedById    BigInt
+  assignmentNote  String?   @db.NVarChar(1000)
+  resolutionNote  String?   @db.NVarChar(1000)
+  status          String    @default("PENDING") @db.VarChar(24)
+  decisionReason  String?   @db.NVarChar(1000)
+  decidedById     BigInt?
+  decidedAt       DateTime? @db.DateTime2
+  version         Int       @default(1)
+  createdAt       DateTime  @default(now()) @db.DateTime2
+  updatedAt       DateTime  @updatedAt @db.DateTime2
+
+  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  client     Client           @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  case       VerificationCase @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  document   Document         @relation(fields: [documentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendor     User             @relation("VendorAssignee", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assignedBy User             @relation("VendorAssigner", fields: [assignedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  decidedBy  User?            @relation("VendorDecider", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([documentId, attempt])
+  @@index([tenantId, vendorUserId, status, createdAt])
+  @@index([tenantId, clientId, status])
+  @@index([caseId])
+}
+
+/// Clients a SPOC-RM may monitor and manage vendor work for. SPOC-RM only: every
+/// other role keeps its single User.clientId, which stays null for SPOC-RM users.
+model SpocClientScope {
+  userId    BigInt
+  clientId  BigInt
+  createdAt DateTime @default(now()) @db.DateTime2
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  client Client @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([userId, clientId])
+  @@index([clientId, userId])
+}
+
+/// A help request raised by a candidate (through their portal link) or a Client
+/// Admin, worked by Support Agents. The client and case are always resolved on the
+/// server from the requester, never from the request body.
+model SupportRequest {
+  id              BigInt    @id @default(autoincrement())
+  publicId        String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId        BigInt
+  requestNumber   String    @db.VarChar(32)
+  requesterType   String    @db.VarChar(16)
+  requesterUserId BigInt?
+  clientId        BigInt
+  caseId          BigInt?
+  subject         String    @db.NVarChar(160)
+  message         String    @db.NVarChar(2000)
+  status          String    @default("OPEN") @db.VarChar(16)
+  assignedToId    BigInt?
+  resolutionNote  String?   @db.NVarChar(2000)
+  resolvedAt      DateTime? @db.DateTime2
+  version         Int       @default(1)
+  createdAt       DateTime  @default(now()) @db.DateTime2
+  updatedAt       DateTime  @updatedAt @db.DateTime2
+
+  tenant     Tenant            @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  client     Client            @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  case       VerificationCase? @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  requester  User?             @relation("SupportRequester", fields: [requesterUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assignedTo User?             @relation("SupportAssignee", fields: [assignedToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([tenantId, requestNumber])
+  @@index([tenantId, status, createdAt])
+  @@index([tenantId, clientId, createdAt])
+  @@index([caseId])
+  @@index([requesterUserId, createdAt])
 }

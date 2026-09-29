@@ -14,7 +14,9 @@ export type NavWorkspace =
   | "qa-reviewer"
   | "field-executive"
   | "finance"
-  | "spoc-rm";
+  | "spoc-rm"
+  | "vendor"
+  | "support";
 
 export interface NavGroup {
   id: NavGroupId;

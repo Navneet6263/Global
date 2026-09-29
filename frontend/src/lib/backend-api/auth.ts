@@ -8,6 +8,8 @@ export type Session = {
   branchName?: string;
   clientId?: string;
   clientName?: string;
+  /** SPOC-RM only: its assigned client workspaces. */
+  clientScope?: Array<{ id: string; name: string }>;
   email: string;
   displayName: string;
   mustChangePassword: boolean;

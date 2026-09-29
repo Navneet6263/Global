@@ -16,7 +16,12 @@ import {
   taskBucket,
   visitBucket,
 } from "./spoc-buckets";
-import { pageResult, paging, spocCaseWhere } from "./spoc-scope";
+import {
+  pageResult,
+  paging,
+  resolveSpocClients,
+  spocCaseWhere,
+} from "./spoc-scope";
 
 function withBucket(where: object, bucket: object | null) {
   return bucket ? { AND: [where, bucket] } : where;
@@ -214,7 +219,7 @@ export class SpocWorkRecordsService {
       tenantId: actor.tenantId,
       ...(query.stage ? { stage: query.stage } : {}),
       ...(query.ownerId ? { owner: { publicId: query.ownerId } } : {}),
-      ...(query.clientId ? { client: { publicId: query.clientId } } : {}),
+      ...resolveSpocClients(actor, query.clientId).byClient,
       ...(query.followUp === "overdue"
         ? { ...open, nextFollowUpAt: { lt: now } }
         : {}),
@@ -297,7 +302,7 @@ export class SpocWorkRecordsService {
         : query.status
           ? { status: query.status }
           : { status: { not: "DRAFT" } }),
-      ...(query.clientId ? { client: { publicId: query.clientId } } : {}),
+      ...resolveSpocClients(actor, query.clientId).byClient,
       ...(text
         ? {
             OR: [

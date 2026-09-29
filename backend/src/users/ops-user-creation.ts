@@ -12,6 +12,8 @@ export const OPS_CREATABLE_ROLES: readonly string[] = [
   "SPOC_RM",
   "SALES_MANAGER",
   "FINANCE_MANAGER",
+  "VENDOR",
+  "SUPPORT_AGENT",
 ];
 
 /** Roles whose existing scope includes an operating branch (see frontend ROLE_DEFINITIONS). */

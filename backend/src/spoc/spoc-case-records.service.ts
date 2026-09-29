@@ -15,7 +15,13 @@ import {
   statusesHeldBy,
   terminalCaseStatuses,
 } from "./spoc-holder";
-import { pageResult, paging, spocCaseWhere, spocRange } from "./spoc-scope";
+import {
+  pageResult,
+  paging,
+  resolveSpocClients,
+  spocCaseWhere,
+  spocRange,
+} from "./spoc-scope";
 
 /** Bucket context for a record list; case filters are already applied by the caller. */
 export function bucketContext(
@@ -26,7 +32,7 @@ export function bucketContext(
   return {
     tenantId: actor.tenantId,
     caseWhere: {},
-    clientPublicId: query.clientId,
+    clients: resolveSpocClients(actor, query.clientId),
     range: spocRange(query, now),
     now,
   };

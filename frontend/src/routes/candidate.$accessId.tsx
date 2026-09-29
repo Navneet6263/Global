@@ -6,6 +6,7 @@ import { CandidateChecks } from "@/components/candidate/CandidateChecks";
 import { CandidateDocuments } from "@/components/candidate/CandidateDocuments";
 import { CandidateOverview } from "@/components/candidate/CandidateOverview";
 import { PublicPageShell } from "@/features/public/PublicPageShell";
+import { CandidateSupportSheet } from "@/features/support/components/CandidateSupportSheet";
 import { PublicLoading, PublicUnavailable } from "@/features/public/PublicStates";
 import { getCandidatePortal } from "@/lib/api/candidate-portal";
 import { capturePublicLinkToken } from "@/lib/auth/public-link-token";
@@ -30,7 +31,18 @@ function CandidatePortalPage() {
   });
   const data = portal.data?.case;
   return (
-    <PublicPageShell context="Secure candidate workspace">
+    <PublicPageShell
+      context="Secure candidate workspace"
+      actions={
+        data ? (
+          <CandidateSupportSheet
+            accessId={accessId}
+            token={accessToken}
+            requests={data.supportRequests}
+          />
+        ) : null
+      }
+    >
       <div className="mx-auto max-w-5xl">
         {token === null ? <PublicLoading /> : null}
         {token === "" ? (

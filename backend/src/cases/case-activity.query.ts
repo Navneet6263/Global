@@ -35,6 +35,9 @@ export function caseActivityScope(
     OR (a.[resourceType] = 'invoice' AND EXISTS (
       SELECT 1 FROM [dbo].[InvoiceLine] l JOIN [dbo].[Invoice] i ON i.[id] = l.[invoiceId]
       WHERE l.[caseId] = ${caseId} AND CONVERT(varchar(36), i.[publicId]) = a.[resourcePublicId]))
+    OR (a.[resourceType] = 'vendor_assignment' AND EXISTS (
+      SELECT 1 FROM [dbo].[VendorAssignment] va WHERE va.[caseId] = ${caseId}
+      AND CONVERT(varchar(36), va.[publicId]) = a.[resourcePublicId]))
   )`;
 }
 

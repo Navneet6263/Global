@@ -7,7 +7,7 @@ import {
   statusesHeldBy,
   terminalCaseStatuses,
 } from "./spoc-holder";
-import { pageResult, paging } from "./spoc-scope";
+import { pageResult, paging, resolveSpocClients } from "./spoc-scope";
 
 function tally<T>(
   rows: T[],
@@ -32,7 +32,7 @@ export class SpocClientsService {
     const where = {
       tenantId: actor.tenantId,
       ...(query.status ? { status: query.status } : {}),
-      ...(query.clientId ? { publicId: query.clientId } : {}),
+      ...resolveSpocClients(actor, query.clientId).clientRow,
       ...(text
         ? {
             OR: [

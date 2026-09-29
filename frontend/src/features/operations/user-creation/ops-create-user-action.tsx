@@ -25,7 +25,11 @@ export function OpsCreateUserAction() {
   const createUser = useCreateUser();
   const options = opsCreationOptions(policy.data, ROLES);
   const needsClients = Boolean(
-    options?.roles.some((role) => ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace")),
+    options?.roles.some((role) =>
+      ROLE_DEFINITIONS[role].scopeFields.some(
+        (field) => field === "clientWorkspace" || field === "clientWorkspaces",
+      ),
+    ),
   );
   const clients = useQuery({
     queryKey: ["users", "scope-options", "clients"],
