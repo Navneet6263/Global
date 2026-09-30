@@ -108,6 +108,10 @@ export function UserTable({
                 >
                   {summarizeClientScope(user.clientWorkspaceScope)}
                 </td>
+              ) : user.vendorTeamOf ? (
+                <td className="px-3 py-3 text-[12px] text-muted-foreground">
+                  Vendor team: {user.vendorTeamOf}
+                </td>
               ) : (
                 <td className="px-3 py-3 text-[12px] text-muted-foreground">
                   {user.branchScope.length > 0 ? user.branchScope.join(", ") : "All branches"}

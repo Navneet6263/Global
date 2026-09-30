@@ -20,6 +20,14 @@ import {
   type ScopeClient,
 } from "./spoc-client-scope";
 import { networkLocationLabel } from "../common/http/network-location";
+import { applyVendorTeamRulesOnEdit } from "../vendor-requests/services/vendor-team-rules";
+import {
+  assertEmailAvailable,
+  insertUserAccount,
+  resetAccountPassword,
+  resolveRoles,
+  revokeSessions,
+} from "./user-accounts";
 import type { UserActivityQueryDto } from "./dto/user-activity-query.dto";
 
 const toSpocClient = ({
@@ -58,6 +66,7 @@ export class UsersService {
           version: true,
           branch: { select: { publicId: true, code: true, name: true } },
           client: { select: { publicId: true, displayName: true } },
+          vendorOwner: { select: { displayName: true } },
           userRoles: {
             select: { role: { select: { code: true, name: true } } },
           },
@@ -76,9 +85,10 @@ export class UsersService {
     ]);
     return {
       items: users.map(
-        ({ publicId, userRoles, spocClientScopes, ...user }) => ({
+        ({ publicId, userRoles, spocClientScopes, vendorOwner, ...user }) => ({
           id: publicId,
           ...user,
+          vendorTeamOf: vendorOwner?.displayName ?? null,
           roles: userRoles.map(({ role: assignedRole }) => assignedRole),
           spocClients: spocClientScopes.map(({ client }) =>
             toSpocClient(client),
@@ -123,21 +133,9 @@ export class UsersService {
     const createdVia = await assertCanCreateUser(this.prisma, actor, input);
     assertSafeRoleCombination(input.roleCodes, input.additionalAccessConfirmed);
     assertSpocClientInput(input.roleCodes, input);
-    const normalizedEmail = input.email.trim().toLowerCase();
-    const exists = await this.prisma.user.findFirst({
-      where: { tenantId: actor.tenantId, normalizedEmail },
-      select: { id: true },
-    });
-    if (exists)
-      throw new ConflictException("A user with this email already exists");
+    await assertEmailAvailable(this.prisma, actor.tenantId, input.email);
     const [roles, branch, client, scopeClients] = await Promise.all([
-      this.prisma.role.findMany({
-        where: {
-          tenantId: actor.tenantId,
-          code: { in: [...new Set(input.roleCodes)] },
-        },
-        select: { id: true, code: true },
-      }),
+      resolveRoles(this.prisma, actor.tenantId, input.roleCodes),
       input.branchId
         ? this.prisma.branch.findFirst({
             where: {
@@ -162,8 +160,6 @@ export class UsersService {
         ? resolveScopeClients(this.prisma, actor.tenantId, input.spocClientIds)
         : ([] as ScopeClient[]),
     ]);
-    if (roles.length !== new Set(input.roleCodes).size)
-      throw new NotFoundException("One or more roles were not found");
     if (input.branchId && !branch)
       throw new NotFoundException("Active branch not found");
     if (input.clientId && !client)
@@ -182,51 +178,22 @@ export class UsersService {
       );
     const passwordHash = await hashPassword(input.temporaryPassword);
     return this.prisma.$transaction(async (tx) => {
-      const row = await tx.user.create({
-        data: {
-          tenantId: actor.tenantId,
-          branchId: branch?.id,
-          clientId: client?.id,
-          email: input.email.trim(),
-          normalizedEmail,
-          displayName: input.displayName.trim(),
-          phone: input.phone?.trim(),
-          passwordHash,
-          mustChangePassword: true,
-          userRoles: { create: roles.map((role) => ({ roleId: role.id })) },
+      const row = await insertUserAccount(tx, {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        email: input.email,
+        displayName: input.displayName,
+        phone: input.phone,
+        passwordHash,
+        roles,
+        branchId: branch?.id,
+        clientId: client?.id,
+        spocClientIds: scopeClients.map((scope) => scope.id),
+        audit: {
           ...(scopeClients.length
-            ? {
-                spocClientScopes: {
-                  create: scopeClients.map((scope) => ({ clientId: scope.id })),
-                },
-              }
+            ? { clients: scopeClients.map((scope) => scope.publicId) }
             : {}),
-        },
-        select: {
-          publicId: true,
-          email: true,
-          displayName: true,
-          status: true,
-          mustChangePassword: true,
-          version: true,
-          createdAt: true,
-        },
-      });
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "user.created",
-          resourceType: "user",
-          resourcePublicId: row.publicId,
-          afterJson: JSON.stringify({
-            email: row.email,
-            roles: roles.map((role) => role.code),
-            ...(scopeClients.length
-              ? { clients: scopeClients.map((scope) => scope.publicId) }
-              : {}),
-            ...(createdVia === "OPERATIONS" ? { createdVia } : {}),
-          }),
+          ...(createdVia === "OPERATIONS" ? { createdVia } : {}),
         },
       });
       const { publicId, ...user } = row;
@@ -258,6 +225,8 @@ export class UsersService {
         version: true,
         status: true,
         clientId: true,
+        displayName: true,
+        vendorOwnerId: true,
         userRoles: { select: { role: { select: { code: true } } } },
         spocClientScopes: {
           select: {
@@ -357,12 +326,20 @@ export class UsersService {
             );
           }
         }
+        const team = await applyVendorTeamRulesOnEdit(tx, {
+          tenantId: actor.tenantId,
+          user,
+          wasVendor: currentRoleCodes.includes("VENDOR"),
+          staysVendor: nextRoleCodes.includes("VENDOR"),
+          nextStatus: input.status ?? user.status,
+        });
         const updated = await tx.user.updateMany({
           where: { id: user.id, version: input.version },
           data: {
             status: input.status,
             version: { increment: 1 },
             ...(nextIsSpoc && user.clientId ? { clientId: null } : {}),
+            ...(team.clearOwner ? { vendorOwnerId: null } : {}),
           },
         });
         if (updated.count !== 1)
@@ -386,10 +363,7 @@ export class UsersService {
             });
         }
         if (input.status === "SUSPENDED" || rolesChanged)
-          await tx.refreshSession.updateMany({
-            where: { userId: user.id, revokedAt: null },
-            data: { revokedAt: new Date() },
-          });
+          await revokeSessions(tx, user.id);
         await tx.auditEvent.create({
           data: {
             tenantId: actor.tenantId,
@@ -443,30 +417,15 @@ export class UsersService {
     });
     if (!user) throw new NotFoundException("User not found");
     const passwordHash = await hashPassword(temporaryPassword);
-    await this.prisma.$transaction(async (tx) => {
-      await tx.user.update({
-        where: { id: user.id },
-        data: {
-          passwordHash,
-          mustChangePassword: true,
-          passwordChangedAt: new Date(),
-          version: { increment: 1 },
-        },
-      });
-      await tx.refreshSession.updateMany({
-        where: { userId: user.id, revokedAt: null },
-        data: { revokedAt: new Date() },
-      });
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "user.password.reset",
-          resourceType: "user",
-          resourcePublicId: publicId,
-        },
-      });
-    });
+    await this.prisma.$transaction((tx) =>
+      resetAccountPassword(tx, {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        userId: user.id,
+        publicId,
+        passwordHash,
+      }),
+    );
     return { reset: true };
   }
 

@@ -83,6 +83,12 @@ import { Route as SupportIndexRouteImport } from './routes/support.index'
 import { Route as SupportEmployeesRouteImport } from './routes/support.employees'
 import { Route as SupportRequestsRouteImport } from './routes/support.requests'
 import { Route as VendorIndexRouteImport } from './routes/vendor.index'
+import { Route as VendorAllRouteImport } from './routes/vendor.all'
+import { Route as VendorApprovedRouteImport } from './routes/vendor.approved'
+import { Route as VendorLogsRouteImport } from './routes/vendor.logs'
+import { Route as VendorPendingRouteImport } from './routes/vendor.pending'
+import { Route as VendorRejectedRouteImport } from './routes/vendor.rejected'
+import { Route as VendorTeamRouteImport } from './routes/vendor.team'
 import { Route as VerifierIndexRouteImport } from './routes/verifier.index'
 import { Route as VerifierBlockersRouteImport } from './routes/verifier.blockers'
 import { Route as VerifierHistoryRouteImport } from './routes/verifier.history'
@@ -464,6 +470,36 @@ const VendorIndexRoute = VendorIndexRouteImport.update({
   path: '/',
   getParentRoute: () => VendorRoute,
 } as any)
+const VendorAllRoute = VendorAllRouteImport.update({
+  id: '/all',
+  path: '/all',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorApprovedRoute = VendorApprovedRouteImport.update({
+  id: '/approved',
+  path: '/approved',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorLogsRoute = VendorLogsRouteImport.update({
+  id: '/logs',
+  path: '/logs',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorPendingRoute = VendorPendingRouteImport.update({
+  id: '/pending',
+  path: '/pending',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorRejectedRoute = VendorRejectedRouteImport.update({
+  id: '/rejected',
+  path: '/rejected',
+  getParentRoute: () => VendorRoute,
+} as any)
+const VendorTeamRoute = VendorTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => VendorRoute,
+} as any)
 const VerifierIndexRoute = VerifierIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -569,6 +605,12 @@ export interface FileRoutesByFullPath {
   '/spoc-rm/vendors': typeof SpocRmVendorsRoute
   '/support/employees': typeof SupportEmployeesRoute
   '/support/requests': typeof SupportRequestsRoute
+  '/vendor/all': typeof VendorAllRoute
+  '/vendor/approved': typeof VendorApprovedRoute
+  '/vendor/logs': typeof VendorLogsRoute
+  '/vendor/pending': typeof VendorPendingRoute
+  '/vendor/rejected': typeof VendorRejectedRoute
+  '/vendor/team': typeof VendorTeamRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
@@ -644,6 +686,12 @@ export interface FileRoutesByTo {
   '/spoc-rm/vendors': typeof SpocRmVendorsRoute
   '/support/employees': typeof SupportEmployeesRoute
   '/support/requests': typeof SupportRequestsRoute
+  '/vendor/all': typeof VendorAllRoute
+  '/vendor/approved': typeof VendorApprovedRoute
+  '/vendor/logs': typeof VendorLogsRoute
+  '/vendor/pending': typeof VendorPendingRoute
+  '/vendor/rejected': typeof VendorRejectedRoute
+  '/vendor/team': typeof VendorTeamRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
@@ -728,6 +776,12 @@ export interface FileRoutesById {
   '/spoc-rm/vendors': typeof SpocRmVendorsRoute
   '/support/employees': typeof SupportEmployeesRoute
   '/support/requests': typeof SupportRequestsRoute
+  '/vendor/all': typeof VendorAllRoute
+  '/vendor/approved': typeof VendorApprovedRoute
+  '/vendor/logs': typeof VendorLogsRoute
+  '/vendor/pending': typeof VendorPendingRoute
+  '/vendor/rejected': typeof VendorRejectedRoute
+  '/vendor/team': typeof VendorTeamRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
@@ -813,6 +867,12 @@ export interface FileRouteTypes {
     | '/spoc-rm/vendors'
     | '/support/employees'
     | '/support/requests'
+    | '/vendor/all'
+    | '/vendor/approved'
+    | '/vendor/logs'
+    | '/vendor/pending'
+    | '/vendor/rejected'
+    | '/vendor/team'
     | '/verifier/blockers'
     | '/verifier/history'
     | '/verifier/performance'
@@ -888,6 +948,12 @@ export interface FileRouteTypes {
     | '/spoc-rm/vendors'
     | '/support/employees'
     | '/support/requests'
+    | '/vendor/all'
+    | '/vendor/approved'
+    | '/vendor/logs'
+    | '/vendor/pending'
+    | '/vendor/rejected'
+    | '/vendor/team'
     | '/verifier/blockers'
     | '/verifier/history'
     | '/verifier/performance'
@@ -971,6 +1037,12 @@ export interface FileRouteTypes {
     | '/spoc-rm/vendors'
     | '/support/employees'
     | '/support/requests'
+    | '/vendor/all'
+    | '/vendor/approved'
+    | '/vendor/logs'
+    | '/vendor/pending'
+    | '/vendor/rejected'
+    | '/vendor/team'
     | '/verifier/blockers'
     | '/verifier/history'
     | '/verifier/performance'
@@ -1538,6 +1610,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendorIndexRouteImport
       parentRoute: typeof VendorRoute
     }
+    '/vendor/all': {
+      id: '/vendor/all'
+      path: '/all'
+      fullPath: '/vendor/all'
+      preLoaderRoute: typeof VendorAllRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/approved': {
+      id: '/vendor/approved'
+      path: '/approved'
+      fullPath: '/vendor/approved'
+      preLoaderRoute: typeof VendorApprovedRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/logs': {
+      id: '/vendor/logs'
+      path: '/logs'
+      fullPath: '/vendor/logs'
+      preLoaderRoute: typeof VendorLogsRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/pending': {
+      id: '/vendor/pending'
+      path: '/pending'
+      fullPath: '/vendor/pending'
+      preLoaderRoute: typeof VendorPendingRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/rejected': {
+      id: '/vendor/rejected'
+      path: '/rejected'
+      fullPath: '/vendor/rejected'
+      preLoaderRoute: typeof VendorRejectedRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/team': {
+      id: '/vendor/team'
+      path: '/team'
+      fullPath: '/vendor/team'
+      preLoaderRoute: typeof VendorTeamRouteImport
+      parentRoute: typeof VendorRoute
+    }
     '/verifier/': {
       id: '/verifier/'
       path: '/'
@@ -1739,10 +1853,22 @@ const SupportRouteWithChildren =
   SupportRoute._addFileChildren(SupportRouteChildren)
 
 interface VendorRouteChildren {
+  VendorAllRoute: typeof VendorAllRoute
+  VendorApprovedRoute: typeof VendorApprovedRoute
+  VendorLogsRoute: typeof VendorLogsRoute
+  VendorPendingRoute: typeof VendorPendingRoute
+  VendorRejectedRoute: typeof VendorRejectedRoute
+  VendorTeamRoute: typeof VendorTeamRoute
   VendorIndexRoute: typeof VendorIndexRoute
 }
 
 const VendorRouteChildren: VendorRouteChildren = {
+  VendorAllRoute: VendorAllRoute,
+  VendorApprovedRoute: VendorApprovedRoute,
+  VendorLogsRoute: VendorLogsRoute,
+  VendorPendingRoute: VendorPendingRoute,
+  VendorRejectedRoute: VendorRejectedRoute,
+  VendorTeamRoute: VendorTeamRoute,
   VendorIndexRoute: VendorIndexRoute,
 }
 

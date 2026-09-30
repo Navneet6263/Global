@@ -1,47 +1,29 @@
-import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { KpiStrip } from "@/components/dashboards/ui";
+import { useCallback } from "react";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { OversightSearch } from "@/features/admin-dashboard/components/oversight-ui";
 import { useVendorRequests } from "@/features/vendor/use-vendor-requests";
-import { REQUEST_TABS } from "@/features/vendor/vendor-request-model";
+import { VendorKpiStrip } from "@/features/vendor/VendorKpiStrip";
 import { vendorRequestsSearch, type VendorRequestsSearch } from "@/features/vendor/vendor-search";
 import { VendorRequestDrawer } from "@/features/vendor/VendorRequestDrawer";
 import { VendorRequestTable } from "@/features/vendor/VendorRequestTable";
-import { useDebouncedValue } from "@/lib/use-debounced-value";
 
 export const Route = createFileRoute("/vendor/")({
   validateSearch: vendorRequestsSearch,
   head: () => ({ meta: [{ title: "Vendor requests — Sapling Global" }] }),
-  component: VendorRequestsPage,
+  component: VendorOverviewPage,
 });
 
-function VendorRequestsPage() {
+/** Counts per status and the latest requests; the sidebar opens each full list. */
+function VendorOverviewPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const [text, setText] = useState(search.search ?? "");
-  const debounced = useDebouncedValue(text.trim());
-  const tab = search.status ?? "PENDING";
-  const update = (patch: Partial<VendorRequestsSearch>) =>
-    void navigate({ search: (current) => ({ ...current, ...patch }), replace: true });
-
-  useEffect(() => {
-    if (debounced !== (search.search ?? ""))
-      void navigate({
-        search: (current) => ({ ...current, search: debounced || undefined, page: undefined }),
-        replace: true,
-      });
-  }, [debounced, navigate, search.search]);
-
-  const requests = useVendorRequests({
-    status: tab === "ALL" ? undefined : tab,
-    page: search.page ?? 1,
-    pageSize: 20,
-    search: search.search,
-  });
-  const counts = requests.data?.counts;
-  const value = (count: number | undefined) => (count === undefined ? "—" : String(count));
+  const update = useCallback(
+    (patch: Partial<VendorRequestsSearch>) =>
+      void navigate({ search: (current) => ({ ...current, ...patch }), replace: true }),
+    [navigate],
+  );
+  const latest = useVendorRequests({ page: 1, pageSize: 10 });
 
   return (
     <div className="space-y-6">
@@ -49,45 +31,23 @@ function VendorRequestsPage() {
         title="Vendor requests"
         description="Documents assigned to you. Approve them, or reject them with a clear reason."
       />
-      <KpiStrip
-        items={[
-          {
-            label: "Waiting for you",
-            value: value(counts?.pending),
-            delta: "Pending",
-            tone: "warning",
-          },
-          { label: "Approved", value: value(counts?.approved), delta: "Done", tone: "success" },
-          {
-            label: "Rejected",
-            value: value(counts?.rejected),
-            delta: "Sent back",
-            tone: "destructive",
-          },
-        ]}
-      />
-      <Tabs
-        value={tab}
-        onValueChange={(next) =>
-          update({ status: next as VendorRequestsSearch["status"], page: undefined })
-        }
-      >
-        <TabsList>
-          {REQUEST_TABS.map((item) => (
-            <TabsTrigger key={item.value} value={item.value} className="text-xs">
-              {item.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      <VendorKpiStrip counts={latest.data?.counts} />
       <VendorRequestTable
-        data={requests.data}
-        error={requests.error}
-        retrying={requests.isFetching}
-        onRetry={() => void requests.refetch()}
-        onPage={(page) => update({ page })}
+        title="Latest requests"
+        description="The ten most recent assignments. Use the sidebar for every request by status."
+        data={latest.data}
+        error={latest.error}
+        retrying={latest.isFetching}
+        onRetry={() => void latest.refetch()}
         onOpen={(row) => update({ requestId: row.id })}
-        toolbar={<OversightSearch value={text} onChange={setText} placeholder="Case number" />}
+        toolbar={
+          <Link
+            to="/vendor/all"
+            className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+          >
+            View all <ArrowRight className="size-3.5" aria-hidden />
+          </Link>
+        }
       />
       <VendorRequestDrawer
         requestId={search.requestId}

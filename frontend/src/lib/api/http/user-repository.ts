@@ -8,6 +8,7 @@ import {
   type DirectoryUser,
 } from "@/lib/backend-api/users";
 import type { PlatformUser } from "@/lib/contracts/user";
+import { temporaryPassword } from "@/lib/auth/temporary-password";
 
 function mapUser(row: DirectoryUser): PlatformUser & { version: number } {
   return {
@@ -27,19 +28,11 @@ function mapUser(row: DirectoryUser): PlatformUser & { version: number } {
         ? [row.client.displayName]
         : [],
     clientWorkspaceIds: row.spocClients?.map((client) => client.id) ?? [],
+    vendorTeamOf: row.vendorTeamOf ?? null,
     lastLoginAt: row.lastLoginAt ?? null,
     createdAt: row.createdAt,
     mfaEnabled: null,
   };
-}
-
-function temporaryPassword(): string {
-  const bytes = crypto.getRandomValues(new Uint8Array(8));
-  const body = Array.from(
-    bytes,
-    (value) => "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789"[value % 57],
-  ).join("");
-  return `${body}@7a`;
 }
 
 let knownUsers: Array<PlatformUser & { version: number }> = [];

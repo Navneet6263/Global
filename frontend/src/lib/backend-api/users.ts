@@ -16,6 +16,8 @@ export interface DirectoryUser {
   roles: Array<{ code: string; name: string }>;
   /** SPOC-RM client workspaces (empty for every other role). */
   spocClients?: Array<{ id: string; displayName: string }>;
+  /** Vendor team users only: the Main Vendor that manages this login. */
+  vendorTeamOf?: string | null;
 }
 
 export interface DirectoryRole {

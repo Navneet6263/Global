@@ -31,6 +31,7 @@ export class AuthenticationService {
           branch: true,
           client: true,
           userRoles: { include: { role: true } },
+          vendorOwner: { select: { status: true } },
           spocClientScopes: {
             select: {
               client: { select: { publicId: true, displayName: true } },
@@ -43,6 +44,8 @@ export class AuthenticationService {
     if (
       !user ||
       user.status !== "ACTIVE" ||
+      // A vendor team login is unusable while its Main Vendor is suspended.
+      (user.vendorOwnerId !== null && user.vendorOwner?.status !== "ACTIVE") ||
       !(await verifyPassword(input.password, user.passwordHash))
     ) {
       if (user) await this.recordFailedLogin(user, meta);

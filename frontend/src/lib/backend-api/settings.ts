@@ -106,3 +106,30 @@ export function updatePackageRequirements(
     body: JSON.stringify(input),
   });
 }
+
+/** One Main Vendor with its Admin-set team limit and current team counts. */
+export interface VendorTeamLimit {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+  limit: number;
+  /** Policy version for the optimistic save; 0 when no limit was ever set. */
+  version: number;
+  activeTeamUsers: number;
+  inactiveTeamUsers: number;
+}
+
+export function listVendorTeamLimits() {
+  return apiRequest<{ maxLimit: number; items: VendorTeamLimit[] }>("/settings/vendor-team-limits");
+}
+
+export function updateVendorTeamLimit(
+  vendorId: string,
+  input: { maxActiveUsers: number; version: number },
+) {
+  return apiRequest<{ id: string; limit: number; version: number; activeTeamUsers: number }>(
+    `/settings/vendor-team-limits/${encodeURIComponent(vendorId)}`,
+    { method: "PATCH", body: JSON.stringify(input) },
+  );
+}

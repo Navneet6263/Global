@@ -102,7 +102,9 @@ export const ModelName = {
   CandidatePortalAccess: 'CandidatePortalAccess',
   VendorAssignment: 'VendorAssignment',
   SpocClientScope: 'SpocClientScope',
-  SupportRequest: 'SupportRequest'
+  SupportRequest: 'SupportRequest',
+  VendorTeamPolicy: 'VendorTeamPolicy',
+  VendorReport: 'VendorReport'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -168,6 +170,7 @@ export const UserScalarFieldEnum = {
   lockedUntil: 'lockedUntil',
   lastLoginAt: 'lastLoginAt',
   passwordChangedAt: 'passwordChangedAt',
+  vendorOwnerId: 'vendorOwnerId',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1046,6 +1049,9 @@ export const VendorAssignmentScalarFieldEnum = {
   decisionReason: 'decisionReason',
   decidedById: 'decidedById',
   decidedAt: 'decidedAt',
+  handlerUserId: 'handlerUserId',
+  delegatedAt: 'delegatedAt',
+  lastRemindedAt: 'lastRemindedAt',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1084,6 +1090,39 @@ export const SupportRequestScalarFieldEnum = {
 } as const
 
 export type SupportRequestScalarFieldEnum = (typeof SupportRequestScalarFieldEnum)[keyof typeof SupportRequestScalarFieldEnum]
+
+
+export const VendorTeamPolicyScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  vendorUserId: 'vendorUserId',
+  maxActiveUsers: 'maxActiveUsers',
+  version: 'version',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorTeamPolicyScalarFieldEnum = (typeof VendorTeamPolicyScalarFieldEnum)[keyof typeof VendorTeamPolicyScalarFieldEnum]
+
+
+export const VendorReportScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  assignmentId: 'assignmentId',
+  version: 'version',
+  objectKey: 'objectKey',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type VendorReportScalarFieldEnum = (typeof VendorReportScalarFieldEnum)[keyof typeof VendorReportScalarFieldEnum]
 
 
 export const SortOrder = {

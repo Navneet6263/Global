@@ -11,6 +11,9 @@ import { assertCanCreateUser } from "../src/users/ops-user-creation";
 import { UsersService } from "../src/users/users.service";
 import { SpocVendorsController } from "../src/vendor-requests/spoc-vendors.controller";
 import { VendorRequestsController } from "../src/vendor-requests/vendor-requests.controller";
+import { VendorActivityController } from "../src/vendor-requests/vendor-activity.controller";
+import { VendorReportsController } from "../src/vendor-requests/vendor-reports.controller";
+import { VendorTeamController } from "../src/vendor-requests/vendor-team.controller";
 import { allControllerHandlers, passesGuard } from "./helpers/guard-check";
 import { testActor } from "./helpers/test-actor";
 import {
@@ -54,10 +57,16 @@ void test("/spoc/vendors admits SPOC-RM and Platform Admin; /vendor/requests adm
   }
 });
 
-void test("VENDOR is allowed on no route outside /vendor/requests", async () => {
+void test("VENDOR is allowed only on the /vendor requests, reports, team and logs routes", async () => {
+  const vendorControllers: readonly object[] = [
+    VendorRequestsController,
+    VendorTeamController,
+    VendorReportsController,
+    VendorActivityController,
+  ];
   let checked = 0;
   for (const { file, controller, handler } of await allControllerHandlers()) {
-    if (controller === VendorRequestsController) continue;
+    if (vendorControllers.includes(controller)) continue;
     for (const target of [controller, handler]) {
       const roles = Reflect.getMetadata(ROLES_KEY, target) as
         string[] | undefined;

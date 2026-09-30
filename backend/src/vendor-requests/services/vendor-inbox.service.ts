@@ -5,11 +5,7 @@ import { pageResult } from "../../spoc/spoc-scope";
 import { VendorRequestsRepository } from "../vendor-requests.repository";
 import type { VendorRequestQueryDto } from "../vendor-requests.validation";
 import { toVendorDetail, toVendorListItem } from "./vendor-request-view";
-
-/** Every vendor query is keyed on the caller, so another vendor's request is simply not found. */
-export function ownRequests(actor: Actor) {
-  return { tenantId: actor.tenantId, vendorUserId: actor.userId };
-}
+import { isMainVendor, ownRequests } from "./vendor-scope";
 
 /** The Vendor workspace reads: the caller's own requests, detail and file preview. */
 @Injectable()
@@ -58,7 +54,7 @@ export class VendorInboxService {
       row.documentId,
       row.documentVersion,
     );
-    return toVendorDetail(row, file);
+    return toVendorDetail(row, file, isMainVendor(actor));
   }
 
   /** Streams exactly the version that was assigned, never a later upload. */

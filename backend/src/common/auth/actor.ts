@@ -21,6 +21,11 @@ export interface Actor {
    * request. Undefined for every other role, which keep the single clientId above.
    */
   spocClients?: readonly SpocClient[];
+  /**
+   * Vendor team users only: the Main Vendor that manages this login. Undefined for a
+   * Main Vendor and every other role. Team users work only requests delegated to them.
+   */
+  vendorOwnerId?: bigint;
 }
 
 export interface SpocClient {

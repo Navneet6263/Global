@@ -42,6 +42,8 @@ const requiredMigrations = [
   "20260928100000_vendor_assignments",
   "20260929100000_spoc_client_scope",
   "20260930100000_support_requests",
+  "20261001100000_vendor_teams",
+  "20261002100000_vendor_reports",
 ] as const;
 
 function required(name: string): string {

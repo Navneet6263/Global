@@ -67,6 +67,7 @@ void test("approve records the vendor, time and decision and notifies the SPOC s
   const update = args(seen, "update");
   assert.deepEqual(update.where, {
     id: 61n,
+    tenantId: 7n,
     vendorUserId: 31n,
     status: "PENDING",
     version: 1,

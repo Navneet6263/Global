@@ -1,4 +1,4 @@
-import { apiDownload, apiRequest } from "@/lib/backend-api/client";
+import { apiDownload, apiRequest, saveBlob } from "@/lib/backend-api/client";
 import { openDocumentPreview } from "@/lib/backend-api/document-preview";
 import { queryString } from "../api/spoc-api";
 import type { SpocPage, SpocQuery } from "../contracts/spoc";
@@ -61,4 +61,14 @@ export const spocVendorApi = {
     ),
   preview: (documentId: string) =>
     openDocumentPreview(() => apiDownload(`/spoc/vendors/documents/${id(documentId)}/preview`)),
+  /** The latest report of an approved attempt; only a real download is logged for the vendor. */
+  previewReport: (assignmentId: string) =>
+    openDocumentPreview(() =>
+      apiDownload(`/spoc/vendors/assignments/${id(assignmentId)}/report?mode=preview`),
+    ),
+  downloadReport: async (assignmentId: string, filename: string) =>
+    saveBlob(
+      await apiDownload(`/spoc/vendors/assignments/${id(assignmentId)}/report?mode=download`),
+      filename,
+    ),
 };

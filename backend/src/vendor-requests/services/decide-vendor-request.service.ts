@@ -6,7 +6,7 @@ import {
 import type { Actor } from "../../common/auth/actor";
 import { VendorRequestsRepository } from "../vendor-requests.repository";
 import type { VendorDecisionDto } from "../vendor-requests.validation";
-import { ownRequests } from "./vendor-inbox.service";
+import { ownRequests } from "./vendor-scope";
 import { notifySpocOfDecision } from "./vendor-notify";
 import { decisionFields } from "./vendor-rules";
 
@@ -39,7 +39,7 @@ export class DecideVendorRequestService {
         tx,
         {
           id: row.id,
-          vendorUserId: actor.userId,
+          ...ownRequests(actor),
           status: "PENDING",
           version: input.version,
         },
@@ -74,7 +74,11 @@ export class DecideVendorRequestService {
         clientName: row.client.displayName,
         clientId: row.clientId,
         assignedById: row.assignedById,
-        vendorName: actor.displayName,
+        // A team user decides on behalf of its Main Vendor; SPOC-RM sees both names.
+        vendorName:
+          actor.vendorOwnerId !== undefined
+            ? `${actor.displayName} (${row.vendor.displayName})`
+            : actor.displayName,
         decision: input.decision,
         reason: fields.decisionReason,
       });

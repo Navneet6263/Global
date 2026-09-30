@@ -4,6 +4,7 @@ import {
   nextVendorAction,
   reuploadState,
 } from "./vendor-rules";
+import { toReportView } from "./vendor-request-view";
 
 /** Row shapes and mappers for the SPOC-RM Vendors page (list and detail drawer). */
 type AttemptRow = {
@@ -20,6 +21,7 @@ type AttemptRow = {
   vendor: { publicId: string; displayName: string };
   assignedBy: { displayName: string };
   decidedBy: { displayName: string } | null;
+  reports: Parameters<typeof toReportView>[0][];
 };
 
 type DocumentRow = {
@@ -64,6 +66,11 @@ export function toHistory(row: AttemptRow) {
     decidedBy: row.decidedBy?.displayName ?? null,
     decidedAt: row.decidedAt,
     reason: row.decisionReason,
+    // SPOC-RM receives a vendor report only for an approved attempt.
+    report:
+      row.status === "APPROVED" && row.reports[0]
+        ? toReportView(row.reports[0])
+        : null,
   };
 }
 

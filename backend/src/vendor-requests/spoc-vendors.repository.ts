@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
 import { paging } from "../spoc/spoc-scope";
+import { latestReportSelect } from "./vendor-reports.repository";
 
 const name = { select: { displayName: true } } as const;
 
@@ -20,6 +21,7 @@ const attemptSelect = {
   vendor: { select: { publicId: true, displayName: true } },
   assignedBy: name,
   decidedBy: name,
+  reports: latestReportSelect,
 } as const;
 
 export const documentSelect = {
@@ -187,6 +189,8 @@ export class SpocVendorsRepository {
       where: {
         tenantId,
         status: "ACTIVE",
+        // SPOC-RM assigns only to Main Vendors; their team users work by delegation.
+        vendorOwnerId: null,
         userRoles: { some: { role: { code: "VENDOR" } } },
       },
       select: {

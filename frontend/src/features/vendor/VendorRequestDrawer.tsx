@@ -15,15 +15,17 @@ import {
 import { oversightLabel } from "@/features/admin-dashboard/oversight-format";
 import { formatBytes } from "@/features/cases/case-detail-formatting";
 import { formatDateTime } from "@/lib/formatting";
+import { DelegateRequestPanel } from "./DelegateRequestPanel";
 import { useVendorDecision, useVendorRequest } from "./use-vendor-requests";
 import { vendorApi } from "./vendor-api";
 import type { VendorDecision } from "./vendor-contracts";
 import { REQUEST_STATUS_META } from "./vendor-request-model";
 import { VendorDecisionDialog } from "./VendorDecisionDialog";
+import { VendorReportPanel } from "./VendorReportPanel";
 
 const when = (value: string | null) => (value ? formatDateTime(value) : "—");
 
-/** One assigned document: details, preview, and Approve / Reject while it is pending. */
+/** One assigned document: details, preview, Approve / Reject while pending, then its report. */
 export function VendorRequestDrawer({
   requestId,
   onClose,
@@ -89,6 +91,7 @@ export function VendorRequestDrawer({
               <Fact term="Client" value={item.clientName} />
               <Fact term="Assigned by" value={item.assignedBy} />
               <Fact term="Assigned" value={when(item.assignedAt)} />
+              {item.handler ? <Fact term="Handled by" value={item.handler.name} /> : null}
               <Fact term="File" value={item.file?.name ?? "Unavailable"} />
               <Fact
                 term="Size"
@@ -108,6 +111,10 @@ export function VendorRequestDrawer({
                 </>
               ) : null}
             </dl>
+            {item.canDelegate ? (
+              <DelegateRequestPanel key={`${item.id}-${item.version}`} item={item} />
+            ) : null}
+            {item.canUploadReport || item.report ? <VendorReportPanel item={item} /> : null}
             <div className="flex flex-wrap gap-2">
               <Button
                 type="button"

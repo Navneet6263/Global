@@ -46,13 +46,17 @@ export class VendorAssignmentsRepository {
     return this.prisma.$transaction(work, { isolationLevel: "Serializable" });
   }
 
-  /** An ACTIVE user holding the VENDOR role in the tenant; re-checked inside each write. */
+  /**
+   * An ACTIVE Main Vendor (VENDOR role, not a team user) in the tenant; re-checked
+   * inside each write, so a team user can never be assigned directly.
+   */
   findActiveVendor(tx: VendorTx, tenantId: bigint, vendorPublicId: string) {
     return tx.user.findFirst({
       where: {
         tenantId,
         publicId: vendorPublicId,
         status: "ACTIVE",
+        vendorOwnerId: null,
         userRoles: { some: { role: { code: "VENDOR" } } },
       },
       select: { id: true, publicId: true, displayName: true },

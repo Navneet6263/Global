@@ -24,6 +24,8 @@ import { UpdateFieldPolicyDto } from "./dto/update-field-policy.dto";
 import { SettingsService } from "./settings.service";
 import { AccessPolicyService } from "./access-policy.service";
 import { UpdateAccessPolicyDto } from "./dto/update-access-policy.dto";
+import { UpdateVendorTeamLimitDto } from "./dto/update-vendor-team-limit.dto";
+import { VendorTeamPolicyService } from "./vendor-team-policy.service";
 
 @Controller("settings")
 @RequirePermissions(Permission.SettingsManage)
@@ -33,6 +35,7 @@ export class SettingsController {
     private readonly settings: SettingsService,
     private readonly packagePolicy: ServicePackagePolicyService,
     private readonly access: AccessPolicyService,
+    private readonly vendorTeams: VendorTeamPolicyService,
   ) {}
   @Get("access-policy") accessPolicy(@CurrentActor() actor: Actor) {
     return this.access.get(actor);
@@ -42,6 +45,16 @@ export class SettingsController {
     @Body() input: UpdateAccessPolicyDto,
   ) {
     return this.access.update(actor, input);
+  }
+  @Get("vendor-team-limits") vendorTeamLimits(@CurrentActor() actor: Actor) {
+    return this.vendorTeams.list(actor);
+  }
+  @Patch("vendor-team-limits/:vendorId") updateVendorTeamLimit(
+    @CurrentActor() actor: Actor,
+    @Param("vendorId", ParseUUIDPipe) vendorId: string,
+    @Body() input: UpdateVendorTeamLimitDto,
+  ) {
+    return this.vendorTeams.update(actor, vendorId, input);
   }
   @Get("organisation") organisation(@CurrentActor() actor: Actor) {
     return this.settings.organisation(actor);

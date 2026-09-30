@@ -26,6 +26,7 @@ import {
 } from "./use-spoc-vendors";
 import { Fact, Section } from "./VendorDrawerParts";
 import { VendorHistoryTimeline } from "./VendorHistoryTimeline";
+import { VendorReportActions } from "./VendorReportActions";
 import { VendorStatusPanel } from "./VendorStatusPanel";
 
 /**
@@ -110,16 +111,18 @@ export function SpocVendorDocumentDrawer({
                 />
                 <Fact term="Case stage" value={label(item.caseStatus)} />
               </dl>
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-3"
-                disabled={!item.file || previewing}
-                loading={previewing}
-                onClick={() => void preview()}
-              >
-                <Eye className="size-4" aria-hidden /> Preview file
-              </Button>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={!item.file || previewing}
+                  loading={previewing}
+                  onClick={() => void preview()}
+                >
+                  <Eye className="size-4" aria-hidden /> Preview file
+                </Button>
+                <VendorReportActions attempt={current} caseNumber={item.caseNumber} />
+              </div>
             </Section>
 
             <Section title="Vendor status">

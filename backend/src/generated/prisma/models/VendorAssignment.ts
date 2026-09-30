@@ -39,6 +39,7 @@ export type VendorAssignmentAvgAggregateOutputType = {
   vendorUserId: number | null
   assignedById: number | null
   decidedById: number | null
+  handlerUserId: number | null
   version: number | null
 }
 
@@ -53,6 +54,7 @@ export type VendorAssignmentSumAggregateOutputType = {
   vendorUserId: bigint | null
   assignedById: bigint | null
   decidedById: bigint | null
+  handlerUserId: bigint | null
   version: number | null
 }
 
@@ -73,6 +75,9 @@ export type VendorAssignmentMinAggregateOutputType = {
   decisionReason: string | null
   decidedById: bigint | null
   decidedAt: Date | null
+  handlerUserId: bigint | null
+  delegatedAt: Date | null
+  lastRemindedAt: Date | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -95,6 +100,9 @@ export type VendorAssignmentMaxAggregateOutputType = {
   decisionReason: string | null
   decidedById: bigint | null
   decidedAt: Date | null
+  handlerUserId: bigint | null
+  delegatedAt: Date | null
+  lastRemindedAt: Date | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -117,6 +125,9 @@ export type VendorAssignmentCountAggregateOutputType = {
   decisionReason: number
   decidedById: number
   decidedAt: number
+  handlerUserId: number
+  delegatedAt: number
+  lastRemindedAt: number
   version: number
   createdAt: number
   updatedAt: number
@@ -135,6 +146,7 @@ export type VendorAssignmentAvgAggregateInputType = {
   vendorUserId?: true
   assignedById?: true
   decidedById?: true
+  handlerUserId?: true
   version?: true
 }
 
@@ -149,6 +161,7 @@ export type VendorAssignmentSumAggregateInputType = {
   vendorUserId?: true
   assignedById?: true
   decidedById?: true
+  handlerUserId?: true
   version?: true
 }
 
@@ -169,6 +182,9 @@ export type VendorAssignmentMinAggregateInputType = {
   decisionReason?: true
   decidedById?: true
   decidedAt?: true
+  handlerUserId?: true
+  delegatedAt?: true
+  lastRemindedAt?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -191,6 +207,9 @@ export type VendorAssignmentMaxAggregateInputType = {
   decisionReason?: true
   decidedById?: true
   decidedAt?: true
+  handlerUserId?: true
+  delegatedAt?: true
+  lastRemindedAt?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -213,6 +232,9 @@ export type VendorAssignmentCountAggregateInputType = {
   decisionReason?: true
   decidedById?: true
   decidedAt?: true
+  handlerUserId?: true
+  delegatedAt?: true
+  lastRemindedAt?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -322,6 +344,9 @@ export type VendorAssignmentGroupByOutputType = {
   decisionReason: string | null
   decidedById: bigint | null
   decidedAt: Date | null
+  handlerUserId: bigint | null
+  delegatedAt: Date | null
+  lastRemindedAt: Date | null
   version: number
   createdAt: Date
   updatedAt: Date
@@ -367,6 +392,9 @@ export type VendorAssignmentWhereInput = {
   decisionReason?: Prisma.StringNullableFilter<"VendorAssignment"> | string | null
   decidedById?: Prisma.BigIntNullableFilter<"VendorAssignment"> | bigint | number | null
   decidedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
+  handlerUserId?: Prisma.BigIntNullableFilter<"VendorAssignment"> | bigint | number | null
+  delegatedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
+  lastRemindedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
   version?: Prisma.IntFilter<"VendorAssignment"> | number
   createdAt?: Prisma.DateTimeFilter<"VendorAssignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VendorAssignment"> | Date | string
@@ -377,6 +405,8 @@ export type VendorAssignmentWhereInput = {
   vendor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   assignedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   decidedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  handler?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  reports?: Prisma.VendorReportListRelationFilter
 }
 
 export type VendorAssignmentOrderByWithRelationInput = {
@@ -396,6 +426,9 @@ export type VendorAssignmentOrderByWithRelationInput = {
   decisionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedById?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  delegatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastRemindedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -406,6 +439,8 @@ export type VendorAssignmentOrderByWithRelationInput = {
   vendor?: Prisma.UserOrderByWithRelationInput
   assignedBy?: Prisma.UserOrderByWithRelationInput
   decidedBy?: Prisma.UserOrderByWithRelationInput
+  handler?: Prisma.UserOrderByWithRelationInput
+  reports?: Prisma.VendorReportOrderByRelationAggregateInput
 }
 
 export type VendorAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -429,6 +464,9 @@ export type VendorAssignmentWhereUniqueInput = Prisma.AtLeast<{
   decisionReason?: Prisma.StringNullableFilter<"VendorAssignment"> | string | null
   decidedById?: Prisma.BigIntNullableFilter<"VendorAssignment"> | bigint | number | null
   decidedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
+  handlerUserId?: Prisma.BigIntNullableFilter<"VendorAssignment"> | bigint | number | null
+  delegatedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
+  lastRemindedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
   version?: Prisma.IntFilter<"VendorAssignment"> | number
   createdAt?: Prisma.DateTimeFilter<"VendorAssignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VendorAssignment"> | Date | string
@@ -439,6 +477,8 @@ export type VendorAssignmentWhereUniqueInput = Prisma.AtLeast<{
   vendor?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   assignedBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   decidedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  handler?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  reports?: Prisma.VendorReportListRelationFilter
 }, "id" | "publicId" | "documentId_attempt">
 
 export type VendorAssignmentOrderByWithAggregationInput = {
@@ -458,6 +498,9 @@ export type VendorAssignmentOrderByWithAggregationInput = {
   decisionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedById?: Prisma.SortOrderInput | Prisma.SortOrder
   decidedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  delegatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastRemindedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -488,6 +531,9 @@ export type VendorAssignmentScalarWhereWithAggregatesInput = {
   decisionReason?: Prisma.StringNullableWithAggregatesFilter<"VendorAssignment"> | string | null
   decidedById?: Prisma.BigIntNullableWithAggregatesFilter<"VendorAssignment"> | bigint | number | null
   decidedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VendorAssignment"> | Date | string | null
+  handlerUserId?: Prisma.BigIntNullableWithAggregatesFilter<"VendorAssignment"> | bigint | number | null
+  delegatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VendorAssignment"> | Date | string | null
+  lastRemindedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VendorAssignment"> | Date | string | null
   version?: Prisma.IntWithAggregatesFilter<"VendorAssignment"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VendorAssignment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VendorAssignment"> | Date | string
@@ -503,6 +549,8 @@ export type VendorAssignmentCreateInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -513,6 +561,8 @@ export type VendorAssignmentCreateInput = {
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateInput = {
@@ -532,9 +582,13 @@ export type VendorAssignmentUncheckedCreateInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUpdateInput = {
@@ -547,6 +601,8 @@ export type VendorAssignmentUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -557,6 +613,8 @@ export type VendorAssignmentUpdateInput = {
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateInput = {
@@ -576,9 +634,13 @@ export type VendorAssignmentUncheckedUpdateInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentCreateManyInput = {
@@ -597,6 +659,9 @@ export type VendorAssignmentCreateManyInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -612,6 +677,8 @@ export type VendorAssignmentUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -634,6 +701,9 @@ export type VendorAssignmentUncheckedUpdateManyInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -671,6 +741,9 @@ export type VendorAssignmentCountOrderByAggregateInput = {
   decisionReason?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrder
+  delegatedAt?: Prisma.SortOrder
+  lastRemindedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -687,6 +760,7 @@ export type VendorAssignmentAvgOrderByAggregateInput = {
   vendorUserId?: Prisma.SortOrder
   assignedById?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -707,6 +781,9 @@ export type VendorAssignmentMaxOrderByAggregateInput = {
   decisionReason?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrder
+  delegatedAt?: Prisma.SortOrder
+  lastRemindedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -729,6 +806,9 @@ export type VendorAssignmentMinOrderByAggregateInput = {
   decisionReason?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
   decidedAt?: Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrder
+  delegatedAt?: Prisma.SortOrder
+  lastRemindedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -745,7 +825,13 @@ export type VendorAssignmentSumOrderByAggregateInput = {
   vendorUserId?: Prisma.SortOrder
   assignedById?: Prisma.SortOrder
   decidedById?: Prisma.SortOrder
+  handlerUserId?: Prisma.SortOrder
   version?: Prisma.SortOrder
+}
+
+export type VendorAssignmentScalarRelationFilter = {
+  is?: Prisma.VendorAssignmentWhereInput
+  isNot?: Prisma.VendorAssignmentWhereInput
 }
 
 export type VendorAssignmentCreateNestedManyWithoutTenantInput = {
@@ -811,6 +897,13 @@ export type VendorAssignmentCreateNestedManyWithoutDecidedByInput = {
   connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
 }
 
+export type VendorAssignmentCreateNestedManyWithoutHandlerInput = {
+  create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput> | Prisma.VendorAssignmentCreateWithoutHandlerInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput[]
+  connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput | Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput[]
+  createMany?: Prisma.VendorAssignmentCreateManyHandlerInputEnvelope
+  connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+}
+
 export type VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput = {
   create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutVendorInput, Prisma.VendorAssignmentUncheckedCreateWithoutVendorInput> | Prisma.VendorAssignmentCreateWithoutVendorInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutVendorInput[]
   connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutVendorInput | Prisma.VendorAssignmentCreateOrConnectWithoutVendorInput[]
@@ -829,6 +922,13 @@ export type VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput = {
   create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutDecidedByInput, Prisma.VendorAssignmentUncheckedCreateWithoutDecidedByInput> | Prisma.VendorAssignmentCreateWithoutDecidedByInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutDecidedByInput[]
   connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutDecidedByInput | Prisma.VendorAssignmentCreateOrConnectWithoutDecidedByInput[]
   createMany?: Prisma.VendorAssignmentCreateManyDecidedByInputEnvelope
+  connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+}
+
+export type VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput = {
+  create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput> | Prisma.VendorAssignmentCreateWithoutHandlerInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput[]
+  connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput | Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput[]
+  createMany?: Prisma.VendorAssignmentCreateManyHandlerInputEnvelope
   connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
 }
 
@@ -874,6 +974,20 @@ export type VendorAssignmentUpdateManyWithoutDecidedByNestedInput = {
   deleteMany?: Prisma.VendorAssignmentScalarWhereInput | Prisma.VendorAssignmentScalarWhereInput[]
 }
 
+export type VendorAssignmentUpdateManyWithoutHandlerNestedInput = {
+  create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput> | Prisma.VendorAssignmentCreateWithoutHandlerInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput[]
+  connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput | Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput[]
+  upsert?: Prisma.VendorAssignmentUpsertWithWhereUniqueWithoutHandlerInput | Prisma.VendorAssignmentUpsertWithWhereUniqueWithoutHandlerInput[]
+  createMany?: Prisma.VendorAssignmentCreateManyHandlerInputEnvelope
+  set?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  disconnect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  delete?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  update?: Prisma.VendorAssignmentUpdateWithWhereUniqueWithoutHandlerInput | Prisma.VendorAssignmentUpdateWithWhereUniqueWithoutHandlerInput[]
+  updateMany?: Prisma.VendorAssignmentUpdateManyWithWhereWithoutHandlerInput | Prisma.VendorAssignmentUpdateManyWithWhereWithoutHandlerInput[]
+  deleteMany?: Prisma.VendorAssignmentScalarWhereInput | Prisma.VendorAssignmentScalarWhereInput[]
+}
+
 export type VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput = {
   create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutVendorInput, Prisma.VendorAssignmentUncheckedCreateWithoutVendorInput> | Prisma.VendorAssignmentCreateWithoutVendorInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutVendorInput[]
   connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutVendorInput | Prisma.VendorAssignmentCreateOrConnectWithoutVendorInput[]
@@ -913,6 +1027,20 @@ export type VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput = {
   connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
   update?: Prisma.VendorAssignmentUpdateWithWhereUniqueWithoutDecidedByInput | Prisma.VendorAssignmentUpdateWithWhereUniqueWithoutDecidedByInput[]
   updateMany?: Prisma.VendorAssignmentUpdateManyWithWhereWithoutDecidedByInput | Prisma.VendorAssignmentUpdateManyWithWhereWithoutDecidedByInput[]
+  deleteMany?: Prisma.VendorAssignmentScalarWhereInput | Prisma.VendorAssignmentScalarWhereInput[]
+}
+
+export type VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput = {
+  create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput> | Prisma.VendorAssignmentCreateWithoutHandlerInput[] | Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput[]
+  connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput | Prisma.VendorAssignmentCreateOrConnectWithoutHandlerInput[]
+  upsert?: Prisma.VendorAssignmentUpsertWithWhereUniqueWithoutHandlerInput | Prisma.VendorAssignmentUpsertWithWhereUniqueWithoutHandlerInput[]
+  createMany?: Prisma.VendorAssignmentCreateManyHandlerInputEnvelope
+  set?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  disconnect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  delete?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  connect?: Prisma.VendorAssignmentWhereUniqueInput | Prisma.VendorAssignmentWhereUniqueInput[]
+  update?: Prisma.VendorAssignmentUpdateWithWhereUniqueWithoutHandlerInput | Prisma.VendorAssignmentUpdateWithWhereUniqueWithoutHandlerInput[]
+  updateMany?: Prisma.VendorAssignmentUpdateManyWithWhereWithoutHandlerInput | Prisma.VendorAssignmentUpdateManyWithWhereWithoutHandlerInput[]
   deleteMany?: Prisma.VendorAssignmentScalarWhereInput | Prisma.VendorAssignmentScalarWhereInput[]
 }
 
@@ -1042,6 +1170,20 @@ export type VendorAssignmentUncheckedUpdateManyWithoutDocumentNestedInput = {
   deleteMany?: Prisma.VendorAssignmentScalarWhereInput | Prisma.VendorAssignmentScalarWhereInput[]
 }
 
+export type VendorAssignmentCreateNestedOneWithoutReportsInput = {
+  create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutReportsInput, Prisma.VendorAssignmentUncheckedCreateWithoutReportsInput>
+  connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutReportsInput
+  connect?: Prisma.VendorAssignmentWhereUniqueInput
+}
+
+export type VendorAssignmentUpdateOneRequiredWithoutReportsNestedInput = {
+  create?: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutReportsInput, Prisma.VendorAssignmentUncheckedCreateWithoutReportsInput>
+  connectOrCreate?: Prisma.VendorAssignmentCreateOrConnectWithoutReportsInput
+  upsert?: Prisma.VendorAssignmentUpsertWithoutReportsInput
+  connect?: Prisma.VendorAssignmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VendorAssignmentUpdateToOneWithWhereWithoutReportsInput, Prisma.VendorAssignmentUpdateWithoutReportsInput>, Prisma.VendorAssignmentUncheckedUpdateWithoutReportsInput>
+}
+
 export type VendorAssignmentCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -1052,6 +1194,8 @@ export type VendorAssignmentCreateWithoutTenantInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1061,6 +1205,8 @@ export type VendorAssignmentCreateWithoutTenantInput = {
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutTenantInput = {
@@ -1079,9 +1225,13 @@ export type VendorAssignmentUncheckedCreateWithoutTenantInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutTenantInput = {
@@ -1129,6 +1279,9 @@ export type VendorAssignmentScalarWhereInput = {
   decisionReason?: Prisma.StringNullableFilter<"VendorAssignment"> | string | null
   decidedById?: Prisma.BigIntNullableFilter<"VendorAssignment"> | bigint | number | null
   decidedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
+  handlerUserId?: Prisma.BigIntNullableFilter<"VendorAssignment"> | bigint | number | null
+  delegatedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
+  lastRemindedAt?: Prisma.DateTimeNullableFilter<"VendorAssignment"> | Date | string | null
   version?: Prisma.IntFilter<"VendorAssignment"> | number
   createdAt?: Prisma.DateTimeFilter<"VendorAssignment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VendorAssignment"> | Date | string
@@ -1144,6 +1297,8 @@ export type VendorAssignmentCreateWithoutVendorInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1153,6 +1308,8 @@ export type VendorAssignmentCreateWithoutVendorInput = {
   document: Prisma.DocumentCreateNestedOneWithoutVendorAssignmentsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutVendorInput = {
@@ -1171,9 +1328,13 @@ export type VendorAssignmentUncheckedCreateWithoutVendorInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutVendorInput = {
@@ -1195,6 +1356,8 @@ export type VendorAssignmentCreateWithoutAssignedByInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1204,6 +1367,8 @@ export type VendorAssignmentCreateWithoutAssignedByInput = {
   document: Prisma.DocumentCreateNestedOneWithoutVendorAssignmentsInput
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutAssignedByInput = {
@@ -1222,9 +1387,13 @@ export type VendorAssignmentUncheckedCreateWithoutAssignedByInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutAssignedByInput = {
@@ -1246,6 +1415,8 @@ export type VendorAssignmentCreateWithoutDecidedByInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1255,6 +1426,8 @@ export type VendorAssignmentCreateWithoutDecidedByInput = {
   document: Prisma.DocumentCreateNestedOneWithoutVendorAssignmentsInput
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutDecidedByInput = {
@@ -1273,9 +1446,13 @@ export type VendorAssignmentUncheckedCreateWithoutDecidedByInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutDecidedByInput = {
@@ -1285,6 +1462,65 @@ export type VendorAssignmentCreateOrConnectWithoutDecidedByInput = {
 
 export type VendorAssignmentCreateManyDecidedByInputEnvelope = {
   data: Prisma.VendorAssignmentCreateManyDecidedByInput | Prisma.VendorAssignmentCreateManyDecidedByInput[]
+}
+
+export type VendorAssignmentCreateWithoutHandlerInput = {
+  id?: bigint | number
+  publicId?: string
+  documentVersion: number
+  attempt: number
+  assignmentNote?: string | null
+  resolutionNote?: string | null
+  status?: string
+  decisionReason?: string | null
+  decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutVendorAssignmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutVendorAssignmentsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutVendorAssignmentsInput
+  document: Prisma.DocumentCreateNestedOneWithoutVendorAssignmentsInput
+  vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
+  assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
+  decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
+}
+
+export type VendorAssignmentUncheckedCreateWithoutHandlerInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  clientId: bigint | number
+  caseId: bigint | number
+  documentId: bigint | number
+  documentVersion: number
+  attempt: number
+  vendorUserId: bigint | number
+  assignedById: bigint | number
+  assignmentNote?: string | null
+  resolutionNote?: string | null
+  status?: string
+  decisionReason?: string | null
+  decidedById?: bigint | number | null
+  decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
+}
+
+export type VendorAssignmentCreateOrConnectWithoutHandlerInput = {
+  where: Prisma.VendorAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput>
+}
+
+export type VendorAssignmentCreateManyHandlerInputEnvelope = {
+  data: Prisma.VendorAssignmentCreateManyHandlerInput | Prisma.VendorAssignmentCreateManyHandlerInput[]
 }
 
 export type VendorAssignmentUpsertWithWhereUniqueWithoutVendorInput = {
@@ -1335,6 +1571,22 @@ export type VendorAssignmentUpdateManyWithWhereWithoutDecidedByInput = {
   data: Prisma.XOR<Prisma.VendorAssignmentUpdateManyMutationInput, Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByInput>
 }
 
+export type VendorAssignmentUpsertWithWhereUniqueWithoutHandlerInput = {
+  where: Prisma.VendorAssignmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.VendorAssignmentUpdateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedUpdateWithoutHandlerInput>
+  create: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedCreateWithoutHandlerInput>
+}
+
+export type VendorAssignmentUpdateWithWhereUniqueWithoutHandlerInput = {
+  where: Prisma.VendorAssignmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.VendorAssignmentUpdateWithoutHandlerInput, Prisma.VendorAssignmentUncheckedUpdateWithoutHandlerInput>
+}
+
+export type VendorAssignmentUpdateManyWithWhereWithoutHandlerInput = {
+  where: Prisma.VendorAssignmentScalarWhereInput
+  data: Prisma.XOR<Prisma.VendorAssignmentUpdateManyMutationInput, Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerInput>
+}
+
 export type VendorAssignmentCreateWithoutClientInput = {
   id?: bigint | number
   publicId?: string
@@ -1345,6 +1597,8 @@ export type VendorAssignmentCreateWithoutClientInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1354,6 +1608,8 @@ export type VendorAssignmentCreateWithoutClientInput = {
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutClientInput = {
@@ -1372,9 +1628,13 @@ export type VendorAssignmentUncheckedCreateWithoutClientInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutClientInput = {
@@ -1412,6 +1672,8 @@ export type VendorAssignmentCreateWithoutCaseInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1421,6 +1683,8 @@ export type VendorAssignmentCreateWithoutCaseInput = {
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutCaseInput = {
@@ -1439,9 +1703,13 @@ export type VendorAssignmentUncheckedCreateWithoutCaseInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutCaseInput = {
@@ -1479,6 +1747,8 @@ export type VendorAssignmentCreateWithoutDocumentInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1488,6 +1758,8 @@ export type VendorAssignmentCreateWithoutDocumentInput = {
   vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
   assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
   decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+  reports?: Prisma.VendorReportCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentUncheckedCreateWithoutDocumentInput = {
@@ -1506,9 +1778,13 @@ export type VendorAssignmentUncheckedCreateWithoutDocumentInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  reports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutAssignmentInput
 }
 
 export type VendorAssignmentCreateOrConnectWithoutDocumentInput = {
@@ -1536,6 +1812,122 @@ export type VendorAssignmentUpdateManyWithWhereWithoutDocumentInput = {
   data: Prisma.XOR<Prisma.VendorAssignmentUpdateManyMutationInput, Prisma.VendorAssignmentUncheckedUpdateManyWithoutDocumentInput>
 }
 
+export type VendorAssignmentCreateWithoutReportsInput = {
+  id?: bigint | number
+  publicId?: string
+  documentVersion: number
+  attempt: number
+  assignmentNote?: string | null
+  resolutionNote?: string | null
+  status?: string
+  decisionReason?: string | null
+  decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutVendorAssignmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutVendorAssignmentsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutVendorAssignmentsInput
+  document: Prisma.DocumentCreateNestedOneWithoutVendorAssignmentsInput
+  vendor: Prisma.UserCreateNestedOneWithoutVendorRequestsInput
+  assignedBy: Prisma.UserCreateNestedOneWithoutVendorAssignmentsMadeInput
+  decidedBy?: Prisma.UserCreateNestedOneWithoutVendorDecisionsInput
+  handler?: Prisma.UserCreateNestedOneWithoutHandledVendorRequestsInput
+}
+
+export type VendorAssignmentUncheckedCreateWithoutReportsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  clientId: bigint | number
+  caseId: bigint | number
+  documentId: bigint | number
+  documentVersion: number
+  attempt: number
+  vendorUserId: bigint | number
+  assignedById: bigint | number
+  assignmentNote?: string | null
+  resolutionNote?: string | null
+  status?: string
+  decisionReason?: string | null
+  decidedById?: bigint | number | null
+  decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VendorAssignmentCreateOrConnectWithoutReportsInput = {
+  where: Prisma.VendorAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutReportsInput, Prisma.VendorAssignmentUncheckedCreateWithoutReportsInput>
+}
+
+export type VendorAssignmentUpsertWithoutReportsInput = {
+  update: Prisma.XOR<Prisma.VendorAssignmentUpdateWithoutReportsInput, Prisma.VendorAssignmentUncheckedUpdateWithoutReportsInput>
+  create: Prisma.XOR<Prisma.VendorAssignmentCreateWithoutReportsInput, Prisma.VendorAssignmentUncheckedCreateWithoutReportsInput>
+  where?: Prisma.VendorAssignmentWhereInput
+}
+
+export type VendorAssignmentUpdateToOneWithWhereWithoutReportsInput = {
+  where?: Prisma.VendorAssignmentWhereInput
+  data: Prisma.XOR<Prisma.VendorAssignmentUpdateWithoutReportsInput, Prisma.VendorAssignmentUncheckedUpdateWithoutReportsInput>
+}
+
+export type VendorAssignmentUpdateWithoutReportsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  attempt?: Prisma.IntFieldUpdateOperationsInput | number
+  assignmentNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  document?: Prisma.DocumentUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
+  assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
+  decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+}
+
+export type VendorAssignmentUncheckedUpdateWithoutReportsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  attempt?: Prisma.IntFieldUpdateOperationsInput | number
+  vendorUserId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedById?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignmentNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 export type VendorAssignmentCreateManyTenantInput = {
   publicId?: string
   clientId: bigint | number
@@ -1551,6 +1943,9 @@ export type VendorAssignmentCreateManyTenantInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1566,6 +1961,8 @@ export type VendorAssignmentUpdateWithoutTenantInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1575,6 +1972,8 @@ export type VendorAssignmentUpdateWithoutTenantInput = {
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutTenantInput = {
@@ -1593,9 +1992,13 @@ export type VendorAssignmentUncheckedUpdateWithoutTenantInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutTenantInput = {
@@ -1614,6 +2017,9 @@ export type VendorAssignmentUncheckedUpdateManyWithoutTenantInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1634,6 +2040,9 @@ export type VendorAssignmentCreateManyVendorInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1654,6 +2063,9 @@ export type VendorAssignmentCreateManyAssignedByInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1674,6 +2086,32 @@ export type VendorAssignmentCreateManyDecidedByInput = {
   status?: string
   decisionReason?: string | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VendorAssignmentCreateManyHandlerInput = {
+  publicId?: string
+  tenantId: bigint | number
+  clientId: bigint | number
+  caseId: bigint | number
+  documentId: bigint | number
+  documentVersion: number
+  attempt: number
+  vendorUserId: bigint | number
+  assignedById: bigint | number
+  assignmentNote?: string | null
+  resolutionNote?: string | null
+  status?: string
+  decisionReason?: string | null
+  decidedById?: bigint | number | null
+  decidedAt?: Date | string | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1689,6 +2127,8 @@ export type VendorAssignmentUpdateWithoutVendorInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1698,6 +2138,8 @@ export type VendorAssignmentUpdateWithoutVendorInput = {
   document?: Prisma.DocumentUpdateOneRequiredWithoutVendorAssignmentsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutVendorInput = {
@@ -1716,9 +2158,13 @@ export type VendorAssignmentUncheckedUpdateWithoutVendorInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutVendorInput = {
@@ -1737,6 +2183,9 @@ export type VendorAssignmentUncheckedUpdateManyWithoutVendorInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1752,6 +2201,8 @@ export type VendorAssignmentUpdateWithoutAssignedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1761,6 +2212,8 @@ export type VendorAssignmentUpdateWithoutAssignedByInput = {
   document?: Prisma.DocumentUpdateOneRequiredWithoutVendorAssignmentsNestedInput
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutAssignedByInput = {
@@ -1779,9 +2232,13 @@ export type VendorAssignmentUncheckedUpdateWithoutAssignedByInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutAssignedByInput = {
@@ -1800,6 +2257,9 @@ export type VendorAssignmentUncheckedUpdateManyWithoutAssignedByInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1815,6 +2275,8 @@ export type VendorAssignmentUpdateWithoutDecidedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1824,6 +2286,8 @@ export type VendorAssignmentUpdateWithoutDecidedByInput = {
   document?: Prisma.DocumentUpdateOneRequiredWithoutVendorAssignmentsNestedInput
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutDecidedByInput = {
@@ -1842,9 +2306,13 @@ export type VendorAssignmentUncheckedUpdateWithoutDecidedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutDecidedByInput = {
@@ -1863,6 +2331,83 @@ export type VendorAssignmentUncheckedUpdateManyWithoutDecidedByInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VendorAssignmentUpdateWithoutHandlerInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  documentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  attempt?: Prisma.IntFieldUpdateOperationsInput | number
+  assignmentNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  document?: Prisma.DocumentUpdateOneRequiredWithoutVendorAssignmentsNestedInput
+  vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
+  assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
+  decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
+}
+
+export type VendorAssignmentUncheckedUpdateWithoutHandlerInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  attempt?: Prisma.IntFieldUpdateOperationsInput | number
+  vendorUserId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedById?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignmentNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
+}
+
+export type VendorAssignmentUncheckedUpdateManyWithoutHandlerInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  attempt?: Prisma.IntFieldUpdateOperationsInput | number
+  vendorUserId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedById?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignmentNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resolutionNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1883,6 +2428,9 @@ export type VendorAssignmentCreateManyClientInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1898,6 +2446,8 @@ export type VendorAssignmentUpdateWithoutClientInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1907,6 +2457,8 @@ export type VendorAssignmentUpdateWithoutClientInput = {
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutClientInput = {
@@ -1925,9 +2477,13 @@ export type VendorAssignmentUncheckedUpdateWithoutClientInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutClientInput = {
@@ -1946,6 +2502,9 @@ export type VendorAssignmentUncheckedUpdateManyWithoutClientInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1966,6 +2525,9 @@ export type VendorAssignmentCreateManyCaseInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1981,6 +2543,8 @@ export type VendorAssignmentUpdateWithoutCaseInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1990,6 +2554,8 @@ export type VendorAssignmentUpdateWithoutCaseInput = {
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutCaseInput = {
@@ -2008,9 +2574,13 @@ export type VendorAssignmentUncheckedUpdateWithoutCaseInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutCaseInput = {
@@ -2029,6 +2599,9 @@ export type VendorAssignmentUncheckedUpdateManyWithoutCaseInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2049,6 +2622,9 @@ export type VendorAssignmentCreateManyDocumentInput = {
   decisionReason?: string | null
   decidedById?: bigint | number | null
   decidedAt?: Date | string | null
+  handlerUserId?: bigint | number | null
+  delegatedAt?: Date | string | null
+  lastRemindedAt?: Date | string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2064,6 +2640,8 @@ export type VendorAssignmentUpdateWithoutDocumentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2073,6 +2651,8 @@ export type VendorAssignmentUpdateWithoutDocumentInput = {
   vendor?: Prisma.UserUpdateOneRequiredWithoutVendorRequestsNestedInput
   assignedBy?: Prisma.UserUpdateOneRequiredWithoutVendorAssignmentsMadeNestedInput
   decidedBy?: Prisma.UserUpdateOneWithoutVendorDecisionsNestedInput
+  handler?: Prisma.UserUpdateOneWithoutHandledVendorRequestsNestedInput
+  reports?: Prisma.VendorReportUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateWithoutDocumentInput = {
@@ -2091,9 +2671,13 @@ export type VendorAssignmentUncheckedUpdateWithoutDocumentInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reports?: Prisma.VendorReportUncheckedUpdateManyWithoutAssignmentNestedInput
 }
 
 export type VendorAssignmentUncheckedUpdateManyWithoutDocumentInput = {
@@ -2112,11 +2696,43 @@ export type VendorAssignmentUncheckedUpdateManyWithoutDocumentInput = {
   decisionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decidedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   decidedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  handlerUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  delegatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRemindedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+
+/**
+ * Count Type VendorAssignmentCountOutputType
+ */
+
+export type VendorAssignmentCountOutputType = {
+  reports: number
+}
+
+export type VendorAssignmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  reports?: boolean | VendorAssignmentCountOutputTypeCountReportsArgs
+}
+
+/**
+ * VendorAssignmentCountOutputType without action
+ */
+export type VendorAssignmentCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorAssignmentCountOutputType
+   */
+  select?: Prisma.VendorAssignmentCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * VendorAssignmentCountOutputType without action
+ */
+export type VendorAssignmentCountOutputTypeCountReportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorReportWhereInput
+}
 
 
 export type VendorAssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2136,6 +2752,9 @@ export type VendorAssignmentSelect<ExtArgs extends runtime.Types.Extensions.Inte
   decisionReason?: boolean
   decidedById?: boolean
   decidedAt?: boolean
+  handlerUserId?: boolean
+  delegatedAt?: boolean
+  lastRemindedAt?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -2146,6 +2765,9 @@ export type VendorAssignmentSelect<ExtArgs extends runtime.Types.Extensions.Inte
   vendor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   decidedBy?: boolean | Prisma.VendorAssignment$decidedByArgs<ExtArgs>
+  handler?: boolean | Prisma.VendorAssignment$handlerArgs<ExtArgs>
+  reports?: boolean | Prisma.VendorAssignment$reportsArgs<ExtArgs>
+  _count?: boolean | Prisma.VendorAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendorAssignment"]>
 
 
@@ -2167,12 +2789,15 @@ export type VendorAssignmentSelectScalar = {
   decisionReason?: boolean
   decidedById?: boolean
   decidedAt?: boolean
+  handlerUserId?: boolean
+  delegatedAt?: boolean
+  lastRemindedAt?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VendorAssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "caseId" | "documentId" | "documentVersion" | "attempt" | "vendorUserId" | "assignedById" | "assignmentNote" | "resolutionNote" | "status" | "decisionReason" | "decidedById" | "decidedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["vendorAssignment"]>
+export type VendorAssignmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "caseId" | "documentId" | "documentVersion" | "attempt" | "vendorUserId" | "assignedById" | "assignmentNote" | "resolutionNote" | "status" | "decisionReason" | "decidedById" | "decidedAt" | "handlerUserId" | "delegatedAt" | "lastRemindedAt" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["vendorAssignment"]>
 export type VendorAssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
@@ -2181,6 +2806,9 @@ export type VendorAssignmentInclude<ExtArgs extends runtime.Types.Extensions.Int
   vendor?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   assignedBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   decidedBy?: boolean | Prisma.VendorAssignment$decidedByArgs<ExtArgs>
+  handler?: boolean | Prisma.VendorAssignment$handlerArgs<ExtArgs>
+  reports?: boolean | Prisma.VendorAssignment$reportsArgs<ExtArgs>
+  _count?: boolean | Prisma.VendorAssignmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 
 export type $VendorAssignmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2193,6 +2821,8 @@ export type $VendorAssignmentPayload<ExtArgs extends runtime.Types.Extensions.In
     vendor: Prisma.$UserPayload<ExtArgs>
     assignedBy: Prisma.$UserPayload<ExtArgs>
     decidedBy: Prisma.$UserPayload<ExtArgs> | null
+    handler: Prisma.$UserPayload<ExtArgs> | null
+    reports: Prisma.$VendorReportPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -2211,6 +2841,12 @@ export type $VendorAssignmentPayload<ExtArgs extends runtime.Types.Extensions.In
     decisionReason: string | null
     decidedById: bigint | null
     decidedAt: Date | null
+    /**
+     * Team user the Main Vendor delegated this request to; null = the Main Vendor handles it.
+     */
+    handlerUserId: bigint | null
+    delegatedAt: Date | null
+    lastRemindedAt: Date | null
     version: number
     createdAt: Date
     updatedAt: Date
@@ -2561,6 +3197,8 @@ export interface Prisma__VendorAssignmentClient<T, Null = never, ExtArgs extends
   vendor<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   assignedBy<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   decidedBy<T extends Prisma.VendorAssignment$decidedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VendorAssignment$decidedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  handler<T extends Prisma.VendorAssignment$handlerArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VendorAssignment$handlerArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  reports<T extends Prisma.VendorAssignment$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VendorAssignment$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2606,6 +3244,9 @@ export interface VendorAssignmentFieldRefs {
   readonly decisionReason: Prisma.FieldRef<"VendorAssignment", 'String'>
   readonly decidedById: Prisma.FieldRef<"VendorAssignment", 'BigInt'>
   readonly decidedAt: Prisma.FieldRef<"VendorAssignment", 'DateTime'>
+  readonly handlerUserId: Prisma.FieldRef<"VendorAssignment", 'BigInt'>
+  readonly delegatedAt: Prisma.FieldRef<"VendorAssignment", 'DateTime'>
+  readonly lastRemindedAt: Prisma.FieldRef<"VendorAssignment", 'DateTime'>
   readonly version: Prisma.FieldRef<"VendorAssignment", 'Int'>
   readonly createdAt: Prisma.FieldRef<"VendorAssignment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VendorAssignment", 'DateTime'>
@@ -2972,6 +3613,49 @@ export type VendorAssignment$decidedByArgs<ExtArgs extends runtime.Types.Extensi
    */
   include?: Prisma.UserInclude<ExtArgs> | null
   where?: Prisma.UserWhereInput
+}
+
+/**
+ * VendorAssignment.handler
+ */
+export type VendorAssignment$handlerArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * VendorAssignment.reports
+ */
+export type VendorAssignment$reportsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorReport
+   */
+  select?: Prisma.VendorReportSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorReport
+   */
+  omit?: Prisma.VendorReportOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorReportInclude<ExtArgs> | null
+  where?: Prisma.VendorReportWhereInput
+  orderBy?: Prisma.VendorReportOrderByWithRelationInput | Prisma.VendorReportOrderByWithRelationInput[]
+  cursor?: Prisma.VendorReportWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorReportScalarFieldEnum | Prisma.VendorReportScalarFieldEnum[]
 }
 
 /**

@@ -11,6 +11,20 @@ export interface VendorRequestRow {
   assignedBy: string;
   assignedAt: string;
   decidedAt: string | null;
+  /** Team user the Main Vendor delegated this to; null = the Main Vendor. */
+  handledBy: string | null;
+  hasReport: boolean;
+}
+
+/** The latest report of an approved request (the storage key is never sent). */
+export interface VendorReport {
+  id: string;
+  version: number;
+  name: string;
+  contentType: "application/pdf" | "image/png";
+  sizeBytes: number;
+  uploadedAt: string;
+  uploadedBy: string;
 }
 
 export interface VendorRequestPage {
@@ -37,6 +51,15 @@ export interface VendorRequestDetail {
   resolutionNote: string | null;
   decidedAt: string | null;
   reason: string | null;
+  handler: { id: string; name: string } | null;
+  delegatedAt: string | null;
+  lastRemindedAt: string | null;
+  /** Server-decided: only the Main Vendor, only while pending. */
+  canDelegate: boolean;
+  canRemind: boolean;
+  /** Approve first, then upload: true only for an APPROVED request. */
+  canUploadReport: boolean;
+  report: VendorReport | null;
   file: {
     version: number;
     name: string;

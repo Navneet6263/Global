@@ -50,13 +50,15 @@ interface CreateUserDialogProps {
   roles?: readonly Role[];
   /** False when the caller may only assign the listed branches, never all branches. */
   allowTenantWide?: boolean;
+  /** Roles selected when the dialog opens (e.g. VENDOR for a vendor's team). */
+  defaultRoles?: readonly Role[];
   onOpenChange: (open: boolean) => void;
   onSubmit: (input: CreateUserInput) => void;
 }
 
 export function CreateUserDialog(props: CreateUserDialogProps) {
   const defaultBranch = props.allowTenantWide === false ? (props.branches[0]?.id ?? "all") : "all";
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [roles, setRoles] = useState<Role[]>([...(props.defaultRoles ?? [])]);
   const [branchId, setBranchId] = useState(defaultBranch);
   const [clientId, setClientId] = useState("none");
   const [clientIds, setClientIds] = useState<string[]>([]);
@@ -112,12 +114,12 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
   useEffect(() => {
     if (props.open) return;
     form.reset({ fullName: "", email: "", mobile: "" });
-    setRoles([]);
+    setRoles([...(props.defaultRoles ?? [])]);
     setBranchId(defaultBranch);
     setClientId("none");
     setClientIds([]);
     setScopeError("");
-  }, [defaultBranch, form, props.open]);
+  }, [defaultBranch, form, props.open, props.defaultRoles]);
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>

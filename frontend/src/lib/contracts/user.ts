@@ -15,6 +15,8 @@ export interface PlatformUser {
   clientWorkspaceScope: readonly string[];
   /** SPOC-RM only: the assigned client IDs, used to pre-tick Edit role access. */
   clientWorkspaceIds?: readonly string[];
+  /** Vendor team users only: the Main Vendor that manages this login. */
+  vendorTeamOf?: string | null;
   lastLoginAt: string | null;
   createdAt: string;
   mfaEnabled: boolean | null;

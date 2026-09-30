@@ -27,6 +27,7 @@ import {
   AddBranchDialog,
   AddPackageDialog,
 } from "@/features/settings/components/settings-create-dialogs";
+import { VendorTeamLimitsPanel } from "@/features/settings/components/vendor-team-limits-panel";
 
 export const Route = createFileRoute("/admin/settings")({
   head: () => ({
@@ -154,6 +155,7 @@ function SettingsPage() {
               busy={accessMutation.isPending}
               onToggle={(policy) => accessMutation.mutate(policy)}
             />
+            <VendorTeamLimitsPanel />
           </TabsContent>
 
           <TabsContent value="catalogue" className="space-y-6 pt-4">

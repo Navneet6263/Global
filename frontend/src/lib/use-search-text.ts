@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useDebouncedValue } from "@/lib/use-debounced-value";
+import { useDebouncedValue } from "./use-debounced-value";
 
 /** A search box bound to a URL param: typed text is committed after a short pause. */
 export function useSearchText(current: string | undefined, commit: (value?: string) => void) {

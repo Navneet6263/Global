@@ -21,10 +21,12 @@ import { AssignVendorService } from "./services/assign-vendor.service";
 import { ReassignVendorService } from "./services/reassign-vendor.service";
 import { RequestReuploadService } from "./services/request-reupload.service";
 import { SpocVendorMonitorService } from "./services/spoc-vendor-monitor.service";
+import { VendorReportFileService } from "./services/vendor-report-file.service";
 import { SPOC_VENDOR_ROUTES } from "./vendor-requests.routes";
 import {
   AssignVendorDto,
   ReassignVendorDto,
+  ReportModeQueryDto,
   RequestReuploadDto,
   SpocVendorClientQueryDto,
   SpocVendorDocumentQueryDto,
@@ -44,6 +46,7 @@ export class SpocVendorsController {
     private readonly assigner: AssignVendorService,
     private readonly reassigner: ReassignVendorService,
     private readonly reuploads: RequestReuploadService,
+    private readonly reports: VendorReportFileService,
   ) {}
 
   @Get(SPOC_VENDOR_ROUTES.clients)
@@ -79,6 +82,18 @@ export class SpocVendorsController {
     @Param("documentId", ParseUUIDPipe) documentId: string,
   ): Promise<StreamableFile> {
     return (await this.monitor.preview(actor, documentId)).file;
+  }
+
+  /** The vendor's report of an approved attempt; only a real download is logged as received. */
+  @Get(SPOC_VENDOR_ROUTES.report)
+  @Header("Cache-Control", "private, no-store")
+  @Header("X-Content-Type-Options", "nosniff")
+  report(
+    @CurrentActor() actor: Actor,
+    @Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+    @Query() query: ReportModeQueryDto,
+  ): Promise<StreamableFile> {
+    return this.reports.forSpoc(actor, assignmentId, query.mode);
   }
 
   @Get(SPOC_VENDOR_ROUTES.vendors)

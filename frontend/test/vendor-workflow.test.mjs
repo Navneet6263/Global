@@ -83,7 +83,12 @@ test("every vendor status has a label and tone, and rejected work stands out", (
   assert.equal(spoc.VENDOR_STATUS_META.REJECTED.tone, "critical");
   assert.equal(vendor.REQUEST_STATUS_META.PENDING.tone, "warning");
   assert.deepEqual(
-    vendor.REQUEST_TABS.map((tab) => tab.value),
-    ["PENDING", "APPROVED", "REJECTED", "ALL"],
+    vendor.VENDOR_LIST_VIEWS.map((view) => [view.view, view.status, view.to]),
+    [
+      ["PENDING", "PENDING", "/vendor/pending"],
+      ["APPROVED", "APPROVED", "/vendor/approved"],
+      ["REJECTED", "REJECTED", "/vendor/rejected"],
+      ["ALL", undefined, "/vendor/all"],
+    ],
   );
 });

@@ -8,7 +8,7 @@ import { OversightSearch } from "@/features/admin-dashboard/components/oversight
 import { EMPLOYEE_COLUMNS } from "@/features/support/components/support-columns";
 import { SupportEmployeeDrawer } from "@/features/support/components/SupportEmployeeDrawer";
 import { SupportTablePanel } from "@/features/support/components/SupportTablePanel";
-import { useSearchText } from "@/features/support/hooks/use-search-text";
+import { useSearchText } from "@/lib/use-search-text";
 import { useSupportEmployees } from "@/features/support/hooks/use-support";
 import { EMPLOYEE_TABS } from "@/features/support/support-model";
 import {

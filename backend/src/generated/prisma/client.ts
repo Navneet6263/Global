@@ -304,3 +304,15 @@ export type SpocClientScope = Prisma.SpocClientScopeModel
  * server from the requester, never from the request body.
  */
 export type SupportRequest = Prisma.SupportRequestModel
+/**
+ * Model VendorTeamPolicy
+ * How many ACTIVE team logins a Main Vendor may have, set by Platform Admin.
+ * No row means 0: the vendor cannot create team users.
+ */
+export type VendorTeamPolicy = Prisma.VendorTeamPolicyModel
+/**
+ * Model VendorReport
+ * A report a vendor attaches to an APPROVED assignment attempt. Uploading again adds
+ * version n+1 (history kept); SPOC-RM always gets the latest version.
+ */
+export type VendorReport = Prisma.VendorReportModel

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -8,6 +7,7 @@ import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import { Prisma } from "../generated/prisma/client";
+import { listAuditActivity } from "./audit-activity-page";
 import {
   activityMetadata,
   activitySource,
@@ -59,44 +59,28 @@ export class CaseActivityService {
     publicId: string,
     query: CaseActivityQuery,
   ) {
-    const scope = caseActivityScope(tenantId, caseId, publicId);
     const filter = query.resource
       ? Prisma.sql`AND a.[resourceType] = ${query.resource}`
       : Prisma.empty;
-    let pagination = Prisma.empty;
-    if (query.cursor) {
-      const anchors = await this.prisma.$queryRaw<
-        Array<{ id: string; cursorTime: string }>
-      >(Prisma.sql`
-        SELECT CONVERT(varchar(36), a.[publicId]) AS [id],
-          CONVERT(varchar(33), a.[createdAt], 126) AS [cursorTime]
-        FROM [dbo].[AuditEvent] a WHERE ${scope} ${filter}
-        AND a.[publicId] = CONVERT(uniqueidentifier, ${query.cursor})`);
-      const anchor = anchors[0];
-      if (!anchor)
-        throw new BadRequestException(
-          "Activity page has changed; return to the first page",
-        );
-      // Keep SQL DATETIME2's seven-digit precision: JS Date truncates to ms.
-      pagination = Prisma.sql`AND (a.[createdAt] < CONVERT(datetime2, ${anchor.cursorTime}, 126) OR
-        (a.[createdAt] = CONVERT(datetime2, ${anchor.cursorTime}, 126) AND a.[publicId] < CONVERT(uniqueidentifier, ${anchor.id})))`;
-    }
-    const limit = Math.min(50, Math.max(1, query.limit));
-    const rows = await this.prisma.$queryRaw<CaseActivityRow[]>(Prisma.sql`
-      SELECT TOP (${limit + 1}) ${activityMetadata} FROM ${activitySource}
-      WHERE ${scope} ${filter} ${pagination}
-      ORDER BY a.[createdAt] DESC, a.[publicId] DESC`);
-    const hasMore = rows.length > limit;
+    const { rows, nextCursor } = await listAuditActivity<CaseActivityRow>(
+      this.prisma,
+      {
+        scope: Prisma.sql`${caseActivityScope(tenantId, caseId, publicId)} ${filter}`,
+        metadata: activityMetadata,
+        source: activitySource,
+        query,
+      },
+    );
     // Explicit allowlist: never serialize audit JSON, IPs, location or object keys.
-    const items = rows
-      .slice(0, limit)
-      .map(({ id, action, resourceType, actorName, createdAt }) => ({
+    const items = rows.map(
+      ({ id, action, resourceType, actorName, createdAt }) => ({
         id,
         action,
         resourceType,
         actorName,
         createdAt,
-      }));
-    return { items, nextCursor: hasMore ? (items.at(-1)?.id ?? null) : null };
+      }),
+    );
+    return { items, nextCursor };
   }
 }

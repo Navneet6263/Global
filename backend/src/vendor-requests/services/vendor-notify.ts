@@ -175,3 +175,36 @@ export async function notifyOperationsOfReupload(
     })),
   });
 }
+
+/**
+ * A vendor attached (or replaced) the report of an approved request: the SPOC side
+ * of that client can now preview and download it. Same recipients as decisions.
+ */
+export async function notifyReportAvailable(
+  tx: Tx,
+  context: VendorNoticeContext & {
+    clientId: bigint;
+    clientPublicId: string;
+    assignedById: bigint;
+    vendorName: string;
+    version: number;
+  },
+) {
+  const recipients = await spocVendorRecipients(
+    tx,
+    context.tenantId,
+    context.clientId,
+    context.assignedById,
+  );
+  if (!recipients.length) return;
+  await tx.notification.createMany({
+    data: recipients.map((recipient) => ({
+      tenantId: context.tenantId,
+      userId: recipient.id,
+      type: "VENDOR_REPORT_AVAILABLE",
+      title: "Vendor report available",
+      body: `${context.vendorName}: ${context.caseNumber} · ${documentLabel(context.documentType)} (v${context.version}) from ${context.clientName}.`,
+      href: `/spoc-rm/vendors?clientId=${context.clientPublicId}`,
+    })),
+  });
+}

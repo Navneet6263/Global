@@ -26,6 +26,7 @@ type AuthActorRow = {
   email: string;
   displayName: string;
   mustChangePassword: boolean;
+  vendorOwnerId: bigint | null;
   roleCode: string;
   permissionsJson: string;
 };
@@ -71,6 +72,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         u.[email] AS [email],
         u.[displayName] AS [displayName],
         u.[mustChangePassword] AS [mustChangePassword],
+        u.[vendorOwnerId] AS [vendorOwnerId],
         role.[code] AS [roleCode],
         role.[permissionsJson] AS [permissionsJson]
       FROM [dbo].[RefreshSession] session
@@ -78,6 +80,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       INNER JOIN [dbo].[Tenant] tenant ON tenant.[id] = u.[tenantId]
       LEFT JOIN [dbo].[Branch] branch ON branch.[id] = u.[branchId]
       LEFT JOIN [dbo].[Client] client ON client.[id] = u.[clientId]
+      LEFT JOIN [dbo].[User] vendorOwner ON vendorOwner.[id] = u.[vendorOwnerId]
       INNER JOIN [dbo].[UserRole] userRole ON userRole.[userId] = u.[id]
       INNER JOIN [dbo].[Role] role ON role.[id] = userRole.[roleId]
       WHERE session.[publicId] = CAST(${payload.sessionId} AS UNIQUEIDENTIFIER)
@@ -85,6 +88,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         AND session.[expiresAt] > SYSUTCDATETIME()
         AND u.[publicId] = CAST(${payload.sub} AS UNIQUEIDENTIFIER)
         AND u.[status] = 'ACTIVE'
+        -- A vendor team login works only while its Main Vendor is active.
+        AND (u.[vendorOwnerId] IS NULL OR vendorOwner.[status] = 'ACTIVE')
         AND tenant.[publicId] = CAST(${payload.tenantId} AS UNIQUEIDENTIFIER)
         AND tenant.[status] = 'ACTIVE'
     `;
@@ -125,6 +130,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       mustChangePassword: user.mustChangePassword,
       roles,
       permissions,
+      ...(user.vendorOwnerId ? { vendorOwnerId: user.vendorOwnerId } : {}),
       ...(roles.includes("SPOC_RM")
         ? { spocClients: await this.spocClients(user.userId, user.tenantId) }
         : {}),

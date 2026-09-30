@@ -1,4 +1,5 @@
 import type { SpocPage } from "../contracts/spoc";
+import type { VendorReport } from "@/features/vendor/vendor-contracts";
 
 export type VendorAssignmentStatus = "PENDING" | "APPROVED" | "REJECTED";
 export type VendorDocumentStatus = "NOT_ASSIGNED" | VendorAssignmentStatus;
@@ -30,6 +31,8 @@ export interface VendorAttempt {
   decidedBy: string | null;
   decidedAt: string | null;
   reason: string | null;
+  /** The vendor's latest report; the server sends it only for an APPROVED attempt. */
+  report: VendorReport | null;
 }
 
 export interface VendorFile {

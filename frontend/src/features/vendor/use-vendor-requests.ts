@@ -41,3 +41,45 @@ export function useVendorDecision(onDone: () => void) {
       toast.error("The decision was not saved", { description: error.message }),
   });
 }
+
+export function useDelegateRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { requestId: string; handlerId: string | null; version: number }) =>
+      vendorApi.delegate(input.requestId, input.handlerId, input.version),
+    onSuccess: (result) => {
+      void queryClient.invalidateQueries({ queryKey: vendorKeys.all });
+      toast.success(result.handler ? `Assigned to ${result.handler.name}` : "You are handling it", {
+        description: result.handler ? "They have been notified." : undefined,
+      });
+    },
+    onError: (error: Error) => toast.error("Not reassigned", { description: error.message }),
+  });
+}
+
+export function useRemindRequest() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (requestId: string) => vendorApi.remind(requestId),
+    onSuccess: (result) => {
+      void queryClient.invalidateQueries({ queryKey: vendorKeys.all });
+      toast.success(`Reminder sent to ${result.handler}`);
+    },
+    onError: (error: Error) => toast.error("Reminder not sent", { description: error.message }),
+  });
+}
+
+export function useUploadReport() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { requestId: string; file: File }) =>
+      vendorApi.uploadReport(input.requestId, input.file),
+    onSuccess: (report) => {
+      void queryClient.invalidateQueries({ queryKey: vendorKeys.all });
+      toast.success(`Report v${report.version} uploaded`, {
+        description: "SPOC-RM has been notified that it is available.",
+      });
+    },
+    onError: (error: Error) => toast.error("Report not uploaded", { description: error.message }),
+  });
+}

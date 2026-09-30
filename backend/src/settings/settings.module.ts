@@ -3,6 +3,7 @@ import { SettingsController } from "./settings.controller";
 import { SettingsService } from "./settings.service";
 import { ServicePackagePolicyService } from "./service-package-policy.service";
 import { AccessPolicyService } from "./access-policy.service";
+import { VendorTeamPolicyService } from "./vendor-team-policy.service";
 
 @Module({
   controllers: [SettingsController],
@@ -10,6 +11,7 @@ import { AccessPolicyService } from "./access-policy.service";
     SettingsService,
     ServicePackagePolicyService,
     AccessPolicyService,
+    VendorTeamPolicyService,
   ],
 })
 export class SettingsModule {}

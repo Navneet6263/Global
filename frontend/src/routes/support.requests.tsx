@@ -7,7 +7,7 @@ import { OversightSearch } from "@/features/admin-dashboard/components/oversight
 import { REQUEST_COLUMNS } from "@/features/support/components/support-columns";
 import { SupportRequestDrawer } from "@/features/support/components/SupportRequestDrawer";
 import { SupportTablePanel } from "@/features/support/components/SupportTablePanel";
-import { useSearchText } from "@/features/support/hooks/use-search-text";
+import { useSearchText } from "@/lib/use-search-text";
 import { useSupportRequests } from "@/features/support/hooks/use-support";
 import { REQUEST_TABS, REQUESTER_LABEL } from "@/features/support/support-model";
 import {

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Eye } from "lucide-react";
+import { Eye, FileCheck2 } from "lucide-react";
 import { ErrorState } from "@/components/feedback/error-state";
 import { TableSkeleton } from "@/components/feedback/skeletons";
 import { StatusBadge } from "@/components/feedback/status-badge";
@@ -18,7 +18,7 @@ import { formatDateTime } from "@/lib/formatting";
 import type { VendorRequestPage, VendorRequestRow } from "./vendor-contracts";
 import { REQUEST_STATUS_META } from "./vendor-request-model";
 
-const HEADERS = ["Assigned", "Client", "Case", "Document", "Assigned by", "Status"];
+const HEADERS = ["Assigned", "Client", "Case", "Document", "Assigned by", "Handled by", "Status"];
 
 /** The vendor's own requests. Rows only open the request drawer. */
 export function VendorRequestTable({
@@ -26,6 +26,8 @@ export function VendorRequestTable({
   error,
   retrying,
   toolbar,
+  title = "Assigned documents",
+  description = "Open a request to view the document, then approve it or reject it with a reason.",
   onRetry,
   onPage,
   onOpen,
@@ -34,15 +36,18 @@ export function VendorRequestTable({
   error: Error | null;
   retrying: boolean;
   toolbar?: ReactNode;
+  title?: string;
+  description?: string;
   onRetry: () => void;
-  onPage: (page: number) => void;
+  /** Omit to show one page only (the overview's latest requests). */
+  onPage?: (page: number) => void;
   onOpen: (row: VendorRequestRow) => void;
 }) {
   return (
     <OversightPanel
-      title="Assigned documents"
-      description="Open a request to view the document, then approve it or reject it with a reason."
-      count={data?.total}
+      title={title}
+      description={description}
+      count={onPage ? data?.total : undefined}
       toolbar={toolbar}
     >
       {error ? (
@@ -81,8 +86,17 @@ export function VendorRequestTable({
                     <TableCell>{row.caseNumber}</TableCell>
                     <TableCell>{oversightLabel(row.documentType)}</TableCell>
                     <TableCell>{row.assignedBy}</TableCell>
+                    <TableCell className="text-muted-foreground">{row.handledBy ?? "—"}</TableCell>
                     <TableCell>
-                      <StatusBadge label={status.label} tone={status.tone} />
+                      <span className="inline-flex items-center gap-2">
+                        <StatusBadge label={status.label} tone={status.tone} />
+                        {row.hasReport ? (
+                          <span title="Report uploaded" className="text-primary">
+                            <FileCheck2 className="size-3.5" aria-hidden />
+                            <span className="sr-only">Report uploaded</span>
+                          </span>
+                        ) : null}
+                      </span>
                     </TableCell>
                     <TableCell className="text-right">
                       <button
@@ -104,7 +118,7 @@ export function VendorRequestTable({
           </Table>
         </div>
       )}
-      {data && data.total > data.pageSize ? (
+      {onPage && data && data.total > data.pageSize ? (
         <div className="border-t border-border/70 px-4 py-3">
           <PaginationBar
             page={data.page}

@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { OversightSearch } from "@/features/admin-dashboard/components/oversight-ui";
 import { CLIENT_COLUMNS } from "@/features/support/components/support-columns";
 import { SupportTablePanel } from "@/features/support/components/SupportTablePanel";
-import { useSearchText } from "@/features/support/hooks/use-search-text";
+import { useSearchText } from "@/lib/use-search-text";
 import { useSupportClients, useSupportSummary } from "@/features/support/hooks/use-support";
 import { supportClientsSearch, type SupportClientsSearch } from "@/features/support/support-search";
 

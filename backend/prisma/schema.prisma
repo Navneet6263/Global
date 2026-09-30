@@ -47,6 +47,8 @@ model Tenant {
   vendorSharingRecords VendorSharingRecord[]
   vendorAssignments VendorAssignment[]
   supportRequests SupportRequest[]
+  vendorTeamPolicies VendorTeamPolicy[]
+  vendorReports      VendorReport[]
 }
 
 model Branch {
@@ -85,6 +87,8 @@ model User {
   lockedUntil        DateTime? @db.DateTime2
   lastLoginAt        DateTime? @db.DateTime2
   passwordChangedAt  DateTime  @default(now()) @db.DateTime2
+  /// Vendor team users only: the Main Vendor that created and manages this login.
+  vendorOwnerId      BigInt?
   version            Int       @default(1)
   createdAt          DateTime  @default(now()) @db.DateTime2
   updatedAt          DateTime  @updatedAt @db.DateTime2
@@ -126,12 +130,18 @@ model User {
   spocClientScopes      SpocClientScope[]
   supportRequestsRaised SupportRequest[] @relation("SupportRequester")
   supportRequestsTaken  SupportRequest[] @relation("SupportAssignee")
+  vendorOwner           User?              @relation("VendorTeam", fields: [vendorOwnerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorTeam            User[]             @relation("VendorTeam")
+  vendorTeamPolicy      VendorTeamPolicy?
+  handledVendorRequests VendorAssignment[] @relation("VendorHandler")
+  uploadedVendorReports VendorReport[]     @relation("VendorReportUploader")
 
   @@unique([tenantId, normalizedEmail])
   @@index([tenantId, status])
   @@index([tenantId, branchId])
   @@index([tenantId, clientId])
   @@index([tenantId, displayName, publicId])
+  @@index([tenantId, vendorOwnerId, status])
 }
 
 model VendorSharingRecord {
@@ -1176,6 +1186,10 @@ model VendorAssignment {
   decisionReason  String?   @db.NVarChar(1000)
   decidedById     BigInt?
   decidedAt       DateTime? @db.DateTime2
+  /// Team user the Main Vendor delegated this request to; null = the Main Vendor handles it.
+  handlerUserId   BigInt?
+  delegatedAt     DateTime? @db.DateTime2
+  lastRemindedAt  DateTime? @db.DateTime2
   version         Int       @default(1)
   createdAt       DateTime  @default(now()) @db.DateTime2
   updatedAt       DateTime  @updatedAt @db.DateTime2
@@ -1187,11 +1201,14 @@ model VendorAssignment {
   vendor     User             @relation("VendorAssignee", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   assignedBy User             @relation("VendorAssigner", fields: [assignedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
   decidedBy  User?            @relation("VendorDecider", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  handler    User?            @relation("VendorHandler", fields: [handlerUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reports    VendorReport[]
 
   @@unique([documentId, attempt])
   @@index([tenantId, vendorUserId, status, createdAt])
   @@index([tenantId, clientId, status])
   @@index([caseId])
+  @@index([tenantId, handlerUserId, status])
 }
 
 /// Clients a SPOC-RM may monitor and manage vendor work for. SPOC-RM only: every
@@ -1241,4 +1258,47 @@ model SupportRequest {
   @@index([tenantId, clientId, createdAt])
   @@index([caseId])
   @@index([requesterUserId, createdAt])
+}
+
+/// How many ACTIVE team logins a Main Vendor may have, set by Platform Admin.
+/// No row means 0: the vendor cannot create team users.
+model VendorTeamPolicy {
+  id             BigInt   @id @default(autoincrement())
+  publicId       String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId       BigInt
+  vendorUserId   BigInt   @unique
+  maxActiveUsers Int      @default(0)
+  version        Int      @default(1)
+  updatedById    BigInt?
+  createdAt      DateTime @default(now()) @db.DateTime2
+  updatedAt      DateTime @updatedAt @db.DateTime2
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendor User   @relation(fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([tenantId])
+}
+
+/// A report a vendor attaches to an APPROVED assignment attempt. Uploading again adds
+/// version n+1 (history kept); SPOC-RM always gets the latest version.
+model VendorReport {
+  id           BigInt   @id @default(autoincrement())
+  publicId     String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId     BigInt
+  assignmentId BigInt
+  version      Int
+  objectKey    String   @db.NVarChar(600)
+  originalName String   @db.NVarChar(255)
+  contentType  String   @db.VarChar(100)
+  sizeBytes    Int
+  sha256       String   @db.Char(64)
+  uploadedById BigInt
+  createdAt    DateTime @default(now()) @db.DateTime2
+
+  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assignment VendorAssignment @relation(fields: [assignmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  uploadedBy User             @relation("VendorReportUploader", fields: [uploadedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([assignmentId, version])
+  @@index([tenantId, assignmentId])
 }

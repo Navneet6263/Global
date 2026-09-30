@@ -3,6 +3,7 @@ import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
 import { paging } from "../spoc/spoc-scope";
 import type { VendorTx } from "./vendor-assignments.repository";
+import { latestReportSelect } from "./vendor-reports.repository";
 
 const name = { select: { displayName: true } } as const;
 
@@ -20,6 +21,8 @@ export const vendorListSelect = {
   case: { select: { caseNumber: true } },
   client: name,
   assignedBy: name,
+  handler: name,
+  _count: { select: { reports: true } },
 } as const;
 
 export const vendorDetailSelect = {
@@ -43,6 +46,11 @@ export const vendorDetailSelect = {
   },
   client: name,
   assignedBy: name,
+  handlerUserId: true,
+  delegatedAt: true,
+  lastRemindedAt: true,
+  handler: { select: { publicId: true, displayName: true } },
+  reports: latestReportSelect,
 } as const;
 
 /** Data access for the Vendor workspace. Every where is keyed on the caller's own requests. */
@@ -122,7 +130,50 @@ export class VendorRequestsRepository {
         document: { select: { publicId: true, type: true } },
         case: { select: { publicId: true, caseNumber: true } },
         client: name,
+        vendor: name,
       },
+    });
+  }
+
+  /** A Main Vendor's own request, with what delegation and reminders need. */
+  findOwnForDelegation(tx: VendorTx, where: Prisma.VendorAssignmentWhereInput) {
+    return tx.vendorAssignment.findFirst({
+      where,
+      select: {
+        id: true,
+        publicId: true,
+        status: true,
+        version: true,
+        handlerUserId: true,
+        lastRemindedAt: true,
+        document: { select: { type: true } },
+        case: { select: { caseNumber: true } },
+        client: name,
+        handler: { select: { publicId: true, displayName: true } },
+      },
+    });
+  }
+
+  /** Optimistic: only a still-PENDING row at the version the Main Vendor read. */
+  setHandler(
+    tx: VendorTx,
+    row: { id: bigint; version: number },
+    handlerUserId: bigint | null,
+  ) {
+    return tx.vendorAssignment.updateMany({
+      where: { id: row.id, version: row.version, status: "PENDING" },
+      data: {
+        handlerUserId,
+        delegatedAt: handlerUserId === null ? null : new Date(),
+        version: { increment: 1 },
+      },
+    });
+  }
+
+  markReminded(tx: VendorTx, id: bigint, at: Date) {
+    return tx.vendorAssignment.update({
+      where: { id },
+      data: { lastRemindedAt: at },
     });
   }
 
