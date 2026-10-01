@@ -40,7 +40,7 @@ export async function clientWorkspaceFixture(
       loggedOut = true;
       return reply({ authenticated: false });
     }
-    if (path === "/auth/me" && loggedOut)
+    if (loggedOut && (path === "/auth/me" || path === "/auth/refresh"))
       return route.fulfill({ status: 401, json: { title: "Signed out" } });
     if (path === "/auth/me")
       return reply({
