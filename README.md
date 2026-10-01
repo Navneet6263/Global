@@ -2,6 +2,28 @@
 
 ## Developer handover
 
+### Main working copy
+
+Use `TrustLink-Verifications` for all further development: UI changes belong in
+`frontend/`, API changes in `backend/`. Company handover changes and the latest
+Client Admin design were consolidated here on 1 October 2026. Do not continue
+editing the retired duplicate repositories.
+
+Run the two development processes from this repository in separate terminals:
+
+```sh
+npm run dev:frontend
+npm run dev:backend
+```
+
+Use `npm.cmd` instead of `npm` if PowerShell blocks `npm.ps1`. Stop each process
+with Ctrl+C. API configuration details are in
+[Frontend API integration](frontend/docs/API-INTEGRATION.md).
+
+The local branch `backup/pre-consolidation-20261001` preserves the previous main
+code. Consolidation does not migrate the database or replace private environment
+files. Review pending database migrations separately before running new workflows.
+
 Latest agreed internal flow: [BGV Portal Agreed Internal Workflow](docs/agreed-internal-workflow.md). This defines Operations-to-RM allocation, RM-led verification and complete RM reassignment handover. It is a target specification, not confirmation of implemented functionality.
 
 This is the primary repository guide: use it to locate screens, API logic, database definitions, tests and deployment configuration.

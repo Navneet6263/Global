@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
+    "start": "node .output/server/index.mjs",
     "typecheck": "tsc --noEmit",
     "test:unit": "node --test test/*.test.mjs",
     "test:ui": "playwright test --config playwright.ui.config.ts",
