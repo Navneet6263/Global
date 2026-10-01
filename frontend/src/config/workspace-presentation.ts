@@ -36,6 +36,10 @@ export const WORKSPACE_PRESENTATION: Record<NavWorkspace, WorkspacePresentation>
     label: "Client Admin",
     heading: "Sapling Global — Client Verification Portal",
     home: "/client-portal",
+    search: {
+      route: "/client-portal/verifications",
+      placeholder: "Search candidate or case number",
+    },
     security: "/change-password",
     quickCreate: false,
   },

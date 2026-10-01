@@ -2,6 +2,8 @@
 
 ## Developer handover
 
+Latest agreed internal flow: [BGV Portal Agreed Internal Workflow](docs/agreed-internal-workflow.md). This defines Operations-to-RM allocation, RM-led verification and complete RM reassignment handover. It is a target specification, not confirmation of implemented functionality.
+
 This is the primary repository guide: use it to locate screens, API logic, database definitions, tests and deployment configuration.
 
 The frontend uses **React, TypeScript, TanStack Start/Router/Query, Vite and Tailwind CSS**. It is not a Next.js application. The backend uses **NestJS, Fastify, Prisma and Microsoft SQL Server**. The root npm workspace manages both applications.
@@ -54,6 +56,7 @@ All application code is under `frontend/src/`.
 | `lib/feedback/`, `lib/formatting/` | Shared interaction feedback and date, currency and number formatting. |
 | `lib/indian-mobile.ts`, `lib/password-policy.ts` | Shared phone-number and password validation helpers. |
 | `styles.css` | Global theme, design tokens and shared styling. |
+| `design/workspace-theme.css`, `design/client-portal-*.css` | Approved v1.1 palette and Client Admin sidebar, dashboard and queue geometry. Client-specific styling does not replace other role layouts. |
 
 ### Feature folders and workspaces
 
@@ -65,7 +68,7 @@ All application code is under `frontend/src/`.
 | `crm/` | Sales opportunities, activities, follow-ups, accounts and commercial onboarding. |
 | `clients/` | Client management and related presentation. |
 | `field/` | Field visit queue, GPS actions, evidence capture and offline visit work. |
-| `stakeholders/client/` | Client-facing verification portfolio and related views. |
+| `stakeholders/client/` | Client-facing verification portfolio and related views. `ClientPortalShell` and `ClientPortalNavigation` own the client frame; `ClientHeaderActions` and `ClientAccountMenu` provide header help, learning and account controls; `ClientCaseQueue` owns server-paginated case browsing. |
 | `stakeholders/finance/` | Finance workspace components and financial views. |
 | `stakeholders/settings/`, `settings/` | Organisation, branch, package and workflow settings. |
 | `stakeholders/security/`, `security/` | Account security, sessions and related controls. |
@@ -206,9 +209,21 @@ npm run test:backend
 
 Browser tests live in `frontend/e2e/`. Review each test's fixture and environment requirements before execution. Database integration tests, fixture provisioning and the golden-flow cleanup require a disposable test environment, not the shared local/UAT database. Keep test fixtures: they are test inputs, not production business data.
 
+For the database-free workspace UI regression suite, build the frontend first, then run:
+
+```bash
+npm run --workspace frontend build
+npm run --workspace frontend test:ui
+```
+
+`frontend/playwright.ui.config.ts` starts only the compiled frontend on loopback port 8189. Its selected browser tests intercept API calls; no backend, credentials or database are needed. The test runner closes its own server after completion. Set `E2E_FRONTEND_PORT` if this port is occupied. This suite validates UI behaviour, not backend authorization or the complete delivery workflow.
+
+The shared workspace palette is in `frontend/src/design/workspace-theme.css`. Client overview and verification queues share `ClientCaseQueue.tsx` and `client-queue-model.ts` under `frontend/src/features/stakeholders/client/`. Filters and pagination are URL-backed; tenant/client scope remains enforced by the existing API, not supplied through URL filters.
+
 ## Workflow and deployment references
 
-- [Developer workflow handover](docs/developer-workflow-handover.md): target role flow, current functionality, required changes and planning estimates. The target workflow is not yet implemented.
+- [Agreed internal workflow](docs/agreed-internal-workflow.md): current target routing, role responsibilities, RM transfer rules and acceptance checks.
+- [Earlier developer workflow handover](docs/developer-workflow-handover.md): historical scope and estimates; conflicting routing is superseded by the agreed internal workflow.
 - [Production runbook](docs/PRODUCTION_RUNBOOK.md): migration, storage, notification providers, secrets, backups, monitoring and rollback.
 - [Backend startup troubleshooting](docs/BACKEND_STARTUP.md): build and startup issues.
 - [Case dispatch](docs/case-dispatch-workflow.md), [Operations action inbox](docs/operations-action-inbox.md), [Physical address verification](docs/physical-address-verification.md).

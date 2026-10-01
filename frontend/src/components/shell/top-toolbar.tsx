@@ -44,8 +44,8 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-transparent backdrop-blur-md">
-      <div className="flex h-16 items-center gap-3 px-4 lg:px-7">
+    <header className="sticky top-0 z-30 border-b border-border bg-card">
+      <div className="flex h-16 items-center gap-3 px-4 lg:px-6">
         <Button
           variant="ghost"
           size="icon"
@@ -57,7 +57,9 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
         </Button>
 
         <div className="hidden min-w-0 lg:block">
-          <p className="truncate text-[13px] font-medium text-foreground">{presentation.heading}</p>
+          <p className="truncate text-[13px] font-semibold text-foreground">
+            {presentation.heading}
+          </p>
           <p className="truncate text-[11px] text-muted-foreground">{session.scopeLabel}</p>
         </div>
 

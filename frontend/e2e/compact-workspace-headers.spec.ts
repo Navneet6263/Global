@@ -33,7 +33,7 @@ for (const width of [1440, 390]) {
       expect(await description.textContent()).toBeTruthy();
       expect(
         await title.evaluate((element) => Number.parseFloat(getComputedStyle(element).fontSize)),
-      ).toBeLessThanOrEqual(20);
+      ).toBeLessThanOrEqual(width === 1440 ? 32 : 24);
       if (role === "qa") {
         await expect(header.getByText("2 awaiting review", { exact: true })).toBeVisible();
         await expect(page.getByRole("checkbox", { name: "Available to claim only" })).toBeVisible();

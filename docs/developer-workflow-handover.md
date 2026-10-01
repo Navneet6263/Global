@@ -1,6 +1,8 @@
 # BGV Portal — Developer Workflow Handover
 
-24 September 2026. This document describes the target workflow and development scope. It does not mean the new roles and routing are already implemented. See [README](../README.md) for project structure and setup.
+24 September 2026. This document describes the earlier target workflow and development scope. It does not mean the new roles and routing are already implemented. See [README](../README.md) for project structure and setup.
+
+**Superseded for current internal routing and ownership:** Follow [BGV Portal Agreed Internal Workflow](agreed-internal-workflow.md), agreed on 30 September 2026. Candidate submissions first go to Operations for RM assignment; Data Entry Ready returns to RM; RM assigns Verifiers and performs final review after QC. It also defines complete RM transfer handover, the Super Admin/Company Admin separation and the current vendor/internal-field hold. The older flow and estimates below are historical context, not the current implementation plan.
 
 ## Oversight and administration
 

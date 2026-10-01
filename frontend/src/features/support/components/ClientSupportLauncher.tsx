@@ -15,7 +15,13 @@ import { RaiseSupportRequestForm } from "./RaiseSupportRequestForm";
 import { SupportRequestHistory } from "./SupportRequestHistory";
 
 /** Client Admin navbar: raise a support request and follow its status and reply. */
-export function ClientSupportLauncher() {
+export function ClientSupportLauncher({
+  label,
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
   const [open, setOpen] = useState(false);
   const mine = useMySupportRequests(1, open);
   const raise = useRaiseSupportRequest();
@@ -24,8 +30,14 @@ export function ClientSupportLauncher() {
       <Tooltip>
         <TooltipTrigger asChild>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" aria-label="Support">
+            <Button
+              variant={label ? "outline" : "ghost"}
+              size={label ? "default" : "icon"}
+              aria-label={label ?? "Support"}
+              className={className}
+            >
               <LifeBuoy className="size-4" aria-hidden />
+              {label}
             </Button>
           </SheetTrigger>
         </TooltipTrigger>

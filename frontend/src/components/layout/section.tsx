@@ -24,7 +24,7 @@ export function Section({
     <section className={cn("surface overflow-hidden", className)}>
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border px-5 py-4">
         <div className="min-w-0 space-y-1">
-          <h2 className="text-sm font-semibold tracking-tight text-foreground">{title}</h2>
+          <h2 className="text-lg font-bold leading-7 tracking-tight text-foreground">{title}</h2>
           {description ? (
             <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">{description}</p>
           ) : null}

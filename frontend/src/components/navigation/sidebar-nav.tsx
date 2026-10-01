@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { ChevronDown } from "lucide-react";
-import { navFor, type NavGroupId, type NavWorkspace } from "@/config/navigation";
+import { navFor, type NavWorkspace } from "@/config/navigation";
 import { NavItemLink } from "./nav-item-link";
 import { sessionForNav } from "@/lib/auth/session";
 import { isVisible } from "@/lib/permissions";
@@ -17,9 +18,7 @@ export function SidebarNav({ onNavigate, workspace = "platform-admin" }: Sidebar
   const session = sessionForNav(workspace);
   const { groups, items: navItems } = navFor(workspace);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
-
-  const toggle = (id: NavGroupId) =>
-    setCollapsed((current) => ({ ...current, [id]: !current[id] }));
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   return (
     <nav aria-label={`${workspace} navigation`} className="space-y-5 px-3 py-4">
@@ -28,13 +27,16 @@ export function SidebarNav({ onNavigate, workspace = "platform-admin" }: Sidebar
           (item) => item.group === group.id && isVisible(session, item),
         );
         if (items.length === 0) return null;
-        const isOpen = !collapsed[group.id];
+        const key = `${workspace}:${group.id}`;
+        const hasActive = items.some((item) => item.route === pathname);
+        const isOpen =
+          collapsed[key] === undefined ? group.defaultOpen || hasActive : !collapsed[key];
 
         return (
           <div key={group.id} className="space-y-1">
             <button
               type="button"
-              onClick={() => toggle(group.id)}
+              onClick={() => setCollapsed((current) => ({ ...current, [key]: isOpen }))}
               aria-expanded={isOpen}
               className="flex w-full items-center justify-between rounded-lg px-2.5 py-1 text-[11px] font-semibold tracking-[0.09em] text-muted-foreground uppercase transition-colors hover:text-foreground"
             >

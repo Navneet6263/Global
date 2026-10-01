@@ -1,6 +1,6 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 
-import { StakeholderShell } from "@/features/stakeholders/StakeholderShell";
+import { ClientPortalShell } from "@/features/stakeholders/client/ClientPortalShell";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/client-portal")({
@@ -11,8 +11,8 @@ export const Route = createFileRoute("/client-portal")({
 
 function ClientPortalLayout() {
   return (
-    <StakeholderShell workspace="client-admin">
+    <ClientPortalShell>
       <Outlet />
-    </StakeholderShell>
+    </ClientPortalShell>
   );
 }

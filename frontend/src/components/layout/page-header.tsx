@@ -22,7 +22,7 @@ export function PageHeader({ title, description, meta, actions, className }: Pag
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
         <h1
           aria-describedby={description ? descriptionId : undefined}
-          className="break-words text-lg font-semibold leading-7 tracking-[-0.02em] text-foreground sm:text-xl"
+          className="break-words text-2xl font-bold leading-9 tracking-[-0.02em] text-foreground sm:text-[32px] sm:leading-10"
         >
           {title}
         </h1>

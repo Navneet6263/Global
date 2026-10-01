@@ -68,7 +68,12 @@ function roleNav(
 
 export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>> = {
   "client-admin": {
-    groups: ROLE_GROUPS,
+    groups: [
+      { id: "command", label: "Workspace", defaultOpen: true },
+      { id: "work", label: "Reports & insights", defaultOpen: true },
+      { id: "revenue", label: "Billing", defaultOpen: true },
+      { id: "account", label: "Account", defaultOpen: true },
+    ],
     items: [
       clientItem(
         "Portfolio overview",
@@ -218,7 +223,11 @@ function clientItem(
     description,
     icon,
     route,
-    group: "command",
+    group: route.endsWith("/billing")
+      ? "revenue"
+      : route.endsWith("/reports") || route.endsWith("/analytics")
+        ? "work"
+        : "command",
     roles: ["CLIENT_ADMIN"],
     permission,
     ...(badge ? { badge } : {}),

@@ -30,16 +30,8 @@ export function AdminShell({ children, workspace = "platform-admin" }: AdminShel
           Skip to main content
         </a>
 
-        <aside className="fixed inset-y-3 left-3 z-40 hidden w-[254px] flex-col overflow-hidden rounded-[28px] lg:flex glow-panel">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-40"
-            style={{
-              background:
-                "radial-gradient(120% 100% at 20% 0%, oklch(0.92 0.07 158 / 0.5), transparent 70%)",
-            }}
-          />
-          <div className="relative flex h-16 shrink-0 items-center px-4">
+        <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-sidebar-border bg-sidebar lg:flex">
+          <div className="flex h-16 shrink-0 items-center border-b border-sidebar-border px-4">
             <BrandMark workspace={workspace} />
           </div>
           <div className="relative min-h-0 flex-1 overflow-y-auto">
@@ -63,10 +55,10 @@ export function AdminShell({ children, workspace = "platform-admin" }: AdminShel
           </SheetContent>
         </Sheet>
 
-        <div className="flex min-h-screen flex-col lg:pl-[276px]">
+        <div className="flex min-h-screen min-w-0 flex-col lg:pl-[248px]">
           <TopToolbar workspace={workspace} onOpenNav={() => setNavOpen(true)} />
-          <main id="workspace-main" className="flex-1 px-4 pt-3 pb-6 lg:px-7 lg:pt-3 lg:pb-8">
-            <div className="mx-auto w-full max-w-[1560px] space-y-6">
+          <main id="workspace-main" className="min-w-0 flex-1 px-4 py-5 lg:p-6">
+            <div className="mx-auto w-full max-w-[1560px] space-y-4">
               <LearningIntro />
               {children}
             </div>

@@ -14,7 +14,13 @@ import { useHydrated } from "@/lib/use-hydrated";
 
 const HelpConversation = lazy(() => import("./help-conversation"));
 
-export function HelpLauncher() {
+export function HelpLauncher({
+  label = "Help",
+  className,
+}: {
+  label?: string;
+  className?: string;
+}) {
   const hydrated = useHydrated();
   const help = usePageHelp();
   if (!help) return null;
@@ -22,14 +28,19 @@ export function HelpLauncher() {
     <Sheet open={help.open} onOpenChange={help.setOpen}>
       <SheetTrigger asChild>
         <Button
-          variant="ghost"
+          variant={label === "Help" ? "ghost" : "outline"}
           size="sm"
-          className="gap-1.5 rounded-full"
+          className={
+            className ??
+            (label === "Help"
+              ? "gap-1.5 rounded-full"
+              : "h-10 gap-2 rounded-lg bg-white text-primary shadow-none")
+          }
           aria-label="Help with this page"
           disabled={!hydrated}
         >
           <CircleHelp className="size-4" aria-hidden />
-          <span className="hidden sm:inline">Help</span>
+          <span className="hidden sm:inline">{label}</span>
           {help.enabled ? (
             <span className="size-1.5 rounded-full bg-emerald-600" aria-label="Learning mode on" />
           ) : null}

@@ -51,7 +51,7 @@ export function NavItemLink({ item, onNavigate }: NavItemLinkProps) {
         onClick={onNavigate}
         aria-busy={pending || undefined}
         activeOptions={{ exact: item.route === WORKSPACE_PRESENTATION[item.workspace].home }}
-        className="group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm text-sidebar-foreground/85 transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:font-medium data-[status=active]:text-sidebar-accent-foreground"
+        className="group flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:text-sidebar-accent-foreground"
       >
         {content}
       </Link>

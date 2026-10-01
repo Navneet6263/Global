@@ -1,0 +1,158 @@
+.client-page {
+  margin-left: 248px;
+  min-width: 0;
+}
+.client-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  background: white;
+}
+.client-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.client-breadcrumb a,
+.client-breadcrumb > span {
+  color: #64748b;
+}
+.client-breadcrumb strong {
+  font-weight: 500;
+}
+.client-global-search {
+  margin-left: auto;
+  flex: 1;
+  min-width: 140px;
+  max-width: 440px;
+}
+.client-global-search form {
+  max-width: none;
+}
+.client-global-search input {
+  height: 40px;
+  border-radius: 8px;
+  background: #f5f9fc;
+  font-size: 13px;
+  box-shadow: none;
+}
+.client-menu-toggle {
+  display: none;
+}
+.client-main {
+  padding: 24px;
+  max-width: 1850px;
+  margin-inline: auto;
+}
+.client-main > * + * {
+  margin-top: 16px;
+}
+.client-main > header {
+  margin-bottom: 20px;
+}
+.client-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.client-heading h1 {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.client-heading p {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 20px;
+  color: #475569;
+}
+.client-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.client-heading-actions > button {
+  height: 40px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: none;
+}
+.client-import-control button {
+  border-radius: 8px;
+  height: 34px;
+  color: #1d4ed8;
+  background: #fff;
+  border-color: #e2e8f0;
+}
+.client-skip-link {
+  position: absolute;
+  left: -9999px;
+}
+.client-skip-link:focus {
+  left: 16px;
+  top: 16px;
+  z-index: 100;
+  background: white;
+  padding: 12px;
+}
+.client-portal-shell :is(button, a, input, select):focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 3px;
+}
+@media (max-width: 1279px) {
+  .client-sidebar {
+    display: none;
+  }
+  .client-page {
+    margin-left: 0;
+  }
+  .client-menu-toggle {
+    display: inline-flex;
+  }
+  .client-topbar {
+    gap: 12px;
+  }
+}
+@media (max-width: 767px) {
+  .client-main {
+    padding: 16px;
+  }
+  .client-topbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+  .client-breadcrumb {
+    flex: 1;
+    gap: 8px;
+  }
+  .client-global-search {
+    order: 5;
+    width: 100%;
+  }
+  .client-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .client-heading h1 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  .client-heading-actions {
+    flex-wrap: wrap;
+  }
+  .client-heading-actions > button {
+    min-height: 44px;
+  }
+}

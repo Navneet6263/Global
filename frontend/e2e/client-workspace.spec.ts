@@ -1,0 +1,129 @@
+import { expect as baseExpect, test } from "@playwright/test";
+import { clientWorkspaceFixture } from "./fixtures/client-workspace-fixture";
+const expect = baseExpect.configure({ timeout: 20_000 });
+
+test("client overview uses compact live queues, working filters, pagination and export", async ({
+  page,
+}) => {
+  const fixture = await clientWorkspaceFixture(page);
+  await page.goto("/client-portal");
+  await expect(page.getByRole("heading", { name: "Verification overview" })).toBeVisible();
+  await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page).toHaveURL(/page=2/);
+  await expect(page.getByText("7–12 of 23 cases", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Document review 5", exact: true }).click();
+  await page.getByRole("button", { name: "Documents 5", exact: true }).click();
+  await expect(page).toHaveURL(/status=DOCUMENT_PENDING/);
+  await expect(page.getByText("1–5 of 5 cases", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Open case for Candidate 1", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("searchbox", { name: "Search candidate or case number" }).fill("missing");
+  await page.getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page.getByText("No cases found", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Clear filters" }).click();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export CSV" }).click();
+  expect((await download).suggestedFilename()).toMatch(/\.csv$/);
+  await page.getByRole("link", { name: /^Completed 5$/ }).click();
+  await expect(page).toHaveURL(/verifications.*status=COMPLETED/);
+  await expect(page.getByText("1–5 of 5 cases", { exact: true })).toBeVisible();
+  expect(fixture.unexpected).toEqual([]);
+});
+
+test("URL navigation restores filters and closes a case on browser Back", async ({ page }) => {
+  await clientWorkspaceFixture(page);
+  await page.goto("/client-portal/verifications?q=Candidate%201&status=DOCUMENT_PENDING");
+  await expect(page.getByRole("searchbox")).toHaveValue("Candidate 1");
+  await page.getByRole("button", { name: "Open case for Candidate 1", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "Case detail" })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole("dialog", { name: "Case detail" })).toHaveCount(0);
+  await expect(page.getByRole("searchbox")).toHaveValue("Candidate 1");
+});
+
+test("queue updates retain their layout and errors are not shown as empty results", async ({
+  page,
+}) => {
+  const fixture = await clientWorkspaceFixture(page);
+  await page.goto("/client-portal/verifications");
+  await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
+  fixture.delay(1200);
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByText(/Showing previous results/)).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Open case for Candidate 1", exact: true }),
+  ).toBeDisabled();
+  await expect(page.getByText("7–12 of 23 cases", { exact: true })).toBeVisible();
+  fixture.delay(0);
+  fixture.fail(true);
+  await page.getByRole("button", { name: "Next", exact: true }).click();
+  await expect(page.getByText("Test queue unavailable", { exact: true })).toBeVisible();
+  await expect(page.getByText("No cases found", { exact: true })).toHaveCount(0);
+  fixture.fail(false);
+  await page.getByRole("button", { name: "Retry", exact: true }).click();
+  await expect(page.getByText("13–18 of 23 cases", { exact: true })).toBeVisible();
+});
+
+for (const width of [390, 1024, 1440, 1672, 1920]) {
+  test(`client layout and navigation fit at ${width}px`, async ({ page }) => {
+    const fixture = await clientWorkspaceFixture(page);
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/client-portal");
+    await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "New verification", exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+      true,
+    );
+    const heading = page.getByRole("heading", { name: "Verification overview" });
+    expect(await heading.evaluate((el) => getComputedStyle(el).fontWeight)).toBe("700");
+    expect(await page.locator("body").evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(
+      "rgb(248, 250, 252)",
+    );
+    await page.screenshot({ path: `test-results/client-workspace-${width}.png`, fullPage: true });
+    if (width < 1280) await page.getByRole("button", { name: "Open navigation" }).click();
+    await expect(
+      page
+        .getByRole("navigation", { name: "client-admin navigation" })
+        .filter({ visible: true })
+        .getByRole("button", { name: "Reports", exact: true }),
+    ).toBeVisible();
+    expect(errors).toEqual([]);
+    expect(fixture.unexpected).toEqual([]);
+  });
+}
+
+test("six-row queue, expandable navigation, guide and learning controls work", async ({ page }) => {
+  await clientWorkspaceFixture(page);
+  await page.setViewportSize({ width: 1672, height: 1000 });
+  await page.goto("/client-portal");
+  await expect(page.locator(".client-case-table tbody tr")).toHaveCount(6);
+  const stage = await page.getByRole("region", { name: "Verification flow" }).boundingBox();
+  const context = await page
+    .getByRole("complementary", { name: "Client actions and support" })
+    .boundingBox();
+  expect(Math.abs(stage!.y - context!.y)).toBeLessThanOrEqual(1);
+  await page.getByRole("combobox", { name: "Rows per page" }).selectOption("12");
+  await expect(page.locator(".client-case-table tbody tr")).toHaveCount(12);
+  await expect(page.getByText("1–12 of 23 cases", { exact: true })).toBeVisible();
+  const nav = page.getByRole("navigation", { name: "client-admin navigation" });
+  await nav.getByRole("button", { name: "Reports", exact: true }).click();
+  await expect(nav.getByRole("link", { name: "Published reports" })).toBeVisible();
+  await page.getByRole("switch", { name: "Learning mode" }).click();
+  await expect(page.getByRole("region", { name: "Page learning guide" })).toBeVisible();
+  await page.getByRole("switch", { name: "Learning mode" }).click();
+  await expect(page.getByRole("region", { name: "Page learning guide" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Help with this page" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+});
+
+test("read-only client cannot see case creation controls", async ({ page }) => {
+  await clientWorkspaceFixture(page, false);
+  await page.goto("/client-portal");
+  await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "New verification", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Import CSV", exact: true })).toHaveCount(0);
+});
