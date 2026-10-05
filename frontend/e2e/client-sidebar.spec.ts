@@ -16,7 +16,7 @@ for (const size of [
     const sidebar = page.locator(".client-sidebar");
     const nav = sidebar.getByRole("navigation");
     await expect(nav.getByRole("link", { name: "All verifications", exact: true })).toBeVisible();
-    await expect(nav.getByRole("button", { name: "Queries & support", exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Queries & support", exact: true })).toBeVisible();
     expect(await nav.evaluate((el) => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
     await expect(sidebar.getByRole("switch")).toHaveCount(0);
     await expect(sidebar.getByText("Client Tester", { exact: true })).toHaveCount(0);
@@ -71,6 +71,7 @@ test("header profile works with keyboard and preserves real sign out", async ({ 
   await profile.click();
   await page.getByRole("menuitem", { name: "Sign out", exact: true }).click();
   await expect(page).toHaveURL(/\/auth$/);
+  await expect(page.locator("html")).toHaveCSS("zoom", "1");
   expect(
     fixture.requests.filter((request) => request.pathname.endsWith("/auth/logout")),
   ).toHaveLength(1);

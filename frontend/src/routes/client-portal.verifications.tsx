@@ -25,7 +25,6 @@ function ClientVerificationsPage() {
         title="Verifications"
         description="Search every candidate, inspect the current stage and follow progress."
         allowCreate
-        exportFilter={search}
       />
       <ClientCaseQueue search={search} onChange={update} onOpen={(caseId) => update({ caseId })} />
       {search.caseId ? (

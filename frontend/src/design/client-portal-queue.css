@@ -125,15 +125,15 @@
 .client-case-table tbody tr:hover {
   background: #fafcff;
 }
-.client-case-table td:nth-child(1) {
+.client-case-table td[data-column="candidate"] {
   width: 21%;
   min-width: 135px;
 }
-.client-case-table td:nth-child(2) {
+.client-case-table td[data-column="status"] {
   width: 29%;
   min-width: 190px;
 }
-.client-case-table td:nth-child(4) {
+.client-case-table time {
   white-space: nowrap;
   font-size: 11px;
   color: #475569;

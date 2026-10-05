@@ -9,7 +9,7 @@ export default {
     [
       "Check the portfolio and Action required counts.",
       "Open a candidate to inspect the current stage and pending requests.",
-      "Correct requested information or download the report once it is published.",
+      "Correct requested information. Open Reports for all downloads and custom exports.",
     ],
     "Only your authorised organisation's cases should appear. The verification team's internal workspaces are separate.",
   ),
@@ -44,7 +44,7 @@ export default {
     "Portfolio analytics",
     "Understand volume, turnaround and where your organisation's cases need attention.",
     [
-      "Review the selected period and scope.",
+      "Choose Flow & outcomes, Quality & rework or Branch comparison.",
       "Compare stage delays and correction hotspots.",
       "Inspect the underlying cases before deciding what to change.",
     ],
@@ -54,9 +54,9 @@ export default {
     "Published reports",
     "Access the verification outcomes released for your organisation.",
     [
-      "Find the candidate and report version.",
+      "Choose Published reports, Customise export, or Invoices & statements.",
       "Confirm the report is released and its download access has not expired.",
-      "Download it and use its authenticity reference when verification is needed.",
+      "For a custom CSV, choose a report type, apply filters, select and reorder columns, then preview and download.",
     ],
     "A prepared report is held until full report-specific payment and release. Partial payments and credit notes do not unlock it. For expired access, ask Operations to renew it. Only share reports with authorised recipients.",
   ),
@@ -65,10 +65,20 @@ export default {
     "See your organisation's invoices, recorded payments and outstanding balances.",
     [
       "Find the invoice and review its due date and remaining amount.",
-      "Download the invoice PDF or select an India calendar month for a statement CSV.",
+      "Open Reports → Invoices & statements for invoice PDFs and monthly statements.",
       "Contact Finance about payment discrepancies; check Reports after payment has been confirmed.",
     ],
     "This page does not take a bank payment. Only your organisation's billing records are shown. A statement reflects recorded entries at export time, including later backdated corrections.",
+  ),
+  "/client-portal/support": guide(
+    "Queries & support",
+    "Raise a support query and read replies to requests from your account.",
+    [
+      "Choose New request and describe the problem; add a case number when relevant.",
+      "Submit once and wait for the saved request confirmation.",
+      "Use the request history pages to check status and read the support reply.",
+    ],
+    "Never include passwords, OTPs or full identity-document numbers in support messages.",
   ),
   "/sales-crm": guide(
     "Revenue command",

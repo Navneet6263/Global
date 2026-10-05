@@ -48,6 +48,7 @@ import { Route as ClientPortalActionsRouteImport } from './routes/client-portal.
 import { Route as ClientPortalAnalyticsRouteImport } from './routes/client-portal.analytics'
 import { Route as ClientPortalBillingRouteImport } from './routes/client-portal.billing'
 import { Route as ClientPortalReportsRouteImport } from './routes/client-portal.reports'
+import { Route as ClientPortalSupportRouteImport } from './routes/client-portal.support'
 import { Route as ClientPortalVerificationsRouteImport } from './routes/client-portal.verifications'
 import { Route as ConsentConsentIdRouteImport } from './routes/consent.$consentId'
 import { Route as FinanceBillingRouteImport } from './routes/finance_.billing'
@@ -291,6 +292,11 @@ const ClientPortalBillingRoute = ClientPortalBillingRouteImport.update({
 const ClientPortalReportsRoute = ClientPortalReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalSupportRoute = ClientPortalSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => ClientPortalRoute,
 } as any)
 const ClientPortalVerificationsRoute =
@@ -575,6 +581,7 @@ export interface FileRoutesByFullPath {
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/support': typeof ClientPortalSupportRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
   '/finance/billing': typeof FinanceBillingRoute
@@ -656,6 +663,7 @@ export interface FileRoutesByTo {
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/support': typeof ClientPortalSupportRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
   '/finance/billing': typeof FinanceBillingRoute
@@ -746,6 +754,7 @@ export interface FileRoutesById {
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/support': typeof ClientPortalSupportRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
   '/finance_/billing': typeof FinanceBillingRoute
@@ -837,6 +846,7 @@ export interface FileRouteTypes {
     | '/client-portal/analytics'
     | '/client-portal/billing'
     | '/client-portal/reports'
+    | '/client-portal/support'
     | '/client-portal/verifications'
     | '/consent/$consentId'
     | '/finance/billing'
@@ -918,6 +928,7 @@ export interface FileRouteTypes {
     | '/client-portal/analytics'
     | '/client-portal/billing'
     | '/client-portal/reports'
+    | '/client-portal/support'
     | '/client-portal/verifications'
     | '/consent/$consentId'
     | '/finance/billing'
@@ -1007,6 +1018,7 @@ export interface FileRouteTypes {
     | '/client-portal/analytics'
     | '/client-portal/billing'
     | '/client-portal/reports'
+    | '/client-portal/support'
     | '/client-portal/verifications'
     | '/consent/$consentId'
     | '/finance_/billing'
@@ -1363,6 +1375,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/client-portal/reports'
       preLoaderRoute: typeof ClientPortalReportsRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/support': {
+      id: '/client-portal/support'
+      path: '/support'
+      fullPath: '/client-portal/support'
+      preLoaderRoute: typeof ClientPortalSupportRouteImport
       parentRoute: typeof ClientPortalRoute
     }
     '/client-portal/verifications': {
@@ -1751,6 +1770,7 @@ interface ClientPortalRouteChildren {
   ClientPortalAnalyticsRoute: typeof ClientPortalAnalyticsRoute
   ClientPortalBillingRoute: typeof ClientPortalBillingRoute
   ClientPortalReportsRoute: typeof ClientPortalReportsRoute
+  ClientPortalSupportRoute: typeof ClientPortalSupportRoute
   ClientPortalVerificationsRoute: typeof ClientPortalVerificationsRoute
   ClientPortalIndexRoute: typeof ClientPortalIndexRoute
 }
@@ -1760,6 +1780,7 @@ const ClientPortalRouteChildren: ClientPortalRouteChildren = {
   ClientPortalAnalyticsRoute: ClientPortalAnalyticsRoute,
   ClientPortalBillingRoute: ClientPortalBillingRoute,
   ClientPortalReportsRoute: ClientPortalReportsRoute,
+  ClientPortalSupportRoute: ClientPortalSupportRoute,
   ClientPortalVerificationsRoute: ClientPortalVerificationsRoute,
   ClientPortalIndexRoute: ClientPortalIndexRoute,
 }

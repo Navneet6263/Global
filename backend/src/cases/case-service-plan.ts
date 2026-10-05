@@ -110,9 +110,18 @@ export async function loadCaseServicePlan(
       throw new BadRequestException(
         `${pkg.name} is not enabled in this client's agreement`,
       );
-    const checks = packageChecks(pkg.checksJson);
-    if (!checks.length)
+    const availableChecks = packageChecks(pkg.checksJson);
+    if (!availableChecks.length)
       throw new ConflictException(`${pkg.name} has no valid checks`);
+    const checks = request.selectedChecks ?? availableChecks;
+    if (
+      !checks.length ||
+      new Set(checks).size !== checks.length ||
+      checks.some((check) => !availableChecks.includes(check))
+    )
+      throw new BadRequestException(
+        `${pkg.name}: select at least one valid check from this package`,
+      );
     const details = request.details ?? {};
     if (
       pkg.serviceFamily === "VENDORCHECK" &&
@@ -164,6 +173,7 @@ export async function caseServiceCatalog(
               servicePackageId: true,
               active: true,
               unitPrice: true,
+              taxRate: true,
               tatHours: true,
             },
           },
@@ -205,7 +215,10 @@ export async function caseServiceCatalog(
           checks: packageChecks(pkg.checksJson),
           requiredDocuments: stringList(pkg.requiredDocumentsJson),
           ...(!client || commercialAccess
-            ? { price: rate?.unitPrice ?? pkg.price }
+            ? {
+                price: rate?.unitPrice ?? pkg.price ?? 0,
+                taxRate: rate?.taxRate ?? 0,
+              }
             : {}),
           tatHours: Math.min(
             rate?.tatHours ?? pkg.tatHours,

@@ -88,10 +88,10 @@ export function useUpdateSupportRequest(onSaved?: () => void) {
   });
 }
 
-export function useMySupportRequests(page: number, enabled: boolean) {
+export function useMySupportRequests(page: number, enabled: boolean, pageSize = 10) {
   return useQuery({
-    queryKey: supportKeys.mine(page),
-    queryFn: ({ signal }) => clientSupportApi.mine(page, signal),
+    queryKey: [...supportKeys.mine(page), pageSize],
+    queryFn: ({ signal }) => clientSupportApi.mine(page, signal, pageSize),
     enabled,
   });
 }

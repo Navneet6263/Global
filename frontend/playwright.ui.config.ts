@@ -10,6 +10,11 @@ export default defineConfig({
   testMatch: [
     "client-workspace.spec.ts",
     "client-sidebar.spec.ts",
+    "client-pages.spec.ts",
+    "client-custom-export.spec.ts",
+    "client-density.spec.ts",
+    "client-workspace-enhancements.spec.ts",
+    "client-case-activity.spec.ts",
     "compact-workspace-headers.spec.ts",
     "operations-action-inbox.spec.ts",
     "case-initiation-layout.spec.ts",

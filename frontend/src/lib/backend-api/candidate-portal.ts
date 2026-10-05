@@ -54,8 +54,11 @@ export interface CandidateAccessResult {
   delivery: { queued: true; channel: "EMAIL" | "SMS"; destination: string } | { queued: false };
 }
 
-export function issueCandidateAccess(caseId: string) {
-  return apiRequest<CandidateAccessResult>(`/cases/${caseId}/candidate-access`, { method: "POST" });
+export function issueCandidateAccess(caseId: string, sendNotification = true) {
+  return apiRequest<CandidateAccessResult>(`/cases/${caseId}/candidate-access`, {
+    method: "POST",
+    body: JSON.stringify({ sendNotification }),
+  });
 }
 
 export function getCandidatePortal(accessId: string, token: string) {

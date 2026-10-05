@@ -27,7 +27,7 @@ export function ClientHeaderActions({
           <RefreshCw className={refreshing ? "animate-spin" : ""} aria-hidden />
         </Button>
       </div>
-      <HelpLauncher label="Help & learning" className="client-header-help" />
+      <HelpLauncher label="Page help" className="client-header-help" />
       {help ? (
         <button
           type="button"

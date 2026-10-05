@@ -1,108 +1,115 @@
 import { useState } from "react";
-import { Building2, ChevronLeft, ChevronRight, Search } from "lucide-react";
 import type { ClientAnalyticsDashboard } from "@/lib/backend-api/dashboards";
+import { ClientEmpty, ClientPager, ClientPill, ClientSearch } from "./ClientPageParts";
 
 export function ClientBranchComparison({ rows }: { rows: ClientAnalyticsDashboard["branches"] }) {
+  const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("total");
   const [page, setPage] = useState(1);
-  const filtered = rows.filter((row) =>
-    `${row.name} ${row.city ?? ""}`.toLowerCase().includes(search.toLowerCase()),
-  );
-  const pages = Math.max(1, Math.ceil(filtered.length / 6));
+  const filtered = rows
+    .filter((row) => `${row.name} ${row.city ?? ""}`.toLowerCase().includes(search.toLowerCase()))
+    .sort((a, b) =>
+      sort === "overdue"
+        ? b.overdue - a.overdue
+        : sort === "name"
+          ? a.name.localeCompare(b.name)
+          : b.total - a.total,
+    );
+  const pages = Math.max(1, Math.ceil(filtered.length / 8));
   const current = Math.min(page, pages);
   return (
-    <section className="rounded-3xl border border-info/20 bg-gradient-to-br from-info-soft/30 to-card p-5 shadow-[var(--shadow-card)]">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <section className="client-register">
+      <div className="client-register-title">
         <div>
-          <h2 className="flex items-center gap-2 text-sm font-semibold">
-            <Building2 className="size-4 text-info" /> Delivery branch comparison
-          </h2>
-          <p className="mt-1 max-w-xl text-xs text-muted-foreground">
-            Only your organisation's cases, grouped by assigned operating branch. Completion is
-            completed / all cases; overdue includes active cases only.
+          <h2>Delivery branch comparison</h2>
+          <p>
+            Only your organisation's cases. Completion includes all cases; overdue includes active
+            work only.
           </p>
         </div>
-        <label className="flex items-center gap-2 rounded-full border border-border bg-card px-3">
-          <Search className="size-3.5" />
-          <input
-            aria-label="Search delivery branches"
-            className="h-9 w-40 bg-transparent text-xs outline-none"
-            placeholder="Branch or city"
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setPage(1);
-            }}
-          />
-        </label>
       </div>
-      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-        {filtered.slice((current - 1) * 6, current * 6).map((row) => (
-          <article
-            key={row.id ?? "unassigned"}
-            className={`rounded-2xl border bg-card p-4 ${row.overdue ? "border-warning/30" : "border-mint/25"}`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="truncate text-sm font-semibold">{row.name}</h3>
-              <span className="rounded-full bg-info-soft px-2 py-1 text-[10px] text-info-foreground">
-                {row.total} cases
-              </span>
-            </div>
-            <p className="mt-1 text-[10px] text-muted-foreground">
-              {row.city ?? "Location not recorded"}
-            </p>
-            <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
-              <Metric label="Active" value={row.active} />
-              <Metric label="Completed" value={row.completed} />
-              <Metric label="Overdue" value={row.overdue} />
-            </div>
-            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-mint"
-                style={{ width: `${row.completionPercent}%` }}
-              />
-            </div>
-            <p className="mt-2 text-[10px] text-muted-foreground">
-              {row.completionPercent}% completed · {row.pendingDocuments} documents pending ·{" "}
-              {row.clarifications} clarifications · {row.cancelled} cancelled
-            </p>
-          </article>
-        ))}
+      <div className="client-register-toolbar">
+        <ClientSearch
+          label="Search delivery branches"
+          placeholder="Branch or city"
+          value={input}
+          onChange={setInput}
+          onSubmit={() => {
+            setSearch(input.trim());
+            setPage(1);
+          }}
+        />
+        <select
+          aria-label="Sort branches"
+          value={sort}
+          onChange={(e) => {
+            setSort(e.target.value);
+            setPage(1);
+          }}
+        >
+          <option value="total">Most cases</option>
+          <option value="overdue">Most overdue</option>
+          <option value="name">Branch name</option>
+        </select>
+        <span className="client-register-meta">{filtered.length} branches</span>
       </div>
-      {!filtered.length ? (
-        <p className="py-8 text-center text-xs text-muted-foreground">
-          No matching branch data yet.
-        </p>
-      ) : null}
-      <footer className="mt-3 flex justify-end gap-2 text-xs">
-        <span className="self-center text-muted-foreground">
-          Page {current} of {pages}
-        </span>
-        <button
-          aria-label="Previous branches"
-          disabled={current <= 1}
-          onClick={() => setPage(current - 1)}
-          className="rounded-full border border-border bg-card p-2 disabled:opacity-30"
-        >
-          <ChevronLeft className="size-3.5" />
-        </button>
-        <button
-          aria-label="Next branches"
-          disabled={current >= pages}
-          onClick={() => setPage(current + 1)}
-          className="rounded-full border border-border bg-card p-2 disabled:opacity-30"
-        >
-          <ChevronRight className="size-3.5" />
-        </button>
-      </footer>
+      <div className="client-register-scroll">
+        <table>
+          <thead>
+            <tr>
+              {[
+                "Branch",
+                "Total / active",
+                "Completed",
+                "Overdue",
+                "Pending documents",
+                "Clarifications",
+              ].map((label) => (
+                <th scope="col" key={label}>
+                  {label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.slice((current - 1) * 8, current * 8).map((row) => (
+              <tr key={row.id ?? "unassigned"}>
+                <td>
+                  <strong>{row.name}</strong>
+                  <small>{row.city ?? "Location not recorded"}</small>
+                </td>
+                <td>
+                  {row.total}
+                  <small>
+                    {row.active} active · {row.cancelled} cancelled
+                  </small>
+                </td>
+                <td>
+                  <strong>{row.completed}</strong>
+                  <small>{row.completionPercent}% of all cases</small>
+                </td>
+                <td>
+                  <ClientPill tone={row.overdue ? "red" : "green"}>{row.overdue}</ClientPill>
+                </td>
+                <td>{row.pendingDocuments}</td>
+                <td>{row.clarifications}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {!filtered.length && (
+        <ClientEmpty title="No matching branch data">Try a different branch or city.</ClientEmpty>
+      )}
+      <ClientPager
+        page={current}
+        previous={current > 1}
+        next={current < pages}
+        onPrevious={() => setPage(current - 1)}
+        onNext={() => setPage(current + 1)}
+        detail="Grouped by assigned operating branch."
+      />
     </section>
-  );
-}
-function Metric({ label, value }: { label: string; value: number }) {
-  return (
-    <div>
-      <p className="num text-lg font-semibold">{value}</p>
-      <p className="text-[10px] text-muted-foreground">{label}</p>
-    </div>
   );
 }

@@ -8,6 +8,8 @@ import { ListSkeleton } from "@/components/feedback/skeletons";
 import { listCases } from "@/lib/api/cases";
 import type { OperationsDashboard } from "@/lib/api/dashboards";
 import { ClientQueueRow } from "./ClientQueueRow";
+import { ClientQueueColumns } from "./ClientQueueColumns";
+import { queueColumns, useQueueColumns } from "./client-queue-columns";
 import {
   CLIENT_PAGE_SIZE,
   clientQueueQuery,
@@ -30,6 +32,7 @@ export function ClientCaseQueue({
   onOpen: (caseId: string) => void;
 }) {
   const [input, setInput] = useState(search.q ?? "");
+  const { columns, update: updateColumns } = useQueueColumns();
   useEffect(() => setInput(search.q ?? ""), [search.q]);
   const query = clientQueueQuery(search);
   const cases = useQuery({
@@ -55,7 +58,10 @@ export function ClientCaseQueue({
     <section className="client-panel client-queue" aria-label="Your verifications">
       <header className="client-queue-heading">
         <h2>Your verifications</h2>
-        {tools}
+        <div className="flex items-center gap-2">
+          {tools}
+          <ClientQueueColumns columns={columns} onChange={updateColumns} />
+        </div>
       </header>
       <div className="client-queue-tabs" role="group" aria-label="Quick case filters">
         {tabs.map((tab) => (
@@ -70,7 +76,6 @@ export function ClientCaseQueue({
           </button>
         ))}
         <Link to="/client-portal/actions">Needs action ↗</Link>
-        <Link to="/client-portal/reports">Reports ↗</Link>
       </div>
       <form
         className="client-queue-filters"
@@ -143,9 +148,13 @@ export function ClientCaseQueue({
                 <thead>
                   <tr>
                     <th scope="col">Candidate / Case</th>
-                    <th scope="col">Current status</th>
-                    <th scope="col">Checks</th>
-                    <th scope="col">Expected by</th>
+                    {queueColumns
+                      .filter((column) => columns.includes(column.key))
+                      .map((column) => (
+                        <th key={column.key} scope="col">
+                          {column.label}
+                        </th>
+                      ))}
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
@@ -154,6 +163,7 @@ export function ClientCaseQueue({
                     <ClientQueueRow
                       key={item.id}
                       item={item}
+                      columns={columns}
                       disabled={cases.isPlaceholderData}
                       onOpen={() => onOpen(item.id)}
                     />

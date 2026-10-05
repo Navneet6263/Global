@@ -14,8 +14,18 @@ const { serviceSelectionError } = await import(
   `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`
 );
 const packages = [
-  { id: "vendor", name: "Vendor scope", serviceFamily: "VENDORCHECK" },
-  { id: "hire", name: "Employee scope", serviceFamily: "HIRECHECK" },
+  {
+    id: "vendor",
+    name: "Vendor scope",
+    serviceFamily: "VENDORCHECK",
+    checks: ["COMPANY_REGISTRATION"],
+  },
+  {
+    id: "hire",
+    name: "Employee scope",
+    serviceFamily: "HIRECHECK",
+    checks: ["IDENTITY", "EDUCATION"],
+  },
 ];
 
 test("VendorCheck intake cannot continue without the business identity", () => {
@@ -45,4 +55,26 @@ test("multi-service selection rejects duplicates and removed packages", () => {
   assert.match(serviceSelectionError(draft, packages), /no longer available/);
   draft.services = [{ servicePackageId: "hire" }];
   assert.equal(serviceSelectionError(draft, packages), undefined);
+});
+
+test("selected checks cannot be empty, duplicated or outside the agreed package", () => {
+  for (const selectedChecks of [[], ["ADDRESS"], ["IDENTITY", "IDENTITY"]]) {
+    assert.match(
+      serviceSelectionError(
+        { checks: ["IDENTITY"], services: [{ servicePackageId: "hire", selectedChecks }] },
+        packages,
+      ),
+      /choose at least one check/,
+    );
+  }
+  assert.equal(
+    serviceSelectionError(
+      {
+        checks: ["EDUCATION"],
+        services: [{ servicePackageId: "hire", selectedChecks: ["EDUCATION"] }],
+      },
+      packages,
+    ),
+    undefined,
+  );
 });

@@ -23,9 +23,7 @@ test("client overview uses compact live queues, working filters, pagination and 
   await page.getByRole("button", { name: "Search", exact: true }).click();
   await expect(page.getByText("No cases found", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
-  const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Export CSV" }).click();
-  expect((await download).suggestedFilename()).toMatch(/\.csv$/);
+  await expect(page.getByRole("button", { name: "Export CSV" })).toHaveCount(0);
   await page.getByRole("link", { name: /^Completed 5$/ }).click();
   await expect(page).toHaveURL(/verifications.*status=COMPLETED/);
   await expect(page.getByText("1–5 of 5 cases", { exact: true })).toBeVisible();

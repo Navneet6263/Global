@@ -1,22 +1,29 @@
 import { useQuery } from "@tanstack/react-query";
-import { Download, ShieldCheck, X } from "lucide-react";
-import { toast } from "sonner";
-
+import { useMemo, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+import {
+  CheckCheck,
+  FileText,
+  Clock3,
+  MessageSquare,
+  ShieldCheck,
+  LayoutDashboard,
+  RefreshCw,
+} from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
 import { listClarifications } from "@/lib/api/clarifications";
 import { getCase } from "@/lib/api/cases";
-import { downloadReport, listReports } from "@/lib/api/reports";
+import { casePackageName } from "@/lib/backend-api/case-services";
 import { ClientCaseDocuments } from "./ClientCaseDocuments";
 import { ClientCaseTimeline } from "./ClientCaseTimeline";
+import { ClientCaseOverview } from "./ClientCaseOverview";
+import { ClientCaseChecks } from "./ClientCaseChecks";
+import { caseDate, clientCaseActivity } from "./client-case-activity";
 import { ClientClarificationCard } from "./ClientClarificationCard";
-import {
-  caseStatusLabel,
-  formatDate,
-  humanize,
-  relativeTime,
-  slaText,
-  statusTone,
-} from "./client-portal-utils";
+import { caseStatusLabel, humanize, relativeTime, statusTone } from "./client-portal-utils";
 
 export function ClientCaseDrawer({
   caseId,
@@ -27,214 +34,277 @@ export function ClientCaseDrawer({
   canRespond: boolean;
   onClose: () => void;
 }) {
+  const opener = useRef(
+    typeof document === "undefined" ? null : (document.activeElement as HTMLElement),
+  );
   const detail = useQuery({ queryKey: ["cases", caseId], queryFn: () => getCase(caseId) });
-  const reports = useQuery({ queryKey: ["reports", caseId], queryFn: () => listReports(caseId) });
   const clarifications = useQuery({
     queryKey: ["clarifications", caseId],
     queryFn: () => listClarifications(caseId),
   });
+  const [tab, setTab] = useState("overview");
   const item = detail.data;
-  const completedChecks = item?.checks.filter((check) => check.status === "COMPLETED").length ?? 0;
-  const progress = item?.checks.length
-    ? Math.round((completedChecks / item.checks.length) * 100)
-    : 0;
+  const events = useMemo(() => (item ? clientCaseActivity(item) : []), [item]);
+  const completed = item?.checks.filter((check) => check.status === "COMPLETED").length ?? 0;
+  const progress = item?.checks.length ? Math.round((completed / item.checks.length) * 100) : 0;
+  const questions = clarifications.data?.items ?? [];
   return (
-    <div
-      className="fixed inset-0 z-50 flex justify-end bg-foreground/20 backdrop-blur-[3px]"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Case detail"
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
     >
-      <button
-        type="button"
-        aria-label="Close case detail"
-        onClick={onClose}
-        className="absolute inset-0 cursor-default"
-      />
-      <aside className="relative h-full w-full max-w-[46rem] overflow-y-auto rounded-l-[2rem] border-l border-white/80 bg-background/95 shadow-[var(--shadow-float)] backdrop-blur-xl">
-        <header className="sticky top-0 z-10 flex items-start justify-between border-b border-border bg-background/90 px-5 py-4 backdrop-blur-xl">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
-              Case detail
+      <DialogContent
+        aria-label="Case detail"
+        aria-labelledby={undefined}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          if (opener.current?.isConnected) opener.current.focus();
+        }}
+        className="client-case-workspace flex h-[85%] max-h-[900px] w-[calc(100%-2rem)] max-w-[1160px] flex-col gap-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl"
+      >
+        <header className="flex shrink-0 items-center gap-3 border-b border-slate-200 px-5 py-4 pr-12 sm:px-6">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
+            <ShieldCheck className="size-5" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-blue-600">
+              Verification workspace
             </p>
-            <h2 className="mt-1 text-lg font-semibold tracking-tight text-foreground">
+            <DialogTitle className="truncate text-xl font-bold">
               {item?.subject.fullName ?? (detail.isError ? "Case unavailable" : "Loading case")}
-            </h2>
-            <p className="num text-xs text-muted-foreground">{item?.caseNumber}</p>
+            </DialogTitle>
+            <DialogDescription className="mt-1 text-xs text-slate-500">
+              {item
+                ? `${item.caseNumber} · ${item.client.displayName}`
+                : "Your case details, documents and activity"}
+            </DialogDescription>
           </div>
-          <button
-            type="button"
-            aria-label="Close case detail"
-            onClick={onClose}
-            className="grid size-9 place-items-center rounded-full border border-border bg-card text-muted-foreground shadow-[var(--shadow-card)] hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </header>
-        {detail.isError || reports.isError || clarifications.isError ? (
-          <p className="m-5 rounded-xl border border-critical/20 bg-critical-soft p-3 text-sm text-critical-foreground">
-            {detail.error?.message ?? reports.error?.message ?? clarifications.error?.message}
-          </p>
-        ) : null}
-        <div className={detail.isError ? "hidden" : "space-y-5 p-5"}>
-          {detail.isPending ? <DrawerSkeleton /> : null}
-          {item ? (
-            <section
-              className="relative overflow-hidden rounded-[1.5rem] p-5 text-white shadow-[var(--shadow-raise)]"
-              style={{
-                background:
-                  "linear-gradient(145deg, oklch(0.43 0.07 168), oklch(0.29 0.045 172) 72%)",
-              }}
+          {item && (
+            <span
+              className={`hidden rounded-full px-3 py-1.5 text-xs font-semibold sm:block ${statusTone(item.status)}`}
             >
-              <span
-                aria-hidden
-                className="absolute -right-8 -top-10 size-32 rounded-full bg-white/10"
-              />
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/60">
-                    Overall progress
-                  </p>
-                  <p className="mt-1 text-sm font-semibold">{caseStatusLabel(item.status)}</p>
-                </div>
-                <span className="relative grid size-9 place-items-center rounded-full bg-white/10 text-amber-200">
-                  <ShieldCheck className="h-4 w-4" />
-                </span>
-              </div>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                  <div
-                    className="h-full rounded-full bg-amber-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <span className="num text-xs font-semibold">{progress}%</span>
-              </div>
-              <p className="mt-2 text-[10px] text-white/60">
-                {completedChecks} of {item.checks.length} verification checks completed
-              </p>
-            </section>
-          ) : null}
-          <section className="grid gap-3 sm:grid-cols-3">
-            <Fact label="SLA" value={item ? slaText(item.dueAt, item.status) : "Loading"} />
-            <Fact label="Priority" value={humanize(item?.priority ?? "—")} />
-            <Fact label="Last update" value={item ? relativeTime(item.updatedAt) : "Loading"} />
-          </section>
-          <section className="surface overflow-hidden rounded-2xl">
-            <Heading title="Verification checks" detail={`${item?.checks.length ?? 0} checks`} />
-            <div className="divide-y divide-border/70">
-              {item?.checks.map((check) => (
-                <div key={check.publicId} className="flex items-center justify-between px-4 py-3">
-                  <div>
-                    <p className="text-xs font-semibold text-foreground">{humanize(check.type)}</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">
-                      {check.result ? humanize(check.result) : "Result pending"}
-                    </p>
-                  </div>
-                  <Status value={check.status} />
-                </div>
-              ))}
-            </div>
-          </section>
-          {item ? <ClientCaseTimeline items={item.statusHistory} /> : null}
-          {item ? (
-            <ClientCaseDocuments caseId={caseId} caseStatus={item.status} items={item.documents} />
-          ) : null}
-          <section className="surface overflow-hidden rounded-2xl">
-            <Heading title="Published reports" detail="Versioned and authenticity protected" />
-            <div className="space-y-2 p-4">
-              {reports.data?.items.map((report) => (
-                <button
-                  key={report.id}
-                  type="button"
-                  onClick={() =>
-                    void downloadReport(report.id, item?.caseNumber ?? "Report").catch(
-                      (error: unknown) =>
-                        toast.error("Report could not be downloaded", {
-                          description: error instanceof Error ? error.message : undefined,
-                        }),
-                    )
-                  }
-                  className="flex w-full items-center justify-between rounded-xl border border-border bg-card px-4 py-3 text-left shadow-[var(--shadow-card)] transition hover:border-mint/25 hover:bg-mint-soft/35"
+              {caseStatusLabel(item.status)}
+            </span>
+          )}
+        </header>
+        {detail.isPending && (
+          <div className="space-y-4 p-6" aria-label="Loading case detail">
+            <Skeleton className="h-24 rounded-xl" />
+            <Skeleton className="h-60 rounded-xl" />
+          </div>
+        )}
+        {detail.isError && (
+          <div className="m-6 rounded-xl border border-red-200 bg-red-50 p-4" role="alert">
+            <p className="text-sm">{detail.error.message}</p>
+            <Button
+              variant="outline"
+              className="mt-3"
+              loading={detail.isFetching}
+              onClick={() => void detail.refetch()}
+            >
+              Retry case
+            </Button>
+          </div>
+        )}
+        {item && !detail.isError && (
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <div className="grid min-h-full lg:grid-cols-[minmax(0,1fr)_260px]">
+              <main className="min-w-0 p-4 sm:p-6">
+                <section
+                  className="mb-5 rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-white p-4"
+                  aria-label="Case progress"
                 >
-                  <div>
-                    <p className="text-xs font-semibold">Report version {report.currentVersion}</p>
-                    <p className="text-[10px] text-muted-foreground">
-                      {report.publishedAt
-                        ? `Published ${formatDate(report.publishedAt)}`
-                        : humanize(report.status)}
-                    </p>
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">
+                        {caseStatusLabel(item.status)}
+                      </p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        {completed} of {item.checks.length} checks completed
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <strong className="text-2xl font-bold text-blue-600">{progress}%</strong>
+                      <span className="block text-[10px] text-slate-500">Checks complete</span>
+                    </div>
                   </div>
-                  <Download className="size-4 text-mint-deep" />
-                </button>
-              ))}
-              {!reports.data?.items.length ? (
-                <Empty text="No published report is available yet." />
-              ) : null}
+                  <div
+                    role="progressbar"
+                    aria-label="Checks completed"
+                    aria-valuenow={progress}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    className="mt-3 h-1.5 overflow-hidden rounded-full bg-blue-100"
+                  >
+                    <div
+                      className="h-full rounded-full bg-blue-600"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </section>
+                <Tabs value={tab} onValueChange={setTab}>
+                  <TabsList className="mb-4 grid h-auto w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:grid-cols-5">
+                    {[
+                      { value: "overview", label: "Overview", icon: LayoutDashboard },
+                      {
+                        value: "checks",
+                        label: `Checks (${item.checks.length})`,
+                        icon: CheckCheck,
+                      },
+                      {
+                        value: "documents",
+                        label: `Documents (${item.documents.length})`,
+                        icon: FileText,
+                      },
+                      { value: "requests", label: "Requests", icon: MessageSquare },
+                      { value: "timeline", label: "Timeline", icon: Clock3 },
+                    ].map(({ value, label, icon: Icon }) => (
+                      <TabsTrigger
+                        key={value}
+                        value={value}
+                        className="gap-1.5 rounded-lg py-2.5 text-xs font-semibold data-[state=active]:text-blue-700"
+                      >
+                        <Icon className="size-3.5" />
+                        {label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  <TabsContent value="overview">
+                    <ClientCaseOverview
+                      item={item}
+                      events={events}
+                      requestCount={
+                        clarifications.isSuccess
+                          ? questions.filter(
+                              (question) =>
+                                !["RESOLVED", "CLOSED", "CANCELLED"].includes(question.status),
+                            ).length
+                          : undefined
+                      }
+                      onSelect={setTab}
+                    />
+                  </TabsContent>
+                  <TabsContent value="checks">
+                    <ClientCaseChecks checks={item.checks} />
+                  </TabsContent>
+                  <TabsContent value="documents">
+                    <ClientCaseDocuments
+                      caseId={caseId}
+                      caseStatus={item.status}
+                      items={item.documents}
+                    />
+                  </TabsContent>
+                  <TabsContent value="timeline">
+                    <ClientCaseTimeline events={events} />
+                  </TabsContent>
+                  <TabsContent value="requests" className="space-y-3">
+                    {clarifications.isPending && (
+                      <p role="status" className="p-4 text-sm text-slate-500">
+                        Loading requests…
+                      </p>
+                    )}
+                    {clarifications.isError && (
+                      <div role="alert" className="rounded-xl bg-red-50 p-4 text-sm">
+                        {clarifications.error.message}
+                        <Button
+                          variant="outline"
+                          className="mt-2"
+                          onClick={() => void clarifications.refetch()}
+                        >
+                          Retry requests
+                        </Button>
+                      </div>
+                    )}
+                    {questions.map((question) => (
+                      <ClientClarificationCard
+                        key={question.id}
+                        caseId={caseId}
+                        item={question}
+                        canRespond={canRespond}
+                      />
+                    ))}
+                    {clarifications.isSuccess && !questions.length && (
+                      <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center">
+                        <MessageSquare className="mx-auto mb-3 size-6 text-blue-400" />
+                        <p className="text-sm font-semibold">No clarification is pending</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          Questions from the verification team will appear here.
+                        </p>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </main>
+              <aside
+                className="space-y-5 border-t border-slate-200 bg-slate-50/70 p-5 lg:border-l lg:border-t-0"
+                aria-label="Case summary"
+              >
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  At a glance
+                </h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-2 rounded-lg bg-white"
+                  loading={detail.isFetching || clarifications.isFetching}
+                  onClick={() => {
+                    void detail.refetch();
+                    void clarifications.refetch();
+                  }}
+                >
+                  <RefreshCw className="size-3.5" />
+                  Refresh case
+                </Button>
+                <dl className="space-y-4">
+                  {[
+                    ["Expected by", caseDate(item.dueAt)],
+                    ["Created", caseDate(item.createdAt)],
+                    ["Priority", humanize(item.priority)],
+                    [
+                      "Last updated",
+                      `${relativeTime(item.updatedAt)} · ${caseDate(item.updatedAt)}`,
+                    ],
+                    ["Package", casePackageName(item) || "Not available"],
+                    ["Branch", item.branch?.name ?? "Not assigned"],
+                  ].map(([label, value]) => (
+                    <div key={label}>
+                      <dt className="text-[11px] text-slate-500">{label}</dt>
+                      <dd className="mt-1 break-words text-xs font-semibold leading-5">{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="rounded-xl border border-blue-100 bg-white p-3">
+                  <p className="text-xs font-bold">Need an update?</p>
+                  <p className="mb-3 mt-1 text-xs leading-5 text-slate-500">
+                    Contact support with this case number.
+                  </p>
+                  <Link
+                    to="/client-portal/support"
+                    onClick={onClose}
+                    className="text-xs font-semibold text-blue-700"
+                  >
+                    Open support →
+                  </Link>
+                </div>
+                <p className="text-[11px] leading-5 text-slate-500">
+                  Final report downloads are available in the Reports section after authorised
+                  release.
+                </p>
+              </aside>
             </div>
-          </section>
-          <section className="surface overflow-hidden rounded-2xl">
-            <Heading title="Clarifications" detail="Questions and responses linked to this case" />
-            <div className="space-y-3 p-4">
-              {clarifications.data?.items.map((clarification) => (
-                <ClientClarificationCard
-                  key={clarification.id}
-                  caseId={caseId}
-                  item={clarification}
-                  canRespond={canRespond}
-                />
-              ))}
-              {!clarifications.data?.items.length ? (
-                <Empty text="No clarification is pending." />
-              ) : null}
-            </div>
-          </section>
-        </div>
-      </aside>
-    </div>
+          </div>
+        )}
+        <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
+          <span className="text-[11px] text-slate-500">
+            Private · Visible only within your authorised workspace
+          </span>
+          <Button variant="outline" size="sm" className="rounded-lg" onClick={onClose}>
+            Close case detail
+          </Button>
+        </footer>
+      </DialogContent>
+    </Dialog>
   );
-}
-
-function Heading({ title, detail }: { title: string; detail: string }) {
-  return (
-    <header className="border-b border-border px-4 py-3">
-      <h3 className="text-xs font-semibold text-foreground">{title}</h3>
-      <p className="text-[10px] text-muted-foreground">{detail}</p>
-    </header>
-  );
-}
-function Fact({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-2xl border border-white/80 bg-card/75 p-3 shadow-[var(--shadow-card)]">
-      <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1 text-xs font-semibold text-foreground">{value}</p>
-    </div>
-  );
-}
-function Status({ value }: { value: string }) {
-  return (
-    <span
-      className={`rounded-full px-2.5 py-1 text-[9px] font-bold ring-1 ring-inset ${statusTone(value)}`}
-    >
-      {["OPEN", "RESPONDED", "RESOLVED"].includes(value) ? humanize(value) : caseStatusLabel(value)}
-    </span>
-  );
-}
-function DrawerSkeleton() {
-  return (
-    <div className="space-y-3" aria-label="Loading case detail">
-      <Skeleton className="h-36 rounded-[1.5rem]" />
-      <div className="grid grid-cols-3 gap-3">
-        <Skeleton className="h-16 rounded-2xl" />
-        <Skeleton className="h-16 rounded-2xl" />
-        <Skeleton className="h-16 rounded-2xl" />
-      </div>
-      <Skeleton className="h-44 rounded-2xl" />
-    </div>
-  );
-}
-function Empty({ text }: { text: string }) {
-  return <p className="py-6 text-center text-xs text-muted-foreground">{text}</p>;
 }

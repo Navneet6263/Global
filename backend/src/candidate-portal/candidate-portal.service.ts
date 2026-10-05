@@ -33,7 +33,7 @@ export class CandidatePortalService {
     private readonly supportRequests: RequesterSupportRequestsService,
   ) {}
 
-  async issue(actor: Actor, casePublicId: string) {
+  async issue(actor: Actor, casePublicId: string, sendNotification = true) {
     const verificationCase = await this.prisma.verificationCase.findFirst({
       where: {
         ...caseAccessScope(actor),
@@ -84,10 +84,14 @@ export class CandidatePortalService {
           action: "candidate-portal.access-issued",
           resourceType: "case",
           resourcePublicId: casePublicId,
-          afterJson: JSON.stringify({ accessId: created.publicId, expiresAt }),
+          afterJson: JSON.stringify({
+            accessId: created.publicId,
+            expiresAt,
+            sendNotification,
+          }),
         },
       });
-      if (channel && address) {
+      if (sendNotification && channel && address) {
         await tx.outboxEvent.create({
           data: {
             tenantId: actor.tenantId,
@@ -113,7 +117,7 @@ export class CandidatePortalService {
       token,
       expiresAt,
       delivery:
-        channel && address
+        sendNotification && channel && address
           ? {
               queued: true,
               channel,

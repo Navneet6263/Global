@@ -87,7 +87,7 @@ function Bar({
     <span
       title={label}
       className={`relative w-3 rounded-t-lg shadow-sm transition-all group-hover:brightness-95 sm:w-5 ${className}`}
-      style={{ height: `${Math.max(6, (value / max) * 140)}px` }}
+      style={{ height: `${(value / max) * 140}px` }}
     >
       <span className="pointer-events-none absolute -top-5 left-1/2 -translate-x-1/2 text-[8px] font-semibold text-foreground opacity-0 transition group-hover:opacity-100">
         {value}

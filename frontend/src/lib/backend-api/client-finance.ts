@@ -15,13 +15,22 @@ export interface ClientInvoice {
 }
 export const getClientFinanceOverview = () =>
   apiRequest<FinanceOverview>("/client-finance/overview");
-export function listClientInvoices(input: { search: string; status: string; cursor?: string }) {
-  const query = new URLSearchParams({ limit: "20" });
+export function listClientInvoices(
+  input: {
+    search: string;
+    status: string;
+    cursor?: string;
+    limit?: number;
+  },
+  signal?: AbortSignal,
+) {
+  const query = new URLSearchParams({ limit: String(input.limit ?? 20) });
   if (input.search) query.set("search", input.search);
   if (input.status) query.set("status", input.status);
   if (input.cursor) query.set("cursor", input.cursor);
   return apiRequest<{ items: ClientInvoice[]; nextCursor: string | null }>(
     `/client-finance/invoices?${query}`,
+    { signal },
   );
 }
 export async function downloadClientInvoice(invoice: ClientInvoice) {

@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { GlobalSearch } from "@/components/shell/global-search";
+import { ClientWorkspaceSearch } from "./ClientWorkspaceSearch";
 import { WorkspaceHelp } from "@/features/help/workspace-help";
 import { LearningIntro } from "@/features/help/help-launcher";
 import { ClientPortalNavigation } from "./ClientPortalNavigation";
@@ -35,6 +35,7 @@ export function ClientPortalShell({ children }: { children: ReactNode }) {
         analytics: "Insights",
         billing: "Invoices & payments",
         reports: "Reports",
+        support: "Queries & support",
         verifications: "Verifications",
       } as Record<string, string>
     )[page ?? ""] ?? "Overview";
@@ -74,7 +75,7 @@ export function ClientPortalShell({ children }: { children: ReactNode }) {
               </div>
             </div>
             <div className="client-global-search">
-              <GlobalSearch workspace="client-admin" />
+              <ClientWorkspaceSearch />
             </div>
             <ClientHeaderActions refreshing={refreshing} onRefresh={() => void refresh()} />
           </header>

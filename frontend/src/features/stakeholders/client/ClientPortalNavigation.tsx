@@ -8,10 +8,10 @@ import {
   FileCheck2,
   Files,
   LayoutDashboard,
+  LifeBuoy,
   ReceiptIndianRupee,
   type LucideIcon,
 } from "lucide-react";
-import { ClientSupportLauncher } from "@/features/support/components/ClientSupportLauncher";
 import { getSession } from "@/lib/api/auth";
 import { NavigationHint } from "@/features/help/navigation-hint";
 import { navFor } from "@/config/navigation";
@@ -90,11 +90,16 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
       | "/client-portal/actions"
       | "/client-portal/reports"
       | "/client-portal/analytics"
-      | "/client-portal/billing",
+      | "/client-portal/billing"
+      | "/client-portal/support",
     status?: string,
     Icon?: LucideIcon,
+    reportView?: "custom" | "invoices",
   ) => {
-    const active = pathname === to && search["status"] === status;
+    const active =
+      pathname === to &&
+      search["status"] === status &&
+      (to !== "/client-portal/reports" || search["view"] === reportView);
     return (
       <NavigationHint
         title={label}
@@ -104,7 +109,7 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
       >
         <Link
           to={to}
-          search={status ? { status } : {}}
+          search={reportView ? { view: reportView } : status ? { status } : {}}
           onClick={onNavigate}
           className={`${Icon ? "client-nav-row" : ""} ${active ? "is-active" : ""}`}
           aria-current={active ? "page" : undefined}
@@ -157,7 +162,7 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
             {item("Completed", "/client-portal/verifications", "COMPLETED")}
           </NavGroup>
         )}
-        {can("report:read") && (
+        {(can("report:read") || can("case:read")) && (
           <NavGroup
             label="Reports"
             icon={FileCheck2}
@@ -165,7 +170,17 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
             current={reportSelected}
             onToggle={() => toggle("reports")}
           >
-            {item("Published reports", "/client-portal/reports")}
+            {can("report:read") && item("Published reports", "/client-portal/reports")}
+            {can("case:read") &&
+              item("Customise export", "/client-portal/reports", undefined, undefined, "custom")}
+            {can("case:read") &&
+              item(
+                "Invoices & statements",
+                "/client-portal/reports",
+                undefined,
+                undefined,
+                "invoices",
+              )}
             {can("case:read") &&
               item("Awaiting release", "/client-portal/verifications", "PAYMENT_PENDING")}
           </NavGroup>
@@ -174,10 +189,8 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
           item("Insights", "/client-portal/analytics", undefined, ChartNoAxesCombined)}
         {can("case:read") &&
           item("Invoices & payments", "/client-portal/billing", undefined, ReceiptIndianRupee)}
-        <ClientSupportLauncher
-          label="Queries & support"
-          className="client-nav-row client-support-nav"
-        />
+        {can("support:request") &&
+          item("Queries & support", "/client-portal/support", undefined, LifeBuoy)}
       </nav>
     </div>
   );

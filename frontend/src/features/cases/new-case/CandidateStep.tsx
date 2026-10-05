@@ -18,7 +18,7 @@ function Field({
         <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <input
           {...props}
-          className="h-11 w-full rounded-2xl bg-secondary/70 pl-10 pr-4 text-base outline-none transition placeholder:text-muted-foreground/70 focus:bg-secondary focus:ring-2 focus:ring-ring/30 sm:text-sm"
+          className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-base outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 sm:text-sm"
         />
       </span>
     </label>
@@ -57,8 +57,8 @@ export function CandidateStep({
           Requesting organisation
         </span>
         {fixedClient ? (
-          <span className="flex min-h-11 items-center gap-3 rounded-2xl border border-orange-100 bg-orange-50/70 px-3.5 py-2.5">
-            <Building2 className="h-4 w-4 shrink-0 text-orange-600" />
+          <span className="flex min-h-11 items-center gap-3 rounded-lg border border-blue-100 bg-blue-50/50 px-3.5 py-2.5">
+            <Building2 className="h-4 w-4 shrink-0 text-blue-600" />
             <span className="min-w-0">
               <span className="block truncate text-sm font-semibold text-foreground">
                 {fixedClient.displayName}
@@ -78,7 +78,7 @@ export function CandidateStep({
                 const client = clients.find((option) => option.publicId === event.target.value);
                 onChange({ clientId: event.target.value, client: client?.displayName ?? "" });
               }}
-              className="h-11 w-full appearance-none rounded-2xl bg-secondary/70 pl-10 pr-4 text-base outline-none transition focus:bg-secondary focus:ring-2 focus:ring-ring/30 disabled:opacity-60 sm:text-sm"
+              className="h-11 w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-base outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:opacity-60 sm:text-sm"
             >
               <option value="">{clientsLoading ? "Loading clients…" : "Choose a client"}</option>
               {clients.map((client) => (
@@ -141,11 +141,12 @@ export function CandidateStep({
             <button
               key={priority}
               type="button"
+              aria-pressed={draft.priority === priority}
               onClick={() => onChange({ priority: priority as Priority })}
-              className={`h-9 rounded-full px-4 text-xs font-medium transition-colors ${
+              className={`h-9 rounded-lg border px-4 text-xs font-semibold transition-colors ${
                 draft.priority === priority
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-secondary text-muted-foreground hover:text-foreground"
+                  ? "border-blue-600 bg-blue-600 text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
               {priority}

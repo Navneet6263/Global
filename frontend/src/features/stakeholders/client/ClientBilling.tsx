@@ -1,28 +1,18 @@
-import { useDeferredValue, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, Download, ReceiptIndianRupee, Search } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/feedback/error-state";
 import { ListSkeleton } from "@/components/feedback/skeletons";
-import {
-  downloadClientInvoice,
-  getClientFinanceOverview,
-  listClientInvoices,
-} from "@/lib/backend-api/client-finance";
+import { getClientFinanceOverview, listClientInvoices } from "@/lib/backend-api/client-finance";
 import { ClientWorkspaceHeader } from "./ClientWorkspaceHeader";
 import { MonthlyStatement } from "../finance/MonthlyStatement";
+import { ClientEmpty, ClientPager, ClientSearch, ClientSummary } from "./ClientPageParts";
+import { ClientInvoiceRow } from "./ClientInvoiceRow";
+import { invoiceMoney } from "./client-billing-format";
 
-const money = (value: number | string) =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 2,
-  }).format(Number(value));
-const date = (value: string | null) => (value ? new Date(value).toLocaleDateString("en-IN") : "—");
-
-export function ClientBilling() {
+export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) {
+  const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
-  const deferred = useDeferredValue(search.trim());
   const [status, setStatus] = useState("");
   const [cursor, setCursor] = useState<string>();
   const [history, setHistory] = useState<Array<string | undefined>>([]);
@@ -31,199 +21,218 @@ export function ClientBilling() {
     queryFn: getClientFinanceOverview,
   });
   const invoices = useQuery({
-    queryKey: ["client-finance", "invoices", deferred, status, cursor],
-    queryFn: () => listClientInvoices({ search: deferred, status, cursor }),
-  });
-  const download = useMutation({
-    mutationFn: downloadClientInvoice,
-    onError: (error) => toast.error(error.message),
+    queryKey: ["client-finance", "invoices", search, status, cursor, 8],
+    queryFn: () => listClientInvoices({ search, status, cursor, limit: 8 }),
+    placeholderData: keepPreviousData,
   });
   const resetPage = () => {
     setCursor(undefined);
     setHistory([]);
   };
+  const changeStatus = (value: string) => {
+    setStatus(value);
+    resetPage();
+  };
   const summary = overview.data?.summary;
-  const error = invoices.error ?? overview.error;
   return (
     <>
       <ClientWorkspaceHeader
-        title="Invoices & payments"
-        description="Your organisation's invoices, recorded payments and outstanding balance."
+        title={reportMode ? "Invoice documents" : "Invoices & payments"}
+        description="Track billed amounts, recorded payments and balances."
+        actions={reportMode ? <MonthlyStatement ownClient /> : undefined}
       />
-      <div className="flex justify-end">
-        <MonthlyStatement ownClient />
-      </div>
-      {error ? (
+      {overview.isError && (
         <ErrorState
-          description={error.message}
-          onRetry={() => {
-            void invoices.refetch();
-            void overview.refetch();
+          title="Balance summary unavailable"
+          description={overview.error.message}
+          onRetry={() => void overview.refetch()}
+          retrying={overview.isFetching}
+        />
+      )}
+      {overview.isPending && <ListSkeleton rows={1} />}
+      {summary && (
+        <ClientSummary
+          items={[
+            {
+              label: "Total billed",
+              value: invoiceMoney(summary.billed),
+              detail: `${summary.invoiceCount} invoices`,
+            },
+            {
+              label: "Payments received",
+              value: invoiceMoney(summary.collected),
+              tone: "green",
+              detail: "Recorded by Finance",
+            },
+            {
+              label: "Outstanding",
+              value: invoiceMoney(summary.outstanding),
+              tone: "amber",
+              detail: `${summary.openInvoiceCount} open invoices`,
+            },
+            {
+              label: "Overdue balance",
+              value: invoiceMoney(summary.overdueAmount),
+              tone: "red",
+              detail: `${summary.overdueCount} overdue invoices`,
+            },
+          ]}
+        />
+      )}
+      <section className="client-register" aria-label="Invoice register">
+        <div className="client-register-title">
+          <div>
+            <h2>Invoice register</h2>
+            <p>Open a row for its payment and credit breakdown.</p>
+          </div>
+          <div className="client-segments" role="group" aria-label="Quick invoice filters">
+            {[
+              ["", "All invoices"],
+              ["OVERDUE", "Overdue"],
+              ["PAID", "Paid"],
+            ].map(([value, label]) => (
+              <button
+                key={label}
+                aria-pressed={status === value}
+                onClick={() => changeStatus(value!)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="client-register-toolbar">
+          <ClientSearch
+            label="Search invoice number"
+            value={input}
+            onChange={setInput}
+            onSubmit={() => {
+              setSearch(input.trim());
+              resetPage();
+            }}
+          />
+          <select
+            aria-label="Invoice status"
+            value={status}
+            onChange={(e) => changeStatus(e.target.value)}
+          >
+            <option value="">All statuses</option>
+            {[
+              "ISSUED",
+              "PARTIALLY_PAID",
+              "PAID",
+              "OVERDUE",
+              "CREDITED",
+              "SETTLED",
+              "CANCELLED",
+            ].map((value) => (
+              <option key={value} value={value}>
+                {value.replaceAll("_", " ")}
+              </option>
+            ))}
+          </select>
+          {(search || status) && (
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setInput("");
+                setSearch("");
+                changeStatus("");
+              }}
+            >
+              Clear filters
+            </Button>
+          )}
+          <span role="status" className="client-register-meta">
+            {invoices.isFetching
+              ? "Updating invoices…"
+              : invoices.isError
+                ? "Results unavailable"
+                : `${invoices.data?.items.length ?? 0} on this page`}
+          </span>
+        </div>
+        {invoices.isError && (
+          <ErrorState
+            description={invoices.error.message}
+            onRetry={() => void invoices.refetch()}
+            retrying={invoices.isFetching}
+          />
+        )}
+        {invoices.isPending ? (
+          <ListSkeleton rows={4} />
+        ) : invoices.data ? (
+          <>
+            <div className="client-register-scroll" aria-busy={invoices.isFetching}>
+              <table>
+                <caption className="sr-only">Your organisation's invoices</caption>
+                <thead>
+                  <tr>
+                    {["Invoice", "Due date", "Total", "Balance", "Status", "Actions"].map(
+                      (label) => (
+                        <th scope="col" key={label}>
+                          {label}
+                        </th>
+                      ),
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.data.items.map((invoice) => (
+                    <ClientInvoiceRow
+                      key={invoice.id}
+                      invoice={invoice}
+                      stale={invoices.isPlaceholderData}
+                      allowDownload={reportMode}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!invoices.data.items.length && (
+              <ClientEmpty title="No matching invoices">
+                Try another invoice number or clear your filters.
+              </ClientEmpty>
+            )}
+          </>
+        ) : null}
+        <ClientPager
+          page={history.length + 1}
+          previous={!!history.length}
+          next={!!invoices.data?.nextCursor}
+          busy={invoices.isFetching || invoices.isError}
+          detail={
+            reportMode
+              ? "Download invoices or your monthly statement here."
+              : "PDFs, statements and customised exports are available in Reports."
+          }
+          onPrevious={() => {
+            const previous = [...history];
+            setCursor(previous.pop());
+            setHistory(previous);
+          }}
+          onNext={() => {
+            if (!invoices.data?.nextCursor) return;
+            setHistory([...history, cursor]);
+            setCursor(invoices.data.nextCursor);
           }}
         />
-      ) : null}
-      {summary ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {[
-            {
-              title: "Total billed",
-              value: summary.billed,
-              tone: "from-info-soft/65 border-info/20",
-            },
-            {
-              title: "Payments received",
-              value: summary.collected,
-              tone: "from-mint-soft/70 border-mint/25",
-            },
-            {
-              title: "Outstanding",
-              value: summary.outstanding,
-              tone: "from-warning-soft/65 border-warning/20",
-            },
-            {
-              title: "Overdue",
-              value: summary.overdueAmount,
-              tone: "from-critical-soft/55 border-critical/20",
-            },
-          ].map((metric) => (
-            <div
-              key={metric.title}
-              className={`rounded-3xl border bg-gradient-to-br ${metric.tone} to-card p-5 shadow-[var(--shadow-card)]`}
-            >
-              <p className="text-xs text-muted-foreground">{metric.title}</p>
-              <p className="num mt-3 text-2xl font-semibold tracking-tight">
-                {money(metric.value)}
-              </p>
-            </div>
-          ))}
-        </div>
-      ) : null}
-      <section className="surface overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)]">
-        <div className="flex flex-wrap items-center justify-between gap-3 p-5">
-          <h2 className="flex items-center gap-2 text-sm font-semibold">
-            <ReceiptIndianRupee className="size-4 text-primary" /> Invoice register
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            <label className="flex items-center gap-2 rounded-full border border-border px-3">
-              <Search className="size-4 text-muted-foreground" />
-              <input
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  resetPage();
-                }}
-                placeholder="Search invoice number"
-                aria-label="Search invoice number"
-                className="h-9 w-44 bg-transparent text-xs outline-none"
-              />
-            </label>
-            <select
-              aria-label="Invoice status"
-              value={status}
-              onChange={(e) => {
-                setStatus(e.target.value);
-                resetPage();
-              }}
-              className="h-9 rounded-full border border-border bg-card px-3 text-xs"
-            >
-              <option value="">All statuses</option>
-              {[
-                "ISSUED",
-                "PARTIALLY_PAID",
-                "PAID",
-                "OVERDUE",
-                "CREDITED",
-                "SETTLED",
-                "CANCELLED",
-              ].map((value) => (
-                <option key={value} value={value}>
-                  {value.replaceAll("_", " ")}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        {invoices.isPending ? <ListSkeleton rows={4} /> : null}
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-xs">
-            <thead className="bg-muted/40 text-muted-foreground">
-              <tr>
-                {["Invoice", "Issued / due", "Total", "Balance", "Status", ""].map((label, i) => (
-                  <th key={i} className="px-5 py-3 font-medium">
-                    {label}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {invoices.data?.items.map((invoice) => (
-                <tr key={invoice.id} className="hover:bg-muted/20">
-                  <td className="px-5 py-4 font-medium">{invoice.invoiceNumber}</td>
-                  <td className="px-5 py-4">
-                    {date(invoice.issuedAt)}
-                    <span className="mt-1 block text-muted-foreground">
-                      Due {date(invoice.dueAt)}
-                    </span>
-                  </td>
-                  <td className="num px-5 py-4">{money(invoice.totalAmount)}</td>
-                  <td className="num px-5 py-4 font-semibold">{money(invoice.balance)}</td>
-                  <td className="px-5 py-4">
-                    <span
-                      className={`rounded-full px-2.5 py-1 text-[10px] ${invoice.status === "OVERDUE" ? "bg-critical-soft text-critical" : invoice.balance === 0 ? "bg-mint-soft text-mint-deep" : "bg-warning-soft text-warning-foreground"}`}
-                    >
-                      {invoice.status.replaceAll("_", " ")}
-                    </span>
-                  </td>
-                  <td className="px-5 py-4">
-                    <button
-                      onClick={() => download.mutate(invoice)}
-                      disabled={download.isPending}
-                      aria-busy={download.isPending && download.variables?.id === invoice.id}
-                      className="rounded-full border border-border p-2 hover:bg-muted disabled:opacity-40"
-                      aria-label={`Download ${invoice.invoiceNumber}`}
-                    >
-                      <Download className="size-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {invoices.data?.items.length === 0 ? (
-          <p className="p-10 text-center text-sm text-muted-foreground">
-            No invoices match these filters.
-          </p>
-        ) : null}
-        <footer className="flex items-center justify-between border-t border-border px-5 py-3 text-xs text-muted-foreground">
-          <span>Page {history.length + 1} · Payments are confirmed by Finance.</span>
-          <div className="flex gap-2">
-            <button
-              aria-label="Previous invoices"
-              disabled={!history.length || invoices.isFetching}
-              onClick={() => {
-                const next = [...history];
-                setCursor(next.pop());
-                setHistory(next);
-              }}
-              className="rounded-full border border-border p-2 disabled:opacity-30"
-            >
-              <ArrowLeft className="size-4" />
-            </button>
-            <button
-              aria-label="Next invoices"
-              disabled={!invoices.data?.nextCursor || invoices.isFetching}
-              onClick={() => {
-                setHistory([...history, cursor]);
-                setCursor(invoices.data?.nextCursor ?? undefined);
-              }}
-              className="rounded-full border border-border p-2 disabled:opacity-30"
-            >
-              <ArrowRight className="size-4" />
-            </button>
-          </div>
-        </footer>
       </section>
+      {overview.data && (
+        <section className="client-panel client-ageing" aria-label="Outstanding ageing">
+          <div>
+            <h2>Outstanding by age</h2>
+            <p className="client-muted">Recorded ledger balances across ageing buckets.</p>
+          </div>
+          <dl>
+            {overview.data.ageing.map((bucket) => (
+              <div key={bucket.label}>
+                <dt>{bucket.label}</dt>
+                <dd>{invoiceMoney(bucket.value)}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
     </>
   );
 }

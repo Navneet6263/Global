@@ -34,7 +34,11 @@ export type CheckKey =
   | "PAN_VALIDATION"
   | "MCA_VALIDATION";
 
-export type ServiceSelection = { servicePackageId: string; details?: Record<string, string> };
+export type ServiceSelection = {
+  servicePackageId: string;
+  selectedChecks?: string[];
+  details?: Record<string, string>;
+};
 
 export type Priority = (typeof priorities)[number];
 

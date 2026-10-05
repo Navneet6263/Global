@@ -6,7 +6,13 @@ import {
   Length,
   Matches,
   ValidateNested,
+  IsArray,
+  ArrayMinSize,
+  ArrayMaxSize,
+  ArrayUnique,
+  IsIn,
 } from "class-validator";
+import { CheckTypes } from "../case.constants";
 
 export class CaseServiceDetailsDto {
   @IsOptional()
@@ -47,6 +53,14 @@ export class CaseServiceDetailsDto {
 export class CaseServiceInputDto {
   @IsUUID()
   servicePackageId!: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(30)
+  @ArrayUnique()
+  @IsIn(CheckTypes, { each: true })
+  selectedChecks?: string[];
 
   @IsOptional()
   @ValidateNested()

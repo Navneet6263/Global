@@ -18,9 +18,9 @@
 .client-header-help {
   min-height: 36px;
   padding: 8px 10px;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
   color: #475569;
   box-shadow: none;
   font-size: 12px;

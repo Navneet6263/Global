@@ -58,6 +58,7 @@ export async function clientWorkspaceFixture(
           "dashboard:read",
           "report:read",
           "notification:read",
+          "support:request",
           ...(canCreate ? ["case:create"] : []),
         ],
       });
@@ -117,7 +118,8 @@ export async function clientWorkspaceFixture(
         nextCursor: null,
       });
     }
-    if (path.startsWith("/cases/")) return reply(items.find((item) => path.endsWith(item.id)));
+    if (/^\/cases\/[^/]+\/clarifications$/.test(path)) return reply({ items: [] });
+    if (/^\/cases\/[^/]+$/.test(path)) return reply(items.find((item) => path.endsWith(item.id)));
     if (path === "/reports" || path === "/clarifications")
       return reply({ items: [], total: 0, nextCursor: null });
     unexpected.push(path);

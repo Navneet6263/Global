@@ -116,7 +116,7 @@ function CandidateAccessBlock({
       <AccessBlock
         icon={Mail}
         title="1. Candidate document-upload link"
-        description={`Opens the document workspace · expires ${formatExpiry(candidate.access.expiresAt)}`}
+        description={`Copy and share privately with the candidate · expires ${formatExpiry(candidate.access.expiresAt)} · ${candidate.access.delivery.queued ? "Delivery queued, not yet confirmed" : "Link only — no document-link email or SMS queued"}`}
         value={candidate.url}
         onCopy={() => onCopy(candidate.url!, "Document link")}
       />

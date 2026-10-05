@@ -7,6 +7,8 @@
 @import "./design/client-portal-header.css";
 @import "./design/client-portal-dashboard.css";
 @import "./design/client-portal-queue.css";
+@import "./design/client-portal-register.css";
+@import "./design/client-portal-pages.css";
 
 @theme inline {
   --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

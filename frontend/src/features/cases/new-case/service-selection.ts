@@ -17,6 +17,14 @@ export function serviceSelectionError(draft: CaseDraft, packages: CaseServicePac
   for (const selection of selections) {
     const pkg = packages.find((item) => item.id === selection.servicePackageId);
     if (!pkg) return "A selected package is no longer available. Choose your services again.";
+    const checks = selection.selectedChecks ?? pkg.checks;
+    if (
+      !checks.length ||
+      new Set(checks).size !== checks.length ||
+      checks.some((check) => !pkg.checks.includes(check))
+    ) {
+      return `${pkg.name}: choose at least one check from this package`;
+    }
     if (
       pkg.serviceFamily === "VENDORCHECK" &&
       (!selection.details?.["organisationName"]?.trim() ||

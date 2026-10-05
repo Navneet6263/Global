@@ -54,13 +54,10 @@ export const supportApi = {
 
 /** Client Admin (/support-requests): raise a request and follow its own requests. */
 export const clientSupportApi = {
-  mine: (page: number, signal?: AbortSignal) =>
-    apiRequest<SupportPage<MySupportRequest>>(
-      `/support-requests${toQuery({ page, pageSize: 10 })}`,
-      {
-        signal,
-      },
-    ),
+  mine: (page: number, signal?: AbortSignal, pageSize = 10) =>
+    apiRequest<SupportPage<MySupportRequest>>(`/support-requests${toQuery({ page, pageSize })}`, {
+      signal,
+    }),
   raise: (input: RaiseSupportRequestInput) =>
     apiRequest<MySupportRequest>("/support-requests", {
       method: "POST",

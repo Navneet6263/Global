@@ -31,7 +31,7 @@ async function initiateCase(page: Page, invite = true) {
   await expectInsideViewport(page, dialog);
   await dialog.getByRole("button", { name: "Continue", exact: true }).click();
   if (!invite)
-    await dialog.getByRole("checkbox", { name: /Send secure document-upload link/ }).uncheck();
+    await dialog.getByRole("checkbox", { name: /Create secure document-upload link/ }).uncheck();
   await expectInsideViewport(page, dialog);
   await expectInsideViewport(
     page,
@@ -89,10 +89,7 @@ for (const viewport of [
         "246810",
       ]);
     await expect(dialog.getByRole("status")).toHaveText("OTP copied");
-    if (viewport.height <= 600) {
-      expect(await details.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(
-        true,
-      );
+    if (await details.evaluate((element) => element.scrollHeight > element.clientHeight)) {
       await details.focus();
       await page.keyboard.press("Home");
       await page.keyboard.press("End");

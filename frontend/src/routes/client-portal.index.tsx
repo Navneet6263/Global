@@ -43,7 +43,6 @@ function ClientPortalPage() {
         title="Verification overview"
         description="Track every candidate with clarity."
         allowCreate
-        exportFilter={search}
       />
       {dashboard.isError ? (
         <ErrorState

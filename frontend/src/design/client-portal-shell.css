@@ -1,3 +1,14 @@
+/* Desktop client workspace density. Root scope keeps portalled dialogs and menus
+   in the same coordinate system; public pages and mobile retain their normal size. */
+@media (min-width: 1024px) {
+  html:has(.client-portal-shell) {
+    zoom: 0.9;
+  }
+  html .client-portal-shell {
+    min-height: calc(100dvh / 0.9);
+  }
+}
+
 .client-page {
   margin-left: 248px;
   min-width: 0;

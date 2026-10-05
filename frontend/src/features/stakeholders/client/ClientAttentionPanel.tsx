@@ -9,7 +9,6 @@ import {
 } from "lucide-react";
 import { ErrorState } from "@/components/feedback/error-state";
 import { ListSkeleton } from "@/components/feedback/skeletons";
-import { ClientSupportLauncher } from "@/features/support/components/ClientSupportLauncher";
 import type { ExceptionsDashboard, OperationsDashboard } from "@/lib/api/dashboards";
 
 export function ClientAttentionPanel({
@@ -84,10 +83,9 @@ export function ClientAttentionPanel({
             <p>Use support until your RM contact details are available here.</p>
           </div>
         </div>
-        <ClientSupportLauncher
-          label="Contact support"
-          className="rounded-lg bg-white text-primary shadow-none"
-        />
+        <Link to="/client-portal/support" className="client-outline-link">
+          Contact support
+        </Link>
       </section>
       <section className="client-panel">
         <header className="client-panel-head">

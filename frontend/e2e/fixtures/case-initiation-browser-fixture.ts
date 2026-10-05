@@ -3,6 +3,7 @@ import { expect, type Page } from "@playwright/test";
 // Browser-only workflow fixture: no real cases, invitations or shared DB writes.
 export async function caseInitiationFixture(page: Page, failAccess = false) {
   const writes: string[] = [];
+  const payloads: Array<{ path: string; body: unknown }> = [];
   const unexpected: string[] = [];
   let releaseAccess = () => {};
   const accessGate = new Promise<void>((resolve) => {
@@ -56,6 +57,7 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
             serviceFamily: "BGV",
             requiredDocuments: [],
             price: 2500,
+            taxRate: 18,
             tatHours: 72,
           },
         ],
@@ -69,6 +71,7 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
         servicePackageId: "package-test",
       });
       writes.push(path);
+      payloads.push({ path, body: request.postDataJSON() });
       return reply(
         {
           id: "case-test",
@@ -85,6 +88,7 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
     }
     if (path === "/cases/case-test/candidate-access" && request.method() === "POST") {
       writes.push(path);
+      payloads.push({ path, body: request.postDataJSON() });
       await accessGate;
       if (failAccess)
         return reply(
@@ -106,5 +110,5 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
   });
   await page.goto("/client-portal/verifications");
   await page.getByRole("button", { name: "New verification", exact: true }).click();
-  return { writes, unexpected, releaseAccess };
+  return { writes, unexpected, releaseAccess, payloads };
 }

@@ -117,3 +117,59 @@ void test("specialised checks retain identity and unsupported types cannot enter
   );
   assert.equal(caseTatHours("URGENT", 72, 48), 24);
 });
+
+void test("selected checks use package whitelist and keep contracted commercial terms", async () => {
+  const database = db([
+    {
+      servicePackageId: 10n,
+      active: true,
+      unitPrice: 750,
+      taxRate: 18,
+      tatHours: 48,
+    },
+  ]);
+  database.servicePackage.findMany = (() =>
+    Promise.resolve([
+      { ...packages[0], checksJson: '["IDENTITY","EDUCATION"]' },
+    ])) as typeof database.servicePackage.findMany;
+  const plan = await loadCaseServicePlan(database, actor, {
+    ...input,
+    services: [{ servicePackageId: ids[0]!, selectedChecks: ["EDUCATION"] }],
+  } as CreateCaseDto);
+  assert.deepEqual(plan.services[0]!.checks, ["EDUCATION"]);
+  assert.equal(plan.services[0]!.unitPrice, 750);
+  assert.equal(plan.services[0]!.taxRate, 18);
+  assert.equal(plan.services[0]!.pkg.requiredDocumentsJson, '["PAN"]');
+  for (const checks of [[], ["COURT_RECORD"], ["IDENTITY", "IDENTITY"]]) {
+    await assert.rejects(
+      loadCaseServicePlan(database, actor, {
+        ...input,
+        services: [{ servicePackageId: ids[0]!, selectedChecks: checks }],
+      } as CreateCaseDto),
+      /valid check/,
+    );
+  }
+  const legacy = await loadCaseServicePlan(
+    database,
+    actor,
+    input as CreateCaseDto,
+  );
+  assert.deepEqual(legacy.services[0]!.checks, ["IDENTITY", "EDUCATION"]);
+});
+
+void test("selected-check DTO rejects empty, duplicate and unknown checks", async () => {
+  for (const checks of [[], ["WRONG"], ["IDENTITY", "IDENTITY"]]) {
+    const value = plainToInstance(CreateCaseDto, {
+      ...input,
+      services: [{ servicePackageId: ids[0], selectedChecks: checks }],
+    });
+    assert.ok(
+      (await validate(value)).some((error) => error.property === "services"),
+    );
+  }
+  const valid = plainToInstance(CreateCaseDto, {
+    ...input,
+    services: [{ servicePackageId: ids[0], selectedChecks: ["IDENTITY"] }],
+  });
+  assert.equal((await validate(valid)).length, 0);
+});

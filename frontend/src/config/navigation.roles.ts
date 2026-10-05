@@ -76,7 +76,7 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
     ],
     items: [
       clientItem(
-        "Portfolio overview",
+        "Overview",
         "Live volume, SLA and verification flow",
         LayoutDashboard,
         "/client-portal",
@@ -99,13 +99,13 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
       ),
       clientItem(
         "Reports",
-        "Published signed verification reports",
+        "Signed reports, custom exports, invoices and statements",
         ScrollText,
         "/client-portal/reports",
         "report:read",
       ),
       clientItem(
-        "Portfolio analytics",
+        "Insights",
         "Stage ageing, outcome and rejection hotspots",
         BarChart3,
         "/client-portal/analytics",
@@ -117,6 +117,13 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
         ReceiptIndianRupee,
         "/client-portal/billing",
         "case:read",
+      ),
+      clientItem(
+        "Queries & support",
+        "Raise a request and follow replies from the support team",
+        MessageSquareWarning,
+        "/client-portal/support",
+        "support:request",
       ),
       {
         workspace: "client-admin",

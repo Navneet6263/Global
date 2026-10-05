@@ -29,7 +29,7 @@ export function ClientCaseDocuments({
 }) {
   const canUpload = uploadableStatuses.has(caseStatus);
   return (
-    <section className="surface overflow-hidden rounded-2xl">
+    <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
       <header className="border-b border-border px-4 py-3">
         <h3 className="text-xs font-semibold text-foreground">Documents</h3>
         <p className="mt-0.5 text-[10px] text-muted-foreground">
@@ -49,7 +49,7 @@ export function ClientCaseDocuments({
           <div className="flex flex-col items-center py-7 text-center">
             <FileUp className="size-5 text-muted-foreground/45" />
             <p className="mt-2 text-xs text-muted-foreground">
-              No document has been requested yet.
+              No documents are available for this case yet.
             </p>
           </div>
         ) : null}
@@ -83,10 +83,10 @@ function DocumentRow({
   });
   const latest = item.versions[0];
   return (
-    <article className="rounded-2xl border border-border bg-card/70 p-3.5 shadow-[var(--shadow-card)]">
+    <article className="rounded-xl border border-slate-200 bg-white p-3.5">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-mint-soft text-mint-deep shadow-[var(--shadow-card)]">
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
             {item.currentVersion ? (
               <CheckCircle2 className="size-4 text-success" />
             ) : (
@@ -98,7 +98,9 @@ function DocumentRow({
             <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
               {latest
                 ? `${latest.originalName} · version ${item.currentVersion}`
-                : "Upload is still pending"}
+                : item.currentVersion > 0
+                  ? `Version ${item.currentVersion} uploaded · file details restricted`
+                  : "Upload is still pending"}
             </p>
           </div>
         </div>

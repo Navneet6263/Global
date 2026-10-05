@@ -1,11 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Download, Plus } from "lucide-react";
-import { lazy, Suspense } from "react";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { Plus } from "lucide-react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/api/auth";
-import { exportCases } from "@/lib/api/cases";
-import type { ClientQueueSearch } from "./client-queue-model";
 
 const NewCaseDialog = lazy(() =>
   import("@/components/ops/NewCaseDialog").then((module) => ({ default: module.NewCaseDialog })),
@@ -18,21 +15,17 @@ export function ClientWorkspaceHeader({
   title,
   description,
   allowCreate = false,
-  exportFilter,
+  actions,
 }: {
   title: string;
   description: string;
   allowCreate?: boolean;
-  exportFilter?: ClientQueueSearch;
+  actions?: ReactNode;
 }) {
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const can = (permission: string) =>
     Boolean(session.data?.permissions.some((p) => p === "*" || p === permission));
   const canCreate = allowCreate && can("case:create");
-  const exportMutation = useMutation({
-    mutationFn: () => exportCases({ search: exportFilter?.q, status: exportFilter?.status }),
-    onError: (error) => toast.error("Export failed", { description: error.message }),
-  });
   return (
     <header className="client-heading">
       <div>
@@ -43,6 +36,7 @@ export function ClientWorkspaceHeader({
         </p>
       </div>
       <div className="client-heading-actions">
+        {actions}
         {canCreate ? (
           <div className="client-import-control">
             <Suspense
@@ -55,18 +49,6 @@ export function ClientWorkspaceHeader({
               <ClientBulkIntake />
             </Suspense>
           </div>
-        ) : null}
-        {exportFilter && can("case:read") ? (
-          <Button
-            variant="outline"
-            className="bg-white text-primary"
-            loading={exportMutation.isPending}
-            onClick={() => exportMutation.mutate()}
-            aria-label="Export CSV"
-          >
-            <Download aria-hidden />
-            {exportMutation.isPending ? "Exporting…" : "Export"}
-          </Button>
         ) : null}
         {canCreate ? (
           <Suspense

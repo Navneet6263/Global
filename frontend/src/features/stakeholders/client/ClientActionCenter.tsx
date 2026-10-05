@@ -1,222 +1,127 @@
-import {
-  AlertCircle,
-  ArrowRight,
-  CheckCircle2,
-  Clock3,
-  FileWarning,
-  MessageSquareText,
-} from "lucide-react";
-
+import { useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import type { ExceptionsDashboard } from "@/lib/api/dashboards";
 import { formatDate, relativeTime } from "./client-portal-utils";
+import { ClientEmpty, ClientPager, ClientPill, ClientSearch } from "./ClientPageParts";
+import { clientActionItems, filterClientActions } from "./client-action-model";
 
+const kinds = [
+  { value: "", label: "All items", tone: "blue" },
+  { value: "response", label: "Your response", tone: "amber" },
+  { value: "documents", label: "Documents", tone: "red" },
+  { value: "review", label: "Under review", tone: "blue" },
+  { value: "overdue", label: "SLA attention", tone: "red" },
+];
 export function ClientActionCenter({
   data,
   onOpen,
 }: {
-  data: ExceptionsDashboard | undefined;
+  data: ExceptionsDashboard;
   onOpen: (caseId: string) => void;
 }) {
-  const open = data?.clarifications.filter((item) => item.status === "OPEN") ?? [];
-  const underReview = data?.clarifications.filter((item) => item.status === "RESPONDED") ?? [];
-  const overdue = data?.overdue ?? [];
-  const rejectedDocuments = data?.rejectedDocuments ?? [];
-  const actionCount = data?.summary.clientActions ?? 0;
-
+  const [kind, setKind] = useState("");
+  const [input, setInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const items = clientActionItems(data);
+  const filtered = filterClientActions(items, kind, search);
+  const pages = Math.max(1, Math.ceil(filtered.length / 8));
+  const current = Math.min(page, pages);
   return (
-    <section id="actions" className="surface scroll-mt-28 overflow-hidden rounded-[1.75rem]">
-      <header className="flex flex-col gap-3 border-b border-border px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+    <section className="client-register" aria-label="Action centre">
+      <div className="client-register-title">
         <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-semibold tracking-tight text-foreground">Action centre</h2>
-            {actionCount ? (
-              <span className="rounded-full bg-warning-soft px-2 py-0.5 text-[9px] font-semibold text-warning-foreground ring-1 ring-warning/20">
-                {actionCount} waiting
+          <h2>Action centre</h2>
+          <p>What needs your response and what the delivery team is reviewing.</p>
+        </div>
+        <span className="client-register-meta">Updated {relativeTime(data.generatedAt)}</span>
+      </div>
+      <div className="client-register-toolbar">
+        <div className="client-segments" role="group" aria-label="Action type">
+          {kinds.map((entry) => (
+            <button
+              key={entry.label}
+              aria-pressed={kind === entry.value}
+              onClick={() => {
+                setKind(entry.value);
+                setPage(1);
+              }}
+            >
+              {entry.label}{" "}
+              <span>
+                {entry.value
+                  ? items.filter((item) => item.kind === entry.value).length
+                  : items.length}
               </span>
-            ) : null}
-          </div>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Re-upload requests, missing information and SLA risks in one queue.
-          </p>
+            </button>
+          ))}
         </div>
-        <p className="num text-[10px] text-muted-foreground">
-          Updated {data ? relativeTime(data.generatedAt) : "now"}
-        </p>
-      </header>
-
-      {!actionCount && !overdue.length && !underReview.length ? (
-        <div className="flex flex-col items-center px-5 py-12 text-center">
-          <span className="grid size-12 place-items-center rounded-2xl bg-success-soft text-success">
-            <CheckCircle2 className="h-5 w-5" />
-          </span>
-          <p className="mt-3 text-sm font-semibold">Your team is all caught up</p>
-          <p className="mt-1 max-w-sm text-xs leading-5 text-muted-foreground">
-            New document or information requests will appear here with a clear reason and due time.
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-5 p-4 xl:grid-cols-[1.35fr_0.65fr]">
-          <div>
-            <SectionLabel
-              icon={FileWarning}
-              label="Needs your response"
-              count={open.length + rejectedDocuments.length}
-            />
-            <div className="mt-2 space-y-2">
-              {open.slice(0, 6).map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onOpen(item.case.publicId)}
-                  className="group flex w-full items-start gap-3 rounded-2xl border border-warning/20 bg-warning-soft/55 p-3.5 text-left shadow-[var(--shadow-card)] transition hover:-translate-y-px hover:border-warning/35"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-card text-warning-foreground shadow-[var(--shadow-card)]">
-                    <MessageSquareText className="h-4 w-4" />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <span className="truncate text-xs font-semibold text-foreground">
-                        {item.subject}
-                      </span>
-                      <span
-                        className={`rounded-full bg-card px-2 py-0.5 text-[9px] font-semibold ${isDocumentRequest(item.subject, item.latestMessage?.body) ? "text-critical-foreground" : "text-warning-foreground"}`}
-                      >
-                        {isDocumentRequest(item.subject, item.latestMessage?.body)
-                          ? "Document re-upload"
-                          : "Response required"}
-                      </span>
-                    </span>
-                    <span className="mt-1 line-clamp-2 block text-[11px] leading-4 text-muted-foreground">
-                      {item.latestMessage?.body ??
-                        "Sapling Global needs additional information before verification can continue."}
-                    </span>
-                    <span className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
-                      <span className="font-semibold text-foreground">
-                        {item.case.subject.fullName}
-                      </span>
-                      <span>{item.case.caseNumber}</span>
-                      <span>
-                        {item.dueAt
-                          ? `Due ${formatDate(item.dueAt)}`
-                          : relativeTime(item.createdAt)}
-                      </span>
-                    </span>
-                  </span>
-                  <ArrowRight className="mt-2 size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-warning-foreground" />
-                </button>
-              ))}
-              {rejectedDocuments.slice(0, 6).map((document) => (
-                <button
-                  key={document.id}
-                  type="button"
-                  onClick={() => onOpen(document.case.publicId)}
-                  className="group flex w-full items-start gap-3 rounded-2xl border border-critical/20 bg-critical-soft/55 p-3.5 text-left shadow-[var(--shadow-card)] transition hover:-translate-y-px hover:border-critical/35"
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-card text-critical-foreground shadow-[var(--shadow-card)]">
-                    <FileWarning className="size-4" aria-hidden />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="text-xs font-semibold text-foreground">
-                      {document.type.replaceAll("_", " ")} needs replacement
-                    </span>
-                    <span className="mt-1 block text-[11px] leading-4 text-muted-foreground">
-                      The submitted file did not pass document review. Open the case to upload a
-                      corrected version.
-                    </span>
-                    <span className="mt-2 flex flex-wrap gap-x-3 text-[10px] text-muted-foreground">
-                      <span className="font-semibold text-foreground">
-                        {document.case.subject.fullName}
-                      </span>
-                      <span>{document.case.caseNumber}</span>
-                      <span>{relativeTime(document.updatedAt)}</span>
-                    </span>
-                  </span>
-                  <ArrowRight className="mt-2 size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-critical-foreground" />
-                </button>
-              ))}
-              {!open.length && !rejectedDocuments.length ? (
-                <CompactEmpty text="No response is pending from your team." />
-              ) : null}
-            </div>
-          </div>
-
-          <div className="space-y-5">
+      </div>
+      <div className="client-register-toolbar">
+        <ClientSearch
+          label="Search action items"
+          placeholder="Candidate, case or request"
+          value={input}
+          onChange={setInput}
+          onSubmit={() => {
+            setSearch(input);
+            setPage(1);
+          }}
+        />
+        {(search || kind) && (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setInput("");
+              setSearch("");
+              setKind("");
+              setPage(1);
+            }}
+          >
+            Clear filters
+          </Button>
+        )}
+        <span className="client-register-meta">
+          {filtered.length} matching items in this snapshot
+        </span>
+      </div>
+      <div className="client-action-list">
+        {filtered.slice((current - 1) * 8, current * 8).map((item) => (
+          <article key={item.id}>
             <div>
-              <SectionLabel icon={AlertCircle} label="SLA attention" count={overdue.length} />
-              <div className="mt-2 space-y-2">
-                {overdue.slice(0, 4).map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => onOpen(item.id)}
-                    className="flex w-full items-center gap-3 rounded-2xl border border-critical/15 bg-critical-soft/65 p-3 text-left transition hover:border-critical/30"
-                  >
-                    <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-card text-critical">
-                      <Clock3 className="h-3.5 w-3.5" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[11px] font-semibold">
-                        {item.subject.fullName}
-                      </span>
-                      <span className="mt-0.5 block text-[10px] text-critical-foreground">
-                        {item.caseNumber} · overdue since {formatDate(item.dueAt)}
-                      </span>
-                    </span>
-                  </button>
-                ))}
-                {!overdue.length ? <CompactEmpty text="No case is overdue." /> : null}
-              </div>
+              <ClientPill tone={kinds.find((entry) => entry.value === item.kind)?.tone}>
+                {kinds.find((entry) => entry.value === item.kind)?.label}
+              </ClientPill>
+              <h3>{item.title}</h3>
+              <p>{item.detail}</p>
+              <small>
+                <strong>{item.candidate}</strong> · {item.caseNumber}
+                {item.dueAt ? ` · Due ${formatDate(item.dueAt)}` : ""}
+              </small>
             </div>
-            {underReview.length ? (
-              <div>
-                <SectionLabel
-                  icon={CheckCircle2}
-                  label="Response under review"
-                  count={underReview.length}
-                />
-                <p className="mt-2 rounded-2xl border border-info/15 bg-info-soft px-3.5 py-3 text-[11px] leading-5 text-info-foreground">
-                  Your team has replied on {underReview.length}{" "}
-                  {underReview.length === 1 ? "case" : "cases"}. Sapling Global is reviewing the
-                  information.
-                </p>
-              </div>
-            ) : null}
-          </div>
-        </div>
+            <Button variant="outline" size="sm" onClick={() => onOpen(item.caseId)}>
+              {["response", "documents"].includes(item.kind) ? "Review & respond" : "View case"}
+              <ArrowRight aria-hidden />
+            </Button>
+          </article>
+        ))}
+      </div>
+      {!filtered.length && (
+        <ClientEmpty title="No matching action items">
+          {search || kind
+            ? "Change the filters to see other requests."
+            : "New requests will appear here when your response is needed."}
+        </ClientEmpty>
       )}
+      <ClientPager
+        page={current}
+        previous={current > 1}
+        next={current < pages}
+        onPrevious={() => setPage(current - 1)}
+        onNext={() => setPage(current + 1)}
+        detail="Latest exception snapshot. A case may have more than one action item."
+      />
     </section>
-  );
-}
-
-function SectionLabel({
-  icon: Icon,
-  label,
-  count,
-}: {
-  icon: typeof FileWarning;
-  label: string;
-  count: number;
-}) {
-  return (
-    <div className="flex items-center justify-between px-1">
-      <span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-        <Icon className="h-3.5 w-3.5" /> {label}
-      </span>
-      <span className="num text-[10px] font-semibold text-muted-foreground">{count}</span>
-    </div>
-  );
-}
-
-function CompactEmpty({ text }: { text: string }) {
-  return (
-    <p className="rounded-2xl border border-dashed border-border-strong bg-muted/25 px-3 py-5 text-center text-[11px] text-muted-foreground">
-      {text}
-    </p>
-  );
-}
-
-function isDocumentRequest(subject: string, message?: string) {
-  return /document|upload|aadhaar|aadhar|pan card|passport|certificate|blur|cropped|expired/i.test(
-    `${subject} ${message ?? ""}`,
   );
 }

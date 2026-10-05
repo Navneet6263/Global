@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ export function RaiseSupportRequestForm({
   onSubmit: (input: RaiseSupportRequestInput, reset: () => void) => void;
 }) {
   const [subject, setSubject] = useState("");
+  const id = useId();
   const [message, setMessage] = useState("");
   const [caseNumber, setCaseNumber] = useState("");
   const ready =
@@ -48,8 +49,11 @@ export function RaiseSupportRequestForm({
       }}
     >
       <div>
-        <Label className="mb-1.5 block text-xs">What is it about?</Label>
+        <Label htmlFor={`${id}-subject`} className="mb-1.5 block text-xs">
+          What is it about?
+        </Label>
         <Input
+          id={`${id}-subject`}
           value={subject}
           onChange={(event) => setSubject(event.target.value)}
           maxLength={SUPPORT_SUBJECT_MAX}
@@ -58,8 +62,11 @@ export function RaiseSupportRequestForm({
       </div>
       {withCaseNumber ? (
         <div>
-          <Label className="mb-1.5 block text-xs">Case number (optional)</Label>
+          <Label htmlFor={`${id}-case`} className="mb-1.5 block text-xs">
+            Case number (optional)
+          </Label>
           <Input
+            id={`${id}-case`}
             value={caseNumber}
             onChange={(event) => setCaseNumber(event.target.value)}
             maxLength={32}
@@ -68,8 +75,11 @@ export function RaiseSupportRequestForm({
         </div>
       ) : null}
       <div>
-        <Label className="mb-1.5 block text-xs">Describe the problem</Label>
+        <Label htmlFor={`${id}-message`} className="mb-1.5 block text-xs">
+          Describe the problem
+        </Label>
         <Textarea
+          id={`${id}-message`}
           value={message}
           onChange={(event) => setMessage(event.target.value)}
           maxLength={SUPPORT_MESSAGE_MAX}
@@ -78,7 +88,7 @@ export function RaiseSupportRequestForm({
         />
       </div>
       <Button type="submit" disabled={!ready || busy} loading={busy}>
-        <Send className="size-4" aria-hidden /> Submit request
+        <Send className="size-4" aria-hidden /> {busy ? "Submitting…" : "Submit request"}
       </Button>
     </form>
   );

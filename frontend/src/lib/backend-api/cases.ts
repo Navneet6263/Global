@@ -26,6 +26,7 @@ export type CaseServicePackage = {
   serviceFamily?: string;
   requiredDocuments?: string[];
   price?: string | number | null;
+  taxRate?: string | number | null;
   tatHours: number;
 };
 

@@ -24,6 +24,7 @@ import { SUPPORT_ROUTES } from "../support/support.routes";
 import { RaiseSupportRequestDto } from "../support/support.validation";
 import { CandidatePortalService } from "./candidate-portal.service";
 import { CandidateSupportService } from "./candidate-support.service";
+import { IssueCandidateAccessDto } from "./issue-candidate-access.dto";
 
 @Controller()
 export class CandidatePortalController {
@@ -38,8 +39,9 @@ export class CandidatePortalController {
   issue(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Body() input: IssueCandidateAccessDto,
   ) {
-    return this.portal.issue(actor, caseId);
+    return this.portal.issue(actor, caseId, input?.sendNotification ?? true);
   }
 
   @Get("public/candidate-access/:accessId")
