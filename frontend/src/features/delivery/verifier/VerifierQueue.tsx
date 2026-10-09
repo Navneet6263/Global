@@ -2,6 +2,7 @@ import { AlertCircle, ChevronLeft, ChevronRight, Clock3, Loader2, Search } from 
 
 import type { VerificationTask } from "@/lib/api/tasks";
 import { cn } from "@/lib/utils";
+import { Avatar } from "@/components/workspace/kit";
 import { formatDate, humanize } from "../utils";
 
 export type VerifierQueueFilter = "ACTIVE" | "OPEN" | "IN_PROGRESS" | "BLOCKED" | "COMPLETED";
@@ -24,18 +25,16 @@ interface VerifierQueueProps {
 
 export function VerifierQueue(props: VerifierQueueProps) {
   return (
-    <section className="overflow-hidden rounded-[1.65rem] border border-white/80 bg-card/85 shadow-[var(--shadow-float)] backdrop-blur-sm xl:sticky xl:top-5 xl:self-start">
-      <header className="border-b border-border/70 p-4">
+    <section
+      aria-label="Assigned checks"
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-5 xl:self-start"
+    >
+      <header className="grid gap-3 px-4 pb-3 pt-4">
         <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-[15px] font-semibold tracking-[-0.02em]">Assigned checks</h2>
-            <p className="mt-0.5 text-[10.5px] text-muted-foreground">
-              Select a task to continue verification
-            </p>
-          </div>
+          <h2 className="text-[16px] font-bold text-slate-900">My checks</h2>
           <span
             role="status"
-            className="num flex items-center gap-1.5 rounded-full bg-mint-soft px-2.5 py-1 text-[10px] font-medium text-mint-deep"
+            className="flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11.5px] font-semibold text-slate-600"
           >
             {props.pending ? (
               <>
@@ -47,18 +46,18 @@ export function VerifierQueue(props: VerifierQueueProps) {
             )}
           </span>
         </div>
-        <div className="relative mt-3">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <label className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 focus-within:border-blue-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-100">
+          <Search className="size-4 shrink-0 text-slate-400" aria-hidden />
           <input
             value={props.search}
             onChange={(event) => props.onSearch(event.target.value)}
-            placeholder="Search case, candidate or client"
+            placeholder="Search candidate, Sapling ID or company"
             aria-label="Search assigned checks"
-            className="h-10 w-full rounded-full border border-border bg-background/75 pl-9 pr-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+            className="min-w-0 flex-1 bg-transparent text-[13px] outline-none placeholder:text-slate-400"
           />
-        </div>
+        </label>
         <div
-          className="mt-3 flex flex-wrap gap-1.5 rounded-2xl bg-mint-soft/65 p-1.5"
+          className="flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1"
           aria-label="Task status"
           role="group"
         >
@@ -69,10 +68,10 @@ export function VerifierQueue(props: VerifierQueueProps) {
               onClick={() => props.onFilter(filter)}
               aria-pressed={props.activeFilter === filter}
               className={cn(
-                "min-w-0 flex-[1_1_100px] rounded-xl px-3 py-2 text-[11px] font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint",
+                "min-w-0 flex-auto rounded-lg px-2.5 py-1.5 text-[12.5px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
                 props.activeFilter === filter
-                  ? "bg-white text-foreground shadow-[var(--shadow-card)]"
-                  : "text-mint-deep hover:bg-white/55",
+                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-slate-200"
+                  : "text-slate-600 hover:bg-white/70 hover:text-slate-900",
               )}
             >
               {humanize(filter)}
@@ -85,7 +84,7 @@ export function VerifierQueue(props: VerifierQueueProps) {
         aria-busy={props.pending}
         inert={props.pending}
         className={cn(
-          "min-h-40 max-h-[690px] space-y-2 overflow-y-auto p-3",
+          "max-h-[640px] min-h-40 divide-y divide-slate-100 overflow-y-auto border-t border-slate-100",
           props.pending && "opacity-60",
         )}
       >
@@ -123,36 +122,43 @@ function QueueItem({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "relative w-full overflow-hidden rounded-[1.15rem] border p-3.5 text-left transition duration-200",
-        active
-          ? "border-mint/30 bg-mint-soft/75 shadow-[var(--shadow-card)]"
-          : "border-transparent bg-background/55 hover:border-white hover:bg-white/85",
+        "relative flex w-full items-start gap-3 px-4 py-3 text-left transition",
+        active ? "bg-blue-50" : "hover:bg-slate-50",
       )}
     >
-      {active ? <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-mint" /> : null}
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="truncate text-[13px] font-semibold text-foreground">
+      {active ? <span className="absolute inset-y-0 left-0 w-[3px] bg-blue-600" /> : null}
+      <Avatar
+        name={task.check.case.subject.fullName}
+        size="sm"
+        tone={task.status === "BLOCKED" ? "warn" : "info"}
+      />
+      <span className="min-w-0 flex-1">
+        <span className="flex items-start justify-between gap-2">
+          <strong className="truncate text-[13.5px] font-semibold text-slate-900">
             {task.check.case.subject.fullName}
-          </p>
-          <p className="mt-0.5 truncate text-[10.5px] text-muted-foreground">
-            {task.check.case.caseNumber} · {humanize(task.check.type)}
-          </p>
-        </div>
-        <Status status={task.status} />
-      </div>
-      <div className="mt-3 flex items-center justify-between gap-2 text-[9.5px] text-muted-foreground">
-        <span className="truncate">{task.check.case.client.displayName}</span>
-        <span
-          className={cn(
-            "flex shrink-0 items-center gap-1",
-            overdue && "font-medium text-critical-foreground",
-          )}
-        >
-          {overdue ? <AlertCircle className="size-3" /> : <Clock3 className="size-3" />}
-          {task.dueAt ? formatDate(task.dueAt) : "No due date"}
+          </strong>
+          <Status status={task.status} />
         </span>
-      </div>
+        <span className="block truncate font-mono text-[11.5px] text-slate-500">
+          {task.check.case.caseNumber}
+        </span>
+        <span className="mt-1.5 flex items-center justify-between gap-2 text-[11.5px] text-slate-500">
+          <span className="truncate">
+            <span className="font-semibold text-blue-700">{humanize(task.check.type)}</span>
+            {" · "}
+            {task.check.case.client.displayName}
+          </span>
+          <span
+            className={cn(
+              "flex shrink-0 items-center gap-1",
+              overdue && "font-semibold text-red-600",
+            )}
+          >
+            {overdue ? <AlertCircle className="size-3" /> : <Clock3 className="size-3" />}
+            {task.dueAt ? formatDate(task.dueAt) : "No due date"}
+          </span>
+        </span>
+      </span>
     </button>
   );
 }
@@ -160,11 +166,11 @@ function QueueItem({
 function QueueEmpty() {
   return (
     <div className="px-5 py-14 text-center">
-      <span className="mx-auto grid size-10 place-items-center rounded-full bg-muted text-muted-foreground">
-        <Search className="size-4" />
+      <span className="mx-auto grid size-11 place-items-center rounded-2xl bg-slate-100 text-slate-500">
+        <Search className="size-5" />
       </span>
-      <p className="mt-3 text-[12px] font-medium">No matching checks</p>
-      <p className="mt-1 text-[10.5px] text-muted-foreground">Try another status or search.</p>
+      <p className="mt-3 text-[13.5px] font-semibold text-slate-900">No matching checks</p>
+      <p className="mt-1 text-[12.5px] text-slate-500">Try another status or search.</p>
     </div>
   );
 }
@@ -173,8 +179,8 @@ function QueuePagination(
   props: Pick<VerifierQueueProps, "items" | "hasPrevious" | "hasNext" | "onPrevious" | "onNext">,
 ) {
   return (
-    <footer className="flex items-center justify-between border-t border-border/70 px-4 py-3">
-      <span className="text-[10px] text-muted-foreground">
+    <footer className="flex items-center justify-between border-t border-slate-100 px-4 py-3">
+      <span className="text-[12px] text-slate-500">
         {props.items.length} {props.items.length === 1 ? "check" : "checks"} on this page
       </span>
       <div className="flex gap-1.5">
@@ -212,7 +218,7 @@ function PageButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="grid size-8 place-items-center rounded-full border border-border bg-white/70 text-muted-foreground transition hover:bg-mint-soft hover:text-mint-deep disabled:cursor-not-allowed disabled:opacity-35"
+      className="grid size-8 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
     >
       <Icon className="size-3.5" />
     </button>
@@ -229,7 +235,12 @@ export function Status({ status }: { status: string }) {
           ? "border-info/25 bg-info-soft text-info-foreground"
           : "border-warning/30 bg-warning-soft text-warning-foreground";
   return (
-    <span className={cn("shrink-0 rounded-full border px-2 py-1 text-[8.5px] font-semibold", tone)}>
+    <span
+      className={cn(
+        "w-fit shrink-0 justify-self-start rounded-full border px-2 py-1 text-[11px] font-semibold",
+        tone,
+      )}
+    >
       {humanize(status)}
     </span>
   );

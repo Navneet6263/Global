@@ -1,8 +1,12 @@
+import { ConfigService } from "@nestjs/config";
+import { SecretBoxService } from "../common/security/secret-box.service";
+import { SubjectPiiService } from "../common/security/subject-pii.service";
 import {
   BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
@@ -17,7 +21,20 @@ import {
 
 @Injectable()
 export class InvoicePaymentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly pii?: SubjectPiiService,
+    @Optional() private readonly config?: ConfigService,
+  ) {}
+
+  /** Release email delivery; absent in narrow unit tests. */
+  private releaseMail() {
+    const webOrigin = this.config?.get<string>("WEB_ORIGIN");
+    return this.secretBox && this.pii && webOrigin
+      ? { secretBox: this.secretBox, pii: this.pii, webOrigin }
+      : undefined;
+  }
 
   async record(actor: Actor, publicId: string, input: RecordPaymentDto) {
     const invoice = await this.prisma.invoice.findFirst({
@@ -99,6 +116,7 @@ export class InvoicePaymentService {
             actor.tenantId,
             invoice.id,
             actor.userId,
+            this.releaseMail(),
           );
         }
         return {

@@ -97,16 +97,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "icon",
         type: "image/png",
         sizes: "1254x1254",
-        href: "/brand/sapling-global-mark.png?v=20260907",
+        href: "/brand/sapling-icon.png?v=20261006",
       },
       {
         rel: "shortcut icon",
         type: "image/png",
-        href: "/brand/sapling-global-mark.png?v=20260907",
+        href: "/brand/sapling-icon.png?v=20261006",
       },
       {
         rel: "apple-touch-icon",
-        href: "/brand/sapling-global-mark.png?v=20260907",
+        href: "/brand/sapling-icon.png?v=20261006",
       },
       {
         rel: "stylesheet",

@@ -12,6 +12,11 @@ const ClientCustomExport = lazy(() =>
     default: m.ClientCustomExport,
   })),
 );
+const ClientMisReports = lazy(() =>
+  import("@/features/stakeholders/client/ClientMisReports").then((m) => ({
+    default: m.ClientMisReports,
+  })),
+);
 const ClientBilling = lazy(() =>
   import("@/features/stakeholders/client/ClientBilling").then((m) => ({
     default: m.ClientBilling,
@@ -19,8 +24,11 @@ const ClientBilling = lazy(() =>
 );
 
 export const Route = createFileRoute("/client-portal/reports")({
-  validateSearch: (input: Record<string, unknown>): { view?: "custom" | "invoices" } => ({
-    view: input["view"] === "custom" || input["view"] === "invoices" ? input["view"] : undefined,
+  validateSearch: (input: Record<string, unknown>): { view?: "custom" | "invoices" | "mis" } => ({
+    view:
+      input["view"] === "custom" || input["view"] === "invoices" || input["view"] === "mis"
+        ? input["view"]
+        : undefined,
   }),
   head: () => ({ meta: [{ title: "Reports — Sapling Global" }] }),
   component: ClientReportsPage,
@@ -45,6 +53,7 @@ function ClientReportsPage() {
       >
         {[
           { value: undefined, label: "Published reports", allowed: can("report:read") },
+          { value: "mis" as const, label: "MIS & bulk download", allowed: can("case:read") },
           { value: "custom" as const, label: "Customise export", allowed: can("case:read") },
           { value: "invoices" as const, label: "Invoices & statements", allowed: can("case:read") },
         ]
@@ -68,7 +77,9 @@ function ClientReportsPage() {
         />
       ) : (
         <Suspense fallback={<ListSkeleton rows={4} />}>
-          {view === "custom" ? (
+          {view === "mis" ? (
+            <ClientMisReports />
+          ) : view === "custom" ? (
             <ClientCustomExport />
           ) : view === "invoices" ? (
             <ClientBilling reportMode />

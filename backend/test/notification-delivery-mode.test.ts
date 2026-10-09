@@ -31,6 +31,7 @@ function worker(environment: "development" | "production") {
     {} as ReportRecoveryService,
     {} as ObjectDeletionRecoveryService,
     new RuntimeHealthService(),
+    { configured: () => false } as never,
   );
 }
 

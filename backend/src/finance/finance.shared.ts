@@ -94,7 +94,8 @@ export function toPaise(value: unknown) {
     BigInt(match[2]!) * 100n + BigInt((match[3] ?? "").padEnd(2, "0"));
   const signed = match[1] ? -paise : paise;
   const result = Number(signed);
-  if (!Number.isSafeInteger(result)) throw new Error("Money value exceeds safe paise range");
+  if (!Number.isSafeInteger(result))
+    throw new Error("Money value exceeds safe paise range");
   return result;
 }
 

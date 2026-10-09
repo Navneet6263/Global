@@ -38,6 +38,8 @@ export class ClarificationsController {
     "CLIENT_ADMIN",
     "VERIFIER",
     "QA_REVIEWER",
+    "DATA_ENTRY",
+    "SPOC_RM",
   )
   list(
     @CurrentActor() actor: Actor,
@@ -48,7 +50,7 @@ export class ClarificationsController {
 
   @Post("cases/:caseId/clarifications")
   @RequirePermissions(Permission.ClarificationWrite)
-  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER", "DATA_ENTRY")
   create(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
@@ -59,7 +61,7 @@ export class ClarificationsController {
 
   @Patch("cases/:caseId/clarifications/:clarificationId/resolve")
   @RequirePermissions(Permission.ClarificationWrite)
-  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER", "DATA_ENTRY")
   resolve(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,

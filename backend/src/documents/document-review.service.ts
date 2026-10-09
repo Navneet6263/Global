@@ -3,7 +3,12 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { issueCandidateLink } from "../candidate-portal/candidate-link";
+import { SecretBoxService } from "../common/security/secret-box.service";
+import { SubjectPiiService } from "../common/security/subject-pii.service";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
@@ -13,10 +18,16 @@ import {
   documentExpiry,
   lockMutableCaseEvidence,
 } from "./upload-document-policy";
+import { documentScope } from "../verification/check-documents";
 
 @Injectable()
 export class DocumentReviewService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly pii?: SubjectPiiService,
+    @Optional() private readonly config?: ConfigService,
+  ) {}
 
   async readiness(actor: Actor, casePublicId: string) {
     const record = await this.prisma.verificationCase.findFirst({
@@ -34,9 +45,25 @@ export class DocumentReviewService {
           tenantId: actor.tenantId,
           publicId,
           case: caseAccessScope(actor),
+          ...documentScope(actor),
         },
         include: {
-          case: { select: { id: true, status: true, publicId: true } },
+          case: {
+            select: {
+              id: true,
+              status: true,
+              publicId: true,
+              subject: {
+                select: {
+                  email: true,
+                  phone: true,
+                  employeeCode: true,
+                  piiCiphertext: true,
+                  piiKeyVersion: true,
+                },
+              },
+            },
+          },
           versions: {
             where: { version: input.documentVersion },
             select: { malwareState: true },
@@ -123,8 +150,37 @@ export class DocumentReviewService {
           }),
         },
       });
+      // Sent back to the candidate: the old (possibly completed) link is replaced by a
+      // fresh one emailed to them. Consent stays recorded and is not asked again.
+      let candidateLink: { queued: boolean } | null = null;
+      if (
+        ["REJECTED", "REUPLOAD_REQUIRED"].includes(input.decision) &&
+        this.secretBox &&
+        this.pii &&
+        this.config
+      ) {
+        const link = await issueCandidateLink(
+          tx,
+          {
+            secretBox: this.secretBox,
+            pii: this.pii,
+            webOrigin: this.config.getOrThrow<string>("WEB_ORIGIN"),
+          },
+          {
+            tenantId: actor.tenantId,
+            caseId: document.case.id,
+            casePublicId: document.case.publicId,
+            actorUserId: actor.userId,
+            subject: document.case.subject,
+            sendNotification: true,
+            reason: `${document.type.replaceAll("_", " ").toLowerCase()}: ${input.note.trim()}`,
+          },
+        );
+        candidateLink = { queued: link.delivery.queued };
+      }
       return {
         id: publicId,
+        candidateLink,
         status: input.decision,
         version: input.version + 1,
         currentVersion: document.currentVersion,

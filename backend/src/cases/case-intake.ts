@@ -1,4 +1,4 @@
-import { ConflictException } from "@nestjs/common";
+import { BadRequestException, ConflictException } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import type { PrismaService } from "../database/prisma.service";
@@ -6,6 +6,8 @@ import type { SubjectPiiService } from "../common/security/subject-pii.service";
 import type { ConsentIssuanceService } from "../consents/consent-issuance.service";
 import type { CreateCaseDto } from "./dto/create-case.dto";
 import { loadCaseServicePlan } from "./case-service-plan";
+import { issueCandidateLink } from "../candidate-portal/candidate-link";
+import { internalWorkflowV2Enabled } from "../workflow/workflow-access";
 
 export async function createVerificationCase(
   prisma: PrismaService,
@@ -14,6 +16,10 @@ export async function createVerificationCase(
   actor: Actor,
   input: CreateCaseDto,
 ) {
+  if (!input.email && !input.phone)
+    throw new BadRequestException(
+      "A candidate email or mobile number is required for the candidate link",
+    );
   const { client, services } = await loadCaseServicePlan(prisma, actor, input);
   const now = new Date();
   const dueAt = new Date(
@@ -38,6 +44,17 @@ export async function createVerificationCase(
       throw new ConflictException(
         "This organisation is on a Finance intake hold. Contact your account manager before creating new cases; existing cases remain accessible.",
       );
+    const companyRm = client.primaryRmUserId
+      ? await tx.user.findFirst({
+          where: {
+            id: client.primaryRmUserId,
+            tenantId: actor.tenantId,
+            status: "ACTIVE",
+            userRoles: { some: { role: { code: "SPOC_RM" } } },
+          },
+          select: { id: true },
+        })
+      : null;
     const subject = await tx.subject.create({
       data: {
         tenantId: actor.tenantId,
@@ -64,6 +81,11 @@ export async function createVerificationCase(
         status: "CONSENT_PENDING",
         priority: input.priority,
         dueAt,
+        // Company-level RM: the client's RM owns every new case automatically.
+        ...(companyRm ? { assignedOpsUserId: companyRm.id } : {}),
+        ...(internalWorkflowV2Enabled()
+          ? { workflowVersion: 2, intakeStage: "INTAKE" }
+          : {}),
         statusHistory: {
           create: { toStatus: "CONSENT_PENDING", changedById: actor.userId },
         },
@@ -105,19 +127,20 @@ export async function createVerificationCase(
         })),
       });
     }
-    const consent = await tx.consent.findFirstOrThrow({
-      where: { caseId: verificationCase.id },
-      select: { id: true, publicId: true },
-    });
-    const consentDelivery = await issuance.issue(tx, {
-      consentId: consent.id,
-      consentPublicId: consent.publicId,
-      tenantId: actor.tenantId,
-      casePublicId: verificationCase.publicId,
-      actorUserId: actor.userId,
-      email: input.email,
-      phone: input.phone,
-    });
+    // One link for the candidate: consent (OTP) and uploads both happen inside it,
+    // so no separate consent email or link is sent.
+    const candidateAccess = await issueCandidateLink(
+      tx,
+      issuance.candidateLinkDeps(pii),
+      {
+        tenantId: actor.tenantId,
+        caseId: verificationCase.id,
+        casePublicId: verificationCase.publicId,
+        actorUserId: actor.userId,
+        subject,
+        sendNotification: true,
+      },
+    );
     await tx.auditEvent.create({
       data: {
         tenantId: actor.tenantId,
@@ -128,6 +151,7 @@ export async function createVerificationCase(
         afterJson: JSON.stringify({
           caseNumber,
           status: "CONSENT_PENDING",
+          ...(companyRm ? { autoAssignedRm: true } : {}),
           services: services.map((service) => ({
             packageId: service.pkg.publicId,
             family: service.pkg.serviceFamily,
@@ -145,12 +169,23 @@ export async function createVerificationCase(
         payloadJson: JSON.stringify({ caseId: verificationCase.publicId }),
       },
     });
-    return { casePublicId: verificationCase.publicId, consentDelivery };
+    if (companyRm)
+      await tx.notification.create({
+        data: {
+          tenantId: actor.tenantId,
+          userId: companyRm.id,
+          type: "CASE_OWNER_ASSIGNED",
+          title: "New case for your client",
+          body: `${caseNumber}: ${input.fullName.trim()} was added. Assign Data Entry once the candidate submits.`,
+          href: `/spoc-rm/work?caseId=${verificationCase.publicId}`,
+        },
+      });
+    return { casePublicId: verificationCase.publicId, candidateAccess };
   });
   return {
     id: created.casePublicId,
     caseNumber,
     status: "CONSENT_PENDING",
-    consentDelivery: created.consentDelivery,
+    candidateAccess: created.candidateAccess,
   };
 }

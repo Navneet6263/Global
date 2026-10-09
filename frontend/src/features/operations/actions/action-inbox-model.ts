@@ -1,3 +1,4 @@
+import { FIELD_WORK_ENABLED } from "@/config/features";
 import {
   ClipboardCheck,
   FileCheck2,
@@ -71,9 +72,13 @@ export const actionMeta = {
 } as const;
 
 export type ActionKind = keyof typeof actionMeta;
-export const actionKinds = Object.keys(actionMeta) as ActionKind[];
+const FIELD_KINDS: readonly ActionKind[] = ["field_assignment", "field_review"];
+/** Field categories stay hidden while field work is on hold (config/features.ts). */
+export const actionKinds = (Object.keys(actionMeta) as ActionKind[]).filter(
+  (kind) => FIELD_WORK_ENABLED || !FIELD_KINDS.includes(kind),
+);
 export function parseAction(value: unknown): ActionKind | undefined {
-  return typeof value === "string" && Object.hasOwn(actionMeta, value)
+  return typeof value === "string" && actionKinds.includes(value as ActionKind)
     ? (value as ActionKind)
     : undefined;
 }

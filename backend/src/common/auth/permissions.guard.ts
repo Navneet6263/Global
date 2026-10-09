@@ -3,15 +3,26 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import type { FastifyRequest } from "fastify";
-import { IS_PUBLIC_KEY, PERMISSIONS_KEY, ROLES_KEY } from "./auth.decorators";
+import {
+  IS_PUBLIC_KEY,
+  PERMISSIONS_KEY,
+  ROLES_KEY,
+  VIEW_ONLY_ADMIN_ALLOWED_KEY,
+} from "./auth.decorators";
+import { isViewOnlyAdmin } from "./view-only";
 import type { Actor } from "./actor";
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(
+    private readonly reflector: Reflector,
+    @Optional() private readonly config?: ConfigService,
+  ) {}
 
   canActivate(context: ExecutionContext): boolean {
     if (
@@ -26,6 +37,21 @@ export class PermissionsGuard implements CanActivate {
     const request = context
       .switchToHttp()
       .getRequest<FastifyRequest & { user: Actor }>();
+    if (
+      !["GET", "HEAD", "OPTIONS"].includes(request.method) &&
+      isViewOnlyAdmin(
+        request.user.roles,
+        this.config?.get<boolean>("PLATFORM_ADMIN_VIEW_ONLY", true) ?? true,
+      ) &&
+      !this.reflector.getAllAndOverride<boolean>(VIEW_ONLY_ADMIN_ALLOWED_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ])
+    ) {
+      throw new ForbiddenException(
+        "Platform Admin has view-only access. Escalate the case or ask Operations to make this change.",
+      );
+    }
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],

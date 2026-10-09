@@ -10,7 +10,7 @@ import {
 import type { PlatformUser } from "@/lib/contracts/user";
 import { temporaryPassword } from "@/lib/auth/temporary-password";
 
-function mapUser(row: DirectoryUser): PlatformUser & { version: number } {
+export function mapUser(row: DirectoryUser): PlatformUser & { version: number } {
   return {
     id: row.id,
     version: row.version,
@@ -67,6 +67,10 @@ export const userRepository: UserRepository = {
       spocClientIds: input.clientIds?.length ? [...input.clientIds] : undefined,
       roleCodes: [...input.roles],
       additionalAccessConfirmed: input.additionalAccessConfirmed,
+      departments: input.departments?.length ? [...input.departments] : undefined,
+      access: input.access?.length
+        ? input.access.map((entry) => ({ role: entry.role, permissions: [...entry.permissions] }))
+        : undefined,
       temporaryPassword: password,
     });
     const user: PlatformUser = {

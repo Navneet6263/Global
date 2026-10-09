@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
+import { caseColour, effectiveDisposition } from "../verification/dispositions";
 import type { ExecutiveQueryDto } from "./dto/executive-query.dto";
 import {
   attentionQueue,
@@ -74,6 +75,7 @@ export class ExecutiveAnalyticsService {
                 type: true,
                 status: true,
                 result: true,
+                disposition: true,
                 createdAt: true,
                 completedAt: true,
               },
@@ -147,9 +149,8 @@ export class ExecutiveAnalyticsService {
       summary: {
         total: stats.total,
         overdue: stats.overdue,
-        createdToday: rows.filter(
-          (row) => row.createdAt >= startOfToday(now),
-        ).length,
+        createdToday: rows.filter((row) => row.createdAt >= startOfToday(now))
+          .length,
         completedToday: rows.filter(
           (row) => row.completedAt && row.completedAt >= startOfToday(now),
         ).length,
@@ -161,9 +162,21 @@ export class ExecutiveAnalyticsService {
       },
       statusMix: countBy(rows.map((row) => row.status)),
       riskMix: countBy(rows.map((row) => row.riskLevel ?? "UNCLASSIFIED")),
-      outcomeMix: countBy(
-        checks.map((check) => check.result ?? "PENDING"),
+      outcomeMix: countBy(checks.map((check) => check.result ?? "PENDING")),
+      // Colour codes: per check, and per case (the most serious check decides).
+      dispositionMix: countBy(
+        checks.flatMap((check) => {
+          const value = effectiveDisposition(check);
+          return value ? [value] : [];
+        }),
       ),
+      caseColourMix: countBy(
+        rows.flatMap((row) => {
+          const value = caseColour(row.checks);
+          return value ? [value] : [];
+        }),
+      ),
+      clientColours: clientColourRows(rows),
       trend: trend.map(({ month, created, completed }) => ({
         month,
         created,
@@ -195,5 +208,32 @@ export class ExecutiveAnalyticsService {
       generatedAt: now,
     };
   }
+}
 
+function clientColourRows(
+  rows: Array<{
+    client: { publicId: string; displayName: string };
+    checks: Array<{ result: string | null; disposition?: string | null }>;
+  }>,
+) {
+  const byClient = new Map<
+    string,
+    { id: string; name: string; colours: Record<string, number> }
+  >();
+  for (const row of rows) {
+    const colour = caseColour(row.checks);
+    if (!colour) continue;
+    const entry = byClient.get(row.client.publicId) ?? {
+      id: row.client.publicId,
+      name: row.client.displayName,
+      colours: {},
+    };
+    entry.colours[colour] = (entry.colours[colour] ?? 0) + 1;
+    byClient.set(row.client.publicId, entry);
+  }
+  return [...byClient.values()].sort(
+    (a, b) =>
+      Object.values(b.colours).reduce((x, y) => x + y, 0) -
+      Object.values(a.colours).reduce((x, y) => x + y, 0),
+  );
 }

@@ -86,6 +86,8 @@ export function reuploadHarness(
     outboxEvent: { create: record("outbox", {}) },
     candidatePortalAccess: {
       findFirst: record("link", { expiresAt: new Date("2026-10-10") }),
+      updateMany: record("revokeLinks", { count: 1 }),
+      create: record("newLink", { publicId: "access-2" }),
     },
     vendorAssignment: {
       update: record("vendorWrite", {}),

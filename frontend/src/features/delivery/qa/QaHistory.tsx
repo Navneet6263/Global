@@ -4,6 +4,8 @@ import { CheckCircle2, RotateCcw, Search } from "lucide-react";
 import { getQaHistory } from "@/lib/backend-api/qa-register";
 import { useDebouncedValue } from "@/lib/use-debounced-value";
 import { Button } from "@/components/ui/button";
+import { ExportSheetButton } from "@/components/workspace/export-sheet";
+import { QA_HISTORY_COLUMNS, QA_HISTORY_DEFAULTS, loadQaHistory } from "./qa-export";
 import { WorkspaceEmpty, WorkspaceError, WorkspaceLoading } from "../WorkspaceStates";
 import { formatDate, humanize } from "../utils";
 
@@ -19,7 +21,7 @@ export function QaHistory() {
     enabled: search === searchInput.trim(),
   });
   return (
-    <section className="rounded-[1.65rem] border border-white/80 bg-card/85 p-5 shadow-[var(--shadow-float)] sm:p-6">
+    <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
       <header className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold">My decision history</h2>
@@ -27,16 +29,27 @@ export function QaHistory() {
             Your recorded decisions · current case and report status shown separately
           </p>
         </div>
-        <label className="flex items-center gap-2 rounded-full border bg-white px-3 py-2">
-          <Search className="size-4 text-muted-foreground" aria-hidden />
-          <input
-            aria-label="Search decision history"
-            placeholder="Candidate, case or client"
-            value={searchInput}
-            onChange={(event) => setSearchInput(event.target.value)}
-            className="min-w-0 bg-transparent text-xs outline-none"
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportSheetButton
+            source="qa-history"
+            title="Export decision history"
+            filename="Sapling-Global-qa-decisions"
+            columns={QA_HISTORY_COLUMNS}
+            defaults={QA_HISTORY_DEFAULTS}
+            scopeNote={search ? `search “${search}”` : "all your decisions"}
+            loadRows={() => loadQaHistory(search || undefined)}
           />
-        </label>
+          <label className="flex items-center gap-2 rounded-full border bg-white px-3 py-2">
+            <Search className="size-4 text-muted-foreground" aria-hidden />
+            <input
+              aria-label="Search decision history"
+              placeholder="Candidate, case or client"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              className="min-w-0 bg-transparent text-xs outline-none"
+            />
+          </label>
+        </div>
       </header>
       {query.isFetching ? (
         <p className="mt-3 text-xs text-muted-foreground" role="status">
@@ -56,11 +69,11 @@ export function QaHistory() {
               return (
                 <article
                   key={entry.publicId}
-                  className="rounded-2xl border border-border/60 bg-background/55 p-4"
+                  className="rounded-2xl border border-border/60 bg-slate-50 p-4"
                 >
                   <div className="flex flex-wrap items-start gap-3">
                     <span
-                      className={`grid size-10 shrink-0 place-items-center rounded-2xl ${approved ? "bg-mint-soft text-mint-deep" : "bg-amber-50 text-amber-800"}`}
+                      className={`grid size-10 shrink-0 place-items-center rounded-2xl ${approved ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-800"}`}
                     >
                       <Icon className="size-5" aria-hidden />
                     </span>

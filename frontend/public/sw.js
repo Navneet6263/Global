@@ -1,6 +1,11 @@
-const VERSION = "sapling-global-v6";
+const VERSION = "sapling-global-v7";
 const STATIC_CACHE = `${VERSION}-static`;
-const STATIC_ASSETS = ["/offline.html", "/manifest.webmanifest", "/brand/sapling-global-mark.png"];
+const STATIC_ASSETS = [
+  "/offline.html",
+  "/manifest.webmanifest",
+  "/brand/sapling-wordmark.png",
+  "/brand/sapling-icon.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS)));

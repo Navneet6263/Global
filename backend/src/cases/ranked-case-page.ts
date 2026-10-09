@@ -13,6 +13,7 @@ const statusGroups = [
   ["REPORT_PENDING"],
   ["PAYMENT_PENDING"],
   ["COMPLETED", "CLOSED", "CANCELLED"],
+  ["STOPPED"],
 ];
 const priorityGroups = [["NORMAL"], ["HIGH"], ["URGENT"]];
 

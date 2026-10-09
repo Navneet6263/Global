@@ -89,3 +89,9 @@ export function verifyReport(authenticityCode: string) {
     completedAt?: string | null;
   }>(`/public/reports/verify/${encodeURIComponent(authenticityCode)}`);
 }
+
+/** Work-in-progress PDF of the checks finished so far (no source contacts). */
+export async function downloadInterimReport(caseId: string, caseNumber: string) {
+  const blob = await apiDownload(`/cases/${caseId}/interim-report`);
+  saveBlob(blob, `Sapling-Global-interim-${caseNumber}.pdf`);
+}

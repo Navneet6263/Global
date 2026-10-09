@@ -1,3 +1,6 @@
+import { ClientReportsController } from "./client-reports.controller";
+import { ClientReportsService } from "./client-reports.service";
+import { ClientMisScheduleService } from "./client-mis-schedule.service";
 import { Module } from "@nestjs/common";
 import { DocumentsModule } from "../documents/documents.module";
 import { ReportPdfService } from "./report-pdf.service";
@@ -9,10 +12,11 @@ import { ManagerReviewService } from "./manager-review.service";
 import { CaseReopeningService } from "./case-reopening.service";
 import { ReportBillingService } from "./report-billing.service";
 import { ReportAccessService } from "./report-access.service";
+import { InterimReportService } from "./interim-report.service";
 
 @Module({
   imports: [DocumentsModule],
-  controllers: [ReportsController],
+  controllers: [ReportsController, ClientReportsController],
   providers: [
     ReportsService,
     ReportPdfService,
@@ -22,7 +26,10 @@ import { ReportAccessService } from "./report-access.service";
     CaseReopeningService,
     ReportBillingService,
     ReportAccessService,
+    InterimReportService,
+    ClientReportsService,
+    ClientMisScheduleService,
   ],
-  exports: [ReportsService, ReportRecoveryService],
+  exports: [ReportsService, ReportRecoveryService, ManagerReviewService],
 })
 export class ReportsModule {}

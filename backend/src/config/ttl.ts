@@ -1,6 +1,7 @@
 export function ttlSeconds(value: string): number {
   const match = /^(\d+)([smhd])$/.exec(value);
-  if (!match) throw new Error("TTL must use an integer followed by s, m, h or d");
+  if (!match)
+    throw new Error("TTL must use an integer followed by s, m, h or d");
   const amount = Number(match[1]);
   const multiplier = {
     s: 1,

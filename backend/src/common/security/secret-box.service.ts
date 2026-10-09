@@ -54,11 +54,7 @@ export class SecretBoxService {
     const iv = payload.subarray(0, 12);
     const tag = payload.subarray(12, 28);
     const ciphertext = payload.subarray(28);
-    const decipher = createDecipheriv(
-      "aes-256-gcm",
-      this.keyFor(version),
-      iv,
-    );
+    const decipher = createDecipheriv("aes-256-gcm", this.keyFor(version), iv);
     decipher.setAuthTag(tag);
     return JSON.parse(
       Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString(

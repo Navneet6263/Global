@@ -97,7 +97,17 @@ function policyPrisma(
 
 void test("only Platform Admin reads and sets vendor team limits", () => {
   for (const method of ["vendorTeamLimits", "updateVendorTeamLimit"]) {
-    assert.ok(passesGuard(SettingsController, method, admin), method);
+    assert.ok(
+      passesGuard(SettingsController, method, admin, {
+        platformAdminViewOnly: false,
+      }),
+      method,
+    );
+    // Settings stay with the Platform Admin even in view-only oversight.
+    assert.ok(
+      passesGuard(SettingsController, method, admin),
+      `view-only admin ${method}`,
+    );
     for (const who of [
       mainVendor,
       testActor(["OPS_MANAGER"], ["*"]),

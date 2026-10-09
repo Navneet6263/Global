@@ -147,7 +147,7 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
     const createdCase = await expectJson<{
       id: string;
       status: string;
-      consentDelivery: { consentId: string; developmentOtp?: string };
+      candidateAccess: { id: string; token: string };
     }>(
       await api.post("cases", {
         headers: writeHeaders(),
@@ -167,11 +167,20 @@ test("case lifecycle reaches a verified report through real APIs", async () => {
 
     const initial = await getCase(api, createdCase.id);
     expect(initial.consents).toHaveLength(1);
-    const consent = createdCase.consentDelivery;
-    expect(consent.developmentOtp).toMatch(/^\d{6}$/);
+    // One candidate link: consent is confirmed with an OTP inside it.
+    const link = createdCase.candidateAccess;
+    const portalHeaders = { "x-portal-token": link.token };
+    const code = await expectJson<{ developmentOtp?: string }>(
+      await api.post(`public/candidate-access/${link.id}/consent/otp`, {
+        headers: portalHeaders,
+      }),
+      201,
+    );
+    expect(code.developmentOtp).toMatch(/^\d{6}$/);
     await expectJson(
-      await api.post(`public/consents/${consent.consentId}/confirm`, {
-        data: { otp: consent.developmentOtp },
+      await api.post(`public/candidate-access/${link.id}/consent/confirm`, {
+        headers: portalHeaders,
+        data: { otp: code.developmentOtp },
       }),
       201,
     );

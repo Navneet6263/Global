@@ -33,6 +33,15 @@ export const rolePermissions: Record<string, string[]> = {
     Permission.ClarificationWrite,
     Permission.NotificationRead,
   ],
+  // Intake review. Write actions are served only by the role-gated /workflow module.
+  DATA_ENTRY: [
+    Permission.DashboardRead,
+    Permission.CaseRead,
+    Permission.DocumentRead,
+    Permission.ClarificationRead,
+    Permission.ClarificationWrite,
+    Permission.NotificationRead,
+  ],
   QA_REVIEWER: [
     Permission.DashboardRead,
     Permission.CaseRead,
@@ -84,6 +93,11 @@ export const rolePermissions: Record<string, string[]> = {
     Permission.DashboardRead,
     Permission.NotificationRead,
     Permission.VendorAssign,
+    // Read-only evidence for the responsible RM. RM actions go through /workflow.
+    Permission.CaseRead,
+    Permission.DocumentRead,
+    Permission.ClarificationRead,
+    Permission.ReportRead,
   ],
   // External vendor: only the document requests assigned to it (/vendor/requests).
   VENDOR: [Permission.VendorReview, Permission.NotificationRead],
@@ -94,3 +108,31 @@ export const rolePermissions: Record<string, string[]> = {
     Permission.NotificationRead,
   ],
 };
+
+/** Departments seeded for every tenant; admins may rename, deactivate or add more. */
+export const defaultDepartments = [
+  {
+    code: "DATA_ENTRY",
+    name: "Data Entry",
+    kind: "DATA_ENTRY",
+    checkTypes: [],
+  },
+  {
+    code: "EMPLOYMENT",
+    name: "Employment",
+    kind: "VERIFICATION",
+    checkTypes: ["EMPLOYMENT", "REFERENCE"],
+  },
+  {
+    code: "EDUCATION",
+    name: "Education",
+    kind: "VERIFICATION",
+    checkTypes: ["EDUCATION"],
+  },
+  {
+    code: "ADDRESS",
+    name: "Address / DAV",
+    kind: "VERIFICATION",
+    checkTypes: ["ADDRESS"],
+  },
+] as const;

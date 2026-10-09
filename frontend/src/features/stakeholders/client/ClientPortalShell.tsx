@@ -32,10 +32,12 @@ export function ClientPortalShell({ children }: { children: ReactNode }) {
     (
       {
         actions: "Needs your action",
+        onboarding: "Get started",
         analytics: "Insights",
         billing: "Invoices & payments",
         reports: "Reports",
         support: "Queries & support",
+        review: "Review submissions",
         verifications: "Verifications",
       } as Record<string, string>
     )[page ?? ""] ?? "Overview";

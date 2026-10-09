@@ -16,7 +16,8 @@ export type NavWorkspace =
   | "finance"
   | "spoc-rm"
   | "vendor"
-  | "support";
+  | "support"
+  | "data-entry";
 
 export interface NavGroup {
   id: NavGroupId;
@@ -36,6 +37,10 @@ export interface NavItem {
   roles: readonly Role[];
   permission: Permission;
   badge?: { key: string; tone: NavBadgeTone };
+  /** Opens the route with this filter, e.g. { bucket: "ready" }. */
+  search?: Readonly<Record<string, string>>;
+  /** Drawn indented under the item above it. */
+  sub?: boolean;
 }
 
 export interface WorkspaceNavigation {

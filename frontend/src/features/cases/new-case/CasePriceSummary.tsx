@@ -20,13 +20,20 @@ export function CasePriceSummary({
         <span className="text-[10px] font-semibold uppercase tracking-wide text-blue-600">INR</span>
       </div>
       <div className="mt-3 space-y-2">
-        {estimate.selected
-          .filter((pkg): pkg is CaseServicePackage => Boolean(pkg))
-          .map((pkg) => (
-            <div key={pkg.id} className="flex justify-between gap-3 text-xs">
-              <span className="text-slate-600">{pkg.name}</span>
+        {estimate.lines
+          .filter((line): line is typeof line & { pkg: CaseServicePackage } => Boolean(line.pkg))
+          .map((line) => (
+            <div key={line.pkg.id} className="flex justify-between gap-3 text-xs">
+              <span className="text-slate-600">
+                {line.pkg.name}
+                {line.totalCount && line.selectedCount < line.totalCount ? (
+                  <small className="block text-[11px] text-slate-500">
+                    {line.selectedCount} of {line.totalCount} checks
+                  </small>
+                ) : null}
+              </span>
               <strong className="whitespace-nowrap text-slate-800">
-                {pkg.price != null ? priceLabel(Number(pkg.price)) : "Not available"}
+                {line.price !== null ? priceLabel(line.price) : "Not available"}
               </strong>
             </div>
           ))}
@@ -43,7 +50,7 @@ export function CasePriceSummary({
             <dd>{priceLabel(estimate.subtotal!)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt>Tax</dt>
+            <dt>GST</dt>
             <dd>{priceLabel(estimate.tax!)}</dd>
           </div>
           <div className="flex justify-between pt-2 text-sm font-bold text-blue-800">
@@ -57,8 +64,8 @@ export function CasePriceSummary({
         </p>
       ) : null}
       <p className="mt-3 text-[11px] leading-5 text-slate-500">
-        Package pricing applies even when you select fewer checks. Final charges follow your
-        agreement; creating a case does not collect a payment.
+        Choosing fewer checks lowers the price. Final charges follow your agreement; creating a case
+        does not collect a payment.
       </p>
     </section>
   );

@@ -18,7 +18,7 @@ export function QaClaimState({
           <LockKeyhole className="h-4 w-4" />{" "}
           {owner ? `Currently claimed by ${owner}` : "Claim before reviewing"}
         </p>
-        <p className="mt-1 text-[10.5px] leading-relaxed text-muted-foreground">
+        <p className="mt-1 text-[12.5px] leading-relaxed text-muted-foreground">
           Reserve this case to review evidence and submit your decision.
         </p>
       </div>
@@ -27,7 +27,7 @@ export function QaClaimState({
           onClick={onClaim}
           disabled={busy}
           aria-busy={loading}
-          className="shrink-0 rounded-full bg-review px-4 py-2.5 text-[11px] font-medium text-white shadow-[var(--shadow-card)] transition hover:brightness-110 disabled:opacity-50"
+          className="shrink-0 rounded-full bg-review px-4 py-2.5 text-[12.5px] font-medium text-white shadow-sm transition hover:brightness-110 disabled:opacity-50"
         >
           {loading ? "Claiming…" : "Claim case"}
         </button>
@@ -58,7 +58,7 @@ export function QaDecisionButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`rounded-[1rem] border px-4 py-3 text-[11px] font-medium transition ${active ? `${activeClass} shadow-[var(--shadow-card)]` : "border-border bg-white/60 text-muted-foreground hover:bg-white"}`}
+      className={`rounded-xl border px-4 py-3 text-[12.5px] font-medium transition ${active ? `${activeClass} shadow-sm` : "border-border bg-white text-muted-foreground hover:bg-white"}`}
     >
       <Icon className="mr-2 inline h-4 w-4" />
       {label}

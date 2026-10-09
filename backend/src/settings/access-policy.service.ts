@@ -6,6 +6,8 @@ import type { UpdateAccessPolicyDto } from "./dto/update-access-policy.dto";
 const accessPolicySelect = {
   publicId: true,
   opsUserCreationEnabled: true,
+  releaseBeforePayment: true,
+  branchScopingEnabled: true,
   version: true,
   updatedAt: true,
 } as const;
@@ -42,6 +44,12 @@ export class AccessPolicyService {
         where: { id: existing.id, version: input.version },
         data: {
           opsUserCreationEnabled: input.opsUserCreationEnabled,
+          ...(input.releaseBeforePayment === undefined
+            ? {}
+            : { releaseBeforePayment: input.releaseBeforePayment }),
+          ...(input.branchScopingEnabled === undefined
+            ? {}
+            : { branchScopingEnabled: input.branchScopingEnabled }),
           version: { increment: 1 },
         },
       });
@@ -56,6 +64,12 @@ export class AccessPolicyService {
           resourcePublicId: existing.publicId,
           afterJson: JSON.stringify({
             opsUserCreationEnabled: input.opsUserCreationEnabled,
+            ...(input.releaseBeforePayment === undefined
+              ? {}
+              : { releaseBeforePayment: input.releaseBeforePayment }),
+            ...(input.branchScopingEnabled === undefined
+              ? {}
+              : { branchScopingEnabled: input.branchScopingEnabled }),
             version: input.version + 1,
           }),
         },

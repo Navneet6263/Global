@@ -3,6 +3,8 @@ import { apiRequest } from "./client";
 export interface CandidatePortalData {
   id: string;
   expiresAt: string;
+  /** Set once the candidate pressed Complete; the link is then closed for changes. */
+  completedAt?: string | null;
   privacyNotice: { version: string; title: string; paragraphs: string[] };
   case: {
     caseNumber: string;
@@ -19,6 +21,15 @@ export interface CandidatePortalData {
       expiresAt?: string | null;
     }>;
     requiredDocumentTypes: string[];
+    /** Exactly what this candidate must upload, with its current state. */
+    uploadItems: Array<{
+      type: string;
+      required: boolean;
+      state: "NEEDED" | "UPLOADED" | "VERIFIED" | "REUPLOAD";
+      reviewNote: string | null;
+      version: number;
+    }>;
+    readyToComplete: boolean;
     clarifications: Array<{
       id: string;
       subject: string;
@@ -120,6 +131,37 @@ export function raiseCandidateSupportRequest(
       method: "POST",
       headers: { "x-portal-token": token },
       body: JSON.stringify(input),
+    },
+  );
+}
+
+export function completeCandidatePortal(accessId: string, token: string) {
+  return apiRequest<{ completed: true; completedAt: string }>(
+    `/public/candidate-access/${accessId}/complete`,
+    { method: "POST", headers: { "x-portal-token": token } },
+  );
+}
+
+/** Consent inside the same link: emails a one-time code (there is no separate consent link). */
+export function sendCandidateConsentCode(accessId: string, token: string) {
+  return apiRequest<{
+    sent: true;
+    expiresAt: string;
+    destination: string;
+    developmentOtp?: string;
+  }>(`/public/candidate-access/${accessId}/consent/otp`, {
+    method: "POST",
+    headers: { "x-portal-token": token },
+  });
+}
+
+export function confirmCandidateConsent(accessId: string, token: string, otp: string) {
+  return apiRequest<{ accepted: true; acceptedAt: string }>(
+    `/public/candidate-access/${accessId}/consent/confirm`,
+    {
+      method: "POST",
+      headers: { "x-portal-token": token },
+      body: JSON.stringify({ otp }),
     },
   );
 }

@@ -19,10 +19,16 @@ export class ReportBillingService {
       where: {
         tenantId: actor.tenantId,
         workflowVersion: 2,
-        status: "PREPARED",
+        // Waiting for payment, or already released and billed monthly.
+        OR: [
+          { status: "PREPARED", case: { status: "PAYMENT_PENDING" } },
+          {
+            status: "PUBLISHED",
+            case: { status: { in: ["COMPLETED", "CLOSED"] } },
+          },
+        ],
         invoiceLines: { none: { invoice: { status: { not: "CANCELLED" } } } },
         case: {
-          status: "PAYMENT_PENDING",
           ...(actor.clientId ? { clientId: actor.clientId } : {}),
           ...(actor.branchId ? { branchId: actor.branchId } : {}),
           ...(query.search

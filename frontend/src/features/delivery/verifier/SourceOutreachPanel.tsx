@@ -91,7 +91,7 @@ export function SourceOutreachPanel({
         </div>
       )}
       {query.data && (
-        <details className="rounded-xl bg-white/70 p-3 text-xs">
+        <details className="rounded-xl bg-white p-3 text-xs">
           <summary className="cursor-pointer font-medium">
             Request wording · {humanize(run.method)}
           </summary>
@@ -162,7 +162,7 @@ export function SourceOutreachPanel({
             Next follow-up (optional)
             <Input type="datetime-local" value={next} onChange={(e) => setNext(e.target.value)} />
           </label>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-[12.5px] text-muted-foreground">
             Records contact at the current time. This does not complete the check or record a
             verification result.
           </p>
@@ -183,7 +183,7 @@ export function SourceOutreachPanel({
             {humanize(item.channel)} · {humanize(item.outcome)}
           </div>
           <p className="mt-1 whitespace-pre-wrap">{item.notes}</p>
-          <p className="mt-1 text-[11px] text-muted-foreground">
+          <p className="mt-1 text-[12.5px] text-muted-foreground">
             {item.actorName} · {formatDateTime(item.occurredAt)}
             {item.nextFollowUpAt ? ` · Next ${formatDateTime(item.nextFollowUpAt)}` : ""}
           </p>

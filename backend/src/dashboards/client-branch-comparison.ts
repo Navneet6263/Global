@@ -27,7 +27,7 @@ export async function clientBranchComparison(
       by: ["branchId"],
       where: {
         ...scope,
-        status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED"] },
+        status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
         dueAt: { lt: now },
       },
       _count: { _all: true },

@@ -11,6 +11,7 @@ import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
+import { issueCandidateLink } from "../candidate-portal/candidate-link";
 import { ConsentIssuanceService } from "./consent-issuance.service";
 
 @Injectable()
@@ -66,7 +67,6 @@ export class ConsentsService {
       orderBy: { createdAt: "desc" },
     });
     if (!consent) throw new NotFoundException("Consent request not found");
-    const subjectPii = this.pii.open(consent.case.subject);
     if (["ACCEPTED", "WITHDRAWN"].includes(consent.status)) {
       throw new BadRequestException(
         `Consent is already ${consent.status.toLowerCase()}`,
@@ -77,17 +77,22 @@ export class ConsentsService {
         "Consent cannot be reissued for a completed or cancelled case",
       );
     }
-    return this.prisma.$transaction((tx) =>
-      this.issuance.issue(tx, {
-        consentId: consent.id,
-        consentPublicId: consent.publicId,
+    // Consent is given inside the candidate link, so a reminder is a fresh link.
+    const link = await this.prisma.$transaction((tx) =>
+      issueCandidateLink(tx, this.issuance.candidateLinkDeps(this.pii), {
         tenantId: actor.tenantId,
+        caseId: consent.caseId,
         casePublicId: consent.case.publicId,
         actorUserId: actor.userId,
-        email: subjectPii.email,
-        phone: subjectPii.phone,
+        subject: consent.case.subject,
+        sendNotification: true,
       }),
     );
+    return {
+      consentId: consent.publicId,
+      expiresAt: link.expiresAt,
+      delivery: link.delivery,
+    };
   }
 
   async confirm(

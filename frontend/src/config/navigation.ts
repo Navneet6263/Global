@@ -5,6 +5,7 @@ import { ROLE_NAVIGATION } from "./navigation.roles";
 import { SPOC_NAV_GROUPS, SPOC_NAV_ITEMS } from "./navigation.spoc";
 import { SUPPORT_NAV_GROUPS, SUPPORT_NAV_ITEMS } from "./navigation.support";
 import { VENDOR_NAV_GROUPS, VENDOR_NAV_ITEMS } from "./navigation.vendor";
+import { DATA_ENTRY_NAV_GROUPS, DATA_ENTRY_NAV_ITEMS } from "./navigation.data-entry";
 import type { NavWorkspace, WorkspaceNavigation } from "./navigation.types";
 
 export type {
@@ -28,6 +29,7 @@ const NAVIGATION: Record<NavWorkspace, WorkspaceNavigation> = {
   "spoc-rm": { groups: SPOC_NAV_GROUPS, items: SPOC_NAV_ITEMS },
   vendor: { groups: VENDOR_NAV_GROUPS, items: VENDOR_NAV_ITEMS },
   support: { groups: SUPPORT_NAV_GROUPS, items: SUPPORT_NAV_ITEMS },
+  "data-entry": { groups: DATA_ENTRY_NAV_GROUPS, items: DATA_ENTRY_NAV_ITEMS },
 };
 
 export function navFor(workspace: NavWorkspace): WorkspaceNavigation {

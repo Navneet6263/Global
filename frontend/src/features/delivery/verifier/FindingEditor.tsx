@@ -21,28 +21,25 @@ export function FindingEditor({
   const update = (index: number, patch: Partial<FindingInput>) =>
     onChange(value.map((item, itemIndex) => (itemIndex === index ? { ...item, ...patch } : item)));
   return (
-    <section className="rounded-[1.35rem] border border-white/80 bg-warning-soft/35 p-4 shadow-[var(--shadow-card)]">
+    <section className="rounded-2xl border border-slate-200 bg-warning-soft/35 p-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <div>
           <h3 className="text-[12px] font-semibold">Structured findings</h3>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             Add every discrepancy separately with its evidence source.
           </p>
         </div>
         <button
           type="button"
           onClick={() => onChange([...value, blankFinding()])}
-          className="inline-flex items-center gap-1.5 rounded-full border border-white bg-white/85 px-3 py-2 text-[10px] font-medium text-warning-foreground shadow-[var(--shadow-card)] transition hover:bg-warning-soft"
+          className="inline-flex items-center gap-1.5 rounded-full border border-white bg-white px-3 py-2 text-xs font-medium text-warning-foreground shadow-sm transition hover:bg-warning-soft"
         >
           <Plus className="h-3.5 w-3.5" /> Add
         </button>
       </div>
       <div className="mt-3 space-y-3">
         {value.map((finding, index) => (
-          <div
-            key={index}
-            className="rounded-[1.15rem] border border-white/90 bg-white/80 p-4 shadow-[var(--shadow-card)]"
-          >
+          <div key={index} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="grid gap-3 sm:grid-cols-2">
               <Select
                 label="Category"
@@ -77,26 +74,26 @@ export function FindingEditor({
                 onChange={(source) => update(index, { source })}
               />
             </div>
-            <label className="mt-3 block text-[10.5px] font-semibold">
+            <label className="mt-3 block text-[12.5px] font-semibold">
               Description
               <textarea
                 value={finding.description}
                 onChange={(event) => update(index, { description: event.target.value })}
                 rows={3}
-                className="mt-1.5 w-full rounded-[0.9rem] border border-border bg-background/70 px-3 py-2 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+                className="mt-1.5 w-full rounded-xl border border-border bg-slate-50 px-3 py-2 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
               />
             </label>
             <button
               type="button"
               onClick={() => onChange(value.filter((_, itemIndex) => itemIndex !== index))}
-              className="mt-2 inline-flex items-center gap-1 text-[10px] font-medium text-critical-foreground"
+              className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-critical-foreground"
             >
               <Trash2 className="h-3.5 w-3.5" /> Remove finding
             </button>
           </div>
         ))}
         {!value.length ? (
-          <p className="rounded-[1rem] border border-dashed border-warning/30 bg-white/60 p-4 text-center text-[10.5px] text-muted-foreground">
+          <p className="rounded-xl border border-dashed border-warning/30 bg-white p-4 text-center text-[12.5px] text-muted-foreground">
             No discrepancy recorded. Clear outcomes can be submitted without a finding.
           </p>
         ) : null}
@@ -115,12 +112,12 @@ function Field({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="text-[10.5px] font-semibold">
+    <label className="text-[12.5px] font-semibold">
       {label}
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1.5 h-10 w-full rounded-[0.9rem] border border-border bg-background/70 px-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+        className="mt-1.5 h-10 w-full rounded-xl border border-border bg-slate-50 px-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
       />
     </label>
   );
@@ -137,12 +134,12 @@ function Select({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="text-[10.5px] font-semibold">
+    <label className="text-[12.5px] font-semibold">
       {label}
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="mt-1.5 h-10 w-full rounded-[0.9rem] border border-border bg-background/70 px-3 text-[12px] outline-none focus:border-primary/40"
+        className="mt-1.5 h-10 w-full rounded-xl border border-border bg-slate-50 px-3 text-[12px] outline-none focus:border-primary/40"
       >
         {values.map((item) => (
           <option key={item} value={item}>

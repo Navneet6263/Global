@@ -13,6 +13,7 @@ import {
   Public,
   RequirePermissions,
   RequireRoles,
+  AllowViewOnlyAdmin,
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
@@ -24,6 +25,7 @@ import { CaseReopeningService } from "./case-reopening.service";
 import { ManagerReviewDto, ReopenCaseDto } from "./dto/manager-review.dto";
 import { ReportBillingService } from "./report-billing.service";
 import { ReportAccessService } from "./report-access.service";
+import { InterimReportService } from "./interim-report.service";
 
 @Controller()
 export class ReportsController {
@@ -34,7 +36,19 @@ export class ReportsController {
     private readonly reopening: CaseReopeningService,
     private readonly billing: ReportBillingService,
     private readonly access: ReportAccessService,
+    private readonly interim: InterimReportService,
   ) {}
+
+  /** Work-in-progress PDF: completed checks only, no source contacts; audited. */
+  @Get("cases/:caseId/interim-report")
+  @RequirePermissions(Permission.ReportRead)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
+  interimReport(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+  ) {
+    return this.interim.download(actor, caseId);
+  }
 
   @Get("reports/:reportId/preview")
   @RequirePermissions(Permission.ReportRead)
@@ -47,6 +61,7 @@ export class ReportsController {
   }
 
   @Post("reports/:reportId/download-access")
+  @AllowViewOnlyAdmin()
   @RequirePermissions(Permission.ReportGenerate)
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   renewAccess(

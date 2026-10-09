@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { CircleHelp } from "lucide-react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { ErrorState } from "@/components/feedback/error-state";
 import { CardGridSkeleton } from "@/components/feedback/skeletons";
 import { ClientCaseDialog } from "@/features/stakeholders/client/ClientCaseDialog";
@@ -14,9 +14,16 @@ import {
   type ClientQueueSearch,
 } from "@/features/stakeholders/client/client-queue-model";
 import { getExceptionsDashboard, getOperationsDashboard } from "@/lib/api/dashboards";
+import { loadIdentity } from "@/lib/auth/platform-session";
 
 export const Route = createFileRoute("/client-portal/")({
   validateSearch: parseClientQueueSearch,
+  beforeLoad: async () => {
+    // A self sign-up company starts on its onboarding checklist until it is approved.
+    const identity = await loadIdentity();
+    if (identity?.clientStatus === "ONBOARDING")
+      throw redirect({ to: "/client-portal/onboarding" });
+  },
   head: () => ({ meta: [{ title: "Client Portfolio — Sapling Global" }] }),
   component: ClientPortalPage,
 });

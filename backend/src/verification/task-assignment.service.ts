@@ -1,3 +1,4 @@
+import { roleIs } from "../common/auth/role-filter";
 import {
   ConflictException,
   Injectable,
@@ -89,7 +90,7 @@ export class TaskAssignmentService {
             OR: [{ clientId: null }, { clientId: task.check.case.clientId }],
           },
         ],
-        userRoles: { some: { role: { code: "VERIFIER" } } },
+        userRoles: { some: { role: roleIs("VERIFIER") } },
       },
       select: { id: true, publicId: true, displayName: true },
     });

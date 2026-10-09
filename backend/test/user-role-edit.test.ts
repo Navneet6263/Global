@@ -14,7 +14,8 @@ const actor = {
   userId: 1n,
   userPublicId: "admin",
   roles: ["PLATFORM_ADMIN"],
-} as Actor;
+  permissions: ["*"],
+} as unknown as Actor;
 function fixture(current = ["SALES_MANAGER", "OPS_MANAGER", "VERIFIER"]) {
   const writes: { kind: string; input: unknown }[] = [];
   const controls = { others: 1, updated: 1 };
@@ -48,6 +49,10 @@ function fixture(current = ["SALES_MANAGER", "OPS_MANAGER", "VERIFIER"]) {
     auditEvent: { create: (input: unknown) => capture("audit", input) },
   };
   const prisma = {
+    // The admin switch "Ops Managers can create users" is OFF in this fixture.
+    tenantAccessPolicy: {
+      findUnique: () => Promise.resolve({ opsUserCreationEnabled: false }),
+    },
     user: { findFirst: () => Promise.resolve(user) },
     role: {
       findMany: (input: { where: { code: { in: string[] } } }) =>
@@ -168,7 +173,7 @@ void test("last active admin cannot be demoted and stale updates do not overwrit
   assert.equal(concurrent.writes.length, 0);
 });
 
-void test("operations cannot directly invoke access updates", async () => {
+void test("operations cannot change access while the admin switch is off", async () => {
   await assert.rejects(
     fixture().service.update({ ...actor, roles: ["OPS_MANAGER"] }, "target", {
       version: 4,

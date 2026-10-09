@@ -9,6 +9,7 @@ import {
   Query,
 } from "@nestjs/common";
 import {
+  AllowViewOnlyAdmin,
   CurrentActor,
   RequirePermissions,
   RequireRoles,
@@ -22,7 +23,10 @@ import { ResetUserPasswordDto } from "./dto/reset-user-password.dto";
 import { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 import { UserActivityQueryDto } from "./dto/user-activity-query.dto";
 
+// User IDs stay with the Platform Admin even in view-only oversight, so the admin never
+// depends on anyone else to create, edit or reset an ID.
 @Controller("users")
+@AllowViewOnlyAdmin()
 @RequirePermissions(Permission.UserRead)
 @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
 export class UsersController {
@@ -49,6 +53,11 @@ export class UsersController {
     return this.users.activity(actor, userId, query);
   }
 
+  @Get("setup-options")
+  setupOptions(@CurrentActor() actor: Actor) {
+    return this.users.setupOptions(actor);
+  }
+
   @Get("creation-policy")
   creationPolicy(@CurrentActor() actor: Actor) {
     return this.users.creationPolicy(actor);
@@ -63,9 +72,11 @@ export class UsersController {
     return this.users.create(actor, input);
   }
 
+  // Ops Managers change only IDs they could create, while the admin switch is ON
+  // (assertCanManageUser); platform admins still need user:write there.
   @Patch(":userId")
-  @RequireRoles("PLATFORM_ADMIN")
-  @RequirePermissions(Permission.UserWrite)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  @RequirePermissions(Permission.UserRead)
   update(
     @CurrentActor() actor: Actor,
     @Param("userId", ParseUUIDPipe) userId: string,
@@ -75,8 +86,8 @@ export class UsersController {
   }
 
   @Post(":userId/reset-password")
-  @RequireRoles("PLATFORM_ADMIN")
-  @RequirePermissions(Permission.UserWrite)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  @RequirePermissions(Permission.UserRead)
   resetPassword(
     @CurrentActor() actor: Actor,
     @Param("userId", ParseUUIDPipe) userId: string,

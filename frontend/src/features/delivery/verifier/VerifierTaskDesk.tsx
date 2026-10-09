@@ -1,17 +1,42 @@
 import { useQuery } from "@tanstack/react-query";
-import { Activity, FileSearch, Files, ListChecks, MessageSquareText } from "lucide-react";
+import {
+  Activity,
+  ClipboardCheck,
+  FileSearch,
+  Files,
+  ListChecks,
+  Mail,
+  MessageSquareText,
+  Truck,
+} from "lucide-react";
 import { useState } from "react";
 
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getVerifierTaskContext, type VerificationTask } from "@/lib/api/tasks";
 import { cn } from "@/lib/utils";
+import { Avatar, Pill } from "@/components/workspace/kit";
+import type { Tone } from "@/components/workspace/tones";
+import { formatDate, humanize } from "../utils";
+
+const STATUS_TONE: Record<string, Tone> = {
+  COMPLETED: "good",
+  BLOCKED: "bad",
+  IN_PROGRESS: "info",
+};
 import { ActivityView, CaseContextView, ClarificationsView } from "./VerifierContextViews";
 import { VerifierDocumentsView } from "./VerifierDocumentsView";
 import { VerifierTaskWorkspace } from "./VerifierTaskWorkspace";
 import { VerificationMethodsPanel } from "./VerificationMethodsPanel";
+import { VerifiedDetailsPanel } from "./VerifiedDetailsPanel";
+import { SourceEmailPanel } from "./SourceEmailPanel";
+import { CheckVendorPanel } from "@/features/vendor-checks/CheckVendorPanel";
+import { internalVendorApi } from "@/lib/backend-api/vendor-checks";
 
 const tabs = [
   { id: "verification", label: "Verification", icon: ListChecks },
+  { id: "verified", label: "Verified details", icon: ClipboardCheck },
+  { id: "email", label: "Source email", icon: Mail },
+  { id: "vendor", label: "Vendor", icon: Truck },
   { id: "methods", label: "Sources & methods", icon: FileSearch },
   { id: "context", label: "Case context", icon: FileSearch },
   { id: "documents", label: "Documents", icon: Files },
@@ -32,30 +57,66 @@ export function VerifierTaskDesk({
     queryFn: () => getVerifierTaskContext(task.id),
     staleTime: 20_000,
   });
+  // Vendor: only when the check is with a vendor, or the viewer may send it (TL / RM).
+  const vendor = useQuery({
+    queryKey: ["vendor-checks", "check", task.check.publicId],
+    queryFn: () => internalVendorApi.forCheck(task.check.publicId),
+    staleTime: 30_000,
+  });
+  const showVendor = Boolean(vendor.data?.canManage || vendor.data?.attempts?.length);
+  const visibleTabs = tabs.filter((item) => item.id !== "vendor" || showVendor);
   return (
     <div className="min-w-0 space-y-3">
-      <nav
-        aria-label="Selected task workspace"
-        className="grid grid-cols-2 gap-1.5 rounded-[1.3rem] border border-white/80 bg-card/85 p-2 shadow-[var(--shadow-card)] sm:grid-cols-3"
-      >
-        {tabs.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            aria-pressed={tab === item.id}
-            onClick={() => setTab(item.id)}
-            className={cn(
-              "flex min-w-0 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-center text-[11px] font-medium leading-snug transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-mint",
-              tab === item.id
-                ? "bg-mint-deep text-white shadow-[var(--shadow-card)]"
-                : "text-muted-foreground hover:bg-mint-soft hover:text-foreground",
-            )}
-          >
-            <item.icon className="size-4 shrink-0" aria-hidden />
-            <span className="min-w-0 whitespace-normal">{item.label}</span>
-          </button>
-        ))}
-      </nav>
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <header className="flex flex-wrap items-center gap-3 px-5 pb-3 pt-4">
+          <Avatar name={task.check.case.subject.fullName} size="lg" />
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-lg font-bold text-slate-900">
+              {task.check.case.subject.fullName}
+            </h2>
+            <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-slate-500">
+              <span className="rounded-md bg-blue-50 px-1.5 font-mono text-[11.5px] font-semibold text-blue-700">
+                {task.check.case.caseNumber}
+              </span>
+              <span>{task.check.case.client.displayName}</span>
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <Pill tone="info">{humanize(task.check.type)}</Pill>
+            <Pill tone={STATUS_TONE[task.status] ?? "warn"}>{humanize(task.status)}</Pill>
+            {task.check.status === "TL_REVIEW" ? (
+              <Pill tone="violet">With Team Leader for review</Pill>
+            ) : null}
+            {task.dueAt && task.status !== "COMPLETED" ? (
+              <Pill tone={new Date(task.dueAt).getTime() < Date.now() ? "bad" : "neutral"}>
+                Due {formatDate(task.dueAt)}
+              </Pill>
+            ) : null}
+          </div>
+        </header>
+        <nav
+          aria-label="Selected task workspace"
+          className="flex flex-wrap gap-1 border-t border-slate-100 bg-slate-50/70 px-3 py-2"
+        >
+          {visibleTabs.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              aria-pressed={tab === item.id}
+              onClick={() => setTab(item.id)}
+              className={cn(
+                "flex min-w-0 items-center gap-1.5 rounded-lg px-3 py-2 text-[12.5px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
+                tab === item.id
+                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-slate-200"
+                  : "text-slate-600 hover:bg-white hover:text-slate-900",
+              )}
+            >
+              <item.icon className="size-4 shrink-0" aria-hidden />
+              <span className="min-w-0 whitespace-normal">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </div>
       {tab === "verification" ? (
         <VerifierTaskWorkspace
           key={`${task.id}-${task.version}`}
@@ -63,6 +124,16 @@ export function VerifierTaskDesk({
           onUpdated={onUpdated}
         />
       ) : null}
+      {tab === "verified" && (
+        <VerifiedDetailsPanel
+          checkId={task.check.publicId}
+          readOnly={task.status === "COMPLETED"}
+        />
+      )}
+      {tab === "vendor" && <CheckVendorPanel checkId={task.check.publicId} />}
+      {tab === "email" && (
+        <SourceEmailPanel checkId={task.check.publicId} readOnly={task.status === "COMPLETED"} />
+      )}
       {tab === "methods" && (
         <VerificationMethodsPanel
           checkId={task.check.publicId}
@@ -70,16 +141,18 @@ export function VerifierTaskDesk({
           readOnly={task.status === "COMPLETED"}
         />
       )}
-      {tab !== "verification" && tab !== "methods" && context.isLoading ? (
+      {!["verification", "methods", "verified", "email", "vendor"].includes(tab) &&
+      context.isLoading ? (
         <WorkspaceLoading label="Loading protected case context" />
       ) : null}
-      {tab !== "verification" && context.isError ? (
+      {!["verification", "methods", "verified", "email", "vendor"].includes(tab) &&
+      context.isError ? (
         <WorkspaceError message={context.error.message} onRetry={() => void context.refetch()} />
       ) : null}
-      {context.data && tab !== "methods" ? (
+      {context.data && !["methods", "verified", "email", "vendor"].includes(tab) ? (
         <section
           className={cn(
-            "rounded-[1.65rem] border border-white/80 bg-card/85 p-5 shadow-[var(--shadow-float)] sm:p-6",
+            "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6",
             tab === "verification" && "hidden",
           )}
         >

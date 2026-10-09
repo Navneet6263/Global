@@ -6,6 +6,7 @@ import { getSession } from "@/lib/api/auth";
 import type { CaseDetail } from "@/lib/api/cases";
 import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
 import { downloadReport, generateReport, listReports, retryReport } from "@/lib/api/reports";
+import { InterimReportButton } from "./InterimReportButton";
 import { previewReport, releaseReport, renewReportAccess } from "@/lib/backend-api/case-approvals";
 import { Metric, Panel, Status } from "./case-detail-ui";
 import { formatDateTime } from "./case-detail-formatting";
@@ -63,6 +64,11 @@ export function ReportsPanel({ item }: { item: CaseDetail }) {
   const latest = reports.data?.items[0];
   return (
     <Panel title="QA & reports" subtitle="Reviewed snapshots, billing status and report history">
+      {canRead ? (
+        <div className="mb-3 flex justify-end">
+          <InterimReportButton item={item} />
+        </div>
+      ) : null}
       <div className="grid grid-cols-2 gap-3">
         <Metric label="QA reviews" value={String(item.qaReviews.length)} light />
         <Metric

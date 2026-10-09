@@ -27,6 +27,7 @@ export { DOCUMENT_UPLOAD_ALLOWED_CASE_STATUSES };
 import { CANDIDATE_PRIVACY_NOTICE } from "./candidate-privacy-notice";
 import { assertCandidateDocumentType } from "./candidate-document-policy";
 import { notifyNewVersionForVendorChain } from "../vendor-requests/services/vendor-notify";
+import { documentScope } from "../verification/check-documents";
 
 export interface DocumentStreamAccess {
   caseScope: Prisma.VerificationCaseWhereInput;
@@ -202,6 +203,28 @@ export class DocumentsService {
           documentId: document.id,
           version,
         });
+        // Notification matrix: a replacement during intake goes back to the Data Entry owner.
+        const intake = await tx.verificationCase.findFirst({
+          where: {
+            tenantId: actor.tenantId,
+            documents: { some: { id: document.id } },
+            workflowVersion: 2,
+            intakeStage: { in: ["DATA_ENTRY", "CORRECTION"] },
+            dataEntryUserId: { not: null },
+          },
+          select: { publicId: true, caseNumber: true, dataEntryUserId: true },
+        });
+        if (intake?.dataEntryUserId && version > 1)
+          await tx.notification.create({
+            data: {
+              tenantId: actor.tenantId,
+              userId: intake.dataEntryUserId,
+              type: "DOCUMENT_RESUBMITTED",
+              title: "Document resubmitted",
+              body: `${intake.caseNumber}: a replacement document (v${version}) is ready to review.`,
+              href: `/data-entry?caseId=${intake.publicId}`,
+            },
+          });
         return created;
       });
     } catch (error) {
@@ -228,6 +251,7 @@ export class DocumentsService {
           publicId,
           tenantId: actor.tenantId,
           case: access?.caseScope ?? caseAccessScope(actor),
+          ...(access?.caseScope ? {} : documentScope(actor)),
         },
         malwareState: "CLEAN",
         ...(access?.version !== undefined ? { version: access.version } : {}),

@@ -10,26 +10,46 @@ import {
 export function executiveRange(query: ExecutiveQueryDto, now: Date) {
   const from = query.from
     ? new Date(query.from)
-    : new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (query.months - 1), 1));
+    : new Date(
+        Date.UTC(
+          now.getUTCFullYear(),
+          now.getUTCMonth() - (query.months - 1),
+          1,
+        ),
+      );
   const to = query.to ? new Date(query.to) : now;
-  if (from > to) throw new BadRequestException("From date must be before to date");
+  if (from > to)
+    throw new BadRequestException("From date must be before to date");
   return { from, to };
 }
 
-export function executiveTrend(rows: ExecutiveCaseRow[], from: Date, to: Date, now: Date) {
-  const days = Math.max(1, Math.ceil((to.getTime() - from.getTime()) / 86_400_000));
+export function executiveTrend(
+  rows: ExecutiveCaseRow[],
+  from: Date,
+  to: Date,
+  now: Date,
+) {
+  const days = Math.max(
+    1,
+    Math.ceil((to.getTime() - from.getTime()) / 86_400_000),
+  );
   const bucketDays = days <= 31 ? 1 : days <= 120 ? 7 : 30;
   const buckets = Math.ceil(days / bucketDays);
   return Array.from({ length: buckets }, (_, index) => {
     const start = new Date(from.getTime() + index * bucketDays * 86_400_000);
-    const end = new Date(Math.min(to.getTime() + 1, start.getTime() + bucketDays * 86_400_000));
+    const end = new Date(
+      Math.min(to.getTime() + 1, start.getTime() + bucketDays * 86_400_000),
+    );
     const completed = rows.filter(
-      (row) => row.completedAt && row.completedAt >= start && row.completedAt < end,
+      (row) =>
+        row.completedAt && row.completedAt >= start && row.completedAt < end,
     );
     const eligible = completed.filter((row) => row.dueAt);
     return {
       month: bucketLabel(start, bucketDays, days),
-      created: rows.filter((row) => row.createdAt >= start && row.createdAt < end).length,
+      created: rows.filter(
+        (row) => row.createdAt >= start && row.createdAt < end,
+      ).length,
       completed: completed.length,
       slaPercentage: percent(
         eligible.filter((row) => row.completedAt! <= row.dueAt!).length,
@@ -37,7 +57,8 @@ export function executiveTrend(rows: ExecutiveCaseRow[], from: Date, to: Date, n
       ),
       averageTatHours: average(
         completed.map(
-          (row) => (row.completedAt!.getTime() - row.createdAt.getTime()) / 3_600_000,
+          (row) =>
+            (row.completedAt!.getTime() - row.createdAt.getTime()) / 3_600_000,
         ),
       ),
       overdue: rows.filter(
@@ -53,7 +74,11 @@ export function executiveTrend(rows: ExecutiveCaseRow[], from: Date, to: Date, n
 }
 
 export function businessHealth(
-  opportunities: Array<{ stage: string; estimatedValue: unknown; probability: number }>,
+  opportunities: Array<{
+    stage: string;
+    estimatedValue: unknown;
+    probability: number;
+  }>,
   invoices: Array<{
     status: string;
     totalAmount: unknown;
@@ -63,9 +88,13 @@ export function businessHealth(
   }>,
   now: Date,
 ) {
-  const open = opportunities.filter((row) => !["WON", "LOST"].includes(row.stage));
+  const open = opportunities.filter(
+    (row) => !["WON", "LOST"].includes(row.stage),
+  );
   const won = opportunities.filter((row) => row.stage === "WON");
-  const closed = opportunities.filter((row) => ["WON", "LOST"].includes(row.stage));
+  const closed = opportunities.filter((row) =>
+    ["WON", "LOST"].includes(row.stage),
+  );
   const activeInvoices = invoices.filter((row) => row.status !== "CANCELLED");
   const billed = sum(activeInvoices, (row) => Number(row.totalAmount));
   const collected = sum(activeInvoices, (row) => Number(row.paidAmount));
@@ -80,7 +109,10 @@ export function businessHealth(
     crm: {
       openPipeline: money(sum(open, (row) => Number(row.estimatedValue))),
       weightedForecast: money(
-        sum(open, (row) => (Number(row.estimatedValue) * row.probability) / 100),
+        sum(
+          open,
+          (row) => (Number(row.estimatedValue) * row.probability) / 100,
+        ),
       ),
       closedWon: money(sum(won, (row) => Number(row.estimatedValue))),
       winRate: percent(won.length, closed.length),
@@ -110,16 +142,20 @@ export function completionForecast(rows: ExecutiveCaseRow[], now: Date) {
   const sevenDays = new Date(now.getTime() + 7 * 86_400_000);
   const active = rows.filter((row) => !terminalStatuses.includes(row.status));
   const completedLast30 = rows.filter(
-    (row) => row.completedAt && row.completedAt >= new Date(now.getTime() - 30 * 86_400_000),
+    (row) =>
+      row.completedAt &&
+      row.completedAt >= new Date(now.getTime() - 30 * 86_400_000),
   ).length;
   return {
-    dueNext7Days: active.filter((row) => row.dueAt && row.dueAt >= now && row.dueAt <= sevenDays)
-      .length,
+    dueNext7Days: active.filter(
+      (row) => row.dueAt && row.dueAt >= now && row.dueAt <= sevenDays,
+    ).length,
     atRiskNext7Days: active.filter(
       (row) =>
         row.dueAt &&
         row.dueAt <= sevenDays &&
-        (["HIGH", "CRITICAL"].includes(row.riskLevel ?? "") || row.priority === "URGENT"),
+        (["HIGH", "CRITICAL"].includes(row.riskLevel ?? "") ||
+          row.priority === "URGENT"),
     ).length,
     projectedCompletions7Days: Math.round((completedLast30 / 30) * 7),
     unassignedActive: active.filter((row) => !row.assignedOpsUser).length,

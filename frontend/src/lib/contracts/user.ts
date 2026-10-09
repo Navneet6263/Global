@@ -43,6 +43,10 @@ export interface CreateUserInput {
   clientIds?: readonly string[];
   clientLabels?: readonly string[];
   additionalAccessConfirmed?: boolean;
+  /** Teams to join now (Data Entry / verification), optionally as Team Leader. */
+  departments?: ReadonlyArray<{ id: string; lead?: boolean }>;
+  /** Narrowed access per role (a personal role is created on that base). */
+  access?: ReadonlyArray<{ role: string; permissions: readonly string[] }>;
 }
 
 export interface CreatedUserResult {

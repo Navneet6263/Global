@@ -14,6 +14,7 @@ export const OPS_CREATABLE_ROLES: readonly string[] = [
   "FINANCE_MANAGER",
   "VENDOR",
   "SUPPORT_AGENT",
+  "DATA_ENTRY",
 ];
 
 /** Roles whose existing scope includes an operating branch (see frontend ROLE_DEFINITIONS). */
@@ -22,6 +23,7 @@ const BRANCH_SCOPED_ROLES: readonly string[] = [
   "FIELD_EXECUTIVE",
   "QA_REVIEWER",
   "FINANCE_MANAGER",
+  "DATA_ENTRY",
 ];
 
 export type UserCreationPath = "ADMIN" | "OPERATIONS";
@@ -81,6 +83,48 @@ export async function assertCanCreateUser(
   )
     throw new ForbiddenException(
       "Assign your own branch; all-branch access needs a Platform Admin",
+    );
+  return "OPERATIONS";
+}
+
+/**
+ * Server-side gate for changing an existing ID (roles, status, password). Platform admins
+ * keep their path; an Operations Manager may change only IDs it could create (never an
+ * admin or another Ops Manager), only to roles it could give, and only while the admin
+ * switch is ON. `current` / `next` are the roles the person works as (custom → base).
+ */
+export async function assertCanManageUser(
+  prisma: PrismaService,
+  actor: Actor,
+  current: readonly string[],
+  next: readonly string[] = current,
+): Promise<UserCreationPath> {
+  if (actor.roles.includes("PLATFORM_ADMIN")) {
+    if (
+      !actor.permissions.includes("*") &&
+      !actor.permissions.includes(Permission.UserWrite)
+    )
+      throw new ForbiddenException(
+        "You do not have permission to change user IDs",
+      );
+    return "ADMIN";
+  }
+  if (!actor.roles.includes("OPS_MANAGER"))
+    throw new ForbiddenException("Only administrators can change user IDs");
+  if (!(await opsUserCreationEnabled(prisma, actor.tenantId)))
+    throw new ForbiddenException(
+      "Changing user IDs is not enabled for Operations Managers",
+    );
+  const outside = [
+    ...new Set(
+      [...current, ...next].filter(
+        (code) => !OPS_CREATABLE_ROLES.includes(code),
+      ),
+    ),
+  ];
+  if (outside.length)
+    throw new ForbiddenException(
+      `Operations Managers cannot change ${outside.join(", ")} access`,
     );
   return "OPERATIONS";
 }

@@ -3,12 +3,19 @@ import type { Prisma } from "../generated/prisma/client";
 import { caseEvidenceReadiness } from "../documents/evidence-readiness";
 import { reportPaymentReady } from "./report-payment-policy";
 import { reportDownloadExpiry } from "./report-access-policy";
+import {
+  queueReportReleasedEmails,
+  type ReleaseMailDeps,
+} from "./report-release-email";
 
 export async function releasePreparedReport(
   tx: Prisma.TransactionClient,
   tenantId: bigint,
   reportPublicId: string,
   actorUserId?: bigint,
+  mail?: ReleaseMailDeps,
+  /** Monthly billing: release after approval without waiting for payment. */
+  options: { beforePayment?: boolean } = {},
 ): Promise<boolean> {
   const report = await tx.report.findFirst({
     where: { tenantId, publicId: reportPublicId, workflowVersion: 2 },
@@ -74,7 +81,7 @@ export async function releasePreparedReport(
         invoice.tenantId !== tenantId ||
         invoice.clientId !== report.case.clientId,
     ) ||
-    !reportPaymentReady(invoices)
+    (!options.beforePayment && !reportPaymentReady(invoices))
   )
     return false;
   if (!(await caseEvidenceReadiness(tx, report.case.id)).ready) return false;
@@ -112,7 +119,9 @@ export async function releasePreparedReport(
       fromStatus: "PAYMENT_PENDING",
       toStatus: "COMPLETED",
       changedById: actorUserId,
-      reason: "Manager-approved report released after successful full payment",
+      reason: options.beforePayment
+        ? "Manager-approved report released after QC; billed monthly"
+        : "Manager-approved report released after successful full payment",
     },
   });
   await tx.auditEvent.create({
@@ -126,6 +135,7 @@ export async function releasePreparedReport(
         caseId: report.case.publicId,
         reportVersion: report.currentVersion,
         invoiceIds: invoices.map((invoice) => invoice.id.toString()),
+        beforePayment: Boolean(options.beforePayment),
         releasedAt: now,
       }),
     },
@@ -150,6 +160,13 @@ export async function releasePreparedReport(
         href: "/client-portal/reports",
       })),
     });
+  if (mail)
+    await queueReportReleasedEmails(tx, mail, {
+      tenantId,
+      caseId: report.case.id,
+      reportPublicId,
+      recipientIds: recipients.map((user) => user.id),
+    });
   return true;
 }
 
@@ -158,6 +175,7 @@ export async function releaseInvoiceReports(
   tenantId: bigint,
   invoiceId: bigint,
   actorUserId: bigint,
+  mail?: ReleaseMailDeps,
 ) {
   const lines = await tx.invoiceLine.findMany({
     where: { invoiceId, reportId: { not: null } },
@@ -166,6 +184,6 @@ export async function releaseInvoiceReports(
   for (const publicId of new Set(
     lines.flatMap((line) => (line.report ? [line.report.publicId] : [])),
   )) {
-    await releasePreparedReport(tx, tenantId, publicId, actorUserId);
+    await releasePreparedReport(tx, tenantId, publicId, actorUserId, mail);
   }
 }

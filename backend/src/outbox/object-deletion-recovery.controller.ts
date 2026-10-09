@@ -30,7 +30,10 @@ export class ObjectDeletionRecoveryController {
   constructor(private readonly recovery: ObjectDeletionRecoveryService) {}
 
   @Get("failed")
-  listFailed(@CurrentActor() actor: Actor, @Query() query: FailedDeletionQueryDto) {
+  listFailed(
+    @CurrentActor() actor: Actor,
+    @Query() query: FailedDeletionQueryDto,
+  ) {
     return this.recovery.listFailed(actor, query);
   }
 

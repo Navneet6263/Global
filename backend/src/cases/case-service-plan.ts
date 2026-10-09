@@ -9,6 +9,12 @@ import type { PrismaService } from "../database/prisma.service";
 import type { CreateCaseDto } from "./dto/create-case.dto";
 import { CheckTypes } from "./case.constants";
 import { Permission } from "../common/auth/permissions";
+import { discountFor } from "../packages/package-discount";
+import {
+  effectivePackagePricing,
+  parseCheckPrices,
+  priceForSelectedChecks,
+} from "../packages/package-pricing";
 
 export const ServiceFamilies = [
   "HIRECHECK",
@@ -86,7 +92,12 @@ export async function loadCaseServicePlan(
         status: "ACTIVE",
         ...(actor.clientId ? { id: actor.clientId } : {}),
       },
-      include: { packageRates: true },
+      include: {
+        packageRates: true,
+        packageDiscounts: {
+          select: { servicePackageId: true, discountPercent: true },
+        },
+      },
     }),
     prisma.servicePackage.findMany({
       where: {
@@ -135,8 +146,19 @@ export async function loadCaseServicePlan(
       pkg,
       checks,
       details,
-      unitPrice: rate?.unitPrice ?? pkg.price ?? 0,
-      taxRate: rate?.taxRate ?? 0,
+      // Fewer checks cost less: each check has its own price inside the package.
+      unitPrice: priceForSelectedChecks(
+        effectivePackagePricing({
+          listPrice: pkg.price,
+          agreedPrice: rate?.unitPrice,
+          checks: availableChecks,
+          checkPrices: parseCheckPrices(pkg.checkPricesJson),
+          discountPercent: discountFor(client.packageDiscounts, pkg.id),
+        }),
+        availableChecks,
+        checks,
+      ),
+      taxRate: rate?.taxRate ?? pkg.taxRate ?? 0,
       tatHours: caseTatHours(
         input.priority,
         client.slaHours,
@@ -177,6 +199,9 @@ export async function caseServiceCatalog(
               tatHours: true,
             },
           },
+          packageDiscounts: {
+            select: { servicePackageId: true, discountPercent: true },
+          },
         },
       })
     : null;
@@ -207,6 +232,13 @@ export async function caseServiceCatalog(
     items: packages
       .map((pkg) => {
         const rate = rates.find((item) => item.servicePackageId === pkg.id);
+        const pricing = effectivePackagePricing({
+          listPrice: pkg.price,
+          agreedPrice: rate?.unitPrice,
+          checks: packageChecks(pkg.checksJson),
+          checkPrices: parseCheckPrices(pkg.checkPricesJson),
+          discountPercent: discountFor(client?.packageDiscounts ?? [], pkg.id),
+        });
         return {
           id: pkg.publicId,
           code: pkg.code,
@@ -216,8 +248,10 @@ export async function caseServiceCatalog(
           requiredDocuments: stringList(pkg.requiredDocumentsJson),
           ...(!client || commercialAccess
             ? {
-                price: rate?.unitPrice ?? pkg.price ?? 0,
-                taxRate: rate?.taxRate ?? 0,
+                price: pricing.full,
+                /** What each check costs on its own, for cases with fewer checks. */
+                checkPrices: pricing.perCheck,
+                taxRate: rate?.taxRate ?? pkg.taxRate ?? 0,
               }
             : {}),
           tatHours: Math.min(

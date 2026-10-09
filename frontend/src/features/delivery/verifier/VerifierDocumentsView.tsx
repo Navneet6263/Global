@@ -20,10 +20,10 @@ export function VerifierDocumentsView({ context }: { context: VerifierTaskContex
   );
   return (
     <div className="min-w-0 space-y-4">
-      <header className="rounded-2xl border border-mint/20 bg-mint-soft/50 p-4">
+      <header className="rounded-2xl border border-blue-200 bg-blue-50 p-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="flex items-center gap-2 text-base font-semibold">
-            <FolderOpen className="size-5 text-mint-deep" />
+            <FolderOpen className="size-5 text-blue-700" />
             Case documents
           </h2>
           <span className="shrink-0 rounded-full bg-white px-3 py-1 text-xs font-medium">
@@ -34,9 +34,8 @@ export function VerifierDocumentsView({ context }: { context: VerifierTaskContex
           {context.check.case.subject.fullName} · {humanize(context.check.type)} check
         </p>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          These files belong to this candidate&apos;s case. Your current access includes the case
-          documents, not only this check. Use the document-type filter to focus on the evidence you
-          need.
+          Only the documents this check needs, plus Aadhaar and PAN to match the person. Need
+          something else? Ask for it from the Clarifications tab.
         </p>
       </header>
       <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_180px]">
@@ -107,7 +106,7 @@ export function VerifierDocumentsView({ context }: { context: VerifierTaskContex
                 <details className="mt-3 border-t border-border/60 pt-2 text-xs text-muted-foreground">
                   <summary className="cursor-pointer font-medium">File details</summary>
                   <p className="mt-2">Uploaded {formatDateTime(version.createdAt)}</p>
-                  <p className="mt-1 break-all font-mono text-[10px]">SHA-256 {version.sha256}</p>
+                  <p className="mt-1 break-all font-mono text-xs">SHA-256 {version.sha256}</p>
                 </details>
               ) : null}
             </article>

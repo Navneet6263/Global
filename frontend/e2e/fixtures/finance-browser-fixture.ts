@@ -62,6 +62,22 @@ export async function financeBrowserFixture(page: Page, canWrite = true) {
     }
     if (path === "/finance/billing-ready") return reply({ items: [], nextCursor: null });
     if (path === "/finance/credit-control") return reply({ items: [], total: 0 });
+    if (path === "/finance/invoices/invoice-test/annexure")
+      return reply({
+        invoice: {
+          id: "invoice-test",
+          invoiceNumber: "INV-TEST",
+          status: "ISSUED",
+          issuedAt: null,
+          clientName: "Test client",
+          subtotal: "1000.00",
+          taxAmount: "180.00",
+          totalAmount: "1180.00",
+        },
+        validation: { status: null, sentAt: null, validatedAt: null, query: null, ageing: false },
+        colours: {},
+        rows: [],
+      });
     unexpected.push(path);
     return route.fulfill({ status: 501, json: { title: `Unexpected ${path}` } });
   });

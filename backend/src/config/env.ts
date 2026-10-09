@@ -83,6 +83,8 @@ const envSchema = z
     DATA_ENCRYPTION_PREVIOUS_KEYS: z.string().optional(),
     JWT_ACCESS_TTL: z.string().default("15m"),
     JWT_REFRESH_TTL: z.string().default("7d"),
+    /** Days before a password must be changed at sign-in; 0 turns the policy off. */
+    PASSWORD_MAX_AGE_DAYS: z.coerce.number().int().min(0).max(3650).default(90),
     COOKIE_SECURE: booleanString("false"),
     OBJECT_STORAGE_DRIVER: z.enum(["local", "s3", "azure"]).default("local"),
     OBJECT_STORAGE_BUCKET: z.string().default("sapling-global-private"),
@@ -106,6 +108,25 @@ const envSchema = z
     NOTIFICATION_HEALTH_URL: optionalUrl,
     NOTIFICATION_WEBHOOK_SECRET: z.string().min(32).optional(),
     OUTBOX_WORKER_ENABLED: booleanString("true"),
+    /** New cases follow RM -> Data Entry -> department routing (docs/bgv-flow-implementation-plan.md). */
+    INTERNAL_WORKFLOW_V2: booleanString("true"),
+    /** Working calendar for 6h/8h stage alerts: ISO weekdays ("1-6") and hours ("09:30-18:30") IST. */
+    WORKING_DAYS: z.string().max(20).optional(),
+    WORKING_HOURS: z.string().max(20).optional(),
+    /** Company SMTP for email (sign-up OTP, consent OTP, candidate links). Unset = webhook / dev log. */
+    SMTP_HOST: z.string().optional(),
+    SMTP_PORT: z.coerce.number().int().positive().default(587),
+    SMTP_SECURE: booleanString("false"),
+    SMTP_USER: z.string().optional(),
+    SMTP_PASSWORD: z.string().optional(),
+    /** Accepted alias of SMTP_PASSWORD. */
+    SMTP_PASS: z.string().optional(),
+    SMTP_FROM: z.string().optional(),
+    /** Public company sign-up: the new company admin lands in Onboarding mode. */
+    SELF_SIGNUP_ENABLED: booleanString("true"),
+    SELF_SIGNUP_TENANT_CODE: z.string().default("SAPLING"),
+    /** Platform Admin may view everything and escalate cases, but not change data. */
+    PLATFORM_ADMIN_VIEW_ONLY: booleanString("true"),
     REPORT_DOWNLOAD_TTL_DAYS: z.coerce
       .number()
       .int()
@@ -389,6 +410,13 @@ const envSchema = z
         path: ["AZURE_STORAGE_ACCOUNT_URL"],
         message:
           "Azure storage requires an account URL for managed identity or a connection string",
+      });
+    }
+    if (value.SMTP_HOST && !value.SMTP_FROM) {
+      context.addIssue({
+        code: "custom",
+        path: ["SMTP_FROM"],
+        message: "SMTP_FROM is required when SMTP_HOST is set",
       });
     }
     if (value.MALWARE_SCAN_REQUIRED && !value.CLAMAV_HOST) {

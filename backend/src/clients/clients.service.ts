@@ -12,6 +12,7 @@ import type { ClientQueryDto } from "./dto/client-query.dto";
 import type { CreateClientDto } from "./dto/create-client.dto";
 import type { UpdateClientDto } from "./dto/update-client.dto";
 import { assertClientActivation } from "./client-activation.policy";
+import { SELF_SIGNUP_KYC_TYPES } from "../onboarding/onboarding-checklist";
 
 @Injectable()
 export class ClientsService {
@@ -128,6 +129,7 @@ export class ClientsService {
         const onboarding = await tx.client.findUniqueOrThrow({
           where: { id: current.id },
           select: {
+            selfSignupAt: true,
             billingTerms: true,
             billingAddress: true,
             packageRates: {
@@ -148,7 +150,11 @@ export class ClientsService {
             },
           },
         });
-        assertClientActivation(onboarding);
+        assertClientActivation(
+          onboarding,
+          new Date(),
+          onboarding.selfSignupAt ? SELF_SIGNUP_KYC_TYPES : [],
+        );
       }
       const result = await tx.client.updateMany({
         where: {

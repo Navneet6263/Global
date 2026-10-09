@@ -36,9 +36,7 @@ test("bulk start previews first, skips blocked cases and saves only after explic
   expect(fixture.commits.map((item) => item.id).sort()).toEqual(["dispatch-1", "dispatch-2"]);
   await page.getByRole("button", { name: "Done", exact: true }).click();
   await expect(
-    page
-      .locator("#workspace-main")
-      .getByRole("link", { name: "Assignment Workbench", exact: true }),
+    page.locator("#workspace-main").getByRole("link", { name: "Override allocation", exact: true }),
   ).toBeVisible();
   expect(fixture.unexpected).toEqual([]);
 });

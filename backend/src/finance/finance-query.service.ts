@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, StreamableFile } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  StreamableFile,
+} from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { ListInvoicesDto } from "./dto/list-invoices.dto";

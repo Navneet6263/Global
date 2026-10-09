@@ -1,4 +1,5 @@
 import type { CaseDraft } from "@/features/cases/new-case/model";
+import type { CandidateAccessResult } from "./candidate-portal";
 import { toIndianMobileE164 } from "@/lib/indian-mobile";
 import { apiDownload, apiRequest, saveBlob } from "./client";
 import type { CaseServiceScope } from "./case-services";
@@ -26,6 +27,8 @@ export type CaseServicePackage = {
   serviceFamily?: string;
   requiredDocuments?: string[];
   price?: string | number | null;
+  /** Each check on its own, after the agreed rate and discount (commercial viewers only). */
+  checkPrices?: Record<string, number>;
   taxRate?: string | number | null;
   tatHours: number;
 };
@@ -59,10 +62,33 @@ export interface CaseListItem {
   } | null;
   branch?: { publicId: string; name: string; city?: string | null } | null;
   assignedOpsUser?: { publicId: string; displayName: string } | null;
+  /** Internal roles only: position in the RM -> Data Entry -> department flow. */
+  workflow?: {
+    version: number;
+    intakeStage: "INTAKE" | "DATA_ENTRY" | "CORRECTION" | "READY" | "ROUTED" | null;
+    dataEntryAssignedAt: string | null;
+    dataEntryReadyAt: string | null;
+    dataEntryUser: { publicId: string; displayName: string } | null;
+    /** The client's company RM; new cases are assigned to this RM automatically. */
+    companyRm?: { publicId: string; displayName: string } | null;
+    stoppedFromStatus?: string | null;
+    stoppedAt?: string | null;
+    stopReason?: string | null;
+    escalatedAt?: string | null;
+    escalationNote?: string | null;
+    escalatedBy?: { publicId: string; displayName: string } | null;
+  };
   checks: Array<{
     publicId: string;
     type: string;
     status: string;
+    routedAt?: string | null;
+    department?: { publicId: string; name: string } | null;
+    /** Internal only: Data Entry's check-wise initiation, JSON {"entries":[...]} */
+    initiationJson?: string | null;
+    initiatedAt?: string | null;
+    /** Colour code: GREEN, RED, YELLOW, AMBER, BLUE or CLIENT_REVIEW. */
+    disposition?: string | null;
     result?: string | null;
     riskLevel?: string | null;
     dueAt?: string | null;
@@ -99,6 +125,8 @@ export interface CaseListItem {
 }
 
 export interface CaseDetail extends CaseListItem {
+  /** Company admin view only: its own escalation, never an internal one. */
+  clientEscalation?: { at: string; reason: string } | null;
   qaReviewer?: { publicId: string; displayName: string; email: string } | null;
   statusHistory: Array<{
     fromStatus?: string | null;
@@ -184,9 +212,10 @@ export interface CaseListQueryInput {
   owner?: string;
   ownerId?: string;
   unassigned?: boolean;
+  escalated?: boolean;
   dueToday?: boolean;
   dueNext7Days?: boolean;
-  view?: "all" | "operations";
+  view?: "all" | "operations" | "active";
   search?: string;
   status?: string;
   stage?: string;
@@ -218,6 +247,7 @@ export function listCases(input: CaseListQueryInput = {}, signal?: AbortSignal) 
     "owner",
     "ownerId",
     "unassigned",
+    "escalated",
     "dueToday",
     "dueNext7Days",
     "view",
@@ -252,6 +282,7 @@ export async function exportCases(input: Omit<CaseListQueryInput, "cursor" | "li
     "owner",
     "ownerId",
     "unassigned",
+    "escalated",
     "dueToday",
     "dueNext7Days",
     "view",
@@ -371,11 +402,8 @@ export function createCase(draft: CaseDraft, idempotencyKey?: string) {
     id: string;
     caseNumber: string;
     status: string;
-    consentDelivery: {
-      consentId: string;
-      expiresAt: string;
-      developmentOtp?: string;
-    };
+    /** The single candidate link: consent (OTP) and uploads both happen inside it. */
+    candidateAccess: CandidateAccessResult;
   }>("/cases", {
     method: "POST",
     headers: idempotencyKey ? { "idempotency-key": idempotencyKey } : undefined,
@@ -411,4 +439,12 @@ export function transitionCase(
     method: "PATCH",
     body: JSON.stringify(input),
   });
+}
+
+/** The company admin escalates its own case with a reason; it becomes high priority. */
+export function escalateCaseAsClient(caseId: string, input: { version: number; reason: string }) {
+  return apiRequest<{ id: string; escalated: true; escalatedAt: string; version: number }>(
+    `/cases/${caseId}/client-escalation`,
+    { method: "POST", body: JSON.stringify(input) },
+  );
 }

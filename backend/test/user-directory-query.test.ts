@@ -50,7 +50,9 @@ void test("directory where combines tenant, branch, role, invited and search sco
   assert.equal(where.status, "ACTIVE");
   assert.equal(where.mustChangePassword, true);
   assert.deepEqual(where.userRoles, {
-    some: { role: { code: "VERIFIER" } },
+    some: {
+      role: { OR: [{ code: "VERIFIER" }, { baseRoleCode: "VERIFIER" }] },
+    },
   });
   assert.equal(Array.isArray(where.OR), true);
 });
@@ -77,11 +79,15 @@ void test("directory list uses database pagination and returns the exact total",
             client: null,
             userRoles: [{ role: { code: "VERIFIER", name: "Verifier" } }],
             spocClientScopes: [],
+            departmentMemberships: [
+              { role: "LEAD", department: { name: "Education" } },
+            ],
           },
         ]);
       },
       count: (input: { where: unknown }) => {
-        countWhere = input.where;
+        // The first count is the filtered total; the rest are summary boxes.
+        countWhere ??= input.where;
         return Promise.resolve(267);
       },
     },
@@ -99,4 +105,6 @@ void test("directory list uses database pagination and returns the exact total",
   assert.equal(result.total, 267);
   assert.equal(result.page, 2);
   assert.equal(result.items[0]?.roles[0]?.code, "VERIFIER");
+  assert.deepEqual(result.items[0]?.teams, [{ name: "Education", lead: true }]);
+  assert.equal(result.summary.total, 267);
 });

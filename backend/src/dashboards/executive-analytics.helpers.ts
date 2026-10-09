@@ -1,4 +1,5 @@
-export const terminalStatuses = ["COMPLETED", "CLOSED", "CANCELLED"];
+/** Not active work: finished, cancelled or stopped on client instruction. */
+export const terminalStatuses = ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"];
 
 export interface ExecutiveCaseRow {
   publicId: string;
@@ -18,6 +19,8 @@ export interface ExecutiveCaseRow {
     type: string;
     status: string;
     result: string | null;
+    /** Optional so fixtures without colour codes keep the result-based default. */
+    disposition?: string | null;
     createdAt: Date;
     completedAt: Date | null;
   }>;

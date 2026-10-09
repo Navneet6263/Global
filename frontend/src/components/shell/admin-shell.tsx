@@ -6,6 +6,7 @@ import { SidebarNav } from "@/components/navigation/sidebar-nav";
 import { BrandMark } from "./brand-mark";
 import { AccountFooter } from "./account-footer";
 import { TopToolbar } from "./top-toolbar";
+import { ViewOnlyBanner } from "./view-only-banner";
 import type { NavWorkspace } from "@/config/navigation";
 import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
 import { WorkspaceHelp } from "@/features/help/workspace-help";
@@ -60,6 +61,7 @@ export function AdminShell({ children, workspace = "platform-admin" }: AdminShel
           <main id="workspace-main" className="min-w-0 flex-1 px-4 py-5 lg:p-6">
             <div className="mx-auto w-full max-w-[1560px] space-y-4">
               <LearningIntro />
+              <ViewOnlyBanner />
               {children}
             </div>
           </main>

@@ -1,0 +1,292 @@
+/* Brings earlier Operations pages and shared case panels onto the clean workspace look
+   without changing their behaviour. Scoped to the Operations shell only. */
+.ops-portal-shell .client-main :is(.rounded-3xl, .rounded-\[2rem\]) {
+  border-radius: 12px;
+}
+.ops-portal-shell .client-main .rounded-2xl {
+  border-radius: 10px;
+}
+.ops-portal-shell .client-main .surface {
+  border-color: #e2e8f0;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+.ops-portal-shell .client-main :is(.bg-gradient-to-r, .bg-gradient-to-br) {
+  background-image: none;
+}
+.ops-portal-shell .client-main > [data-workspace-heading],
+.ops-portal-shell .client-main > div > [data-workspace-heading] {
+  margin-bottom: 4px;
+}
+.ops-portal-shell .client-main [data-workspace-heading] h1 {
+  letter-spacing: -0.025em;
+}
+.ops-portal-shell .client-main [data-workspace-heading] > div > div {
+  border-left-color: #e2e8f0;
+}
+
+/* ---------- Full case workspace ---------- */
+.ops-case-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+.ops-back {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+.ops-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #1d4ed8;
+  font-weight: 500;
+}
+.ops-back a + a {
+  color: #64748b;
+  padding-left: 16px;
+  border-left: 1px solid #e2e8f0;
+}
+.ops-back svg {
+  width: 16px;
+  height: 16px;
+}
+.ops-case-header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ops-case-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.ops-case-avatar {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  color: #1d4ed8;
+  font-size: 18px;
+  font-weight: 700;
+}
+.ops-case-identity h1 {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+.ops-case-sub {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #475569;
+}
+.ops-case-sub strong {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+.ops-case-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.ops-case-meta > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 14px;
+  margin-right: 14px;
+  border-right: 1px solid #e2e8f0;
+}
+.ops-case-meta > div:last-child {
+  border-right: 0;
+}
+.ops-case-meta dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+}
+.ops-case-meta dt svg {
+  width: 14px;
+  height: 14px;
+}
+.ops-case-meta dd {
+  font-weight: 600;
+  color: #0f172a;
+}
+.ops-case-meta .is-critical :is(dt, dd) {
+  color: #b91c1c;
+}
+.ops-case-meta .is-warning :is(dt, dd) {
+  color: #b45309;
+}
+.ops-case-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+.ops-case-header-actions > button {
+  min-height: 40px;
+  border-radius: 8px;
+  box-shadow: none;
+}
+.ops-case-header-actions .ops-escalate {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #92400e;
+}
+.ops-stepper.is-wide {
+  padding: 4px 0 0;
+  border-bottom: 0;
+}
+.ops-stepper.is-wide li > span {
+  width: 22px;
+  height: 22px;
+}
+.ops-stepper.is-wide li::before {
+  top: 10px;
+}
+.ops-stepper.is-wide strong {
+  font-size: 12px;
+}
+.ops-stepper.is-wide small {
+  font-size: 11px;
+}
+.ops-case-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+.ops-case-main {
+  min-width: 0;
+}
+.ops-case-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 80px;
+}
+.ops-rail-note {
+  margin-top: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f5f9fc;
+  font-size: 11px;
+  line-height: 16px;
+  color: #475569;
+}
+.ops-owners {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ops-owners li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ops-owners strong {
+  display: block;
+  font-size: 13px;
+}
+.ops-owners small {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+}
+.ops-activity.is-rail li {
+  grid-template-columns: 92px minmax(0, 1fr);
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.ops-activity.is-rail span {
+  white-space: normal;
+}
+.ops-activity.is-rail strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Case tabs: underline tabs instead of filled pills. */
+.ops-case-main [role="tablist"] {
+  gap: 4px;
+}
+.ops-case-main nav:has(> [role="tablist"]) {
+  padding: 0 8px;
+  border-radius: 12px;
+}
+.ops-case-main [role="tab"] {
+  position: relative;
+  min-height: 46px;
+  border-radius: 0;
+  background: transparent !important;
+  color: #475569 !important;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: none !important;
+}
+.ops-case-main [role="tab"][data-state="active"] {
+  color: #1d4ed8 !important;
+  font-weight: 600;
+}
+.ops-case-main [role="tab"][data-state="active"]::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: #1d4ed8;
+}
+
+@media (max-width: 1199px) {
+  .ops-case-layout {
+    grid-template-columns: 1fr;
+  }
+  .ops-case-rail {
+    position: static;
+  }
+}
+@media (max-width: 767px) {
+  .ops-case-identity {
+    flex-wrap: wrap;
+  }
+  .ops-case-avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 15px;
+  }
+  .ops-case-identity h1 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+  .ops-case-header-actions {
+    width: 100%;
+    margin-left: 0;
+  }
+  .ops-case-header-actions > button {
+    flex: 1;
+    min-height: 44px;
+  }
+  .ops-case-meta > div {
+    border-right: 0;
+    margin-right: 10px;
+    padding-right: 0;
+  }
+}

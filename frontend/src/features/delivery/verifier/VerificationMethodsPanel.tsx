@@ -12,7 +12,7 @@ const methods = [
     label: "Manual review",
     detail: "Review documents and authorised sources",
     icon: ClipboardCheck,
-    tone: "bg-mint-soft text-mint-deep",
+    tone: "bg-blue-50 text-blue-700",
   },
   {
     id: "DIGITAL",
@@ -54,10 +54,10 @@ export function VerificationMethodsPanel({
   const active = query.data?.items.filter((run) => run.status !== "SUPERSEDED") ?? [];
   const items = query.data?.items ?? [];
   return (
-    <section className="space-y-4 rounded-[1.65rem] border border-white/80 bg-card/85 p-5 shadow-[var(--shadow-float)]">
+    <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <div>
         <h3 className="flex items-center gap-2 text-base font-semibold">
-          <ShieldCheck className="size-5 text-mint-deep" />
+          <ShieldCheck className="size-5 text-blue-700" />
           Verification methods
         </h3>
         <p className="mt-1 text-xs text-muted-foreground">
@@ -76,7 +76,7 @@ export function VerificationMethodsPanel({
           >
             <item.icon className="mb-2 size-4" />
             <span className="block text-sm font-semibold">{item.label}</span>
-            <span className="mt-1 block text-[11px] opacity-75">{item.detail}</span>
+            <span className="mt-1 block text-[12.5px] opacity-75">{item.detail}</span>
           </button>
         ))}
       </div>

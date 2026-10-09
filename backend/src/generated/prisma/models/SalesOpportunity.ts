@@ -1035,14 +1035,6 @@ export type SalesOpportunityUncheckedUpdateManyWithoutClientNestedInput = {
   deleteMany?: Prisma.SalesOpportunityScalarWhereInput | Prisma.SalesOpportunityScalarWhereInput[]
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
-}
-
 export type SalesOpportunityCreateNestedOneWithoutProposalsInput = {
   create?: Prisma.XOR<Prisma.SalesOpportunityCreateWithoutProposalsInput, Prisma.SalesOpportunityUncheckedCreateWithoutProposalsInput>
   connectOrCreate?: Prisma.SalesOpportunityCreateOrConnectWithoutProposalsInput

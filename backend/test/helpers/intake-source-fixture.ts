@@ -120,6 +120,16 @@ export async function intakeSourceFixture(
   const consent = await tx.consent.findFirstOrThrow({
     where: { caseId: row.id },
   });
+  // One candidate link is issued at intake; the OTP is requested from inside it.
+  assert.equal(created.candidateAccess.delivery.queued, true);
+  await issuance.issue(tx, {
+    consentId: consent.id,
+    consentPublicId: consent.publicId,
+    tenantId: f.tenant.id,
+    casePublicId: row.publicId,
+    email: "synthetic@rollback.invalid",
+    inPortal: true,
+  });
   const otpEvent = await tx.outboxEvent.findFirstOrThrow({
     where: {
       tenantId: f.tenant.id,

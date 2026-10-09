@@ -8,11 +8,9 @@ import type { Actor } from "../../common/auth/actor";
 import { spocScope } from "../../common/auth/access-scope";
 import { SecretBoxService } from "../../common/security/secret-box.service";
 import { SubjectPiiService } from "../../common/security/subject-pii.service";
+import { issueCandidateLink } from "../../candidate-portal/candidate-link";
 import { lockMutableCaseEvidence } from "../../documents/upload-document-policy";
-import {
-  VendorAssignmentsRepository,
-  type VendorTx,
-} from "../vendor-assignments.repository";
+import { VendorAssignmentsRepository } from "../vendor-assignments.repository";
 import type { RequestReuploadDto } from "../vendor-requests.validation";
 import { notifyOperationsOfReupload } from "./vendor-notify";
 import {
@@ -116,71 +114,34 @@ export class RequestReuploadService {
         caseNumber: document.case.caseNumber,
         documentType: document.type,
       });
-      const channel = await this.messageCandidate(tx, actor.tenantId, {
-        documentPublicId: document.publicId,
-        caseNumber: document.case.caseNumber,
-        documentType: document.type,
-        subject: document.case.subject,
-        message,
-      });
-      const link = await this.repository.activeCandidateLink(
+      // The candidate may already have closed their link with "Complete": a fresh link
+      // is emailed with the reason. Consent stays recorded and is not asked again.
+      const link = await issueCandidateLink(
         tx,
-        actor.tenantId,
-        document.case.id,
-        requestedAt,
+        {
+          secretBox: this.secretBox,
+          pii: this.pii,
+          webOrigin: this.config.getOrThrow<string>("WEB_ORIGIN"),
+        },
+        {
+          tenantId: actor.tenantId,
+          caseId: document.case.id,
+          casePublicId: document.case.publicId,
+          actorUserId: actor.userId,
+          subject: document.case.subject,
+          sendNotification: true,
+          reason: `${documentLabel(document.type)}: ${message}`,
+        },
       );
+      const channel = link.delivery.queued ? link.delivery.channel : null;
       return {
         id: document.publicId,
         status: REUPLOAD_REQUIRED,
         version: document.version + 1,
         requestedAt,
-        candidateLink: link
-          ? { active: true, expiresAt: link.expiresAt }
-          : null,
+        candidateLink: { active: true, expiresAt: link.expiresAt },
         candidateMessage: channel,
       };
     });
-  }
-
-  /**
-   * Existing candidate channel: a sealed outbox notification.requested (email, else
-   * SMS). The link token is stored only as a hash, so the message asks the candidate
-   * to reopen the secure link they already received. Skipped without contact details.
-   */
-  private async messageCandidate(
-    tx: VendorTx,
-    tenantId: bigint,
-    input: {
-      documentPublicId: string;
-      caseNumber: string;
-      documentType: string;
-      subject: Parameters<SubjectPiiService["open"]>[0];
-      message: string;
-    },
-  ) {
-    const contact = this.pii.open(input.subject);
-    const channel = contact.email ? "EMAIL" : contact.phone ? "SMS" : null;
-    const destination = contact.email ?? contact.phone;
-    if (!channel || !destination) return null;
-    await this.repository.queueOutbox(tx, {
-      tenantId,
-      topic: "notification.requested",
-      aggregateType: "document",
-      aggregateId: input.documentPublicId,
-      payloadJson: JSON.stringify({
-        secret: this.secretBox.seal({
-          channel,
-          destination,
-          template: "candidate-document-reupload",
-          variables: {
-            caseNumber: input.caseNumber,
-            documentType: documentLabel(input.documentType),
-            message: input.message,
-            portalOrigin: this.config.getOrThrow<string>("WEB_ORIGIN"),
-          },
-        }),
-      }),
-    });
-    return channel;
   }
 }

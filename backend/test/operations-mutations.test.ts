@@ -182,11 +182,190 @@ void test("case escalation persists urgency, audit and client notification", asy
     },
   );
 
-  assert.deepEqual(result, {
+  const { escalatedAt, ...rest } = result;
+  assert.ok(escalatedAt instanceof Date);
+  assert.deepEqual(rest, {
     id: "00000000-0000-4000-8000-000000000030",
     priority: "URGENT",
     version: 6,
     escalated: true,
   });
   assert.deepEqual(writes, ["audit", "notification"]);
+});
+
+void test("Platform Admin escalation is internal: URGENT, recorded, Operations and owner told", async () => {
+  let update: { data: Record<string, unknown> } | undefined;
+  let recipients: { where: Record<string, unknown> } | undefined;
+  let notices: { data: Array<{ href: string; title: string }> } | undefined;
+  const tx = {
+    verificationCase: {
+      updateMany: (input: { data: Record<string, unknown> }) => {
+        update = input;
+        return Promise.resolve({ count: 1 });
+      },
+    },
+    auditEvent: { create: () => Promise.resolve({}) },
+    notification: {
+      createMany: (input: { data: Array<{ href: string; title: string }> }) => {
+        notices = input;
+        return Promise.resolve({ count: 2 });
+      },
+    },
+  };
+  const prisma = {
+    verificationCase: {
+      findFirst: () =>
+        Promise.resolve({
+          id: 30n,
+          clientId: 40n,
+          caseNumber: "SG-TEST-3",
+          status: "IN_PROGRESS",
+          priority: "NORMAL",
+          version: 2,
+          assignedOpsUser: { id: 77n, publicId: "owner" },
+        }),
+    },
+    user: {
+      findMany: (input: { where: Record<string, unknown> }) => {
+        recipients = input;
+        return Promise.resolve([{ id: 50n }, { id: 77n }]);
+      },
+    },
+    $transaction: (work: (client: typeof tx) => Promise<void>) => work(tx),
+  };
+  await new CaseOperationsService(prisma as unknown as PrismaService).escalate(
+    { ...actor, userId: 1n, roles: ["PLATFORM_ADMIN"] },
+    "00000000-0000-4000-8000-000000000030",
+    { version: 2, note: "Client CEO asked for this today" },
+  );
+  assert.equal(update?.data.priority, "URGENT");
+  assert.equal(update?.data.escalatedById, 1n);
+  assert.equal(update?.data.escalationNote, "Client CEO asked for this today");
+  // Internal: no client-admin filter; Operations Managers plus the case owner.
+  assert.equal(recipients?.where.clientId, undefined);
+  assert.equal(notices?.data.length, 2);
+  assert.equal(
+    notices?.data[0]?.href,
+    "/cases/00000000-0000-4000-8000-000000000030",
+  );
+  assert.match(notices?.data[0]?.title ?? "", /high priority/);
+});
+
+void test("operations can assign a client-mapped RM as case owner with audit", async () => {
+  const writes: Array<{ kind: string; data: unknown }> = [];
+  let ownerQuery: unknown;
+  const tx = {
+    verificationCase: {
+      updateMany: (input: unknown) => {
+        writes.push({ kind: "case", data: input });
+        return Promise.resolve({ count: 1 });
+      },
+    },
+    auditEvent: {
+      create: (input: unknown) => {
+        writes.push({ kind: "audit", data: input });
+        return Promise.resolve(input);
+      },
+    },
+    notification: {
+      create: (input: unknown) => {
+        writes.push({ kind: "notification", data: input });
+        return Promise.resolve(input);
+      },
+    },
+  };
+  const prisma = {
+    verificationCase: {
+      findFirst: () =>
+        Promise.resolve({
+          id: 30n,
+          clientId: 40n,
+          branchId: null,
+          caseNumber: "SG-TEST-3",
+          status: "DOCUMENT_PENDING",
+          priority: "NORMAL",
+          version: 2,
+          assignedOpsUser: null,
+        }),
+    },
+    user: {
+      findFirst: (input: unknown) => {
+        ownerQuery = input;
+        return Promise.resolve({
+          id: 60n,
+          publicId: "00000000-0000-4000-8000-000000000060",
+          displayName: "Riya Mehta",
+          branchId: null,
+          userRoles: [{ role: { code: "SPOC_RM" } }],
+        });
+      },
+    },
+    $transaction: (work: (client: typeof tx) => Promise<void>) => work(tx),
+  };
+  const service = new CaseOperationsService(prisma as unknown as PrismaService);
+  const result = await service.assignOwner(
+    actor,
+    "00000000-0000-4000-8000-000000000030",
+    {
+      ownerId: "00000000-0000-4000-8000-000000000060",
+      version: 2,
+      note: "Dedicated RM for this client",
+    },
+  );
+
+  assert.deepEqual(result.owner, {
+    id: "00000000-0000-4000-8000-000000000060",
+    displayName: "Riya Mehta",
+  });
+  assert.equal(result.version, 3);
+  const scope = JSON.stringify(ownerQuery, (_key, value: unknown) =>
+    typeof value === "bigint" ? value.toString() : value,
+  );
+  assert.match(scope, /"SPOC_RM"/);
+  assert.match(scope, /"spocClientScopes":\{"some":\{"clientId":"40"\}\}/);
+  const audit = writes.find((entry) => entry.kind === "audit")?.data as {
+    data: { action: string; afterJson: string };
+  };
+  assert.equal(audit.data.action, "case.owner-assigned");
+  assert.match(audit.data.afterJson, /Riya Mehta/);
+  const notification = writes.find((entry) => entry.kind === "notification")
+    ?.data as { data: { href: string; title: string } };
+  assert.equal(notification.data.title, "Case assigned to you as RM");
+  assert.match(notification.data.href, /^\/spoc-rm\/records\?domain=cases/);
+});
+
+void test("case owner cannot be reassigned to the same RM", async () => {
+  const prisma = {
+    verificationCase: {
+      findFirst: () =>
+        Promise.resolve({
+          id: 30n,
+          clientId: 40n,
+          branchId: null,
+          caseNumber: "SG-TEST-4",
+          status: "IN_PROGRESS",
+          priority: "NORMAL",
+          version: 4,
+          assignedOpsUser: { id: 60n, publicId: "rm" },
+        }),
+    },
+    user: {
+      findFirst: () =>
+        Promise.resolve({
+          id: 60n,
+          publicId: "00000000-0000-4000-8000-000000000060",
+          displayName: "Riya Mehta",
+          branchId: null,
+          userRoles: [{ role: { code: "SPOC_RM" } }],
+        }),
+    },
+  };
+  const service = new CaseOperationsService(prisma as unknown as PrismaService);
+  await assert.rejects(
+    service.assignOwner(actor, "00000000-0000-4000-8000-000000000030", {
+      ownerId: "00000000-0000-4000-8000-000000000060",
+      version: 4,
+    }),
+    ConflictException,
+  );
 });

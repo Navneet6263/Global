@@ -23,9 +23,11 @@ export function confirmConsent(consentId: string, otp: string) {
   );
 }
 
+/** Consent is given inside the candidate link, so this emails the candidate a fresh link. */
 export function requestConsent(caseId: string) {
-  return apiRequest<{ consentId: string; expiresAt: string; developmentOtp?: string }>(
-    `/cases/${caseId}/consent/request`,
-    { method: "POST" },
-  );
+  return apiRequest<{
+    consentId: string;
+    expiresAt: string;
+    delivery: { queued: true; channel: "EMAIL" | "SMS"; destination: string } | { queued: false };
+  }>(`/cases/${caseId}/consent/request`, { method: "POST" });
 }

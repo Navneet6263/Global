@@ -59,7 +59,16 @@ void test("field picker policy preserves tenant, active role and compatible bran
       { OR: [{ branchId: 2n }, { branchId: null }] },
       { OR: [{ clientId: null }, { clientId: 3n }] },
     ],
-    userRoles: { some: { role: { code: "FIELD_EXECUTIVE" } } },
+    userRoles: {
+      some: {
+        role: {
+          OR: [
+            { code: "FIELD_EXECUTIVE" },
+            { baseRoleCode: "FIELD_EXECUTIVE" },
+          ],
+        },
+      },
+    },
   });
   assert.deepEqual(
     fieldAssigneeScope(1n, { branchId: null, clientId: 3n }).AND,

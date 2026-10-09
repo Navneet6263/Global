@@ -17,6 +17,7 @@ import { ConfigService } from "@nestjs/config";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import {
   AllowPasswordChangePending,
+  AllowViewOnlyAdmin,
   CurrentActor,
   Public,
 } from "../common/auth/auth.decorators";
@@ -26,14 +27,23 @@ import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { ChangePasswordDto } from "./dto/change-password.dto";
 import { RenameSessionDto } from "./dto/rename-session.dto";
+import {
+  SignupResendDto,
+  SignupStartDto,
+  SignupVerifyDto,
+} from "./dto/signup.dto";
+import { SignupService } from "./signup.service";
 import { ttlSeconds } from "../config/ttl";
 import { randomUUID } from "node:crypto";
 
+/** A view-only Platform Admin still manages its own sign-in, password and sessions. */
 @Controller("auth")
+@AllowViewOnlyAdmin()
 export class AuthController {
   constructor(
     private readonly auth: AuthService,
     private readonly config: ConfigService,
+    private readonly signup: SignupService,
   ) {}
 
   @Public()
@@ -46,6 +56,47 @@ export class AuthController {
   ) {
     const deviceKey = this.deviceKey(request, response);
     const result = await this.auth.login(input, this.meta(request, deviceKey));
+    this.setCookies(response, result.tokens);
+    return { authenticated: true, session: result.session };
+  }
+
+  /** Public company sign-up: settings for the sign-up page. */
+  @Public()
+  @Get("signup/settings")
+  signupSettings() {
+    return this.signup.settings();
+  }
+
+  /** Step 1: company + admin details; a 6-digit code is emailed. */
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post("signup")
+  startSignup(@Body() input: SignupStartDto, @Req() request: FastifyRequest) {
+    return this.signup.start(input, this.meta(request));
+  }
+
+  @Public()
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Post("signup/resend")
+  resendSignup(@Body() input: SignupResendDto) {
+    return this.signup.resend(input.signupId);
+  }
+
+  /** Step 2: the code creates the company (Onboarding) and signs the admin in. */
+  @Public()
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @Post("signup/verify")
+  async verifySignup(
+    @Body() input: SignupVerifyDto,
+    @Req() request: FastifyRequest,
+    @Res({ passthrough: true }) response: FastifyReply,
+  ) {
+    const deviceKey = this.deviceKey(request, response);
+    const result = await this.signup.verify(
+      input.signupId,
+      input.otp,
+      this.meta(request, deviceKey),
+    );
     this.setCookies(response, result.tokens);
     return { authenticated: true, session: result.session };
   }

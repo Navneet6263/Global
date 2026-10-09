@@ -66,6 +66,10 @@ export type InvoiceMinAggregateOutputType = {
   paidAmount: runtime.Decimal | null
   creditedAmount: runtime.Decimal | null
   notes: string | null
+  annexureStatus: string | null
+  annexureSentAt: Date | null
+  annexureValidatedAt: Date | null
+  annexureQuery: string | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -87,6 +91,10 @@ export type InvoiceMaxAggregateOutputType = {
   paidAmount: runtime.Decimal | null
   creditedAmount: runtime.Decimal | null
   notes: string | null
+  annexureStatus: string | null
+  annexureSentAt: Date | null
+  annexureValidatedAt: Date | null
+  annexureQuery: string | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -108,6 +116,10 @@ export type InvoiceCountAggregateOutputType = {
   paidAmount: number
   creditedAmount: number
   notes: number
+  annexureStatus: number
+  annexureSentAt: number
+  annexureValidatedAt: number
+  annexureQuery: number
   version: number
   createdAt: number
   updatedAt: number
@@ -155,6 +167,10 @@ export type InvoiceMinAggregateInputType = {
   paidAmount?: true
   creditedAmount?: true
   notes?: true
+  annexureStatus?: true
+  annexureSentAt?: true
+  annexureValidatedAt?: true
+  annexureQuery?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -176,6 +192,10 @@ export type InvoiceMaxAggregateInputType = {
   paidAmount?: true
   creditedAmount?: true
   notes?: true
+  annexureStatus?: true
+  annexureSentAt?: true
+  annexureValidatedAt?: true
+  annexureQuery?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -197,6 +217,10 @@ export type InvoiceCountAggregateInputType = {
   paidAmount?: true
   creditedAmount?: true
   notes?: true
+  annexureStatus?: true
+  annexureSentAt?: true
+  annexureValidatedAt?: true
+  annexureQuery?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -305,6 +329,10 @@ export type InvoiceGroupByOutputType = {
   paidAmount: runtime.Decimal
   creditedAmount: runtime.Decimal
   notes: string | null
+  annexureStatus: string | null
+  annexureSentAt: Date | null
+  annexureValidatedAt: Date | null
+  annexureQuery: string | null
   version: number
   createdAt: Date
   updatedAt: Date
@@ -349,6 +377,10 @@ export type InvoiceWhereInput = {
   paidAmount?: Prisma.DecimalFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.StringNullableFilter<"Invoice"> | string | null
+  annexureStatus?: Prisma.StringNullableFilter<"Invoice"> | string | null
+  annexureSentAt?: Prisma.DateTimeNullableFilter<"Invoice"> | Date | string | null
+  annexureValidatedAt?: Prisma.DateTimeNullableFilter<"Invoice"> | Date | string | null
+  annexureQuery?: Prisma.StringNullableFilter<"Invoice"> | string | null
   version?: Prisma.IntFilter<"Invoice"> | number
   createdAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
@@ -375,6 +407,10 @@ export type InvoiceOrderByWithRelationInput = {
   paidAmount?: Prisma.SortOrder
   creditedAmount?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureValidatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureQuery?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -405,6 +441,10 @@ export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
   paidAmount?: Prisma.DecimalFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.StringNullableFilter<"Invoice"> | string | null
+  annexureStatus?: Prisma.StringNullableFilter<"Invoice"> | string | null
+  annexureSentAt?: Prisma.DateTimeNullableFilter<"Invoice"> | Date | string | null
+  annexureValidatedAt?: Prisma.DateTimeNullableFilter<"Invoice"> | Date | string | null
+  annexureQuery?: Prisma.StringNullableFilter<"Invoice"> | string | null
   version?: Prisma.IntFilter<"Invoice"> | number
   createdAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
@@ -431,6 +471,10 @@ export type InvoiceOrderByWithAggregationInput = {
   paidAmount?: Prisma.SortOrder
   creditedAmount?: Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureSentAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureValidatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  annexureQuery?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -460,6 +504,10 @@ export type InvoiceScalarWhereWithAggregatesInput = {
   paidAmount?: Prisma.DecimalWithAggregatesFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalWithAggregatesFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.StringNullableWithAggregatesFilter<"Invoice"> | string | null
+  annexureStatus?: Prisma.StringNullableWithAggregatesFilter<"Invoice"> | string | null
+  annexureSentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invoice"> | Date | string | null
+  annexureValidatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Invoice"> | Date | string | null
+  annexureQuery?: Prisma.StringNullableWithAggregatesFilter<"Invoice"> | string | null
   version?: Prisma.IntWithAggregatesFilter<"Invoice"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Invoice"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Invoice"> | Date | string
@@ -479,6 +527,10 @@ export type InvoiceCreateInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -505,6 +557,10 @@ export type InvoiceUncheckedCreateInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -527,6 +583,10 @@ export type InvoiceUpdateInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -553,6 +613,10 @@ export type InvoiceUncheckedUpdateInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -576,6 +640,10 @@ export type InvoiceCreateManyInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -595,6 +663,10 @@ export type InvoiceUpdateManyMutationInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -616,6 +688,10 @@ export type InvoiceUncheckedUpdateManyInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -652,6 +728,10 @@ export type InvoiceCountOrderByAggregateInput = {
   paidAmount?: Prisma.SortOrder
   creditedAmount?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  annexureStatus?: Prisma.SortOrder
+  annexureSentAt?: Prisma.SortOrder
+  annexureValidatedAt?: Prisma.SortOrder
+  annexureQuery?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -685,6 +765,10 @@ export type InvoiceMaxOrderByAggregateInput = {
   paidAmount?: Prisma.SortOrder
   creditedAmount?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  annexureStatus?: Prisma.SortOrder
+  annexureSentAt?: Prisma.SortOrder
+  annexureValidatedAt?: Prisma.SortOrder
+  annexureQuery?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -706,6 +790,10 @@ export type InvoiceMinOrderByAggregateInput = {
   paidAmount?: Prisma.SortOrder
   creditedAmount?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  annexureStatus?: Prisma.SortOrder
+  annexureSentAt?: Prisma.SortOrder
+  annexureValidatedAt?: Prisma.SortOrder
+  annexureQuery?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -868,6 +956,10 @@ export type InvoiceCreateWithoutTenantInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -892,6 +984,10 @@ export type InvoiceUncheckedCreateWithoutTenantInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -944,6 +1040,10 @@ export type InvoiceScalarWhereInput = {
   paidAmount?: Prisma.DecimalFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFilter<"Invoice"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.StringNullableFilter<"Invoice"> | string | null
+  annexureStatus?: Prisma.StringNullableFilter<"Invoice"> | string | null
+  annexureSentAt?: Prisma.DateTimeNullableFilter<"Invoice"> | Date | string | null
+  annexureValidatedAt?: Prisma.DateTimeNullableFilter<"Invoice"> | Date | string | null
+  annexureQuery?: Prisma.StringNullableFilter<"Invoice"> | string | null
   version?: Prisma.IntFilter<"Invoice"> | number
   createdAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Invoice"> | Date | string
@@ -963,6 +1063,10 @@ export type InvoiceCreateWithoutClientInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -987,6 +1091,10 @@ export type InvoiceUncheckedCreateWithoutClientInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1034,6 +1142,10 @@ export type InvoiceCreateWithoutLinesInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1059,6 +1171,10 @@ export type InvoiceUncheckedCreateWithoutLinesInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1096,6 +1212,10 @@ export type InvoiceUpdateWithoutLinesInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1121,6 +1241,10 @@ export type InvoiceUncheckedUpdateWithoutLinesInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1142,6 +1266,10 @@ export type InvoiceCreateWithoutPaymentsInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1167,6 +1295,10 @@ export type InvoiceUncheckedCreateWithoutPaymentsInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1204,6 +1336,10 @@ export type InvoiceUpdateWithoutPaymentsInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1229,6 +1365,10 @@ export type InvoiceUncheckedUpdateWithoutPaymentsInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1250,6 +1390,10 @@ export type InvoiceCreateWithoutCreditNotesInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1275,6 +1419,10 @@ export type InvoiceUncheckedCreateWithoutCreditNotesInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1312,6 +1460,10 @@ export type InvoiceUpdateWithoutCreditNotesInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1337,6 +1489,10 @@ export type InvoiceUncheckedUpdateWithoutCreditNotesInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1358,6 +1514,10 @@ export type InvoiceCreateManyTenantInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1377,6 +1537,10 @@ export type InvoiceUpdateWithoutTenantInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1401,6 +1565,10 @@ export type InvoiceUncheckedUpdateWithoutTenantInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1424,6 +1592,10 @@ export type InvoiceUncheckedUpdateManyWithoutTenantInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1443,6 +1615,10 @@ export type InvoiceCreateManyClientInput = {
   paidAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: string | null
+  annexureStatus?: string | null
+  annexureSentAt?: Date | string | null
+  annexureValidatedAt?: Date | string | null
+  annexureQuery?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1462,6 +1638,10 @@ export type InvoiceUpdateWithoutClientInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1486,6 +1666,10 @@ export type InvoiceUncheckedUpdateWithoutClientInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1509,6 +1693,10 @@ export type InvoiceUncheckedUpdateManyWithoutClientInput = {
   paidAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   creditedAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  annexureSentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureValidatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  annexureQuery?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1579,6 +1767,10 @@ export type InvoiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   paidAmount?: boolean
   creditedAmount?: boolean
   notes?: boolean
+  annexureStatus?: boolean
+  annexureSentAt?: boolean
+  annexureValidatedAt?: boolean
+  annexureQuery?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1608,12 +1800,16 @@ export type InvoiceSelectScalar = {
   paidAmount?: boolean
   creditedAmount?: boolean
   notes?: boolean
+  annexureStatus?: boolean
+  annexureSentAt?: boolean
+  annexureValidatedAt?: boolean
+  annexureQuery?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type InvoiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "invoiceNumber" | "status" | "currency" | "issuedAt" | "dueAt" | "subtotal" | "taxAmount" | "totalAmount" | "paidAmount" | "creditedAmount" | "notes" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
+export type InvoiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "clientId" | "invoiceNumber" | "status" | "currency" | "issuedAt" | "dueAt" | "subtotal" | "taxAmount" | "totalAmount" | "paidAmount" | "creditedAmount" | "notes" | "annexureStatus" | "annexureSentAt" | "annexureValidatedAt" | "annexureQuery" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["invoice"]>
 export type InvoiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
@@ -1648,6 +1844,13 @@ export type $InvoicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     paidAmount: runtime.Decimal
     creditedAmount: runtime.Decimal
     notes: string | null
+    /**
+     * Bill validation: the client checks the billing annexure (PENDING / VALIDATED / QUERIED).
+     */
+    annexureStatus: string | null
+    annexureSentAt: Date | null
+    annexureValidatedAt: Date | null
+    annexureQuery: string | null
     version: number
     createdAt: Date
     updatedAt: Date
@@ -2040,6 +2243,10 @@ export interface InvoiceFieldRefs {
   readonly paidAmount: Prisma.FieldRef<"Invoice", 'Decimal'>
   readonly creditedAmount: Prisma.FieldRef<"Invoice", 'Decimal'>
   readonly notes: Prisma.FieldRef<"Invoice", 'String'>
+  readonly annexureStatus: Prisma.FieldRef<"Invoice", 'String'>
+  readonly annexureSentAt: Prisma.FieldRef<"Invoice", 'DateTime'>
+  readonly annexureValidatedAt: Prisma.FieldRef<"Invoice", 'DateTime'>
+  readonly annexureQuery: Prisma.FieldRef<"Invoice", 'String'>
   readonly version: Prisma.FieldRef<"Invoice", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Invoice", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Invoice", 'DateTime'>

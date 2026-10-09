@@ -85,6 +85,12 @@ export type RefreshSession = Prisma.RefreshSessionModel
  */
 export type Client = Prisma.ClientModel
 /**
+ * Model SignupRequest
+ * Public company sign-up waiting for email OTP. The user, client and session are
+ * created only after the OTP is confirmed.
+ */
+export type SignupRequest = Prisma.SignupRequestModel
+/**
  * Model ServicePackage
  * 
  */
@@ -245,6 +251,29 @@ export type CaseService = Prisma.CaseServiceModel
  */
 export type VerificationMethodRun = Prisma.VerificationMethodRunModel
 /**
+ * Model VendorCheckAssignment
+ * An email to an employer / university with an automatic follow-up plan
+ * (BGV process: employment 7 follow-ups, education 3; stops when the source responds).
+ * Vendor / field work on a whole check: assigned -> in progress -> submitted -> approved
+ * (or returned / declined / cancelled). Approval copies the result into the check's RHS.
+ */
+export type VendorCheckAssignment = Prisma.VendorCheckAssignmentModel
+/**
+ * Model VendorCheckEvidence
+ * Proof a vendor uploads with its check result.
+ */
+export type VendorCheckEvidence = Prisma.VendorCheckEvidenceModel
+/**
+ * Model ClientMisSchedule
+ * Client scheduled MIS: a report preset emailed daily / weekly / monthly.
+ */
+export type ClientMisSchedule = Prisma.ClientMisScheduleModel
+/**
+ * Model SourceEmail
+ * 
+ */
+export type SourceEmail = Prisma.SourceEmailModel
+/**
  * Model SourceOutreach
  * 
  */
@@ -254,6 +283,12 @@ export type SourceOutreach = Prisma.SourceOutreachModel
  * 
  */
 export type ClientPackageRate = Prisma.ClientPackageRateModel
+/**
+ * Model ClientPackageDiscount
+ * A discount on one package for one client, on top of its list or contracted price.
+ * Kept apart from ClientPackageRate so a discount never changes which packages a client may use.
+ */
+export type ClientPackageDiscount = Prisma.ClientPackageDiscountModel
 /**
  * Model ClientAgreement
  * 
@@ -316,3 +351,14 @@ export type VendorTeamPolicy = Prisma.VendorTeamPolicyModel
  * version n+1 (history kept); SPOC-RM always gets the latest version.
  */
 export type VendorReport = Prisma.VendorReportModel
+/**
+ * Model Department
+ * Configurable operational department (Data Entry, Employment, Education, Address...).
+ * Packages define checks; routing a check to a department and assigning a member are separate.
+ */
+export type Department = Prisma.DepartmentModel
+/**
+ * Model DepartmentMember
+ * Team Leader (LEAD) or team member (MEMBER) of a department.
+ */
+export type DepartmentMember = Prisma.DepartmentMemberModel

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import { taskAccessScope } from "./task-query.helpers";
+import { documentScope } from "./check-documents";
 
 @Injectable()
 export class TaskContextService {
@@ -49,6 +50,7 @@ export class TaskContextService {
                   orderBy: { createdAt: "desc" },
                 },
                 documents: {
+                  where: documentScope(actor),
                   select: {
                     publicId: true,
                     type: true,

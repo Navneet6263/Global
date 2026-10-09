@@ -37,8 +37,9 @@ export class DashboardsController {
     private readonly navigationCounts: NavigationCountsService,
   ) {}
 
+  // Sidebar counts only; an RM gets its own cases by step.
   @Get("navigation")
-  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN", "SPOC_RM")
   navigation(@CurrentActor() actor: Actor) {
     return this.navigationCounts.get(actor);
   }

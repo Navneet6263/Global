@@ -67,31 +67,31 @@ function VerifierPerformancePage() {
         ]}
       />
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(20rem,0.85fr)]">
-        <section className="rounded-[1.7rem] border border-white/85 bg-card/90 p-5 shadow-[var(--shadow-float)] sm:p-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h2 className="text-[15px] font-semibold">Throughput rhythm</h2>
-              <p className="mt-0.5 text-[10px] text-muted-foreground">
+              <p className="mt-0.5 text-xs text-muted-foreground">
                 Completed checks across the last seven calendar days
               </p>
             </div>
-            <span className="rounded-full bg-info-soft px-3 py-1.5 text-[9.5px] font-semibold text-info-foreground">
+            <span className="rounded-full bg-info-soft px-3 py-1.5 text-[11.5px] font-semibold text-info-foreground">
               7-day view
             </span>
           </div>
           <div className="mt-7 grid h-56 grid-cols-7 items-end gap-3 border-b border-border/60 px-2">
             {daily.map((day) => (
               <div key={day.date} className="flex h-full flex-col items-center justify-end gap-2">
-                <span className="num text-[10px] font-semibold">{day.completed}</span>
+                <span className="num text-xs font-semibold">{day.completed}</span>
                 <div className="flex h-[155px] w-full max-w-12 items-end overflow-hidden rounded-t-full bg-info-soft/55">
                   <span
-                    className="w-full rounded-t-full bg-gradient-to-t from-info to-mint transition-[height] duration-500"
+                    className="w-full rounded-t-full bg-gradient-to-t from-info to-blue-500 transition-[height] duration-500"
                     style={{
                       height: `${Math.max(day.completed ? 12 : 3, (day.completed / peak) * 100)}%`,
                     }}
                   />
                 </div>
-                <span className="pb-2 text-[9px] text-muted-foreground">
+                <span className="pb-2 text-[11px] text-muted-foreground">
                   {new Intl.DateTimeFormat("en-IN", { weekday: "short" }).format(
                     new Date(day.date),
                   )}
@@ -100,9 +100,9 @@ function VerifierPerformancePage() {
             ))}
           </div>
         </section>
-        <section className="rounded-[1.7rem] border border-white/85 bg-card/90 p-5 shadow-[var(--shadow-float)] sm:p-6">
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <h2 className="text-[15px] font-semibold">Outcome mix</h2>
-          <p className="mt-0.5 text-[10px] text-muted-foreground">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             Defensible results recorded this week
           </p>
           <div
@@ -141,9 +141,9 @@ function VerifierPerformancePage() {
               color="bg-critical"
             />
           </div>
-          <div className="mt-6 rounded-[1.2rem] border border-mint/15 bg-mint-soft/35 p-4">
-            <p className="text-[10.5px] font-semibold">Quality interpretation</p>
-            <p className="mt-1.5 text-[9.5px] leading-relaxed text-muted-foreground">
+          <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+            <p className="text-[12.5px] font-semibold">Quality interpretation</p>
+            <p className="mt-1.5 text-[11.5px] leading-relaxed text-muted-foreground">
               This view measures process discipline, not a target for clear outcomes. Discrepancies
               and unable-to-verify decisions are valid when the recorded evidence supports them.
             </p>
@@ -178,11 +178,11 @@ function OutcomeRow({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-[1rem] border border-border/60 bg-background/50 p-3">
+    <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-slate-50 p-3">
       <span className={`size-2.5 rounded-full ${color}`} />
-      <span className="flex-1 text-[10.5px] font-medium">{label}</span>
-      <span className="num text-[11px] font-semibold">{value}</span>
-      <span className="w-10 text-right text-[9px] text-muted-foreground">
+      <span className="flex-1 text-[12.5px] font-medium">{label}</span>
+      <span className="num text-[12.5px] font-semibold">{value}</span>
+      <span className="w-10 text-right text-[11px] text-muted-foreground">
         {total ? Math.round((value / total) * 100) : 0}%
       </span>
     </div>

@@ -35,6 +35,9 @@ export type VerificationCaseAvgAggregateOutputType = {
   subjectId: number | null
   assignedOpsUserId: number | null
   qaReviewerId: number | null
+  workflowVersion: number | null
+  dataEntryUserId: number | null
+  escalatedById: number | null
   version: number | null
 }
 
@@ -47,6 +50,9 @@ export type VerificationCaseSumAggregateOutputType = {
   subjectId: bigint | null
   assignedOpsUserId: bigint | null
   qaReviewerId: bigint | null
+  workflowVersion: number | null
+  dataEntryUserId: bigint | null
+  escalatedById: bigint | null
   version: number | null
 }
 
@@ -70,6 +76,17 @@ export type VerificationCaseMinAggregateOutputType = {
   dueAt: Date | null
   completedAt: Date | null
   riskLevel: string | null
+  workflowVersion: number | null
+  intakeStage: string | null
+  dataEntryUserId: bigint | null
+  dataEntryAssignedAt: Date | null
+  dataEntryReadyAt: Date | null
+  stoppedFromStatus: string | null
+  stoppedAt: Date | null
+  stopReason: string | null
+  escalatedAt: Date | null
+  escalatedById: bigint | null
+  escalationNote: string | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -95,6 +112,17 @@ export type VerificationCaseMaxAggregateOutputType = {
   dueAt: Date | null
   completedAt: Date | null
   riskLevel: string | null
+  workflowVersion: number | null
+  intakeStage: string | null
+  dataEntryUserId: bigint | null
+  dataEntryAssignedAt: Date | null
+  dataEntryReadyAt: Date | null
+  stoppedFromStatus: string | null
+  stoppedAt: Date | null
+  stopReason: string | null
+  escalatedAt: Date | null
+  escalatedById: bigint | null
+  escalationNote: string | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -120,6 +148,17 @@ export type VerificationCaseCountAggregateOutputType = {
   dueAt: number
   completedAt: number
   riskLevel: number
+  workflowVersion: number
+  intakeStage: number
+  dataEntryUserId: number
+  dataEntryAssignedAt: number
+  dataEntryReadyAt: number
+  stoppedFromStatus: number
+  stoppedAt: number
+  stopReason: number
+  escalatedAt: number
+  escalatedById: number
+  escalationNote: number
   version: number
   createdAt: number
   updatedAt: number
@@ -136,6 +175,9 @@ export type VerificationCaseAvgAggregateInputType = {
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
+  workflowVersion?: true
+  dataEntryUserId?: true
+  escalatedById?: true
   version?: true
 }
 
@@ -148,6 +190,9 @@ export type VerificationCaseSumAggregateInputType = {
   subjectId?: true
   assignedOpsUserId?: true
   qaReviewerId?: true
+  workflowVersion?: true
+  dataEntryUserId?: true
+  escalatedById?: true
   version?: true
 }
 
@@ -171,6 +216,17 @@ export type VerificationCaseMinAggregateInputType = {
   dueAt?: true
   completedAt?: true
   riskLevel?: true
+  workflowVersion?: true
+  intakeStage?: true
+  dataEntryUserId?: true
+  dataEntryAssignedAt?: true
+  dataEntryReadyAt?: true
+  stoppedFromStatus?: true
+  stoppedAt?: true
+  stopReason?: true
+  escalatedAt?: true
+  escalatedById?: true
+  escalationNote?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -196,6 +252,17 @@ export type VerificationCaseMaxAggregateInputType = {
   dueAt?: true
   completedAt?: true
   riskLevel?: true
+  workflowVersion?: true
+  intakeStage?: true
+  dataEntryUserId?: true
+  dataEntryAssignedAt?: true
+  dataEntryReadyAt?: true
+  stoppedFromStatus?: true
+  stoppedAt?: true
+  stopReason?: true
+  escalatedAt?: true
+  escalatedById?: true
+  escalationNote?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -221,6 +288,17 @@ export type VerificationCaseCountAggregateInputType = {
   dueAt?: true
   completedAt?: true
   riskLevel?: true
+  workflowVersion?: true
+  intakeStage?: true
+  dataEntryUserId?: true
+  dataEntryAssignedAt?: true
+  dataEntryReadyAt?: true
+  stoppedFromStatus?: true
+  stoppedAt?: true
+  stopReason?: true
+  escalatedAt?: true
+  escalatedById?: true
+  escalationNote?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -333,6 +411,17 @@ export type VerificationCaseGroupByOutputType = {
   dueAt: Date | null
   completedAt: Date | null
   riskLevel: string | null
+  workflowVersion: number
+  intakeStage: string | null
+  dataEntryUserId: bigint | null
+  dataEntryAssignedAt: Date | null
+  dataEntryReadyAt: Date | null
+  stoppedFromStatus: string | null
+  stoppedAt: Date | null
+  stopReason: string | null
+  escalatedAt: Date | null
+  escalatedById: bigint | null
+  escalationNote: string | null
   version: number
   createdAt: Date
   updatedAt: Date
@@ -381,10 +470,23 @@ export type VerificationCaseWhereInput = {
   dueAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   riskLevel?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  workflowVersion?: Prisma.IntFilter<"VerificationCase"> | number
+  intakeStage?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  dataEntryUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
+  dataEntryAssignedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  dataEntryReadyAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  stoppedFromStatus?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  stoppedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  stopReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  escalatedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  escalatedById?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
+  escalationNote?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   version?: Prisma.IntFilter<"VerificationCase"> | number
   createdAt?: Prisma.DateTimeFilter<"VerificationCase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VerificationCase"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  dataEntryUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  escalatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   servicePackage?: Prisma.XOR<Prisma.ServicePackageNullableScalarRelationFilter, Prisma.ServicePackageWhereInput> | null
@@ -404,6 +506,7 @@ export type VerificationCaseWhereInput = {
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
   vendorAssignments?: Prisma.VendorAssignmentListRelationFilter
+  vendorCheckWork?: Prisma.VendorCheckAssignmentListRelationFilter
   supportRequests?: Prisma.SupportRequestListRelationFilter
 }
 
@@ -427,10 +530,23 @@ export type VerificationCaseOrderByWithRelationInput = {
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   riskLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  intakeStage?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryAssignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReadyAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  stoppedFromStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  stoppedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  stopReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalatedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalationNote?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
+  dataEntryUser?: Prisma.UserOrderByWithRelationInput
+  escalatedBy?: Prisma.UserOrderByWithRelationInput
   branch?: Prisma.BranchOrderByWithRelationInput
   client?: Prisma.ClientOrderByWithRelationInput
   servicePackage?: Prisma.ServicePackageOrderByWithRelationInput
@@ -450,6 +566,7 @@ export type VerificationCaseOrderByWithRelationInput = {
   invoiceLines?: Prisma.InvoiceLineOrderByRelationAggregateInput
   candidateAccess?: Prisma.CandidatePortalAccessOrderByRelationAggregateInput
   vendorAssignments?: Prisma.VendorAssignmentOrderByRelationAggregateInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
   supportRequests?: Prisma.SupportRequestOrderByRelationAggregateInput
 }
 
@@ -477,10 +594,23 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   dueAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   riskLevel?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  workflowVersion?: Prisma.IntFilter<"VerificationCase"> | number
+  intakeStage?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  dataEntryUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
+  dataEntryAssignedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  dataEntryReadyAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  stoppedFromStatus?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  stoppedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  stopReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  escalatedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  escalatedById?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
+  escalationNote?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   version?: Prisma.IntFilter<"VerificationCase"> | number
   createdAt?: Prisma.DateTimeFilter<"VerificationCase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VerificationCase"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
+  dataEntryUser?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+  escalatedBy?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   branch?: Prisma.XOR<Prisma.BranchNullableScalarRelationFilter, Prisma.BranchWhereInput> | null
   client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   servicePackage?: Prisma.XOR<Prisma.ServicePackageNullableScalarRelationFilter, Prisma.ServicePackageWhereInput> | null
@@ -500,6 +630,7 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   invoiceLines?: Prisma.InvoiceLineListRelationFilter
   candidateAccess?: Prisma.CandidatePortalAccessListRelationFilter
   vendorAssignments?: Prisma.VendorAssignmentListRelationFilter
+  vendorCheckWork?: Prisma.VendorCheckAssignmentListRelationFilter
   supportRequests?: Prisma.SupportRequestListRelationFilter
 }, "id" | "publicId" | "tenantId_caseNumber">
 
@@ -523,6 +654,17 @@ export type VerificationCaseOrderByWithAggregationInput = {
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   riskLevel?: Prisma.SortOrderInput | Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  intakeStage?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryAssignedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReadyAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  stoppedFromStatus?: Prisma.SortOrderInput | Prisma.SortOrder
+  stoppedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  stopReason?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalatedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  escalationNote?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -556,6 +698,17 @@ export type VerificationCaseScalarWhereWithAggregatesInput = {
   dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
   riskLevel?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
+  workflowVersion?: Prisma.IntWithAggregatesFilter<"VerificationCase"> | number
+  intakeStage?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
+  dataEntryUserId?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
+  dataEntryAssignedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
+  dataEntryReadyAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
+  stoppedFromStatus?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
+  stoppedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
+  stopReason?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
+  escalatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
+  escalatedById?: Prisma.BigIntNullableWithAggregatesFilter<"VerificationCase"> | bigint | number | null
+  escalationNote?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
   version?: Prisma.IntWithAggregatesFilter<"VerificationCase"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"VerificationCase"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"VerificationCase"> | Date | string
@@ -574,10 +727,21 @@ export type VerificationCaseCreateInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -597,6 +761,7 @@ export type VerificationCaseCreateInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -620,6 +785,17 @@ export type VerificationCaseUncheckedCreateInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -636,6 +812,7 @@ export type VerificationCaseUncheckedCreateInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -652,10 +829,21 @@ export type VerificationCaseUpdateInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -675,6 +863,7 @@ export type VerificationCaseUpdateInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -698,6 +887,17 @@ export type VerificationCaseUncheckedUpdateInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -714,6 +914,7 @@ export type VerificationCaseUncheckedUpdateInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -736,6 +937,17 @@ export type VerificationCaseCreateManyInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -754,6 +966,15 @@ export type VerificationCaseUpdateManyMutationInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -779,6 +1000,17 @@ export type VerificationCaseUncheckedUpdateManyInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -819,6 +1051,17 @@ export type VerificationCaseCountOrderByAggregateInput = {
   dueAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  intakeStage?: Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrder
+  dataEntryAssignedAt?: Prisma.SortOrder
+  dataEntryReadyAt?: Prisma.SortOrder
+  stoppedFromStatus?: Prisma.SortOrder
+  stoppedAt?: Prisma.SortOrder
+  stopReason?: Prisma.SortOrder
+  escalatedAt?: Prisma.SortOrder
+  escalatedById?: Prisma.SortOrder
+  escalationNote?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -833,6 +1076,9 @@ export type VerificationCaseAvgOrderByAggregateInput = {
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrder
+  escalatedById?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -856,6 +1102,17 @@ export type VerificationCaseMaxOrderByAggregateInput = {
   dueAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  intakeStage?: Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrder
+  dataEntryAssignedAt?: Prisma.SortOrder
+  dataEntryReadyAt?: Prisma.SortOrder
+  stoppedFromStatus?: Prisma.SortOrder
+  stoppedAt?: Prisma.SortOrder
+  stopReason?: Prisma.SortOrder
+  escalatedAt?: Prisma.SortOrder
+  escalatedById?: Prisma.SortOrder
+  escalationNote?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -881,6 +1138,17 @@ export type VerificationCaseMinOrderByAggregateInput = {
   dueAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   riskLevel?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  intakeStage?: Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrder
+  dataEntryAssignedAt?: Prisma.SortOrder
+  dataEntryReadyAt?: Prisma.SortOrder
+  stoppedFromStatus?: Prisma.SortOrder
+  stoppedAt?: Prisma.SortOrder
+  stopReason?: Prisma.SortOrder
+  escalatedAt?: Prisma.SortOrder
+  escalatedById?: Prisma.SortOrder
+  escalationNote?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -895,6 +1163,9 @@ export type VerificationCaseSumOrderByAggregateInput = {
   subjectId?: Prisma.SortOrder
   assignedOpsUserId?: Prisma.SortOrder
   qaReviewerId?: Prisma.SortOrder
+  workflowVersion?: Prisma.SortOrder
+  dataEntryUserId?: Prisma.SortOrder
+  escalatedById?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -1006,6 +1277,20 @@ export type VerificationCaseCreateNestedManyWithoutQaReviewerInput = {
   connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
 }
 
+export type VerificationCaseCreateNestedManyWithoutDataEntryUserInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput> | Prisma.VerificationCaseCreateWithoutDataEntryUserInput[] | Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput | Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput[]
+  createMany?: Prisma.VerificationCaseCreateManyDataEntryUserInputEnvelope
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+}
+
+export type VerificationCaseCreateNestedManyWithoutEscalatedByInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput> | Prisma.VerificationCaseCreateWithoutEscalatedByInput[] | Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput | Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput[]
+  createMany?: Prisma.VerificationCaseCreateManyEscalatedByInputEnvelope
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+}
+
 export type VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput = {
   create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutAssignedOpsUserInput, Prisma.VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput> | Prisma.VerificationCaseCreateWithoutAssignedOpsUserInput[] | Prisma.VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput[]
   connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutAssignedOpsUserInput | Prisma.VerificationCaseCreateOrConnectWithoutAssignedOpsUserInput[]
@@ -1017,6 +1302,20 @@ export type VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput = {
   create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutQaReviewerInput, Prisma.VerificationCaseUncheckedCreateWithoutQaReviewerInput> | Prisma.VerificationCaseCreateWithoutQaReviewerInput[] | Prisma.VerificationCaseUncheckedCreateWithoutQaReviewerInput[]
   connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutQaReviewerInput | Prisma.VerificationCaseCreateOrConnectWithoutQaReviewerInput[]
   createMany?: Prisma.VerificationCaseCreateManyQaReviewerInputEnvelope
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+}
+
+export type VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput> | Prisma.VerificationCaseCreateWithoutDataEntryUserInput[] | Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput | Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput[]
+  createMany?: Prisma.VerificationCaseCreateManyDataEntryUserInputEnvelope
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+}
+
+export type VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput> | Prisma.VerificationCaseCreateWithoutEscalatedByInput[] | Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput | Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput[]
+  createMany?: Prisma.VerificationCaseCreateManyEscalatedByInputEnvelope
   connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
 }
 
@@ -1048,6 +1347,34 @@ export type VerificationCaseUpdateManyWithoutQaReviewerNestedInput = {
   deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
 }
 
+export type VerificationCaseUpdateManyWithoutDataEntryUserNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput> | Prisma.VerificationCaseCreateWithoutDataEntryUserInput[] | Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput | Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput[]
+  upsert?: Prisma.VerificationCaseUpsertWithWhereUniqueWithoutDataEntryUserInput | Prisma.VerificationCaseUpsertWithWhereUniqueWithoutDataEntryUserInput[]
+  createMany?: Prisma.VerificationCaseCreateManyDataEntryUserInputEnvelope
+  set?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  disconnect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  delete?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutDataEntryUserInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutDataEntryUserInput[]
+  updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutDataEntryUserInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutDataEntryUserInput[]
+  deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
+}
+
+export type VerificationCaseUpdateManyWithoutEscalatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput> | Prisma.VerificationCaseCreateWithoutEscalatedByInput[] | Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput | Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput[]
+  upsert?: Prisma.VerificationCaseUpsertWithWhereUniqueWithoutEscalatedByInput | Prisma.VerificationCaseUpsertWithWhereUniqueWithoutEscalatedByInput[]
+  createMany?: Prisma.VerificationCaseCreateManyEscalatedByInputEnvelope
+  set?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  disconnect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  delete?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutEscalatedByInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutEscalatedByInput[]
+  updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutEscalatedByInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutEscalatedByInput[]
+  deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
+}
+
 export type VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput = {
   create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutAssignedOpsUserInput, Prisma.VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput> | Prisma.VerificationCaseCreateWithoutAssignedOpsUserInput[] | Prisma.VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput[]
   connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutAssignedOpsUserInput | Prisma.VerificationCaseCreateOrConnectWithoutAssignedOpsUserInput[]
@@ -1073,6 +1400,34 @@ export type VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput = {
   connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
   update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutQaReviewerInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutQaReviewerInput[]
   updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutQaReviewerInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutQaReviewerInput[]
+  deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
+}
+
+export type VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput> | Prisma.VerificationCaseCreateWithoutDataEntryUserInput[] | Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput | Prisma.VerificationCaseCreateOrConnectWithoutDataEntryUserInput[]
+  upsert?: Prisma.VerificationCaseUpsertWithWhereUniqueWithoutDataEntryUserInput | Prisma.VerificationCaseUpsertWithWhereUniqueWithoutDataEntryUserInput[]
+  createMany?: Prisma.VerificationCaseCreateManyDataEntryUserInputEnvelope
+  set?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  disconnect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  delete?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutDataEntryUserInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutDataEntryUserInput[]
+  updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutDataEntryUserInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutDataEntryUserInput[]
+  deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
+}
+
+export type VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput> | Prisma.VerificationCaseCreateWithoutEscalatedByInput[] | Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput[]
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput | Prisma.VerificationCaseCreateOrConnectWithoutEscalatedByInput[]
+  upsert?: Prisma.VerificationCaseUpsertWithWhereUniqueWithoutEscalatedByInput | Prisma.VerificationCaseUpsertWithWhereUniqueWithoutEscalatedByInput[]
+  createMany?: Prisma.VerificationCaseCreateManyEscalatedByInputEnvelope
+  set?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  disconnect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  delete?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  connect?: Prisma.VerificationCaseWhereUniqueInput | Prisma.VerificationCaseWhereUniqueInput[]
+  update?: Prisma.VerificationCaseUpdateWithWhereUniqueWithoutEscalatedByInput | Prisma.VerificationCaseUpdateWithWhereUniqueWithoutEscalatedByInput[]
+  updateMany?: Prisma.VerificationCaseUpdateManyWithWhereWithoutEscalatedByInput | Prisma.VerificationCaseUpdateManyWithWhereWithoutEscalatedByInput[]
   deleteMany?: Prisma.VerificationCaseScalarWhereInput | Prisma.VerificationCaseScalarWhereInput[]
 }
 
@@ -1358,6 +1713,20 @@ export type VerificationCaseUpdateOneRequiredWithoutServicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutServicesInput, Prisma.VerificationCaseUpdateWithoutServicesInput>, Prisma.VerificationCaseUncheckedUpdateWithoutServicesInput>
 }
 
+export type VerificationCaseCreateNestedOneWithoutVendorCheckWorkInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorCheckWorkInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorCheckWorkInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutVendorCheckWorkInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+}
+
+export type VerificationCaseUpdateOneRequiredWithoutVendorCheckWorkNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorCheckWorkInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorCheckWorkInput>
+  connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutVendorCheckWorkInput
+  upsert?: Prisma.VerificationCaseUpsertWithoutVendorCheckWorkInput
+  connect?: Prisma.VerificationCaseWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationCaseUpdateToOneWithWhereWithoutVendorCheckWorkInput, Prisma.VerificationCaseUpdateWithoutVendorCheckWorkInput>, Prisma.VerificationCaseUncheckedUpdateWithoutVendorCheckWorkInput>
+}
+
 export type VerificationCaseCreateNestedOneWithoutCandidateAccessInput = {
   create?: Prisma.XOR<Prisma.VerificationCaseCreateWithoutCandidateAccessInput, Prisma.VerificationCaseUncheckedCreateWithoutCandidateAccessInput>
   connectOrCreate?: Prisma.VerificationCaseCreateOrConnectWithoutCandidateAccessInput
@@ -1415,9 +1784,20 @@ export type VerificationCaseCreateWithoutTenantInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -1437,6 +1817,7 @@ export type VerificationCaseCreateWithoutTenantInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -1459,6 +1840,17 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1475,6 +1867,7 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -1526,6 +1919,17 @@ export type VerificationCaseScalarWhereInput = {
   dueAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   riskLevel?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  workflowVersion?: Prisma.IntFilter<"VerificationCase"> | number
+  intakeStage?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  dataEntryUserId?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
+  dataEntryAssignedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  dataEntryReadyAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  stoppedFromStatus?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  stoppedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  stopReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  escalatedAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
+  escalatedById?: Prisma.BigIntNullableFilter<"VerificationCase"> | bigint | number | null
+  escalationNote?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   version?: Prisma.IntFilter<"VerificationCase"> | number
   createdAt?: Prisma.DateTimeFilter<"VerificationCase"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"VerificationCase"> | Date | string
@@ -1544,10 +1948,21 @@ export type VerificationCaseCreateWithoutBranchInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
@@ -1566,6 +1981,7 @@ export type VerificationCaseCreateWithoutBranchInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -1588,6 +2004,17 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1604,6 +2031,7 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -1645,10 +2073,21 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -1667,6 +2106,7 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -1689,6 +2129,17 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1705,6 +2156,7 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -1730,10 +2182,21 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -1752,6 +2215,7 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -1774,6 +2238,17 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1790,6 +2265,7 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -1800,6 +2276,224 @@ export type VerificationCaseCreateOrConnectWithoutQaReviewerInput = {
 
 export type VerificationCaseCreateManyQaReviewerInputEnvelope = {
   data: Prisma.VerificationCaseCreateManyQaReviewerInput | Prisma.VerificationCaseCreateManyQaReviewerInput[]
+}
+
+export type VerificationCaseCreateWithoutDataEntryUserInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutDataEntryUserInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutDataEntryUserInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput>
+}
+
+export type VerificationCaseCreateManyDataEntryUserInputEnvelope = {
+  data: Prisma.VerificationCaseCreateManyDataEntryUserInput | Prisma.VerificationCaseCreateManyDataEntryUserInput[]
+}
+
+export type VerificationCaseCreateWithoutEscalatedByInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutEscalatedByInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutEscalatedByInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput>
+}
+
+export type VerificationCaseCreateManyEscalatedByInputEnvelope = {
+  data: Prisma.VerificationCaseCreateManyEscalatedByInput | Prisma.VerificationCaseCreateManyEscalatedByInput[]
 }
 
 export type VerificationCaseUpsertWithWhereUniqueWithoutAssignedOpsUserInput = {
@@ -1834,6 +2528,38 @@ export type VerificationCaseUpdateManyWithWhereWithoutQaReviewerInput = {
   data: Prisma.XOR<Prisma.VerificationCaseUpdateManyMutationInput, Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerInput>
 }
 
+export type VerificationCaseUpsertWithWhereUniqueWithoutDataEntryUserInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedUpdateWithoutDataEntryUserInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedCreateWithoutDataEntryUserInput>
+}
+
+export type VerificationCaseUpdateWithWhereUniqueWithoutDataEntryUserInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutDataEntryUserInput, Prisma.VerificationCaseUncheckedUpdateWithoutDataEntryUserInput>
+}
+
+export type VerificationCaseUpdateManyWithWhereWithoutDataEntryUserInput = {
+  where: Prisma.VerificationCaseScalarWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateManyMutationInput, Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserInput>
+}
+
+export type VerificationCaseUpsertWithWhereUniqueWithoutEscalatedByInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedUpdateWithoutEscalatedByInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedCreateWithoutEscalatedByInput>
+}
+
+export type VerificationCaseUpdateWithWhereUniqueWithoutEscalatedByInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutEscalatedByInput, Prisma.VerificationCaseUncheckedUpdateWithoutEscalatedByInput>
+}
+
+export type VerificationCaseUpdateManyWithWhereWithoutEscalatedByInput = {
+  where: Prisma.VerificationCaseScalarWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateManyMutationInput, Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByInput>
+}
+
 export type VerificationCaseCreateWithoutClientInput = {
   id?: bigint | number
   publicId?: string
@@ -1847,10 +2573,21 @@ export type VerificationCaseCreateWithoutClientInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
@@ -1869,6 +2606,7 @@ export type VerificationCaseCreateWithoutClientInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -1891,6 +2629,17 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1907,6 +2656,7 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -1948,10 +2698,21 @@ export type VerificationCaseCreateWithoutServicePackageInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
@@ -1970,6 +2731,7 @@ export type VerificationCaseCreateWithoutServicePackageInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -1992,6 +2754,17 @@ export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2008,6 +2781,7 @@ export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2049,10 +2823,21 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -2071,6 +2856,7 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -2093,6 +2879,17 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2109,6 +2906,7 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2150,10 +2948,21 @@ export type VerificationCaseCreateWithoutChecksInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -2172,6 +2981,7 @@ export type VerificationCaseCreateWithoutChecksInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -2195,6 +3005,17 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2210,6 +3031,7 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2242,10 +3064,21 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -2264,6 +3097,7 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -2287,6 +3121,17 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2302,6 +3147,7 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -2318,10 +3164,21 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -2340,6 +3197,7 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -2363,6 +3221,17 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2378,6 +3247,7 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2410,10 +3280,21 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -2432,6 +3313,7 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -2455,6 +3337,17 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2470,6 +3363,7 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -2486,10 +3380,21 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -2508,6 +3413,7 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -2531,6 +3437,17 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2546,6 +3463,7 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2578,10 +3496,21 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -2600,6 +3529,7 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -2623,6 +3553,17 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2638,6 +3579,7 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -2654,10 +3596,21 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -2676,6 +3629,7 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -2699,6 +3653,17 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2714,6 +3679,7 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2746,10 +3712,21 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -2768,6 +3745,7 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -2791,6 +3769,17 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2806,6 +3795,7 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -2822,10 +3812,21 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -2844,6 +3845,7 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -2867,6 +3869,17 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -2882,6 +3895,7 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -2914,10 +3928,21 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -2936,6 +3961,7 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -2959,6 +3985,17 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2974,6 +4011,7 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -2990,10 +4028,21 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -3012,6 +4061,7 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -3035,6 +4085,17 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3050,6 +4111,7 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -3082,10 +4144,21 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -3104,6 +4177,7 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -3127,6 +4201,17 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3142,6 +4227,7 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -3158,10 +4244,21 @@ export type VerificationCaseCreateWithoutReportsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -3180,6 +4277,7 @@ export type VerificationCaseCreateWithoutReportsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -3203,6 +4301,17 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3218,6 +4327,7 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -3250,10 +4360,21 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -3272,6 +4393,7 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -3295,6 +4417,17 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3310,6 +4443,7 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -3326,10 +4460,21 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -3348,6 +4493,7 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -3371,6 +4517,17 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3386,6 +4543,7 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -3418,10 +4576,21 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -3440,6 +4609,7 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -3463,6 +4633,17 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3478,6 +4659,7 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -3494,10 +4676,21 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -3516,6 +4709,7 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -3539,6 +4733,17 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3554,6 +4759,7 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -3586,10 +4792,21 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -3608,6 +4825,7 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -3631,6 +4849,17 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3646,6 +4875,7 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -3662,10 +4892,21 @@ export type VerificationCaseCreateWithoutManagerReviewsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -3684,6 +4925,7 @@ export type VerificationCaseCreateWithoutManagerReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -3707,6 +4949,17 @@ export type VerificationCaseUncheckedCreateWithoutManagerReviewsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3722,6 +4975,7 @@ export type VerificationCaseUncheckedCreateWithoutManagerReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -3754,10 +5008,21 @@ export type VerificationCaseUpdateWithoutManagerReviewsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -3776,6 +5041,7 @@ export type VerificationCaseUpdateWithoutManagerReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -3799,6 +5065,17 @@ export type VerificationCaseUncheckedUpdateWithoutManagerReviewsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3814,6 +5091,7 @@ export type VerificationCaseUncheckedUpdateWithoutManagerReviewsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -3830,10 +5108,21 @@ export type VerificationCaseCreateWithoutServicesInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -3852,6 +5141,7 @@ export type VerificationCaseCreateWithoutServicesInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -3875,6 +5165,17 @@ export type VerificationCaseUncheckedCreateWithoutServicesInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -3890,6 +5191,7 @@ export type VerificationCaseUncheckedCreateWithoutServicesInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -3922,10 +5224,21 @@ export type VerificationCaseUpdateWithoutServicesInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -3944,6 +5257,7 @@ export type VerificationCaseUpdateWithoutServicesInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -3967,6 +5281,17 @@ export type VerificationCaseUncheckedUpdateWithoutServicesInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3977,6 +5302,223 @@ export type VerificationCaseUncheckedUpdateWithoutServicesInput = {
   clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
   qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
   managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseCreateWithoutVendorCheckWorkInput = {
+  id?: bigint | number
+  publicId?: string
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
+  branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
+  client: Prisma.ClientCreateNestedOneWithoutCasesInput
+  servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
+  subject: Prisma.SubjectCreateNestedOneWithoutCasesInput
+  assignedOpsUser?: Prisma.UserCreateNestedOneWithoutAssignedCasesInput
+  qaReviewer?: Prisma.UserCreateNestedOneWithoutQaClaimedCasesInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseUncheckedCreateWithoutVendorCheckWorkInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutCaseInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedCreateNestedManyWithoutCaseInput
+  consents?: Prisma.ConsentUncheckedCreateNestedManyWithoutCaseInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutCaseInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutCaseInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutCaseInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutCaseInput
+  services?: Prisma.CaseServiceUncheckedCreateNestedManyWithoutCaseInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutCaseInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
+}
+
+export type VerificationCaseCreateOrConnectWithoutVendorCheckWorkInput = {
+  where: Prisma.VerificationCaseWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorCheckWorkInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorCheckWorkInput>
+}
+
+export type VerificationCaseUpsertWithoutVendorCheckWorkInput = {
+  update: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutVendorCheckWorkInput, Prisma.VerificationCaseUncheckedUpdateWithoutVendorCheckWorkInput>
+  create: Prisma.XOR<Prisma.VerificationCaseCreateWithoutVendorCheckWorkInput, Prisma.VerificationCaseUncheckedCreateWithoutVendorCheckWorkInput>
+  where?: Prisma.VerificationCaseWhereInput
+}
+
+export type VerificationCaseUpdateToOneWithWhereWithoutVendorCheckWorkInput = {
+  where?: Prisma.VerificationCaseWhereInput
+  data: Prisma.XOR<Prisma.VerificationCaseUpdateWithoutVendorCheckWorkInput, Prisma.VerificationCaseUncheckedUpdateWithoutVendorCheckWorkInput>
+}
+
+export type VerificationCaseUpdateWithoutVendorCheckWorkInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutVendorCheckWorkInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
@@ -3998,10 +5540,21 @@ export type VerificationCaseCreateWithoutCandidateAccessInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -4020,6 +5573,7 @@ export type VerificationCaseCreateWithoutCandidateAccessInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -4043,6 +5597,17 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4058,6 +5623,7 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -4090,10 +5656,21 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -4112,6 +5689,7 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -4135,6 +5713,17 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4150,6 +5739,7 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -4166,10 +5756,21 @@ export type VerificationCaseCreateWithoutVendorAssignmentsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -4188,6 +5789,7 @@ export type VerificationCaseCreateWithoutVendorAssignmentsInput = {
   fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutCaseInput
 }
 
@@ -4211,6 +5813,17 @@ export type VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4226,6 +5839,7 @@ export type VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCaseInput
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
   supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutCaseInput
 }
 
@@ -4258,10 +5872,21 @@ export type VerificationCaseUpdateWithoutVendorAssignmentsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -4280,6 +5905,7 @@ export type VerificationCaseUpdateWithoutVendorAssignmentsInput = {
   fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -4303,6 +5929,17 @@ export type VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4318,6 +5955,7 @@ export type VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput = {
   fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -4334,10 +5972,21 @@ export type VerificationCaseCreateWithoutSupportRequestsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCasesInput
+  dataEntryUser?: Prisma.UserCreateNestedOneWithoutDataEntryCasesInput
+  escalatedBy?: Prisma.UserCreateNestedOneWithoutEscalatedCasesInput
   branch?: Prisma.BranchCreateNestedOneWithoutCasesInput
   client: Prisma.ClientCreateNestedOneWithoutCasesInput
   servicePackage?: Prisma.ServicePackageCreateNestedOneWithoutCasesInput
@@ -4357,6 +6006,7 @@ export type VerificationCaseCreateWithoutSupportRequestsInput = {
   invoiceLines?: Prisma.InvoiceLineCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseUncheckedCreateWithoutSupportRequestsInput = {
@@ -4379,6 +6029,17 @@ export type VerificationCaseUncheckedCreateWithoutSupportRequestsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4395,6 +6056,7 @@ export type VerificationCaseUncheckedCreateWithoutSupportRequestsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedCreateNestedManyWithoutCaseInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutCaseInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutCaseInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCaseInput
 }
 
 export type VerificationCaseCreateOrConnectWithoutSupportRequestsInput = {
@@ -4426,10 +6088,21 @@ export type VerificationCaseUpdateWithoutSupportRequestsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -4449,6 +6122,7 @@ export type VerificationCaseUpdateWithoutSupportRequestsInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseUncheckedUpdateWithoutSupportRequestsInput = {
@@ -4471,6 +6145,17 @@ export type VerificationCaseUncheckedUpdateWithoutSupportRequestsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4487,6 +6172,7 @@ export type VerificationCaseUncheckedUpdateWithoutSupportRequestsInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
 }
 
 export type VerificationCaseCreateManyTenantInput = {
@@ -4507,6 +6193,17 @@ export type VerificationCaseCreateManyTenantInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4525,9 +6222,20 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -4547,6 +6255,7 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -4569,6 +6278,17 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4585,6 +6305,7 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -4607,6 +6328,17 @@ export type VerificationCaseUncheckedUpdateManyWithoutTenantInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4630,6 +6362,17 @@ export type VerificationCaseCreateManyBranchInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4648,10 +6391,21 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
@@ -4670,6 +6424,7 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -4692,6 +6447,17 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4708,6 +6474,7 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -4730,6 +6497,17 @@ export type VerificationCaseUncheckedUpdateManyWithoutBranchInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4753,6 +6531,17 @@ export type VerificationCaseCreateManyAssignedOpsUserInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4776,6 +6565,85 @@ export type VerificationCaseCreateManyQaReviewerInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VerificationCaseCreateManyDataEntryUserInput = {
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type VerificationCaseCreateManyEscalatedByInput = {
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId: bigint | number
+  servicePackageId?: bigint | number | null
+  subjectId: bigint | number
+  assignedOpsUserId?: bigint | number | null
+  qaReviewerId?: bigint | number | null
+  qaClaimedAt?: Date | string | null
+  retentionHoldAt?: Date | string | null
+  retentionHoldReason?: string | null
+  caseNumber: string
+  externalRef?: string | null
+  status?: string
+  priority?: string
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -4794,10 +6662,21 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -4816,6 +6695,7 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -4838,6 +6718,17 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4854,6 +6745,7 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -4876,6 +6768,17 @@ export type VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4894,10 +6797,21 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -4916,6 +6830,7 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -4938,6 +6853,17 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4954,6 +6880,7 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -4976,6 +6903,287 @@ export type VerificationCaseUncheckedUpdateManyWithoutQaReviewerInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VerificationCaseUpdateWithoutDataEntryUserInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutDataEntryUserInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateManyWithoutDataEntryUserInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VerificationCaseUpdateWithoutEscalatedByInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
+  servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
+  subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
+  assignedOpsUser?: Prisma.UserUpdateOneWithoutAssignedCasesNestedInput
+  qaReviewer?: Prisma.UserUpdateOneWithoutQaClaimedCasesNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateWithoutEscalatedByInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutCaseNestedInput
+  statusHistory?: Prisma.CaseStatusHistoryUncheckedUpdateManyWithoutCaseNestedInput
+  consents?: Prisma.ConsentUncheckedUpdateManyWithoutCaseNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutCaseNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutCaseNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutCaseNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutCaseNestedInput
+  services?: Prisma.CaseServiceUncheckedUpdateManyWithoutCaseNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutCaseNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCaseNestedInput
+  invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
+}
+
+export type VerificationCaseUncheckedUpdateManyWithoutEscalatedByInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  servicePackageId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  subjectId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  assignedOpsUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaReviewerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  qaClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4999,6 +7207,17 @@ export type VerificationCaseCreateManyClientInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5017,10 +7236,21 @@ export type VerificationCaseUpdateWithoutClientInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
@@ -5039,6 +7269,7 @@ export type VerificationCaseUpdateWithoutClientInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -5061,6 +7292,17 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5077,6 +7319,7 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -5099,6 +7342,17 @@ export type VerificationCaseUncheckedUpdateManyWithoutClientInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5122,6 +7376,17 @@ export type VerificationCaseCreateManyServicePackageInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5140,10 +7405,21 @@ export type VerificationCaseUpdateWithoutServicePackageInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutCasesNestedInput
@@ -5162,6 +7438,7 @@ export type VerificationCaseUpdateWithoutServicePackageInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -5184,6 +7461,17 @@ export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5200,6 +7488,7 @@ export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -5222,6 +7511,17 @@ export type VerificationCaseUncheckedUpdateManyWithoutServicePackageInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5245,6 +7545,17 @@ export type VerificationCaseCreateManySubjectInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   riskLevel?: string | null
+  workflowVersion?: number
+  intakeStage?: string | null
+  dataEntryUserId?: bigint | number | null
+  dataEntryAssignedAt?: Date | string | null
+  dataEntryReadyAt?: Date | string | null
+  stoppedFromStatus?: string | null
+  stoppedAt?: Date | string | null
+  stopReason?: string | null
+  escalatedAt?: Date | string | null
+  escalatedById?: bigint | number | null
+  escalationNote?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -5263,10 +7574,21 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCasesNestedInput
+  dataEntryUser?: Prisma.UserUpdateOneWithoutDataEntryCasesNestedInput
+  escalatedBy?: Prisma.UserUpdateOneWithoutEscalatedCasesNestedInput
   branch?: Prisma.BranchUpdateOneWithoutCasesNestedInput
   client?: Prisma.ClientUpdateOneRequiredWithoutCasesNestedInput
   servicePackage?: Prisma.ServicePackageUpdateOneWithoutCasesNestedInput
@@ -5285,6 +7607,7 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   invoiceLines?: Prisma.InvoiceLineUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUpdateManyWithoutCaseNestedInput
 }
 
@@ -5307,6 +7630,17 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5323,6 +7657,7 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   invoiceLines?: Prisma.InvoiceLineUncheckedUpdateManyWithoutCaseNestedInput
   candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutCaseNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutCaseNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCaseNestedInput
   supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutCaseNestedInput
 }
 
@@ -5345,6 +7680,17 @@ export type VerificationCaseUncheckedUpdateManyWithoutSubjectInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  workflowVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  intakeStage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryUserId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryAssignedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReadyAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stoppedFromStatus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stoppedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  stopReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  escalatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  escalatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  escalationNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -5369,6 +7715,7 @@ export type VerificationCaseCountOutputType = {
   invoiceLines: number
   candidateAccess: number
   vendorAssignments: number
+  vendorCheckWork: number
   supportRequests: number
 }
 
@@ -5386,6 +7733,7 @@ export type VerificationCaseCountOutputTypeSelect<ExtArgs extends runtime.Types.
   invoiceLines?: boolean | VerificationCaseCountOutputTypeCountInvoiceLinesArgs
   candidateAccess?: boolean | VerificationCaseCountOutputTypeCountCandidateAccessArgs
   vendorAssignments?: boolean | VerificationCaseCountOutputTypeCountVendorAssignmentsArgs
+  vendorCheckWork?: boolean | VerificationCaseCountOutputTypeCountVendorCheckWorkArgs
   supportRequests?: boolean | VerificationCaseCountOutputTypeCountSupportRequestsArgs
 }
 
@@ -5493,6 +7841,13 @@ export type VerificationCaseCountOutputTypeCountVendorAssignmentsArgs<ExtArgs ex
 /**
  * VerificationCaseCountOutputType without action
  */
+export type VerificationCaseCountOutputTypeCountVendorCheckWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * VerificationCaseCountOutputType without action
+ */
 export type VerificationCaseCountOutputTypeCountSupportRequestsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SupportRequestWhereInput
 }
@@ -5518,10 +7873,23 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   dueAt?: boolean
   completedAt?: boolean
   riskLevel?: boolean
+  workflowVersion?: boolean
+  intakeStage?: boolean
+  dataEntryUserId?: boolean
+  dataEntryAssignedAt?: boolean
+  dataEntryReadyAt?: boolean
+  stoppedFromStatus?: boolean
+  stoppedAt?: boolean
+  stopReason?: boolean
+  escalatedAt?: boolean
+  escalatedById?: boolean
+  escalationNote?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  dataEntryUser?: boolean | Prisma.VerificationCase$dataEntryUserArgs<ExtArgs>
+  escalatedBy?: boolean | Prisma.VerificationCase$escalatedByArgs<ExtArgs>
   branch?: boolean | Prisma.VerificationCase$branchArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   servicePackage?: boolean | Prisma.VerificationCase$servicePackageArgs<ExtArgs>
@@ -5541,6 +7909,7 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   invoiceLines?: boolean | Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.VerificationCase$candidateAccessArgs<ExtArgs>
   vendorAssignments?: boolean | Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs>
+  vendorCheckWork?: boolean | Prisma.VerificationCase$vendorCheckWorkArgs<ExtArgs>
   supportRequests?: boolean | Prisma.VerificationCase$supportRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.VerificationCaseCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["verificationCase"]>
@@ -5567,14 +7936,27 @@ export type VerificationCaseSelectScalar = {
   dueAt?: boolean
   completedAt?: boolean
   riskLevel?: boolean
+  workflowVersion?: boolean
+  intakeStage?: boolean
+  dataEntryUserId?: boolean
+  dataEntryAssignedAt?: boolean
+  dataEntryReadyAt?: boolean
+  stoppedFromStatus?: boolean
+  stoppedAt?: boolean
+  stopReason?: boolean
+  escalatedAt?: boolean
+  escalatedById?: boolean
+  escalationNote?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "retentionHoldAt" | "retentionHoldReason" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
+export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "retentionHoldAt" | "retentionHoldReason" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "workflowVersion" | "intakeStage" | "dataEntryUserId" | "dataEntryAssignedAt" | "dataEntryReadyAt" | "stoppedFromStatus" | "stoppedAt" | "stopReason" | "escalatedAt" | "escalatedById" | "escalationNote" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
 export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
+  dataEntryUser?: boolean | Prisma.VerificationCase$dataEntryUserArgs<ExtArgs>
+  escalatedBy?: boolean | Prisma.VerificationCase$escalatedByArgs<ExtArgs>
   branch?: boolean | Prisma.VerificationCase$branchArgs<ExtArgs>
   client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   servicePackage?: boolean | Prisma.VerificationCase$servicePackageArgs<ExtArgs>
@@ -5594,6 +7976,7 @@ export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.Int
   invoiceLines?: boolean | Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>
   candidateAccess?: boolean | Prisma.VerificationCase$candidateAccessArgs<ExtArgs>
   vendorAssignments?: boolean | Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs>
+  vendorCheckWork?: boolean | Prisma.VerificationCase$vendorCheckWorkArgs<ExtArgs>
   supportRequests?: boolean | Prisma.VerificationCase$supportRequestsArgs<ExtArgs>
   _count?: boolean | Prisma.VerificationCaseCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -5602,6 +7985,8 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
   name: "VerificationCase"
   objects: {
     tenant: Prisma.$TenantPayload<ExtArgs>
+    dataEntryUser: Prisma.$UserPayload<ExtArgs> | null
+    escalatedBy: Prisma.$UserPayload<ExtArgs> | null
     branch: Prisma.$BranchPayload<ExtArgs> | null
     client: Prisma.$ClientPayload<ExtArgs>
     servicePackage: Prisma.$ServicePackagePayload<ExtArgs> | null
@@ -5621,6 +8006,7 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     invoiceLines: Prisma.$InvoiceLinePayload<ExtArgs>[]
     candidateAccess: Prisma.$CandidatePortalAccessPayload<ExtArgs>[]
     vendorAssignments: Prisma.$VendorAssignmentPayload<ExtArgs>[]
+    vendorCheckWork: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
     supportRequests: Prisma.$SupportRequestPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -5643,6 +8029,29 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     dueAt: Date | null
     completedAt: Date | null
     riskLevel: string | null
+    /**
+     * 1 = original delivery path; 2 = RM -> Data Entry -> department routing flow.
+     */
+    workflowVersion: number
+    /**
+     * v2 intake: INTAKE, DATA_ENTRY, CORRECTION, READY, ROUTED.
+     */
+    intakeStage: string | null
+    dataEntryUserId: bigint | null
+    dataEntryAssignedAt: Date | null
+    dataEntryReadyAt: Date | null
+    /**
+     * STOPPED on client instruction; resume returns to stoppedFromStatus.
+     */
+    stoppedFromStatus: string | null
+    stoppedAt: Date | null
+    stopReason: string | null
+    /**
+     * Raised to URGENT by the Platform Admin (view-only oversight) or Operations.
+     */
+    escalatedAt: Date | null
+    escalatedById: bigint | null
+    escalationNote: string | null
     version: number
     createdAt: Date
     updatedAt: Date
@@ -5987,6 +8396,8 @@ readonly fields: VerificationCaseFieldRefs;
 export interface Prisma__VerificationCaseClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  dataEntryUser<T extends Prisma.VerificationCase$dataEntryUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$dataEntryUserArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  escalatedBy<T extends Prisma.VerificationCase$escalatedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$escalatedByArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   branch<T extends Prisma.VerificationCase$branchArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$branchArgs<ExtArgs>>): Prisma.Prisma__BranchClient<runtime.Types.Result.GetResult<Prisma.$BranchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   servicePackage<T extends Prisma.VerificationCase$servicePackageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$servicePackageArgs<ExtArgs>>): Prisma.Prisma__ServicePackageClient<runtime.Types.Result.GetResult<Prisma.$ServicePackagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -6006,6 +8417,7 @@ export interface Prisma__VerificationCaseClient<T, Null = never, ExtArgs extends
   invoiceLines<T extends Prisma.VerificationCase$invoiceLinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$invoiceLinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InvoiceLinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   candidateAccess<T extends Prisma.VerificationCase$candidateAccessArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$candidateAccessArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CandidatePortalAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorAssignments<T extends Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$vendorAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorCheckWork<T extends Prisma.VerificationCase$vendorCheckWorkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$vendorCheckWorkArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   supportRequests<T extends Prisma.VerificationCase$supportRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCase$supportRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SupportRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6055,6 +8467,17 @@ export interface VerificationCaseFieldRefs {
   readonly dueAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
   readonly riskLevel: Prisma.FieldRef<"VerificationCase", 'String'>
+  readonly workflowVersion: Prisma.FieldRef<"VerificationCase", 'Int'>
+  readonly intakeStage: Prisma.FieldRef<"VerificationCase", 'String'>
+  readonly dataEntryUserId: Prisma.FieldRef<"VerificationCase", 'BigInt'>
+  readonly dataEntryAssignedAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
+  readonly dataEntryReadyAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
+  readonly stoppedFromStatus: Prisma.FieldRef<"VerificationCase", 'String'>
+  readonly stoppedAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
+  readonly stopReason: Prisma.FieldRef<"VerificationCase", 'String'>
+  readonly escalatedAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
+  readonly escalatedById: Prisma.FieldRef<"VerificationCase", 'BigInt'>
+  readonly escalationNote: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly version: Prisma.FieldRef<"VerificationCase", 'Int'>
   readonly createdAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>
@@ -6402,6 +8825,44 @@ export type VerificationCaseDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
    * Limit how many VerificationCases to delete.
    */
   limit?: number
+}
+
+/**
+ * VerificationCase.dataEntryUser
+ */
+export type VerificationCase$dataEntryUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
+}
+
+/**
+ * VerificationCase.escalatedBy
+ */
+export type VerificationCase$escalatedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**
@@ -6790,6 +9251,30 @@ export type VerificationCase$vendorAssignmentsArgs<ExtArgs extends runtime.Types
   take?: number
   skip?: number
   distinct?: Prisma.VendorAssignmentScalarFieldEnum | Prisma.VendorAssignmentScalarFieldEnum[]
+}
+
+/**
+ * VerificationCase.vendorCheckWork
+ */
+export type VerificationCase$vendorCheckWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
 }
 
 /**

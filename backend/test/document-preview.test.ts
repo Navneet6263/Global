@@ -10,6 +10,7 @@ import type { ContentInspectionService } from "../src/documents/content-inspecti
 import type { LocalObjectStorageService } from "../src/documents/local-object-storage.service";
 import type { Actor } from "../src/common/auth/actor";
 import { caseAccessScope } from "../src/common/auth/access-scope";
+import { documentScope } from "../src/verification/check-documents";
 import {
   IS_PUBLIC_KEY,
   PERMISSIONS_KEY,
@@ -114,6 +115,7 @@ void test("download remains an attachment with its original audit action", async
 });
 
 void test("preview applies the same tenant, client, branch and assignment scopes as download", async () => {
+  // A verifier additionally sees only its checks' documents (see check-documents tests).
   for (const scoped of [
     actor,
     { ...actor, roles: ["CLIENT_ADMIN"], clientId: 31n },
@@ -128,6 +130,7 @@ void test("preview applies the same tenant, client, branch and assignment scopes
         publicId: "document-1",
         tenantId: 7n,
         case: caseAccessScope(scoped),
+        ...documentScope(scoped),
       },
       malwareState: "CLEAN",
     });

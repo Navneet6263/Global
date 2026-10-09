@@ -2,7 +2,7 @@ import "dotenv/config";
 import { PrismaMssql } from "@prisma/adapter-mssql";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { hashPassword } from "../src/auth/password";
-import { rolePermissions } from "./seed-roles";
+import { defaultDepartments, rolePermissions } from "./seed-roles";
 import {
   isValidUserPassword,
   USER_PASSWORD_REQUIREMENTS,
@@ -91,6 +91,20 @@ async function main(): Promise<void> {
       },
     });
     roles.set(code, role.id);
+  }
+
+  for (const department of defaultDepartments) {
+    await prisma.department.upsert({
+      where: { tenantId_code: { tenantId: tenant.id, code: department.code } },
+      update: {},
+      create: {
+        tenantId: tenant.id,
+        code: department.code,
+        name: department.name,
+        kind: department.kind,
+        checkTypesJson: JSON.stringify(department.checkTypes),
+      },
+    });
   }
 
   await prisma.tenantFieldPolicy.upsert({

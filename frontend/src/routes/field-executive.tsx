@@ -12,7 +12,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { SaplingSymbol } from "@/components/brand/sapling-symbol";
+import { SaplingLogo } from "@/components/brand/sapling-logo";
 import { FieldChecklist } from "@/features/field/FieldChecklist";
 import { FieldDayPlan } from "@/features/field/FieldDayPlan";
 import { FieldRouteSummary } from "@/features/field/FieldRouteSummary";
@@ -109,11 +109,9 @@ function FieldExecutivePage() {
         <div className="mx-auto w-full max-w-[46rem] space-y-4 pb-10">
           <header className="surface flex items-center justify-between gap-3 rounded-[1.5rem] px-4 py-3.5 sm:px-5">
             <div className="flex min-w-0 items-center gap-3">
-              <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-[#fff9f3] ring-1 ring-primary/15">
-                <SaplingSymbol className="size-9" />
-              </span>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">Sapling Global — Field Operations</p>
+                <SaplingLogo width={140} />
+                <p className="mt-1 truncate pl-0.5 text-sm font-semibold">Field Operations</p>
                 <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
                   GPS, evidence and offline-safe completion
                 </p>

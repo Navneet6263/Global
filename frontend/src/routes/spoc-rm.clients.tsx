@@ -27,7 +27,7 @@ function SpocClientsPage() {
   return (
     <>
       <PageHeader
-        title="Clients"
+        title="My clients"
         description="Per-client progress, client-side pending work, overdue cases and receivables."
       />
       <SpocClientTable

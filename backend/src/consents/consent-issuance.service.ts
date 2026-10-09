@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createHmac, randomInt } from "node:crypto";
 import { SecretBoxService } from "../common/security/secret-box.service";
+import type { SubjectPiiService } from "../common/security/subject-pii.service";
 import type { Prisma } from "../generated/prisma/client";
 
 export type ConsentIssueTarget = {
@@ -9,9 +10,15 @@ export type ConsentIssueTarget = {
   consentPublicId: string;
   tenantId: bigint;
   casePublicId: string;
-  actorUserId: bigint;
+  /** Absent when the candidate asked for the code themselves. */
+  actorUserId?: bigint;
   email?: string;
   phone?: string;
+  /**
+   * The candidate asked for the code inside their single secure link: it goes to email
+   * first and carries no separate consent link.
+   */
+  inPortal?: boolean;
 };
 
 @Injectable()
@@ -22,7 +29,14 @@ export class ConsentIssuanceService {
   ) {}
 
   async issue(tx: Prisma.TransactionClient, target: ConsentIssueTarget) {
-    const destination = target.phone ?? target.email;
+    const channel: "EMAIL" | "SMS" = target.inPortal
+      ? target.email
+        ? "EMAIL"
+        : "SMS"
+      : target.phone
+        ? "SMS"
+        : "EMAIL";
+    const destination = channel === "EMAIL" ? target.email : target.phone;
     if (!destination) {
       throw new BadRequestException(
         "A candidate email or mobile number is required for consent delivery",
@@ -80,10 +94,14 @@ export class ConsentIssuanceService {
         payloadJson: JSON.stringify({
           consentId: target.consentPublicId,
           secret: this.secretBox.seal({
-            channel: target.phone ? "SMS" : "EMAIL",
+            channel,
             destination,
             otp,
-            consentUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/consent/${target.consentPublicId}`,
+            ...(target.inPortal
+              ? {}
+              : {
+                  consentUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/consent/${target.consentPublicId}`,
+                }),
             expiresAt,
             issuedAt,
           }),
@@ -97,7 +115,10 @@ export class ConsentIssuanceService {
         action: "consent.otp-requested",
         resourceType: "consent",
         resourcePublicId: target.consentPublicId,
-        afterJson: JSON.stringify({ expiresAt }),
+        afterJson: JSON.stringify({
+          expiresAt,
+          ...(target.inPortal ? { via: "candidate-link" } : {}),
+        }),
       },
     });
 
@@ -107,6 +128,15 @@ export class ConsentIssuanceService {
       ...(this.config.get("NODE_ENV") === "development"
         ? { developmentOtp: otp }
         : {}),
+    };
+  }
+
+  /** What the single candidate link needs to be issued and delivered. */
+  candidateLinkDeps(pii: SubjectPiiService) {
+    return {
+      secretBox: this.secretBox,
+      pii,
+      webOrigin: this.config.getOrThrow<string>("WEB_ORIGIN"),
     };
   }
 
@@ -150,7 +180,6 @@ export class ConsentIssuanceService {
               purpose: target.purpose,
               noticeVersion: target.noticeVersion,
               acceptedAt: target.acceptedAt,
-              consentUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/consent/${target.consentId}`,
             },
           }),
         }),

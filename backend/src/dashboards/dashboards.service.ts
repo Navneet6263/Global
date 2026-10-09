@@ -38,7 +38,7 @@ export class DashboardsService {
         where: {
           ...scope,
           dueAt: { lt: now },
-          status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED"] },
+          status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
         },
       }),
       this.prisma.verificationCase.count({
@@ -71,7 +71,7 @@ export class DashboardsService {
       this.prisma.verificationCase.groupBy({
         by: ["status"],
         where: {
-          status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED"] },
+          status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
           AND: [
             scope,
             {

@@ -35,7 +35,7 @@ export function QaQueue(props: QaQueueProps) {
   return (
     <section
       aria-label="QA case list"
-      className="overflow-hidden rounded-[1.65rem] border border-white/80 bg-card/85 shadow-[var(--shadow-float)] backdrop-blur-sm xl:sticky xl:top-5 xl:self-start"
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-5 xl:self-start"
     >
       <header className="border-b border-review/15 border-t-4 border-t-review/35 bg-gradient-to-br from-review-soft via-review-soft/35 to-white p-4">
         <div className="flex items-center justify-between gap-3">
@@ -43,7 +43,7 @@ export function QaQueue(props: QaQueueProps) {
             <h2 className="text-[15px] font-semibold tracking-[-0.02em]">
               {props.corrections ? "Returned for correction" : "Quality review queue"}
             </h2>
-            <p className="mt-0.5 text-[10.5px] text-muted-foreground">
+            <p className="mt-0.5 text-[12.5px] text-muted-foreground">
               {props.corrections
                 ? "Waiting on verification work before the next QA review"
                 : "Claim one case before making a decision"}
@@ -51,7 +51,7 @@ export function QaQueue(props: QaQueueProps) {
           </div>
           <span
             role="status"
-            className="num flex items-center gap-1 rounded-full bg-review-soft px-2.5 py-1 text-[10px] font-medium text-review-foreground"
+            className="num flex items-center gap-1 rounded-full bg-review-soft px-2.5 py-1 text-xs font-medium text-review-foreground"
           >
             {props.pending ? (
               <>
@@ -70,7 +70,7 @@ export function QaQueue(props: QaQueueProps) {
             onChange={(event) => props.onSearch(event.target.value)}
             placeholder="Search candidate, case or client"
             aria-label="Search QA queue"
-            className="h-10 w-full rounded-full border border-border bg-background/75 pl-9 pr-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+            className="h-10 w-full rounded-full border border-border bg-slate-50 pl-9 pr-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
           />
         </div>
         {props.availableOnly !== undefined ? (
@@ -112,7 +112,7 @@ export function QaQueue(props: QaQueueProps) {
       </div>
 
       <footer className="flex items-center justify-between border-t border-border/70 px-4 py-3">
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-xs text-muted-foreground">
           Page {props.page} · {props.items.length} cases
         </span>
         <div className="flex gap-1.5">
@@ -151,25 +151,25 @@ function QaQueueCard({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "relative w-full overflow-hidden rounded-[1.15rem] border p-3.5 text-left transition duration-200",
+        "relative w-full overflow-hidden rounded-xl border p-3.5 text-left transition duration-200",
         active
-          ? "border-review/40 bg-gradient-to-br from-review-soft to-review-soft/50 shadow-[var(--shadow-card)]"
+          ? "border-review/40 bg-gradient-to-br from-review-soft to-review-soft/50 shadow-sm"
           : highRisk || overdue
             ? "border-critical/20 bg-critical-soft/40 hover:bg-critical-soft/65"
-            : "border-mint/15 bg-mint-soft/35 hover:border-mint/30 hover:bg-mint-soft/60",
+            : "border-blue-200 bg-blue-50 hover:border-blue-200 hover:bg-blue-50",
       )}
     >
       {active ? <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-review" /> : null}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-[13px] font-semibold">{item.subject.fullName}</p>
-          <p className="mt-0.5 truncate text-[10.5px] text-muted-foreground">
+          <p className="mt-0.5 truncate text-[12.5px] text-muted-foreground">
             {item.caseNumber} · {item.client.displayName}
           </p>
         </div>
         <span
           className={cn(
-            "shrink-0 rounded-full border px-2 py-1 text-[8.5px] font-semibold",
+            "shrink-0 rounded-full border px-2 py-1 text-[11px] font-semibold",
             highRisk || ["CRITICAL", "URGENT"].includes(item.priority)
               ? "border-critical/25 bg-critical-soft text-critical-foreground"
               : item.priority === "HIGH"
@@ -180,7 +180,7 @@ function QaQueueCard({
           {highRisk ? "High risk" : humanize(item.priority)}
         </span>
       </div>
-      <div className="mt-3 flex items-center justify-between gap-2 text-[9.5px] text-muted-foreground">
+      <div className="mt-3 flex items-center justify-between gap-2 text-[11.5px] text-muted-foreground">
         <span>
           {item.completedCheckCount}/{item.checkCount} checks complete
         </span>
@@ -195,7 +195,7 @@ function QaQueueCard({
         </span>
       </div>
       {item.qaReviewer && item.claimActive ? (
-        <p className="mt-2 flex items-center gap-1 text-[9.5px] font-medium text-review-foreground">
+        <p className="mt-2 flex items-center gap-1 text-[11.5px] font-medium text-review-foreground">
           <ShieldCheck className="size-3" /> Claimed by {item.qaReviewer.displayName}
         </p>
       ) : null}
@@ -210,7 +210,7 @@ function QaQueueEmpty() {
         <ShieldCheck className="size-4" />
       </span>
       <p className="mt-3 text-[12px] font-medium">Review queue is clear</p>
-      <p className="mt-1 text-[10.5px] text-muted-foreground">No cases match this search.</p>
+      <p className="mt-1 text-[12.5px] text-muted-foreground">No cases match this search.</p>
     </div>
   );
 }
@@ -232,7 +232,7 @@ function PageButton({
       aria-label={label}
       disabled={disabled}
       onClick={onClick}
-      className="grid size-8 place-items-center rounded-full border border-border bg-white/70 text-muted-foreground transition hover:bg-review-soft hover:text-review-foreground disabled:cursor-not-allowed disabled:opacity-35"
+      className="grid size-8 place-items-center rounded-full border border-border bg-white text-muted-foreground transition hover:bg-review-soft hover:text-review-foreground disabled:cursor-not-allowed disabled:opacity-35"
     >
       <Icon className="size-3.5" />
     </button>

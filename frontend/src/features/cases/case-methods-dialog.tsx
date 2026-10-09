@@ -18,6 +18,21 @@ const Methods = lazy(() =>
     default: module.VerificationMethodsPanel,
   })),
 );
+const SourceEmail = lazy(() =>
+  import("@/features/delivery/verifier/SourceEmailPanel").then((module) => ({
+    default: module.SourceEmailPanel,
+  })),
+);
+const VendorPanel = lazy(() =>
+  import("@/features/vendor-checks/CheckVendorPanel").then((module) => ({
+    default: module.CheckVendorPanel,
+  })),
+);
+const VerifiedDetails = lazy(() =>
+  import("@/features/delivery/verifier/VerifiedDetailsPanel").then((module) => ({
+    default: module.VerifiedDetailsPanel,
+  })),
+);
 
 export function CaseMethodsDialog({
   caseId,
@@ -31,6 +46,7 @@ export function CaseMethodsDialog({
   checkStatus: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [view, setView] = useState<"methods" | "verified" | "email" | "vendor">("methods");
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const roles = session.data?.roles ?? [];
   if (
@@ -57,17 +73,50 @@ export function CaseMethodsDialog({
             Recorded method responses and the evidence used for this check.
           </DialogDescription>
         </DialogHeader>
+        <div className="cmd-tabs" role="group" aria-label="Check workspace view">
+          <button
+            type="button"
+            aria-pressed={view === "methods"}
+            onClick={() => setView("methods")}
+          >
+            Sources & methods
+          </button>
+          <button
+            type="button"
+            aria-pressed={view === "verified"}
+            onClick={() => setView("verified")}
+          >
+            Verified details (LHS / RHS)
+          </button>
+          <button type="button" aria-pressed={view === "email"} onClick={() => setView("email")}>
+            Source email
+          </button>
+          <button type="button" aria-pressed={view === "vendor"} onClick={() => setView("vendor")}>
+            Vendor
+          </button>
+        </div>
         {open && (
           <Suspense
             fallback={
               <p className="p-5 text-sm text-muted-foreground">Loading source workspace…</p>
             }
           >
-            <Methods
-              caseId={caseId}
-              checkId={checkId}
-              readOnly={!canWrite || checkStatus === "COMPLETED"}
-            />
+            {view === "methods" ? (
+              <Methods
+                caseId={caseId}
+                checkId={checkId}
+                readOnly={!canWrite || checkStatus === "COMPLETED"}
+              />
+            ) : view === "vendor" ? (
+              <VendorPanel checkId={checkId} />
+            ) : view === "email" ? (
+              <SourceEmail checkId={checkId} readOnly={!canWrite || checkStatus === "COMPLETED"} />
+            ) : (
+              <VerifiedDetails
+                checkId={checkId}
+                readOnly={!canWrite || checkStatus === "COMPLETED"}
+              />
+            )}
           </Suspense>
         )}
       </DialogContent>

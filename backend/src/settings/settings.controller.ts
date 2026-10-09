@@ -12,6 +12,7 @@ import {
   UpdatePackageRequirementsDto,
 } from "./service-package-policy.service";
 import {
+  AllowViewOnlyAdmin,
   CurrentActor,
   RequirePermissions,
   RequireRoles,
@@ -27,7 +28,10 @@ import { UpdateAccessPolicyDto } from "./dto/update-access-policy.dto";
 import { UpdateVendorTeamLimitDto } from "./dto/update-vendor-team-limit.dto";
 import { VendorTeamPolicyService } from "./vendor-team-policy.service";
 
+// Platform configuration (incl. the "Ops Managers can create users" toggle) stays with
+// the Platform Admin even in view-only oversight.
 @Controller("settings")
+@AllowViewOnlyAdmin()
 @RequirePermissions(Permission.SettingsManage)
 @RequireRoles("PLATFORM_ADMIN")
 export class SettingsController {

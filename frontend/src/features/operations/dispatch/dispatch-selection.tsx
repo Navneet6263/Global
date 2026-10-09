@@ -32,7 +32,7 @@ export function DispatchSelectionBar({
       </div>
       <div className="flex flex-wrap gap-2">
         <Button asChild variant="outline" size="sm">
-          <Link to="/operations/assignments">Assignment Workbench</Link>
+          <Link to="/operations/assignments">Override allocation</Link>
         </Button>
         {selected.length ? (
           <Button type="button" variant="ghost" size="sm" onClick={onClear}>

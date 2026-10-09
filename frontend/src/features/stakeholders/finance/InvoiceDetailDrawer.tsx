@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { cancelInvoice, downloadInvoice, type Invoice } from "@/lib/api/finance";
 import { CreditNoteHistory } from "./CreditNoteHistory";
+import { BillingAnnexurePanel } from "@/features/finance/BillingAnnexurePanel";
 import { formatDate, humanize, money } from "./finance-utils";
 
 export function InvoiceDetailDrawer({
@@ -120,6 +121,9 @@ export function InvoiceDetailDrawer({
               </table>
             </div>
           </section>
+          {invoice.status !== "DRAFT" && invoice.status !== "CANCELLED" ? (
+            <BillingAnnexurePanel audience="finance" invoiceId={invoice.id} />
+          ) : null}
           <section className="surface overflow-hidden rounded-2xl">
             <Heading
               title="Payment reconciliation"

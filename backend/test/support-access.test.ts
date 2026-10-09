@@ -32,7 +32,18 @@ void test("/support admits Support Agents and Platform Admin only; /support-requ
     "update",
   ]) {
     assert.ok(passesGuard(SupportController, method, agent), method);
-    assert.ok(passesGuard(SupportController, method, admin), method);
+    assert.ok(
+      passesGuard(SupportController, method, admin, {
+        platformAdminViewOnly: false,
+      }),
+      method,
+    );
+    // A view-only Platform Admin reads the desk but cannot update requests.
+    assert.equal(
+      passesGuard(SupportController, method, admin),
+      method !== "update",
+      method,
+    );
     for (const role of [
       "OPS_MANAGER",
       "SPOC_RM",

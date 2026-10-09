@@ -3,11 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import {
-  ConflictException,
-  ForbiddenException,
-  NotFoundException,
-} from "@nestjs/common";
+import { ConflictException, ForbiddenException } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { validateSync } from "class-validator";
 import type { PrismaService } from "../src/database/prisma.service";
@@ -29,6 +25,10 @@ function editPrisma(options: {
     return Promise.resolve({ count: 1 });
   };
   const prisma = {
+    // The admin switch "Ops Managers can create users" is OFF here.
+    tenantAccessPolicy: {
+      findUnique: () => Promise.resolve({ opsUserCreationEnabled: false }),
+    },
     user: {
       findFirst: () =>
         Promise.resolve({
@@ -57,7 +57,12 @@ function editPrisma(options: {
     },
     $transaction: (work: (tx: unknown) => Promise<unknown>) =>
       work({
-        user: { updateMany: record("user"), count: () => Promise.resolve(1) },
+        user: {
+          updateMany: record("user"),
+          count: () => Promise.resolve(1),
+          // Company-RM claim lookups are covered in rm-company-claim.test.ts.
+          findFirst: () => Promise.resolve(null),
+        },
         userRole: {
           deleteMany: record("roles-"),
           createMany: record("roles+"),
@@ -114,7 +119,7 @@ void test("edit role access replaces a SPOC-RM's clients in one audited write", 
 });
 
 void test("edit role access keeps every other rule for SPOC-RM scope", async () => {
-  // Adding a client that is not ACTIVE is refused; keeping one already held is fine.
+  // Adding a suspended client is refused; keeping one already held is fine.
   await assert.rejects(
     editPrisma({
       roles: ["SPOC_RM"],
@@ -124,16 +129,22 @@ void test("edit role access keeps every other rule for SPOC-RM scope", async () 
         { id: 44n, publicId: D, status: "SUSPENDED" },
       ],
     }).service.update(admin, "user-2", { version: 4, spocClientIds: [A, D] }),
-    NotFoundException,
+    /suspended or closed/,
   );
-  // Becoming SPOC-RM needs at least one client.
-  await assert.rejects(
-    editPrisma({ roles: ["VERIFIER"], scope: [] }).service.update(
-      admin,
-      "user-2",
-      { version: 4, roleCodes: ["SPOC_RM"] },
-    ),
-    ConflictException,
+  // A company still onboarding can be given to its RM.
+  await editPrisma({
+    roles: ["SPOC_RM"],
+    scope: [scopeABC[0]!],
+    clients: [
+      { id: 41n, publicId: A, status: "ACTIVE" },
+      { id: 44n, publicId: D, status: "ONBOARDING" },
+    ],
+  }).service.update(admin, "user-2", { version: 4, spocClientIds: [A, D] });
+  // Becoming SPOC-RM with no company is fine; companies come later.
+  await editPrisma({ roles: ["VERIFIER"], scope: [] }).service.update(
+    admin,
+    "user-2",
+    { version: 4, roleCodes: ["SPOC_RM"] },
   );
   // Other roles never take a client list.
   await assert.rejects(
@@ -152,15 +163,15 @@ void test("edit role access keeps every other rule for SPOC-RM scope", async () 
   });
   assert.ok(leaving.writes.some((write) => write.kind === "scope-"));
   assert.ok(!leaving.writes.some((write) => write.kind === "scope+"));
-  // An empty list never reaches the service.
+  // An empty list is valid: it removes every company from the RM.
   const empty = plainToInstance(UpdateUserDto, {
     version: 4,
     spocClientIds: [],
   });
   assert.ok(
-    validateSync(empty).some((error) => error.property === "spocClientIds"),
+    !validateSync(empty).some((error) => error.property === "spocClientIds"),
   );
-  // Only Platform Admin edits access.
+  // With the admin switch OFF, only the Platform Admin edits access.
   await assert.rejects(
     editPrisma({ roles: ["SPOC_RM"], scope: scopeABC }).service.update(
       spocActor(["OPS_MANAGER"]),
@@ -198,6 +209,8 @@ void test("Ops Managers create multi-client SPOC-RMs through the same toggle-gat
             created = args;
             return Promise.resolve({ publicId: "u-9", email: "s@example.com" });
           },
+          // Company-RM claim lookups are covered in rm-company-claim.test.ts.
+          findFirst: () => Promise.resolve(null),
         },
         auditEvent: { create: () => Promise.resolve({}) },
       }),

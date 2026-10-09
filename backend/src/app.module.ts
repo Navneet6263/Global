@@ -27,14 +27,19 @@ import { UsersModule } from "./users/users.module";
 import { CrmModule } from "./crm/crm.module";
 import { FinanceModule } from "./finance/finance.module";
 import { SettingsModule } from "./settings/settings.module";
+import { PackagesModule } from "./packages/packages.module";
 import { NotificationsModule } from "./notifications/notifications.module";
 import { CandidatePortalModule } from "./candidate-portal/candidate-portal.module";
 import { SecurityModule } from "./common/security/security.module";
+import { MailModule } from "./common/mail/mail.module";
 import { OutboxModule } from "./outbox/outbox.module";
 import { PrivacyModule } from "./privacy/privacy.module";
 import { SpocModule } from "./spoc/spoc.module";
+import { WorkflowModule } from "./workflow/workflow.module";
 import { VendorRequestsModule } from "./vendor-requests/vendor-requests.module";
+import { VendorChecksModule } from "./vendor-checks/vendor-checks.module";
 import { SupportModule } from "./support/support.module";
+import { OnboardingModule } from "./onboarding/onboarding.module";
 
 @Module({
   imports: [
@@ -46,6 +51,7 @@ import { SupportModule } from "./support/support.module";
     ThrottlerModule.forRoot([{ name: "default", ttl: 60_000, limit: 120 }]),
     PrismaModule,
     SecurityModule,
+    MailModule,
     AuthModule,
     ClientsModule,
     CasesModule,
@@ -56,9 +62,13 @@ import { SupportModule } from "./support/support.module";
     CrmModule,
     FinanceModule,
     SpocModule,
+    WorkflowModule,
     VendorRequestsModule,
+    VendorChecksModule,
     SupportModule,
+    OnboardingModule,
     SettingsModule,
+    PackagesModule,
     NotificationsModule,
     CandidatePortalModule,
     OutboxModule,

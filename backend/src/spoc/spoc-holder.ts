@@ -24,7 +24,12 @@ export const SpocHolderRoles = [
 ] as const;
 export type SpocHolderRole = (typeof SpocHolderRoles)[number];
 
-export const terminalCaseStatuses = ["COMPLETED", "CLOSED", "CANCELLED"];
+export const terminalCaseStatuses = [
+  "COMPLETED",
+  "CLOSED",
+  "CANCELLED",
+  "STOPPED",
+];
 export const activeTaskStatuses = [
   "UNASSIGNED",
   "OPEN",
@@ -63,6 +68,8 @@ export const caseHolder: Record<(typeof CaseStatuses)[number], SpocHolderRole> =
     COMPLETED: "NONE",
     CLOSED: "NONE",
     CANCELLED: "NONE",
+    // Stopped on client instruction; Operations or the RM decides when to resume.
+    STOPPED: "OPS_MANAGER",
   };
 
 export function holderOf(status: string): SpocHolderRole {

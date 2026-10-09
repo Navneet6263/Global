@@ -41,6 +41,16 @@ export class CaseWorkflowPolicy {
       if (!accepted)
         throw new BadRequestException("Accepted consent is required");
     }
+    if (to === "IN_PROGRESS" && from === "DOCUMENT_PENDING") {
+      const flow = await tx.verificationCase.findUnique({
+        where: { id: caseId },
+        select: { workflowVersion: true, intakeStage: true },
+      });
+      if (flow?.workflowVersion === 2 && flow.intakeStage !== "ROUTED")
+        throw new BadRequestException(
+          "This case starts verification when Data Entry marks it Ready and the RM routes its checks",
+        );
+    }
     if (to === "IN_PROGRESS") {
       await assertCaseEvidenceReady(tx, caseId, { includeWork: false });
       if (

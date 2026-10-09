@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { randomBytes } from "node:crypto";
 import { ConfigService } from "@nestjs/config";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
@@ -16,11 +15,13 @@ import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { caseEvidenceReadiness } from "../documents/evidence-readiness";
 import { CANDIDATE_PRIVACY_NOTICE } from "../documents/candidate-privacy-notice";
 import { RequesterSupportRequestsService } from "../support/services/requester-support-requests.service";
+import { authorizeCandidateAccess } from "./candidate-access-authorizer";
+import { issueCandidateLink } from "./candidate-link";
+import { applyIntakeRules } from "../workflow/intake-rules";
 import {
-  authorizeCandidateAccess,
-  digestPortalToken,
-  maskDestination,
-} from "./candidate-access-authorizer";
+  candidateRequestedTypes,
+  candidateUploadItems,
+} from "./candidate-upload-state";
 
 @Injectable()
 export class CandidatePortalService {
@@ -54,81 +55,27 @@ export class CandidatePortalService {
       },
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
-    const token = randomBytes(32).toString("base64url");
-    const expiresAt = new Date(Date.now() + 14 * 86_400_000);
-    const destination = this.pii.open(verificationCase.subject);
-    const channel = destination.email
-      ? "EMAIL"
-      : destination.phone
-        ? "SMS"
-        : undefined;
-    const address = destination.email ?? destination.phone;
-    const access = await this.prisma.$transaction(async (tx) => {
-      await tx.candidatePortalAccess.updateMany({
-        where: { caseId: verificationCase.id, revokedAt: null },
-        data: { revokedAt: new Date() },
-      });
-      const created = await tx.candidatePortalAccess.create({
-        data: {
-          tenantId: actor.tenantId,
-          caseId: verificationCase.id,
-          tokenHash: digestPortalToken(token),
-          expiresAt,
-        },
-        select: { publicId: true },
-      });
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "candidate-portal.access-issued",
-          resourceType: "case",
-          resourcePublicId: casePublicId,
-          afterJson: JSON.stringify({
-            accessId: created.publicId,
-            expiresAt,
-            sendNotification,
-          }),
-        },
-      });
-      if (sendNotification && channel && address) {
-        await tx.outboxEvent.create({
-          data: {
-            tenantId: actor.tenantId,
-            topic: "candidate.access.issued",
-            aggregateType: "candidate-portal-access",
-            aggregateId: created.publicId,
-            payloadJson: JSON.stringify({
-              secret: this.secretBox.seal({
-                accessId: created.publicId,
-                channel,
-                destination: address,
-                portalUrl: `${this.config.getOrThrow<string>("WEB_ORIGIN")}/candidate/${created.publicId}#token=${encodeURIComponent(token)}`,
-                expiresAt,
-              }),
-            }),
-          },
-        });
-      }
-      return created;
-    });
-    return {
-      id: access.publicId,
-      token,
-      expiresAt,
-      delivery:
-        sendNotification && channel && address
-          ? {
-              queued: true,
-              channel,
-              destination: maskDestination(address, channel),
-            }
-          : { queued: false },
-    };
+    return this.prisma.$transaction((tx) =>
+      issueCandidateLink(tx, this.linkDeps(), {
+        tenantId: actor.tenantId,
+        caseId: verificationCase.id,
+        casePublicId,
+        actorUserId: actor.userId,
+        subject: verificationCase.subject,
+        sendNotification,
+      }),
+    );
   }
 
   async get(publicId: string, token: string) {
-    const access = await authorizeCandidateAccess(this.prisma, publicId, token);
+    const access = await authorizeCandidateAccess(
+      this.prisma,
+      publicId,
+      token,
+      {
+        allowCompleted: true,
+      },
+    );
     await this.prisma.candidatePortalAccess.update({
       where: { id: access.id },
       data: { lastAccessedAt: new Date() },
@@ -137,9 +84,20 @@ export class CandidatePortalService {
       access.tenantId,
       access.caseId,
     );
+    const requiredTypes = (
+      await caseEvidenceReadiness(this.prisma, access.caseId, {
+        includeWork: false,
+      })
+    ).requiredTypes;
+    const requested = candidateRequestedTypes(
+      requiredTypes,
+      access.case.checks,
+    );
+    const uploads = candidateUploadItems(requested, access.case.documents);
     return {
       id: access.publicId,
       expiresAt: access.expiresAt,
+      completedAt: access.completedAt,
       privacyNotice: CANDIDATE_PRIVACY_NOTICE,
       case: {
         caseNumber: access.case.caseNumber,
@@ -147,11 +105,9 @@ export class CandidatePortalService {
         candidateName: access.case.subject.fullName,
         clientName: access.case.client.displayName,
         dueAt: access.case.dueAt,
-        requiredDocumentTypes: (
-          await caseEvidenceReadiness(this.prisma, access.caseId, {
-            includeWork: false,
-          })
-        ).requiredTypes,
+        requiredDocumentTypes: requested,
+        uploadItems: uploads.items,
+        readyToComplete: uploads.complete,
         checks: access.case.checks.map((check) => ({
           type: check.type,
           status: check.status,
@@ -183,6 +139,82 @@ export class CandidatePortalService {
     };
   }
 
+  /**
+   * "I have uploaded all documents": only when every requested document is in. The link
+   * closes; if the team later needs something again, a new link is emailed.
+   */
+  async complete(publicId: string, token: string) {
+    const access = await authorizeCandidateAccess(this.prisma, publicId, token);
+    const requiredTypes = (
+      await caseEvidenceReadiness(this.prisma, access.caseId, {
+        includeWork: false,
+      })
+    ).requiredTypes;
+    const requested = candidateRequestedTypes(
+      requiredTypes,
+      access.case.checks,
+    );
+    const uploads = candidateUploadItems(requested, access.case.documents);
+    if (!uploads.complete) {
+      const missing = uploads.items
+        .filter((item) => item.state === "NEEDED" || item.state === "REUPLOAD")
+        .map((item) => item.type.replaceAll("_", " ").toLowerCase());
+      throw new ConflictException(`Upload these first: ${missing.join(", ")}`);
+    }
+    const completedAt = new Date();
+    const next = await this.prisma.$transaction(async (tx) => {
+      const closed = await tx.candidatePortalAccess.updateMany({
+        where: { id: access.id, revokedAt: null, completedAt: null },
+        data: { completedAt, revokedAt: completedAt },
+      });
+      if (!closed.count)
+        throw new ConflictException("This link is already closed");
+      await tx.auditEvent.create({
+        data: {
+          tenantId: access.tenantId,
+          action: "candidate-portal.completed",
+          resourceType: "case",
+          resourcePublicId: access.case.publicId,
+          afterJson: JSON.stringify({
+            accessId: access.publicId,
+            completedAt,
+            documents: uploads.items.map((item) => item.type),
+          }),
+        },
+      });
+      const recipients = await activeOperationsRecipients(tx, {
+        tenantId: access.tenantId,
+        branchId: access.case.branchId,
+        clientId: access.case.clientId,
+        assignedUserId: access.case.assignedOpsUserId,
+      });
+      const userIds = new Set(recipients.map((recipient) => recipient.id));
+      if (access.case.dataEntryUserId) userIds.add(access.case.dataEntryUserId);
+      if (userIds.size)
+        await tx.notification.createMany({
+          data: [...userIds].map((userId) => ({
+            tenantId: access.tenantId,
+            userId,
+            type: "CANDIDATE_COMPLETED",
+            title: "Candidate finished uploading",
+            body: `${access.case.caseNumber}: ${access.case.subject.fullName} uploaded all requested documents.`,
+            href: `/cases/${access.case.publicId}`,
+          })),
+        });
+      // Route A (client reviews first) or the client's auto Data Entry rule.
+      return applyIntakeRules(tx, access.caseId);
+    });
+    return { completed: true, completedAt, next };
+  }
+
+  private linkDeps() {
+    return {
+      secretBox: this.secretBox,
+      pii: this.pii,
+      webOrigin: this.config.getOrThrow<string>("WEB_ORIGIN"),
+    };
+  }
+
   async upload(
     publicId: string,
     token: string,
@@ -192,6 +224,11 @@ export class CandidatePortalService {
     noticeVersion?: string,
   ) {
     const access = await authorizeCandidateAccess(this.prisma, publicId, token);
+    const consent = access.case.consents[0]?.status;
+    if (consent && consent !== "ACCEPTED")
+      throw new ConflictException(
+        "Confirm your consent with the one-time code before uploading",
+      );
     if (noticeVersion !== CANDIDATE_PRIVACY_NOTICE.version) {
       throw new ConflictException(
         "Read and acknowledge the current privacy notice before uploading",

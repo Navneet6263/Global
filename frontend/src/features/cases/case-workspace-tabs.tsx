@@ -23,6 +23,7 @@ import { CandidatePanel, CheckCard } from "@/features/cases/case-workflow-panels
 import type { CaseDetail } from "@/lib/api/cases";
 import { useState } from "react";
 import { CasePhysicalFieldNotice } from "./case-physical-field-notice";
+import { FIELD_WORK_ENABLED } from "@/config/features";
 import { CaseProgressSummary } from "./case-progress-summary";
 import { caseWorkflowSummary } from "./case-workflow-summary";
 import { FieldEvidenceGallery } from "./field-evidence-gallery";
@@ -51,7 +52,9 @@ export function CaseWorkspaceTabs({
   return (
     <Tabs value={tab} onValueChange={setTab} className="space-y-5">
       <CaseProgressSummary summary={caseWorkflowSummary(item)} />
-      <CasePhysicalFieldNotice item={item} onOpen={() => setTab("field-visits")} />
+      {FIELD_WORK_ENABLED ? (
+        <CasePhysicalFieldNotice item={item} onOpen={() => setTab("field-visits")} />
+      ) : null}
       <nav className="surface overflow-x-auto rounded-2xl p-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <TabsList className="flex h-auto w-max min-w-full justify-start gap-1 bg-transparent p-0">
           <TabsTrigger className={triggerClass} value="overview">
@@ -66,9 +69,11 @@ export function CaseWorkspaceTabs({
           <TabsTrigger className={triggerClass} value="clarifications">
             <MessageSquareText className="size-3.5" aria-hidden /> Clarifications
           </TabsTrigger>
-          <TabsTrigger className={triggerClass} value="field-visits">
-            <MapPinned className="size-3.5" aria-hidden /> Field visits
-          </TabsTrigger>
+          {FIELD_WORK_ENABLED ? (
+            <TabsTrigger className={triggerClass} value="field-visits">
+              <MapPinned className="size-3.5" aria-hidden /> Field visits
+            </TabsTrigger>
+          ) : null}
           <TabsTrigger className={triggerClass} value="reports">
             <ShieldCheck className="size-3.5" aria-hidden /> QA & reports
           </TabsTrigger>

@@ -4,6 +4,8 @@ export interface Clarification {
   id: string;
   status: string;
   subject: string;
+  /** L1 = raised at Data Entry; L2 = raised during verification. Null for older requests. */
+  level?: "L1" | "L2" | null;
   dueAt?: string | null;
   resolvedAt?: string | null;
   createdAt: string;

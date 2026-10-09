@@ -75,7 +75,7 @@ for (const width of [390, 1440]) {
   });
 }
 
-test("new verification submits selected checks, shows tax and creates a copy-only candidate link", async ({
+test("new verification submits selected checks, shows tax and emails one candidate link", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -99,16 +99,15 @@ test("new verification submits selected checks, shows tax and creates a copy-onl
     .getByRole("checkbox", { name: "Standard BGV: Identity (Aadhaar / PAN)", exact: true })
     .check();
   await dialog.getByRole("button", { name: "Continue", exact: true }).click();
-  await expect(dialog.getByRole("checkbox", { name: /Also queue email/ })).not.toBeChecked();
+  await expect(dialog.getByText("One secure link for the candidate")).toBeVisible();
   await page.screenshot({ path: "test-results/client-intake-review.png", animations: "disabled" });
   await dialog.getByRole("button", { name: "Initiate case", exact: true }).click();
-  fixture.releaseAccess();
-  await expect(
-    page.getByRole("textbox", { name: "1. Candidate document-upload link", exact: true }),
-  ).toHaveValue(/#token=/);
+  await expect(page.getByRole("textbox", { name: "Candidate link", exact: true })).toHaveValue(
+    /#token=/,
+  );
   expect(fixture.payloads[0]?.body).toMatchObject({
     services: [{ servicePackageId: "package-test", selectedChecks: ["IDENTITY"] }],
   });
-  expect(fixture.payloads[1]?.body).toEqual({ sendNotification: false });
+  expect(fixture.payloads).toHaveLength(1);
   expect(fixture.unexpected).toEqual([]);
 });

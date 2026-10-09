@@ -1,25 +1,21 @@
 import "reflect-metadata";
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import {
-  ConflictException,
-  ForbiddenException,
-  type ExecutionContext,
-} from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
+import { ConflictException, ForbiddenException } from "@nestjs/common";
 import type { Actor } from "../src/common/auth/actor";
-import { PermissionsGuard } from "../src/common/auth/permissions.guard";
 import type { PrismaService } from "../src/database/prisma.service";
 import { AccessPolicyService } from "../src/settings/access-policy.service";
 import { SettingsController } from "../src/settings/settings.controller";
 import type { CreateUserDto } from "../src/users/dto/create-user.dto";
 import {
   assertCanCreateUser,
+  assertCanManageUser,
   OPS_CREATABLE_ROLES,
   userCreationPolicy,
 } from "../src/users/ops-user-creation";
 import { UsersController } from "../src/users/users.controller";
 import { UsersService } from "../src/users/users.service";
+import { passesGuard } from "./helpers/guard-check";
 
 const BRANCH_B = "3f2504e0-4f89-41d3-9a0c-0305e82c3301";
 const OTHER_BRANCH = "6ba7b810-9dad-41d1-80b4-00c04fd430c8";
@@ -79,38 +75,34 @@ function policyPrisma(enabled: boolean | null) {
   return { prisma, branchWhere: () => branchWhere };
 }
 
+/** Route gate with PLATFORM_ADMIN_VIEW_ONLY switched off (admin writes allowed). */
 function allowedByGuard(
   controller: object,
   method: string,
   who: Actor,
 ): boolean {
-  const target = controller as { prototype: Record<string, unknown> };
-  const context = {
-    getHandler: () => target.prototype[method],
-    getClass: () => controller,
-    switchToHttp: () => ({ getRequest: () => ({ user: who }) }),
-  } as unknown as ExecutionContext;
-  try {
-    return new PermissionsGuard(new Reflector()).canActivate(context);
-  } catch {
-    return false;
-  }
+  return passesGuard(controller, method, who, { platformAdminViewOnly: false });
 }
 
-void test("POST /users admits Ops Managers to the service gate; every other user write stays admin-only", () => {
+void test("user writes admit Ops Managers to the service gate (toggle and role checks)", () => {
   assert.ok(allowedByGuard(UsersController, "create", opsTenantWide));
   assert.ok(allowedByGuard(UsersController, "create", admin));
   assert.ok(!allowedByGuard(UsersController, "create", actor(["VERIFIER"])));
   for (const method of ["update", "resetPassword"]) {
-    assert.ok(!allowedByGuard(UsersController, method, opsTenantWide), method);
+    assert.ok(allowedByGuard(UsersController, method, opsTenantWide), method);
     assert.ok(allowedByGuard(UsersController, method, admin), method);
+    // A view-only Platform Admin still manages user IDs itself.
+    assert.ok(passesGuard(UsersController, method, admin), method);
   }
+  assert.ok(passesGuard(UsersController, "create", admin));
   for (const method of ["accessPolicy", "updateAccessPolicy"]) {
     assert.ok(
       !allowedByGuard(SettingsController, method, opsTenantWide),
       method,
     );
     assert.ok(allowedByGuard(SettingsController, method, admin), method);
+    // ...and the settings, including the "Ops Managers can create users" switch.
+    assert.ok(passesGuard(SettingsController, method, admin), method);
   }
 });
 
@@ -125,10 +117,11 @@ void test("the toggle is OFF by default and OFF refuses every Ops creation", asy
   }
 });
 
-void test("with the toggle ON an Ops Manager may create exactly the nine delegated roles", async () => {
+void test("with the toggle ON an Ops Manager may create exactly the ten delegated roles", async () => {
   const { prisma } = policyPrisma(true);
   assert.deepEqual([...OPS_CREATABLE_ROLES].sort(), [
     "CLIENT_ADMIN",
+    "DATA_ENTRY",
     "FIELD_EXECUTIVE",
     "FINANCE_MANAGER",
     "QA_REVIEWER",
@@ -360,4 +353,38 @@ void test("the access policy switch is versioned and audited", async () => {
   });
   assert.equal(updated.opsUserCreationEnabled, true);
   assert.equal(auditAction, "settings.access-policy.updated");
+});
+
+void test("Ops Managers change only IDs they could create, and only while the switch is ON", async () => {
+  const on = policyPrisma(true).prisma;
+  assert.equal(
+    await assertCanManageUser(
+      on,
+      opsTenantWide,
+      ["SPOC_RM"],
+      ["SPOC_RM", "DATA_ENTRY"],
+    ),
+    "OPERATIONS",
+  );
+  // Never an admin or another Ops Manager, and never to those roles.
+  for (const [current, next] of [
+    [["PLATFORM_ADMIN"], ["PLATFORM_ADMIN"]],
+    [["OPS_MANAGER"], ["OPS_MANAGER"]],
+    [["VERIFIER"], ["OPS_MANAGER"]],
+  ] as const) {
+    await assert.rejects(
+      assertCanManageUser(on, opsTenantWide, current, next),
+      ForbiddenException,
+    );
+  }
+  // Switch OFF (or never set): no changes at all.
+  for (const enabled of [false, null]) {
+    await assert.rejects(
+      assertCanManageUser(policyPrisma(enabled).prisma, opsTenantWide, [
+        "VERIFIER",
+      ]),
+      ForbiddenException,
+    );
+  }
+  assert.equal(await assertCanManageUser(on, admin, ["OPS_MANAGER"]), "ADMIN");
 });

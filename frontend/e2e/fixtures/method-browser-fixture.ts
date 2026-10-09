@@ -4,6 +4,8 @@ import type { Page } from "@playwright/test";
 export async function methodBrowserFixture(page: Page) {
   const unexpected: string[] = [];
   const writes: Record<string, unknown>[] = [];
+  const verified: Array<Array<Record<string, string>>> = [];
+  const emails: Array<Record<string, unknown>> = [];
   const methods: Record<string, unknown>[] = [];
   const contacts: Record<string, unknown>[] = [];
   const check = {
@@ -82,6 +84,103 @@ export async function methodBrowserFixture(page: Page) {
       return reply({ counts: {}, generatedAt: "2026-09-08T10:00:00Z" });
     if (path === "/cases/method-case") return reply(row);
     if (path === "/cases/method-case/reports") return reply({ items: [] });
+    if (path === "/cases/method-case/activity") return reply({ items: [], nextCursor: null });
+    if (path === "/checks/check-1/source-emails") {
+      if (method === "POST") {
+        const body = JSON.parse(route.request().postData() ?? "{}") as Record<string, unknown>;
+        emails.push(body);
+        return reply({ id: "email-1", maxFollowUps: 7, nextFollowUpAt: "2026-10-08T10:00:00Z" });
+      }
+      return reply({
+        checkType: "EMPLOYMENT",
+        followUps: 7,
+        draft: {
+          subject: "Authorised verification request · SG-1 · EMPLOYMENT",
+          body: "We are reviewing the consented verification scope.\n\nCandidate: Source UI Test",
+        },
+        documents: [
+          {
+            id: "11111111-1111-4111-8111-111111111111",
+            type: "RELIEVING_LETTER",
+            name: "relieving.pdf",
+            version: 1,
+            sizeBytes: 20480,
+          },
+        ],
+        items: emails.length
+          ? [
+              {
+                id: "email-1",
+                to: "hr@acme.test",
+                cc: [],
+                subject: "Authorised verification request · SG-1 · EMPLOYMENT",
+                attachments: ["relieving.pdf"],
+                maxFollowUps: 7,
+                followUpsSent: 0,
+                lastSentAt: "2026-10-07T10:00:00Z",
+                nextFollowUpAt: "2026-10-08T10:00:00Z",
+                stoppedAt: null,
+                stopReason: null,
+                createdAt: "2026-10-07T10:00:00Z",
+              },
+            ]
+          : [],
+      });
+    }
+    if (path === "/checks/check-1/verified-details") {
+      if (method === "PUT") {
+        const body = JSON.parse(route.request().postData() ?? "{}") as {
+          entries: Array<Record<string, string>>;
+        };
+        verified.push(body.entries);
+        return reply({
+          checkId: "check-1",
+          verifiedAt: "2026-10-07T10:00:00Z",
+          entries: body.entries,
+        });
+      }
+      return reply({
+        checkId: "check-1",
+        type: "IDENTITY",
+        statusLabel: "In progress",
+        lhs: {
+          form: {
+            repeatable: true,
+            fields: [
+              { key: "idType", label: "ID type", required: true, kind: "select", options: ["PAN"] },
+              { key: "idNumber", label: "ID number", required: true },
+            ],
+          },
+          entries: [{ idType: "PAN", idNumber: "ABCDE1234F" }],
+        },
+        rhs: {
+          form: {
+            repeatable: true,
+            fields: [
+              { key: "idType", label: "ID type", required: true },
+              { key: "idNumber", label: "ID number (confirmed)", required: true },
+              {
+                key: "nameMatch",
+                label: "Name matches",
+                required: true,
+                kind: "select",
+                options: ["Yes", "No"],
+              },
+              {
+                key: "method",
+                label: "Method of verification",
+                required: true,
+                kind: "select",
+                options: ["Government API", "Online portal", "Document check"],
+              },
+              { key: "verificationDate", label: "Verification date", required: true, kind: "date" },
+            ],
+          },
+          entries: [],
+          verifiedAt: null,
+        },
+      });
+    }
     if (path === "/checks/check-1/methods" && method === "GET")
       return reply({
         items: methods,
@@ -151,5 +250,5 @@ export async function methodBrowserFixture(page: Page) {
       body: JSON.stringify({ title: `Unexpected test request: ${path}` }),
     });
   });
-  return { unexpected, writes, methods, contacts };
+  return { unexpected, writes, methods, contacts, verified, emails };
 }

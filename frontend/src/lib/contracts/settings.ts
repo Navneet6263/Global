@@ -58,7 +58,11 @@ export interface PlatformSettings {
   };
   evidencePolicy: readonly PolicyToggle[];
   accessPolicy: readonly PolicyToggle[];
-  accessPolicyConfig: { opsUserCreationEnabled: boolean; version: number };
+  accessPolicyConfig: {
+    opsUserCreationEnabled: boolean;
+    releaseBeforePayment: boolean;
+    version: number;
+  };
   slaDefaults: readonly SlaDefault[];
   retention: readonly RetentionRule[];
 }

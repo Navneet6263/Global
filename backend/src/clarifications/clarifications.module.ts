@@ -4,6 +4,7 @@ import { ClarificationsService } from "./clarifications.service";
 import { ClarificationTokenService } from "./clarification-token.service";
 import { VerificationModule } from "../verification/verification.module";
 import { ClientClarificationResponseService } from "./client-clarification-response.service";
+import { InsufficiencyReminderService } from "./insufficiency-reminder.service";
 
 @Module({
   imports: [VerificationModule],
@@ -12,6 +13,7 @@ import { ClientClarificationResponseService } from "./client-clarification-respo
     ClarificationsService,
     ClarificationTokenService,
     ClientClarificationResponseService,
+    InsufficiencyReminderService,
   ],
 })
 export class ClarificationsModule {}

@@ -13,7 +13,8 @@ export type WorkspaceId =
   | "finance"
   | "spoc"
   | "vendor"
-  | "support";
+  | "support"
+  | "data-entry";
 
 export interface WorkspaceDefinition {
   id: WorkspaceId;
@@ -25,6 +26,14 @@ export interface WorkspaceDefinition {
 }
 
 export const WORKSPACES: readonly WorkspaceDefinition[] = [
+  {
+    id: "data-entry",
+    label: "Data Entry",
+    summary: "Intake completeness review, corrections and Ready for the RM.",
+    basePath: "/data-entry",
+    roles: ["DATA_ENTRY"],
+    requiredPermission: "case:read",
+  },
   {
     id: "platform-admin",
     label: "Platform Admin",

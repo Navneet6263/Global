@@ -1,4 +1,4 @@
-import { CheckCircle2, Copy, KeyRound, LoaderCircle, Mail, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Copy, LoaderCircle, Mail } from "lucide-react";
 import { useState } from "react";
 
 import { DialogDescription, DialogTitle } from "@/components/ui/dialog";
@@ -7,9 +7,6 @@ import type { CandidateAccessResult } from "@/lib/api/candidate-portal";
 export interface CreatedCaseAccess {
   caseId: string;
   caseNumber: string;
-  consentUrl: string;
-  consentExpiresAt: string;
-  developmentOtp?: string;
   candidate: {
     status: "issuing" | "ready" | "failed" | "skipped";
     url?: string;
@@ -43,7 +40,7 @@ export function CaseAccessSuccess({
             Verification initiated
           </DialogTitle>
           <DialogDescription className="mt-1 break-words text-xs leading-5 text-muted-foreground sm:text-sm">
-            {result.caseNumber} is created. You can continue while secure access is prepared.
+            {result.caseNumber} is created and the candidate has one secure link.
           </DialogDescription>
         </div>
       </header>
@@ -55,37 +52,10 @@ export function CaseAccessSuccess({
         className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-5 pb-5 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:px-6"
       >
         <CandidateAccessBlock candidate={result.candidate} onCopy={copy} />
-        <AccessBlock
-          icon={ShieldCheck}
-          title="2. Candidate consent link"
-          description={`Opens the six-digit OTP consent page · OTP expires ${formatExpiry(result.consentExpiresAt)}`}
-          value={result.consentUrl}
-          onCopy={() => copy(result.consentUrl, "Consent link")}
-        />
-        {result.developmentOtp ? (
-          <div className="rounded-2xl border border-primary/15 bg-accent/35 p-4">
-            <div className="flex items-center gap-2">
-              <KeyRound className="size-4 text-primary" aria-hidden />
-              <p className="text-xs font-semibold">Development consent OTP</p>
-            </div>
-            <div className="mt-2 flex items-center gap-3">
-              <code className="min-w-0 flex-1 text-2xl font-semibold tracking-[0.28em]">
-                {result.developmentOtp}
-              </code>
-              <button
-                type="button"
-                onClick={() => copy(result.developmentOtp!, "OTP")}
-                className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground"
-                aria-label="Copy development consent OTP"
-              >
-                <Copy className="size-4" aria-hidden />
-              </button>
-            </div>
-            <p className="mt-2 text-[10px] leading-4 text-muted-foreground">
-              SMTP/SMS is not configured, so use this OTP on the consent link during local testing.
-            </p>
-          </div>
-        ) : null}
+        <p className="px-1 text-[11px] leading-5 text-muted-foreground">
+          This is the only link the candidate needs. They confirm consent with a one-time code on
+          the same page, then upload the requested documents.
+        </p>
       </div>
 
       <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-border/70 bg-secondary/30 px-5 py-4 sm:px-6">
@@ -115,10 +85,10 @@ function CandidateAccessBlock({
     return (
       <AccessBlock
         icon={Mail}
-        title="1. Candidate document-upload link"
-        description={`Copy and share privately with the candidate · expires ${formatExpiry(candidate.access.expiresAt)} · ${candidate.access.delivery.queued ? "Delivery queued, not yet confirmed" : "Link only — no document-link email or SMS queued"}`}
+        title="Candidate link"
+        description={`Consent and uploads in one place · expires ${formatExpiry(candidate.access.expiresAt)} · ${candidate.access.delivery.queued ? `Emailed to ${candidate.access.delivery.destination}` : "No email or phone on file — copy and share it privately"}`}
         value={candidate.url}
-        onCopy={() => onCopy(candidate.url!, "Document link")}
+        onCopy={() => onCopy(candidate.url!, "Candidate link")}
       />
     );
   }

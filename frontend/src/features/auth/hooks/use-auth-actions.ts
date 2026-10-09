@@ -1,5 +1,6 @@
 "use client";
 
+import { ROLE_HOME, rememberedRole } from "@/lib/auth/role-home";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -23,9 +24,16 @@ export function useAuthActions() {
       const tenantCode = import.meta.env["VITE_TENANT_CODE"] ?? "SAPLING";
       const result = await login({ tenantCode, email, password });
       const identity = await cacheIdentityFromSession(result.session);
+      if (result.session.passwordExpired)
+        toast.info("Time for a new password", {
+          description: "Passwords are changed every 90 days. Set a new one to continue.",
+        });
+      const lastRole = rememberedRole(identity.roles);
       const destination = result.session.mustChangePassword
         ? "/change-password"
-        : landingPathForRoles(identity.roles);
+        : lastRole
+          ? ROLE_HOME[lastRole]!
+          : landingPathForRoles(identity.roles);
       await navigate({ to: destination as "/admin", replace: true });
     } catch (error) {
       toast.error(messageOf(error, "Could not sign in"));

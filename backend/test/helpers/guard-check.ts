@@ -2,7 +2,9 @@ import "reflect-metadata";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
-import type { ExecutionContext } from "@nestjs/common";
+import { RequestMethod, type ExecutionContext } from "@nestjs/common";
+import { METHOD_METADATA } from "@nestjs/common/constants";
+import type { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import type { Actor } from "../../src/common/auth/actor";
 import { PermissionsGuard } from "../../src/common/auth/permissions.guard";
@@ -12,15 +14,31 @@ export function passesGuard(
   controller: object,
   method: string,
   who: Actor,
+  /** PLATFORM_ADMIN_VIEW_ONLY (default true, like production). */
+  options: { platformAdminViewOnly?: boolean } = {},
 ): boolean {
   const target = controller as { prototype: Record<string, unknown> };
+  const handler = target.prototype[method] as object;
+  // The real HTTP verb matters: a view-only Platform Admin may read but not write.
+  const verb = Reflect.getMetadata(METHOD_METADATA, handler) as
+    RequestMethod | undefined;
   const context = {
-    getHandler: () => target.prototype[method],
+    getHandler: () => handler,
     getClass: () => controller,
-    switchToHttp: () => ({ getRequest: () => ({ user: who }) }),
+    switchToHttp: () => ({
+      getRequest: () => ({
+        user: who,
+        method: RequestMethod[verb ?? RequestMethod.GET],
+      }),
+    }),
   } as unknown as ExecutionContext;
   try {
-    return Boolean(new PermissionsGuard(new Reflector()).canActivate(context));
+    const config = {
+      get: () => options.platformAdminViewOnly ?? true,
+    } as unknown as ConfigService;
+    return Boolean(
+      new PermissionsGuard(new Reflector(), config).canActivate(context),
+    );
   } catch {
     return false;
   }

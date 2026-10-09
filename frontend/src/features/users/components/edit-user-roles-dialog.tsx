@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { ShieldCheck } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ShieldCheck, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
 import type { PlatformUser } from "@/lib/contracts/user";
@@ -12,69 +13,53 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { sameClientSet, type ScopeOption } from "../client-scope";
 import { useUpdateUserRoles } from "../hooks/use-users";
 import { ClientScopePicker } from "./client-scope-picker";
+import { nextRoles } from "../role-guide";
+import { RoleCards } from "./RoleCards";
 
-const EXCLUSIVE: readonly Role[] = [
-  "PLATFORM_ADMIN",
-  "CLIENT_ADMIN",
-  "SPOC_RM",
-  "VENDOR",
-  "SUPPORT_AGENT",
-];
-
+/**
+ * Edit role & access: the same role cards as Create. Tick another working role to give
+ * it too (e.g. an RM who also does Data Entry); untick to take one away.
+ */
 export function EditUserRolesDialog({
   user,
   clients,
+  roles = ROLES,
   onClose,
 }: {
   user: PlatformUser;
+  /** Roles the editor may give (Operations: the roles it may create). */
+  roles?: readonly Role[];
   /** Client workspaces a SPOC-RM can be given (the server re-checks each one). */
   clients: readonly ScopeOption[];
   onClose: () => void;
 }) {
-  const [mode, setMode] = useState<"single" | "multiple">(
-    user.roles.length > 1 ? "multiple" : "single",
-  );
   const [selected, setSelected] = useState<Role[]>([...user.roles]);
-  const [confirmed, setConfirmed] = useState(false);
+  const [confirmed, setConfirmed] = useState(user.roles.length > 1);
   const initialClients = user.clientWorkspaceIds ?? [];
   const [clientIds, setClientIds] = useState<string[]>([...initialClients]);
   const update = useUpdateUserRoles();
   const busy = useRef(false);
   const added = selected.filter((role) => !user.roles.includes(role));
   const removed = user.roles.filter((role) => !selected.includes(role));
-  // SPOC-RM client workspaces are edited here too; other roles keep their scope.
   const spoc = selected.includes("SPOC_RM");
   const rolesChanged = Boolean(added.length || removed.length);
   const clientsChanged = spoc && !sameClientSet(clientIds, initialClients);
-  const clientsMissing = spoc && !clientIds.length;
   const changed = rolesChanged || clientsChanged;
-  // Keep every currently assigned client visible, even if the list omits it.
+  const needsTeam = added.some((role) => role === "DATA_ENTRY" || role === "VERIFIER");
   const options = [
     ...clients,
     ...initialClients
       .map((id, index) => ({ id, label: user.clientWorkspaceScope[index] ?? id }))
       .filter((own) => !clients.some((option) => option.id.toLowerCase() === own.id.toLowerCase())),
   ];
-  const choose = (role: Role) => {
-    setConfirmed(false);
-    if (mode === "single" || EXCLUSIVE.includes(role)) setSelected([role]);
-    else
-      setSelected((current) =>
-        current.includes(role)
-          ? current.filter((item) => item !== role)
-          : [...current.filter((item) => !EXCLUSIVE.includes(item)), role],
-      );
-  };
   const save = () => {
     if (
       busy.current ||
       !user.version ||
       !changed ||
-      clientsMissing ||
       !selected.length ||
       (selected.length > 1 && !confirmed)
     )
@@ -90,10 +75,12 @@ export function EditUserRolesDialog({
       },
       {
         onSuccess: () => {
-          toast.success(rolesChanged ? "User roles updated" : "Client access updated", {
+          toast.success(rolesChanged ? "Roles updated" : "Company access updated", {
             description: rolesChanged
-              ? "The user must sign in again with their updated access."
-              : "The new client access applies from the user's next request.",
+              ? selected.length > 1
+                ? "They sign in again and switch roles from “Working as” at the top."
+                : "They sign in again with the new access."
+              : "The new company access applies from their next action.",
           });
           onClose();
         },
@@ -117,111 +104,62 @@ export function EditUserRolesDialog({
         <DialogHeader className="border-b border-border px-5 py-5 pr-12 sm:px-6">
           <DialogTitle className="flex items-center gap-2">
             <ShieldCheck className="size-5 text-primary" />
-            Edit role access
+            Edit role &amp; access
           </DialogTitle>
           <DialogDescription>
             {user.fullName} · {user.email}
           </DialogDescription>
         </DialogHeader>
-        <div className="min-h-0 space-y-5 overflow-y-auto px-5 py-5 sm:px-6">
+        <div className="min-h-0 space-y-4 overflow-y-auto px-5 py-5 sm:px-6">
+          <p className="cu-note">
+            <UsersRound aria-hidden /> Tick another role to give it too, e.g. an RM who also does
+            Data Entry. They then switch from “Working as” at the top.
+          </p>
+          <fieldset disabled={update.isPending} className="grid gap-4">
+            <RoleCards
+              available={roles}
+              selected={selected}
+              onToggle={(role) => {
+                setConfirmed(false);
+                setSelected((current) => nextRoles(current, role));
+              }}
+              disabledReason={(role) =>
+                ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace") &&
+                !user.clientWorkspaceScope.length
+                  ? "Needs a company: create a new Client Admin ID instead."
+                  : null
+              }
+            />
+          </fieldset>
           {spoc ? (
             <ClientScopePicker
               options={options}
               value={clientIds}
               onChange={setClientIds}
               disabled={update.isPending}
-              error={clientsMissing ? "Select at least one client workspace." : undefined}
             />
-          ) : (
-            <div className="rounded-2xl border border-sky-100 bg-sky-50/60 p-4 text-sm">
-              <p className="font-medium">Branch and client scope stay unchanged</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                {user.branchScope.join(", ") || "All branches"}
-                {user.clientWorkspaceScope.length
-                  ? ` · ${user.clientWorkspaceScope.join(", ")}`
-                  : " · No client restriction"}
-              </p>
-            </div>
-          )}
-          <fieldset disabled={update.isPending} className="space-y-4">
-            <legend className="mb-2 text-sm font-semibold">Access mode</legend>
-            <RadioGroup
-              value={mode}
-              onValueChange={(value) => {
-                const next = value as typeof mode;
-                setMode(next);
-                setConfirmed(false);
-                if (next === "single" && selected.length > 1) setSelected([]);
-              }}
-              className="grid gap-3 sm:grid-cols-2"
-            >
-              {(["single", "multiple"] as const).map((value) => (
-                <label
-                  key={value}
-                  className="flex cursor-pointer items-center gap-3 rounded-2xl border border-border px-4 py-3 has-[[data-state=checked]]:border-primary/40 has-[[data-state=checked]]:bg-primary/5"
-                >
-                  <RadioGroupItem value={value} />
-                  <span className="text-sm font-medium">
-                    {value === "single" ? "Single role" : "Multiple roles"}
-                  </span>
-                </label>
-              ))}
-            </RadioGroup>
-            <p className="text-xs text-muted-foreground">
-              {mode === "single"
-                ? "Choose the one role this account should keep. Other roles will be removed."
-                : "Select up to 3 roles. Their permissions are combined; this is not a temporary dashboard switch."}
+          ) : null}
+          {selected.length > 1 ? (
+            <label className="flex items-start gap-3 rounded-2xl bg-amber-50 p-4 text-sm text-amber-950">
+              <Checkbox
+                checked={confirmed}
+                onCheckedChange={(value) => setConfirmed(value === true)}
+                className="mt-0.5"
+                aria-label="Confirm combined roles"
+              />
+              I confirm this person does all of these jobs:{" "}
+              {selected.map((role) => ROLE_DEFINITIONS[role].label).join(" + ")}.
+            </label>
+          ) : null}
+          {needsTeam ? (
+            <p className="cu-note">
+              <UsersRound aria-hidden /> Next, add them to their team in{" "}
+              <Link to="/operations/departments" className="rmo-link">
+                Departments &amp; teams
+              </Link>{" "}
+              so work reaches them.
             </p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {ROLES.map((role) => {
-                const clientUnavailable =
-                  ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace") &&
-                  !user.clientWorkspaceScope.length;
-                const maxReached =
-                  mode === "multiple" &&
-                  selected.length >= 3 &&
-                  !selected.includes(role) &&
-                  !EXCLUSIVE.includes(role);
-                return (
-                  <label
-                    key={role}
-                    className="flex items-start gap-3 rounded-2xl border border-border bg-muted/25 p-3 has-[[data-state=checked]]:border-emerald-300 has-[[data-state=checked]]:bg-emerald-50/60"
-                  >
-                    <Checkbox
-                      aria-label={ROLE_DEFINITIONS[role].label}
-                      checked={selected.includes(role)}
-                      onCheckedChange={() => choose(role)}
-                      disabled={clientUnavailable || maxReached}
-                      className="mt-0.5"
-                    />
-                    <span>
-                      <span className="block text-sm font-medium">
-                        {ROLE_DEFINITIONS[role].label}
-                      </span>
-                      <span className="mt-1 block text-xs text-muted-foreground">
-                        {clientUnavailable
-                          ? "Requires a linked client workspace; cannot be granted from this form."
-                          : ROLE_DEFINITIONS[role].description}
-                      </span>
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Platform Admin and Client Admin must each remain the only role on an account.
-            </p>
-            {selected.length > 1 ? (
-              <label className="flex items-start gap-3 rounded-2xl bg-amber-50 p-4 text-sm text-amber-950">
-                <Checkbox
-                  checked={confirmed}
-                  onCheckedChange={(value) => setConfirmed(value === true)}
-                  className="mt-0.5"
-                />
-                I confirm this person needs the combined permissions of these roles.
-              </label>
-            ) : null}
-          </fieldset>
+          ) : null}
           {changed ? (
             <div className="space-y-1 text-sm" aria-live="polite">
               {removed.length ? (
@@ -237,24 +175,24 @@ export function EditUserRolesDialog({
             </div>
           ) : null}
           <p className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4 text-xs text-amber-950">
-            Saving changed roles signs this user out of existing sessions. Assigned work is not
-            automatically transferred—arrange a handover first if removing a working role. The
-            change is recorded in the audit trail.
+            Saving signs this person out once. Work already assigned is not moved; hand it over
+            first if you remove a working role. Recorded in the audit trail.
           </p>
           {!user.version ? (
             <p role="alert" className="text-sm text-red-700">
-              Refresh the user directory before editing this account.
+              Refresh the list before editing this account.
             </p>
           ) : null}
           {update.isError ? (
             <p role="alert" className="text-sm text-red-700">
-              {update.error.message} If the account changed, close this dialog, refresh the
-              directory and reopen it.
+              {update.error.message}
             </p>
           ) : null}
         </div>
         <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-border px-5 py-4 sm:px-6">
-          <span className="text-xs text-muted-foreground">{selected.length} role(s) selected</span>
+          <span className="text-xs text-muted-foreground">
+            {selected.map((role) => ROLE_DEFINITIONS[role].label).join(" + ") || "No role"}
+          </span>
           <div className="flex gap-2">
             <Button type="button" variant="outline" disabled={update.isPending} onClick={onClose}>
               Cancel
@@ -263,15 +201,11 @@ export function EditUserRolesDialog({
               type="button"
               loading={update.isPending}
               disabled={
-                !changed ||
-                clientsMissing ||
-                !user.version ||
-                !selected.length ||
-                (selected.length > 1 && !confirmed)
+                !changed || !user.version || !selected.length || (selected.length > 1 && !confirmed)
               }
               onClick={save}
             >
-              Save access
+              Save
             </Button>
           </div>
         </footer>

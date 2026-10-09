@@ -14,7 +14,12 @@ import { CrmProposalService } from "./crm-proposal.service";
 import { CrmAutoAssignmentController } from "./crm-auto-assignment.controller";
 
 @Module({
-  controllers: [CrmController, CrmSequenceController, CrmProposalController, CrmAutoAssignmentController],
+  controllers: [
+    CrmController,
+    CrmSequenceController,
+    CrmProposalController,
+    CrmAutoAssignmentController,
+  ],
   providers: [
     CrmService,
     CrmQueryService,

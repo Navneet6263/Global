@@ -16,7 +16,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { toast } from "sonner";
-import { SaplingSymbol } from "@/components/brand/sapling-symbol";
+import { SaplingLogo } from "@/components/brand/sapling-logo";
 import { getSession } from "@/lib/api/auth";
 import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { canAccessWorkspace } from "@/lib/auth/workspace-access";
@@ -75,10 +75,8 @@ export function MobileWorkspaceNav() {
       >
         <SheetHeader className="shrink-0 border-b border-border/60 px-1 pb-4 text-left">
           <SheetTitle className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-2xl bg-[#fff9f3] ring-1 ring-primary/15">
-              <SaplingSymbol className="size-8" />
-            </span>
-            Sapling Global
+            <SaplingLogo width={140} />
+            <span className="sr-only">Sapling Global</span>
           </SheetTitle>
           <SheetDescription>Choose an authorized workspace</SheetDescription>
         </SheetHeader>

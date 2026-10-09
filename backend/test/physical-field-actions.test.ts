@@ -11,6 +11,9 @@ import type { CaseWorkflowPolicy } from "../src/cases/case-workflow.policy";
 import type { SubjectPiiService } from "../src/common/security/subject-pii.service";
 import type { ConsentIssuanceService } from "../src/consents/consent-issuance.service";
 
+// These cover the physical-visit rule, so field work is on here.
+process.env.FIELD_WORK_ENABLED = "true";
+
 const actor = {
   tenantId: 1n,
   userId: 2n,

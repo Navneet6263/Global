@@ -9,6 +9,8 @@ import type { Actor } from "./actor";
 export const IS_PUBLIC_KEY = "isPublic";
 export const PERMISSIONS_KEY = "permissions";
 export const ROLES_KEY = "roles";
+/** Write endpoints a view-only Platform Admin may still call (own session, escalation). */
+export const VIEW_ONLY_ADMIN_ALLOWED_KEY = "viewOnlyAdminAllowed";
 export const PASSWORD_CHANGE_PENDING_ALLOWED_KEY =
   "passwordChangePendingAllowed";
 
@@ -17,6 +19,8 @@ export const RequirePermissions = (...permissions: string[]) =>
   SetMetadata(PERMISSIONS_KEY, permissions);
 export const RequireRoles = (...roles: string[]) =>
   SetMetadata(ROLES_KEY, roles);
+export const AllowViewOnlyAdmin = () =>
+  SetMetadata(VIEW_ONLY_ADMIN_ALLOWED_KEY, true);
 export const AllowPasswordChangePending = () =>
   SetMetadata(PASSWORD_CHANGE_PENDING_ALLOWED_KEY, true);
 

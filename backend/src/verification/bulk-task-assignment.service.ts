@@ -1,3 +1,4 @@
+import { roleIs } from "../common/auth/role-filter";
 import {
   ConflictException,
   Injectable,
@@ -38,7 +39,7 @@ export class BulkTaskAssignmentService {
               tenantId: actor.tenantId,
               publicId: input.assigneeId,
               status: "ACTIVE",
-              userRoles: { some: { role: { code: "VERIFIER" } } },
+              userRoles: { some: { role: roleIs("VERIFIER") } },
             },
             select: {
               id: true,

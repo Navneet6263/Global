@@ -5,6 +5,12 @@ import { useState } from "react";
 
 import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
 import { VerifierTaskTable } from "@/features/delivery/verifier/VerifierTaskTable";
+import { ExportSheetButton } from "@/components/workspace/export-sheet";
+import {
+  TASK_EXPORT_COLUMNS,
+  TASK_EXPORT_DEFAULTS,
+  loadAllTasks,
+} from "@/features/delivery/verifier/task-export";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
 
@@ -79,6 +85,17 @@ function VerifierBlockersPage() {
       />
       <RecoveryGuide />
       <VerifierTaskTable
+        exporter={
+          <ExportSheetButton
+            source="verifier-blockers"
+            title="Export blocked checks"
+            filename="Sapling-Global-verifier-blockers"
+            columns={TASK_EXPORT_COLUMNS}
+            defaults={TASK_EXPORT_DEFAULTS}
+            scopeNote="Blocked checks"
+            loadRows={() => loadAllTasks({ status: "BLOCKED" })}
+          />
+        }
         title="Blocked assignments"
         detail="Open a task to review context, raise a clarification or resume verified work"
         items={tasks.data?.items ?? []}
@@ -115,18 +132,18 @@ function RecoveryGuide() {
     ],
   ];
   return (
-    <section className="grid gap-3 rounded-[1.55rem] border border-warning/20 bg-gradient-to-r from-warning-soft/55 via-card/90 to-mint-soft/45 p-4 shadow-[var(--shadow-card)] md:grid-cols-3">
+    <section className="grid gap-3 rounded-2xl border border-warning/20 bg-gradient-to-r from-warning-soft/55 via-card/90 to-blue-50 p-4 shadow-sm md:grid-cols-3">
       {steps.map(([number, title, detail]) => (
         <article
           key={number}
-          className="flex gap-3 rounded-[1.1rem] border border-white/80 bg-white/65 p-3.5"
+          className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3.5"
         >
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-warning text-[10px] font-bold text-warning-foreground">
+          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">
             {number}
           </span>
           <div>
-            <p className="text-[11px] font-semibold">{title}</p>
-            <p className="mt-1 text-[9.5px] leading-relaxed text-muted-foreground">{detail}</p>
+            <p className="text-[12.5px] font-semibold">{title}</p>
+            <p className="mt-1 text-[11.5px] leading-relaxed text-muted-foreground">{detail}</p>
           </div>
         </article>
       ))}

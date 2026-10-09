@@ -217,6 +217,40 @@ export async function decideQaCase(
         });
       }
     }
+    if (
+      input.decision === "REWORK" &&
+      verificationCase.workflowVersion === 2 &&
+      verificationCase.assignedOpsUserId
+    ) {
+      // Notification matrix: QC rejection is visible to the RM tracking the case.
+      await tx.notification.create({
+        data: {
+          tenantId: actor.tenantId,
+          userId: verificationCase.assignedOpsUserId,
+          type: "QC_REWORK",
+          title: "QC returned work for rework",
+          body: `${verificationCase.caseNumber}: ${input.reworkCheckIds.length} check(s) returned to the team.`,
+          href: `/spoc-rm/work?caseId=${casePublicId}`,
+        },
+      });
+    }
+    if (
+      input.decision === "APPROVED" &&
+      verificationCase.workflowVersion === 2 &&
+      verificationCase.assignedOpsUserId
+    ) {
+      // v2 flow: QC approval returns the case to its current RM for final review.
+      await tx.notification.create({
+        data: {
+          tenantId: actor.tenantId,
+          userId: verificationCase.assignedOpsUserId,
+          type: "FINAL_REVIEW_READY",
+          title: "Ready for your final review",
+          body: `${verificationCase.caseNumber}: QC approved. Review and approve the case.`,
+          href: `/spoc-rm/work?caseId=${casePublicId}`,
+        },
+      });
+    }
     await updateCaseRisk(tx, verificationCase.id);
     await tx.auditEvent.create({
       data: {

@@ -11,13 +11,17 @@ async function main() {
     .useValue({})
     .compile();
   try {
-    console.log("PASS: compiled application dependency graph; no SQL connection, worker initialization or HTTP listener.");
+    console.log(
+      "PASS: compiled application dependency graph; no SQL connection, worker initialization or HTTP listener.",
+    );
   } finally {
     await moduleRef.close();
   }
 }
 
 main().catch((error) => {
-  console.error(error instanceof Error ? error.message : "Application wiring check failed");
+  console.error(
+    error instanceof Error ? error.message : "Application wiring check failed",
+  );
   process.exitCode = 1;
 });

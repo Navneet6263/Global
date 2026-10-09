@@ -15,13 +15,15 @@ type OnboardingClient = {
 export function assertClientActivation(
   client: OnboardingClient,
   now = new Date(),
+  /** Self sign-up companies also need approved KYC proofs (GST, PAN, signatory). */
+  extraDocumentTypes: readonly string[] = [],
 ) {
   const missing: string[] = [];
   if (!client.billingTerms?.trim()) missing.push("billing terms");
   if (!client.billingAddress?.trim()) missing.push("billing address");
   if (!client.packageRates.some((rate) => rate.active))
     missing.push("an enabled contracted package");
-  for (const type of ["AGREEMENT", "DPA"]) {
+  for (const type of ["AGREEMENT", "DPA", ...extraDocumentTypes]) {
     if (
       !client.agreements.some(
         (row) =>

@@ -16,6 +16,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { listClarifications } from "@/lib/api/clarifications";
 import { getCase } from "@/lib/api/cases";
+import { ClientEscalate } from "./ClientEscalate";
+import { InterimReportButton } from "@/features/cases/InterimReportButton";
 import { casePackageName } from "@/lib/backend-api/case-services";
 import { ClientCaseDocuments } from "./ClientCaseDocuments";
 import { ClientCaseTimeline } from "./ClientCaseTimeline";
@@ -296,13 +298,17 @@ export function ClientCaseDrawer({
             </div>
           </div>
         )}
-        <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
-          <span className="text-[11px] text-slate-500">
+        <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
+          <span className="hidden text-[11px] text-slate-500 sm:inline">
             Private · Visible only within your authorised workspace
           </span>
-          <Button variant="outline" size="sm" className="rounded-lg" onClick={onClose}>
-            Close case detail
-          </Button>
+          <span className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+            {item && !detail.isError ? <InterimReportButton item={item} /> : null}
+            {item && !detail.isError ? <ClientEscalate item={item} /> : null}
+            <Button variant="outline" size="sm" className="rounded-lg" onClick={onClose}>
+              Close case detail
+            </Button>
+          </span>
         </footer>
       </DialogContent>
     </Dialog>

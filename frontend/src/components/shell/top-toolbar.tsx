@@ -1,5 +1,6 @@
 "use client";
 
+import { RoleSwitcher } from "./role-switcher";
 import { Link } from "@tanstack/react-router";
 import { Menu, RefreshCw, ShieldCheck } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { GlobalSearch } from "./global-search";
 import { NotificationsMenu } from "./notifications-menu";
 import { QuickCreateMenu } from "./quick-create-menu";
-import { HelpLauncher } from "@/features/help/help-launcher";
+import { HelpMenu } from "@/features/help/help-launcher";
 import { ClientSupportLauncher } from "@/features/support/components/ClientSupportLauncher";
 
 interface TopToolbarProps {
@@ -72,7 +73,7 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
         )}
 
         <div className="ml-auto flex items-center gap-1.5 md:ml-0">
-          <HelpLauncher />
+          <HelpMenu />
           {workspace === "client-admin" ? <ClientSupportLauncher /> : null}
           <Tooltip>
             <TooltipTrigger asChild>
@@ -89,6 +90,7 @@ export function TopToolbar({ onOpenNav, workspace = "platform-admin" }: TopToolb
             </TooltipTrigger>
             <TooltipContent>Refresh all panels</TooltipContent>
           </Tooltip>
+          <RoleSwitcher />
           <NotificationsMenu workspace={workspace} />
           {presentation.quickCreate ? <QuickCreateMenu /> : null}
           <Tooltip>

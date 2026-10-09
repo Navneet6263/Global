@@ -1,5 +1,5 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { AdminShell } from "@/components/shell/admin-shell";
+import { OperationsShell } from "@/features/operations/workspace/OperationsShell";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/operations")({
@@ -10,9 +10,9 @@ export const Route = createFileRoute("/operations")({
 
 function OperationsLayout() {
   return (
-    <AdminShell workspace="operations">
+    <OperationsShell>
       {/* Required: nested operations routes render here. */}
       <Outlet />
-    </AdminShell>
+    </OperationsShell>
   );
 }

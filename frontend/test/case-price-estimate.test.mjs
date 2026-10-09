@@ -41,3 +41,38 @@ test("missing price or tax is not presented as a free verification", () => {
     0,
   );
 });
+test("fewer checks cost the sum of their own prices, never more than the package", () => {
+  const pkg = {
+    id: "p",
+    price: 10000,
+    taxRate: 18,
+    checks: ["IDENTITY", "EMPLOYMENT", "EDUCATION", "ADDRESS", "CRIMINAL", "REFERENCE"],
+    checkPrices: {
+      IDENTITY: 1000,
+      EMPLOYMENT: 2500,
+      EDUCATION: 2000,
+      ADDRESS: 1500,
+      CRIMINAL: 2000,
+      REFERENCE: 1000,
+    },
+  };
+  const one = casePriceEstimate(
+    { services: [{ servicePackageId: "p", selectedChecks: ["EMPLOYMENT"] }] },
+    [pkg],
+  );
+  assert.equal(one.subtotal, 2500);
+  assert.equal(one.tax, 450);
+  assert.equal(one.total, 2950);
+  assert.equal(one.lines[0].selectedCount, 1);
+  const all = casePriceEstimate(
+    { services: [{ servicePackageId: "p", selectedChecks: pkg.checks }] },
+    [pkg],
+  );
+  assert.equal(all.subtotal, 10000);
+  assert.equal(all.total, 11800);
+  const five = casePriceEstimate(
+    { services: [{ servicePackageId: "p", selectedChecks: pkg.checks.slice(0, 5) }] },
+    [{ ...pkg, checkPrices: { ...pkg.checkPrices, IDENTITY: 4000 } }],
+  );
+  assert.equal(five.subtotal, 10000);
+});

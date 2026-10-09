@@ -156,11 +156,21 @@ export function updateTask(
     status: "IN_PROGRESS" | "COMPLETED" | "BLOCKED";
     version: number;
     result?: "CLEAR" | "DISCREPANCY" | "UNABLE_TO_VERIFY";
+    /** Colour code; defaults from the result when omitted. */
+    disposition?: string;
     sourceSummary?: string;
     findings: FindingInput[];
   },
 ) {
-  return apiRequest<{ id: string; status: string; version: number }>(`/tasks/${taskId}`, {
+  return apiRequest<{
+    id: string;
+    status: string;
+    version: number;
+    /** The check now waits for its Team Leader's review before QA. */
+    tlReview?: boolean;
+    /** The person who finished it leads the team: offer "Forward to QA" now. */
+    canForward?: boolean;
+  }>(`/tasks/${taskId}`, {
     method: "PATCH",
     body: JSON.stringify(input),
   });
@@ -173,5 +183,21 @@ export function createTask(
   return apiRequest<{ id: string; status: string; version: number }>(`/checks/${checkId}/tasks`, {
     method: "POST",
     body: JSON.stringify(input),
+  });
+}
+
+/** Team Leader: the finished check is fine; complete it so the case can go to QA. */
+export function forwardTask(taskId: string, note?: string) {
+  return apiRequest<{ id: string; status: string; caseToQa: boolean }>(`/tasks/${taskId}/forward`, {
+    method: "POST",
+    body: JSON.stringify(note ? { note } : {}),
+  });
+}
+
+/** Team Leader: send the finished check back to its verifier with what to fix. */
+export function sendBackTask(taskId: string, reason: string) {
+  return apiRequest<{ id: string; status: string }>(`/tasks/${taskId}/send-back`, {
+    method: "POST",
+    body: JSON.stringify({ note: reason }),
   });
 }

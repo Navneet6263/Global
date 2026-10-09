@@ -134,4 +134,5 @@ const clientInvoiceSelect = {
   totalAmount: true,
   paidAmount: true,
   creditedAmount: true,
+  annexureStatus: true,
 } as const;

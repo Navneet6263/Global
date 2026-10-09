@@ -85,6 +85,13 @@ async function fixture(page: Page) {
         nextCursor: null,
         summary: { active: 1, overdue: 0, blocked: 0, completedToday: 0 },
       });
+    if (path === "/checks/check-test/vendor")
+      return reply({
+        checkId: "check-test",
+        checkType: "EDUCATION",
+        canManage: false,
+        attempts: [],
+      });
     if (path === "/tasks/task-test/context")
       return reply({
         publicId: task.id,

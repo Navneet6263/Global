@@ -1,31 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight, ShieldCheck } from "lucide-react";
 import type { OpsActionItem, OpsActionTreatment } from "../contracts/operations";
 import { OPS_STAGE_META } from "../contracts/case";
-import { Section } from "@/components/layout/section";
-import { StatusBadge } from "@/components/feedback/status-badge";
 import { PaginationBar } from "@/components/layout/pagination-bar";
-import { Button } from "@/components/ui/button";
 import { formatDuration } from "@/lib/formatting";
-import type { StatusTone } from "@/lib/contracts/common";
-import { cn } from "@/lib/utils";
+import { initials } from "../workspace/ops-queue-model";
 
-const TREATMENT_TONE: Record<OpsActionTreatment, StatusTone> = {
-  critical: "critical",
-  action: "warning",
-  processing: "info",
-  review: "review",
-  resolved: "success",
-};
-
-const TREATMENT_LABEL: Record<OpsActionTreatment, string> = {
-  critical: "Act now",
-  action: "Needs action",
-  processing: "In progress",
-  review: "Review",
-  resolved: "Ready",
+const TREATMENT: Record<
+  OpsActionTreatment,
+  { label: string; tone: "bad" | "warn" | "info" | "good" }
+> = {
+  critical: { label: "Act now", tone: "bad" },
+  action: { label: "Needs action", tone: "warn" },
+  processing: { label: "In progress", tone: "info" },
+  review: { label: "Review", tone: "info" },
+  resolved: { label: "Ready", tone: "good" },
 };
 
 const PAGE_SIZE = 6;
@@ -35,6 +26,7 @@ interface OpsActionQueueProps {
   onOpenCase: (caseId: string) => void;
 }
 
+/** Delivery risks and ownership gaps, most urgent first. Collapses to one line when clear. */
 export function OpsActionQueue({ items, onOpenCase }: OpsActionQueueProps) {
   const [page, setPage] = useState(1);
   const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
@@ -43,74 +35,73 @@ export function OpsActionQueue({ items, onOpenCase }: OpsActionQueueProps) {
     () => items.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
     [items, safePage],
   );
-
+  const critical = items.filter((item) => item.treatment === "critical").length;
   return (
-    <Section
-      title="SLA attention"
-      description="Delivery risks and ownership gaps, most urgent first."
-      padded={false}
-    >
-      <ul className="divide-y divide-border">
-        {visible.map((item) => {
-          const tone = TREATMENT_TONE[item.treatment];
-          return (
-            <li key={item.id} className="flex flex-wrap items-start gap-3 px-5 py-3.5">
-              <span
-                aria-hidden
-                className={cn(
-                  "mt-1 h-9 w-[3px] shrink-0 rounded-full",
-                  tone === "critical"
-                    ? "bg-critical"
-                    : tone === "warning"
-                      ? "bg-warning"
-                      : tone === "review"
-                        ? "bg-review"
-                        : tone === "success"
-                          ? "bg-success"
-                          : "bg-info",
-                )}
-              />
-              <div className="min-w-0 flex-1 space-y-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="num text-xs text-muted-foreground">{item.caseNumber}</span>
-                  <span className="text-[13px] font-medium text-foreground">
-                    {item.candidateName}
+    <section className="attn-card" aria-label="SLA attention">
+      <header className="attn-card-head">
+        <div>
+          <h2>SLA attention</h2>
+          <p>
+            Delivery risks and ownership gaps, most urgent first
+            {critical ? ` · ${critical} to act on now` : ""}
+          </p>
+        </div>
+      </header>
+      {visible.length ? (
+        <ul className="attn-rows mt-3" aria-label="Delivery risks">
+          {visible.map((item) => {
+            const treatment = TREATMENT[item.treatment];
+            const overdue = item.slaMinutesRemaining <= 0;
+            return (
+              <li key={item.id} className={`attn-row ${overdue ? "is-overdue" : ""}`}>
+                <span className="attn-avatar" aria-hidden>
+                  {initials(item.candidateName)}
+                </span>
+                <span className="attn-row-who">
+                  <strong>{item.candidateName}</strong>
+                  <small>
+                    {item.caseNumber} · {item.clientName}
+                  </small>
+                </span>
+                <span className="attn-row-mid">
+                  <span>
+                    <i className={`attn-dot is-${treatment.tone}`} aria-hidden />
+                    {treatment.label} · {OPS_STAGE_META[item.stage].short}
                   </span>
-                  <StatusBadge label={TREATMENT_LABEL[item.treatment]} tone={tone} />
-                  <StatusBadge
-                    label={OPS_STAGE_META[item.stage].short}
-                    tone="neutral"
-                    withDot={false}
-                  />
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">{item.issue}</p>
-                <p className="text-[11px] text-muted-foreground/85">
-                  {item.clientName} · waiting {formatDuration(item.waitingMinutes)} · owner{" "}
-                  {item.owner}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <span className="num hidden text-[11px] text-muted-foreground sm:block">
-                  {item.slaMinutesRemaining <= 0
+                  <small>
+                    {item.issue} · owner {item.owner} · waiting{" "}
+                    {formatDuration(item.waitingMinutes)}
+                  </small>
+                </span>
+                <span className={`attn-row-due ${overdue ? "is-bad" : "is-warn"}`}>
+                  {overdue
                     ? `Overdue ${formatDuration(-item.slaMinutesRemaining)}`
                     : `${formatDuration(item.slaMinutesRemaining)} left`}
                 </span>
-                <Button variant="outline" size="sm" onClick={() => onOpenCase(item.caseId)}>
+                <button type="button" className="attn-go" onClick={() => onOpenCase(item.caseId)}>
                   {item.nextAction}
-                  <ArrowRight className="size-3.5" aria-hidden />
-                </Button>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
-      <PaginationBar
-        page={safePage}
-        pageSize={PAGE_SIZE}
-        total={items.length}
-        onPageChange={setPage}
-        label="actions"
-      />
-    </Section>
+                  <ChevronRight aria-hidden />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="attn-empty">
+          <ShieldCheck aria-hidden /> No delivery risks right now.
+        </p>
+      )}
+      {items.length > PAGE_SIZE ? (
+        <div className="attn-foot">
+          <PaginationBar
+            page={safePage}
+            pageSize={PAGE_SIZE}
+            total={items.length}
+            onPageChange={setPage}
+            label="actions"
+          />
+        </div>
+      ) : null}
+    </section>
   );
 }

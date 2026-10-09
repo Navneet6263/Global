@@ -28,6 +28,7 @@ export const checkPublicSelect = {
   type: true,
   status: true,
   result: true,
+  disposition: true,
   riskLevel: true,
   dueAt: true,
   completedAt: true,

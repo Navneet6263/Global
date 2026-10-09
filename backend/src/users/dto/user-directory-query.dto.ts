@@ -21,6 +21,7 @@ export const DirectoryRoleCodes = [
   "SPOC_RM",
   "VENDOR",
   "SUPPORT_AGENT",
+  "DATA_ENTRY",
 ] as const;
 
 export const DirectoryStatuses = ["ACTIVE", "SUSPENDED", "INVITED"] as const;

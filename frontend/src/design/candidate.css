@@ -1,0 +1,503 @@
+/* Candidate upload page: phone-first, one clear task. */
+.cand {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  padding-bottom: 7rem;
+}
+.cand-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.1rem;
+  border-radius: 22px;
+  padding: 1.4rem;
+  color: #fff;
+  background:
+    radial-gradient(22rem 14rem at 100% 0%, rgb(74 222 128 / 0.28), transparent 65%),
+    linear-gradient(145deg, #0b1d4a 0%, #163f93 55%, #0f6b4f 100%);
+  box-shadow: 0 24px 50px -28px rgb(11 29 74 / 0.6);
+}
+@media (min-width: 640px) {
+  .cand-hero {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    padding: 1.75rem 1.9rem;
+  }
+}
+.cand-hero h1 {
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.cand-hero p {
+  margin-top: 0.45rem;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(255 255 255 / 0.78);
+}
+.cand-steps {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.cand-steps li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(255 255 255 / 0.08);
+  padding: 0.3rem 0.7rem 0.3rem 0.35rem;
+  font-size: 12px;
+  color: rgb(255 255 255 / 0.8);
+}
+.cand-steps li > span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 99px;
+  background: rgb(255 255 255 / 0.16);
+  font-size: 11px;
+  font-weight: 700;
+}
+.cand-steps li > span svg {
+  width: 12px;
+  height: 12px;
+}
+.cand-steps li.is-done > span {
+  background: #16a34a;
+}
+.cand-steps li.is-now {
+  border-color: transparent;
+  background: #fff;
+  color: #0b1d4a;
+  font-weight: 650;
+}
+.cand-steps li.is-now > span {
+  background: #1d4ed8;
+  color: #fff;
+}
+.cand-ring {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  justify-self: start;
+}
+@media (min-width: 640px) {
+  .cand-ring {
+    justify-self: end;
+  }
+}
+.cand-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.cand-ring circle {
+  fill: none;
+  stroke-width: 9;
+}
+.cand-ring .track {
+  stroke: rgb(255 255 255 / 0.18);
+}
+.cand-ring .bar {
+  stroke: #4ade80;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.5s ease;
+}
+.cand-ring span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.cand-ring small {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+  text-transform: uppercase;
+}
+
+.cand-card {
+  border: 1px solid #e6ebf2;
+  border-radius: 18px;
+  background: #fff;
+}
+.cand-card-head {
+  padding: 1rem 1.15rem 0.25rem;
+}
+.cand-card-head h2 {
+  font-size: 15px;
+  font-weight: 650;
+  color: #0b1324;
+}
+.cand-card-head p {
+  margin-top: 0.15rem;
+  font-size: 12.5px;
+  color: #64748b;
+}
+.cand-notice {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.9rem 1.15rem;
+  font-size: 13px;
+  color: #334155;
+}
+.cand-notice input {
+  margin-top: 3px;
+  width: 16px;
+  height: 16px;
+  accent-color: #1d4ed8;
+}
+.cand-notice button {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: #1d4ed8;
+  cursor: pointer;
+}
+.cand-notice-text {
+  margin: 0 1.15rem 1rem;
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 0.75rem 0.9rem;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #475569;
+}
+.cand-notice-text p + p {
+  margin-top: 0.5rem;
+}
+
+.cand-docs {
+  display: grid;
+}
+.cand-doc {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.95rem 1.15rem;
+  border-top: 1px solid #eef2f7;
+}
+@media (min-width: 560px) {
+  .cand-doc {
+    grid-template-columns: 40px minmax(0, 1fr) auto;
+    align-items: center;
+  }
+}
+.cand-doc-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: #64748b;
+}
+.cand-doc-icon svg {
+  width: 19px;
+  height: 19px;
+}
+.cand-doc.is-done .cand-doc-icon {
+  background: #dcfce7;
+  color: #15803d;
+}
+.cand-doc.is-again .cand-doc-icon {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.cand-doc strong {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0b1324;
+}
+.cand-doc small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #64748b;
+}
+.cand-doc-reason {
+  margin-top: 0.45rem;
+  border-radius: 10px;
+  background: #fef2f2;
+  padding: 0.45rem 0.65rem;
+  font-size: 12.5px;
+  color: #991b1b;
+}
+.cand-chip {
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  font-size: 11px;
+  font-weight: 700;
+}
+.cand-chip.is-needed {
+  background: #f1f5f9;
+  color: #475569;
+}
+.cand-chip.is-done {
+  background: #dcfce7;
+  color: #166534;
+}
+.cand-chip.is-again {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.cand-doc-actions {
+  grid-column: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+@media (min-width: 560px) {
+  .cand-doc-actions {
+    grid-column: auto;
+    justify-content: flex-end;
+  }
+}
+.cand-doc-actions input[type="date"] {
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  padding: 0 0.5rem;
+  font-size: 12.5px;
+}
+.cand-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 38px;
+  border: 0;
+  border-radius: 11px;
+  padding: 0 0.95rem;
+  font-size: 13px;
+  font-weight: 650;
+  color: #fff;
+  background: #1d4ed8;
+  cursor: pointer;
+}
+.cand-upload.is-secondary {
+  background: #fff;
+  color: #0b1324;
+  border: 1px solid #d5dce6;
+}
+.cand-upload:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.cand-upload svg {
+  width: 15px;
+  height: 15px;
+}
+.cand-error {
+  margin: 0 1.15rem 1rem;
+  border-radius: 10px;
+  background: #fef2f2;
+  padding: 0.55rem 0.75rem;
+  font-size: 12.5px;
+  color: #991b1b;
+}
+
+/* Sticky completion bar */
+.cand-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  border-top: 1px solid #e2e8f0;
+  background: rgb(255 255 255 / 0.96);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -12px 30px -24px rgb(11 29 74 / 0.45);
+}
+.cand-bar-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom));
+}
+.cand-bar p {
+  font-size: 13px;
+  color: #334155;
+}
+.cand-bar p strong {
+  color: #0b1324;
+}
+.cand-complete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 46px;
+  border: 0;
+  border-radius: 13px;
+  padding: 0 1.2rem;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #15803d, #16a34a);
+  box-shadow: 0 14px 28px -16px rgb(22 163 74 / 0.9);
+  cursor: pointer;
+}
+.cand-complete:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.cand-complete svg {
+  width: 18px;
+  height: 18px;
+}
+@media (max-width: 520px) {
+  .cand-complete {
+    width: 100%;
+  }
+}
+
+/* Done screen */
+.cand-done {
+  max-width: 560px;
+  margin: 2rem auto;
+  border: 1px solid #e6ebf2;
+  border-radius: 22px;
+  background: #fff;
+  padding: 2.25rem 1.5rem;
+  text-align: center;
+  box-shadow: 0 30px 60px -40px rgb(11 29 74 / 0.45);
+}
+.cand-done-icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  color: #15803d;
+  box-shadow: 0 0 0 10px rgb(34 197 94 / 0.08);
+}
+.cand-done-icon svg {
+  width: 34px;
+  height: 34px;
+}
+.cand-done h1 {
+  margin-top: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #0b1324;
+}
+.cand-done p {
+  margin-top: 0.6rem;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #475569;
+}
+.cand-done ul {
+  margin: 1.25rem auto 0;
+  display: grid;
+  gap: 0.45rem;
+  max-width: 360px;
+  text-align: left;
+}
+.cand-done li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 13.5px;
+  color: #334155;
+}
+.cand-done li svg {
+  width: 16px;
+  height: 16px;
+  color: #16a34a;
+}
+
+/* Consent inside the same link */
+.cand-consent .cand-card-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.cand-consent .cand-card-head h2 svg {
+  width: 17px;
+  height: 17px;
+  color: #1d4ed8;
+}
+.cand-consent-body {
+  display: grid;
+  gap: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+  padding: 1rem 1.15rem 1.15rem;
+}
+.cand-consent-body form {
+  display: grid;
+  gap: 0.85rem;
+}
+.cand-consent-send {
+  justify-self: start;
+}
+.cand-consent-sent {
+  font-size: 13px;
+  color: #475569;
+}
+.cand-consent-dev {
+  font-size: 12px;
+  color: #64748b;
+}
+.cand-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cand-consent-resend {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d4ed8;
+  cursor: pointer;
+}
+.cand-consent-resend:disabled {
+  color: #94a3b8;
+  cursor: default;
+}
+.cand-docs-locked {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 1.15rem;
+  font-size: 13px;
+  color: #64748b;
+}
+.cand-docs-locked svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}

@@ -1,11 +1,14 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query } from "@nestjs/common";
 import {
+  ArrayMaxSize,
+  IsArray,
   IsDateString,
   IsIn,
   IsInt,
   IsOptional,
   IsString,
   Max,
+  Length,
   Min,
 } from "class-validator";
 import { Type } from "class-transformer";
@@ -42,6 +45,32 @@ class AuditQueryDto {
   @IsOptional() @IsDateString() to?: string;
 }
 
+export const EXPORT_SOURCES = [
+  "data-entry-queue",
+  "team-queue",
+  "team-members",
+  "verifier-tasks",
+  "verifier-sla",
+  "verifier-blockers",
+  "verifier-history",
+  "utv",
+  "team-annexure",
+  "qa-queue",
+  "qa-mine",
+  "qa-corrections",
+  "qa-history",
+] as const;
+
+export class ExportLogDto {
+  @IsIn(EXPORT_SOURCES) source!: (typeof EXPORT_SOURCES)[number];
+  @Type(() => Number) @IsInt() @Min(0) @Max(100_000) rows!: number;
+  @IsArray()
+  @ArrayMaxSize(40)
+  @IsString({ each: true })
+  @Length(1, 60, { each: true })
+  columns!: string[];
+}
+
 @Controller("audit-events")
 export class AuditController {
   constructor(private readonly audit: AuditService) {}
@@ -58,5 +87,18 @@ export class AuditController {
   @RequireRoles("PLATFORM_ADMIN")
   facets(@CurrentActor() actor: Actor) {
     return this.audit.facets(actor);
+  }
+
+  /** A sheet exported in the browser from a work list: who, which list, how many rows, which columns. */
+  @Post("exports")
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "VERIFIER",
+    "QA_REVIEWER",
+    "DATA_ENTRY",
+  )
+  logExport(@CurrentActor() actor: Actor, @Body() input: ExportLogDto) {
+    return this.audit.logExport(actor, input);
   }
 }

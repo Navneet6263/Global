@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 
 import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
 import { VerifierTaskTable } from "@/features/delivery/verifier/VerifierTaskTable";
+import { ExportSheetButton } from "@/components/workspace/export-sheet";
+import {
+  TASK_EXPORT_COLUMNS,
+  TASK_EXPORT_DEFAULTS,
+  loadAllTasks,
+} from "@/features/delivery/verifier/task-export";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
 
@@ -94,10 +100,21 @@ function VerifierHistoryPage() {
           value={input}
           onChange={(event) => setInput(event.target.value)}
           placeholder="Search candidate, case or client"
-          className="h-11 w-full rounded-full border border-white/80 bg-card/85 pl-11 pr-4 text-[11px] shadow-[var(--shadow-card)] outline-none focus:border-mint/40 focus:ring-2 focus:ring-mint/10"
+          className="h-11 w-full rounded-full border border-slate-200 bg-white pl-11 pr-4 text-[12.5px] shadow-sm outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100"
         />
       </label>
       <VerifierTaskTable
+        exporter={
+          <ExportSheetButton
+            source="verifier-history"
+            title="Export completed checks"
+            filename="Sapling-Global-verifier-history"
+            columns={TASK_EXPORT_COLUMNS}
+            defaults={TASK_EXPORT_DEFAULTS}
+            scopeNote={search ? `Completed · search “${search}”` : "All completed checks"}
+            loadRows={() => loadAllTasks({ status: "COMPLETED", search })}
+          />
+        }
         title="Outcome history"
         detail={search ? `Results matching “${search}”` : "Most recent completed checks first"}
         items={tasks.data?.items ?? []}

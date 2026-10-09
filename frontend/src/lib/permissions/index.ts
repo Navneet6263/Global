@@ -3,6 +3,8 @@ import type { Role } from "@/config/roles";
 import type { PlatformSession } from "@/lib/auth/session";
 
 export function can(session: PlatformSession, permission: Permission): boolean {
+  // A view-only Platform Admin keeps every read; write permissions are withheld.
+  if (session.viewOnly && !permission.endsWith(":read")) return false;
   return session.permissions.includes("*") || session.permissions.includes(permission);
 }
 

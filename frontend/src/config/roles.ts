@@ -12,6 +12,7 @@ export const ROLES = [
   "SPOC_RM",
   "VENDOR",
   "SUPPORT_AGENT",
+  "DATA_ENTRY",
 ] as const;
 
 export type Role = (typeof ROLES)[number];
@@ -144,10 +145,18 @@ const definitions: Record<Role, Omit<RoleDefinition, "id">> = {
     scopeFields: ["branch"],
   },
   SPOC_RM: {
-    label: "SPOC-RM",
+    label: "RM / SPOC",
     description:
-      "Monitors its assigned client workspaces across every role and assigns their documents to vendors.",
-    permissions: ["dashboard:read", "notification:read", "vendor:assign"],
+      "Owns its clients' cases: assigns Data Entry, routes checks to departments and gives final approval.",
+    permissions: [
+      "dashboard:read",
+      "notification:read",
+      "vendor:assign",
+      "case:read",
+      "document:read",
+      "clarification:read",
+      "report:read",
+    ],
     scopeFields: ["clientWorkspaces"],
   },
   VENDOR: {
@@ -155,6 +164,19 @@ const definitions: Record<Role, Omit<RoleDefinition, "id">> = {
     description: "External partner that approves or rejects only the documents assigned to it.",
     permissions: ["vendor:review", "notification:read"],
     scopeFields: [],
+  },
+  DATA_ENTRY: {
+    label: "Data Entry",
+    description: "Checks intake completeness, raises corrections and marks cases Ready for the RM.",
+    permissions: [
+      "dashboard:read",
+      "case:read",
+      "document:read",
+      "clarification:read",
+      "clarification:write",
+      "notification:read",
+    ],
+    scopeFields: ["branch", "queue"],
   },
   SUPPORT_AGENT: {
     label: "Support Agent",

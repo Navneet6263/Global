@@ -21,10 +21,17 @@ export interface AuthenticatedIdentity {
   branchId?: string;
   branchName?: string;
   clientName?: string;
+  clientStatus?: string;
+  /** View-only Platform Admin: read everything, escalate cases, change nothing. */
+  viewOnly: boolean;
   /** SPOC-RM only: names of its assigned client workspaces. */
   clientScope?: readonly string[];
   mustChangePassword: boolean;
+  /** Branch (office) scoping is on for this company. */
+  branchScoping: boolean;
 }
+
+const PUBLIC_PATHS = new Set(["/", "/auth", "/signup"]);
 
 let currentIdentity: AuthenticatedIdentity | null = null;
 let identityLoad: Promise<AuthenticatedIdentity | null> | null = null;
@@ -48,8 +55,11 @@ function fromBackendSession(session: Session): AuthenticatedIdentity {
     branchId: session.branchId,
     branchName: session.branchName,
     clientName: session.clientName,
+    clientStatus: session.clientStatus,
+    viewOnly: session.viewOnly === true,
     clientScope: session.clientScope?.map((client) => client.name),
     mustChangePassword: session.mustChangePassword,
+    branchScoping: session.branchScoping === true,
   };
 }
 
@@ -106,7 +116,8 @@ registerSessionExpiryHandler(async () => {
     // The identity is already unusable; a failed local cleanup must not restore it.
   }
   if (expiredVersion !== identityVersion) return;
-  if (typeof window !== "undefined" && window.location.pathname !== "/auth") {
+  // Public pages (landing, sign-in, sign-up) stay put; workspaces go to sign-in.
+  if (typeof window !== "undefined" && !PUBLIC_PATHS.has(window.location.pathname)) {
     window.location.assign("/auth");
   }
 });
@@ -134,7 +145,8 @@ export function landingPathForRoles(roles: readonly Role[]): string {
   if (roles.includes("VERIFIER")) return "/verifier";
   if (roles.includes("QA_REVIEWER")) return "/qa-review";
   if (roles.includes("FINANCE_MANAGER")) return "/finance";
-  if (roles.includes("SPOC_RM")) return "/spoc-rm";
+  if (roles.includes("SPOC_RM")) return "/spoc-rm/work";
+  if (roles.includes("DATA_ENTRY")) return "/data-entry";
   if (roles.includes("VENDOR")) return "/vendor";
   if (roles.includes("SUPPORT_AGENT")) return "/support";
   return "/auth";

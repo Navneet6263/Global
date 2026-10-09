@@ -60,14 +60,14 @@ export function DeliveryKpis({
         <article key={label} className="surface p-4 transition-transform hover:-translate-y-0.5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-[11px] font-medium text-muted-foreground">{label}</p>
+              <p className="text-[12.5px] font-medium text-muted-foreground">{label}</p>
               <p className="num mt-1 text-2xl font-semibold text-foreground">{value}</p>
             </div>
             <span className={`grid size-9 place-items-center rounded-xl ${tones[tone].icon}`}>
               <Icon className="size-4" />
             </span>
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">{detail}</p>
+          <p className="mt-2 text-[12.5px] text-muted-foreground">{detail}</p>
           {progress !== undefined ? (
             <div className="mt-3 h-1 overflow-hidden rounded-full bg-muted">
               <div

@@ -65,8 +65,10 @@ test("session survives refresh and logout revokes the browser session", async ({
   await expect(page).not.toHaveURL(/\/auth/);
   await page.getByRole("button", { name: /sign out/i }).click();
   await expect(page).toHaveURL(/\/auth/);
+  // Signed out, the home page is the public landing page, never a workspace.
   await page.goto("/");
-  await expect(page).toHaveURL(/\/auth/);
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("link", { name: "Sign in" }).first()).toBeVisible();
 });
 
 async function login(page: Page) {

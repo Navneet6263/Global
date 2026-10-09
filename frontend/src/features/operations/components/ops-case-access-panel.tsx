@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Copy, KeyRound, Link2, Send } from "lucide-react";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import type { OpsCaseDetail } from "../contracts/case";
 import { opsKeys } from "../hooks/use-operations";
@@ -17,16 +17,11 @@ const CLOSED_STAGES = new Set(["completed", "cancelled"]);
 
 export function OpsCaseAccessPanel({ item }: { item: OpsCaseDetail }) {
   const queryClient = useQueryClient();
-  const [origin, setOrigin] = useState("");
   const [candidateUrl, setCandidateUrl] = useState("");
-  const [consentOtp, setConsentOtp] = useState("");
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const canIssueCandidate = hasPermission(session.data?.permissions, "case:create");
   const canManageConsent = hasPermission(session.data?.permissions, "consent:manage");
   const closed = CLOSED_STAGES.has(item.stage);
-  const consentUrl = item.consent.id && origin ? `${origin}/consent/${item.consent.id}` : "";
-
-  useEffect(() => setOrigin(window.location.origin), []);
 
   const candidate = useMutation({
     mutationFn: () => issueCandidateAccess(item.id),
@@ -48,16 +43,16 @@ export function OpsCaseAccessPanel({ item }: { item: OpsCaseDetail }) {
   const consent = useMutation({
     mutationFn: () => requestConsent(item.id),
     onSuccess: (result) => {
-      setConsentOtp(result.developmentOtp ?? "");
-      toast.success("New consent OTP issued", {
-        description: result.developmentOtp
-          ? "Local development OTP is available below."
-          : `Valid until ${formatDateTime(result.expiresAt)}.`,
+      setCandidateUrl("");
+      toast.success("Candidate link re-sent", {
+        description: result.delivery.queued
+          ? `Emailed to ${result.delivery.destination}. Valid until ${formatDateTime(result.expiresAt)}.`
+          : "No email or phone on file; issue and copy the document link instead.",
       });
       void queryClient.invalidateQueries({ queryKey: opsKeys.case(item.id) });
     },
     onError: (error: Error) =>
-      toast.error("Consent OTP could not be issued", {
+      toast.error("Candidate link could not be re-sent", {
         description: error.message,
       }),
   });
@@ -76,15 +71,14 @@ export function OpsCaseAccessPanel({ item }: { item: OpsCaseDetail }) {
       />
       <AccessCard
         icon={<KeyRound className="size-4" aria-hidden />}
-        title="Consent link & OTP"
+        title="Consent"
         description={
           item.consent.status === "signed"
-            ? "Consent has already been accepted and cannot be reissued."
-            : "The consent link is separate from the document-upload link."
+            ? "Consent is recorded. It is never asked again."
+            : "The candidate confirms consent with a one-time code inside the same link, then uploads."
         }
-        value={consentUrl}
-        secondaryValue={consentOtp}
-        actionLabel="Issue new OTP"
+        value=""
+        actionLabel="Re-send candidate link"
         disabled={
           !canManageConsent ||
           !item.consent.id ||
@@ -104,7 +98,6 @@ function AccessCard(props: {
   title: string;
   description: string;
   value: string;
-  secondaryValue?: string;
   actionLabel: string;
   disabled: boolean;
   busy: boolean;
@@ -122,9 +115,6 @@ function AccessCard(props: {
         </div>
       </div>
       {props.value ? <CopyValue value={props.value} label={props.title} /> : null}
-      {props.secondaryValue ? (
-        <CopyValue value={props.secondaryValue} label="Development OTP" code />
-      ) : null}
       <Button
         size="sm"
         className="mt-3 w-full"

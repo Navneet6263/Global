@@ -13,7 +13,7 @@ export class DashboardExceptionsService {
     const overdueWhere = {
       ...scope,
       dueAt: { lt: now },
-      status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED"] },
+      status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
     };
     const clarificationWhere = {
       tenantId: actor.tenantId,

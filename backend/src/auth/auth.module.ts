@@ -9,6 +9,7 @@ import { AuthTokenService } from "./auth-token.service";
 import { AuthenticationService } from "./authentication.service";
 import { JwtStrategy } from "./jwt.strategy";
 import { SessionManagementService } from "./session-management.service";
+import { SignupService } from "./signup.service";
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SessionManagementService } from "./session-management.service";
     SessionManagementService,
     AccountPasswordService,
     JwtStrategy,
+    SignupService,
     ConfigService,
   ],
   exports: [AuthService],

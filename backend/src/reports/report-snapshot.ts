@@ -13,6 +13,8 @@ export const reportApprovalSelect = {
   tenantId: true,
   completedAt: true,
   riskLevel: true,
+  workflowVersion: true,
+  assignedOpsUserId: true,
   client: { select: { displayName: true } },
   subject: {
     select: {
@@ -31,8 +33,11 @@ export const reportApprovalSelect = {
       type: true,
       status: true,
       result: true,
+      disposition: true,
       riskLevel: true,
       sourceSummary: true,
+      initiationJson: true,
+      verifiedJson: true,
       caseService: { select: { serviceFamily: true } },
       methodRuns: {
         where: { status: "RESPONDED" },
@@ -182,8 +187,11 @@ export function snapshotForApproval(
     checks: row.checks.map((check) => ({
       type: check.type,
       result: check.result,
+      disposition: check.disposition,
       riskLevel: check.riskLevel,
       serviceFamily: check.caseService?.serviceFamily,
+      claimed: entriesOf(check.initiationJson),
+      verified: entriesOf(check.verifiedJson),
       methods: check.methodRuns.map((run) => ({
         ...run,
         requestedAt: run.requestedAt?.toISOString(),
@@ -221,6 +229,25 @@ function safeServiceDetails(json: string): Array<[string, string]> {
         ? [[labels[key], value.trim().slice(0, 2000)] as [string, string]]
         : [],
     );
+  } catch {
+    return [];
+  }
+}
+
+/** Reads {"entries":[...]} stored on a check; anything else is treated as none. */
+export function entriesOf(
+  json: string | null | undefined,
+): Array<Record<string, string>> {
+  try {
+    const parsed = JSON.parse(json ?? "") as { entries?: unknown };
+    return Array.isArray(parsed.entries)
+      ? parsed.entries.filter(
+          (entry): entry is Record<string, string> =>
+            Boolean(entry) &&
+            typeof entry === "object" &&
+            !Array.isArray(entry),
+        )
+      : [];
   } catch {
     return [];
   }

@@ -9,6 +9,12 @@ import {
   type VerifierQueueFilter,
 } from "@/features/delivery/verifier/VerifierQueue";
 import { VerifierTaskDesk } from "@/features/delivery/verifier/VerifierTaskDesk";
+import { ExportSheetButton } from "@/components/workspace/export-sheet";
+import {
+  TASK_EXPORT_COLUMNS,
+  TASK_EXPORT_DEFAULTS,
+  loadAllTasks,
+} from "@/features/delivery/verifier/task-export";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -87,6 +93,23 @@ function VerifierWorkbench() {
         title="Active verification queue"
         description="Review protected evidence, record defensible findings and move each assigned check through a controlled hand-off."
         signal={`${summary.active} active checks`}
+        actions={
+          <ExportSheetButton
+            source="verifier-tasks"
+            title="Export my checks"
+            filename="Sapling-Global-my-checks"
+            columns={TASK_EXPORT_COLUMNS}
+            defaults={TASK_EXPORT_DEFAULTS}
+            scopeNote={`${filter === "ACTIVE" ? "Active" : filter.toLowerCase().replace("_", " ")}${search ? ` · search “${search}”` : ""}`}
+            loadRows={() =>
+              loadAllTasks({
+                search,
+                ...(queryStatus ? { status: queryStatus } : {}),
+                ...(filter === "ACTIVE" ? { view: "ACTIVE" as const } : {}),
+              })
+            }
+          />
+        }
       />
       <WorkspaceMetricGrid
         items={[
@@ -126,7 +149,7 @@ function VerifierWorkbench() {
         <button
           type="button"
           onClick={clearDeepLink}
-          className="rounded-full border border-border bg-white/75 px-3.5 py-2 text-[10.5px] font-semibold text-mint-deep shadow-[var(--shadow-card)] hover:bg-mint-soft"
+          className="w-fit rounded-lg px-1 text-[12.5px] font-semibold text-blue-700 hover:underline"
         >
           ← Return to full queue
         </button>

@@ -57,20 +57,23 @@ void test("Re-upload moves the document into the existing REUPLOAD_REQUIRED stat
   assert.equal(ops[0]!.type, "DOCUMENT_REUPLOAD_REQUESTED");
   assert.equal(ops[0]!.href, "/cases/case-1");
 
+  // A fresh link replaces any earlier (possibly completed) one and is emailed with
+  // the reason; consent is not asked again.
+  assert.equal(calls.revokeLinks?.length, 1);
+  assert.equal(calls.newLink?.length, 1);
   const outbox = calls.outbox![0]!.data!;
-  assert.equal(outbox.topic, "notification.requested");
+  assert.equal(outbox.topic, "candidate.access.issued");
   const payload = JSON.parse(String(outbox.payloadJson)) as { secret: string };
   const delivery = secrets.open<{
     channel: string;
     destination: string;
-    template: string;
-    variables: Record<string, unknown>;
+    portalUrl: string;
+    reason: string;
   }>(payload.secret);
   assert.equal(delivery.channel, "EMAIL");
   assert.equal(delivery.destination, "vivo@example.com");
-  assert.equal(delivery.template, "candidate-document-reupload");
-  assert.equal(delivery.variables.message, input.message);
-  assert.equal(delivery.variables.documentType, "Education certificate");
+  assert.match(delivery.portalUrl, /\/candidate\/access-2#token=/);
+  assert.equal(delivery.reason, `Education certificate: ${input.message}`);
 });
 
 void test("Re-upload is refused unless the latest attempt is a rejection of an open, uploadable case", async () => {
@@ -144,7 +147,16 @@ void test("only SPOC-RM and Platform Admin with vendor:assign reach the re-uploa
   const allowed = (who: typeof spocAB) =>
     passesGuard(SpocVendorsController, "requestReupload", who);
   assert.ok(allowed(spocAB));
-  assert.ok(allowed(testActor(["PLATFORM_ADMIN"], ["*"])));
+  assert.ok(
+    passesGuard(
+      SpocVendorsController,
+      "requestReupload",
+      testActor(["PLATFORM_ADMIN"], ["*"]),
+      { platformAdminViewOnly: false },
+    ),
+  );
+  // Default: the Platform Admin is view-only.
+  assert.ok(!allowed(testActor(["PLATFORM_ADMIN"], ["*"])));
   assert.ok(!allowed({ ...spocAB, permissions: ["dashboard:read"] }));
   for (const role of ["VENDOR", "CLIENT_ADMIN", "OPS_MANAGER", "SUPPORT_AGENT"])
     assert.ok(!allowed(testActor([role], ["*"])), role);

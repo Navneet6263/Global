@@ -60,6 +60,7 @@ export const ModelName = {
   UserRole: 'UserRole',
   RefreshSession: 'RefreshSession',
   Client: 'Client',
+  SignupRequest: 'SignupRequest',
   ServicePackage: 'ServicePackage',
   Subject: 'Subject',
   VerificationCase: 'VerificationCase',
@@ -92,8 +93,13 @@ export const ModelName = {
   ManagerReview: 'ManagerReview',
   CaseService: 'CaseService',
   VerificationMethodRun: 'VerificationMethodRun',
+  VendorCheckAssignment: 'VendorCheckAssignment',
+  VendorCheckEvidence: 'VendorCheckEvidence',
+  ClientMisSchedule: 'ClientMisSchedule',
+  SourceEmail: 'SourceEmail',
   SourceOutreach: 'SourceOutreach',
   ClientPackageRate: 'ClientPackageRate',
+  ClientPackageDiscount: 'ClientPackageDiscount',
   ClientAgreement: 'ClientAgreement',
   ClientAgreementFile: 'ClientAgreementFile',
   Payment: 'Payment',
@@ -104,7 +110,9 @@ export const ModelName = {
   SpocClientScope: 'SpocClientScope',
   SupportRequest: 'SupportRequest',
   VendorTeamPolicy: 'VendorTeamPolicy',
-  VendorReport: 'VendorReport'
+  VendorReport: 'VendorReport',
+  Department: 'Department',
+  DepartmentMember: 'DepartmentMember'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -234,6 +242,7 @@ export const RoleScalarFieldEnum = {
   name: 'name',
   permissionsJson: 'permissionsJson',
   isSystem: 'isSystem',
+  baseRoleCode: 'baseRoleCode',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -287,12 +296,45 @@ export const ClientScalarFieldEnum = {
   gstin: 'gstin',
   billingAddress: 'billingAddress',
   slaHours: 'slaHours',
+  primaryRmUserId: 'primaryRmUserId',
+  primaryRmAssignedAt: 'primaryRmAssignedAt',
+  defaultDataEntryUserId: 'defaultDataEntryUserId',
+  clientReviewFirst: 'clientReviewFirst',
+  pan: 'pan',
+  selfSignupAt: 'selfSignupAt',
+  onboardingSubmittedAt: 'onboardingSubmittedAt',
+  onboardingNote: 'onboardingNote',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
+
+
+export const SignupRequestScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  email: 'email',
+  normalizedEmail: 'normalizedEmail',
+  fullName: 'fullName',
+  companyName: 'companyName',
+  phone: 'phone',
+  passwordHash: 'passwordHash',
+  otpHash: 'otpHash',
+  otpExpiresAt: 'otpExpiresAt',
+  otpAttempts: 'otpAttempts',
+  sendCount: 'sendCount',
+  lastSentAt: 'lastSentAt',
+  status: 'status',
+  ipAddress: 'ipAddress',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SignupRequestScalarFieldEnum = (typeof SignupRequestScalarFieldEnum)[keyof typeof SignupRequestScalarFieldEnum]
 
 
 export const ServicePackageScalarFieldEnum = {
@@ -305,6 +347,9 @@ export const ServicePackageScalarFieldEnum = {
   serviceFamily: 'serviceFamily',
   requiredDocumentsJson: 'requiredDocumentsJson',
   price: 'price',
+  maxRmDiscountPercent: 'maxRmDiscountPercent',
+  checkPricesJson: 'checkPricesJson',
+  taxRate: 'taxRate',
   tatHours: 'tatHours',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -352,6 +397,17 @@ export const VerificationCaseScalarFieldEnum = {
   dueAt: 'dueAt',
   completedAt: 'completedAt',
   riskLevel: 'riskLevel',
+  workflowVersion: 'workflowVersion',
+  intakeStage: 'intakeStage',
+  dataEntryUserId: 'dataEntryUserId',
+  dataEntryAssignedAt: 'dataEntryAssignedAt',
+  dataEntryReadyAt: 'dataEntryReadyAt',
+  stoppedFromStatus: 'stoppedFromStatus',
+  stoppedAt: 'stoppedAt',
+  stopReason: 'stopReason',
+  escalatedAt: 'escalatedAt',
+  escalatedById: 'escalatedById',
+  escalationNote: 'escalationNote',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -374,6 +430,15 @@ export const CaseCheckScalarFieldEnum = {
   dueAt: 'dueAt',
   completedAt: 'completedAt',
   sourceSummary: 'sourceSummary',
+  departmentId: 'departmentId',
+  routedAt: 'routedAt',
+  initiationJson: 'initiationJson',
+  initiatedAt: 'initiatedAt',
+  initiatedById: 'initiatedById',
+  verifiedJson: 'verifiedJson',
+  verifiedAt: 'verifiedAt',
+  verifiedById: 'verifiedById',
+  disposition: 'disposition',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -514,6 +579,8 @@ export const ClarificationScalarFieldEnum = {
   dueAt: 'dueAt',
   resolvedAt: 'resolvedAt',
   reverificationRequired: 'reverificationRequired',
+  level: 'level',
+  raisedById: 'raisedById',
   responseTokenHash: 'responseTokenHash',
   responseTokenExpiresAt: 'responseTokenExpiresAt',
   createdAt: 'createdAt',
@@ -731,6 +798,8 @@ export const TenantAccessPolicyScalarFieldEnum = {
   publicId: 'publicId',
   tenantId: 'tenantId',
   opsUserCreationEnabled: 'opsUserCreationEnabled',
+  releaseBeforePayment: 'releaseBeforePayment',
+  branchScopingEnabled: 'branchScopingEnabled',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -822,6 +891,10 @@ export const InvoiceScalarFieldEnum = {
   paidAmount: 'paidAmount',
   creditedAmount: 'creditedAmount',
   notes: 'notes',
+  annexureStatus: 'annexureStatus',
+  annexureSentAt: 'annexureSentAt',
+  annexureValidatedAt: 'annexureValidatedAt',
+  annexureQuery: 'annexureQuery',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -903,6 +976,104 @@ export const VerificationMethodRunScalarFieldEnum = {
 export type VerificationMethodRunScalarFieldEnum = (typeof VerificationMethodRunScalarFieldEnum)[keyof typeof VerificationMethodRunScalarFieldEnum]
 
 
+export const VendorCheckAssignmentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  clientId: 'clientId',
+  caseId: 'caseId',
+  checkId: 'checkId',
+  vendorUserId: 'vendorUserId',
+  handlerUserId: 'handlerUserId',
+  assignedById: 'assignedById',
+  reviewedById: 'reviewedById',
+  assignedAs: 'assignedAs',
+  requestReason: 'requestReason',
+  approvedById: 'approvedById',
+  approvedAt: 'approvedAt',
+  approvalNote: 'approvalNote',
+  attempt: 'attempt',
+  status: 'status',
+  dueAt: 'dueAt',
+  note: 'note',
+  sharedDocumentsJson: 'sharedDocumentsJson',
+  submissionJson: 'submissionJson',
+  result: 'result',
+  remarks: 'remarks',
+  declineReason: 'declineReason',
+  reviewNote: 'reviewNote',
+  acceptedAt: 'acceptedAt',
+  submittedAt: 'submittedAt',
+  reviewedAt: 'reviewedAt',
+  lastRemindedAt: 'lastRemindedAt',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorCheckAssignmentScalarFieldEnum = (typeof VendorCheckAssignmentScalarFieldEnum)[keyof typeof VendorCheckAssignmentScalarFieldEnum]
+
+
+export const VendorCheckEvidenceScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  assignmentId: 'assignmentId',
+  objectKey: 'objectKey',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type VendorCheckEvidenceScalarFieldEnum = (typeof VendorCheckEvidenceScalarFieldEnum)[keyof typeof VendorCheckEvidenceScalarFieldEnum]
+
+
+export const ClientMisScheduleScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  clientId: 'clientId',
+  preset: 'preset',
+  frequency: 'frequency',
+  recipientsJson: 'recipientsJson',
+  nextRunAt: 'nextRunAt',
+  lastRunAt: 'lastRunAt',
+  active: 'active',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClientMisScheduleScalarFieldEnum = (typeof ClientMisScheduleScalarFieldEnum)[keyof typeof ClientMisScheduleScalarFieldEnum]
+
+
+export const SourceEmailScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  checkId: 'checkId',
+  toEmail: 'toEmail',
+  ccEmails: 'ccEmails',
+  subject: 'subject',
+  body: 'body',
+  attachmentsJson: 'attachmentsJson',
+  maxFollowUps: 'maxFollowUps',
+  followUpsSent: 'followUpsSent',
+  lastSentAt: 'lastSentAt',
+  nextFollowUpAt: 'nextFollowUpAt',
+  stoppedAt: 'stoppedAt',
+  stopReason: 'stopReason',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SourceEmailScalarFieldEnum = (typeof SourceEmailScalarFieldEnum)[keyof typeof SourceEmailScalarFieldEnum]
+
+
 export const SourceOutreachScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -932,6 +1103,20 @@ export const ClientPackageRateScalarFieldEnum = {
 } as const
 
 export type ClientPackageRateScalarFieldEnum = (typeof ClientPackageRateScalarFieldEnum)[keyof typeof ClientPackageRateScalarFieldEnum]
+
+
+export const ClientPackageDiscountScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  servicePackageId: 'servicePackageId',
+  discountPercent: 'discountPercent',
+  note: 'note',
+  setById: 'setById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClientPackageDiscountScalarFieldEnum = (typeof ClientPackageDiscountScalarFieldEnum)[keyof typeof ClientPackageDiscountScalarFieldEnum]
 
 
 export const ClientAgreementScalarFieldEnum = {
@@ -1026,6 +1211,7 @@ export const CandidatePortalAccessScalarFieldEnum = {
   expiresAt: 'expiresAt',
   revokedAt: 'revokedAt',
   lastAccessedAt: 'lastAccessedAt',
+  completedAt: 'completedAt',
   createdAt: 'createdAt'
 } as const
 
@@ -1123,6 +1309,33 @@ export const VendorReportScalarFieldEnum = {
 } as const
 
 export type VendorReportScalarFieldEnum = (typeof VendorReportScalarFieldEnum)[keyof typeof VendorReportScalarFieldEnum]
+
+
+export const DepartmentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  code: 'code',
+  name: 'name',
+  kind: 'kind',
+  checkTypesJson: 'checkTypesJson',
+  status: 'status',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DepartmentScalarFieldEnum = (typeof DepartmentScalarFieldEnum)[keyof typeof DepartmentScalarFieldEnum]
+
+
+export const DepartmentMemberScalarFieldEnum = {
+  departmentId: 'departmentId',
+  userId: 'userId',
+  role: 'role',
+  createdAt: 'createdAt'
+} as const
+
+export type DepartmentMemberScalarFieldEnum = (typeof DepartmentMemberScalarFieldEnum)[keyof typeof DepartmentMemberScalarFieldEnum]
 
 
 export const SortOrder = {

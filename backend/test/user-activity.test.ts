@@ -23,7 +23,10 @@ const actor: Actor = {
 };
 
 void test("user activity query validates bounded database pages", async () => {
-  const query = plainToInstance(UserActivityQueryDto, { page: "3", pageSize: "50" });
+  const query = plainToInstance(UserActivityQueryDto, {
+    page: "3",
+    pageSize: "50",
+  });
   assert.equal((await validate(query)).length, 0);
   assert.equal(query.page, 3);
   assert.equal(query.pageSize, 50);
@@ -74,7 +77,10 @@ void test("employee timeline includes all actor actions and account-targeted eve
     },
   };
   const service = new UsersService(prisma as unknown as PrismaService);
-  const query = plainToInstance(UserActivityQueryDto, { page: 2, pageSize: 10 });
+  const query = plainToInstance(UserActivityQueryDto, {
+    page: 2,
+    pageSize: 10,
+  });
   const result = await service.activity(
     actor,
     "00000000-0000-4000-8000-000000000027",

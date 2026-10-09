@@ -29,7 +29,7 @@ export function QaOverview() {
           },
         ]}
       />
-      <section className="rounded-3xl border border-border/60 bg-card p-5 shadow-[var(--shadow-card)]">
+      <section className="rounded-3xl border border-border/60 bg-card p-5 shadow-sm">
         <h2 className="text-sm font-semibold">Your review flow</h2>
         <ol className="mt-4 grid gap-4 text-xs text-muted-foreground sm:grid-cols-3">
           {[
@@ -41,7 +41,7 @@ export function QaOverview() {
             ],
           ].map(([title, detail], index) => (
             <li key={title} className="flex gap-3">
-              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-mint-soft font-semibold text-mint-deep">
+              <span className="grid size-7 shrink-0 place-items-center rounded-full bg-blue-50 font-semibold text-blue-700">
                 {index + 1}
               </span>
               <div>

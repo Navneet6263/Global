@@ -28,6 +28,23 @@ const categoryTerms: Record<string, string[]> = {
 export class AuditService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async logExport(
+    actor: Actor,
+    input: { source: string; rows: number; columns: string[] },
+  ) {
+    await this.prisma.auditEvent.create({
+      data: {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        action: "export.downloaded",
+        resourceType: "report",
+        resourcePublicId: input.source,
+        afterJson: JSON.stringify({ rows: input.rows, columns: input.columns }),
+      },
+    });
+    return { logged: true };
+  }
+
   async list(actor: Actor, query: AuditFilters) {
     const search = query.search?.trim();
     const terms = query.category ? (categoryTerms[query.category] ?? []) : [];

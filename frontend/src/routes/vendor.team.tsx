@@ -120,6 +120,7 @@ function VendorTeamPage() {
         submitting={create.isPending}
         roles={VENDOR_ONLY}
         defaultRoles={VENDOR_ONLY}
+        withSetup={false}
         branches={[]}
         clients={[]}
         onOpenChange={setOpen}

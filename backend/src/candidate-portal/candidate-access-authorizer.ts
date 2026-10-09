@@ -21,6 +21,8 @@ export async function authorizeCandidateAccess(
   prisma: PrismaService,
   publicId: string,
   token: string,
+  /** Reading only: a link the candidate closed with "Complete" may show its done page. */
+  options: { allowCompleted?: boolean } = {},
 ) {
   const access = await prisma.candidatePortalAccess.findUnique({
     where: { publicId },
@@ -68,7 +70,14 @@ export async function authorizeCandidateAccess(
       },
     },
   });
-  if (!access || access.revokedAt || access.expiresAt <= new Date())
+  const closedByCandidate = Boolean(
+    options.allowCompleted && access?.completedAt,
+  );
+  if (
+    !access ||
+    (access.revokedAt && !closedByCandidate) ||
+    (access.expiresAt <= new Date() && !closedByCandidate)
+  )
     throw new UnauthorizedException(
       "Candidate access link is invalid or expired",
     );

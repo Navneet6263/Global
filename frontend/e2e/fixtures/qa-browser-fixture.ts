@@ -9,6 +9,7 @@ export async function qaBrowserFixture(
   const reviewerId = "00000000-0000-4000-8000-000000000077";
   const details: string[] = [];
   const unexpected: string[] = [];
+  const exports: unknown[] = [];
   const views: string[] = [];
   let version = 1;
   let claimed = false;
@@ -53,6 +54,10 @@ export async function qaBrowserFixture(
         permissions: ["qa:review", "case:read", "document:read", "notification:read"],
       });
     if (path === "/notifications") return reply({ items: [], nextCursor: null, unreadCount: 0 });
+    if (path === "/audit-events/exports" && route.request().method() === "POST") {
+      exports.push(JSON.parse(route.request().postData() ?? "{}") as unknown);
+      return reply({ logged: true });
+    }
     if (path === "/qa/register") {
       const view = url.searchParams.get("view") ?? "all";
       views.push(view);
@@ -129,6 +134,7 @@ export async function qaBrowserFixture(
     });
   });
   return {
+    exports,
     details,
     unexpected,
     views,

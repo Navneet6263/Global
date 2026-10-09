@@ -1,3 +1,6 @@
+import { CUSTOM_ROLE_BASES } from "./custom-role-rules";
+import { joinDepartments, personalRoles } from "./user-setup";
+import { effectiveRole, roleIs } from "../common/auth/role-filter";
 import {
   ConflictException,
   ForbiddenException,
@@ -13,9 +16,14 @@ import type { UpdateUserDto } from "./dto/update-user.dto";
 import type { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 import type { Prisma } from "../generated/prisma/client";
 import { assertSafeRoleCombination } from "./role-combination";
-import { assertCanCreateUser, userCreationPolicy } from "./ops-user-creation";
+import {
+  assertCanCreateUser,
+  assertCanManageUser,
+  userCreationPolicy,
+} from "./ops-user-creation";
 import {
   assertSpocClientInput,
+  claimCompaniesWithoutRm,
   resolveScopeClients,
   type ScopeClient,
 } from "./spoc-client-scope";
@@ -51,7 +59,9 @@ export class UsersService {
   async list(actor: Actor, query: UserDirectoryQueryDto) {
     this.assertDirectoryRole(actor);
     const where = userDirectoryWhere(actor, query);
-    const [users, total] = await Promise.all([
+    // Summary counts ignore the status filter so the boxes stay meaningful while filtering.
+    const scope = userDirectoryWhere(actor, { ...query, status: undefined });
+    const [users, total, all, active, invited, suspended] = await Promise.all([
       this.prisma.user.findMany({
         where,
         select: {
@@ -68,7 +78,9 @@ export class UsersService {
           client: { select: { publicId: true, displayName: true } },
           vendorOwner: { select: { displayName: true } },
           userRoles: {
-            select: { role: { select: { code: true, name: true } } },
+            select: {
+              role: { select: { code: true, name: true, baseRoleCode: true } },
+            },
           },
           spocClientScopes: {
             select: {
@@ -76,23 +88,58 @@ export class UsersService {
             },
             orderBy: { client: { displayName: "asc" } },
           },
+          departmentMemberships: {
+            where: { department: { status: "ACTIVE" } },
+            select: { role: true, department: { select: { name: true } } },
+          },
         },
         orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
         skip: (query.page - 1) * query.pageSize,
         take: query.pageSize,
       }),
       this.prisma.user.count({ where }),
+      this.prisma.user.count({ where: scope }),
+      this.prisma.user.count({
+        where: {
+          AND: [scope, { status: "ACTIVE", mustChangePassword: false }],
+        },
+      }),
+      this.prisma.user.count({
+        where: { AND: [scope, { status: "ACTIVE", mustChangePassword: true }] },
+      }),
+      this.prisma.user.count({
+        where: { AND: [scope, { status: "SUSPENDED" }] },
+      }),
     ]);
     return {
+      summary: { total: all, active, invited, suspended },
       items: users.map(
-        ({ publicId, userRoles, spocClientScopes, vendorOwner, ...user }) => ({
+        ({
+          publicId,
+          userRoles,
+          spocClientScopes,
+          vendorOwner,
+          departmentMemberships,
+          ...user
+        }) => ({
           id: publicId,
           ...user,
           vendorTeamOf: vendorOwner?.displayName ?? null,
-          roles: userRoles.map(({ role: assignedRole }) => assignedRole),
+          // A custom role is shown as its base role code (the UI knows those) with its own name.
+          roles: userRoles.map(({ role: assignedRole }) => ({
+            code: assignedRole.baseRoleCode ?? assignedRole.code,
+            name: assignedRole.name,
+            ...(assignedRole.baseRoleCode
+              ? { customRole: assignedRole.code }
+              : {}),
+          })),
           spocClients: spocClientScopes.map(({ client }) =>
             toSpocClient(client),
           ),
+          teams: departmentMemberships.map((membership) => ({
+            name: membership.department.name,
+            lead: membership.role === "LEAD",
+          })),
         }),
       ),
       total,
@@ -119,6 +166,37 @@ export class UsersService {
         id: publicId,
         ...role,
         permissions: this.parsePermissions(permissionsJson),
+      })),
+    };
+  }
+
+  /** What the Create user panel offers: teams to join and the ticks for each role. */
+  async setupOptions(actor: Actor) {
+    this.assertDirectoryRole(actor);
+    const [departments, bases] = await Promise.all([
+      this.prisma.department.findMany({
+        where: { tenantId: actor.tenantId, status: "ACTIVE" },
+        orderBy: { name: "asc" },
+        select: { publicId: true, name: true, kind: true },
+      }),
+      this.prisma.role.findMany({
+        where: {
+          tenantId: actor.tenantId,
+          isSystem: true,
+          code: { in: [...CUSTOM_ROLE_BASES] },
+        },
+        select: { code: true, name: true, permissionsJson: true },
+      }),
+    ]);
+    return {
+      departments: departments.map(({ publicId, ...department }) => ({
+        id: publicId,
+        ...department,
+      })),
+      access: bases.map((role) => ({
+        role: role.code,
+        name: role.name,
+        permissions: this.parsePermissions(role.permissionsJson),
       })),
     };
   }
@@ -178,6 +256,13 @@ export class UsersService {
       );
     const passwordHash = await hashPassword(input.temporaryPassword);
     return this.prisma.$transaction(async (tx) => {
+      const given = await personalRoles(tx, {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        displayName: input.displayName,
+        roles,
+        access: input.access,
+      });
       const row = await insertUserAccount(tx, {
         tenantId: actor.tenantId,
         actorUserId: actor.userId,
@@ -185,7 +270,7 @@ export class UsersService {
         displayName: input.displayName,
         phone: input.phone,
         passwordHash,
-        roles,
+        roles: given.roles,
         branchId: branch?.id,
         clientId: client?.id,
         spocClientIds: scopeClients.map((scope) => scope.id),
@@ -194,10 +279,37 @@ export class UsersService {
             ? { clients: scopeClients.map((scope) => scope.publicId) }
             : {}),
           ...(createdVia === "OPERATIONS" ? { createdVia } : {}),
+          ...(given.created.length ? { personalRoles: given.created } : {}),
         },
+      });
+      const teams = input.departments?.length
+        ? await joinDepartments(tx, {
+            tenantId: actor.tenantId,
+            actorUserId: actor.userId,
+            user: {
+              id: (
+                await tx.user.findUniqueOrThrow({
+                  where: { publicId: row.publicId },
+                  select: { id: true },
+                })
+              ).id,
+              publicId: row.publicId,
+              displayName: row.displayName,
+            },
+            roleCodes: input.roleCodes,
+            departments: input.departments,
+          })
+        : [];
+      const companyRmFor = await claimCompaniesWithoutRm(tx, {
+        tenantId: actor.tenantId,
+        actorUserId: actor.userId,
+        rmPublicId: row.publicId,
+        clientIds: scopeClients.map((scope) => scope.id),
       });
       const { publicId, ...user } = row;
       return {
+        ...(companyRmFor.length ? { companyRmFor } : {}),
+        ...(teams.length ? { teams } : {}),
         id: publicId,
         ...user,
         roles: roles.map((role) => role.code),
@@ -211,8 +323,8 @@ export class UsersService {
   async update(actor: Actor, publicId: string, input: UpdateUserDto) {
     assertAnyRole(
       actor,
-      ["PLATFORM_ADMIN"],
-      "Only platform administrators can change account access",
+      ["PLATFORM_ADMIN", "OPS_MANAGER"],
+      "Only administrators can change account access",
     );
     const user = await this.prisma.user.findFirst({
       where: {
@@ -227,7 +339,9 @@ export class UsersService {
         clientId: true,
         displayName: true,
         vendorOwnerId: true,
-        userRoles: { select: { role: { select: { code: true } } } },
+        userRoles: {
+          select: { role: { select: { code: true, baseRoleCode: true } } },
+        },
         spocClientScopes: {
           select: {
             client: {
@@ -255,6 +369,16 @@ export class UsersService {
       throw new NotFoundException("One or more roles were not found");
     const currentRoleCodes = user.userRoles.map(({ role }) => role.code);
     const nextRoleCodes = input.roleCodes ?? currentRoleCodes;
+    const changedVia = await assertCanManageUser(
+      this.prisma,
+      actor,
+      user.userRoles.map(({ role }) => effectiveRole(role)),
+      nextRoleCodes.map(
+        (code) =>
+          user.userRoles.find(({ role }) => role.code === code)?.role
+            .baseRoleCode ?? code,
+      ),
+    );
     const rolesChanged =
       currentRoleCodes.length !== nextRoleCodes.length ||
       currentRoleCodes.some((role) => !nextRoleCodes.includes(role));
@@ -285,10 +409,7 @@ export class UsersService {
             currentScope.map((client) => client.id),
           )
         : currentScope;
-    if (nextIsSpoc && !nextScope.length)
-      throw new ConflictException(
-        "SPOC-RM users must be assigned at least one client workspace",
-      );
+    // An RM may have no company yet; companies are assigned later (Companies & RMs).
     const scopeChanged =
       nextScope.length !== currentScope.length ||
       nextScope.some(
@@ -361,6 +482,18 @@ export class UsersService {
                 clientId: client.id,
               })),
             });
+          // Newly added companies with no RM get this RM as their company RM.
+          await claimCompaniesWithoutRm(tx, {
+            tenantId: actor.tenantId,
+            actorUserId: actor.userId,
+            rmPublicId: publicId,
+            clientIds: nextScope
+              .filter(
+                (client) =>
+                  !currentScope.some((current) => current.id === client.id),
+              )
+              .map((client) => client.id),
+          });
         }
         if (input.status === "SUSPENDED" || rolesChanged)
           await revokeSessions(tx, user.id);
@@ -383,6 +516,7 @@ export class UsersService {
               status: input.status ?? user.status,
               roles: nextRoleCodes,
               version: input.version + 1,
+              ...(changedVia === "OPERATIONS" ? { changedVia } : {}),
               ...(currentScope.length || nextScope.length
                 ? { clients: nextScope.map((client) => client.publicId) }
                 : {}),
@@ -413,9 +547,19 @@ export class UsersService {
         publicId,
         ...this.branchScope(actor),
       },
-      select: { id: true },
+      select: {
+        id: true,
+        userRoles: {
+          select: { role: { select: { code: true, baseRoleCode: true } } },
+        },
+      },
     });
     if (!user) throw new NotFoundException("User not found");
+    await assertCanManageUser(
+      this.prisma,
+      actor,
+      user.userRoles.map(({ role }) => effectiveRole(role)),
+    );
     const passwordHash = await hashPassword(temporaryPassword);
     await this.prisma.$transaction((tx) =>
       resetAccountPassword(tx, {
@@ -518,7 +662,7 @@ export function userDirectoryWhere(
     tenantId: actor.tenantId,
     ...userDirectoryBranchScope(actor),
     ...(query.role
-      ? { userRoles: { some: { role: { code: query.role } } } }
+      ? { userRoles: { some: { role: roleIs(query.role) } } }
       : {}),
     ...(query.status === "INVITED"
       ? { status: "ACTIVE", mustChangePassword: true }

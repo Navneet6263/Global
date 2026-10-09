@@ -6,6 +6,8 @@ export interface ReportData {
   candidateName: string;
   completedAt: Date | null;
   riskLevel: string | null;
+  /** Interim (work in progress) report: pending checks shown as in progress. */
+  interim?: boolean;
   services?: string[];
   identityDetails?: Array<[string, string]>;
   reviewerName?: string;
@@ -28,6 +30,12 @@ export interface ReportData {
       respondedAt?: string | null;
     }>;
     result: string | null;
+    /** Colour code; absent in snapshots approved before colour codes existed. */
+    disposition?: string | null;
+    /** LHS: what Data Entry recorded at initiation (one record per entry). */
+    claimed?: Array<Record<string, string>>;
+    /** RHS: what the source confirmed (one record per entry). */
+    verified?: Array<Record<string, string>>;
     riskLevel: string | null;
     sourceSummary: string | null;
     findings: Array<{

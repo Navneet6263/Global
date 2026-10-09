@@ -17,7 +17,7 @@ import {
   Files,
 } from "lucide-react";
 import { toast } from "sonner";
-import { SaplingSymbol } from "@/components/brand/sapling-symbol";
+import { SaplingLogo } from "@/components/brand/sapling-logo";
 import { getSession } from "@/lib/api/auth";
 import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { canAccessWorkspace } from "@/lib/auth/workspace-access";
@@ -98,12 +98,9 @@ export function Sidebar() {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 flex-col overflow-hidden border-r border-[var(--hairline)] bg-white lg:flex">
       <div className="flex shrink-0 items-center gap-2.5 border-b border-slate-100 px-5 py-4">
-        <div className="grid h-10 w-10 place-items-center rounded-2xl bg-[#fff9f3] shadow-[var(--shadow-float)] ring-1 ring-primary/15">
-          <SaplingSymbol className="size-9" />
-        </div>
         <div className="leading-tight">
-          <p className="text-sm font-bold tracking-tight">Sapling Global</p>
-          <p className="text-[11px] text-muted-foreground">Verification Ops · v2</p>
+          <SaplingLogo width={150} />
+          <p className="mt-1 pl-0.5 text-[11px] text-muted-foreground">Verification Ops · v2</p>
         </div>
       </div>
 

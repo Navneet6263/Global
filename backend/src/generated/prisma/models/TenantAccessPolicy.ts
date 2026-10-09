@@ -43,6 +43,8 @@ export type TenantAccessPolicyMinAggregateOutputType = {
   publicId: string | null
   tenantId: bigint | null
   opsUserCreationEnabled: boolean | null
+  releaseBeforePayment: boolean | null
+  branchScopingEnabled: boolean | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -53,6 +55,8 @@ export type TenantAccessPolicyMaxAggregateOutputType = {
   publicId: string | null
   tenantId: bigint | null
   opsUserCreationEnabled: boolean | null
+  releaseBeforePayment: boolean | null
+  branchScopingEnabled: boolean | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -63,6 +67,8 @@ export type TenantAccessPolicyCountAggregateOutputType = {
   publicId: number
   tenantId: number
   opsUserCreationEnabled: number
+  releaseBeforePayment: number
+  branchScopingEnabled: number
   version: number
   createdAt: number
   updatedAt: number
@@ -87,6 +93,8 @@ export type TenantAccessPolicyMinAggregateInputType = {
   publicId?: true
   tenantId?: true
   opsUserCreationEnabled?: true
+  releaseBeforePayment?: true
+  branchScopingEnabled?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -97,6 +105,8 @@ export type TenantAccessPolicyMaxAggregateInputType = {
   publicId?: true
   tenantId?: true
   opsUserCreationEnabled?: true
+  releaseBeforePayment?: true
+  branchScopingEnabled?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -107,6 +117,8 @@ export type TenantAccessPolicyCountAggregateInputType = {
   publicId?: true
   tenantId?: true
   opsUserCreationEnabled?: true
+  releaseBeforePayment?: true
+  branchScopingEnabled?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -204,6 +216,8 @@ export type TenantAccessPolicyGroupByOutputType = {
   publicId: string
   tenantId: bigint
   opsUserCreationEnabled: boolean
+  releaseBeforePayment: boolean
+  branchScopingEnabled: boolean
   version: number
   createdAt: Date
   updatedAt: Date
@@ -237,6 +251,8 @@ export type TenantAccessPolicyWhereInput = {
   publicId?: Prisma.StringFilter<"TenantAccessPolicy"> | string
   tenantId?: Prisma.BigIntFilter<"TenantAccessPolicy"> | bigint | number
   opsUserCreationEnabled?: Prisma.BoolFilter<"TenantAccessPolicy"> | boolean
+  releaseBeforePayment?: Prisma.BoolFilter<"TenantAccessPolicy"> | boolean
+  branchScopingEnabled?: Prisma.BoolFilter<"TenantAccessPolicy"> | boolean
   version?: Prisma.IntFilter<"TenantAccessPolicy"> | number
   createdAt?: Prisma.DateTimeFilter<"TenantAccessPolicy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TenantAccessPolicy"> | Date | string
@@ -248,6 +264,8 @@ export type TenantAccessPolicyOrderByWithRelationInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   opsUserCreationEnabled?: Prisma.SortOrder
+  releaseBeforePayment?: Prisma.SortOrder
+  branchScopingEnabled?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -262,6 +280,8 @@ export type TenantAccessPolicyWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TenantAccessPolicyWhereInput[]
   NOT?: Prisma.TenantAccessPolicyWhereInput | Prisma.TenantAccessPolicyWhereInput[]
   opsUserCreationEnabled?: Prisma.BoolFilter<"TenantAccessPolicy"> | boolean
+  releaseBeforePayment?: Prisma.BoolFilter<"TenantAccessPolicy"> | boolean
+  branchScopingEnabled?: Prisma.BoolFilter<"TenantAccessPolicy"> | boolean
   version?: Prisma.IntFilter<"TenantAccessPolicy"> | number
   createdAt?: Prisma.DateTimeFilter<"TenantAccessPolicy"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"TenantAccessPolicy"> | Date | string
@@ -273,6 +293,8 @@ export type TenantAccessPolicyOrderByWithAggregationInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   opsUserCreationEnabled?: Prisma.SortOrder
+  releaseBeforePayment?: Prisma.SortOrder
+  branchScopingEnabled?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -291,6 +313,8 @@ export type TenantAccessPolicyScalarWhereWithAggregatesInput = {
   publicId?: Prisma.StringWithAggregatesFilter<"TenantAccessPolicy"> | string
   tenantId?: Prisma.BigIntWithAggregatesFilter<"TenantAccessPolicy"> | bigint | number
   opsUserCreationEnabled?: Prisma.BoolWithAggregatesFilter<"TenantAccessPolicy"> | boolean
+  releaseBeforePayment?: Prisma.BoolWithAggregatesFilter<"TenantAccessPolicy"> | boolean
+  branchScopingEnabled?: Prisma.BoolWithAggregatesFilter<"TenantAccessPolicy"> | boolean
   version?: Prisma.IntWithAggregatesFilter<"TenantAccessPolicy"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"TenantAccessPolicy"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"TenantAccessPolicy"> | Date | string
@@ -300,6 +324,8 @@ export type TenantAccessPolicyCreateInput = {
   id?: bigint | number
   publicId?: string
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -311,6 +337,8 @@ export type TenantAccessPolicyUncheckedCreateInput = {
   publicId?: string
   tenantId: bigint | number
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -320,6 +348,8 @@ export type TenantAccessPolicyUpdateInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   opsUserCreationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  releaseBeforePayment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branchScopingEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,6 +361,8 @@ export type TenantAccessPolicyUncheckedUpdateInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   opsUserCreationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  releaseBeforePayment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branchScopingEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -340,6 +372,8 @@ export type TenantAccessPolicyCreateManyInput = {
   publicId?: string
   tenantId: bigint | number
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -349,6 +383,8 @@ export type TenantAccessPolicyUpdateManyMutationInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   opsUserCreationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  releaseBeforePayment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branchScopingEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -359,6 +395,8 @@ export type TenantAccessPolicyUncheckedUpdateManyInput = {
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   opsUserCreationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  releaseBeforePayment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branchScopingEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -374,6 +412,8 @@ export type TenantAccessPolicyCountOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   opsUserCreationEnabled?: Prisma.SortOrder
+  releaseBeforePayment?: Prisma.SortOrder
+  branchScopingEnabled?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -390,6 +430,8 @@ export type TenantAccessPolicyMaxOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   opsUserCreationEnabled?: Prisma.SortOrder
+  releaseBeforePayment?: Prisma.SortOrder
+  branchScopingEnabled?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -400,6 +442,8 @@ export type TenantAccessPolicyMinOrderByAggregateInput = {
   publicId?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   opsUserCreationEnabled?: Prisma.SortOrder
+  releaseBeforePayment?: Prisma.SortOrder
+  branchScopingEnabled?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -447,6 +491,8 @@ export type TenantAccessPolicyCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -456,6 +502,8 @@ export type TenantAccessPolicyUncheckedCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -481,6 +529,8 @@ export type TenantAccessPolicyUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   opsUserCreationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  releaseBeforePayment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branchScopingEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -490,6 +540,8 @@ export type TenantAccessPolicyUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   publicId?: Prisma.StringFieldUpdateOperationsInput | string
   opsUserCreationEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  releaseBeforePayment?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  branchScopingEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -502,6 +554,8 @@ export type TenantAccessPolicySelect<ExtArgs extends runtime.Types.Extensions.In
   publicId?: boolean
   tenantId?: boolean
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -515,12 +569,14 @@ export type TenantAccessPolicySelectScalar = {
   publicId?: boolean
   tenantId?: boolean
   opsUserCreationEnabled?: boolean
+  releaseBeforePayment?: boolean
+  branchScopingEnabled?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type TenantAccessPolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "opsUserCreationEnabled" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["tenantAccessPolicy"]>
+export type TenantAccessPolicyOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "opsUserCreationEnabled" | "releaseBeforePayment" | "branchScopingEnabled" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["tenantAccessPolicy"]>
 export type TenantAccessPolicyInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -535,6 +591,14 @@ export type $TenantAccessPolicyPayload<ExtArgs extends runtime.Types.Extensions.
     publicId: string
     tenantId: bigint
     opsUserCreationEnabled: boolean
+    /**
+     * Release the report right after manager approval and bill monthly (false = wait for payment).
+     */
+    releaseBeforePayment: boolean
+    /**
+     * Branch (office) scoping of cases and users; OFF while the company runs one office.
+     */
+    branchScopingEnabled: boolean
     version: number
     createdAt: Date
     updatedAt: Date
@@ -912,6 +976,8 @@ export interface TenantAccessPolicyFieldRefs {
   readonly publicId: Prisma.FieldRef<"TenantAccessPolicy", 'String'>
   readonly tenantId: Prisma.FieldRef<"TenantAccessPolicy", 'BigInt'>
   readonly opsUserCreationEnabled: Prisma.FieldRef<"TenantAccessPolicy", 'Boolean'>
+  readonly releaseBeforePayment: Prisma.FieldRef<"TenantAccessPolicy", 'Boolean'>
+  readonly branchScopingEnabled: Prisma.FieldRef<"TenantAccessPolicy", 'Boolean'>
   readonly version: Prisma.FieldRef<"TenantAccessPolicy", 'Int'>
   readonly createdAt: Prisma.FieldRef<"TenantAccessPolicy", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"TenantAccessPolicy", 'DateTime'>

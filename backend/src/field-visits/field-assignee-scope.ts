@@ -1,3 +1,4 @@
+import { roleIs } from "../common/auth/role-filter";
 import type { Prisma } from "../generated/prisma/client";
 
 /** Shared by the picker and write validation; never use the operator's own branch. */
@@ -14,6 +15,6 @@ export function fieldAssigneeScope(
         : { branchId: null },
       { OR: [{ clientId: null }, { clientId: scope.clientId }] },
     ],
-    userRoles: { some: { role: { code: "FIELD_EXECUTIVE" } } },
+    userRoles: { some: { role: roleIs("FIELD_EXECUTIVE") } },
   };
 }

@@ -1,8 +1,12 @@
+import { ConfigService } from "@nestjs/config";
+import { SecretBoxService } from "../common/security/secret-box.service";
+import { SubjectPiiService } from "../common/security/subject-pii.service";
 import {
   ConflictException,
   Injectable,
   NotFoundException,
   StreamableFile,
+  Optional,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
@@ -13,6 +17,7 @@ import { ReportGenerationService } from "./report-generation.service";
 import { assertManager } from "./manager-review.service";
 import { canReadReleasedReport } from "./report-payment-policy";
 import { releasePreparedReport } from "./report-release";
+import { releaseBeforePayment } from "./release-mode";
 
 const versionSelect = {
   version: true,
@@ -27,7 +32,18 @@ export class ReportsService {
     private readonly prisma: PrismaService,
     private readonly storage: LocalObjectStorageService,
     private readonly generation: ReportGenerationService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly pii?: SubjectPiiService,
+    @Optional() private readonly config?: ConfigService,
   ) {}
+
+  /** Release email delivery; absent in narrow unit tests. */
+  private releaseMail() {
+    const webOrigin = this.config?.get<string>("WEB_ORIGIN");
+    return this.secretBox && this.pii && webOrigin
+      ? { secretBox: this.secretBox, pii: this.pii, webOrigin }
+      : undefined;
+  }
 
   async listPublished(actor: Actor, query: PageQueryDto) {
     const search = query.search?.trim();
@@ -165,14 +181,27 @@ export class ReportsService {
       select: { id: true },
     });
     if (!report) throw new NotFoundException("Report not found");
+    const beforePayment = await releaseBeforePayment(
+      this.prisma,
+      actor.tenantId,
+    );
     const released = await this.prisma.$transaction(
       (tx) =>
-        releasePreparedReport(tx, actor.tenantId, reportPublicId, actor.userId),
+        releasePreparedReport(
+          tx,
+          actor.tenantId,
+          reportPublicId,
+          actor.userId,
+          this.releaseMail(),
+          { beforePayment },
+        ),
       { isolationLevel: "Serializable" },
     );
     if (!released)
       throw new ConflictException(
-        "Report requires preparation, valid reviewed evidence and successful full payment of its linked invoices",
+        beforePayment
+          ? "Report requires preparation and valid reviewed evidence"
+          : "Report requires preparation, valid reviewed evidence and successful full payment of its linked invoices",
       );
     return { id: reportPublicId, status: "PUBLISHED" };
   }

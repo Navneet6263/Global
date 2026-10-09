@@ -76,7 +76,7 @@ export function MethodSourceForm({
           />
         </label>
       </div>
-      <p className="text-[11px] text-muted-foreground">
+      <p className="text-[12.5px] text-muted-foreground">
         This records source work. It does not send an email or call a digital provider
         automatically.
       </p>

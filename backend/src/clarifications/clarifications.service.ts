@@ -3,7 +3,12 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { SecretBoxService } from "../common/security/secret-box.service";
+import { SubjectPiiService } from "../common/security/subject-pii.service";
+import { sendInsufficiencyNotice } from "./insufficiency-notice";
 import { randomBytes } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
@@ -24,7 +29,18 @@ export class ClarificationsService {
     private readonly prisma: PrismaService,
     private readonly tokens: ClarificationTokenService,
     private readonly qaReadiness: QaReadinessService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly pii?: SubjectPiiService,
+    @Optional() private readonly config?: ConfigService,
   ) {}
+
+  /** Candidate and company admin delivery for L1 notices; absent in narrow unit tests. */
+  private noticeDeps() {
+    const webOrigin = this.config?.get<string>("WEB_ORIGIN");
+    return this.secretBox && this.pii && webOrigin
+      ? { secretBox: this.secretBox, pii: this.pii, webOrigin }
+      : undefined;
+  }
 
   async listForCase(actor: Actor, casePublicId: string) {
     const rows = await this.prisma.clarification.findMany({
@@ -36,6 +52,7 @@ export class ClarificationsService {
         publicId: true,
         status: true,
         subject: true,
+        level: true,
         dueAt: true,
         resolvedAt: true,
         createdAt: true,
@@ -61,9 +78,35 @@ export class ClarificationsService {
         ...caseAccessScope(actor),
         publicId: casePublicId,
       },
-      select: { id: true, status: true },
+      select: {
+        id: true,
+        status: true,
+        workflowVersion: true,
+        intakeStage: true,
+        dataEntryUserId: true,
+      },
     });
     if (!verificationCase) throw new NotFoundException("Case not found");
+    // L1 = missing/incorrect intake before verification; L2 = raised during verification.
+    const level = ["CONSENT_PENDING", "DOCUMENT_PENDING"].includes(
+      verificationCase.status,
+    )
+      ? "L1"
+      : "L2";
+    const intakeCorrection =
+      verificationCase.workflowVersion === 2 &&
+      level === "L1" &&
+      ["DATA_ENTRY", "CORRECTION"].includes(verificationCase.intakeStage ?? "");
+    if (
+      actor.roles.includes("DATA_ENTRY") &&
+      !actor.roles.some((role) =>
+        ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role),
+      ) &&
+      !intakeCorrection
+    )
+      throw new ConflictException(
+        "Data Entry can raise insufficiency only while the case is under Data Entry review",
+      );
     if (
       [
         "MANAGER_REVIEW",
@@ -108,6 +151,10 @@ export class ClarificationsService {
           checkId: check?.id,
           checkCycle: currentCheck?.reviewCycle,
           subject: input.subject.trim(),
+          level,
+          raisedById: actor.userId,
+          // Intake corrections happen before any check work exists to reopen.
+          ...(intakeCorrection ? { reverificationRequired: false } : {}),
           dueAt: input.dueAt ? new Date(input.dueAt) : undefined,
           responseTokenHash: digestClarificationToken(portalToken),
           responseTokenExpiresAt: tokenExpiresAt,
@@ -127,6 +174,12 @@ export class ClarificationsService {
           createdAt: true,
         },
       });
+      if (intakeCorrection && verificationCase.intakeStage === "DATA_ENTRY") {
+        await tx.verificationCase.update({
+          where: { id: verificationCase.id },
+          data: { intakeStage: "CORRECTION", version: { increment: 1 } },
+        });
+      }
       if (["IN_PROGRESS", "QA_REVIEW"].includes(verificationCase.status)) {
         await tx.verificationCase.update({
           where: { id: verificationCase.id },
@@ -147,6 +200,18 @@ export class ClarificationsService {
           },
         });
       }
+      // L1 and L2: the candidate and the company admin are told at once, with the remark.
+      const deps = this.noticeDeps();
+      const notice = deps
+        ? await sendInsufficiencyNotice(tx, deps, {
+            tenantId: actor.tenantId,
+            caseId: verificationCase.id,
+            actorUserId: actor.userId,
+            subject: input.subject.trim(),
+            message: input.message.trim(),
+            level,
+          })
+        : null;
       await tx.auditEvent.create({
         data: {
           tenantId: actor.tenantId,
@@ -154,6 +219,11 @@ export class ClarificationsService {
           action: "clarification.created",
           resourceType: "clarification",
           resourcePublicId: created.publicId,
+          afterJson: JSON.stringify({
+            level,
+            subject: created.subject,
+            ...(notice ? { notified: notice } : {}),
+          }),
         },
       });
       return created;
@@ -283,6 +353,10 @@ export class ClarificationsService {
             status: true,
             branchId: true,
             clientId: true,
+            caseNumber: true,
+            workflowVersion: true,
+            intakeStage: true,
+            dataEntryUserId: true,
           },
         },
       },
@@ -342,6 +416,27 @@ export class ClarificationsService {
         },
       });
       let caseStatus = clarification.case.status;
+      if (
+        remaining === 0 &&
+        clarification.case.workflowVersion === 2 &&
+        clarification.case.intakeStage === "CORRECTION"
+      ) {
+        await tx.verificationCase.update({
+          where: { id: clarification.case.id },
+          data: { intakeStage: "DATA_ENTRY", version: { increment: 1 } },
+        });
+        if (clarification.case.dataEntryUserId)
+          await tx.notification.create({
+            data: {
+              tenantId: actor.tenantId,
+              userId: clarification.case.dataEntryUserId,
+              type: "CORRECTION_RECEIVED",
+              title: "Correction received",
+              body: `${clarification.case.caseNumber}: every correction is resolved. Recheck and mark Ready.`,
+              href: `/data-entry?caseId=${clarification.case.publicId}`,
+            },
+          });
+      }
       if (
         remaining === 0 &&
         clarification.case.status === "CLARIFICATION_PENDING"

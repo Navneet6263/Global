@@ -34,6 +34,7 @@ export function caseStatusLabel(value: string): string {
     COMPLETED: "Verification completed",
     CLOSED: "Case closed",
     CANCELLED: "Case cancelled",
+    STOPPED: "Verification stopped",
   };
   return labels[value] ?? humanize(value);
 }

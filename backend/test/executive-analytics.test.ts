@@ -20,7 +20,10 @@ function row(overrides: Partial<ExecutiveCaseRow> = {}): ExecutiveCaseRow {
     dueAt: new Date("2026-08-24T12:00:00.000Z"),
     completedAt: null,
     subject: { fullName: "Test Candidate" },
-    client: { publicId: "00000000-0000-4000-8000-000000000002", displayName: "Client" },
+    client: {
+      publicId: "00000000-0000-4000-8000-000000000002",
+      displayName: "Client",
+    },
     branch: null,
     assignedOpsUser: null,
     checks: [],
@@ -32,8 +35,16 @@ function row(overrides: Partial<ExecutiveCaseRow> = {}): ExecutiveCaseRow {
 
 void test("executive SLA excludes completed cases without a due date", () => {
   const rows = [
-    row({ status: "COMPLETED", completedAt: new Date("2026-08-23T12:00:00.000Z") }),
-    row({ publicId: "00000000-0000-4000-8000-000000000003", status: "COMPLETED", dueAt: null, completedAt: new Date("2026-08-23T12:00:00.000Z") }),
+    row({
+      status: "COMPLETED",
+      completedAt: new Date("2026-08-23T12:00:00.000Z"),
+    }),
+    row({
+      publicId: "00000000-0000-4000-8000-000000000003",
+      status: "COMPLETED",
+      dueAt: null,
+      completedAt: new Date("2026-08-23T12:00:00.000Z"),
+    }),
   ];
   const stats = caseStats(rows, now);
   assert.equal(stats.completed, 2);
@@ -42,8 +53,15 @@ void test("executive SLA excludes completed cases without a due date", () => {
 });
 
 void test("attention queue prioritises overdue critical work", () => {
-  const low = row({ publicId: "00000000-0000-4000-8000-000000000004", dueAt: null, clarifications: [{ status: "OPEN" }] });
-  const critical = row({ publicId: "00000000-0000-4000-8000-000000000005", riskLevel: "CRITICAL" });
+  const low = row({
+    publicId: "00000000-0000-4000-8000-000000000004",
+    dueAt: null,
+    clarifications: [{ status: "OPEN" }],
+  });
+  const critical = row({
+    publicId: "00000000-0000-4000-8000-000000000005",
+    riskLevel: "CRITICAL",
+  });
   const queue = attentionQueue([low, critical], now);
   assert.equal(queue[0]?.id, critical.publicId);
   assert.equal(queue[0]?.severity, 3);

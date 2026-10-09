@@ -1,3 +1,12 @@
+import { RmPaymentsController } from "./rm-payments.controller";
+import { RmPaymentsService } from "./rm-payments.service";
+import { MonthlyBillingService } from "./monthly-billing.service";
+import {
+  ClientAnnexureController,
+  FinanceAnnexureController,
+} from "./billing-annexure.controller";
+import { BillingAnnexureService } from "./billing-annexure.service";
+import { BillingAnnexureAgeingService } from "./billing-annexure-ageing.service";
 import { Module } from "@nestjs/common";
 import { FinanceController } from "./finance.controller";
 import { FinanceQueryService } from "./finance-query.service";
@@ -19,6 +28,9 @@ import { CreditControlController } from "./credit-control.controller";
     ClientFinanceController,
     MonthlyStatementController,
     CreditControlController,
+    FinanceAnnexureController,
+    ClientAnnexureController,
+    RmPaymentsController,
   ],
   providers: [
     ClientFinanceService,
@@ -30,6 +42,10 @@ import { CreditControlController } from "./credit-control.controller";
     InvoiceCreditService,
     InvoiceCancellationService,
     InvoicePdfService,
+    BillingAnnexureService,
+    BillingAnnexureAgeingService,
+    RmPaymentsService,
+    MonthlyBillingService,
   ],
 })
 export class FinanceModule {}

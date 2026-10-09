@@ -36,7 +36,7 @@ export function QaDecisionForm({
             return (
               <label
                 key={label}
-                className={`flex items-start gap-2.5 rounded-xl border p-3 text-xs leading-relaxed transition ${active ? "border-success/25 bg-success-soft/70" : "border-border/70 bg-white/80"}`}
+                className={`flex items-start gap-2.5 rounded-xl border p-3 text-xs leading-relaxed transition ${active ? "border-success/25 bg-success-soft/70" : "border-border/70 bg-white"}`}
               >
                 <input
                   type="checkbox"
@@ -95,7 +95,7 @@ export function QaDecisionForm({
           placeholder="Explain your approval or the exact correction needed"
           className="mt-2 block w-full rounded-2xl border border-border bg-white px-3 py-3 text-sm font-normal outline-none focus:border-review/40 focus:ring-2 focus:ring-review/10"
         />
-        <span className="mt-1.5 block text-[11px] font-normal text-muted-foreground">
+        <span className="mt-1.5 block text-[12.5px] font-normal text-muted-foreground">
           Minimum 10 characters · saved in the decision history
         </span>
       </label>

@@ -9,10 +9,12 @@ import {
   Files,
   LayoutDashboard,
   LifeBuoy,
+  Rocket,
   ReceiptIndianRupee,
   type LucideIcon,
 } from "lucide-react";
 import { getSession } from "@/lib/api/auth";
+import { apiRequest } from "@/lib/backend-api/client";
 import { NavigationHint } from "@/features/help/navigation-hint";
 import { navFor } from "@/config/navigation";
 
@@ -68,9 +70,12 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
     (pathname === "/client-portal/verifications" && search["status"] === "PAYMENT_PENDING");
   const routeGroup = reportSelected
     ? "reports"
-    : ["/client-portal", "/client-portal/verifications", "/client-portal/actions"].includes(
-          pathname,
-        )
+    : [
+          "/client-portal",
+          "/client-portal/verifications",
+          "/client-portal/actions",
+          "/client-portal/review",
+        ].includes(pathname)
       ? "verifications"
       : null;
   const [choice, setChoice] = useState<{ route: string; expanded: string | null }>({
@@ -80,6 +85,17 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
   const expanded = choice.route === routeKey ? choice.expanded : routeGroup;
   const toggle = (group: string) =>
     setChoice({ route: routeKey, expanded: expanded === group ? null : group });
+  // Self sign-up companies see only onboarding and support until Operations approves them.
+  const onboarding = session.data?.clientStatus === "ONBOARDING";
+  // Route A: submissions waiting for this company's review (sidebar badge).
+  const counts = useQuery({
+    queryKey: ["navigation-counts", "client-admin"],
+    queryFn: ({ signal }) =>
+      apiRequest<{ counts: Record<string, number> }>("/dashboards/navigation", { signal }),
+    enabled: Boolean(session.data) && !onboarding,
+    staleTime: 30_000,
+  });
+  const reviews = counts.data?.counts["clientReviews"] ?? 0;
   const can = (permission: string) =>
     Boolean(session.data?.permissions.some((p) => p === "*" || p === permission));
   const item = (
@@ -91,10 +107,13 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
       | "/client-portal/reports"
       | "/client-portal/analytics"
       | "/client-portal/billing"
-      | "/client-portal/support",
+      | "/client-portal/support"
+      | "/client-portal/onboarding"
+      | "/client-portal/review",
     status?: string,
     Icon?: LucideIcon,
-    reportView?: "custom" | "invoices",
+    reportView?: "custom" | "invoices" | "mis",
+    badge?: number,
   ) => {
     const active =
       pathname === to &&
@@ -120,6 +139,11 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
             </span>
           ) : null}
           <span>{label}</span>
+          {badge ? (
+            <span className="ops-nav-badge is-warning" aria-label={`${badge} waiting`}>
+              {badge}
+            </span>
+          ) : null}
         </Link>
       </NavigationHint>
     );
@@ -147,48 +171,78 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
       </div>
       <nav className="client-nav" aria-label="client-admin navigation">
         <p className="client-nav-label">Workspace</p>
-        {can("dashboard:read") && item("Overview", "/client-portal", undefined, LayoutDashboard)}
-        {can("case:read") && (
-          <NavGroup
-            label="Verifications"
-            icon={Files}
-            open={expanded === "verifications"}
-            current={routeGroup === "verifications" && pathname !== "/client-portal"}
-            onToggle={() => toggle("verifications")}
-          >
-            {item("All verifications", "/client-portal/verifications")}
-            {item("Needs your action", "/client-portal/actions")}
-            {item("In progress", "/client-portal/verifications", "IN_PROGRESS")}
-            {item("Completed", "/client-portal/verifications", "COMPLETED")}
-          </NavGroup>
+        {onboarding ? item("Get started", "/client-portal/onboarding", undefined, Rocket) : null}
+        {onboarding ? null : (
+          <>
+            {can("dashboard:read") &&
+              item("Overview", "/client-portal", undefined, LayoutDashboard)}
+            {can("case:read") && (
+              <NavGroup
+                label="Verifications"
+                icon={Files}
+                open={expanded === "verifications"}
+                current={routeGroup === "verifications" && pathname !== "/client-portal"}
+                onToggle={() => toggle("verifications")}
+              >
+                {reviews || pathname === "/client-portal/review"
+                  ? item(
+                      "Review submissions",
+                      "/client-portal/review",
+                      undefined,
+                      undefined,
+                      undefined,
+                      reviews,
+                    )
+                  : null}
+                {item("All verifications", "/client-portal/verifications")}
+                {item("Needs your action", "/client-portal/actions")}
+                {item("In progress", "/client-portal/verifications", "IN_PROGRESS")}
+                {item("Completed", "/client-portal/verifications", "COMPLETED")}
+              </NavGroup>
+            )}
+            {(can("report:read") || can("case:read")) && (
+              <NavGroup
+                label="Reports"
+                icon={FileCheck2}
+                open={expanded === "reports"}
+                current={reportSelected}
+                onToggle={() => toggle("reports")}
+              >
+                {can("report:read") && item("Published reports", "/client-portal/reports")}
+                {can("case:read") &&
+                  item(
+                    "MIS & bulk download",
+                    "/client-portal/reports",
+                    undefined,
+                    undefined,
+                    "mis",
+                  )}
+                {can("case:read") &&
+                  item(
+                    "Customise export",
+                    "/client-portal/reports",
+                    undefined,
+                    undefined,
+                    "custom",
+                  )}
+                {can("case:read") &&
+                  item(
+                    "Invoices & statements",
+                    "/client-portal/reports",
+                    undefined,
+                    undefined,
+                    "invoices",
+                  )}
+                {can("case:read") &&
+                  item("Awaiting release", "/client-portal/verifications", "PAYMENT_PENDING")}
+              </NavGroup>
+            )}
+            {can("dashboard:read") &&
+              item("Insights", "/client-portal/analytics", undefined, ChartNoAxesCombined)}
+            {can("case:read") &&
+              item("Invoices & payments", "/client-portal/billing", undefined, ReceiptIndianRupee)}
+          </>
         )}
-        {(can("report:read") || can("case:read")) && (
-          <NavGroup
-            label="Reports"
-            icon={FileCheck2}
-            open={expanded === "reports"}
-            current={reportSelected}
-            onToggle={() => toggle("reports")}
-          >
-            {can("report:read") && item("Published reports", "/client-portal/reports")}
-            {can("case:read") &&
-              item("Customise export", "/client-portal/reports", undefined, undefined, "custom")}
-            {can("case:read") &&
-              item(
-                "Invoices & statements",
-                "/client-portal/reports",
-                undefined,
-                undefined,
-                "invoices",
-              )}
-            {can("case:read") &&
-              item("Awaiting release", "/client-portal/verifications", "PAYMENT_PENDING")}
-          </NavGroup>
-        )}
-        {can("dashboard:read") &&
-          item("Insights", "/client-portal/analytics", undefined, ChartNoAxesCombined)}
-        {can("case:read") &&
-          item("Invoices & payments", "/client-portal/billing", undefined, ReceiptIndianRupee)}
         {can("support:request") &&
           item("Queries & support", "/client-portal/support", undefined, LifeBuoy)}
       </nav>

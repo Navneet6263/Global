@@ -15,6 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RequiredDocumentFields, ServiceFamilyField } from "./service-policy-fields";
 import { SERVICE_CHECKS } from "./service-policy-options";
+import { CheckPriceFields } from "@/features/packages/CheckPriceFields";
+import { toCheckPrices, type CheckPriceDraft } from "@/features/packages/check-prices";
 
 export interface BranchDraft {
   code: string;
@@ -29,6 +31,11 @@ export interface PackageDraft {
   tatHours: number;
   serviceFamily: string;
   requiredDocuments: string[];
+  /** Most an RM may discount this package (Packages & pricing only). */
+  maxRmDiscountPercent?: number;
+  /** Price of each check on its own (Packages & pricing only). */
+  checkPrices?: Record<string, number>;
+  taxRate?: number;
 }
 
 interface DialogProps<T> {
@@ -94,7 +101,12 @@ export function AddBranchDialog(props: DialogProps<BranchDraft>) {
 
 const CHECKS = SERVICE_CHECKS;
 
-export function AddPackageDialog(props: DialogProps<PackageDraft>) {
+export function AddPackageDialog(
+  props: DialogProps<PackageDraft> & {
+    /** Show "Max RM discount" (the Packages & pricing page). */
+    withRmDiscount?: boolean;
+  },
+) {
   const [draft, setDraft] = useState({
     code: "",
     name: "",
@@ -103,7 +115,10 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
     tatHours: "72",
     serviceFamily: "HIRECHECK",
     requiredDocuments: [] as string[],
+    maxRmDiscountPercent: "0",
+    taxRate: "18",
   });
+  const [checkPrices, setCheckPrices] = useState<CheckPriceDraft>({});
   const toggle = (check: string) =>
     setDraft((current) => ({
       ...current,
@@ -115,7 +130,11 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
     /^[A-Za-z0-9_-]{2,40}$/.test(draft.code) &&
     draft.name.trim().length >= 2 &&
     draft.checks.length > 0 &&
-    Number(draft.tatHours) > 0;
+    Number(draft.tatHours) > 0 &&
+    Number(draft.maxRmDiscountPercent) >= 0 &&
+    Number(draft.maxRmDiscountPercent) <= 100 &&
+    Number(draft.taxRate) >= 0 &&
+    Number(draft.taxRate) <= 100;
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent className="max-h-[88dvh] overflow-y-auto sm:max-w-xl">
@@ -157,6 +176,23 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
               onChange={(e) => setDraft({ ...draft, tatHours: e.target.value })}
             />
           </Field>
+          {props.withRmDiscount ? (
+            <Field label="Max RM discount (%)">
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                step="0.5"
+                aria-label="Max RM discount (%)"
+                value={draft.maxRmDiscountPercent}
+                onChange={(e) => setDraft({ ...draft, maxRmDiscountPercent: e.target.value })}
+              />
+              <p className="mt-1 text-[11px] text-muted-foreground">
+                The most a client RM can give on this package. 0 means only Operations can discount
+                it.
+              </p>
+            </Field>
+          ) : null}
         </div>
         <ServiceFamilyField
           value={draft.serviceFamily}
@@ -183,6 +219,16 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
             ))}
           </div>
         </fieldset>
+        {props.withRmDiscount ? (
+          <CheckPriceFields
+            checks={CHECKS.filter((check) => draft.checks.includes(check))}
+            value={checkPrices}
+            onChange={setCheckPrices}
+            packagePrice={draft.price ? Number(draft.price) : null}
+            taxRate={draft.taxRate}
+            onTaxRate={(taxRate) => setDraft({ ...draft, taxRate })}
+          />
+        ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => props.onOpenChange(false)}>
             Cancel
@@ -199,6 +245,13 @@ export function AddPackageDialog(props: DialogProps<PackageDraft>) {
                 tatHours: Number(draft.tatHours),
                 serviceFamily: draft.serviceFamily,
                 requiredDocuments: draft.requiredDocuments,
+                ...(props.withRmDiscount
+                  ? {
+                      maxRmDiscountPercent: Number(draft.maxRmDiscountPercent),
+                      checkPrices: toCheckPrices(checkPrices, draft.checks),
+                      taxRate: Number(draft.taxRate),
+                    }
+                  : {}),
               })
             }
           >

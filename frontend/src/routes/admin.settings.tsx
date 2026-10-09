@@ -86,10 +86,16 @@ function SettingsPage() {
   const accessMutation = useMutation({
     mutationFn: async (policy: PolicyToggle) => {
       if (!data) throw new Error("Settings are still loading");
-      return updateAccessPolicy({
-        opsUserCreationEnabled: !policy.enabled,
-        version: data.accessPolicyConfig.version,
-      });
+      const config = data.accessPolicyConfig;
+      return updateAccessPolicy(
+        policy.id === "release-before-payment"
+          ? {
+              opsUserCreationEnabled: config.opsUserCreationEnabled,
+              releaseBeforePayment: !policy.enabled,
+              version: config.version,
+            }
+          : { opsUserCreationEnabled: !policy.enabled, version: config.version },
+      );
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.settings() });

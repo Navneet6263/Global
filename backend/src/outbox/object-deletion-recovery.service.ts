@@ -18,7 +18,9 @@ export class ObjectDeletionRecoveryService {
 
   async failTerminal(event: ClaimedOutboxEvent, error: unknown) {
     const failedAt = new Date();
-    const detail = (error instanceof Error ? error.message : "Unknown error").slice(0, 500);
+    const detail = (
+      error instanceof Error ? error.message : "Unknown error"
+    ).slice(0, 500);
     return this.prisma.$transaction(async (tx) => {
       const failed = await tx.outboxEvent.updateMany({
         where: {
@@ -135,9 +137,12 @@ export class ObjectDeletionRecoveryService {
           aggregateId: true,
         },
       });
-      if (!event) throw new NotFoundException("Failed object deletion not found");
+      if (!event)
+        throw new NotFoundException("Failed object deletion not found");
       if (!this.objectKey(event.payloadJson)) {
-        throw new ConflictException("Deletion payload is missing its durable object key");
+        throw new ConflictException(
+          "Deletion payload is missing its durable object key",
+        );
       }
       const requeued = await tx.outboxEvent.updateMany({
         where: {
@@ -165,7 +170,10 @@ export class ObjectDeletionRecoveryService {
           action: "object.deletion-requeued",
           resourceType: "outbox_event",
           resourcePublicId: event.id.toString(),
-          beforeJson: JSON.stringify({ status: "FAILED", attempts: event.attempts }),
+          beforeJson: JSON.stringify({
+            status: "FAILED",
+            attempts: event.attempts,
+          }),
           afterJson: JSON.stringify({
             status: "RETRY",
             attempts: 0,
@@ -180,7 +188,8 @@ export class ObjectDeletionRecoveryService {
   }
 
   private eventId(value: string) {
-    if (!/^[1-9]\d*$/.test(value)) throw new BadRequestException("Invalid outbox event ID");
+    if (!/^[1-9]\d*$/.test(value))
+      throw new BadRequestException("Invalid outbox event ID");
     return BigInt(value);
   }
 

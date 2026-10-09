@@ -1,4 +1,9 @@
+import { SourceEmailController } from "./source-email.controller";
+import { SourceEmailService } from "./source-email.service";
+import { SourceEmailFollowUpService } from "./source-email-follow-up.service";
 import { Module } from "@nestjs/common";
+import { VerifiedDetailsController } from "./verified-details.controller";
+import { VerifiedDetailsService } from "./verified-details.service";
 import { VerificationMethodsController } from "./verification-methods.controller";
 import { VerificationMethodsService } from "./verification-methods.service";
 import { SourceOutreachService } from "./source-outreach.service";
@@ -19,6 +24,8 @@ import { TaskInsightsService } from "./task-insights.service";
     TasksController,
     VerificationMethodsController,
     SourceOutreachController,
+    VerifiedDetailsController,
+    SourceEmailController,
   ],
   providers: [
     TasksService,
@@ -32,6 +39,9 @@ import { TaskInsightsService } from "./task-insights.service";
     TaskAssignmentService,
     BulkTaskAssignmentService,
     QaReadinessService,
+    VerifiedDetailsService,
+    SourceEmailService,
+    SourceEmailFollowUpService,
   ],
   exports: [QaReadinessService],
 })

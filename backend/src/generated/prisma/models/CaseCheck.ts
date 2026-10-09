@@ -32,6 +32,9 @@ export type CaseCheckAvgAggregateOutputType = {
   caseId: number | null
   caseServiceId: number | null
   reviewCycle: number | null
+  departmentId: number | null
+  initiatedById: number | null
+  verifiedById: number | null
   version: number | null
 }
 
@@ -41,6 +44,9 @@ export type CaseCheckSumAggregateOutputType = {
   caseId: bigint | null
   caseServiceId: bigint | null
   reviewCycle: number | null
+  departmentId: bigint | null
+  initiatedById: bigint | null
+  verifiedById: bigint | null
   version: number | null
 }
 
@@ -58,6 +64,15 @@ export type CaseCheckMinAggregateOutputType = {
   dueAt: Date | null
   completedAt: Date | null
   sourceSummary: string | null
+  departmentId: bigint | null
+  routedAt: Date | null
+  initiationJson: string | null
+  initiatedAt: Date | null
+  initiatedById: bigint | null
+  verifiedJson: string | null
+  verifiedAt: Date | null
+  verifiedById: bigint | null
+  disposition: string | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -77,6 +92,15 @@ export type CaseCheckMaxAggregateOutputType = {
   dueAt: Date | null
   completedAt: Date | null
   sourceSummary: string | null
+  departmentId: bigint | null
+  routedAt: Date | null
+  initiationJson: string | null
+  initiatedAt: Date | null
+  initiatedById: bigint | null
+  verifiedJson: string | null
+  verifiedAt: Date | null
+  verifiedById: bigint | null
+  disposition: string | null
   version: number | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -96,6 +120,15 @@ export type CaseCheckCountAggregateOutputType = {
   dueAt: number
   completedAt: number
   sourceSummary: number
+  departmentId: number
+  routedAt: number
+  initiationJson: number
+  initiatedAt: number
+  initiatedById: number
+  verifiedJson: number
+  verifiedAt: number
+  verifiedById: number
+  disposition: number
   version: number
   createdAt: number
   updatedAt: number
@@ -109,6 +142,9 @@ export type CaseCheckAvgAggregateInputType = {
   caseId?: true
   caseServiceId?: true
   reviewCycle?: true
+  departmentId?: true
+  initiatedById?: true
+  verifiedById?: true
   version?: true
 }
 
@@ -118,6 +154,9 @@ export type CaseCheckSumAggregateInputType = {
   caseId?: true
   caseServiceId?: true
   reviewCycle?: true
+  departmentId?: true
+  initiatedById?: true
+  verifiedById?: true
   version?: true
 }
 
@@ -135,6 +174,15 @@ export type CaseCheckMinAggregateInputType = {
   dueAt?: true
   completedAt?: true
   sourceSummary?: true
+  departmentId?: true
+  routedAt?: true
+  initiationJson?: true
+  initiatedAt?: true
+  initiatedById?: true
+  verifiedJson?: true
+  verifiedAt?: true
+  verifiedById?: true
+  disposition?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -154,6 +202,15 @@ export type CaseCheckMaxAggregateInputType = {
   dueAt?: true
   completedAt?: true
   sourceSummary?: true
+  departmentId?: true
+  routedAt?: true
+  initiationJson?: true
+  initiatedAt?: true
+  initiatedById?: true
+  verifiedJson?: true
+  verifiedAt?: true
+  verifiedById?: true
+  disposition?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -173,6 +230,15 @@ export type CaseCheckCountAggregateInputType = {
   dueAt?: true
   completedAt?: true
   sourceSummary?: true
+  departmentId?: true
+  routedAt?: true
+  initiationJson?: true
+  initiatedAt?: true
+  initiatedById?: true
+  verifiedJson?: true
+  verifiedAt?: true
+  verifiedById?: true
+  disposition?: true
   version?: true
   createdAt?: true
   updatedAt?: true
@@ -279,6 +345,15 @@ export type CaseCheckGroupByOutputType = {
   dueAt: Date | null
   completedAt: Date | null
   sourceSummary: string | null
+  departmentId: bigint | null
+  routedAt: Date | null
+  initiationJson: string | null
+  initiatedAt: Date | null
+  initiatedById: bigint | null
+  verifiedJson: string | null
+  verifiedAt: Date | null
+  verifiedById: bigint | null
+  disposition: string | null
   version: number
   createdAt: Date
   updatedAt: Date
@@ -321,11 +396,23 @@ export type CaseCheckWhereInput = {
   dueAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
   sourceSummary?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  departmentId?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  routedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  initiationJson?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  initiatedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  initiatedById?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  verifiedJson?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  verifiedById?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  disposition?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
   version?: Prisma.IntFilter<"CaseCheck"> | number
   createdAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
+  sourceEmails?: Prisma.SourceEmailListRelationFilter
+  vendorWork?: Prisma.VendorCheckAssignmentListRelationFilter
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
   tasks?: Prisma.CheckTaskListRelationFilter
   findings?: Prisma.FindingListRelationFilter
   caseService?: Prisma.XOR<Prisma.CaseServiceNullableScalarRelationFilter, Prisma.CaseServiceWhereInput> | null
@@ -346,11 +433,23 @@ export type CaseCheckOrderByWithRelationInput = {
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceSummary?: Prisma.SortOrderInput | Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  routedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  initiationJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  initiatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  initiatedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  disposition?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  sourceEmails?: Prisma.SourceEmailOrderByRelationAggregateInput
+  vendorWork?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
   tenant?: Prisma.TenantOrderByWithRelationInput
   case?: Prisma.VerificationCaseOrderByWithRelationInput
+  department?: Prisma.DepartmentOrderByWithRelationInput
   tasks?: Prisma.CheckTaskOrderByRelationAggregateInput
   findings?: Prisma.FindingOrderByRelationAggregateInput
   caseService?: Prisma.CaseServiceOrderByWithRelationInput
@@ -375,11 +474,23 @@ export type CaseCheckWhereUniqueInput = Prisma.AtLeast<{
   dueAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
   sourceSummary?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  departmentId?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  routedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  initiationJson?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  initiatedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  initiatedById?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  verifiedJson?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  verifiedById?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  disposition?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
   version?: Prisma.IntFilter<"CaseCheck"> | number
   createdAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
+  sourceEmails?: Prisma.SourceEmailListRelationFilter
+  vendorWork?: Prisma.VendorCheckAssignmentListRelationFilter
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
+  department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
   tasks?: Prisma.CheckTaskListRelationFilter
   findings?: Prisma.FindingListRelationFilter
   caseService?: Prisma.XOR<Prisma.CaseServiceNullableScalarRelationFilter, Prisma.CaseServiceWhereInput> | null
@@ -400,6 +511,15 @@ export type CaseCheckOrderByWithAggregationInput = {
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   sourceSummary?: Prisma.SortOrderInput | Prisma.SortOrder
+  departmentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  routedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  initiationJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  initiatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  initiatedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedJson?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  verifiedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  disposition?: Prisma.SortOrderInput | Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -427,6 +547,15 @@ export type CaseCheckScalarWhereWithAggregatesInput = {
   dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CaseCheck"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CaseCheck"> | Date | string | null
   sourceSummary?: Prisma.StringNullableWithAggregatesFilter<"CaseCheck"> | string | null
+  departmentId?: Prisma.BigIntNullableWithAggregatesFilter<"CaseCheck"> | bigint | number | null
+  routedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CaseCheck"> | Date | string | null
+  initiationJson?: Prisma.StringNullableWithAggregatesFilter<"CaseCheck"> | string | null
+  initiatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CaseCheck"> | Date | string | null
+  initiatedById?: Prisma.BigIntNullableWithAggregatesFilter<"CaseCheck"> | bigint | number | null
+  verifiedJson?: Prisma.StringNullableWithAggregatesFilter<"CaseCheck"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CaseCheck"> | Date | string | null
+  verifiedById?: Prisma.BigIntNullableWithAggregatesFilter<"CaseCheck"> | bigint | number | null
+  disposition?: Prisma.StringNullableWithAggregatesFilter<"CaseCheck"> | string | null
   version?: Prisma.IntWithAggregatesFilter<"CaseCheck"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CaseCheck"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"CaseCheck"> | Date | string
@@ -443,11 +572,22 @@ export type CaseCheckCreateInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
   caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
@@ -468,9 +608,20 @@ export type CaseCheckUncheckedCreateInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -487,11 +638,22 @@ export type CaseCheckUpdateInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
   caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
@@ -512,9 +674,20 @@ export type CaseCheckUncheckedUpdateInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -533,6 +706,15 @@ export type CaseCheckCreateManyInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -549,6 +731,14 @@ export type CaseCheckUpdateManyMutationInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -568,6 +758,15 @@ export type CaseCheckUncheckedUpdateManyInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -603,6 +802,15 @@ export type CaseCheckCountOrderByAggregateInput = {
   dueAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   sourceSummary?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  routedAt?: Prisma.SortOrder
+  initiationJson?: Prisma.SortOrder
+  initiatedAt?: Prisma.SortOrder
+  initiatedById?: Prisma.SortOrder
+  verifiedJson?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  verifiedById?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -614,6 +822,9 @@ export type CaseCheckAvgOrderByAggregateInput = {
   caseId?: Prisma.SortOrder
   caseServiceId?: Prisma.SortOrder
   reviewCycle?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  initiatedById?: Prisma.SortOrder
+  verifiedById?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -631,6 +842,15 @@ export type CaseCheckMaxOrderByAggregateInput = {
   dueAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   sourceSummary?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  routedAt?: Prisma.SortOrder
+  initiationJson?: Prisma.SortOrder
+  initiatedAt?: Prisma.SortOrder
+  initiatedById?: Prisma.SortOrder
+  verifiedJson?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  verifiedById?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -650,6 +870,15 @@ export type CaseCheckMinOrderByAggregateInput = {
   dueAt?: Prisma.SortOrder
   completedAt?: Prisma.SortOrder
   sourceSummary?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  routedAt?: Prisma.SortOrder
+  initiationJson?: Prisma.SortOrder
+  initiatedAt?: Prisma.SortOrder
+  initiatedById?: Prisma.SortOrder
+  verifiedJson?: Prisma.SortOrder
+  verifiedAt?: Prisma.SortOrder
+  verifiedById?: Prisma.SortOrder
+  disposition?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -661,6 +890,9 @@ export type CaseCheckSumOrderByAggregateInput = {
   caseId?: Prisma.SortOrder
   caseServiceId?: Prisma.SortOrder
   reviewCycle?: Prisma.SortOrder
+  departmentId?: Prisma.SortOrder
+  initiatedById?: Prisma.SortOrder
+  verifiedById?: Prisma.SortOrder
   version?: Prisma.SortOrder
 }
 
@@ -837,6 +1069,76 @@ export type CaseCheckUpdateOneRequiredWithoutMethodRunsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutMethodRunsInput, Prisma.CaseCheckUpdateWithoutMethodRunsInput>, Prisma.CaseCheckUncheckedUpdateWithoutMethodRunsInput>
 }
 
+export type CaseCheckCreateNestedOneWithoutVendorWorkInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutVendorWorkInput, Prisma.CaseCheckUncheckedCreateWithoutVendorWorkInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutVendorWorkInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+}
+
+export type CaseCheckUpdateOneRequiredWithoutVendorWorkNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutVendorWorkInput, Prisma.CaseCheckUncheckedCreateWithoutVendorWorkInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutVendorWorkInput
+  upsert?: Prisma.CaseCheckUpsertWithoutVendorWorkInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutVendorWorkInput, Prisma.CaseCheckUpdateWithoutVendorWorkInput>, Prisma.CaseCheckUncheckedUpdateWithoutVendorWorkInput>
+}
+
+export type CaseCheckCreateNestedOneWithoutSourceEmailsInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedCreateWithoutSourceEmailsInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutSourceEmailsInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+}
+
+export type CaseCheckUpdateOneRequiredWithoutSourceEmailsNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedCreateWithoutSourceEmailsInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutSourceEmailsInput
+  upsert?: Prisma.CaseCheckUpsertWithoutSourceEmailsInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutSourceEmailsInput, Prisma.CaseCheckUpdateWithoutSourceEmailsInput>, Prisma.CaseCheckUncheckedUpdateWithoutSourceEmailsInput>
+}
+
+export type CaseCheckCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutDepartmentInput, Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput> | Prisma.CaseCheckCreateWithoutDepartmentInput[] | Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput | Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.CaseCheckCreateManyDepartmentInputEnvelope
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+}
+
+export type CaseCheckUncheckedCreateNestedManyWithoutDepartmentInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutDepartmentInput, Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput> | Prisma.CaseCheckCreateWithoutDepartmentInput[] | Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput | Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput[]
+  createMany?: Prisma.CaseCheckCreateManyDepartmentInputEnvelope
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+}
+
+export type CaseCheckUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutDepartmentInput, Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput> | Prisma.CaseCheckCreateWithoutDepartmentInput[] | Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput | Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.CaseCheckUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.CaseCheckUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.CaseCheckCreateManyDepartmentInputEnvelope
+  set?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  disconnect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  delete?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  update?: Prisma.CaseCheckUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.CaseCheckUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.CaseCheckUpdateManyWithWhereWithoutDepartmentInput | Prisma.CaseCheckUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.CaseCheckScalarWhereInput | Prisma.CaseCheckScalarWhereInput[]
+}
+
+export type CaseCheckUncheckedUpdateManyWithoutDepartmentNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutDepartmentInput, Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput> | Prisma.CaseCheckCreateWithoutDepartmentInput[] | Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput[]
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput | Prisma.CaseCheckCreateOrConnectWithoutDepartmentInput[]
+  upsert?: Prisma.CaseCheckUpsertWithWhereUniqueWithoutDepartmentInput | Prisma.CaseCheckUpsertWithWhereUniqueWithoutDepartmentInput[]
+  createMany?: Prisma.CaseCheckCreateManyDepartmentInputEnvelope
+  set?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  disconnect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  delete?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  connect?: Prisma.CaseCheckWhereUniqueInput | Prisma.CaseCheckWhereUniqueInput[]
+  update?: Prisma.CaseCheckUpdateWithWhereUniqueWithoutDepartmentInput | Prisma.CaseCheckUpdateWithWhereUniqueWithoutDepartmentInput[]
+  updateMany?: Prisma.CaseCheckUpdateManyWithWhereWithoutDepartmentInput | Prisma.CaseCheckUpdateManyWithWhereWithoutDepartmentInput[]
+  deleteMany?: Prisma.CaseCheckScalarWhereInput | Prisma.CaseCheckScalarWhereInput[]
+}
+
 export type CaseCheckCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -848,10 +1150,21 @@ export type CaseCheckCreateWithoutTenantInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
   caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
@@ -871,9 +1184,20 @@ export type CaseCheckUncheckedCreateWithoutTenantInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -921,6 +1245,15 @@ export type CaseCheckScalarWhereInput = {
   dueAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
   completedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
   sourceSummary?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  departmentId?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  routedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  initiationJson?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  initiatedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  initiatedById?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  verifiedJson?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
+  verifiedAt?: Prisma.DateTimeNullableFilter<"CaseCheck"> | Date | string | null
+  verifiedById?: Prisma.BigIntNullableFilter<"CaseCheck"> | bigint | number | null
+  disposition?: Prisma.StringNullableFilter<"CaseCheck"> | string | null
   version?: Prisma.IntFilter<"CaseCheck"> | number
   createdAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
@@ -937,10 +1270,21 @@ export type CaseCheckCreateWithoutCaseInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
   caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
@@ -960,9 +1304,20 @@ export type CaseCheckUncheckedCreateWithoutCaseInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -1004,11 +1359,22 @@ export type CaseCheckCreateWithoutTasksInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
   caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
   methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
@@ -1028,9 +1394,20 @@ export type CaseCheckUncheckedCreateWithoutTasksInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
@@ -1062,11 +1439,22 @@ export type CaseCheckUpdateWithoutTasksInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
   caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
   methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
@@ -1086,9 +1474,20 @@ export type CaseCheckUncheckedUpdateWithoutTasksInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
@@ -1104,11 +1503,22 @@ export type CaseCheckCreateWithoutFindingsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
   methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
@@ -1128,9 +1538,20 @@ export type CaseCheckUncheckedCreateWithoutFindingsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
@@ -1162,11 +1583,22 @@ export type CaseCheckUpdateWithoutFindingsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
   methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
@@ -1186,9 +1618,20 @@ export type CaseCheckUncheckedUpdateWithoutFindingsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
@@ -1204,11 +1647,22 @@ export type CaseCheckCreateWithoutCaseServiceInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
@@ -1227,9 +1681,20 @@ export type CaseCheckUncheckedCreateWithoutCaseServiceInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -1271,11 +1736,22 @@ export type CaseCheckCreateWithoutMethodRunsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
   caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
@@ -1295,9 +1771,20 @@ export type CaseCheckUncheckedCreateWithoutMethodRunsInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
 }
@@ -1329,11 +1816,22 @@ export type CaseCheckUpdateWithoutMethodRunsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
   caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
@@ -1353,11 +1851,399 @@ export type CaseCheckUncheckedUpdateWithoutMethodRunsInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckCreateWithoutVendorWorkInput = {
+  id?: bigint | number
+  publicId?: string
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckUncheckedCreateWithoutVendorWorkInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckCreateOrConnectWithoutVendorWorkInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutVendorWorkInput, Prisma.CaseCheckUncheckedCreateWithoutVendorWorkInput>
+}
+
+export type CaseCheckUpsertWithoutVendorWorkInput = {
+  update: Prisma.XOR<Prisma.CaseCheckUpdateWithoutVendorWorkInput, Prisma.CaseCheckUncheckedUpdateWithoutVendorWorkInput>
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutVendorWorkInput, Prisma.CaseCheckUncheckedCreateWithoutVendorWorkInput>
+  where?: Prisma.CaseCheckWhereInput
+}
+
+export type CaseCheckUpdateToOneWithWhereWithoutVendorWorkInput = {
+  where?: Prisma.CaseCheckWhereInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateWithoutVendorWorkInput, Prisma.CaseCheckUncheckedUpdateWithoutVendorWorkInput>
+}
+
+export type CaseCheckUpdateWithoutVendorWorkInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateWithoutVendorWorkInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckCreateWithoutSourceEmailsInput = {
+  id?: bigint | number
+  publicId?: string
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckUncheckedCreateWithoutSourceEmailsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckCreateOrConnectWithoutSourceEmailsInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedCreateWithoutSourceEmailsInput>
+}
+
+export type CaseCheckUpsertWithoutSourceEmailsInput = {
+  update: Prisma.XOR<Prisma.CaseCheckUpdateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedUpdateWithoutSourceEmailsInput>
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedCreateWithoutSourceEmailsInput>
+  where?: Prisma.CaseCheckWhereInput
+}
+
+export type CaseCheckUpdateToOneWithWhereWithoutSourceEmailsInput = {
+  where?: Prisma.CaseCheckWhereInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedUpdateWithoutSourceEmailsInput>
+}
+
+export type CaseCheckUpdateWithoutSourceEmailsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateWithoutSourceEmailsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckCreateWithoutDepartmentInput = {
+  id?: bigint | number
+  publicId?: string
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckUncheckedCreateWithoutDepartmentInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckCreateOrConnectWithoutDepartmentInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutDepartmentInput, Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput>
+}
+
+export type CaseCheckCreateManyDepartmentInputEnvelope = {
+  data: Prisma.CaseCheckCreateManyDepartmentInput | Prisma.CaseCheckCreateManyDepartmentInput[]
+}
+
+export type CaseCheckUpsertWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  update: Prisma.XOR<Prisma.CaseCheckUpdateWithoutDepartmentInput, Prisma.CaseCheckUncheckedUpdateWithoutDepartmentInput>
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutDepartmentInput, Prisma.CaseCheckUncheckedCreateWithoutDepartmentInput>
+}
+
+export type CaseCheckUpdateWithWhereUniqueWithoutDepartmentInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateWithoutDepartmentInput, Prisma.CaseCheckUncheckedUpdateWithoutDepartmentInput>
+}
+
+export type CaseCheckUpdateManyWithWhereWithoutDepartmentInput = {
+  where: Prisma.CaseCheckScalarWhereInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateManyMutationInput, Prisma.CaseCheckUncheckedUpdateManyWithoutDepartmentInput>
 }
 
 export type CaseCheckCreateManyTenantInput = {
@@ -1372,6 +2258,15 @@ export type CaseCheckCreateManyTenantInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1388,10 +2283,21 @@ export type CaseCheckUpdateWithoutTenantInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
   caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
@@ -1411,9 +2317,20 @@ export type CaseCheckUncheckedUpdateWithoutTenantInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -1432,6 +2349,15 @@ export type CaseCheckUncheckedUpdateManyWithoutTenantInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1449,6 +2375,15 @@ export type CaseCheckCreateManyCaseInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1465,10 +2400,21 @@ export type CaseCheckUpdateWithoutCaseInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
   caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
@@ -1488,9 +2434,20 @@ export type CaseCheckUncheckedUpdateWithoutCaseInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -1509,6 +2466,15 @@ export type CaseCheckUncheckedUpdateManyWithoutCaseInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1526,6 +2492,15 @@ export type CaseCheckCreateManyCaseServiceInput = {
   dueAt?: Date | string | null
   completedAt?: Date | string | null
   sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
   version?: number
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1542,11 +2517,22 @@ export type CaseCheckUpdateWithoutCaseServiceInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
@@ -1565,9 +2551,20 @@ export type CaseCheckUncheckedUpdateWithoutCaseServiceInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -1586,6 +2583,132 @@ export type CaseCheckUncheckedUpdateManyWithoutCaseServiceInput = {
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CaseCheckCreateManyDepartmentInput = {
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type CaseCheckUpdateWithoutDepartmentInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateWithoutDepartmentInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateManyWithoutDepartmentInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1597,12 +2720,16 @@ export type CaseCheckUncheckedUpdateManyWithoutCaseServiceInput = {
  */
 
 export type CaseCheckCountOutputType = {
+  sourceEmails: number
+  vendorWork: number
   tasks: number
   findings: number
   methodRuns: number
 }
 
 export type CaseCheckCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sourceEmails?: boolean | CaseCheckCountOutputTypeCountSourceEmailsArgs
+  vendorWork?: boolean | CaseCheckCountOutputTypeCountVendorWorkArgs
   tasks?: boolean | CaseCheckCountOutputTypeCountTasksArgs
   findings?: boolean | CaseCheckCountOutputTypeCountFindingsArgs
   methodRuns?: boolean | CaseCheckCountOutputTypeCountMethodRunsArgs
@@ -1616,6 +2743,20 @@ export type CaseCheckCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Ex
    * Select specific fields to fetch from the CaseCheckCountOutputType
    */
   select?: Prisma.CaseCheckCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * CaseCheckCountOutputType without action
+ */
+export type CaseCheckCountOutputTypeCountSourceEmailsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SourceEmailWhereInput
+}
+
+/**
+ * CaseCheckCountOutputType without action
+ */
+export type CaseCheckCountOutputTypeCountVendorWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
 }
 
 /**
@@ -1654,11 +2795,23 @@ export type CaseCheckSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   dueAt?: boolean
   completedAt?: boolean
   sourceSummary?: boolean
+  departmentId?: boolean
+  routedAt?: boolean
+  initiationJson?: boolean
+  initiatedAt?: boolean
+  initiatedById?: boolean
+  verifiedJson?: boolean
+  verifiedAt?: boolean
+  verifiedById?: boolean
+  disposition?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  sourceEmails?: boolean | Prisma.CaseCheck$sourceEmailsArgs<ExtArgs>
+  vendorWork?: boolean | Prisma.CaseCheck$vendorWorkArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.CaseCheck$departmentArgs<ExtArgs>
   tasks?: boolean | Prisma.CaseCheck$tasksArgs<ExtArgs>
   findings?: boolean | Prisma.CaseCheck$findingsArgs<ExtArgs>
   caseService?: boolean | Prisma.CaseCheck$caseServiceArgs<ExtArgs>
@@ -1682,15 +2835,27 @@ export type CaseCheckSelectScalar = {
   dueAt?: boolean
   completedAt?: boolean
   sourceSummary?: boolean
+  departmentId?: boolean
+  routedAt?: boolean
+  initiationJson?: boolean
+  initiatedAt?: boolean
+  initiatedById?: boolean
+  verifiedJson?: boolean
+  verifiedAt?: boolean
+  verifiedById?: boolean
+  disposition?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type CaseCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "caseServiceId" | "reviewCycle" | "type" | "status" | "result" | "riskLevel" | "dueAt" | "completedAt" | "sourceSummary" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["caseCheck"]>
+export type CaseCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "caseServiceId" | "reviewCycle" | "type" | "status" | "result" | "riskLevel" | "dueAt" | "completedAt" | "sourceSummary" | "departmentId" | "routedAt" | "initiationJson" | "initiatedAt" | "initiatedById" | "verifiedJson" | "verifiedAt" | "verifiedById" | "disposition" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["caseCheck"]>
 export type CaseCheckInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  sourceEmails?: boolean | Prisma.CaseCheck$sourceEmailsArgs<ExtArgs>
+  vendorWork?: boolean | Prisma.CaseCheck$vendorWorkArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
+  department?: boolean | Prisma.CaseCheck$departmentArgs<ExtArgs>
   tasks?: boolean | Prisma.CaseCheck$tasksArgs<ExtArgs>
   findings?: boolean | Prisma.CaseCheck$findingsArgs<ExtArgs>
   caseService?: boolean | Prisma.CaseCheck$caseServiceArgs<ExtArgs>
@@ -1701,8 +2866,11 @@ export type CaseCheckInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type $CaseCheckPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "CaseCheck"
   objects: {
+    sourceEmails: Prisma.$SourceEmailPayload<ExtArgs>[]
+    vendorWork: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
     tenant: Prisma.$TenantPayload<ExtArgs>
     case: Prisma.$VerificationCasePayload<ExtArgs>
+    department: Prisma.$DepartmentPayload<ExtArgs> | null
     tasks: Prisma.$CheckTaskPayload<ExtArgs>[]
     findings: Prisma.$FindingPayload<ExtArgs>[]
     caseService: Prisma.$CaseServicePayload<ExtArgs> | null
@@ -1722,6 +2890,24 @@ export type $CaseCheckPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     dueAt: Date | null
     completedAt: Date | null
     sourceSummary: string | null
+    departmentId: bigint | null
+    routedAt: Date | null
+    /**
+     * Check-wise initiation captured by Data Entry, e.g. {"entries":[{"employerName":"..."}]}.
+     */
+    initiationJson: string | null
+    initiatedAt: Date | null
+    initiatedById: bigint | null
+    /**
+     * RHS: what the source confirmed, recorded by the verifier, e.g. {"employerName":"..."}.
+     */
+    verifiedJson: string | null
+    verifiedAt: Date | null
+    verifiedById: bigint | null
+    /**
+     * Colour-code disposition: GREEN, RED, YELLOW, AMBER, BLUE or CLIENT_REVIEW.
+     */
+    disposition: string | null
     version: number
     createdAt: Date
     updatedAt: Date
@@ -2065,8 +3251,11 @@ readonly fields: CaseCheckFieldRefs;
  */
 export interface Prisma__CaseCheckClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  sourceEmails<T extends Prisma.CaseCheck$sourceEmailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$sourceEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SourceEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorWork<T extends Prisma.CaseCheck$vendorWorkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$vendorWorkArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  department<T extends Prisma.CaseCheck$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   tasks<T extends Prisma.CaseCheck$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckTaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   findings<T extends Prisma.CaseCheck$findingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$findingsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FindingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   caseService<T extends Prisma.CaseCheck$caseServiceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$caseServiceArgs<ExtArgs>>): Prisma.Prisma__CaseServiceClient<runtime.Types.Result.GetResult<Prisma.$CaseServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2113,6 +3302,15 @@ export interface CaseCheckFieldRefs {
   readonly dueAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
   readonly completedAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
   readonly sourceSummary: Prisma.FieldRef<"CaseCheck", 'String'>
+  readonly departmentId: Prisma.FieldRef<"CaseCheck", 'BigInt'>
+  readonly routedAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
+  readonly initiationJson: Prisma.FieldRef<"CaseCheck", 'String'>
+  readonly initiatedAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
+  readonly initiatedById: Prisma.FieldRef<"CaseCheck", 'BigInt'>
+  readonly verifiedJson: Prisma.FieldRef<"CaseCheck", 'String'>
+  readonly verifiedAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
+  readonly verifiedById: Prisma.FieldRef<"CaseCheck", 'BigInt'>
+  readonly disposition: Prisma.FieldRef<"CaseCheck", 'String'>
   readonly version: Prisma.FieldRef<"CaseCheck", 'Int'>
   readonly createdAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"CaseCheck", 'DateTime'>
@@ -2460,6 +3658,73 @@ export type CaseCheckDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many CaseChecks to delete.
    */
   limit?: number
+}
+
+/**
+ * CaseCheck.sourceEmails
+ */
+export type CaseCheck$sourceEmailsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SourceEmail
+   */
+  select?: Prisma.SourceEmailSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SourceEmail
+   */
+  omit?: Prisma.SourceEmailOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SourceEmailInclude<ExtArgs> | null
+  where?: Prisma.SourceEmailWhereInput
+  orderBy?: Prisma.SourceEmailOrderByWithRelationInput | Prisma.SourceEmailOrderByWithRelationInput[]
+  cursor?: Prisma.SourceEmailWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SourceEmailScalarFieldEnum | Prisma.SourceEmailScalarFieldEnum[]
+}
+
+/**
+ * CaseCheck.vendorWork
+ */
+export type CaseCheck$vendorWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * CaseCheck.department
+ */
+export type CaseCheck$departmentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Department
+   */
+  select?: Prisma.DepartmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Department
+   */
+  omit?: Prisma.DepartmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentInclude<ExtArgs> | null
+  where?: Prisma.DepartmentWhereInput
 }
 
 /**

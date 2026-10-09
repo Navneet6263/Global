@@ -43,7 +43,13 @@ export class DocumentsController {
   }
 
   @Patch("documents/:documentId/review")
-  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER", "QA_REVIEWER")
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "VERIFIER",
+    "QA_REVIEWER",
+    "DATA_ENTRY",
+  )
   @RequirePermissions(Permission.DocumentRead)
   review(
     @CurrentActor() actor: Actor,
@@ -88,6 +94,8 @@ export class DocumentsController {
     "CLIENT_ADMIN",
     "VERIFIER",
     "QA_REVIEWER",
+    "DATA_ENTRY",
+    "SPOC_RM",
   )
   @RequirePermissions(Permission.DocumentRead)
   async download(
@@ -106,6 +114,8 @@ export class DocumentsController {
     "CLIENT_ADMIN",
     "VERIFIER",
     "QA_REVIEWER",
+    "DATA_ENTRY",
+    "SPOC_RM",
   )
   @RequirePermissions(Permission.DocumentRead)
   async preview(

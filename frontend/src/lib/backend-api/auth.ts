@@ -8,11 +8,27 @@ export type Session = {
   branchName?: string;
   clientId?: string;
   clientName?: string;
+  /** Client users: ONBOARDING until Operations approves a self sign-up company. */
+  clientStatus?: string;
+  /** Platform Admin oversight: may view and escalate, never change data. */
+  viewOnly?: boolean;
   /** SPOC-RM only: its assigned client workspaces. */
   clientScope?: Array<{ id: string; name: string }>;
+  /** Data Entry and Verifier users: their department teams (LEAD = Team Leader). */
+  departments?: Array<{
+    id: string;
+    code: string;
+    name: string;
+    kind: "DATA_ENTRY" | "VERIFICATION";
+    role: "LEAD" | "MEMBER";
+  }>;
   email: string;
   displayName: string;
   mustChangePassword: boolean;
+  /** Tenant switch: branch (office) scoping. */
+  branchScoping?: boolean;
+  /** Set at sign-in when the password passed the 90-day limit. */
+  passwordExpired?: boolean;
   roles: string[];
   permissions: string[];
 };
@@ -97,4 +113,54 @@ export function listSecurityEvents(input: { cursor?: string; limit?: number } = 
     nextCursor: string | null;
     summary: { total: number; attention: number };
   }>(`/auth/security-events?${query.toString()}`);
+}
+
+export type SignupSettings = {
+  enabled: boolean;
+  tenantCode: string;
+  passwordRequirements: string;
+};
+
+export type SignupChallenge = {
+  signupId: string;
+  /** Masked, e.g. "ri**@acme.in". */
+  email: string;
+  expiresAt: string;
+  resendAfterSeconds: number;
+};
+
+export function getSignupSettings() {
+  return apiRequest<SignupSettings>("/auth/signup/settings", {}, false);
+}
+
+export function startSignup(input: {
+  fullName: string;
+  companyName: string;
+  email: string;
+  phone?: string;
+  password: string;
+  acceptTerms: boolean;
+}) {
+  return apiRequest<SignupChallenge>(
+    "/auth/signup",
+    { method: "POST", body: JSON.stringify(input) },
+    false,
+  );
+}
+
+export function resendSignupCode(signupId: string) {
+  return apiRequest<SignupChallenge>(
+    "/auth/signup/resend",
+    { method: "POST", body: JSON.stringify({ signupId }) },
+    false,
+  );
+}
+
+export function verifySignup(input: { signupId: string; otp: string }) {
+  resetApiSession();
+  return apiRequest<{ authenticated: true; session: Session }>(
+    "/auth/signup/verify",
+    { method: "POST", body: JSON.stringify(input) },
+    false,
+  );
 }

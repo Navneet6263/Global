@@ -158,6 +158,32 @@ void test("a prepared unpaid report cannot be released and creates no status/aud
   assert.deepEqual(writes, []);
 });
 
+void test("monthly billing: an approved report is released without waiting for payment", async () => {
+  const { tx, writes } = releaseFixture({ invoiceLines: [] });
+  assert.equal(
+    await releasePreparedReport(tx, 1n, "report-id", 2n, undefined, {
+      beforePayment: true,
+    }),
+    true,
+  );
+  assert.deepEqual(writes, ["publish", "complete", "history", "audit"]);
+});
+
+void test("monthly billing still refuses another client's invoice link", async () => {
+  const { tx, writes } = releaseFixture({
+    invoiceLines: [
+      { invoice: { ...paid, id: 5n, tenantId: 1n, clientId: 99n } },
+    ],
+  });
+  assert.equal(
+    await releasePreparedReport(tx, 1n, "report-id", 2n, undefined, {
+      beforePayment: true,
+    }),
+    false,
+  );
+  assert.deepEqual(writes, []);
+});
+
 void test("cross-client invoice links cannot authorize report release", async () => {
   const { tx, writes } = releaseFixture({
     invoiceLines: [
@@ -181,7 +207,7 @@ void test("payment can remain recorded while unresolved evidence holds report re
   assert.deepEqual(writes, []);
 });
 
-void test("manager cannot approve their own QA decision even with Platform Admin access", async () => {
+void test("the case's QA reviewer may also give the final approval (same person is allowed)", async () => {
   const actor = {
     tenantId: 1n,
     userId: 2n,
@@ -213,7 +239,9 @@ void test("manager cannot approve their own QA decision even with Platform Admin
         recommendation: "Factual reviewed findings provided",
       },
     ),
-    /independent of verification and QA/,
+    // This double stops later in the flow; what matters is that the QA reviewer is not
+    // refused for independence.
+    (error: Error) => !/independent/.test(error.message),
   );
 });
 

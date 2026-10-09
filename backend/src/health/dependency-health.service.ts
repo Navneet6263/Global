@@ -6,7 +6,11 @@ import { LocalObjectStorageService } from "../documents/local-object-storage.ser
 @Injectable()
 export class DependencyHealthService {
   private validUntil = 0;
-  private inFlight?: Promise<{ storage: string; malwareScanner: string; notifications: string }>;
+  private inFlight?: Promise<{
+    storage: string;
+    malwareScanner: string;
+    notifications: string;
+  }>;
 
   constructor(
     private readonly storage: LocalObjectStorageService,
@@ -30,13 +34,17 @@ export class DependencyHealthService {
         signal: AbortSignal.timeout(5_000),
       });
       if (!response.ok) {
-        throw new Error(`Notification health probe returned HTTP ${response.status}`);
+        throw new Error(
+          `Notification health probe returned HTTP ${response.status}`,
+        );
       }
     }
     this.validUntil = Date.now() + 60_000;
     return {
       storage: "up",
-      malwareScanner: this.config.get<string>("CLAMAV_HOST") ? "up" : "optional",
+      malwareScanner: this.config.get<string>("CLAMAV_HOST")
+        ? "up"
+        : "optional",
       notifications: healthUrl ? "up" : "optional",
     };
   }

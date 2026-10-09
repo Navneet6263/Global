@@ -34,7 +34,9 @@ export function ClientScopePicker({
   return (
     <fieldset className="space-y-2" disabled={disabled}>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <legend className="text-xs font-medium">Client workspaces</legend>
+        <legend className="text-xs font-medium">
+          Client workspaces <span className="font-normal text-muted-foreground">(optional)</span>
+        </legend>
         <span className="text-[11px] text-muted-foreground">{value.length} selected</span>
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -77,12 +79,13 @@ export function ClientScopePicker({
           ))
         ) : (
           <p className="p-2 text-xs text-muted-foreground">
-            {options.length ? "No clients match this search." : "No active clients found."}
+            {options.length ? "No clients match this search." : "No companies yet."}
           </p>
         )}
       </div>
       <Label className="block text-[10px] font-normal text-muted-foreground">
-        This SPOC-RM sees and manages vendor work only for the selected clients.
+        The RM works only on the selected companies. You can leave this empty and assign companies
+        later from Companies & RMs.
       </Label>
       {error ? <p className="text-[11px] text-critical-foreground">{error}</p> : null}
     </fieldset>

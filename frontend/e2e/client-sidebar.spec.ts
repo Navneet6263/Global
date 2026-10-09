@@ -36,7 +36,7 @@ for (const size of [
       "false",
     );
     const header = page.locator(".client-topbar");
-    await expect(header.getByRole("switch", { name: "Learning mode" })).toBeVisible();
+    await expect(header.getByRole("button", { name: "Help menu" })).toBeVisible();
     await expect(
       header.getByRole("button", { name: "Account menu for Client Tester" }),
     ).toBeVisible();
@@ -82,13 +82,19 @@ test("learning preference and refresh remain available from the header", async (
   const fixture = await clientWorkspaceFixture(page);
   await page.goto("/client-portal");
   const header = page.locator(".client-topbar");
-  const learning = header.getByRole("switch", { name: "Learning mode" });
+  // Help and learning live in one Help menu.
+  const openHelp = () => header.getByRole("button", { name: "Help menu" }).click();
+  const learning = page.getByRole("switch", { name: "Learning mode" });
+  await openHelp();
   await learning.click();
+  await page.keyboard.press("Escape");
   await expect(page.getByRole("region", { name: "Page learning guide" })).toBeVisible();
   await page.reload();
+  await openHelp();
   await expect(learning).toHaveAttribute("aria-checked", "true");
   await expect(page.getByRole("region", { name: "Page learning guide" })).toBeVisible();
   await learning.click();
+  await page.keyboard.press("Escape");
   const before = fixture.requests.filter((url) =>
     url.pathname.endsWith("/dashboards/operations"),
   ).length;
@@ -99,7 +105,8 @@ test("learning preference and refresh remain available from the header", async (
         fixture.requests.filter((url) => url.pathname.endsWith("/dashboards/operations")).length,
     )
     .toBeGreaterThan(before);
-  await header.getByRole("button", { name: "Help with this page" }).click();
+  await openHelp();
+  await page.getByRole("button", { name: "Help with this page" }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
 });
 
@@ -116,7 +123,7 @@ for (const width of [320, 390]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
     );
-    await expect(header.getByRole("switch", { name: "Learning mode" })).toBeVisible();
+    await expect(header.getByRole("button", { name: "Help menu" })).toBeVisible();
     await header.getByRole("button", { name: /Account menu for Navneet/ }).click();
     await expect(page.getByRole("menuitem", { name: "Sign out", exact: true })).toBeVisible();
     await page.keyboard.press("Escape");

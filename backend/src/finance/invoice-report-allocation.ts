@@ -41,12 +41,19 @@ export async function allocateInvoiceReports(
         caseId: line.caseId,
         ...(line.reportPublicId ? { publicId: line.reportPublicId } : {}),
         workflowVersion: 2,
-        status: "PREPARED",
-        case: { clientId, status: "PAYMENT_PENDING" },
+        // Prepared and waiting for payment, or released and billed monthly.
+        OR: [
+          { status: "PREPARED", case: { clientId, status: "PAYMENT_PENDING" } },
+          {
+            status: "PUBLISHED",
+            case: { clientId, status: { in: ["COMPLETED", "CLOSED"] } },
+          },
+        ],
       },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
+        status: true,
         currentVersion: true,
         case: {
           select: { services: { select: { unitPrice: true, taxRate: true } } },
@@ -74,10 +81,10 @@ export async function allocateInvoiceReports(
       const claimed = await tx.report.updateMany({
         where: {
           id: report.id,
-          status: "PREPARED",
+          status: report.status,
           currentVersion: report.currentVersion,
         },
-        data: { status: "PREPARED" },
+        data: { status: report.status },
       });
       if (claimed.count !== 1)
         throw new ConflictException("Report billing state changed");

@@ -23,11 +23,14 @@ type AuthActorRow = {
   clientId: bigint | null;
   clientPublicId: string | null;
   clientName: string | null;
+  clientStatus: string | null;
   email: string;
   displayName: string;
   mustChangePassword: boolean;
   vendorOwnerId: bigint | null;
   roleCode: string;
+  branchScoping: boolean | null;
+  baseRoleCode: string | null;
   permissionsJson: string;
 };
 
@@ -69,12 +72,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         u.[clientId] AS [clientId],
         client.[publicId] AS [clientPublicId],
         client.[displayName] AS [clientName],
+        client.[status] AS [clientStatus],
         u.[email] AS [email],
         u.[displayName] AS [displayName],
         u.[mustChangePassword] AS [mustChangePassword],
         u.[vendorOwnerId] AS [vendorOwnerId],
         role.[code] AS [roleCode],
-        role.[permissionsJson] AS [permissionsJson]
+        role.[baseRoleCode] AS [baseRoleCode],
+        role.[permissionsJson] AS [permissionsJson],
+        accessPolicy.[branchScopingEnabled] AS [branchScoping]
       FROM [dbo].[RefreshSession] session
       INNER JOIN [dbo].[User] u ON u.[id] = session.[userId]
       INNER JOIN [dbo].[Tenant] tenant ON tenant.[id] = u.[tenantId]
@@ -83,6 +89,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       LEFT JOIN [dbo].[User] vendorOwner ON vendorOwner.[id] = u.[vendorOwnerId]
       INNER JOIN [dbo].[UserRole] userRole ON userRole.[userId] = u.[id]
       INNER JOIN [dbo].[Role] role ON role.[id] = userRole.[roleId]
+      LEFT JOIN [dbo].[TenantAccessPolicy] accessPolicy ON accessPolicy.[tenantId] = u.[tenantId]
       WHERE session.[publicId] = CAST(${payload.sessionId} AS UNIQUEIDENTIFIER)
         AND session.[revokedAt] IS NULL
         AND session.[expiresAt] > SYSUTCDATETIME()
@@ -95,11 +102,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     `;
     const user = rows[0];
     if (!user) throw new UnauthorizedException("Account is unavailable");
-    if (payload.branchId && user.branchPublicId !== payload.branchId) {
+    // Branch (office) scoping is a tenant switch; while it is off nobody carries a branch,
+    // so every branch filter in the application stops applying.
+    const branchScoping = user.branchScoping === true;
+    if (
+      branchScoping &&
+      payload.branchId &&
+      user.branchPublicId !== payload.branchId
+    ) {
       throw new UnauthorizedException("Branch access has changed");
     }
 
-    const roles = [...new Set(rows.map((row) => row.roleCode))];
+    // A custom role works as its system base role, with its own (narrower) permissions.
+    const roles = [
+      ...new Set(rows.map((row) => row.baseRoleCode ?? row.roleCode)),
+    ];
     const permissions = [
       ...new Set(
         rows.flatMap((row) => {
@@ -118,12 +135,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       tenantId: user.tenantId,
       tenantPublicId: user.tenantPublicId,
       tenantName: user.tenantName,
-      branchId: user.branchId ?? undefined,
-      branchPublicId: user.branchPublicId ?? undefined,
-      branchName: user.branchName ?? undefined,
+      branchId: branchScoping ? (user.branchId ?? undefined) : undefined,
+      branchPublicId: branchScoping
+        ? (user.branchPublicId ?? undefined)
+        : undefined,
+      branchName: branchScoping ? (user.branchName ?? undefined) : undefined,
+      branchScoping,
       clientId: user.clientId ?? undefined,
       clientPublicId: user.clientPublicId ?? undefined,
       clientName: user.clientName ?? undefined,
+      clientStatus: user.clientStatus ?? undefined,
       email: user.email,
       displayName: user.displayName,
       sessionPublicId: payload.sessionId,
@@ -134,7 +155,33 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       ...(roles.includes("SPOC_RM")
         ? { spocClients: await this.spocClients(user.userId, user.tenantId) }
         : {}),
+      ...(roles.some((role) => ["DATA_ENTRY", "VERIFIER"].includes(role))
+        ? { departments: await this.departments(user.userId, user.tenantId) }
+        : {}),
     };
+  }
+
+  /** Live department membership: removal by an admin applies on the next request. */
+  private async departments(userId: bigint, tenantId: bigint) {
+    const rows = await this.prisma.departmentMember.findMany({
+      where: { userId, department: { tenantId, status: "ACTIVE" } },
+      select: {
+        role: true,
+        department: {
+          select: {
+            id: true,
+            publicId: true,
+            code: true,
+            name: true,
+            kind: true,
+          },
+        },
+      },
+    });
+    return rows.map(({ role, department }) => ({
+      ...department,
+      role: role === "LEAD" ? ("LEAD" as const) : ("MEMBER" as const),
+    }));
   }
 
   /** Live SPOC-RM client scope: a client removed by an admin stops working on the next request. */

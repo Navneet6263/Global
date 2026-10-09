@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { VendorWorkController } from "../src/vendor-checks/vendor-work.controller";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -39,7 +40,18 @@ void test("/spoc/vendors admits SPOC-RM and Platform Admin; /vendor/requests adm
   const noAssign = { ...spocA, permissions: ["dashboard:read"] };
   for (const method of spocMethods) {
     assert.ok(passesGuard(SpocVendorsController, method, spocA), method);
-    assert.ok(passesGuard(SpocVendorsController, method, admin), method);
+    assert.ok(
+      passesGuard(SpocVendorsController, method, admin, {
+        platformAdminViewOnly: false,
+      }),
+      method,
+    );
+    // A view-only Platform Admin sees vendor work but does not assign it.
+    assert.equal(
+      passesGuard(SpocVendorsController, method, admin),
+      !["assign", "reassign", "requestReupload"].includes(method),
+      method,
+    );
     assert.ok(!passesGuard(SpocVendorsController, method, noAssign));
     for (const role of ["VENDOR", "OPS_MANAGER", "CLIENT_ADMIN", "VERIFIER"])
       assert.ok(
@@ -57,12 +69,14 @@ void test("/spoc/vendors admits SPOC-RM and Platform Admin; /vendor/requests adm
   }
 });
 
-void test("VENDOR is allowed only on the /vendor requests, reports, team and logs routes", async () => {
+void test("VENDOR is allowed only on the /vendor requests, reports, team, logs and checks routes", async () => {
   const vendorControllers: readonly object[] = [
     VendorRequestsController,
     VendorTeamController,
     VendorReportsController,
     VendorActivityController,
+    // Check-level vendor work (/vendor/checks): own jobs only, enforced in the service.
+    VendorWorkController,
   ];
   let checked = 0;
   for (const { file, controller, handler } of await allControllerHandlers()) {

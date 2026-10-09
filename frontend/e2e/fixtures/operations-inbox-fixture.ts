@@ -29,7 +29,16 @@ export async function operationsInboxFixture(page: Page, canWrite = true) {
         mustChangePassword: false,
       });
     if (path === "/notifications") return reply({ items: [], unreadCount: 0 });
-    if (path === "/dashboards/navigation") return reply({ counts: {} });
+    if (path === "/dashboards/navigation")
+      return reply({
+        counts: {
+          opsSlaRisk: 3,
+          opsUnassigned: 2,
+          opsClientsWithoutRm: 1,
+          opsStopped: 1,
+          opsReopened: 0,
+        },
+      });
     if (path === "/dashboards/operations")
       return reply({
         summary: { total: 12, overdue: 1, createdToday: 2, completedToday: 1 },
@@ -47,6 +56,18 @@ export async function operationsInboxFixture(page: Page, canWrite = true) {
         attentionQueue: [],
       });
     if (path === "/dashboards/exceptions") return reply({ summary: { clarifications: 1 } });
+    if (path === "/workflow/rm/queue")
+      return reply({ items: [], total: 0, page: 1, pageSize: 1, counts: {}, generatedAt: "" });
+    if (path === "/workflow/team/queue")
+      return reply({
+        items: [],
+        total: 0,
+        page: 1,
+        pageSize: 8,
+        counts: { unassigned: 0, blocked: 0, overdue: 0, total: 0 },
+        members: [],
+        generatedAt: "",
+      });
     if (path === "/dashboards/operations/actions") {
       if (fail) return route.fulfill({ status: 503, json: { title: "Temporarily unavailable" } });
       const action = url.searchParams.get("action") ?? "documents";

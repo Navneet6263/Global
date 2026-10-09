@@ -5,6 +5,12 @@ import { useState } from "react";
 
 import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
 import { VerifierTaskTable } from "@/features/delivery/verifier/VerifierTaskTable";
+import { ExportSheetButton } from "@/components/workspace/export-sheet";
+import {
+  TASK_EXPORT_COLUMNS,
+  TASK_EXPORT_DEFAULTS,
+  loadAllTasks,
+} from "@/features/delivery/verifier/task-export";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
 import { cn } from "@/lib/utils";
@@ -100,7 +106,7 @@ function VerifierSlaPage() {
           },
         ]}
       />
-      <div className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full border border-white/80 bg-card/80 p-1.5 shadow-[var(--shadow-card)]">
+      <div className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full border border-slate-200 bg-white p-1.5 shadow-sm">
         {views.map((item) => (
           <button
             key={item.id}
@@ -111,10 +117,10 @@ function VerifierSlaPage() {
               setHistory([]);
             }}
             className={cn(
-              "shrink-0 rounded-full px-4 py-2 text-[10.5px] font-semibold transition",
+              "shrink-0 rounded-full px-4 py-2 text-[12.5px] font-semibold transition",
               view === item.id
-                ? "bg-mint-deep text-white"
-                : "text-muted-foreground hover:bg-mint-soft hover:text-foreground",
+                ? "bg-blue-600 text-white"
+                : "text-muted-foreground hover:bg-blue-50 hover:text-foreground",
             )}
           >
             {item.label}
@@ -122,6 +128,19 @@ function VerifierSlaPage() {
         ))}
       </div>
       <VerifierTaskTable
+        exporter={
+          <ExportSheetButton
+            source="verifier-sla"
+            title="Export SLA list"
+            filename="Sapling-Global-verifier-sla"
+            columns={TASK_EXPORT_COLUMNS}
+            defaults={TASK_EXPORT_DEFAULTS}
+            scopeNote={views.find((item) => item.id === view)!.label}
+            loadRows={() =>
+              loadAllTasks({ view: "ACTIVE", ...(view !== "ALL" ? { sla: view } : {}) })
+            }
+          />
+        }
         title={views.find((item) => item.id === view)!.label}
         detail="Sorted by nearest committed due time"
         items={tasks.data?.items ?? []}

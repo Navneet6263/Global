@@ -1,14 +1,10 @@
 import { expect, type Page } from "@playwright/test";
 
 // Browser-only workflow fixture: no real cases, invitations or shared DB writes.
-export async function caseInitiationFixture(page: Page, failAccess = false) {
+export async function caseInitiationFixture(page: Page) {
   const writes: string[] = [];
   const payloads: Array<{ path: string; body: unknown }> = [];
   const unexpected: string[] = [];
-  let releaseAccess = () => {};
-  const accessGate = new Promise<void>((resolve) => {
-    releaseAccess = resolve;
-  });
   await page.addInitScript(() => {
     const copied: string[] = [];
     Object.defineProperty(window, "testCopiedValues", { value: copied });
@@ -44,6 +40,15 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
         clientName: "Test requesting organisation",
       });
     if (path === "/notifications") return reply({ items: [], unreadCount: 0, nextCursor: null });
+    if (path === "/client-account/relationship-manager")
+      return reply({
+        rm: {
+          name: "Niku Sharma",
+          email: "niku@saplingglobal.example",
+          phone: "+919876543210",
+          since: "2026-10-07T10:00:00Z",
+        },
+      });
     if (path === "/dashboards/navigation")
       return reply({ counts: {}, generatedAt: new Date().toISOString() });
     if (path === "/cases/catalog")
@@ -77,30 +82,12 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
           id: "case-test",
           caseNumber: "SG-20260909-TEST123456",
           status: "CONSENT_PENDING",
-          consentDelivery: {
-            consentId: "consent-test",
-            expiresAt: "2026-09-09T20:00:00Z",
-            developmentOtp: "246810",
+          candidateAccess: {
+            id: "access-test",
+            token: "long-test-token-".repeat(24),
+            expiresAt: "2026-09-23T20:00:00Z",
+            delivery: { queued: true, channel: "EMAIL", destination: "ca***@example.invalid" },
           },
-        },
-        201,
-      );
-    }
-    if (path === "/cases/case-test/candidate-access" && request.method() === "POST") {
-      writes.push(path);
-      payloads.push({ path, body: request.postDataJSON() });
-      await accessGate;
-      if (failAccess)
-        return reply(
-          { detail: `Access delivery is unavailable. ${"LongDiagnosticReference".repeat(12)}` },
-          503,
-        );
-      return reply(
-        {
-          id: "access-test",
-          token: "long-test-token-".repeat(24),
-          expiresAt: "2026-09-23T20:00:00Z",
-          delivery: { queued: false },
         },
         201,
       );
@@ -110,5 +97,5 @@ export async function caseInitiationFixture(page: Page, failAccess = false) {
   });
   await page.goto("/client-portal/verifications");
   await page.getByRole("button", { name: "New verification", exact: true }).click();
-  return { writes, unexpected, releaseAccess, payloads };
+  return { writes, unexpected, payloads };
 }

@@ -33,7 +33,7 @@ export function QaSelectedCase({
   }, [client, item.id, item.status, item.version, detailVersion]);
   if (item.status !== "QA_REVIEW")
     return (
-      <section className="rounded-3xl border bg-white/85 p-6 shadow-[var(--shadow-card)]">
+      <section className="rounded-3xl border bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold">{item.subject.fullName}</h2>
         <p className="mt-1 text-xs text-muted-foreground">
           {item.caseNumber} · Waiting on verification corrections

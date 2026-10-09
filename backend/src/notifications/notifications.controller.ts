@@ -7,6 +7,7 @@ import {
   Post,
 } from "@nestjs/common";
 import {
+  AllowViewOnlyAdmin,
   CurrentActor,
   RequirePermissions,
 } from "../common/auth/auth.decorators";
@@ -16,6 +17,7 @@ import { NotificationsService } from "./notifications.service";
 
 @Controller("notifications")
 @RequirePermissions(Permission.NotificationRead)
+@AllowViewOnlyAdmin()
 export class NotificationsController {
   constructor(private readonly notifications: NotificationsService) {}
   @Get() list(@CurrentActor() actor: Actor) {

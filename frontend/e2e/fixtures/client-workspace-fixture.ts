@@ -7,6 +7,7 @@ export async function clientWorkspaceFixture(
 ) {
   const unexpected: string[] = [];
   const requests: URL[] = [];
+  const escalations: Array<{ version?: number; reason: string }> = [];
   let failed = false;
   let delay = 0;
   let loggedOut = false;
@@ -63,6 +64,15 @@ export async function clientWorkspaceFixture(
         ],
       });
     if (path === "/notifications") return reply({ items: [], unreadCount: 0 });
+    if (path === "/client-account/relationship-manager")
+      return reply({
+        rm: {
+          name: "Niku Sharma",
+          email: "niku@saplingglobal.example",
+          phone: "+919876543210",
+          since: "2026-10-07T10:00:00Z",
+        },
+      });
     if (path === "/dashboards/navigation") return reply({ counts: { clientActions: 1 } });
     if (path === "/dashboards/operations")
       return reply({
@@ -119,6 +129,14 @@ export async function clientWorkspaceFixture(
       });
     }
     if (/^\/cases\/[^/]+\/clarifications$/.test(path)) return reply({ items: [] });
+    if (/^\/cases\/[^/]+\/client-escalation$/.test(path)) {
+      const id = path.split("/")[2]!;
+      const target = items.find((item) => item.id === id) as Record<string, unknown> | undefined;
+      const body = route.request().postDataJSON() as { reason: string };
+      escalations.push(body);
+      if (target) target.clientEscalation = { at: now, reason: body.reason };
+      return reply({ id, escalated: true, escalatedAt: now, version: 2 });
+    }
     if (/^\/cases\/[^/]+$/.test(path)) return reply(items.find((item) => path.endsWith(item.id)));
     if (path === "/reports" || path === "/clarifications")
       return reply({ items: [], total: 0, nextCursor: null });
@@ -127,6 +145,7 @@ export async function clientWorkspaceFixture(
   });
   return {
     requests,
+    escalations,
     unexpected,
     fail: (value: boolean) => {
       failed = value;

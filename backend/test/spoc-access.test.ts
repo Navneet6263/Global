@@ -119,12 +119,19 @@ void test("SPOC_RM migrations grant no write permission except vendor assignment
   );
 });
 
-void test("SPOC_RM cannot be combined with a workflow role", () => {
+void test("an RM may also hold another working role, but never Ops Manager", () => {
   assert.throws(
     () => assertSafeRoleCombination(["SPOC_RM", "OPS_MANAGER"], true),
     ConflictException,
   );
   assert.doesNotThrow(() => assertSafeRoleCombination(["SPOC_RM"]));
+  assert.doesNotThrow(() =>
+    assertSafeRoleCombination(["SPOC_RM", "DATA_ENTRY"], true),
+  );
+  assert.throws(
+    () => assertSafeRoleCombination(["SPOC_RM", "DATA_ENTRY"], false),
+    ConflictException,
+  );
 });
 
 void test("every case status maps to exactly one holder role", () => {
@@ -166,7 +173,57 @@ void test("the only SPOC_RM write handlers are vendor assign, re-assign and re-u
   assert.deepEqual(writes.sort(), ["assign", "reassign", "requestReupload"]);
 });
 
-void test("SPOC_RM is allowed only on /spoc and the /spoc/vendors assignment controller", async () => {
+/**
+ * Outside /spoc, the responsible RM may use exactly these handlers: the role-gated v2
+ * workflow actions (each re-checks case ownership) and read-only case evidence.
+ */
+const RM_ALLOWED_HANDLERS = new Set([
+  "WorkflowController.listDepartments",
+  "WorkflowController.rmQueue",
+  "WorkflowController.assignDataEntry",
+  "WorkflowController.sendBack",
+  "WorkflowController.routingPlan",
+  "WorkflowController.route",
+  "WorkflowController.finalReviewOverview",
+  "WorkflowController.decideFinalReview",
+  "WorkflowController.stopCase",
+  "WorkflowController.resumeCase",
+  "CasesController.get",
+  "ClarificationsController.list",
+  "DocumentsController.download",
+  "DocumentsController.preview",
+  // Self sign-up onboarding: the RM sees its companies and may message the client;
+  // review, packages, approval and rejection are Operations Manager only (service check).
+  "OpsOnboardingController",
+  "OpsOnboardingController.constructor",
+  // Client discounts: an RM sees and sets its own clients' discount, capped by the
+  // package limit Operations sets (service check).
+  // Read-only sidebar counts of the RM's own cases (service branch for SPOC_RM).
+  "DashboardsController.navigation",
+  // Read-only check-wise initiation form definitions.
+  "WorkflowController.initiationForms",
+  "ClientPricingController",
+  "ClientPricingController.constructor",
+  // Monthly billing: the RM sees its companies' dues and sends a payment reminder
+  // (service limits it to the RM's own companies; audited).
+  "RmPaymentsController",
+  "RmPaymentsController.constructor",
+  "RmPaymentsController.list",
+  "RmPaymentsController.remind",
+  // Vendor check work: an RM sends its own cases' checks to a vendor and reviews the
+  // result (service checks case ownership; audited).
+  "VendorChecksController",
+  "VendorChecksController.constructor",
+  "VendorChecksController.forCheck",
+  "VendorChecksController.assign",
+  "VendorChecksController.review",
+  "VendorChecksController.cancel",
+  "VendorChecksController.board",
+  "VendorChecksController.export",
+  "VendorChecksController.evidence",
+]);
+
+void test("SPOC_RM is allowed only on /spoc, vendor assignment and the reviewed RM workflow handlers", async () => {
   const files: string[] = [];
   const walk = (dir: string) =>
     readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
@@ -188,20 +245,23 @@ void test("SPOC_RM is allowed only on /spoc and the /spoc/vendors assignment con
         value === SpocVendorsController
       )
         continue;
-      const targets = [
-        value,
+      const targets: Array<[string, unknown]> = [
+        [`${value.name}`, value],
         ...Object.getOwnPropertyNames(value.prototype ?? {}).map(
-          (name) => (value.prototype as Record<string, unknown>)[name],
+          (name): [string, unknown] => [
+            `${value.name}.${name}`,
+            (value.prototype as Record<string, unknown>)[name],
+          ],
         ),
       ];
-      for (const target of targets) {
+      for (const [name, target] of targets) {
         if (typeof target !== "function") continue;
         const roles = Reflect.getMetadata(ROLES_KEY, target) as
           string[] | undefined;
         if (roles) checked += 1;
         assert.ok(
-          !roles?.includes("SPOC_RM"),
-          `${file} must not allow SPOC_RM`,
+          !roles?.includes("SPOC_RM") || RM_ALLOWED_HANDLERS.has(name),
+          `${file} (${name}) must not allow SPOC_RM`,
         );
       }
     }

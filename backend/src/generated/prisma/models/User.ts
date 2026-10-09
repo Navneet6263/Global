@@ -402,6 +402,17 @@ export type UserWhereInput = {
   vendorTeamPolicy?: Prisma.XOR<Prisma.VendorTeamPolicyNullableScalarRelationFilter, Prisma.VendorTeamPolicyWhereInput> | null
   handledVendorRequests?: Prisma.VendorAssignmentListRelationFilter
   uploadedVendorReports?: Prisma.VendorReportListRelationFilter
+  vendorCheckWork?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceListRelationFilter
+  departmentMemberships?: Prisma.DepartmentMemberListRelationFilter
+  primaryRmClients?: Prisma.ClientListRelationFilter
+  defaultDataEntryFor?: Prisma.ClientListRelationFilter
+  dataEntryCases?: Prisma.VerificationCaseListRelationFilter
+  escalatedCases?: Prisma.VerificationCaseListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -467,6 +478,17 @@ export type UserOrderByWithRelationInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyOrderByWithRelationInput
   handledVendorRequests?: Prisma.VendorAssignmentOrderByRelationAggregateInput
   uploadedVendorReports?: Prisma.VendorReportOrderByRelationAggregateInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceOrderByRelationAggregateInput
+  departmentMemberships?: Prisma.DepartmentMemberOrderByRelationAggregateInput
+  primaryRmClients?: Prisma.ClientOrderByRelationAggregateInput
+  defaultDataEntryFor?: Prisma.ClientOrderByRelationAggregateInput
+  dataEntryCases?: Prisma.VerificationCaseOrderByRelationAggregateInput
+  escalatedCases?: Prisma.VerificationCaseOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -536,6 +558,17 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   vendorTeamPolicy?: Prisma.XOR<Prisma.VendorTeamPolicyNullableScalarRelationFilter, Prisma.VendorTeamPolicyWhereInput> | null
   handledVendorRequests?: Prisma.VendorAssignmentListRelationFilter
   uploadedVendorReports?: Prisma.VendorReportListRelationFilter
+  vendorCheckWork?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceListRelationFilter
+  departmentMemberships?: Prisma.DepartmentMemberListRelationFilter
+  primaryRmClients?: Prisma.ClientListRelationFilter
+  defaultDataEntryFor?: Prisma.ClientListRelationFilter
+  dataEntryCases?: Prisma.VerificationCaseListRelationFilter
+  escalatedCases?: Prisma.VerificationCaseListRelationFilter
 }, "id" | "publicId" | "tenantId_normalizedEmail">
 
 export type UserOrderByWithAggregationInput = {
@@ -651,6 +684,17 @@ export type UserCreateInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -712,6 +756,17 @@ export type UserUncheckedCreateInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUpdateInput = {
@@ -773,6 +828,17 @@ export type UserUpdateInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -834,6 +900,17 @@ export type UserUncheckedUpdateInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -1269,6 +1346,18 @@ export type UserCreateNestedManyWithoutClientInput = {
   connect?: Prisma.UserWhereUniqueInput | Prisma.UserWhereUniqueInput[]
 }
 
+export type UserCreateNestedOneWithoutPrimaryRmClientsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPrimaryRmClientsInput, Prisma.UserUncheckedCreateWithoutPrimaryRmClientsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPrimaryRmClientsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutDefaultDataEntryForInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDefaultDataEntryForInput, Prisma.UserUncheckedCreateWithoutDefaultDataEntryForInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDefaultDataEntryForInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserUncheckedCreateNestedManyWithoutClientInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutClientInput, Prisma.UserUncheckedCreateWithoutClientInput> | Prisma.UserCreateWithoutClientInput[] | Prisma.UserUncheckedCreateWithoutClientInput[]
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutClientInput | Prisma.UserCreateOrConnectWithoutClientInput[]
@@ -1290,6 +1379,26 @@ export type UserUpdateManyWithoutClientNestedInput = {
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
+export type UserUpdateOneWithoutPrimaryRmClientsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPrimaryRmClientsInput, Prisma.UserUncheckedCreateWithoutPrimaryRmClientsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPrimaryRmClientsInput
+  upsert?: Prisma.UserUpsertWithoutPrimaryRmClientsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPrimaryRmClientsInput, Prisma.UserUpdateWithoutPrimaryRmClientsInput>, Prisma.UserUncheckedUpdateWithoutPrimaryRmClientsInput>
+}
+
+export type UserUpdateOneWithoutDefaultDataEntryForNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDefaultDataEntryForInput, Prisma.UserUncheckedCreateWithoutDefaultDataEntryForInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDefaultDataEntryForInput
+  upsert?: Prisma.UserUpsertWithoutDefaultDataEntryForInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDefaultDataEntryForInput, Prisma.UserUpdateWithoutDefaultDataEntryForInput>, Prisma.UserUncheckedUpdateWithoutDefaultDataEntryForInput>
+}
+
 export type UserUncheckedUpdateManyWithoutClientNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutClientInput, Prisma.UserUncheckedCreateWithoutClientInput> | Prisma.UserCreateWithoutClientInput[] | Prisma.UserUncheckedCreateWithoutClientInput[]
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutClientInput | Prisma.UserCreateOrConnectWithoutClientInput[]
@@ -1304,6 +1413,18 @@ export type UserUncheckedUpdateManyWithoutClientNestedInput = {
   deleteMany?: Prisma.UserScalarWhereInput | Prisma.UserScalarWhereInput[]
 }
 
+export type UserCreateNestedOneWithoutDataEntryCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDataEntryCasesInput, Prisma.UserUncheckedCreateWithoutDataEntryCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDataEntryCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutEscalatedCasesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEscalatedCasesInput, Prisma.UserUncheckedCreateWithoutEscalatedCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEscalatedCasesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserCreateNestedOneWithoutAssignedCasesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAssignedCasesInput, Prisma.UserUncheckedCreateWithoutAssignedCasesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAssignedCasesInput
@@ -1314,6 +1435,26 @@ export type UserCreateNestedOneWithoutQaClaimedCasesInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutQaClaimedCasesInput, Prisma.UserUncheckedCreateWithoutQaClaimedCasesInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutQaClaimedCasesInput
   connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutDataEntryCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDataEntryCasesInput, Prisma.UserUncheckedCreateWithoutDataEntryCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDataEntryCasesInput
+  upsert?: Prisma.UserUpsertWithoutDataEntryCasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDataEntryCasesInput, Prisma.UserUpdateWithoutDataEntryCasesInput>, Prisma.UserUncheckedUpdateWithoutDataEntryCasesInput>
+}
+
+export type UserUpdateOneWithoutEscalatedCasesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutEscalatedCasesInput, Prisma.UserUncheckedCreateWithoutEscalatedCasesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutEscalatedCasesInput
+  upsert?: Prisma.UserUpsertWithoutEscalatedCasesInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutEscalatedCasesInput, Prisma.UserUpdateWithoutEscalatedCasesInput>, Prisma.UserUncheckedUpdateWithoutEscalatedCasesInput>
 }
 
 export type UserUpdateOneWithoutAssignedCasesNestedInput = {
@@ -1550,6 +1691,96 @@ export type UserUpdateOneRequiredWithoutManagerReviewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutManagerReviewsInput, Prisma.UserUpdateWithoutManagerReviewsInput>, Prisma.UserUncheckedUpdateWithoutManagerReviewsInput>
 }
 
+export type UserCreateNestedOneWithoutVendorCheckWorkInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckWorkInput, Prisma.UserUncheckedCreateWithoutVendorCheckWorkInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckWorkInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutVendorCheckHandledInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckHandledInput, Prisma.UserUncheckedCreateWithoutVendorCheckHandledInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckHandledInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutVendorChecksAssignedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksAssignedInput, Prisma.UserUncheckedCreateWithoutVendorChecksAssignedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksAssignedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutVendorChecksReviewedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksReviewedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksReviewedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutVendorChecksApprovedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksApprovedInput, Prisma.UserUncheckedCreateWithoutVendorChecksApprovedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksApprovedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutVendorCheckWorkNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckWorkInput, Prisma.UserUncheckedCreateWithoutVendorCheckWorkInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckWorkInput
+  upsert?: Prisma.UserUpsertWithoutVendorCheckWorkInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorCheckWorkInput, Prisma.UserUpdateWithoutVendorCheckWorkInput>, Prisma.UserUncheckedUpdateWithoutVendorCheckWorkInput>
+}
+
+export type UserUpdateOneWithoutVendorCheckHandledNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckHandledInput, Prisma.UserUncheckedCreateWithoutVendorCheckHandledInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckHandledInput
+  upsert?: Prisma.UserUpsertWithoutVendorCheckHandledInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorCheckHandledInput, Prisma.UserUpdateWithoutVendorCheckHandledInput>, Prisma.UserUncheckedUpdateWithoutVendorCheckHandledInput>
+}
+
+export type UserUpdateOneRequiredWithoutVendorChecksAssignedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksAssignedInput, Prisma.UserUncheckedCreateWithoutVendorChecksAssignedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksAssignedInput
+  upsert?: Prisma.UserUpsertWithoutVendorChecksAssignedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorChecksAssignedInput, Prisma.UserUpdateWithoutVendorChecksAssignedInput>, Prisma.UserUncheckedUpdateWithoutVendorChecksAssignedInput>
+}
+
+export type UserUpdateOneWithoutVendorChecksReviewedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksReviewedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksReviewedInput
+  upsert?: Prisma.UserUpsertWithoutVendorChecksReviewedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorChecksReviewedInput, Prisma.UserUpdateWithoutVendorChecksReviewedInput>, Prisma.UserUncheckedUpdateWithoutVendorChecksReviewedInput>
+}
+
+export type UserUpdateOneWithoutVendorChecksApprovedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksApprovedInput, Prisma.UserUncheckedCreateWithoutVendorChecksApprovedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksApprovedInput
+  upsert?: Prisma.UserUpsertWithoutVendorChecksApprovedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorChecksApprovedInput, Prisma.UserUpdateWithoutVendorChecksApprovedInput>, Prisma.UserUncheckedUpdateWithoutVendorChecksApprovedInput>
+}
+
+export type UserCreateNestedOneWithoutVendorCheckEvidenceInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckEvidenceInput, Prisma.UserUncheckedCreateWithoutVendorCheckEvidenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckEvidenceInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutVendorCheckEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckEvidenceInput, Prisma.UserUncheckedCreateWithoutVendorCheckEvidenceInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckEvidenceInput
+  upsert?: Prisma.UserUpsertWithoutVendorCheckEvidenceInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorCheckEvidenceInput, Prisma.UserUpdateWithoutVendorCheckEvidenceInput>, Prisma.UserUncheckedUpdateWithoutVendorCheckEvidenceInput>
+}
+
 export type UserCreateNestedOneWithoutSourceOutreachInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutSourceOutreachInput, Prisma.UserUncheckedCreateWithoutSourceOutreachInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutSourceOutreachInput
@@ -1770,6 +2001,20 @@ export type UserUpdateOneRequiredWithoutUploadedVendorReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUploadedVendorReportsInput, Prisma.UserUpdateWithoutUploadedVendorReportsInput>, Prisma.UserUncheckedUpdateWithoutUploadedVendorReportsInput>
 }
 
+export type UserCreateNestedOneWithoutDepartmentMembershipsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDepartmentMembershipsInput, Prisma.UserUncheckedCreateWithoutDepartmentMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDepartmentMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutDepartmentMembershipsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutDepartmentMembershipsInput, Prisma.UserUncheckedCreateWithoutDepartmentMembershipsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDepartmentMembershipsInput
+  upsert?: Prisma.UserUpsertWithoutDepartmentMembershipsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDepartmentMembershipsInput, Prisma.UserUpdateWithoutDepartmentMembershipsInput>, Prisma.UserUncheckedUpdateWithoutDepartmentMembershipsInput>
+}
+
 export type UserCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -1828,6 +2073,17 @@ export type UserCreateWithoutTenantInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutTenantInput = {
@@ -1888,6 +2144,17 @@ export type UserUncheckedCreateWithoutTenantInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutTenantInput = {
@@ -1999,6 +2266,17 @@ export type UserCreateWithoutBranchInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutBranchInput = {
@@ -2059,6 +2337,17 @@ export type UserUncheckedCreateWithoutBranchInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutBranchInput = {
@@ -2144,6 +2433,17 @@ export type UserCreateWithoutVendorTeamInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorTeamInput = {
@@ -2204,6 +2504,17 @@ export type UserUncheckedCreateWithoutVendorTeamInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorTeamInput = {
@@ -2269,6 +2580,17 @@ export type UserCreateWithoutVendorOwnerInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorOwnerInput = {
@@ -2329,6 +2651,17 @@ export type UserUncheckedCreateWithoutVendorOwnerInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorOwnerInput = {
@@ -2409,6 +2742,17 @@ export type UserUpdateWithoutVendorTeamInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorTeamInput = {
@@ -2469,6 +2813,17 @@ export type UserUncheckedUpdateWithoutVendorTeamInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithWhereUniqueWithoutVendorOwnerInput = {
@@ -2545,6 +2900,17 @@ export type UserCreateWithoutProposedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutProposedSharingInput = {
@@ -2605,6 +2971,17 @@ export type UserUncheckedCreateWithoutProposedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutProposedSharingInput = {
@@ -2670,6 +3047,17 @@ export type UserCreateWithoutDecidedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutDecidedSharingInput = {
@@ -2730,6 +3118,17 @@ export type UserUncheckedCreateWithoutDecidedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutDecidedSharingInput = {
@@ -2806,6 +3205,17 @@ export type UserUpdateWithoutProposedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutProposedSharingInput = {
@@ -2866,6 +3276,17 @@ export type UserUncheckedUpdateWithoutProposedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutDecidedSharingInput = {
@@ -2937,6 +3358,17 @@ export type UserUpdateWithoutDecidedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutDecidedSharingInput = {
@@ -2997,6 +3429,17 @@ export type UserUncheckedUpdateWithoutDecidedSharingInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedPrivacyRecordsInput = {
@@ -3057,6 +3500,17 @@ export type UserCreateWithoutCreatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedPrivacyRecordsInput = {
@@ -3117,6 +3571,17 @@ export type UserUncheckedCreateWithoutCreatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedPrivacyRecordsInput = {
@@ -3182,6 +3647,17 @@ export type UserCreateWithoutUpdatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutUpdatedPrivacyRecordsInput = {
@@ -3242,6 +3718,17 @@ export type UserUncheckedCreateWithoutUpdatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutUpdatedPrivacyRecordsInput = {
@@ -3318,6 +3805,17 @@ export type UserUpdateWithoutCreatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedPrivacyRecordsInput = {
@@ -3378,6 +3876,17 @@ export type UserUncheckedUpdateWithoutCreatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutUpdatedPrivacyRecordsInput = {
@@ -3449,6 +3958,17 @@ export type UserUpdateWithoutUpdatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUpdatedPrivacyRecordsInput = {
@@ -3509,6 +4029,17 @@ export type UserUncheckedUpdateWithoutUpdatedPrivacyRecordsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutUserRolesInput = {
@@ -3569,6 +4100,17 @@ export type UserCreateWithoutUserRolesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutUserRolesInput = {
@@ -3629,6 +4171,17 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutUserRolesInput = {
@@ -3705,6 +4258,17 @@ export type UserUpdateWithoutUserRolesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUserRolesInput = {
@@ -3765,6 +4329,17 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -3825,6 +4400,17 @@ export type UserCreateWithoutSessionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -3885,6 +4471,17 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -3961,6 +4558,17 @@ export type UserUpdateWithoutSessionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -4021,6 +4629,17 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutClientInput = {
@@ -4081,6 +4700,17 @@ export type UserCreateWithoutClientInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutClientInput = {
@@ -4141,6 +4771,17 @@ export type UserUncheckedCreateWithoutClientInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutClientInput = {
@@ -4150,6 +4791,300 @@ export type UserCreateOrConnectWithoutClientInput = {
 
 export type UserCreateManyClientInputEnvelope = {
   data: Prisma.UserCreateManyClientInput | Prisma.UserCreateManyClientInput[]
+}
+
+export type UserCreateWithoutPrimaryRmClientsInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutPrimaryRmClientsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutPrimaryRmClientsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPrimaryRmClientsInput, Prisma.UserUncheckedCreateWithoutPrimaryRmClientsInput>
+}
+
+export type UserCreateWithoutDefaultDataEntryForInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutDefaultDataEntryForInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutDefaultDataEntryForInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDefaultDataEntryForInput, Prisma.UserUncheckedCreateWithoutDefaultDataEntryForInput>
 }
 
 export type UserUpsertWithWhereUniqueWithoutClientInput = {
@@ -4166,6 +5101,606 @@ export type UserUpdateWithWhereUniqueWithoutClientInput = {
 export type UserUpdateManyWithWhereWithoutClientInput = {
   where: Prisma.UserScalarWhereInput
   data: Prisma.XOR<Prisma.UserUpdateManyMutationInput, Prisma.UserUncheckedUpdateManyWithoutClientInput>
+}
+
+export type UserUpsertWithoutPrimaryRmClientsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPrimaryRmClientsInput, Prisma.UserUncheckedUpdateWithoutPrimaryRmClientsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPrimaryRmClientsInput, Prisma.UserUncheckedCreateWithoutPrimaryRmClientsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPrimaryRmClientsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPrimaryRmClientsInput, Prisma.UserUncheckedUpdateWithoutPrimaryRmClientsInput>
+}
+
+export type UserUpdateWithoutPrimaryRmClientsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPrimaryRmClientsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUpsertWithoutDefaultDataEntryForInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDefaultDataEntryForInput, Prisma.UserUncheckedUpdateWithoutDefaultDataEntryForInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDefaultDataEntryForInput, Prisma.UserUncheckedCreateWithoutDefaultDataEntryForInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDefaultDataEntryForInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDefaultDataEntryForInput, Prisma.UserUncheckedUpdateWithoutDefaultDataEntryForInput>
+}
+
+export type UserUpdateWithoutDefaultDataEntryForInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDefaultDataEntryForInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserCreateWithoutDataEntryCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutDataEntryCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutDataEntryCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDataEntryCasesInput, Prisma.UserUncheckedCreateWithoutDataEntryCasesInput>
+}
+
+export type UserCreateWithoutEscalatedCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+}
+
+export type UserUncheckedCreateWithoutEscalatedCasesInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+}
+
+export type UserCreateOrConnectWithoutEscalatedCasesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEscalatedCasesInput, Prisma.UserUncheckedCreateWithoutEscalatedCasesInput>
 }
 
 export type UserCreateWithoutAssignedCasesInput = {
@@ -4226,6 +5761,17 @@ export type UserCreateWithoutAssignedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedCasesInput = {
@@ -4286,6 +5832,17 @@ export type UserUncheckedCreateWithoutAssignedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedCasesInput = {
@@ -4351,6 +5908,17 @@ export type UserCreateWithoutQaClaimedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutQaClaimedCasesInput = {
@@ -4411,11 +5979,328 @@ export type UserUncheckedCreateWithoutQaClaimedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutQaClaimedCasesInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutQaClaimedCasesInput, Prisma.UserUncheckedCreateWithoutQaClaimedCasesInput>
+}
+
+export type UserUpsertWithoutDataEntryCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDataEntryCasesInput, Prisma.UserUncheckedUpdateWithoutDataEntryCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDataEntryCasesInput, Prisma.UserUncheckedCreateWithoutDataEntryCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDataEntryCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDataEntryCasesInput, Prisma.UserUncheckedUpdateWithoutDataEntryCasesInput>
+}
+
+export type UserUpdateWithoutDataEntryCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDataEntryCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUpsertWithoutEscalatedCasesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEscalatedCasesInput, Prisma.UserUncheckedUpdateWithoutEscalatedCasesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEscalatedCasesInput, Prisma.UserUncheckedCreateWithoutEscalatedCasesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEscalatedCasesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEscalatedCasesInput, Prisma.UserUncheckedUpdateWithoutEscalatedCasesInput>
+}
+
+export type UserUpdateWithoutEscalatedCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEscalatedCasesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
 }
 
 export type UserUpsertWithoutAssignedCasesInput = {
@@ -4487,6 +6372,17 @@ export type UserUpdateWithoutAssignedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedCasesInput = {
@@ -4547,6 +6443,17 @@ export type UserUncheckedUpdateWithoutAssignedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutQaClaimedCasesInput = {
@@ -4618,6 +6525,17 @@ export type UserUpdateWithoutQaClaimedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQaClaimedCasesInput = {
@@ -4678,6 +6596,17 @@ export type UserUncheckedUpdateWithoutQaClaimedCasesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutAssignedTasksInput = {
@@ -4738,6 +6667,17 @@ export type UserCreateWithoutAssignedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedTasksInput = {
@@ -4798,6 +6738,17 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedTasksInput = {
@@ -4863,6 +6814,17 @@ export type UserCreateWithoutCompletedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutCompletedTasksInput = {
@@ -4923,6 +6885,17 @@ export type UserUncheckedCreateWithoutCompletedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutCompletedTasksInput = {
@@ -4999,6 +6972,17 @@ export type UserUpdateWithoutAssignedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedTasksInput = {
@@ -5059,6 +7043,17 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutCompletedTasksInput = {
@@ -5130,6 +7125,17 @@ export type UserUpdateWithoutCompletedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompletedTasksInput = {
@@ -5190,6 +7196,17 @@ export type UserUncheckedUpdateWithoutCompletedTasksInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutClarificationSenderInput = {
@@ -5250,6 +7267,17 @@ export type UserCreateWithoutClarificationSenderInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutClarificationSenderInput = {
@@ -5310,6 +7338,17 @@ export type UserUncheckedCreateWithoutClarificationSenderInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutClarificationSenderInput = {
@@ -5386,6 +7425,17 @@ export type UserUpdateWithoutClarificationSenderInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClarificationSenderInput = {
@@ -5446,6 +7496,17 @@ export type UserUncheckedUpdateWithoutClarificationSenderInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutQaReviewsInput = {
@@ -5506,6 +7567,17 @@ export type UserCreateWithoutQaReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutQaReviewsInput = {
@@ -5566,6 +7638,17 @@ export type UserUncheckedCreateWithoutQaReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutQaReviewsInput = {
@@ -5642,6 +7725,17 @@ export type UserUpdateWithoutQaReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQaReviewsInput = {
@@ -5702,6 +7796,17 @@ export type UserUncheckedUpdateWithoutQaReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutGeneratedReportsInput = {
@@ -5762,6 +7867,17 @@ export type UserCreateWithoutGeneratedReportsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutGeneratedReportsInput = {
@@ -5822,6 +7938,17 @@ export type UserUncheckedCreateWithoutGeneratedReportsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutGeneratedReportsInput = {
@@ -5898,6 +8025,17 @@ export type UserUpdateWithoutGeneratedReportsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGeneratedReportsInput = {
@@ -5958,6 +8096,17 @@ export type UserUncheckedUpdateWithoutGeneratedReportsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutAssignedVisitsInput = {
@@ -6018,6 +8167,17 @@ export type UserCreateWithoutAssignedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignedVisitsInput = {
@@ -6078,6 +8238,17 @@ export type UserUncheckedCreateWithoutAssignedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignedVisitsInput = {
@@ -6143,6 +8314,17 @@ export type UserCreateWithoutCompletedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutCompletedVisitsInput = {
@@ -6203,6 +8385,17 @@ export type UserUncheckedCreateWithoutCompletedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutCompletedVisitsInput = {
@@ -6279,6 +8472,17 @@ export type UserUpdateWithoutAssignedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignedVisitsInput = {
@@ -6339,6 +8543,17 @@ export type UserUncheckedUpdateWithoutAssignedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutCompletedVisitsInput = {
@@ -6410,6 +8625,17 @@ export type UserUpdateWithoutCompletedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCompletedVisitsInput = {
@@ -6470,6 +8696,17 @@ export type UserUncheckedUpdateWithoutCompletedVisitsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutUploadedEvidenceInput = {
@@ -6530,6 +8767,17 @@ export type UserCreateWithoutUploadedEvidenceInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
@@ -6590,6 +8838,17 @@ export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedEvidenceInput = {
@@ -6666,6 +8925,17 @@ export type UserUpdateWithoutUploadedEvidenceInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
@@ -6726,6 +8996,17 @@ export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutAuditEventsInput = {
@@ -6786,6 +9067,17 @@ export type UserCreateWithoutAuditEventsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutAuditEventsInput = {
@@ -6846,6 +9138,17 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutAuditEventsInput = {
@@ -6922,6 +9225,17 @@ export type UserUpdateWithoutAuditEventsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuditEventsInput = {
@@ -6982,6 +9296,17 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutOwnedOpportunitiesInput = {
@@ -7042,6 +9367,17 @@ export type UserCreateWithoutOwnedOpportunitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
@@ -7102,6 +9438,17 @@ export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutOwnedOpportunitiesInput = {
@@ -7178,6 +9525,17 @@ export type UserUpdateWithoutOwnedOpportunitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
@@ -7238,6 +9596,17 @@ export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutAuthoredProposalsInput = {
@@ -7298,6 +9667,17 @@ export type UserCreateWithoutAuthoredProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutAuthoredProposalsInput = {
@@ -7358,6 +9738,17 @@ export type UserUncheckedCreateWithoutAuthoredProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutAuthoredProposalsInput = {
@@ -7423,6 +9814,17 @@ export type UserCreateWithoutApprovedProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutApprovedProposalsInput = {
@@ -7483,6 +9885,17 @@ export type UserUncheckedCreateWithoutApprovedProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutApprovedProposalsInput = {
@@ -7559,6 +9972,17 @@ export type UserUpdateWithoutAuthoredProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAuthoredProposalsInput = {
@@ -7619,6 +10043,17 @@ export type UserUncheckedUpdateWithoutAuthoredProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutApprovedProposalsInput = {
@@ -7690,6 +10125,17 @@ export type UserUpdateWithoutApprovedProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutApprovedProposalsInput = {
@@ -7750,6 +10196,17 @@ export type UserUncheckedUpdateWithoutApprovedProposalsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutSalesActivitiesInput = {
@@ -7810,6 +10267,17 @@ export type UserCreateWithoutSalesActivitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutSalesActivitiesInput = {
@@ -7870,6 +10338,17 @@ export type UserUncheckedCreateWithoutSalesActivitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutSalesActivitiesInput = {
@@ -7946,6 +10425,17 @@ export type UserUpdateWithoutSalesActivitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSalesActivitiesInput = {
@@ -8006,6 +10496,17 @@ export type UserUncheckedUpdateWithoutSalesActivitiesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutManagerReviewsInput = {
@@ -8066,6 +10567,17 @@ export type UserCreateWithoutManagerReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutManagerReviewsInput = {
@@ -8126,6 +10638,17 @@ export type UserUncheckedCreateWithoutManagerReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutManagerReviewsInput = {
@@ -8202,6 +10725,17 @@ export type UserUpdateWithoutManagerReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutManagerReviewsInput = {
@@ -8262,6 +10796,1817 @@ export type UserUncheckedUpdateWithoutManagerReviewsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserCreateWithoutVendorCheckWorkInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorCheckWorkInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorCheckWorkInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckWorkInput, Prisma.UserUncheckedCreateWithoutVendorCheckWorkInput>
+}
+
+export type UserCreateWithoutVendorCheckHandledInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorCheckHandledInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorCheckHandledInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckHandledInput, Prisma.UserUncheckedCreateWithoutVendorCheckHandledInput>
+}
+
+export type UserCreateWithoutVendorChecksAssignedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorChecksAssignedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorChecksAssignedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksAssignedInput, Prisma.UserUncheckedCreateWithoutVendorChecksAssignedInput>
+}
+
+export type UserCreateWithoutVendorChecksReviewedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorChecksReviewedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorChecksReviewedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksReviewedInput>
+}
+
+export type UserCreateWithoutVendorChecksApprovedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorChecksApprovedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorChecksApprovedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksApprovedInput, Prisma.UserUncheckedCreateWithoutVendorChecksApprovedInput>
+}
+
+export type UserUpsertWithoutVendorCheckWorkInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorCheckWorkInput, Prisma.UserUncheckedUpdateWithoutVendorCheckWorkInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckWorkInput, Prisma.UserUncheckedCreateWithoutVendorCheckWorkInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorCheckWorkInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorCheckWorkInput, Prisma.UserUncheckedUpdateWithoutVendorCheckWorkInput>
+}
+
+export type UserUpdateWithoutVendorCheckWorkInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorCheckWorkInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUpsertWithoutVendorCheckHandledInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorCheckHandledInput, Prisma.UserUncheckedUpdateWithoutVendorCheckHandledInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckHandledInput, Prisma.UserUncheckedCreateWithoutVendorCheckHandledInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorCheckHandledInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorCheckHandledInput, Prisma.UserUncheckedUpdateWithoutVendorCheckHandledInput>
+}
+
+export type UserUpdateWithoutVendorCheckHandledInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorCheckHandledInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUpsertWithoutVendorChecksAssignedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksAssignedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksAssignedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksAssignedInput, Prisma.UserUncheckedCreateWithoutVendorChecksAssignedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorChecksAssignedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksAssignedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksAssignedInput>
+}
+
+export type UserUpdateWithoutVendorChecksAssignedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorChecksAssignedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUpsertWithoutVendorChecksReviewedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksReviewedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksReviewedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksReviewedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorChecksReviewedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksReviewedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksReviewedInput>
+}
+
+export type UserUpdateWithoutVendorChecksReviewedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorChecksReviewedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUpsertWithoutVendorChecksApprovedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksApprovedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksApprovedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksApprovedInput, Prisma.UserUncheckedCreateWithoutVendorChecksApprovedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorChecksApprovedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksApprovedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksApprovedInput>
+}
+
+export type UserUpdateWithoutVendorChecksApprovedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorChecksApprovedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserCreateWithoutVendorCheckEvidenceInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorCheckEvidenceInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorCheckEvidenceInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckEvidenceInput, Prisma.UserUncheckedCreateWithoutVendorCheckEvidenceInput>
+}
+
+export type UserUpsertWithoutVendorCheckEvidenceInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorCheckEvidenceInput, Prisma.UserUncheckedUpdateWithoutVendorCheckEvidenceInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckEvidenceInput, Prisma.UserUncheckedCreateWithoutVendorCheckEvidenceInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorCheckEvidenceInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorCheckEvidenceInput, Prisma.UserUncheckedUpdateWithoutVendorCheckEvidenceInput>
+}
+
+export type UserUpdateWithoutVendorCheckEvidenceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorCheckEvidenceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutSourceOutreachInput = {
@@ -8322,6 +12667,17 @@ export type UserCreateWithoutSourceOutreachInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutSourceOutreachInput = {
@@ -8382,6 +12738,17 @@ export type UserUncheckedCreateWithoutSourceOutreachInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutSourceOutreachInput = {
@@ -8458,6 +12825,17 @@ export type UserUpdateWithoutSourceOutreachInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSourceOutreachInput = {
@@ -8518,6 +12896,17 @@ export type UserUncheckedUpdateWithoutSourceOutreachInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutUploadedAgreementsInput = {
@@ -8578,6 +12967,17 @@ export type UserCreateWithoutUploadedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedAgreementsInput = {
@@ -8638,6 +13038,17 @@ export type UserUncheckedCreateWithoutUploadedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedAgreementsInput = {
@@ -8703,6 +13114,17 @@ export type UserCreateWithoutReviewedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutReviewedAgreementsInput = {
@@ -8763,6 +13185,17 @@ export type UserUncheckedCreateWithoutReviewedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutReviewedAgreementsInput = {
@@ -8839,6 +13272,17 @@ export type UserUpdateWithoutUploadedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedAgreementsInput = {
@@ -8899,6 +13343,17 @@ export type UserUncheckedUpdateWithoutUploadedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutReviewedAgreementsInput = {
@@ -8970,6 +13425,17 @@ export type UserUpdateWithoutReviewedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutReviewedAgreementsInput = {
@@ -9030,6 +13496,17 @@ export type UserUncheckedUpdateWithoutReviewedAgreementsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutRecordedPaymentsInput = {
@@ -9090,6 +13567,17 @@ export type UserCreateWithoutRecordedPaymentsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutRecordedPaymentsInput = {
@@ -9150,6 +13638,17 @@ export type UserUncheckedCreateWithoutRecordedPaymentsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutRecordedPaymentsInput = {
@@ -9226,6 +13725,17 @@ export type UserUpdateWithoutRecordedPaymentsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRecordedPaymentsInput = {
@@ -9286,6 +13796,17 @@ export type UserUncheckedUpdateWithoutRecordedPaymentsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutCreatedCreditNotesInput = {
@@ -9346,6 +13867,17 @@ export type UserCreateWithoutCreatedCreditNotesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutCreatedCreditNotesInput = {
@@ -9406,6 +13938,17 @@ export type UserUncheckedCreateWithoutCreatedCreditNotesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutCreatedCreditNotesInput = {
@@ -9482,6 +14025,17 @@ export type UserUpdateWithoutCreatedCreditNotesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedCreditNotesInput = {
@@ -9542,6 +14096,17 @@ export type UserUncheckedUpdateWithoutCreatedCreditNotesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -9602,6 +14167,17 @@ export type UserCreateWithoutNotificationsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -9662,6 +14238,17 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -9738,6 +14325,17 @@ export type UserUpdateWithoutNotificationsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -9798,6 +14396,17 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutVendorRequestsInput = {
@@ -9858,6 +14467,17 @@ export type UserCreateWithoutVendorRequestsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorRequestsInput = {
@@ -9918,6 +14538,17 @@ export type UserUncheckedCreateWithoutVendorRequestsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorRequestsInput = {
@@ -9983,6 +14614,17 @@ export type UserCreateWithoutVendorAssignmentsMadeInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorAssignmentsMadeInput = {
@@ -10043,6 +14685,17 @@ export type UserUncheckedCreateWithoutVendorAssignmentsMadeInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorAssignmentsMadeInput = {
@@ -10108,6 +14761,17 @@ export type UserCreateWithoutVendorDecisionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorDecisionsInput = {
@@ -10168,6 +14832,17 @@ export type UserUncheckedCreateWithoutVendorDecisionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorDecisionsInput = {
@@ -10233,6 +14908,17 @@ export type UserCreateWithoutHandledVendorRequestsInput = {
   vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutHandledVendorRequestsInput = {
@@ -10293,6 +14979,17 @@ export type UserUncheckedCreateWithoutHandledVendorRequestsInput = {
   vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutHandledVendorRequestsInput = {
@@ -10369,6 +15066,17 @@ export type UserUpdateWithoutVendorRequestsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorRequestsInput = {
@@ -10429,6 +15137,17 @@ export type UserUncheckedUpdateWithoutVendorRequestsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutVendorAssignmentsMadeInput = {
@@ -10500,6 +15219,17 @@ export type UserUpdateWithoutVendorAssignmentsMadeInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorAssignmentsMadeInput = {
@@ -10560,6 +15290,17 @@ export type UserUncheckedUpdateWithoutVendorAssignmentsMadeInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutVendorDecisionsInput = {
@@ -10631,6 +15372,17 @@ export type UserUpdateWithoutVendorDecisionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorDecisionsInput = {
@@ -10691,6 +15443,17 @@ export type UserUncheckedUpdateWithoutVendorDecisionsInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutHandledVendorRequestsInput = {
@@ -10762,6 +15525,17 @@ export type UserUpdateWithoutHandledVendorRequestsInput = {
   vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHandledVendorRequestsInput = {
@@ -10822,6 +15596,17 @@ export type UserUncheckedUpdateWithoutHandledVendorRequestsInput = {
   vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutSpocClientScopesInput = {
@@ -10882,6 +15667,17 @@ export type UserCreateWithoutSpocClientScopesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutSpocClientScopesInput = {
@@ -10942,6 +15738,17 @@ export type UserUncheckedCreateWithoutSpocClientScopesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutSpocClientScopesInput = {
@@ -11018,6 +15825,17 @@ export type UserUpdateWithoutSpocClientScopesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSpocClientScopesInput = {
@@ -11078,6 +15896,17 @@ export type UserUncheckedUpdateWithoutSpocClientScopesInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutSupportRequestsRaisedInput = {
@@ -11138,6 +15967,17 @@ export type UserCreateWithoutSupportRequestsRaisedInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutSupportRequestsRaisedInput = {
@@ -11198,6 +16038,17 @@ export type UserUncheckedCreateWithoutSupportRequestsRaisedInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutSupportRequestsRaisedInput = {
@@ -11263,6 +16114,17 @@ export type UserCreateWithoutSupportRequestsTakenInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutSupportRequestsTakenInput = {
@@ -11323,6 +16185,17 @@ export type UserUncheckedCreateWithoutSupportRequestsTakenInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutSupportRequestsTakenInput = {
@@ -11399,6 +16272,17 @@ export type UserUpdateWithoutSupportRequestsRaisedInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSupportRequestsRaisedInput = {
@@ -11459,6 +16343,17 @@ export type UserUncheckedUpdateWithoutSupportRequestsRaisedInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUpsertWithoutSupportRequestsTakenInput = {
@@ -11530,6 +16425,17 @@ export type UserUpdateWithoutSupportRequestsTakenInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSupportRequestsTakenInput = {
@@ -11590,6 +16496,17 @@ export type UserUncheckedUpdateWithoutSupportRequestsTakenInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutVendorTeamPolicyInput = {
@@ -11650,6 +16567,17 @@ export type UserCreateWithoutVendorTeamPolicyInput = {
   vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutVendorTeamPolicyInput = {
@@ -11710,6 +16638,17 @@ export type UserUncheckedCreateWithoutVendorTeamPolicyInput = {
   vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutVendorTeamPolicyInput = {
@@ -11786,6 +16725,17 @@ export type UserUpdateWithoutVendorTeamPolicyInput = {
   vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorTeamPolicyInput = {
@@ -11846,6 +16796,17 @@ export type UserUncheckedUpdateWithoutVendorTeamPolicyInput = {
   vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateWithoutUploadedVendorReportsInput = {
@@ -11906,6 +16867,17 @@ export type UserCreateWithoutUploadedVendorReportsInput = {
   vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserUncheckedCreateWithoutUploadedVendorReportsInput = {
@@ -11966,6 +16938,17 @@ export type UserUncheckedCreateWithoutUploadedVendorReportsInput = {
   vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
 }
 
 export type UserCreateOrConnectWithoutUploadedVendorReportsInput = {
@@ -12042,6 +17025,17 @@ export type UserUpdateWithoutUploadedVendorReportsInput = {
   vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutUploadedVendorReportsInput = {
@@ -12102,6 +17096,317 @@ export type UserUncheckedUpdateWithoutUploadedVendorReportsInput = {
   vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserCreateWithoutDepartmentMembershipsInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserUncheckedCreateWithoutDepartmentMembershipsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+}
+
+export type UserCreateOrConnectWithoutDepartmentMembershipsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutDepartmentMembershipsInput, Prisma.UserUncheckedCreateWithoutDepartmentMembershipsInput>
+}
+
+export type UserUpsertWithoutDepartmentMembershipsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutDepartmentMembershipsInput, Prisma.UserUncheckedUpdateWithoutDepartmentMembershipsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutDepartmentMembershipsInput, Prisma.UserUncheckedCreateWithoutDepartmentMembershipsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutDepartmentMembershipsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutDepartmentMembershipsInput, Prisma.UserUncheckedUpdateWithoutDepartmentMembershipsInput>
+}
+
+export type UserUpdateWithoutDepartmentMembershipsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutDepartmentMembershipsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserCreateManyTenantInput = {
@@ -12183,6 +17488,17 @@ export type UserUpdateWithoutTenantInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTenantInput = {
@@ -12243,6 +17559,17 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutTenantInput = {
@@ -12346,6 +17673,17 @@ export type UserUpdateWithoutBranchInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutBranchInput = {
@@ -12406,6 +17744,17 @@ export type UserUncheckedUpdateWithoutBranchInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutBranchInput = {
@@ -12509,6 +17858,17 @@ export type UserUpdateWithoutVendorOwnerInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVendorOwnerInput = {
@@ -12569,6 +17929,17 @@ export type UserUncheckedUpdateWithoutVendorOwnerInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutVendorOwnerInput = {
@@ -12672,6 +18043,17 @@ export type UserUpdateWithoutClientInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientInput = {
@@ -12732,6 +18114,17 @@ export type UserUncheckedUpdateWithoutClientInput = {
   vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
   handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutClientInput = {
@@ -12799,6 +18192,17 @@ export type UserCountOutputType = {
   vendorTeam: number
   handledVendorRequests: number
   uploadedVendorReports: number
+  vendorCheckWork: number
+  vendorCheckHandled: number
+  vendorChecksAssigned: number
+  vendorChecksReviewed: number
+  vendorChecksApproved: number
+  vendorCheckEvidence: number
+  departmentMemberships: number
+  primaryRmClients: number
+  defaultDataEntryFor: number
+  dataEntryCases: number
+  escalatedCases: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -12839,6 +18243,17 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   vendorTeam?: boolean | UserCountOutputTypeCountVendorTeamArgs
   handledVendorRequests?: boolean | UserCountOutputTypeCountHandledVendorRequestsArgs
   uploadedVendorReports?: boolean | UserCountOutputTypeCountUploadedVendorReportsArgs
+  vendorCheckWork?: boolean | UserCountOutputTypeCountVendorCheckWorkArgs
+  vendorCheckHandled?: boolean | UserCountOutputTypeCountVendorCheckHandledArgs
+  vendorChecksAssigned?: boolean | UserCountOutputTypeCountVendorChecksAssignedArgs
+  vendorChecksReviewed?: boolean | UserCountOutputTypeCountVendorChecksReviewedArgs
+  vendorChecksApproved?: boolean | UserCountOutputTypeCountVendorChecksApprovedArgs
+  vendorCheckEvidence?: boolean | UserCountOutputTypeCountVendorCheckEvidenceArgs
+  departmentMemberships?: boolean | UserCountOutputTypeCountDepartmentMembershipsArgs
+  primaryRmClients?: boolean | UserCountOutputTypeCountPrimaryRmClientsArgs
+  defaultDataEntryFor?: boolean | UserCountOutputTypeCountDefaultDataEntryForArgs
+  dataEntryCases?: boolean | UserCountOutputTypeCountDataEntryCasesArgs
+  escalatedCases?: boolean | UserCountOutputTypeCountEscalatedCasesArgs
 }
 
 /**
@@ -13110,6 +18525,83 @@ export type UserCountOutputTypeCountUploadedVendorReportsArgs<ExtArgs extends ru
   where?: Prisma.VendorReportWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorCheckWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorCheckHandledArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorChecksAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorChecksReviewedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorChecksApprovedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorCheckEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckEvidenceWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDepartmentMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DepartmentMemberWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPrimaryRmClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDefaultDataEntryForArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDataEntryCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationCaseWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEscalatedCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationCaseWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -13174,6 +18666,17 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   vendorTeamPolicy?: boolean | Prisma.User$vendorTeamPolicyArgs<ExtArgs>
   handledVendorRequests?: boolean | Prisma.User$handledVendorRequestsArgs<ExtArgs>
   uploadedVendorReports?: boolean | Prisma.User$uploadedVendorReportsArgs<ExtArgs>
+  vendorCheckWork?: boolean | Prisma.User$vendorCheckWorkArgs<ExtArgs>
+  vendorCheckHandled?: boolean | Prisma.User$vendorCheckHandledArgs<ExtArgs>
+  vendorChecksAssigned?: boolean | Prisma.User$vendorChecksAssignedArgs<ExtArgs>
+  vendorChecksReviewed?: boolean | Prisma.User$vendorChecksReviewedArgs<ExtArgs>
+  vendorChecksApproved?: boolean | Prisma.User$vendorChecksApprovedArgs<ExtArgs>
+  vendorCheckEvidence?: boolean | Prisma.User$vendorCheckEvidenceArgs<ExtArgs>
+  departmentMemberships?: boolean | Prisma.User$departmentMembershipsArgs<ExtArgs>
+  primaryRmClients?: boolean | Prisma.User$primaryRmClientsArgs<ExtArgs>
+  defaultDataEntryFor?: boolean | Prisma.User$defaultDataEntryForArgs<ExtArgs>
+  dataEntryCases?: boolean | Prisma.User$dataEntryCasesArgs<ExtArgs>
+  escalatedCases?: boolean | Prisma.User$escalatedCasesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -13246,6 +18749,17 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   vendorTeamPolicy?: boolean | Prisma.User$vendorTeamPolicyArgs<ExtArgs>
   handledVendorRequests?: boolean | Prisma.User$handledVendorRequestsArgs<ExtArgs>
   uploadedVendorReports?: boolean | Prisma.User$uploadedVendorReportsArgs<ExtArgs>
+  vendorCheckWork?: boolean | Prisma.User$vendorCheckWorkArgs<ExtArgs>
+  vendorCheckHandled?: boolean | Prisma.User$vendorCheckHandledArgs<ExtArgs>
+  vendorChecksAssigned?: boolean | Prisma.User$vendorChecksAssignedArgs<ExtArgs>
+  vendorChecksReviewed?: boolean | Prisma.User$vendorChecksReviewedArgs<ExtArgs>
+  vendorChecksApproved?: boolean | Prisma.User$vendorChecksApprovedArgs<ExtArgs>
+  vendorCheckEvidence?: boolean | Prisma.User$vendorCheckEvidenceArgs<ExtArgs>
+  departmentMemberships?: boolean | Prisma.User$departmentMembershipsArgs<ExtArgs>
+  primaryRmClients?: boolean | Prisma.User$primaryRmClientsArgs<ExtArgs>
+  defaultDataEntryFor?: boolean | Prisma.User$defaultDataEntryForArgs<ExtArgs>
+  dataEntryCases?: boolean | Prisma.User$dataEntryCasesArgs<ExtArgs>
+  escalatedCases?: boolean | Prisma.User$escalatedCasesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -13294,6 +18808,17 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     vendorTeamPolicy: Prisma.$VendorTeamPolicyPayload<ExtArgs> | null
     handledVendorRequests: Prisma.$VendorAssignmentPayload<ExtArgs>[]
     uploadedVendorReports: Prisma.$VendorReportPayload<ExtArgs>[]
+    vendorCheckWork: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorCheckHandled: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorChecksAssigned: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorChecksReviewed: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorChecksApproved: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorCheckEvidence: Prisma.$VendorCheckEvidencePayload<ExtArgs>[]
+    departmentMemberships: Prisma.$DepartmentMemberPayload<ExtArgs>[]
+    primaryRmClients: Prisma.$ClientPayload<ExtArgs>[]
+    defaultDataEntryFor: Prisma.$ClientPayload<ExtArgs>[]
+    dataEntryCases: Prisma.$VerificationCasePayload<ExtArgs>[]
+    escalatedCases: Prisma.$VerificationCasePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -13701,6 +19226,17 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   vendorTeamPolicy<T extends Prisma.User$vendorTeamPolicyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorTeamPolicyArgs<ExtArgs>>): Prisma.Prisma__VendorTeamPolicyClient<runtime.Types.Result.GetResult<Prisma.$VendorTeamPolicyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   handledVendorRequests<T extends Prisma.User$handledVendorRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$handledVendorRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   uploadedVendorReports<T extends Prisma.User$uploadedVendorReportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$uploadedVendorReportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorCheckWork<T extends Prisma.User$vendorCheckWorkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorCheckWorkArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorCheckHandled<T extends Prisma.User$vendorCheckHandledArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorCheckHandledArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorChecksAssigned<T extends Prisma.User$vendorChecksAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorChecksReviewed<T extends Prisma.User$vendorChecksReviewedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksReviewedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorChecksApproved<T extends Prisma.User$vendorChecksApprovedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorCheckEvidence<T extends Prisma.User$vendorCheckEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorCheckEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  departmentMemberships<T extends Prisma.User$departmentMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$departmentMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  primaryRmClients<T extends Prisma.User$primaryRmClientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$primaryRmClientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  defaultDataEntryFor<T extends Prisma.User$defaultDataEntryForArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$defaultDataEntryForArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dataEntryCases<T extends Prisma.User$dataEntryCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$dataEntryCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  escalatedCases<T extends Prisma.User$escalatedCasesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$escalatedCasesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15058,6 +20594,270 @@ export type User$uploadedVendorReportsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.VendorReportScalarFieldEnum | Prisma.VendorReportScalarFieldEnum[]
+}
+
+/**
+ * User.vendorCheckWork
+ */
+export type User$vendorCheckWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorCheckHandled
+ */
+export type User$vendorCheckHandledArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorChecksAssigned
+ */
+export type User$vendorChecksAssignedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorChecksReviewed
+ */
+export type User$vendorChecksReviewedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorChecksApproved
+ */
+export type User$vendorChecksApprovedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorCheckEvidence
+ */
+export type User$vendorCheckEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckEvidence
+   */
+  select?: Prisma.VendorCheckEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckEvidence
+   */
+  omit?: Prisma.VendorCheckEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckEvidenceInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckEvidenceWhereInput
+  orderBy?: Prisma.VendorCheckEvidenceOrderByWithRelationInput | Prisma.VendorCheckEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckEvidenceScalarFieldEnum | Prisma.VendorCheckEvidenceScalarFieldEnum[]
+}
+
+/**
+ * User.departmentMemberships
+ */
+export type User$departmentMembershipsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DepartmentMember
+   */
+  select?: Prisma.DepartmentMemberSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DepartmentMember
+   */
+  omit?: Prisma.DepartmentMemberOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DepartmentMemberInclude<ExtArgs> | null
+  where?: Prisma.DepartmentMemberWhereInput
+  orderBy?: Prisma.DepartmentMemberOrderByWithRelationInput | Prisma.DepartmentMemberOrderByWithRelationInput[]
+  cursor?: Prisma.DepartmentMemberWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DepartmentMemberScalarFieldEnum | Prisma.DepartmentMemberScalarFieldEnum[]
+}
+
+/**
+ * User.primaryRmClients
+ */
+export type User$primaryRmClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Client
+   */
+  select?: Prisma.ClientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Client
+   */
+  omit?: Prisma.ClientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientInclude<ExtArgs> | null
+  where?: Prisma.ClientWhereInput
+  orderBy?: Prisma.ClientOrderByWithRelationInput | Prisma.ClientOrderByWithRelationInput[]
+  cursor?: Prisma.ClientWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientScalarFieldEnum | Prisma.ClientScalarFieldEnum[]
+}
+
+/**
+ * User.defaultDataEntryFor
+ */
+export type User$defaultDataEntryForArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Client
+   */
+  select?: Prisma.ClientSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Client
+   */
+  omit?: Prisma.ClientOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClientInclude<ExtArgs> | null
+  where?: Prisma.ClientWhereInput
+  orderBy?: Prisma.ClientOrderByWithRelationInput | Prisma.ClientOrderByWithRelationInput[]
+  cursor?: Prisma.ClientWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClientScalarFieldEnum | Prisma.ClientScalarFieldEnum[]
+}
+
+/**
+ * User.dataEntryCases
+ */
+export type User$dataEntryCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationCase
+   */
+  select?: Prisma.VerificationCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationCase
+   */
+  omit?: Prisma.VerificationCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationCaseInclude<ExtArgs> | null
+  where?: Prisma.VerificationCaseWhereInput
+  orderBy?: Prisma.VerificationCaseOrderByWithRelationInput | Prisma.VerificationCaseOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationCaseScalarFieldEnum | Prisma.VerificationCaseScalarFieldEnum[]
+}
+
+/**
+ * User.escalatedCases
+ */
+export type User$escalatedCasesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationCase
+   */
+  select?: Prisma.VerificationCaseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationCase
+   */
+  omit?: Prisma.VerificationCaseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationCaseInclude<ExtArgs> | null
+  where?: Prisma.VerificationCaseWhereInput
+  orderBy?: Prisma.VerificationCaseOrderByWithRelationInput | Prisma.VerificationCaseOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationCaseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationCaseScalarFieldEnum | Prisma.VerificationCaseScalarFieldEnum[]
 }
 
 /**

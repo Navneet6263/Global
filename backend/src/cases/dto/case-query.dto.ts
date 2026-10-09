@@ -27,6 +27,7 @@ export const CaseRegisterStages = [
   "payment_pending",
   "completed",
   "cancelled",
+  "stopped",
   "assignment",
   "field_visit",
 ] as const;
@@ -66,6 +67,14 @@ export class CaseQueryDto extends PageQueryDto {
   @IsBoolean()
   unassigned?: boolean;
 
+  /** Live cases escalated by the Platform Admin or Operations. */
+  @IsOptional()
+  @Transform(({ value }) =>
+    value === "true" ? true : value === "false" ? false : value,
+  )
+  @IsBoolean()
+  escalated?: boolean;
+
   @IsOptional()
   @Transform(({ value }) =>
     value === "true" ? true : value === "false" ? false : value,
@@ -81,8 +90,8 @@ export class CaseQueryDto extends PageQueryDto {
   dueNext7Days?: boolean;
 
   @IsOptional()
-  @IsIn(["all", "operations"])
-  view?: "all" | "operations";
+  @IsIn(["all", "operations", "active"])
+  view?: "all" | "operations" | "active";
 
   @IsOptional()
   @IsIn(CaseStatuses)

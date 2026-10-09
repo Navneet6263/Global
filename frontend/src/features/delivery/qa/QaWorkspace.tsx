@@ -14,7 +14,9 @@ import {
   WorkspaceLoading,
 } from "@/features/delivery/WorkspaceStates";
 import { getSession } from "@/lib/api/auth";
-import { getQaRegister } from "@/lib/backend-api/qa-register";
+import { getQaRegister, type QaRegisterView } from "@/lib/backend-api/qa-register";
+import { ExportSheetButton } from "@/components/workspace/export-sheet";
+import { QA_REGISTER_COLUMNS, QA_REGISTER_DEFAULTS, loadQaRegister } from "./qa-export";
 import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
 
 export type QaPageView = "overview" | "all" | "mine" | "corrections" | "history";
@@ -96,6 +98,19 @@ export function QaWorkspace({ view = "all" }: { view?: QaPageView }) {
               : !queue.data
                 ? "Loading queue"
                 : `${summary.awaiting} awaiting review`
+        }
+        actions={
+          view === "all" || view === "mine" || view === "corrections" ? (
+            <ExportSheetButton
+              source={view === "all" ? "qa-queue" : view === "mine" ? "qa-mine" : "qa-corrections"}
+              title={`Export ${titles[view][0].toLowerCase()}`}
+              filename={`Sapling-Global-qa-${view === "all" ? "queue" : view}`}
+              columns={QA_REGISTER_COLUMNS}
+              defaults={QA_REGISTER_DEFAULTS}
+              scopeNote={`${titles[view][0]}${search ? ` · search “${search}”` : ""}`}
+              loadRows={() => loadQaRegister(queryView as QaRegisterView, search || undefined)}
+            />
+          ) : null
         }
       />
       {view === "overview" && queue.data && !queue.isError ? (

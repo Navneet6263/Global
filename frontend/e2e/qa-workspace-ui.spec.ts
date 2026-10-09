@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import { qaBrowserFixture } from "./fixtures/qa-browser-fixture";
 import { qaChecklist } from "../src/features/delivery/utils";
@@ -12,6 +13,8 @@ test("QA summary views fetch only selected evidence and keep corrections separat
   // Development remounts may abort and retry the same read. No other case's evidence is loaded.
   expect([...new Set(fixture.details)]).toEqual(["qa-case-1"]);
   await page.screenshot({ path: "test-results/qa-review-layout.png" });
+  // Help and learning live in one Help menu.
+  await page.getByRole("button", { name: "Help menu" }).click();
   await page.getByRole("button", { name: "Help with this page" }).click();
   await page.getByRole("button", { name: "Which QA view should I use?", exact: true }).click();
   await expect(page.getByRole("log")).toContainText("Corrections tracks cases returned");
@@ -75,5 +78,37 @@ test("QA renewal locks conflicting actions and retains rationale while resetting
   await page.getByRole("button", { name: "Release", exact: true }).click();
   await expect(page.getByRole("button", { name: "Claim case", exact: true })).toBeEnabled();
   await expect(notes).toBeDisabled();
+  expect(fixture.unexpected).toEqual([]);
+});
+
+test("QA exports its queue and decision history with chosen columns", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const fixture = await qaBrowserFixture(page);
+  await page.goto("/qa-review");
+  await expect(page.getByRole("heading", { name: "Review queue", level: 1 })).toBeVisible();
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: /Export review queue/ });
+  await dialog.getByRole("button", { name: "Claimed by", exact: true }).click();
+  const download = page.waitForEvent("download");
+  await dialog.getByRole("button", { name: "Download CSV" }).click();
+  const text = await readFile(await (await download).path(), "utf8");
+  expect(text.split("\r\n")[0]).toBe(
+    '﻿"Sapling ID","Candidate","Company","Status","Checks complete","Highest risk","Due","Claimed by"',
+  );
+  expect(text.split("\r\n")).toHaveLength(3);
+  await expect
+    .poll(() => fixture.exports)
+    .toEqual([expect.objectContaining({ source: "qa-queue", rows: 2 })]);
+  await page.screenshot({ path: "test-results/qa-queue-new.png" });
+
+  await page.goto("/qa-review/history");
+  await expect(page.getByText("QA-TEST-001")).toBeVisible();
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  const history = page.getByRole("dialog", { name: /Export decision history/ });
+  const second = page.waitForEvent("download");
+  await history.getByRole("button", { name: "Download CSV" }).click();
+  const decisions = await readFile(await (await second).path(), "utf8");
+  expect(decisions).toContain('"QA-TEST-001","QA Test Candidate","QA Test Organisation","Rework"');
+  await page.screenshot({ path: "test-results/qa-history-new.png" });
   expect(fixture.unexpected).toEqual([]);
 });

@@ -110,6 +110,8 @@ test("six-row queue, expandable navigation, guide and learning controls work", a
   const nav = page.getByRole("navigation", { name: "client-admin navigation" });
   await nav.getByRole("button", { name: "Reports", exact: true }).click();
   await expect(nav.getByRole("link", { name: "Published reports" })).toBeVisible();
+  const helpMenu = page.getByRole("button", { name: "Help menu" });
+  await helpMenu.click();
   await page.getByRole("switch", { name: "Learning mode" }).click();
   await expect(page.getByRole("region", { name: "Page learning guide" })).toBeVisible();
   await page.getByRole("switch", { name: "Learning mode" }).click();
@@ -124,4 +126,102 @@ test("read-only client cannot see case creation controls", async ({ page }) => {
   await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "New verification", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Import CSV", exact: true })).toHaveCount(0);
+});
+
+test("the company admin always sees its RM, with email and phone", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await clientWorkspaceFixture(page);
+  await page.goto("/client-portal");
+  const card = page.getByRole("complementary", { name: "Client actions and support" });
+  await expect(card.getByText("Niku Sharma")).toBeVisible();
+  await expect(card.getByText("Contact not available yet")).toHaveCount(0);
+  await expect(card.getByRole("link", { name: "Email your RM" })).toHaveAttribute(
+    "href",
+    "mailto:niku@saplingglobal.example",
+  );
+  await expect(card.getByRole("link", { name: "+919876543210" })).toBeVisible();
+  // The RM lives in the dashboard card only, not in the page header.
+  await expect(page.getByRole("button", { name: /Your RM/ })).toHaveCount(0);
+  await card.getByText("Niku Sharma").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: "test-results/client-rm.png" });
+});
+
+test("the company admin escalates a delayed case with a reason", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const fixture = await clientWorkspaceFixture(page);
+  await page.goto("/client-portal?caseId=client-case-2");
+  const workspace = page.getByRole("dialog", { name: "Case detail" });
+  await workspace.getByRole("button", { name: "Escalate" }).click();
+  const dialog = page.getByRole("dialog", { name: "Escalate this case" });
+  const submit = dialog.getByRole("button", { name: "Escalate case" });
+  await dialog.getByRole("textbox").fill("Too short");
+  await expect(submit).toBeDisabled();
+  await dialog.getByRole("textbox").fill("Candidate joins Monday; we need the report by Friday.");
+  await page.screenshot({ path: "test-results/client-escalate.png" });
+  await submit.click();
+  await expect(workspace.getByText("Escalated · RM handling on priority")).toBeVisible();
+  expect(fixture.escalations).toEqual([
+    { version: 1, reason: "Candidate joins Monday; we need the report by Friday." },
+  ]);
+  expect(fixture.unexpected).toEqual([]);
+});
+
+test("Route A: the company admin approves one submission and returns another", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const fixture = await clientWorkspaceFixture(page);
+  const calls: Array<{ path: string; body: unknown }> = [];
+  const item = (id: string, name: string) => ({
+    id,
+    caseNumber: `SG-${id}`,
+    version: 3,
+    candidateName: name,
+    state: "TO_REVIEW",
+    since: "2026-10-07T10:00:00Z",
+    documents: [
+      { id: `doc-${id}`, type: "EDUCATION_CERTIFICATE", status: "UPLOADED", currentVersion: 1 },
+    ],
+  });
+  await page.route("**/api/v1/client-review**", async (route) => {
+    const path = new URL(route.request().url()).pathname.replace("/api/v1", "");
+    if (route.request().method() === "GET")
+      return route.fulfill({
+        json: {
+          items: [
+            item("11111111-1111-4111-8111-111111111111", "Asha Rao"),
+            item("22222222-2222-4222-8222-222222222222", "Vikram Singh"),
+          ],
+        },
+      });
+    calls.push({ path, body: route.request().postDataJSON() });
+    return route.fulfill({
+      json: path.endsWith("/approve")
+        ? { approved: true, autoAssigned: false }
+        : { returned: true, candidateNotified: true },
+    });
+  });
+  await page.goto("/client-portal/review");
+  await expect(page.getByRole("heading", { name: "Review submissions", level: 1 })).toBeVisible();
+  await expect(page.getByText("Waiting for your review")).toBeVisible();
+  await expect(
+    page.getByRole("list", { name: "Documents from Asha Rao" }).getByText("Education certificate"),
+  ).toBeVisible();
+  await page.screenshot({ path: "test-results/client-review.png", fullPage: true });
+  await page.getByRole("button", { name: "Approve" }).first().click();
+  await expect.poll(() => calls.length).toBe(1);
+  expect(calls[0]).toEqual({
+    path: "/client-review/11111111-1111-4111-8111-111111111111/approve",
+    body: { version: 3 },
+  });
+  await page.getByRole("button", { name: "Return to candidate" }).nth(1).click();
+  const dialog = page.getByRole("dialog", { name: "Return to Vikram Singh" });
+  await dialog
+    .getByRole("textbox")
+    .fill("The degree certificate is cut off. Upload the full page.");
+  await dialog.getByRole("button", { name: "Send back" }).click();
+  await expect.poll(() => calls.length).toBe(2);
+  expect(calls[1]).toEqual({
+    path: "/client-review/22222222-2222-4222-8222-222222222222/return",
+    body: { version: 3, reason: "The degree certificate is cut off. Upload the full page." },
+  });
+  expect(fixture.unexpected).toEqual([]);
 });

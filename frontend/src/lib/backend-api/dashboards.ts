@@ -43,6 +43,10 @@ export interface ExecutiveDashboard extends OperationsDashboard {
     overdue: number;
   }>;
   riskMix: Record<string, number>;
+  /** Colour codes per check and per case (the most serious check decides). */
+  dispositionMix?: Record<string, number>;
+  caseColourMix?: Record<string, number>;
+  clientColours?: Array<{ id: string; name: string; colours: Record<string, number> }>;
   attentionQueue: ExecutiveAttentionItem[];
   clientPerformance: ExecutivePerformanceRow[];
   branchPerformance: ExecutivePerformanceRow[];

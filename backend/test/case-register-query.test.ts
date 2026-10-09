@@ -107,3 +107,20 @@ void test("operations ranked pages accept validated filters without losing branc
     { assignedOpsUser: { publicId: actor.userPublicId } },
   ]);
 });
+
+void test("active operations view excludes finished and stopped cases unless a stage is chosen", async () => {
+  const active = plainToInstance(CaseQueryDto, {
+    view: "active",
+    unassigned: "true",
+  });
+  assert.equal((await validate(active)).length, 0);
+  assert.deepEqual(caseRegisterWhere(actor, active).AND, [
+    { status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] } },
+    { assignedOpsUserId: null },
+  ]);
+  const completed = plainToInstance(CaseQueryDto, {
+    view: "active",
+    stage: "completed",
+  });
+  assert.equal(caseRegisterWhere(actor, completed).AND, undefined);
+});

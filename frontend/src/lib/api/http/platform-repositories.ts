@@ -238,9 +238,17 @@ export const settingsRepository: SettingsRepository = {
             "Ops Managers can create operational, client and commercial user IDs inside their own branch scope. Admin roles and account administration stay with Platform Admin.",
           enabled: access.opsUserCreationEnabled,
         },
+        {
+          id: "release-before-payment",
+          label: "Release reports after QC, bill monthly",
+          description:
+            "ON: the report goes to the client as soon as QC and the manager approve it; Finance bills at month end and the RM follows up for payment. OFF: the report waits until its invoice is fully paid.",
+          enabled: access.releaseBeforePayment ?? true,
+        },
       ],
       accessPolicyConfig: {
         opsUserCreationEnabled: access.opsUserCreationEnabled,
+        releaseBeforePayment: access.releaseBeforePayment ?? true,
         version: access.version,
       },
       slaDefaults: packages.items.map((item) => ({

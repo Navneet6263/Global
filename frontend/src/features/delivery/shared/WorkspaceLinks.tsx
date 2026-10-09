@@ -13,7 +13,7 @@ export function WorkspaceLinks({
   }>;
 }) {
   const tones = {
-    mint: "border-mint/20 bg-mint-soft/40 text-mint-deep",
+    mint: "border-blue-200 bg-blue-50 text-blue-700",
     amber: "border-warning/20 bg-warning-soft/40 text-warning-foreground",
     blue: "border-info/20 bg-info-soft/40 text-info-foreground",
     violet: "border-review/20 bg-review-soft/40 text-review-foreground",
@@ -24,10 +24,10 @@ export function WorkspaceLinks({
         <Link
           key={to}
           to={to}
-          className={`group rounded-3xl border p-5 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${tones[tone]}`}
+          className={`group rounded-3xl border p-5 shadow-sm transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${tones[tone]}`}
         >
           <div className="flex items-center justify-between">
-            <span className="grid size-10 place-items-center rounded-2xl bg-white/80">
+            <span className="grid size-10 place-items-center rounded-2xl bg-white">
               <Icon className="size-5" />
             </span>
             <ArrowUpRight className="size-4 transition group-hover:translate-x-0.5" />

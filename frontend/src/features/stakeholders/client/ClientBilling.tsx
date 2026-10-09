@@ -38,7 +38,7 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
     <>
       <ClientWorkspaceHeader
         title={reportMode ? "Invoice documents" : "Invoices & payments"}
-        description="Track billed amounts, recorded payments and balances."
+        description="Reports reach you right after QC; billing is monthly. Track invoices, payments and balances here."
         actions={reportMode ? <MonthlyStatement ownClient /> : undefined}
       />
       {overview.isError && (

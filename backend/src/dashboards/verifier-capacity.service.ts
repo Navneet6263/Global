@@ -1,3 +1,4 @@
+import { roleIs } from "../common/auth/role-filter";
 import { Injectable } from "@nestjs/common";
 import { caseAccessScope } from "../common/auth/access-scope";
 import type { Actor } from "../common/auth/actor";
@@ -25,7 +26,7 @@ export class VerifierCapacityService {
           tenantId: actor.tenantId,
           status: "ACTIVE",
           ...userScope,
-          userRoles: { some: { role: { code: "VERIFIER" } } },
+          userRoles: { some: { role: roleIs("VERIFIER") } },
         },
         select: {
           publicId: true,
@@ -103,8 +104,7 @@ export class VerifierCapacityService {
           (task) =>
             task.dueAt && task.dueAt >= startToday && task.dueAt < endToday,
         ).length,
-        overdue: active.filter((task) => task.dueAt && task.dueAt < now)
-          .length,
+        overdue: active.filter((task) => task.dueAt && task.dueAt < now).length,
         completedToday: owned.filter(
           (task) =>
             task.completedAt &&
@@ -158,9 +158,8 @@ export class VerifierCapacityService {
       })),
       branches,
       demand,
-      openAssignments: openChecks.filter(
-        (check) => !check.tasks[0]?.assigneeId,
-      ).length,
+      openAssignments: openChecks.filter((check) => !check.tasks[0]?.assigneeId)
+        .length,
     };
   }
 }

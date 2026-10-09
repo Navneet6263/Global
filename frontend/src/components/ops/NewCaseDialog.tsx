@@ -117,47 +117,15 @@ export function NewCaseDialog({ trigger }: { trigger: ReactNode }) {
                     </div>
                   )}
                   {step === 2 && (
-                    <section className="mt-5 space-y-3 rounded-xl border border-blue-100 bg-blue-50/40 p-4">
-                      <label className="flex cursor-pointer items-start gap-3">
-                        <input
-                          type="checkbox"
-                          checked={flow.inviteCandidate}
-                          onChange={(event) => flow.setInviteCandidate(event.target.checked)}
-                          className="mt-0.5 size-4 accent-blue-600"
-                        />
-                        <Link2 className="mt-0.5 size-4 shrink-0 text-blue-600" />
-                        <span>
-                          <strong className="block text-xs">
-                            Create secure document-upload link
-                          </strong>
-                          <span className="mt-1 block text-xs leading-5 text-slate-500">
-                            Copy and share the link after creation. Email delivery is not needed.
-                          </span>
+                    <section className="mt-5 flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50/40 p-4">
+                      <Link2 className="mt-0.5 size-4 shrink-0 text-blue-600" aria-hidden />
+                      <span>
+                        <strong className="block text-xs">One secure link for the candidate</strong>
+                        <span className="mt-1 block text-xs leading-5 text-slate-500">
+                          Emailed when you initiate the case. The candidate confirms consent with a
+                          one-time code on that page, then uploads only the documents you asked for.
                         </span>
-                      </label>
-                      {flow.inviteCandidate && (
-                        <label className="flex cursor-pointer items-start gap-3 border-t border-blue-100 pt-3">
-                          <input
-                            type="checkbox"
-                            checked={flow.sendNotification}
-                            onChange={(event) => flow.setSendNotification(event.target.checked)}
-                            className="mt-0.5 size-4 accent-blue-600"
-                          />
-                          <span>
-                            <strong className="block text-xs">
-                              Also queue email / SMS delivery
-                            </strong>
-                            <span className="mt-1 block text-[11px] leading-5 text-slate-500">
-                              Optional. Uses the configured delivery service; a queued message is
-                              not confirmation of delivery.
-                            </span>
-                          </span>
-                        </label>
-                      )}
-                      <p className="text-[11px] leading-5 text-slate-500">
-                        Candidate consent uses a separate secure link and OTP. Its existing delivery
-                        and expiry rules still apply.
-                      </p>
+                      </span>
                     </section>
                   )}
                 </div>

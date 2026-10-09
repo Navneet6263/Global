@@ -36,10 +36,14 @@ export async function readUploadedBinary(
   }
   const claimedDigest = request.headers["x-content-sha256"];
   if (claimedDigest) {
-    const value = Array.isArray(claimedDigest) ? claimedDigest[0] : claimedDigest;
+    const value = Array.isArray(claimedDigest)
+      ? claimedDigest[0]
+      : claimedDigest;
     const actual = createHash("sha256").update(buffer).digest("hex");
     if (!value || !/^[a-f0-9]{64}$/.test(value) || value !== actual) {
-      throw new ConflictException("Uploaded file digest does not match its request header");
+      throw new ConflictException(
+        "Uploaded file digest does not match its request header",
+      );
     }
   }
   return {

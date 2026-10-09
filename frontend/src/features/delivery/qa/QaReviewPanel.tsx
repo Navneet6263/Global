@@ -68,9 +68,9 @@ export function QaReviewPanel({
   return (
     <section
       aria-label="Selected case review"
-      className="min-w-0 overflow-hidden rounded-[1.65rem] border border-review/15 bg-white shadow-[var(--shadow-card)]"
+      className="min-w-0 overflow-hidden rounded-2xl border border-review/15 bg-white shadow-sm"
     >
-      <header className="flex flex-wrap items-center justify-between gap-3 border-t-4 border-review/35 bg-gradient-to-r from-review-soft via-white to-mint-soft px-5 py-4">
+      <header className="flex flex-wrap items-center justify-between gap-3 border-t-4 border-review/35 bg-gradient-to-r from-review-soft via-white to-blue-50 px-5 py-4">
         <div className="min-w-0">
           <h2 className="break-words text-lg font-semibold tracking-tight">
             {item.subject.fullName}
@@ -79,7 +79,7 @@ export function QaReviewPanel({
             {item.caseNumber} · {item.client.displayName}
           </p>
         </div>
-        <div className="flex items-center gap-2 text-[11px]">
+        <div className="flex items-center gap-2 text-[12.5px]">
           <span className="rounded-full border border-review/20 bg-review-soft px-2.5 py-1 text-review-foreground">
             {humanize(item.priority)} priority
           </span>
@@ -150,7 +150,7 @@ export function QaReviewPanel({
           )}
         </fieldset>
       </div>
-      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border/70 bg-background/40 px-4 py-3">
+      <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-border/70 bg-slate-50 px-4 py-3">
         <div className="flex items-center gap-3">
           {step > 0 ? (
             <button
@@ -163,7 +163,7 @@ export function QaReviewPanel({
               Back
             </button>
           ) : null}
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[12.5px] text-muted-foreground">
             Section {step + 1} of {steps.length}
           </span>
         </div>
@@ -173,7 +173,7 @@ export function QaReviewPanel({
             onClick={() => decision.mutate()}
             disabled={!ready || busy || refreshing}
             aria-busy={decision.isPending}
-            className="inline-flex items-center gap-2 rounded-full bg-mint-deep px-4 py-2.5 text-xs font-medium text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2.5 text-xs font-medium text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40"
           >
             {decision.isPending ? (
               <Loader2 className="size-4 animate-spin" />
@@ -187,7 +187,7 @@ export function QaReviewPanel({
             type="button"
             disabled={busy || refreshing}
             onClick={() => changeTab(steps[step + 1]!)}
-            className="inline-flex items-center gap-2 rounded-full bg-mint-deep px-4 py-2.5 text-xs font-medium text-white disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2.5 text-xs font-medium text-white disabled:opacity-50"
           >
             {steps[step + 1] === "decision"
               ? "Continue to decision"

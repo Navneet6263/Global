@@ -46,6 +46,14 @@ function serviceScope(row: CaseRow, actor: Actor) {
   );
 }
 
+/** Client identity only; the company RM stays internal (workflow.companyRm). */
+function publicClient(client: unknown) {
+  const row = objectRow(client);
+  return row.publicId
+    ? { publicId: row.publicId, code: row.code, displayName: row.displayName }
+    : client;
+}
+
 function base(row: CaseRow, subject: unknown, actor: Actor) {
   return {
     id: row.publicId,
@@ -60,7 +68,7 @@ function base(row: CaseRow, subject: unknown, actor: Actor) {
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
     subject,
-    client: row.client,
+    client: publicClient(row.client),
     servicePackage: row.servicePackage,
     services: serviceScope(row, actor),
     branch: row.branch,
@@ -124,18 +132,70 @@ function redactVisit(visit: CaseRow) {
   };
 }
 
+/** Internal v2 flow position. Never returned to Client Admin. */
+/**
+ * The company's own escalation only (its reason, when). Internal escalations by the
+ * Platform Admin or Operations are never shown to the client.
+ */
+function clientEscalation(row: CaseRow) {
+  const note = typeof row.escalationNote === "string" ? row.escalationNote : "";
+  if (!row.escalatedAt || !note.startsWith("Client: ")) return null;
+  return { at: row.escalatedAt, reason: note.slice("Client: ".length) };
+}
+
+function workflow(row: CaseRow) {
+  const dataEntry = objectRow(row.dataEntryUser);
+  const escalatedBy = objectRow(row.escalatedBy);
+  const companyRm = objectRow(objectRow(row.client).primaryRm);
+  return {
+    version: row.workflowVersion ?? 1,
+    intakeStage: row.intakeStage ?? null,
+    dataEntryAssignedAt: row.dataEntryAssignedAt ?? null,
+    dataEntryReadyAt: row.dataEntryReadyAt ?? null,
+    stoppedFromStatus: row.stoppedFromStatus ?? null,
+    stoppedAt: row.stoppedAt ?? null,
+    stopReason: row.stopReason ?? null,
+    escalatedAt: row.escalatedAt ?? null,
+    escalationNote: row.escalationNote ?? null,
+    escalatedBy: escalatedBy.publicId
+      ? { publicId: escalatedBy.publicId, displayName: escalatedBy.displayName }
+      : null,
+    companyRm: companyRm.publicId
+      ? { publicId: companyRm.publicId, displayName: companyRm.displayName }
+      : null,
+    dataEntryUser: dataEntry.publicId
+      ? { publicId: dataEntry.publicId, displayName: dataEntry.displayName }
+      : null,
+  };
+}
+
+function withoutDepartment(check: CaseRow) {
+  const safe = { ...check };
+  delete safe.department;
+  delete safe.routedAt;
+  delete safe.initiationJson;
+  delete safe.initiatedAt;
+  return safe;
+}
+
 export function presentCaseListItem(
   row: CaseRow,
   actor: Actor,
   pii?: SubjectPiiService,
 ) {
   const common = base(row, safeSubject(row, actor, pii), actor);
+  // People who run the internal workflow (RM, Data Entry) need its stage even when they
+  // also hold a narrower role (e.g. RM + QA, Data Entry + Verifier): the most complete
+  // internal view wins, never the narrower one.
   if (
-    actor.roles.some((role) => ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role))
+    actor.roles.some((role) =>
+      ["PLATFORM_ADMIN", "OPS_MANAGER", "SPOC_RM", "DATA_ENTRY"].includes(role),
+    )
   ) {
     return {
       ...common,
       assignedOpsUser: row.assignedOpsUser,
+      workflow: workflow(row),
       checks: row.checks,
       fieldVisits: row.fieldVisits,
     };
@@ -157,7 +217,7 @@ export function presentCaseListItem(
     return {
       ...common,
       checks: rowList(row.checks).map((check) => {
-        const safeCheck = { ...check };
+        const safeCheck = withoutDepartment(check);
         delete safeCheck.tasks;
         delete safeCheck.findings;
         return safeCheck;
@@ -177,6 +237,7 @@ export function presentCaseListItem(
   return {
     ...common,
     assignedOpsUser: row.assignedOpsUser,
+    workflow: workflow(row),
     checks: row.checks,
     fieldVisits: row.fieldVisits,
   };
@@ -215,6 +276,37 @@ export function presentCaseDetail(
     reports: [],
   };
   if (actor.roles.includes("FIELD_EXECUTIVE")) return safe;
+  if (actor.roles.includes("SPOC_RM")) {
+    // The responsible RM owns final review, so it sees the full internal record.
+    return {
+      ...safe,
+      qaReviewer: row.qaReviewer ?? null,
+      statusHistory: row.statusHistory ?? [],
+      consents: row.consents ?? [],
+      documents: row.documents ?? [],
+      clarifications: row.clarifications ?? [],
+      qaReviews: row.qaReviews ?? [],
+      reports: row.reports ?? [],
+      fieldVisits: rowList(row.fieldVisits).map(redactVisit),
+    };
+  }
+  if (actor.roles.includes("DATA_ENTRY")) {
+    // Intake review: documents, consent and correction requests; no findings or reports.
+    return {
+      ...safe,
+      checks: rowList(safe.checks).map((check) => {
+        const intakeCheck = { ...check };
+        delete intakeCheck.tasks;
+        delete intakeCheck.findings;
+        return intakeCheck;
+      }),
+      fieldVisits: [],
+      statusHistory: row.statusHistory ?? [],
+      consents: row.consents ?? [],
+      documents: row.documents ?? [],
+      clarifications: row.clarifications ?? [],
+    };
+  }
   if (actor.roles.includes("VERIFIER")) {
     return { ...safe, clarifications: row.clarifications ?? [] };
   }
@@ -233,6 +325,7 @@ export function presentCaseDetail(
       }),
       clarifications: row.clarifications ?? [],
       reports: row.reports ?? [],
+      clientEscalation: clientEscalation(row),
     };
   }
   if (actor.roles.includes("QA_REVIEWER")) {

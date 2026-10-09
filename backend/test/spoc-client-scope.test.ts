@@ -11,6 +11,7 @@ import { SpocController } from "../src/spoc/spoc.controller";
 import { enforceSpocClient } from "../src/spoc/spoc-scope";
 import { CreateUserDto } from "../src/users/dto/create-user.dto";
 import { UsersService } from "../src/users/users.service";
+import { assertSpocClientInput } from "../src/users/spoc-client-scope";
 
 const CLIENT_A = "0f8fad5b-d9cb-469f-a165-70867728950e";
 const CLIENT_B = "7c9e6679-7425-40de-944b-e07fc1f90ae7";
@@ -154,13 +155,13 @@ const createInput = {
   temporaryPassword: "Temporary#Pass2026",
 } as CreateUserDto;
 
-void test("creating a SPOC-RM without client workspaces, or with a single clientId, is refused", async () => {
+void test("a SPOC-RM may be created with no company (assigned later), but never with a single clientId", async () => {
   const service = new UsersService(
     usersPrisma([{ id: 41n, publicId: CLIENT_A }]),
   );
-  await assert.rejects(
-    service.create(actor(["PLATFORM_ADMIN"]), createInput),
-    ConflictException,
+  assert.doesNotThrow(() => assertSpocClientInput(["SPOC_RM"], {}));
+  assert.doesNotThrow(() =>
+    assertSpocClientInput(["SPOC_RM"], { spocClientIds: [] }),
   );
   await assert.rejects(
     service.create(actor(["PLATFORM_ADMIN"]), {
@@ -201,6 +202,9 @@ void test("creating a SPOC-RM stores every selected client as scope rows, never 
                       created = args as typeof created;
                       return Promise.resolve({ id: 99n, publicId: "u-1" });
                     }
+                    // Company-RM claim lookups are covered in rm-company-claim.test.ts.
+                    if (operation === "findMany") return Promise.resolve([]);
+                    if (operation === "findFirst") return Promise.resolve(null);
                     return Promise.resolve({});
                   },
                 },

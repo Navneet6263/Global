@@ -209,7 +209,9 @@ export class IdempotencyInterceptor implements NestInterceptor {
       } catch (error) {
         lastError = error;
         if (attempt < 2) {
-          await new Promise((resolve) => setTimeout(resolve, 25 * (attempt + 1)));
+          await new Promise((resolve) =>
+            setTimeout(resolve, 25 * (attempt + 1)),
+          );
         }
       }
     }

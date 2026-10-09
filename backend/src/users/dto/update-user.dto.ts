@@ -23,10 +23,9 @@ export class UpdateUserDto {
   @IsString({ each: true })
   roleCodes?: string[];
   @IsOptional() @IsBoolean() additionalAccessConfirmed?: boolean;
-  /** SPOC-RM only: replaces the client workspaces it may monitor (at least one). */
+  /** SPOC-RM only: replaces the client workspaces it may monitor (empty removes all). */
   @IsOptional()
   @IsArray()
-  @ArrayMinSize(1)
   @ArrayMaxSize(200)
   @ArrayUnique()
   @IsUUID("all", { each: true })

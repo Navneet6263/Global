@@ -32,12 +32,12 @@ export function MethodHistory({
               {humanize(run.method)} · {run.provider ?? "Internal review"}
             </h4>
             <span
-              className={`rounded-full px-2.5 py-1 text-[11px] ${run.status === "SUPERSEDED" ? "bg-muted text-muted-foreground" : run.result === "DISCREPANCY" ? "bg-rose-50 text-rose-700" : run.result === "CLEAR" ? "bg-mint-soft text-mint-deep" : "bg-amber-50 text-amber-800"}`}
+              className={`rounded-full px-2.5 py-1 text-[12.5px] ${run.status === "SUPERSEDED" ? "bg-muted text-muted-foreground" : run.result === "DISCREPANCY" ? "bg-rose-50 text-rose-700" : run.result === "CLEAR" ? "bg-blue-50 text-blue-700" : "bg-amber-50 text-amber-800"}`}
             >
               {humanize(run.status === "SUPERSEDED" ? run.status : (run.result ?? run.status))}
             </span>
           </div>
-          <p className="mt-2 text-[11px] text-muted-foreground">
+          <p className="mt-2 text-[12.5px] text-muted-foreground">
             Requested {formatDateTime(run.requestedAt)}
             {run.respondedAt ? ` · Responded ${formatDateTime(run.respondedAt)}` : ""}
             {run.dueAt ? ` · Due ${formatDateTime(run.dueAt)}` : ""}
@@ -52,7 +52,7 @@ export function MethodHistory({
             <p className="mt-2 whitespace-pre-wrap text-xs text-muted-foreground">{run.summary}</p>
           )}
           {!!run.evidenceIds.length && (
-            <p className="mt-2 text-[11px] text-muted-foreground">
+            <p className="mt-2 text-[12.5px] text-muted-foreground">
               {run.evidenceIds.length} supporting document(s) linked
             </p>
           )}

@@ -1,3 +1,4 @@
+import { Dispositions } from "../dispositions";
 import { Type } from "class-transformer";
 import {
   ArrayMaxSize,
@@ -49,6 +50,11 @@ export class UpdateTaskDto {
   @IsOptional()
   @IsIn(["CLEAR", "DISCREPANCY", "UNABLE_TO_VERIFY"])
   result?: string;
+
+  /** Colour code; defaults from the result (CLEAR green, DISCREPANCY red, UTV amber). */
+  @IsOptional()
+  @IsIn(Dispositions)
+  disposition?: string;
 
   @IsOptional()
   @IsString()

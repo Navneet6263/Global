@@ -43,8 +43,8 @@ export default {
     ],
   ),
   "/operations/assignments": guide(
-    "Assignment workbench",
-    "Give selected verification checks to a specific eligible verifier.",
+    "Override allocation",
+    "Backup to the Team queue: give routed checks to a verifier when a team has no Team Leader, the TL is away, or work is stuck.",
     [
       "Find the case and select the checks that need an assignee.",
       "Review the named verifier's scope and workload.",

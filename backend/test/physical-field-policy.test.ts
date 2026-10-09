@@ -11,6 +11,9 @@ import {
 } from "../src/documents/evidence-readiness";
 import { QaReadinessService } from "../src/verification/qa-readiness.service";
 
+// These cover the physical-visit rule, so field work is on here.
+process.env.FIELD_WORK_ENABLED = "true";
+
 const address = [{ type: "ADDRESS" }];
 for (const status of [
   "MISSING",

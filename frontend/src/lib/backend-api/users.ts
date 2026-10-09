@@ -13,7 +13,9 @@ export interface DirectoryUser {
   version: number;
   branch?: { publicId: string; code: string; name: string } | null;
   client?: { publicId: string; displayName: string } | null;
-  roles: Array<{ code: string; name: string }>;
+  roles: Array<{ code: string; name: string; customRole?: string }>;
+  /** Teams (departments) the person belongs to. */
+  teams?: Array<{ name: string; lead: boolean }>;
   /** SPOC-RM client workspaces (empty for every other role). */
   spocClients?: Array<{ id: string; displayName: string }>;
   /** Vendor team users only: the Main Vendor that manages this login. */
@@ -53,6 +55,8 @@ export function createUser(input: {
   spocClientIds?: string[];
   roleCodes: string[];
   additionalAccessConfirmed?: boolean;
+  departments?: Array<{ id: string; lead?: boolean }>;
+  access?: Array<{ role: string; permissions: string[] }>;
   temporaryPassword: string;
 }) {
   const phone = toIndianMobileE164(input.phone);
@@ -105,6 +109,8 @@ export interface UserDirectoryInput {
 export interface UserDirectoryResponse {
   items: DirectoryUser[];
   total: number;
+  /** Counts for the whole scope (ignoring the status filter). */
+  summary?: { total: number; active: number; invited: number; suspended: number };
   page: number;
   pageSize: number;
 }
@@ -161,4 +167,14 @@ export function getUserActivity(userId: string, input: { page?: number; pageSize
     pageSize: String(input.pageSize ?? 10),
   });
   return apiRequest<UserActivityResponse>(`/users/${userId}/activity?${query.toString()}`);
+}
+
+export interface UserSetupOptions {
+  departments: Array<{ id: string; name: string; kind: "DATA_ENTRY" | "VERIFICATION" | string }>;
+  access: Array<{ role: string; name: string; permissions: string[] }>;
+}
+
+/** Teams to join and the access ticks for each customisable role. */
+export function getUserSetupOptions() {
+  return apiRequest<UserSetupOptions>("/users/setup-options");
 }

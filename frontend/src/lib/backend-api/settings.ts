@@ -48,6 +48,8 @@ export function getOrganisation() {
 export interface AccessPolicy {
   publicId: string;
   opsUserCreationEnabled: boolean;
+  /** Release reports after QC / manager approval and bill monthly. */
+  releaseBeforePayment: boolean;
   version: number;
   updatedAt: string;
 }
@@ -56,7 +58,8 @@ export function getAccessPolicy() {
   return apiRequest<AccessPolicy>("/settings/access-policy");
 }
 export function updateAccessPolicy(
-  input: Pick<AccessPolicy, "opsUserCreationEnabled" | "version">,
+  input: Pick<AccessPolicy, "opsUserCreationEnabled" | "version"> &
+    Partial<Pick<AccessPolicy, "releaseBeforePayment">>,
 ) {
   return apiRequest<AccessPolicy>("/settings/access-policy", {
     method: "PATCH",

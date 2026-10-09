@@ -47,6 +47,7 @@ export type CandidatePortalAccessMinAggregateOutputType = {
   expiresAt: Date | null
   revokedAt: Date | null
   lastAccessedAt: Date | null
+  completedAt: Date | null
   createdAt: Date | null
 }
 
@@ -59,6 +60,7 @@ export type CandidatePortalAccessMaxAggregateOutputType = {
   expiresAt: Date | null
   revokedAt: Date | null
   lastAccessedAt: Date | null
+  completedAt: Date | null
   createdAt: Date | null
 }
 
@@ -71,6 +73,7 @@ export type CandidatePortalAccessCountAggregateOutputType = {
   expiresAt: number
   revokedAt: number
   lastAccessedAt: number
+  completedAt: number
   createdAt: number
   _all: number
 }
@@ -97,6 +100,7 @@ export type CandidatePortalAccessMinAggregateInputType = {
   expiresAt?: true
   revokedAt?: true
   lastAccessedAt?: true
+  completedAt?: true
   createdAt?: true
 }
 
@@ -109,6 +113,7 @@ export type CandidatePortalAccessMaxAggregateInputType = {
   expiresAt?: true
   revokedAt?: true
   lastAccessedAt?: true
+  completedAt?: true
   createdAt?: true
 }
 
@@ -121,6 +126,7 @@ export type CandidatePortalAccessCountAggregateInputType = {
   expiresAt?: true
   revokedAt?: true
   lastAccessedAt?: true
+  completedAt?: true
   createdAt?: true
   _all?: true
 }
@@ -220,6 +226,7 @@ export type CandidatePortalAccessGroupByOutputType = {
   expiresAt: Date
   revokedAt: Date | null
   lastAccessedAt: Date | null
+  completedAt: Date | null
   createdAt: Date
   _count: CandidatePortalAccessCountAggregateOutputType | null
   _avg: CandidatePortalAccessAvgAggregateOutputType | null
@@ -255,6 +262,7 @@ export type CandidatePortalAccessWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"CandidatePortalAccess"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
   lastAccessedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CandidatePortalAccess"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
@@ -269,6 +277,7 @@ export type CandidatePortalAccessOrderByWithRelationInput = {
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastAccessedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
   case?: Prisma.VerificationCaseOrderByWithRelationInput
@@ -286,6 +295,7 @@ export type CandidatePortalAccessWhereUniqueInput = Prisma.AtLeast<{
   expiresAt?: Prisma.DateTimeFilter<"CandidatePortalAccess"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
   lastAccessedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CandidatePortalAccess"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
@@ -300,6 +310,7 @@ export type CandidatePortalAccessOrderByWithAggregationInput = {
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   lastAccessedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  completedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CandidatePortalAccessCountOrderByAggregateInput
   _avg?: Prisma.CandidatePortalAccessAvgOrderByAggregateInput
@@ -320,6 +331,7 @@ export type CandidatePortalAccessScalarWhereWithAggregatesInput = {
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"CandidatePortalAccess"> | Date | string
   revokedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CandidatePortalAccess"> | Date | string | null
   lastAccessedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CandidatePortalAccess"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"CandidatePortalAccess"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"CandidatePortalAccess"> | Date | string
 }
 
@@ -330,6 +342,7 @@ export type CandidatePortalAccessCreateInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCandidateAccessInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutCandidateAccessInput
@@ -344,6 +357,7 @@ export type CandidatePortalAccessUncheckedCreateInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -354,6 +368,7 @@ export type CandidatePortalAccessUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCandidateAccessNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutCandidateAccessNestedInput
@@ -368,6 +383,7 @@ export type CandidatePortalAccessUncheckedUpdateInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -379,6 +395,7 @@ export type CandidatePortalAccessCreateManyInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -389,6 +406,7 @@ export type CandidatePortalAccessUpdateManyMutationInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -401,6 +419,7 @@ export type CandidatePortalAccessUncheckedUpdateManyInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -423,6 +442,7 @@ export type CandidatePortalAccessCountOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   lastAccessedAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -441,6 +461,7 @@ export type CandidatePortalAccessMaxOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   lastAccessedAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -453,6 +474,7 @@ export type CandidatePortalAccessMinOrderByAggregateInput = {
   expiresAt?: Prisma.SortOrder
   revokedAt?: Prisma.SortOrder
   lastAccessedAt?: Prisma.SortOrder
+  completedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -553,6 +575,7 @@ export type CandidatePortalAccessCreateWithoutTenantInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   case: Prisma.VerificationCaseCreateNestedOneWithoutCandidateAccessInput
 }
@@ -565,6 +588,7 @@ export type CandidatePortalAccessUncheckedCreateWithoutTenantInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -605,6 +629,7 @@ export type CandidatePortalAccessScalarWhereInput = {
   expiresAt?: Prisma.DateTimeFilter<"CandidatePortalAccess"> | Date | string
   revokedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
   lastAccessedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
+  completedAt?: Prisma.DateTimeNullableFilter<"CandidatePortalAccess"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"CandidatePortalAccess"> | Date | string
 }
 
@@ -615,6 +640,7 @@ export type CandidatePortalAccessCreateWithoutCaseInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutCandidateAccessInput
 }
@@ -627,6 +653,7 @@ export type CandidatePortalAccessUncheckedCreateWithoutCaseInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -662,6 +689,7 @@ export type CandidatePortalAccessCreateManyTenantInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -672,6 +700,7 @@ export type CandidatePortalAccessUpdateWithoutTenantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutCandidateAccessNestedInput
 }
@@ -684,6 +713,7 @@ export type CandidatePortalAccessUncheckedUpdateWithoutTenantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -695,6 +725,7 @@ export type CandidatePortalAccessUncheckedUpdateManyWithoutTenantInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -705,6 +736,7 @@ export type CandidatePortalAccessCreateManyCaseInput = {
   expiresAt: Date | string
   revokedAt?: Date | string | null
   lastAccessedAt?: Date | string | null
+  completedAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -715,6 +747,7 @@ export type CandidatePortalAccessUpdateWithoutCaseInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutCandidateAccessNestedInput
 }
@@ -727,6 +760,7 @@ export type CandidatePortalAccessUncheckedUpdateWithoutCaseInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -738,6 +772,7 @@ export type CandidatePortalAccessUncheckedUpdateManyWithoutCaseInput = {
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revokedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastAccessedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -752,6 +787,7 @@ export type CandidatePortalAccessSelect<ExtArgs extends runtime.Types.Extensions
   expiresAt?: boolean
   revokedAt?: boolean
   lastAccessedAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
@@ -768,10 +804,11 @@ export type CandidatePortalAccessSelectScalar = {
   expiresAt?: boolean
   revokedAt?: boolean
   lastAccessedAt?: boolean
+  completedAt?: boolean
   createdAt?: boolean
 }
 
-export type CandidatePortalAccessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "tokenHash" | "expiresAt" | "revokedAt" | "lastAccessedAt" | "createdAt", ExtArgs["result"]["candidatePortalAccess"]>
+export type CandidatePortalAccessOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "tokenHash" | "expiresAt" | "revokedAt" | "lastAccessedAt" | "completedAt" | "createdAt", ExtArgs["result"]["candidatePortalAccess"]>
 export type CandidatePortalAccessInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
@@ -792,6 +829,10 @@ export type $CandidatePortalAccessPayload<ExtArgs extends runtime.Types.Extensio
     expiresAt: Date
     revokedAt: Date | null
     lastAccessedAt: Date | null
+    /**
+     * The candidate confirmed every requested document is uploaded; the link then closes.
+     */
+    completedAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["candidatePortalAccess"]>
   composites: {}
@@ -1172,6 +1213,7 @@ export interface CandidatePortalAccessFieldRefs {
   readonly expiresAt: Prisma.FieldRef<"CandidatePortalAccess", 'DateTime'>
   readonly revokedAt: Prisma.FieldRef<"CandidatePortalAccess", 'DateTime'>
   readonly lastAccessedAt: Prisma.FieldRef<"CandidatePortalAccess", 'DateTime'>
+  readonly completedAt: Prisma.FieldRef<"CandidatePortalAccess", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"CandidatePortalAccess", 'DateTime'>
 }
     

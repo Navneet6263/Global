@@ -8,7 +8,7 @@ import {
   Post,
   Query,
 } from "@nestjs/common";
-import { IsIn, IsOptional, IsUUID } from "class-validator";
+import { IsIn, IsOptional, IsString, IsUUID, MaxLength } from "class-validator";
 import { PageQueryDto } from "../common/dto/page-query.dto";
 import {
   CurrentActor,
@@ -24,6 +24,10 @@ import { ReassignTaskDto } from "./dto/reassign-task.dto";
 import { UpdateTaskDto } from "./dto/update-task.dto";
 import { TaskAssignmentService } from "./task-assignment.service";
 import { TasksService } from "./tasks.service";
+
+class LeadReviewDto {
+  @IsOptional() @IsString() @MaxLength(1000) note?: string;
+}
 
 class TaskQueryDto extends PageQueryDto {
   @IsOptional()
@@ -102,6 +106,30 @@ export class TasksController {
     @Body() input: ReassignTaskDto,
   ) {
     return this.assignments.reassign(actor, taskId, input);
+  }
+
+  /** Team Leader: the team member's finished check is fine; on to QA. */
+  @Post("tasks/:taskId/forward")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
+  @RequirePermissions(Permission.TaskWrite)
+  forward(
+    @CurrentActor() actor: Actor,
+    @Param("taskId", ParseUUIDPipe) taskId: string,
+    @Body() input: LeadReviewDto,
+  ) {
+    return this.tasks.forward(actor, taskId, input.note);
+  }
+
+  /** Team Leader: send the finished check back to its verifier with what to fix. */
+  @Post("tasks/:taskId/send-back")
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
+  @RequirePermissions(Permission.TaskWrite)
+  sendBack(
+    @CurrentActor() actor: Actor,
+    @Param("taskId", ParseUUIDPipe) taskId: string,
+    @Body() input: LeadReviewDto,
+  ) {
+    return this.tasks.sendBack(actor, taskId, input.note ?? "");
   }
 
   @Patch("tasks/:taskId")

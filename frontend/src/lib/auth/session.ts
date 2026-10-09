@@ -18,6 +18,8 @@ export interface PlatformSession {
   permissions: readonly (Permission | "*")[];
   branchScope: readonly string[];
   scopeLabel: string;
+  /** View-only Platform Admin: write actions are hidden (the API refuses them too). */
+  viewOnly?: boolean;
   activeWorkspace: WorkspaceId;
   signedInAt: string;
 }
@@ -35,7 +37,10 @@ export function getSession(workspace: WorkspaceId = "platform-admin"): PlatformS
       ? `Client scope: ${clientScopeLabel(identity.clientScope)}`
       : identity?.clientName
         ? `Client scope: ${identity.clientName}`
-        : `Branch scope: ${identity?.branchName ?? "All branches"}`,
+        : identity?.branchScoping
+          ? `Branch scope: ${identity.branchName ?? "All branches"}`
+          : (identity?.tenantName ?? ""),
+    viewOnly: identity?.viewOnly ?? false,
     activeWorkspace: workspace,
     signedInAt: new Date().toISOString(),
   };
@@ -50,6 +55,7 @@ export function workspaceForPath(pathname: string): WorkspaceId {
   if (pathname.startsWith("/field-executive")) return "field";
   if (pathname.startsWith("/finance")) return "finance";
   if (pathname.startsWith("/spoc-rm")) return "spoc";
+  if (pathname.startsWith("/data-entry")) return "data-entry";
   if (pathname === "/vendor" || pathname.startsWith("/vendor/")) return "vendor";
   if (pathname === "/support" || pathname.startsWith("/support/")) return "support";
   return "platform-admin";
@@ -67,6 +73,7 @@ const NAV_TO_WORKSPACE: Record<NavWorkspace, WorkspaceId> = {
   "spoc-rm": "spoc",
   vendor: "vendor",
   support: "support",
+  "data-entry": "data-entry",
 };
 
 export function sessionForNav(nav: NavWorkspace): PlatformSession {

@@ -1,3 +1,4 @@
+import { effectiveRole, roleIn } from "../common/auth/role-filter";
 import { Injectable } from "@nestjs/common";
 import type { Prisma } from "../generated/prisma/client";
 import { caseEvidenceReadiness } from "../documents/evidence-readiness";
@@ -71,12 +72,14 @@ export class QaReadinessService {
             }
           : { clientId: null }),
         userRoles: {
-          some: { role: { code: { in: ["QA_REVIEWER", "OPS_MANAGER"] } } },
+          some: { role: roleIn(["QA_REVIEWER", "OPS_MANAGER"]) },
         },
       },
       select: {
         id: true,
-        userRoles: { select: { role: { select: { code: true } } } },
+        userRoles: {
+          select: { role: { select: { code: true, baseRoleCode: true } } },
+        },
       },
     });
     if (reviewers.length) {
@@ -88,7 +91,7 @@ export class QaReadinessService {
           title: "Case ready for QA",
           body: "All verification checks are complete and awaiting independent review.",
           href: reviewer.userRoles.some(
-            (entry) => entry.role.code === "QA_REVIEWER",
+            (entry) => effectiveRole(entry.role) === "QA_REVIEWER",
           )
             ? "/qa-review"
             : "/operations/cases",

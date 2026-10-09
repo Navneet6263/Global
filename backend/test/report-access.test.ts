@@ -82,7 +82,7 @@ void test("a source responder cannot manager-approve a case completed and QA-rev
         recommendation: "Reviewed outcome stated",
       },
     ),
-    /independent of verification and QA/,
+    /independent of the verification work/,
   );
   assert.deepEqual(lookup, {
     where: {

@@ -2,6 +2,7 @@ import {
   BarChart3,
   BellRing,
   BriefcaseBusiness,
+  CircleHelp,
   Files,
   Gauge,
   History,
@@ -24,7 +25,9 @@ const ROLE_GROUPS: readonly NavGroup[] = [
 ];
 
 const VERIFIER_GROUPS: readonly NavGroup[] = [
-  { id: "command", label: "Workspace", defaultOpen: true },
+  // Team Leaders only: their department's queue and annexure.
+  { id: "delivery", label: "My team", defaultOpen: true },
+  { id: "command", label: "My work", defaultOpen: true },
   { id: "work", label: "History & insights", defaultOpen: true },
   { id: "account", label: "Account", defaultOpen: true },
 ];
@@ -141,7 +144,7 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
     groups: VERIFIER_GROUPS,
     items: [
       verifierItem(
-        "Verifier overview",
+        "Overview",
         "Today’s workload and execution health",
         LayoutDashboard,
         "/verifier",
@@ -172,6 +175,12 @@ export const ROLE_NAVIGATION: Partial<Record<NavWorkspace, WorkspaceNavigation>>
         MessageSquareWarning,
         "/verifier/blockers",
         { key: "verifierBlocked", tone: "warning" },
+      ),
+      verifierItem(
+        "UTV bucket",
+        "Unable-to-verify checks; leads re-open them",
+        CircleHelp,
+        "/verifier/utv",
       ),
       verifierItem(
         "Completed checks",

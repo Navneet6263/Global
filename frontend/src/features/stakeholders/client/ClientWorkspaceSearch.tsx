@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Search } from "lucide-react";
 import { getSession } from "@/lib/api/auth";
 
-const destinations = [
+const clientDestinations: readonly WorkspaceDestination[] = [
   {
     label: "Overview",
     detail: "Portfolio and current workload",
@@ -70,9 +70,27 @@ const destinations = [
     terms: "help rm contact issue ticket",
     permission: "support:request",
   },
-] as const;
+];
 
-export function ClientWorkspaceSearch() {
+export interface WorkspaceDestination {
+  label: string;
+  detail: string;
+  to: string;
+  view?: string;
+  search?: Record<string, string | boolean>;
+  terms: string;
+  permission: string;
+}
+
+export function ClientWorkspaceSearch({
+  destinations = clientDestinations,
+  caseSearchTo = "/client-portal/verifications",
+  placeholder = "Search features or cases…",
+}: {
+  destinations?: readonly WorkspaceDestination[];
+  caseSearchTo?: string;
+  placeholder?: string;
+} = {}) {
   const [term, setTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -93,14 +111,14 @@ export function ClientWorkspaceSearch() {
       label: item.label,
       detail: item.detail,
       to: item.to,
-      search: "view" in item ? { view: item.view } : {},
+      search: item.search ?? (item.view ? { view: item.view } : {}),
     })),
     ...(term.trim() && allowed("case:read")
       ? [
           {
             label: `Search cases for “${term.trim()}”`,
             detail: "Search candidate name or case number",
-            to: "/client-portal/verifications",
+            to: caseSearchTo,
             search: { q: term.trim() },
           },
         ]
@@ -135,7 +153,7 @@ export function ClientWorkspaceSearch() {
         autoComplete="off"
         maxLength={120}
         value={term}
-        placeholder="Search features or cases…"
+        placeholder={placeholder}
         className="w-full border border-slate-200 py-2 pl-9 pr-3 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
         onFocus={() => setOpen(true)}
         onChange={(event) => {

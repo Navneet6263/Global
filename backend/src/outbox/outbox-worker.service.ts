@@ -7,6 +7,7 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { createHmac } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
+import { MailerService } from "../common/mail/mailer.service";
 import { SecretBoxService } from "../common/security/secret-box.service";
 import { PrismaService } from "../database/prisma.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
@@ -18,6 +19,7 @@ import {
   NOOP_TOPICS,
   type CandidateAccessDelivery,
   type ConsentDelivery,
+  type EmailDelivery,
   type ExecutiveDelivery,
 } from "./outbox-worker.types";
 import {
@@ -44,6 +46,7 @@ export class OutboxWorkerService
     private readonly reportRecovery: ReportRecoveryService,
     private readonly deletionRecovery: ObjectDeletionRecoveryService,
     private readonly health: RuntimeHealthService,
+    private readonly mailer: MailerService,
   ) {}
 
   onApplicationBootstrap() {
@@ -111,6 +114,9 @@ export class OutboxWorkerService
         if (await this.isCurrentConsentOtp(event, delivery)) {
           await this.deliverConsent(delivery, event.id.toString());
         }
+      } else if (event.topic === "email.requested") {
+        const secret = this.requiredString(payload, "secret");
+        await this.deliverEmail(this.secretBox.open<EmailDelivery>(secret));
       } else if (event.topic === "object.delete.requested") {
         await this.storage.delete(this.requiredString(payload, "objectKey"));
       } else if (event.topic === "dashboard.executive.delivery") {
@@ -133,6 +139,7 @@ export class OutboxWorkerService
         "consent.otp.requested",
         "dashboard.executive.delivery",
         "candidate.access.issued",
+        "email.requested",
       ].includes(event.topic);
       if (!(await this.claims.complete(event, sensitive))) {
         this.logger.warn(
@@ -170,6 +177,7 @@ export class OutboxWorkerService
               "consent.otp.requested",
               "dashboard.executive.delivery",
               "candidate.access.issued",
+              "email.requested",
             ].includes(event.topic),
         );
       }
@@ -185,6 +193,14 @@ export class OutboxWorkerService
   ) {
     if (!delivery.destination)
       throw new Error("Candidate email or phone is required for OTP delivery");
+    if (delivery.channel === "EMAIL" && this.mailer.configured()) {
+      await this.mailer.sendTemplate(delivery.destination, "consent-otp", {
+        otp: delivery.otp,
+        consentUrl: delivery.consentUrl,
+        expiresAt: delivery.expiresAt,
+      });
+      return;
+    }
     await this.deliverWebhook(
       {
         channel: delivery.channel,
@@ -192,7 +208,7 @@ export class OutboxWorkerService
         template: "candidate-consent-otp",
         variables: {
           otp: delivery.otp,
-          consentUrl: delivery.consentUrl,
+          ...(delivery.consentUrl ? { consentUrl: delivery.consentUrl } : {}),
           expiresAt: delivery.expiresAt,
         },
       },
@@ -204,6 +220,14 @@ export class OutboxWorkerService
     delivery: CandidateAccessDelivery,
     idempotencyKey: string,
   ) {
+    if (delivery.channel === "EMAIL" && this.mailer.configured()) {
+      await this.mailer.sendTemplate(delivery.destination, "candidate-access", {
+        portalUrl: delivery.portalUrl,
+        expiresAt: delivery.expiresAt,
+        reason: delivery.reason,
+      });
+      return;
+    }
     await this.deliverWebhook(
       {
         channel: delivery.channel,
@@ -212,6 +236,7 @@ export class OutboxWorkerService
         variables: {
           portalUrl: delivery.portalUrl,
           expiresAt: delivery.expiresAt,
+          ...(delivery.reason ? { reason: delivery.reason } : {}),
         },
       },
       `sapling-candidate-access-${idempotencyKey}`,
@@ -295,6 +320,37 @@ export class OutboxWorkerService
         },
       },
       `sapling-executive-${idempotencyKey}`,
+    );
+  }
+
+  /** Direct email (sign-up OTP, onboarding): company SMTP, else a dev-only log line. */
+  private async deliverEmail(delivery: EmailDelivery) {
+    if (this.mailer.configured()) {
+      const attachments = await Promise.all(
+        (delivery.attachments ?? []).map(async (file) => ({
+          filename: file.filename,
+          contentType: file.contentType,
+          content: file.objectKey
+            ? await this.storage.get(file.objectKey)
+            : Buffer.from(file.base64 ?? "", "base64"),
+        })),
+      );
+      await this.mailer.sendTemplate(
+        delivery.to,
+        delivery.template,
+        delivery.variables,
+        { cc: delivery.cc, attachments },
+      );
+      return;
+    }
+    if (this.config.get<string>("NODE_ENV", "development") === "production")
+      throw new Error("SMTP_HOST is not configured");
+    this.logger.warn(
+      `SMTP is not configured; email "${delivery.template}" for ${delivery.to} not sent${
+        typeof delivery.variables.otp === "string"
+          ? ` (development code: ${delivery.variables.otp})`
+          : ""
+      }`,
     );
   }
 

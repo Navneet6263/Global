@@ -35,6 +35,7 @@ export const CaseStatuses = [
   "COMPLETED",
   "CLOSED",
   "CANCELLED",
+  "STOPPED",
 ] as const;
 
 export const caseTransitions: Record<string, readonly string[]> = {
@@ -50,4 +51,6 @@ export const caseTransitions: Record<string, readonly string[]> = {
   COMPLETED: ["CLOSED"],
   CLOSED: [],
   CANCELLED: [],
+  // Stop and resume go only through the audited /workflow stop action.
+  STOPPED: [],
 };

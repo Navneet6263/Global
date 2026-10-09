@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getSession } from "@/lib/api/auth";
 import { createCase, listAllClients, listCaseServicePackages } from "@/lib/api/cases";
-import { issueCandidateAccess } from "@/lib/api/candidate-portal";
 import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
 import { candidateSchema, createEmptyCaseDraft, type CaseDraft } from "./model";
 import { updateCaseDraft } from "./case-draft-policy";
@@ -14,10 +13,7 @@ export function useCaseIntake() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<CaseDraft>(createEmptyCaseDraft);
-  const [inviteCandidate, setInviteCandidate] = useState(true);
-  const [sendNotification, setSendNotification] = useState(false);
   const [completed, setCompleted] = useState<CreatedCaseAccess>();
-  const issuingForCase = useRef<string | undefined>(undefined);
   const attempt = useRef<{ fingerprint: string; key: string } | undefined>(undefined);
   const queryClient = useQueryClient();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
@@ -56,49 +52,27 @@ export function useCaseIntake() {
       );
   }, [fixedClient, open]);
   const createMutation = useMutation({
-    mutationFn: ({ caseDraft }: { caseDraft: CaseDraft; invite: boolean; notify: boolean }) => {
+    mutationFn: ({ caseDraft }: { caseDraft: CaseDraft }) => {
       const fingerprint = JSON.stringify(caseDraft);
       if (attempt.current?.fingerprint !== fingerprint)
         attempt.current = { fingerprint, key: crypto.randomUUID() };
       return createCase(caseDraft, attempt.current.key);
     },
-    onSuccess: (created, variables) => {
+    onSuccess: (created) => {
       attempt.current = undefined;
-      issuingForCase.current = variables.invite ? created.id : undefined;
+      // One link for the candidate, emailed at creation: consent (OTP) and uploads
+      // both happen inside it.
+      const access = created.candidateAccess;
       setCompleted({
         caseId: created.id,
         caseNumber: created.caseNumber,
-        consentUrl: `${window.location.origin}/consent/${created.consentDelivery.consentId}`,
-        consentExpiresAt: created.consentDelivery.expiresAt,
-        developmentOtp: created.consentDelivery.developmentOtp,
-        candidate: { status: variables.invite ? "issuing" : "skipped" },
+        candidate: {
+          status: "ready",
+          access,
+          url: `${window.location.origin}/candidate/${access.id}#token=${encodeURIComponent(access.token)}`,
+        },
       });
       void invalidateWorkflow(queryClient);
-      if (!variables.invite) return;
-      void issueCandidateAccess(created.id, variables.notify)
-        .then((access) => {
-          if (issuingForCase.current !== created.id) return;
-          const url = `${window.location.origin}/candidate/${access.id}#token=${encodeURIComponent(access.token)}`;
-          setCompleted((current) =>
-            current?.caseId === created.id
-              ? { ...current, candidate: { status: "ready", access, url } }
-              : current,
-          );
-        })
-        .catch((error: unknown) => {
-          if (issuingForCase.current !== created.id) return;
-          setCompleted((current) =>
-            current?.caseId === created.id
-              ? {
-                  ...current,
-                  candidate: {
-                    status: "failed",
-                    error: error instanceof Error ? error.message : "Issue it from Case 360.",
-                  },
-                }
-              : current,
-          );
-        });
     },
     onError: (error) =>
       toast.error("Case submission needs attention", {
@@ -112,11 +86,8 @@ export function useCaseIntake() {
     if (createMutation.isPending) return;
     setOpen(value);
     if (!value) {
-      issuingForCase.current = undefined;
       setStep(0);
       setDraft(createEmptyCaseDraft());
-      setInviteCandidate(true);
-      setSendNotification(false);
       setCompleted(undefined);
     }
   };
@@ -129,7 +100,7 @@ export function useCaseIntake() {
       );
       return;
     }
-    createMutation.mutate({ caseDraft: draft, invite: inviteCandidate, notify: sendNotification });
+    createMutation.mutate({ caseDraft: draft });
   };
   return {
     open,
@@ -138,10 +109,6 @@ export function useCaseIntake() {
     setStep,
     draft,
     update: (patch: Partial<CaseDraft>) => setDraft((current) => updateCaseDraft(current, patch)),
-    inviteCandidate,
-    setInviteCandidate,
-    sendNotification,
-    setSendNotification,
     completed,
     session,
     fixedClient,

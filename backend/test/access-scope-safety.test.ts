@@ -7,7 +7,7 @@ import { assertSafeRoleCombination } from "../src/users/role-combination";
 void test("single roles and explicitly confirmed internal combinations are accepted", () => {
   assert.doesNotThrow(() => assertSafeRoleCombination(["SALES_MANAGER"]));
   assert.doesNotThrow(() =>
-    assertSafeRoleCombination(["OPS_MANAGER", "QA_REVIEWER"], true),
+    assertSafeRoleCombination(["VERIFIER", "QA_REVIEWER"], true),
   );
 });
 
@@ -18,6 +18,8 @@ void test("implicit, platform-admin and client-admin combinations are rejected",
     [["CLIENT_ADMIN", "VERIFIER"], true],
     [["VENDOR", "VERIFIER"], true],
     [["VENDOR", "OPS_MANAGER"], true],
+    // Ops Manager is a single role.
+    [["OPS_MANAGER", "QA_REVIEWER"], true],
   ] as const) {
     assert.throws(
       () => assertSafeRoleCombination(roles, confirmed),

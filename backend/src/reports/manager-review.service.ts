@@ -30,6 +30,35 @@ export function assertManager(actor: Actor) {
   }
 }
 
+function assertRm(actor: Actor) {
+  if (!actor.roles.includes("SPOC_RM"))
+    throw new ForbiddenException(
+      "Final RM review is for the case's responsible RM",
+    );
+}
+
+/**
+ * v1 cases: Operations approves. v2 cases: only the current responsible RM approves
+ * (a platform administrator may still act for recovery).
+ */
+export function assertFinalApprover(
+  actor: Actor,
+  row: { workflowVersion: number; assignedOpsUserId: bigint | null },
+  path: "OPERATIONS" | "RM",
+) {
+  if (row.workflowVersion === 2) {
+    if (path === "RM" && row.assignedOpsUserId === actor.userId) return;
+    if (path === "OPERATIONS" && actor.roles.includes("PLATFORM_ADMIN")) return;
+    throw new ForbiddenException(
+      "Final approval for this case belongs to its responsible RM",
+    );
+  }
+  if (path === "RM")
+    throw new ForbiddenException(
+      "This case follows the earlier path; Operations approves it",
+    );
+}
+
 @Injectable()
 export class ManagerReviewService {
   constructor(
@@ -39,6 +68,16 @@ export class ManagerReviewService {
 
   async overview(actor: Actor, casePublicId: string) {
     assertManager(actor);
+    return this.loadOverview(actor, casePublicId);
+  }
+
+  /** v2 flow: the responsible RM reviews its own case after QC approval. */
+  async overviewAsRm(actor: Actor, casePublicId: string) {
+    assertRm(actor);
+    return this.loadOverview(actor, casePublicId);
+  }
+
+  private async loadOverview(actor: Actor, casePublicId: string) {
     const row = await this.prisma.verificationCase.findFirst({
       where: { ...caseAccessScope(actor), publicId: casePublicId },
       select: {
@@ -95,12 +134,28 @@ export class ManagerReviewService {
 
   async decide(actor: Actor, publicId: string, input: ManagerReviewDto) {
     assertManager(actor);
+    return this.decideCase(actor, publicId, input, "OPERATIONS");
+  }
+
+  /** v2 flow: final approval by the case's current RM (QC-approved cases only). */
+  async decideAsRm(actor: Actor, publicId: string, input: ManagerReviewDto) {
+    assertRm(actor);
+    return this.decideCase(actor, publicId, input, "RM");
+  }
+
+  private async decideCase(
+    actor: Actor,
+    publicId: string,
+    input: ManagerReviewDto,
+    path: "OPERATIONS" | "RM",
+  ) {
     return this.prisma.$transaction(async (tx) => {
       const row = await tx.verificationCase.findFirst({
         where: { ...caseAccessScope(actor), publicId },
         select: reportApprovalSelect,
       });
       if (!row) throw new NotFoundException("Case not found");
+      assertFinalApprover(actor, row, path);
       const legacyRecovery = legacyApprovalRequired(row);
       if (
         row.version !== input.caseVersion ||
@@ -113,15 +168,16 @@ export class ManagerReviewService {
       const qa = row.qaReviews[0];
       if (!qa || qa.decision !== "APPROVED")
         throw new BadRequestException("Approved QA review is required");
+      // The RM may also be the case's QA reviewer (same person); approval still has to be
+      // independent of the verification work itself.
       if (
-        qa.reviewerId === actor.userId ||
         row.checks.some((check) =>
           check.tasks.some((task) => task.completedById === actor.userId),
         ) ||
         (await hasRecordedCaseSource(tx, actor, publicId))
       ) {
         throw new ForbiddenException(
-          "Manager approval must be independent of verification and QA",
+          "Final approval must be independent of the verification work: someone who verified a check cannot approve it",
         );
       }
       const approved = input.decision === "APPROVED";

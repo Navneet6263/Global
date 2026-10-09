@@ -1,5 +1,7 @@
 import {
   BadgeCheck,
+  CircleHelp,
+  FileSpreadsheet,
   ClipboardList,
   FileSearch,
   Gauge,
@@ -47,7 +49,7 @@ export const OPS_NAV_ITEMS: readonly NavItem[] = [
     { key: "opsActiveCases", tone: "info" },
   ),
   item(
-    "Assignment Workbench",
+    "Override allocation",
     "Allocate checks to verifiers",
     BadgeCheck,
     "/operations/assignments",
@@ -72,6 +74,22 @@ export const OPS_NAV_ITEMS: readonly NavItem[] = [
     "delivery",
     "clarification:write",
     { key: "opsClarifications", tone: "review" },
+  ),
+  item(
+    "UTV bucket",
+    "Unable-to-verify checks to re-open",
+    CircleHelp,
+    "/operations/utv",
+    "delivery",
+    "case:read",
+  ),
+  item(
+    "Team annexure",
+    "Closed checks by week, month, year",
+    FileSpreadsheet,
+    "/operations/annexure",
+    "delivery",
+    "case:read",
   ),
   item(
     "Field Operations",

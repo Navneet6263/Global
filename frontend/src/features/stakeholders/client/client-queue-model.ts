@@ -11,6 +11,7 @@ export const clientStages = [
   { value: "COMPLETED", label: "Completed", tone: "success" },
   { value: "CLOSED", label: "Closed", tone: "neutral" },
   { value: "CANCELLED", label: "Cancelled", tone: "critical" },
+  { value: "STOPPED", label: "Stopped", tone: "neutral" },
 ] as const;
 
 export interface ClientQueueSearch {

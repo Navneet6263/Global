@@ -137,8 +137,17 @@ void test("selected checks use package whitelist and keep contracted commercial 
     services: [{ servicePackageId: ids[0]!, selectedChecks: ["EDUCATION"] }],
   } as CreateCaseDto);
   assert.deepEqual(plan.services[0]!.checks, ["EDUCATION"]);
-  assert.equal(plan.services[0]!.unitPrice, 750);
+  // One of two checks: its equal share of the list price (450), scaled by the
+  // agreed rate (750 / 900) = 375. The full package keeps the agreed 750.
+  assert.equal(plan.services[0]!.unitPrice, 375);
   assert.equal(plan.services[0]!.taxRate, 18);
+  const full = await loadCaseServicePlan(database, actor, {
+    ...input,
+    services: [
+      { servicePackageId: ids[0]!, selectedChecks: ["IDENTITY", "EDUCATION"] },
+    ],
+  } as CreateCaseDto);
+  assert.equal(full.services[0]!.unitPrice, 750);
   assert.equal(plan.services[0]!.pkg.requiredDocumentsJson, '["PAN"]');
   for (const checks of [[], ["COURT_RECORD"], ["IDENTITY", "IDENTITY"]]) {
     await assert.rejects(

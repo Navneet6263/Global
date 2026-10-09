@@ -27,7 +27,7 @@ export function QaReviewTabs({
       label: "Checks & findings",
       icon: ListChecks,
       count: String(checks),
-      tone: "bg-mint-soft text-mint-deep border-mint/25",
+      tone: "bg-blue-50 text-blue-700 border-blue-200",
     },
     {
       id: "documents",
@@ -59,7 +59,7 @@ export function QaReviewTabs({
     <nav
       aria-label="Case review sections"
       className={cn(
-        "grid gap-2 border-y border-border/60 bg-background/40 p-3",
+        "grid gap-2 border-y border-border/60 bg-slate-50 p-3",
         fieldVisits ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-1 min-[420px]:grid-cols-3",
       )}
     >
@@ -80,7 +80,7 @@ export function QaReviewTabs({
         >
           <Icon className="size-4 shrink-0" />
           <span>{label}</span>
-          <span className="num rounded-full bg-white/80 px-1.5 py-0.5 text-[10px]">{count}</span>
+          <span className="num rounded-full bg-white px-1.5 py-0.5 text-xs">{count}</span>
         </button>
       ))}
     </nav>

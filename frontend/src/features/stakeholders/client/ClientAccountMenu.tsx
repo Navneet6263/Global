@@ -15,7 +15,7 @@ import { getSession } from "@/lib/api/auth";
 import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { initialsOf } from "@/lib/formatting";
 
-export function ClientAccountMenu() {
+export function ClientAccountMenu({ roleLabel = "Client Admin" }: { roleLabel?: string }) {
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export function ClientAccountMenu() {
           </span>
           <span className="client-account-identity">
             <strong>{name}</strong>
-            <small>{signingOut ? "Signing out…" : "Client Admin"}</small>
+            <small>{signingOut ? "Signing out…" : roleLabel}</small>
           </span>
           <ChevronDown className="client-account-chevron" aria-hidden />
         </button>
@@ -63,7 +63,7 @@ export function ClientAccountMenu() {
           <span className="mt-1 block truncate text-xs font-normal text-muted-foreground">
             {session.data?.email}
           </span>
-          <span className="mt-1 block text-xs font-normal text-muted-foreground">Client Admin</span>
+          <span className="mt-1 block text-xs font-normal text-muted-foreground">{roleLabel}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="min-h-10 rounded-md">

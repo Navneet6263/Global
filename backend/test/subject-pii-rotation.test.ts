@@ -23,7 +23,9 @@ class MemorySubjects implements SubjectPiiRotationRepository {
         .filter(
           (row) =>
             row.piiCiphertext === null &&
-            (row.email !== null || row.phone !== null || row.employeeCode !== null) &&
+            (row.email !== null ||
+              row.phone !== null ||
+              row.employeeCode !== null) &&
             (afterId === undefined || row.id > afterId),
         )
         .sort((left, right) => Number(left.id - right.id))
@@ -32,14 +34,19 @@ class MemorySubjects implements SubjectPiiRotationRepository {
     );
   }
 
-  casSealPlaintext(snapshot: SubjectPiiSnapshot, ciphertext: string, keyVersion: number) {
+  casSealPlaintext(
+    snapshot: SubjectPiiSnapshot,
+    ciphertext: string,
+    keyVersion: number,
+  ) {
     this.sealAttempts += 1;
     const row = this.rows.find(({ id }) => id === snapshot.id);
     if (this.loseFirstSeal && this.sealAttempts === 1 && row) {
       row.email = "Concurrent@Example.com";
       return Promise.resolve(false);
     }
-    if (!row || !this.matchesPlaintext(row, snapshot)) return Promise.resolve(false);
+    if (!row || !this.matchesPlaintext(row, snapshot))
+      return Promise.resolve(false);
     row.email = null;
     row.phone = null;
     row.employeeCode = null;
@@ -48,7 +55,11 @@ class MemorySubjects implements SubjectPiiRotationRepository {
     return Promise.resolve(true);
   }
 
-  findOutdated(activeVersion: number, afterId: bigint | undefined, limit: number) {
+  findOutdated(
+    activeVersion: number,
+    afterId: bigint | undefined,
+    limit: number,
+  ) {
     return Promise.resolve(
       this.rows
         .filter(
@@ -88,7 +99,8 @@ class MemorySubjects implements SubjectPiiRotationRepository {
   countPlaintext() {
     return Promise.resolve(
       this.rows.filter(
-        (row) => row.email !== null || row.phone !== null || row.employeeCode !== null,
+        (row) =>
+          row.email !== null || row.phone !== null || row.employeeCode !== null,
       ).length,
     );
   }
@@ -96,7 +108,8 @@ class MemorySubjects implements SubjectPiiRotationRepository {
   countOutdated(activeVersion: number) {
     return Promise.resolve(
       this.rows.filter(
-        (row) => row.piiCiphertext !== null && row.piiKeyVersion !== activeVersion,
+        (row) =>
+          row.piiCiphertext !== null && row.piiKeyVersion !== activeVersion,
       ).length,
     );
   }
@@ -112,12 +125,18 @@ class MemorySubjects implements SubjectPiiRotationRepository {
   }
 }
 
-function secretBox(version: number, activeKey: string, previous?: Record<string, string>) {
+function secretBox(
+  version: number,
+  activeKey: string,
+  previous?: Record<string, string>,
+) {
   return new SecretBoxService(
     new ConfigService({
       DATA_ENCRYPTION_KEY_VERSION: version,
       DATA_ENCRYPTION_KEY: activeKey,
-      DATA_ENCRYPTION_PREVIOUS_KEYS: previous ? JSON.stringify(previous) : undefined,
+      DATA_ENCRYPTION_PREVIOUS_KEYS: previous
+        ? JSON.stringify(previous)
+        : undefined,
       JWT_REFRESH_SECRET: "refresh-secret-0123456789abcdef0123456789",
     }),
   );

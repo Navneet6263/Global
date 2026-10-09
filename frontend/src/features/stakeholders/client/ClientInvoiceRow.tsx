@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { downloadClientInvoice, type ClientInvoice } from "@/lib/backend-api/client-finance";
 import { ClientPill } from "./ClientPageParts";
 import { invoiceMoney } from "./client-billing-format";
+import { BillingAnnexurePanel } from "@/features/finance/BillingAnnexurePanel";
 const date = (value: string | null) =>
   value ? new Date(value).toLocaleDateString("en-IN") : "Not recorded";
 
@@ -41,6 +42,13 @@ export function ClientInvoiceRow({
         </td>
         <td>
           <ClientPill tone={tone}>{invoice.status.replaceAll("_", " ")}</ClientPill>
+          {invoice.annexureStatus === "PENDING" ? (
+            <ClientPill tone="amber">Validate bill</ClientPill>
+          ) : invoice.annexureStatus === "QUERIED" ? (
+            <ClientPill tone="red">Query raised</ClientPill>
+          ) : invoice.annexureStatus === "VALIDATED" ? (
+            <ClientPill tone="green">Bill validated</ClientPill>
+          ) : null}
         </td>
         <td>
           <div className="client-row-actions">
@@ -94,6 +102,9 @@ export function ClientInvoiceRow({
               Payments and credits are recorded by Finance. A zero balance does not bypass report
               approval.
             </p>
+            {invoice.annexureStatus ? (
+              <BillingAnnexurePanel audience="client" invoiceId={invoice.id} />
+            ) : null}
           </td>
         </tr>
       )}

@@ -14,11 +14,13 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as ClientPortalRouteImport } from './routes/client-portal'
+import { Route as DataEntryRouteImport } from './routes/data-entry'
 import { Route as FieldExecutiveRouteImport } from './routes/field-executive'
 import { Route as FinanceRouteImport } from './routes/finance'
 import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as QaReviewRouteImport } from './routes/qa-review'
 import { Route as SalesCrmRouteImport } from './routes/sales-crm'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SpocRmRouteImport } from './routes/spoc-rm'
 import { Route as SupportRouteImport } from './routes/support'
 import { Route as VendorRouteImport } from './routes/vendor'
@@ -32,9 +34,12 @@ import { Route as AdminClientsRouteImport } from './routes/admin.clients'
 import { Route as AdminExceptionsRouteImport } from './routes/admin.exceptions'
 import { Route as AdminFieldRouteImport } from './routes/admin.field'
 import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
+import { Route as AdminOnboardingRouteImport } from './routes/admin.onboarding'
+import { Route as AdminPackagesRouteImport } from './routes/admin.packages'
 import { Route as AdminPrivacyRouteImport } from './routes/admin.privacy'
 import { Route as AdminQaRouteImport } from './routes/admin.qa'
 import { Route as AdminReportsRouteImport } from './routes/admin.reports'
+import { Route as AdminRolesRouteImport } from './routes/admin.roles'
 import { Route as AdminSalesRouteImport } from './routes/admin.sales'
 import { Route as AdminSecurityRouteImport } from './routes/admin.security'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
@@ -47,23 +52,38 @@ import { Route as ClientPortalIndexRouteImport } from './routes/client-portal.in
 import { Route as ClientPortalActionsRouteImport } from './routes/client-portal.actions'
 import { Route as ClientPortalAnalyticsRouteImport } from './routes/client-portal.analytics'
 import { Route as ClientPortalBillingRouteImport } from './routes/client-portal.billing'
+import { Route as ClientPortalOnboardingRouteImport } from './routes/client-portal.onboarding'
 import { Route as ClientPortalReportsRouteImport } from './routes/client-portal.reports'
+import { Route as ClientPortalReviewRouteImport } from './routes/client-portal.review'
 import { Route as ClientPortalSupportRouteImport } from './routes/client-portal.support'
 import { Route as ClientPortalVerificationsRouteImport } from './routes/client-portal.verifications'
 import { Route as ConsentConsentIdRouteImport } from './routes/consent.$consentId'
+import { Route as DataEntryIndexRouteImport } from './routes/data-entry.index'
+import { Route as DataEntryMembersRouteImport } from './routes/data-entry.members'
+import { Route as DataEntryOverviewRouteImport } from './routes/data-entry.overview'
+import { Route as DataEntryReportsRouteImport } from './routes/data-entry.reports'
 import { Route as FinanceBillingRouteImport } from './routes/finance_.billing'
 import { Route as FinanceCollectionsRouteImport } from './routes/finance_.collections'
 import { Route as FinanceCreditRouteImport } from './routes/finance_.credit'
 import { Route as FinanceInvoicesRouteImport } from './routes/finance_.invoices'
 import { Route as FinanceStatementsRouteImport } from './routes/finance_.statements'
 import { Route as OperationsIndexRouteImport } from './routes/operations.index'
+import { Route as OperationsAnnexureRouteImport } from './routes/operations.annexure'
 import { Route as OperationsAssignmentsRouteImport } from './routes/operations.assignments'
+import { Route as OperationsAttentionRouteImport } from './routes/operations.attention'
 import { Route as OperationsCasesRouteImport } from './routes/operations.cases'
 import { Route as OperationsClarificationsRouteImport } from './routes/operations.clarifications'
+import { Route as OperationsClientsRouteImport } from './routes/operations.clients'
+import { Route as OperationsDepartmentsRouteImport } from './routes/operations.departments'
 import { Route as OperationsExceptionsRouteImport } from './routes/operations.exceptions'
 import { Route as OperationsFieldRouteImport } from './routes/operations.field'
+import { Route as OperationsOnboardingRouteImport } from './routes/operations.onboarding'
+import { Route as OperationsPackagesRouteImport } from './routes/operations.packages'
+import { Route as OperationsReportsRouteImport } from './routes/operations.reports'
 import { Route as OperationsSlaRouteImport } from './routes/operations.sla'
 import { Route as OperationsTeamRouteImport } from './routes/operations.team'
+import { Route as OperationsUtvRouteImport } from './routes/operations.utv'
+import { Route as OperationsVendorWorkRouteImport } from './routes/operations.vendor-work'
 import { Route as QaReviewCorrectionsRouteImport } from './routes/qa-review_.corrections'
 import { Route as QaReviewHistoryRouteImport } from './routes/qa-review_.history'
 import { Route as QaReviewMineRouteImport } from './routes/qa-review_.mine'
@@ -78,24 +98,34 @@ import { Route as SalesCrmSettingsRouteImport } from './routes/sales-crm.setting
 import { Route as SalesCrmTeamRouteImport } from './routes/sales-crm.team'
 import { Route as SpocRmIndexRouteImport } from './routes/spoc-rm.index'
 import { Route as SpocRmClientsRouteImport } from './routes/spoc-rm.clients'
+import { Route as SpocRmOnboardingRouteImport } from './routes/spoc-rm.onboarding'
+import { Route as SpocRmPaymentsRouteImport } from './routes/spoc-rm.payments'
+import { Route as SpocRmPricingRouteImport } from './routes/spoc-rm.pricing'
 import { Route as SpocRmRecordsRouteImport } from './routes/spoc-rm.records'
+import { Route as SpocRmVendorWorkRouteImport } from './routes/spoc-rm.vendor-work'
 import { Route as SpocRmVendorsRouteImport } from './routes/spoc-rm.vendors'
+import { Route as SpocRmWorkRouteImport } from './routes/spoc-rm.work'
 import { Route as SupportIndexRouteImport } from './routes/support.index'
 import { Route as SupportEmployeesRouteImport } from './routes/support.employees'
 import { Route as SupportRequestsRouteImport } from './routes/support.requests'
 import { Route as VendorIndexRouteImport } from './routes/vendor.index'
 import { Route as VendorAllRouteImport } from './routes/vendor.all'
 import { Route as VendorApprovedRouteImport } from './routes/vendor.approved'
+import { Route as VendorChecksRouteImport } from './routes/vendor.checks'
 import { Route as VendorLogsRouteImport } from './routes/vendor.logs'
 import { Route as VendorPendingRouteImport } from './routes/vendor.pending'
 import { Route as VendorRejectedRouteImport } from './routes/vendor.rejected'
 import { Route as VendorTeamRouteImport } from './routes/vendor.team'
 import { Route as VerifierIndexRouteImport } from './routes/verifier.index'
+import { Route as VerifierAnnexureRouteImport } from './routes/verifier.annexure'
 import { Route as VerifierBlockersRouteImport } from './routes/verifier.blockers'
 import { Route as VerifierHistoryRouteImport } from './routes/verifier.history'
+import { Route as VerifierMembersRouteImport } from './routes/verifier.members'
 import { Route as VerifierPerformanceRouteImport } from './routes/verifier.performance'
 import { Route as VerifierQueueRouteImport } from './routes/verifier.queue'
 import { Route as VerifierSlaRouteImport } from './routes/verifier.sla'
+import { Route as VerifierTeamRouteImport } from './routes/verifier.team'
+import { Route as VerifierUtvRouteImport } from './routes/verifier.utv'
 import { Route as ReportsVerifyAuthenticityCodeRouteImport } from './routes/reports.verify.$authenticityCode'
 
 const IndexRoute = IndexRouteImport.update({
@@ -123,6 +153,11 @@ const ClientPortalRoute = ClientPortalRouteImport.update({
   path: '/client-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DataEntryRoute = DataEntryRouteImport.update({
+  id: '/data-entry',
+  path: '/data-entry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FieldExecutiveRoute = FieldExecutiveRouteImport.update({
   id: '/field-executive',
   path: '/field-executive',
@@ -146,6 +181,11 @@ const QaReviewRoute = QaReviewRouteImport.update({
 const SalesCrmRoute = SalesCrmRouteImport.update({
   id: '/sales-crm',
   path: '/sales-crm',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SpocRmRoute = SpocRmRouteImport.update({
@@ -213,6 +253,16 @@ const AdminFinanceRoute = AdminFinanceRouteImport.update({
   path: '/finance',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminOnboardingRoute = AdminOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPackagesRoute = AdminPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminPrivacyRoute = AdminPrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -226,6 +276,11 @@ const AdminQaRoute = AdminQaRouteImport.update({
 const AdminReportsRoute = AdminReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRolesRoute = AdminRolesRouteImport.update({
+  id: '/roles',
+  path: '/roles',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminSalesRoute = AdminSalesRouteImport.update({
@@ -289,9 +344,19 @@ const ClientPortalBillingRoute = ClientPortalBillingRouteImport.update({
   path: '/billing',
   getParentRoute: () => ClientPortalRoute,
 } as any)
+const ClientPortalOnboardingRoute = ClientPortalOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
 const ClientPortalReportsRoute = ClientPortalReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalReviewRoute = ClientPortalReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
   getParentRoute: () => ClientPortalRoute,
 } as any)
 const ClientPortalSupportRoute = ClientPortalSupportRouteImport.update({
@@ -309,6 +374,26 @@ const ConsentConsentIdRoute = ConsentConsentIdRouteImport.update({
   id: '/consent/$consentId',
   path: '/consent/$consentId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DataEntryIndexRoute = DataEntryIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DataEntryRoute,
+} as any)
+const DataEntryMembersRoute = DataEntryMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
+  getParentRoute: () => DataEntryRoute,
+} as any)
+const DataEntryOverviewRoute = DataEntryOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
+  getParentRoute: () => DataEntryRoute,
+} as any)
+const DataEntryReportsRoute = DataEntryReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => DataEntryRoute,
 } as any)
 const FinanceBillingRoute = FinanceBillingRouteImport.update({
   id: '/finance_/billing',
@@ -340,9 +425,19 @@ const OperationsIndexRoute = OperationsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => OperationsRoute,
 } as any)
+const OperationsAnnexureRoute = OperationsAnnexureRouteImport.update({
+  id: '/annexure',
+  path: '/annexure',
+  getParentRoute: () => OperationsRoute,
+} as any)
 const OperationsAssignmentsRoute = OperationsAssignmentsRouteImport.update({
   id: '/assignments',
   path: '/assignments',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsAttentionRoute = OperationsAttentionRouteImport.update({
+  id: '/attention',
+  path: '/attention',
   getParentRoute: () => OperationsRoute,
 } as any)
 const OperationsCasesRoute = OperationsCasesRouteImport.update({
@@ -356,6 +451,16 @@ const OperationsClarificationsRoute =
     path: '/clarifications',
     getParentRoute: () => OperationsRoute,
   } as any)
+const OperationsClientsRoute = OperationsClientsRouteImport.update({
+  id: '/clients',
+  path: '/clients',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsDepartmentsRoute = OperationsDepartmentsRouteImport.update({
+  id: '/departments',
+  path: '/departments',
+  getParentRoute: () => OperationsRoute,
+} as any)
 const OperationsExceptionsRoute = OperationsExceptionsRouteImport.update({
   id: '/exceptions',
   path: '/exceptions',
@@ -366,6 +471,21 @@ const OperationsFieldRoute = OperationsFieldRouteImport.update({
   path: '/field',
   getParentRoute: () => OperationsRoute,
 } as any)
+const OperationsOnboardingRoute = OperationsOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsPackagesRoute = OperationsPackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsReportsRoute = OperationsReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => OperationsRoute,
+} as any)
 const OperationsSlaRoute = OperationsSlaRouteImport.update({
   id: '/sla',
   path: '/sla',
@@ -374,6 +494,16 @@ const OperationsSlaRoute = OperationsSlaRouteImport.update({
 const OperationsTeamRoute = OperationsTeamRouteImport.update({
   id: '/team',
   path: '/team',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsUtvRoute = OperationsUtvRouteImport.update({
+  id: '/utv',
+  path: '/utv',
+  getParentRoute: () => OperationsRoute,
+} as any)
+const OperationsVendorWorkRoute = OperationsVendorWorkRouteImport.update({
+  id: '/vendor-work',
+  path: '/vendor-work',
   getParentRoute: () => OperationsRoute,
 } as any)
 const QaReviewCorrectionsRoute = QaReviewCorrectionsRouteImport.update({
@@ -446,14 +576,39 @@ const SpocRmClientsRoute = SpocRmClientsRouteImport.update({
   path: '/clients',
   getParentRoute: () => SpocRmRoute,
 } as any)
+const SpocRmOnboardingRoute = SpocRmOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => SpocRmRoute,
+} as any)
+const SpocRmPaymentsRoute = SpocRmPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => SpocRmRoute,
+} as any)
+const SpocRmPricingRoute = SpocRmPricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => SpocRmRoute,
+} as any)
 const SpocRmRecordsRoute = SpocRmRecordsRouteImport.update({
   id: '/records',
   path: '/records',
   getParentRoute: () => SpocRmRoute,
 } as any)
+const SpocRmVendorWorkRoute = SpocRmVendorWorkRouteImport.update({
+  id: '/vendor-work',
+  path: '/vendor-work',
+  getParentRoute: () => SpocRmRoute,
+} as any)
 const SpocRmVendorsRoute = SpocRmVendorsRouteImport.update({
   id: '/vendors',
   path: '/vendors',
+  getParentRoute: () => SpocRmRoute,
+} as any)
+const SpocRmWorkRoute = SpocRmWorkRouteImport.update({
+  id: '/work',
+  path: '/work',
   getParentRoute: () => SpocRmRoute,
 } as any)
 const SupportIndexRoute = SupportIndexRouteImport.update({
@@ -486,6 +641,11 @@ const VendorApprovedRoute = VendorApprovedRouteImport.update({
   path: '/approved',
   getParentRoute: () => VendorRoute,
 } as any)
+const VendorChecksRoute = VendorChecksRouteImport.update({
+  id: '/checks',
+  path: '/checks',
+  getParentRoute: () => VendorRoute,
+} as any)
 const VendorLogsRoute = VendorLogsRouteImport.update({
   id: '/logs',
   path: '/logs',
@@ -511,6 +671,11 @@ const VerifierIndexRoute = VerifierIndexRouteImport.update({
   path: '/',
   getParentRoute: () => VerifierRoute,
 } as any)
+const VerifierAnnexureRoute = VerifierAnnexureRouteImport.update({
+  id: '/annexure',
+  path: '/annexure',
+  getParentRoute: () => VerifierRoute,
+} as any)
 const VerifierBlockersRoute = VerifierBlockersRouteImport.update({
   id: '/blockers',
   path: '/blockers',
@@ -519,6 +684,11 @@ const VerifierBlockersRoute = VerifierBlockersRouteImport.update({
 const VerifierHistoryRoute = VerifierHistoryRouteImport.update({
   id: '/history',
   path: '/history',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierMembersRoute = VerifierMembersRouteImport.update({
+  id: '/members',
+  path: '/members',
   getParentRoute: () => VerifierRoute,
 } as any)
 const VerifierPerformanceRoute = VerifierPerformanceRouteImport.update({
@@ -536,6 +706,16 @@ const VerifierSlaRoute = VerifierSlaRouteImport.update({
   path: '/sla',
   getParentRoute: () => VerifierRoute,
 } as any)
+const VerifierTeamRoute = VerifierTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => VerifierRoute,
+} as any)
+const VerifierUtvRoute = VerifierUtvRouteImport.update({
+  id: '/utv',
+  path: '/utv',
+  getParentRoute: () => VerifierRoute,
+} as any)
 const ReportsVerifyAuthenticityCodeRoute =
   ReportsVerifyAuthenticityCodeRouteImport.update({
     id: '/reports/verify/$authenticityCode',
@@ -549,11 +729,13 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/client-portal': typeof ClientPortalRouteWithChildren
+  '/data-entry': typeof DataEntryRouteWithChildren
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
+  '/signup': typeof SignupRoute
   '/spoc-rm': typeof SpocRmRouteWithChildren
   '/support': typeof SupportRouteWithChildren
   '/vendor': typeof VendorRouteWithChildren
@@ -566,9 +748,12 @@ export interface FileRoutesByFullPath {
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
+  '/admin/onboarding': typeof AdminOnboardingRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/privacy': typeof AdminPrivacyRoute
   '/admin/qa': typeof AdminQaRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/roles': typeof AdminRolesRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -580,22 +765,36 @@ export interface FileRoutesByFullPath {
   '/client-portal/actions': typeof ClientPortalActionsRoute
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
+  '/client-portal/onboarding': typeof ClientPortalOnboardingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/review': typeof ClientPortalReviewRoute
   '/client-portal/support': typeof ClientPortalSupportRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/data-entry/members': typeof DataEntryMembersRoute
+  '/data-entry/overview': typeof DataEntryOverviewRoute
+  '/data-entry/reports': typeof DataEntryReportsRoute
   '/finance/billing': typeof FinanceBillingRoute
   '/finance/collections': typeof FinanceCollectionsRoute
   '/finance/credit': typeof FinanceCreditRoute
   '/finance/invoices': typeof FinanceInvoicesRoute
   '/finance/statements': typeof FinanceStatementsRoute
+  '/operations/annexure': typeof OperationsAnnexureRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
+  '/operations/attention': typeof OperationsAttentionRoute
   '/operations/cases': typeof OperationsCasesRoute
   '/operations/clarifications': typeof OperationsClarificationsRoute
+  '/operations/clients': typeof OperationsClientsRoute
+  '/operations/departments': typeof OperationsDepartmentsRoute
   '/operations/exceptions': typeof OperationsExceptionsRoute
   '/operations/field': typeof OperationsFieldRoute
+  '/operations/onboarding': typeof OperationsOnboardingRoute
+  '/operations/packages': typeof OperationsPackagesRoute
+  '/operations/reports': typeof OperationsReportsRoute
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
+  '/operations/utv': typeof OperationsUtvRoute
+  '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review/history': typeof QaReviewHistoryRoute
   '/qa-review/mine': typeof QaReviewMineRoute
@@ -608,23 +807,34 @@ export interface FileRoutesByFullPath {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/onboarding': typeof SpocRmOnboardingRoute
+  '/spoc-rm/payments': typeof SpocRmPaymentsRoute
+  '/spoc-rm/pricing': typeof SpocRmPricingRoute
   '/spoc-rm/records': typeof SpocRmRecordsRoute
+  '/spoc-rm/vendor-work': typeof SpocRmVendorWorkRoute
   '/spoc-rm/vendors': typeof SpocRmVendorsRoute
+  '/spoc-rm/work': typeof SpocRmWorkRoute
   '/support/employees': typeof SupportEmployeesRoute
   '/support/requests': typeof SupportRequestsRoute
   '/vendor/all': typeof VendorAllRoute
   '/vendor/approved': typeof VendorApprovedRoute
+  '/vendor/checks': typeof VendorChecksRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
+  '/verifier/annexure': typeof VerifierAnnexureRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
+  '/verifier/members': typeof VerifierMembersRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
   '/verifier/queue': typeof VerifierQueueRoute
   '/verifier/sla': typeof VerifierSlaRoute
+  '/verifier/team': typeof VerifierTeamRoute
+  '/verifier/utv': typeof VerifierUtvRoute
   '/admin/': typeof AdminIndexRoute
   '/client-portal/': typeof ClientPortalIndexRoute
+  '/data-entry/': typeof DataEntryIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
   '/spoc-rm/': typeof SpocRmIndexRoute
@@ -640,6 +850,7 @@ export interface FileRoutesByTo {
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/qa-review': typeof QaReviewRoute
+  '/signup': typeof SignupRoute
   '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/audit': typeof AdminAuditRoute
   '/admin/cases': typeof AdminCasesRoute
@@ -648,9 +859,12 @@ export interface FileRoutesByTo {
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
+  '/admin/onboarding': typeof AdminOnboardingRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/privacy': typeof AdminPrivacyRoute
   '/admin/qa': typeof AdminQaRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/roles': typeof AdminRolesRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -662,22 +876,36 @@ export interface FileRoutesByTo {
   '/client-portal/actions': typeof ClientPortalActionsRoute
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
+  '/client-portal/onboarding': typeof ClientPortalOnboardingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/review': typeof ClientPortalReviewRoute
   '/client-portal/support': typeof ClientPortalSupportRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/data-entry/members': typeof DataEntryMembersRoute
+  '/data-entry/overview': typeof DataEntryOverviewRoute
+  '/data-entry/reports': typeof DataEntryReportsRoute
   '/finance/billing': typeof FinanceBillingRoute
   '/finance/collections': typeof FinanceCollectionsRoute
   '/finance/credit': typeof FinanceCreditRoute
   '/finance/invoices': typeof FinanceInvoicesRoute
   '/finance/statements': typeof FinanceStatementsRoute
+  '/operations/annexure': typeof OperationsAnnexureRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
+  '/operations/attention': typeof OperationsAttentionRoute
   '/operations/cases': typeof OperationsCasesRoute
   '/operations/clarifications': typeof OperationsClarificationsRoute
+  '/operations/clients': typeof OperationsClientsRoute
+  '/operations/departments': typeof OperationsDepartmentsRoute
   '/operations/exceptions': typeof OperationsExceptionsRoute
   '/operations/field': typeof OperationsFieldRoute
+  '/operations/onboarding': typeof OperationsOnboardingRoute
+  '/operations/packages': typeof OperationsPackagesRoute
+  '/operations/reports': typeof OperationsReportsRoute
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
+  '/operations/utv': typeof OperationsUtvRoute
+  '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review/history': typeof QaReviewHistoryRoute
   '/qa-review/mine': typeof QaReviewMineRoute
@@ -690,23 +918,34 @@ export interface FileRoutesByTo {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/onboarding': typeof SpocRmOnboardingRoute
+  '/spoc-rm/payments': typeof SpocRmPaymentsRoute
+  '/spoc-rm/pricing': typeof SpocRmPricingRoute
   '/spoc-rm/records': typeof SpocRmRecordsRoute
+  '/spoc-rm/vendor-work': typeof SpocRmVendorWorkRoute
   '/spoc-rm/vendors': typeof SpocRmVendorsRoute
+  '/spoc-rm/work': typeof SpocRmWorkRoute
   '/support/employees': typeof SupportEmployeesRoute
   '/support/requests': typeof SupportRequestsRoute
   '/vendor/all': typeof VendorAllRoute
   '/vendor/approved': typeof VendorApprovedRoute
+  '/vendor/checks': typeof VendorChecksRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
+  '/verifier/annexure': typeof VerifierAnnexureRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
+  '/verifier/members': typeof VerifierMembersRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
   '/verifier/queue': typeof VerifierQueueRoute
   '/verifier/sla': typeof VerifierSlaRoute
+  '/verifier/team': typeof VerifierTeamRoute
+  '/verifier/utv': typeof VerifierUtvRoute
   '/admin': typeof AdminIndexRoute
   '/client-portal': typeof ClientPortalIndexRoute
+  '/data-entry': typeof DataEntryIndexRoute
   '/operations': typeof OperationsIndexRoute
   '/sales-crm': typeof SalesCrmIndexRoute
   '/spoc-rm': typeof SpocRmIndexRoute
@@ -722,11 +961,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/client-portal': typeof ClientPortalRouteWithChildren
+  '/data-entry': typeof DataEntryRouteWithChildren
   '/field-executive': typeof FieldExecutiveRoute
   '/finance': typeof FinanceRoute
   '/operations': typeof OperationsRouteWithChildren
   '/qa-review': typeof QaReviewRoute
   '/sales-crm': typeof SalesCrmRouteWithChildren
+  '/signup': typeof SignupRoute
   '/spoc-rm': typeof SpocRmRouteWithChildren
   '/support': typeof SupportRouteWithChildren
   '/vendor': typeof VendorRouteWithChildren
@@ -739,9 +980,12 @@ export interface FileRoutesById {
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
+  '/admin/onboarding': typeof AdminOnboardingRoute
+  '/admin/packages': typeof AdminPackagesRoute
   '/admin/privacy': typeof AdminPrivacyRoute
   '/admin/qa': typeof AdminQaRoute
   '/admin/reports': typeof AdminReportsRoute
+  '/admin/roles': typeof AdminRolesRoute
   '/admin/sales': typeof AdminSalesRoute
   '/admin/security': typeof AdminSecurityRoute
   '/admin/settings': typeof AdminSettingsRoute
@@ -753,22 +997,36 @@ export interface FileRoutesById {
   '/client-portal/actions': typeof ClientPortalActionsRoute
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
+  '/client-portal/onboarding': typeof ClientPortalOnboardingRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
+  '/client-portal/review': typeof ClientPortalReviewRoute
   '/client-portal/support': typeof ClientPortalSupportRoute
   '/client-portal/verifications': typeof ClientPortalVerificationsRoute
   '/consent/$consentId': typeof ConsentConsentIdRoute
+  '/data-entry/members': typeof DataEntryMembersRoute
+  '/data-entry/overview': typeof DataEntryOverviewRoute
+  '/data-entry/reports': typeof DataEntryReportsRoute
   '/finance_/billing': typeof FinanceBillingRoute
   '/finance_/collections': typeof FinanceCollectionsRoute
   '/finance_/credit': typeof FinanceCreditRoute
   '/finance_/invoices': typeof FinanceInvoicesRoute
   '/finance_/statements': typeof FinanceStatementsRoute
+  '/operations/annexure': typeof OperationsAnnexureRoute
   '/operations/assignments': typeof OperationsAssignmentsRoute
+  '/operations/attention': typeof OperationsAttentionRoute
   '/operations/cases': typeof OperationsCasesRoute
   '/operations/clarifications': typeof OperationsClarificationsRoute
+  '/operations/clients': typeof OperationsClientsRoute
+  '/operations/departments': typeof OperationsDepartmentsRoute
   '/operations/exceptions': typeof OperationsExceptionsRoute
   '/operations/field': typeof OperationsFieldRoute
+  '/operations/onboarding': typeof OperationsOnboardingRoute
+  '/operations/packages': typeof OperationsPackagesRoute
+  '/operations/reports': typeof OperationsReportsRoute
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
+  '/operations/utv': typeof OperationsUtvRoute
+  '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review_/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review_/history': typeof QaReviewHistoryRoute
   '/qa-review_/mine': typeof QaReviewMineRoute
@@ -781,23 +1039,34 @@ export interface FileRoutesById {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/onboarding': typeof SpocRmOnboardingRoute
+  '/spoc-rm/payments': typeof SpocRmPaymentsRoute
+  '/spoc-rm/pricing': typeof SpocRmPricingRoute
   '/spoc-rm/records': typeof SpocRmRecordsRoute
+  '/spoc-rm/vendor-work': typeof SpocRmVendorWorkRoute
   '/spoc-rm/vendors': typeof SpocRmVendorsRoute
+  '/spoc-rm/work': typeof SpocRmWorkRoute
   '/support/employees': typeof SupportEmployeesRoute
   '/support/requests': typeof SupportRequestsRoute
   '/vendor/all': typeof VendorAllRoute
   '/vendor/approved': typeof VendorApprovedRoute
+  '/vendor/checks': typeof VendorChecksRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
+  '/verifier/annexure': typeof VerifierAnnexureRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
+  '/verifier/members': typeof VerifierMembersRoute
   '/verifier/performance': typeof VerifierPerformanceRoute
   '/verifier/queue': typeof VerifierQueueRoute
   '/verifier/sla': typeof VerifierSlaRoute
+  '/verifier/team': typeof VerifierTeamRoute
+  '/verifier/utv': typeof VerifierUtvRoute
   '/admin/': typeof AdminIndexRoute
   '/client-portal/': typeof ClientPortalIndexRoute
+  '/data-entry/': typeof DataEntryIndexRoute
   '/operations/': typeof OperationsIndexRoute
   '/sales-crm/': typeof SalesCrmIndexRoute
   '/spoc-rm/': typeof SpocRmIndexRoute
@@ -814,11 +1083,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/change-password'
     | '/client-portal'
+    | '/data-entry'
     | '/field-executive'
     | '/finance'
     | '/operations'
     | '/qa-review'
     | '/sales-crm'
+    | '/signup'
     | '/spoc-rm'
     | '/support'
     | '/vendor'
@@ -831,9 +1102,12 @@ export interface FileRouteTypes {
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
+    | '/admin/onboarding'
+    | '/admin/packages'
     | '/admin/privacy'
     | '/admin/qa'
     | '/admin/reports'
+    | '/admin/roles'
     | '/admin/sales'
     | '/admin/security'
     | '/admin/settings'
@@ -845,22 +1119,36 @@ export interface FileRouteTypes {
     | '/client-portal/actions'
     | '/client-portal/analytics'
     | '/client-portal/billing'
+    | '/client-portal/onboarding'
     | '/client-portal/reports'
+    | '/client-portal/review'
     | '/client-portal/support'
     | '/client-portal/verifications'
     | '/consent/$consentId'
+    | '/data-entry/members'
+    | '/data-entry/overview'
+    | '/data-entry/reports'
     | '/finance/billing'
     | '/finance/collections'
     | '/finance/credit'
     | '/finance/invoices'
     | '/finance/statements'
+    | '/operations/annexure'
     | '/operations/assignments'
+    | '/operations/attention'
     | '/operations/cases'
     | '/operations/clarifications'
+    | '/operations/clients'
+    | '/operations/departments'
     | '/operations/exceptions'
     | '/operations/field'
+    | '/operations/onboarding'
+    | '/operations/packages'
+    | '/operations/reports'
     | '/operations/sla'
     | '/operations/team'
+    | '/operations/utv'
+    | '/operations/vendor-work'
     | '/qa-review/corrections'
     | '/qa-review/history'
     | '/qa-review/mine'
@@ -873,23 +1161,34 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/spoc-rm/clients'
+    | '/spoc-rm/onboarding'
+    | '/spoc-rm/payments'
+    | '/spoc-rm/pricing'
     | '/spoc-rm/records'
+    | '/spoc-rm/vendor-work'
     | '/spoc-rm/vendors'
+    | '/spoc-rm/work'
     | '/support/employees'
     | '/support/requests'
     | '/vendor/all'
     | '/vendor/approved'
+    | '/vendor/checks'
     | '/vendor/logs'
     | '/vendor/pending'
     | '/vendor/rejected'
     | '/vendor/team'
+    | '/verifier/annexure'
     | '/verifier/blockers'
     | '/verifier/history'
+    | '/verifier/members'
     | '/verifier/performance'
     | '/verifier/queue'
     | '/verifier/sla'
+    | '/verifier/team'
+    | '/verifier/utv'
     | '/admin/'
     | '/client-portal/'
+    | '/data-entry/'
     | '/operations/'
     | '/sales-crm/'
     | '/spoc-rm/'
@@ -905,6 +1204,7 @@ export interface FileRouteTypes {
     | '/field-executive'
     | '/finance'
     | '/qa-review'
+    | '/signup'
     | '/admin/analytics'
     | '/admin/audit'
     | '/admin/cases'
@@ -913,9 +1213,12 @@ export interface FileRouteTypes {
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
+    | '/admin/onboarding'
+    | '/admin/packages'
     | '/admin/privacy'
     | '/admin/qa'
     | '/admin/reports'
+    | '/admin/roles'
     | '/admin/sales'
     | '/admin/security'
     | '/admin/settings'
@@ -927,22 +1230,36 @@ export interface FileRouteTypes {
     | '/client-portal/actions'
     | '/client-portal/analytics'
     | '/client-portal/billing'
+    | '/client-portal/onboarding'
     | '/client-portal/reports'
+    | '/client-portal/review'
     | '/client-portal/support'
     | '/client-portal/verifications'
     | '/consent/$consentId'
+    | '/data-entry/members'
+    | '/data-entry/overview'
+    | '/data-entry/reports'
     | '/finance/billing'
     | '/finance/collections'
     | '/finance/credit'
     | '/finance/invoices'
     | '/finance/statements'
+    | '/operations/annexure'
     | '/operations/assignments'
+    | '/operations/attention'
     | '/operations/cases'
     | '/operations/clarifications'
+    | '/operations/clients'
+    | '/operations/departments'
     | '/operations/exceptions'
     | '/operations/field'
+    | '/operations/onboarding'
+    | '/operations/packages'
+    | '/operations/reports'
     | '/operations/sla'
     | '/operations/team'
+    | '/operations/utv'
+    | '/operations/vendor-work'
     | '/qa-review/corrections'
     | '/qa-review/history'
     | '/qa-review/mine'
@@ -955,23 +1272,34 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/spoc-rm/clients'
+    | '/spoc-rm/onboarding'
+    | '/spoc-rm/payments'
+    | '/spoc-rm/pricing'
     | '/spoc-rm/records'
+    | '/spoc-rm/vendor-work'
     | '/spoc-rm/vendors'
+    | '/spoc-rm/work'
     | '/support/employees'
     | '/support/requests'
     | '/vendor/all'
     | '/vendor/approved'
+    | '/vendor/checks'
     | '/vendor/logs'
     | '/vendor/pending'
     | '/vendor/rejected'
     | '/vendor/team'
+    | '/verifier/annexure'
     | '/verifier/blockers'
     | '/verifier/history'
+    | '/verifier/members'
     | '/verifier/performance'
     | '/verifier/queue'
     | '/verifier/sla'
+    | '/verifier/team'
+    | '/verifier/utv'
     | '/admin'
     | '/client-portal'
+    | '/data-entry'
     | '/operations'
     | '/sales-crm'
     | '/spoc-rm'
@@ -986,11 +1314,13 @@ export interface FileRouteTypes {
     | '/auth'
     | '/change-password'
     | '/client-portal'
+    | '/data-entry'
     | '/field-executive'
     | '/finance'
     | '/operations'
     | '/qa-review'
     | '/sales-crm'
+    | '/signup'
     | '/spoc-rm'
     | '/support'
     | '/vendor'
@@ -1003,9 +1333,12 @@ export interface FileRouteTypes {
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
+    | '/admin/onboarding'
+    | '/admin/packages'
     | '/admin/privacy'
     | '/admin/qa'
     | '/admin/reports'
+    | '/admin/roles'
     | '/admin/sales'
     | '/admin/security'
     | '/admin/settings'
@@ -1017,22 +1350,36 @@ export interface FileRouteTypes {
     | '/client-portal/actions'
     | '/client-portal/analytics'
     | '/client-portal/billing'
+    | '/client-portal/onboarding'
     | '/client-portal/reports'
+    | '/client-portal/review'
     | '/client-portal/support'
     | '/client-portal/verifications'
     | '/consent/$consentId'
+    | '/data-entry/members'
+    | '/data-entry/overview'
+    | '/data-entry/reports'
     | '/finance_/billing'
     | '/finance_/collections'
     | '/finance_/credit'
     | '/finance_/invoices'
     | '/finance_/statements'
+    | '/operations/annexure'
     | '/operations/assignments'
+    | '/operations/attention'
     | '/operations/cases'
     | '/operations/clarifications'
+    | '/operations/clients'
+    | '/operations/departments'
     | '/operations/exceptions'
     | '/operations/field'
+    | '/operations/onboarding'
+    | '/operations/packages'
+    | '/operations/reports'
     | '/operations/sla'
     | '/operations/team'
+    | '/operations/utv'
+    | '/operations/vendor-work'
     | '/qa-review_/corrections'
     | '/qa-review_/history'
     | '/qa-review_/mine'
@@ -1045,23 +1392,34 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/spoc-rm/clients'
+    | '/spoc-rm/onboarding'
+    | '/spoc-rm/payments'
+    | '/spoc-rm/pricing'
     | '/spoc-rm/records'
+    | '/spoc-rm/vendor-work'
     | '/spoc-rm/vendors'
+    | '/spoc-rm/work'
     | '/support/employees'
     | '/support/requests'
     | '/vendor/all'
     | '/vendor/approved'
+    | '/vendor/checks'
     | '/vendor/logs'
     | '/vendor/pending'
     | '/vendor/rejected'
     | '/vendor/team'
+    | '/verifier/annexure'
     | '/verifier/blockers'
     | '/verifier/history'
+    | '/verifier/members'
     | '/verifier/performance'
     | '/verifier/queue'
     | '/verifier/sla'
+    | '/verifier/team'
+    | '/verifier/utv'
     | '/admin/'
     | '/client-portal/'
+    | '/data-entry/'
     | '/operations/'
     | '/sales-crm/'
     | '/spoc-rm/'
@@ -1077,11 +1435,13 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
   ClientPortalRoute: typeof ClientPortalRouteWithChildren
+  DataEntryRoute: typeof DataEntryRouteWithChildren
   FieldExecutiveRoute: typeof FieldExecutiveRoute
   FinanceRoute: typeof FinanceRoute
   OperationsRoute: typeof OperationsRouteWithChildren
   QaReviewRoute: typeof QaReviewRoute
   SalesCrmRoute: typeof SalesCrmRouteWithChildren
+  SignupRoute: typeof SignupRoute
   SpocRmRoute: typeof SpocRmRouteWithChildren
   SupportRoute: typeof SupportRouteWithChildren
   VendorRoute: typeof VendorRouteWithChildren
@@ -1139,6 +1499,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientPortalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/data-entry': {
+      id: '/data-entry'
+      path: '/data-entry'
+      fullPath: '/data-entry'
+      preLoaderRoute: typeof DataEntryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/field-executive': {
       id: '/field-executive'
       path: '/field-executive'
@@ -1172,6 +1539,13 @@ declare module '@tanstack/react-router' {
       path: '/sales-crm'
       fullPath: '/sales-crm'
       preLoaderRoute: typeof SalesCrmRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/spoc-rm': {
@@ -1265,6 +1639,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminFinanceRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/onboarding': {
+      id: '/admin/onboarding'
+      path: '/onboarding'
+      fullPath: '/admin/onboarding'
+      preLoaderRoute: typeof AdminOnboardingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/packages': {
+      id: '/admin/packages'
+      path: '/packages'
+      fullPath: '/admin/packages'
+      preLoaderRoute: typeof AdminPackagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/privacy': {
       id: '/admin/privacy'
       path: '/privacy'
@@ -1284,6 +1672,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AdminReportsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/roles': {
+      id: '/admin/roles'
+      path: '/roles'
+      fullPath: '/admin/roles'
+      preLoaderRoute: typeof AdminRolesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/sales': {
@@ -1370,11 +1765,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientPortalBillingRouteImport
       parentRoute: typeof ClientPortalRoute
     }
+    '/client-portal/onboarding': {
+      id: '/client-portal/onboarding'
+      path: '/onboarding'
+      fullPath: '/client-portal/onboarding'
+      preLoaderRoute: typeof ClientPortalOnboardingRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
     '/client-portal/reports': {
       id: '/client-portal/reports'
       path: '/reports'
       fullPath: '/client-portal/reports'
       preLoaderRoute: typeof ClientPortalReportsRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/review': {
+      id: '/client-portal/review'
+      path: '/review'
+      fullPath: '/client-portal/review'
+      preLoaderRoute: typeof ClientPortalReviewRouteImport
       parentRoute: typeof ClientPortalRoute
     }
     '/client-portal/support': {
@@ -1397,6 +1806,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/consent/$consentId'
       preLoaderRoute: typeof ConsentConsentIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/data-entry/': {
+      id: '/data-entry/'
+      path: '/'
+      fullPath: '/data-entry/'
+      preLoaderRoute: typeof DataEntryIndexRouteImport
+      parentRoute: typeof DataEntryRoute
+    }
+    '/data-entry/members': {
+      id: '/data-entry/members'
+      path: '/members'
+      fullPath: '/data-entry/members'
+      preLoaderRoute: typeof DataEntryMembersRouteImport
+      parentRoute: typeof DataEntryRoute
+    }
+    '/data-entry/overview': {
+      id: '/data-entry/overview'
+      path: '/overview'
+      fullPath: '/data-entry/overview'
+      preLoaderRoute: typeof DataEntryOverviewRouteImport
+      parentRoute: typeof DataEntryRoute
+    }
+    '/data-entry/reports': {
+      id: '/data-entry/reports'
+      path: '/reports'
+      fullPath: '/data-entry/reports'
+      preLoaderRoute: typeof DataEntryReportsRouteImport
+      parentRoute: typeof DataEntryRoute
     }
     '/finance_/billing': {
       id: '/finance_/billing'
@@ -1440,11 +1877,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsIndexRouteImport
       parentRoute: typeof OperationsRoute
     }
+    '/operations/annexure': {
+      id: '/operations/annexure'
+      path: '/annexure'
+      fullPath: '/operations/annexure'
+      preLoaderRoute: typeof OperationsAnnexureRouteImport
+      parentRoute: typeof OperationsRoute
+    }
     '/operations/assignments': {
       id: '/operations/assignments'
       path: '/assignments'
       fullPath: '/operations/assignments'
       preLoaderRoute: typeof OperationsAssignmentsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/attention': {
+      id: '/operations/attention'
+      path: '/attention'
+      fullPath: '/operations/attention'
+      preLoaderRoute: typeof OperationsAttentionRouteImport
       parentRoute: typeof OperationsRoute
     }
     '/operations/cases': {
@@ -1461,6 +1912,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsClarificationsRouteImport
       parentRoute: typeof OperationsRoute
     }
+    '/operations/clients': {
+      id: '/operations/clients'
+      path: '/clients'
+      fullPath: '/operations/clients'
+      preLoaderRoute: typeof OperationsClientsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/departments': {
+      id: '/operations/departments'
+      path: '/departments'
+      fullPath: '/operations/departments'
+      preLoaderRoute: typeof OperationsDepartmentsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
     '/operations/exceptions': {
       id: '/operations/exceptions'
       path: '/exceptions'
@@ -1475,6 +1940,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsFieldRouteImport
       parentRoute: typeof OperationsRoute
     }
+    '/operations/onboarding': {
+      id: '/operations/onboarding'
+      path: '/onboarding'
+      fullPath: '/operations/onboarding'
+      preLoaderRoute: typeof OperationsOnboardingRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/packages': {
+      id: '/operations/packages'
+      path: '/packages'
+      fullPath: '/operations/packages'
+      preLoaderRoute: typeof OperationsPackagesRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/reports': {
+      id: '/operations/reports'
+      path: '/reports'
+      fullPath: '/operations/reports'
+      preLoaderRoute: typeof OperationsReportsRouteImport
+      parentRoute: typeof OperationsRoute
+    }
     '/operations/sla': {
       id: '/operations/sla'
       path: '/sla'
@@ -1487,6 +1973,20 @@ declare module '@tanstack/react-router' {
       path: '/team'
       fullPath: '/operations/team'
       preLoaderRoute: typeof OperationsTeamRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/utv': {
+      id: '/operations/utv'
+      path: '/utv'
+      fullPath: '/operations/utv'
+      preLoaderRoute: typeof OperationsUtvRouteImport
+      parentRoute: typeof OperationsRoute
+    }
+    '/operations/vendor-work': {
+      id: '/operations/vendor-work'
+      path: '/vendor-work'
+      fullPath: '/operations/vendor-work'
+      preLoaderRoute: typeof OperationsVendorWorkRouteImport
       parentRoute: typeof OperationsRoute
     }
     '/qa-review_/corrections': {
@@ -1587,6 +2087,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SpocRmClientsRouteImport
       parentRoute: typeof SpocRmRoute
     }
+    '/spoc-rm/onboarding': {
+      id: '/spoc-rm/onboarding'
+      path: '/onboarding'
+      fullPath: '/spoc-rm/onboarding'
+      preLoaderRoute: typeof SpocRmOnboardingRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
+    '/spoc-rm/payments': {
+      id: '/spoc-rm/payments'
+      path: '/payments'
+      fullPath: '/spoc-rm/payments'
+      preLoaderRoute: typeof SpocRmPaymentsRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
+    '/spoc-rm/pricing': {
+      id: '/spoc-rm/pricing'
+      path: '/pricing'
+      fullPath: '/spoc-rm/pricing'
+      preLoaderRoute: typeof SpocRmPricingRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
     '/spoc-rm/records': {
       id: '/spoc-rm/records'
       path: '/records'
@@ -1594,11 +2115,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SpocRmRecordsRouteImport
       parentRoute: typeof SpocRmRoute
     }
+    '/spoc-rm/vendor-work': {
+      id: '/spoc-rm/vendor-work'
+      path: '/vendor-work'
+      fullPath: '/spoc-rm/vendor-work'
+      preLoaderRoute: typeof SpocRmVendorWorkRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
     '/spoc-rm/vendors': {
       id: '/spoc-rm/vendors'
       path: '/vendors'
       fullPath: '/spoc-rm/vendors'
       preLoaderRoute: typeof SpocRmVendorsRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
+    '/spoc-rm/work': {
+      id: '/spoc-rm/work'
+      path: '/work'
+      fullPath: '/spoc-rm/work'
+      preLoaderRoute: typeof SpocRmWorkRouteImport
       parentRoute: typeof SpocRmRoute
     }
     '/support/': {
@@ -1643,6 +2178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendorApprovedRouteImport
       parentRoute: typeof VendorRoute
     }
+    '/vendor/checks': {
+      id: '/vendor/checks'
+      path: '/checks'
+      fullPath: '/vendor/checks'
+      preLoaderRoute: typeof VendorChecksRouteImport
+      parentRoute: typeof VendorRoute
+    }
     '/vendor/logs': {
       id: '/vendor/logs'
       path: '/logs'
@@ -1678,6 +2220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifierIndexRouteImport
       parentRoute: typeof VerifierRoute
     }
+    '/verifier/annexure': {
+      id: '/verifier/annexure'
+      path: '/annexure'
+      fullPath: '/verifier/annexure'
+      preLoaderRoute: typeof VerifierAnnexureRouteImport
+      parentRoute: typeof VerifierRoute
+    }
     '/verifier/blockers': {
       id: '/verifier/blockers'
       path: '/blockers'
@@ -1690,6 +2239,13 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/verifier/history'
       preLoaderRoute: typeof VerifierHistoryRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/members': {
+      id: '/verifier/members'
+      path: '/members'
+      fullPath: '/verifier/members'
+      preLoaderRoute: typeof VerifierMembersRouteImport
       parentRoute: typeof VerifierRoute
     }
     '/verifier/performance': {
@@ -1713,6 +2269,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifierSlaRouteImport
       parentRoute: typeof VerifierRoute
     }
+    '/verifier/team': {
+      id: '/verifier/team'
+      path: '/team'
+      fullPath: '/verifier/team'
+      preLoaderRoute: typeof VerifierTeamRouteImport
+      parentRoute: typeof VerifierRoute
+    }
+    '/verifier/utv': {
+      id: '/verifier/utv'
+      path: '/utv'
+      fullPath: '/verifier/utv'
+      preLoaderRoute: typeof VerifierUtvRouteImport
+      parentRoute: typeof VerifierRoute
+    }
     '/reports/verify/$authenticityCode': {
       id: '/reports/verify/$authenticityCode'
       path: '/reports/verify/$authenticityCode'
@@ -1732,9 +2302,12 @@ interface AdminRouteChildren {
   AdminExceptionsRoute: typeof AdminExceptionsRoute
   AdminFieldRoute: typeof AdminFieldRoute
   AdminFinanceRoute: typeof AdminFinanceRoute
+  AdminOnboardingRoute: typeof AdminOnboardingRoute
+  AdminPackagesRoute: typeof AdminPackagesRoute
   AdminPrivacyRoute: typeof AdminPrivacyRoute
   AdminQaRoute: typeof AdminQaRoute
   AdminReportsRoute: typeof AdminReportsRoute
+  AdminRolesRoute: typeof AdminRolesRoute
   AdminSalesRoute: typeof AdminSalesRoute
   AdminSecurityRoute: typeof AdminSecurityRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
@@ -1752,9 +2325,12 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminExceptionsRoute: AdminExceptionsRoute,
   AdminFieldRoute: AdminFieldRoute,
   AdminFinanceRoute: AdminFinanceRoute,
+  AdminOnboardingRoute: AdminOnboardingRoute,
+  AdminPackagesRoute: AdminPackagesRoute,
   AdminPrivacyRoute: AdminPrivacyRoute,
   AdminQaRoute: AdminQaRoute,
   AdminReportsRoute: AdminReportsRoute,
+  AdminRolesRoute: AdminRolesRoute,
   AdminSalesRoute: AdminSalesRoute,
   AdminSecurityRoute: AdminSecurityRoute,
   AdminSettingsRoute: AdminSettingsRoute,
@@ -1769,7 +2345,9 @@ interface ClientPortalRouteChildren {
   ClientPortalActionsRoute: typeof ClientPortalActionsRoute
   ClientPortalAnalyticsRoute: typeof ClientPortalAnalyticsRoute
   ClientPortalBillingRoute: typeof ClientPortalBillingRoute
+  ClientPortalOnboardingRoute: typeof ClientPortalOnboardingRoute
   ClientPortalReportsRoute: typeof ClientPortalReportsRoute
+  ClientPortalReviewRoute: typeof ClientPortalReviewRoute
   ClientPortalSupportRoute: typeof ClientPortalSupportRoute
   ClientPortalVerificationsRoute: typeof ClientPortalVerificationsRoute
   ClientPortalIndexRoute: typeof ClientPortalIndexRoute
@@ -1779,7 +2357,9 @@ const ClientPortalRouteChildren: ClientPortalRouteChildren = {
   ClientPortalActionsRoute: ClientPortalActionsRoute,
   ClientPortalAnalyticsRoute: ClientPortalAnalyticsRoute,
   ClientPortalBillingRoute: ClientPortalBillingRoute,
+  ClientPortalOnboardingRoute: ClientPortalOnboardingRoute,
   ClientPortalReportsRoute: ClientPortalReportsRoute,
+  ClientPortalReviewRoute: ClientPortalReviewRoute,
   ClientPortalSupportRoute: ClientPortalSupportRoute,
   ClientPortalVerificationsRoute: ClientPortalVerificationsRoute,
   ClientPortalIndexRoute: ClientPortalIndexRoute,
@@ -1789,25 +2369,61 @@ const ClientPortalRouteWithChildren = ClientPortalRoute._addFileChildren(
   ClientPortalRouteChildren,
 )
 
+interface DataEntryRouteChildren {
+  DataEntryMembersRoute: typeof DataEntryMembersRoute
+  DataEntryOverviewRoute: typeof DataEntryOverviewRoute
+  DataEntryReportsRoute: typeof DataEntryReportsRoute
+  DataEntryIndexRoute: typeof DataEntryIndexRoute
+}
+
+const DataEntryRouteChildren: DataEntryRouteChildren = {
+  DataEntryMembersRoute: DataEntryMembersRoute,
+  DataEntryOverviewRoute: DataEntryOverviewRoute,
+  DataEntryReportsRoute: DataEntryReportsRoute,
+  DataEntryIndexRoute: DataEntryIndexRoute,
+}
+
+const DataEntryRouteWithChildren = DataEntryRoute._addFileChildren(
+  DataEntryRouteChildren,
+)
+
 interface OperationsRouteChildren {
+  OperationsAnnexureRoute: typeof OperationsAnnexureRoute
   OperationsAssignmentsRoute: typeof OperationsAssignmentsRoute
+  OperationsAttentionRoute: typeof OperationsAttentionRoute
   OperationsCasesRoute: typeof OperationsCasesRoute
   OperationsClarificationsRoute: typeof OperationsClarificationsRoute
+  OperationsClientsRoute: typeof OperationsClientsRoute
+  OperationsDepartmentsRoute: typeof OperationsDepartmentsRoute
   OperationsExceptionsRoute: typeof OperationsExceptionsRoute
   OperationsFieldRoute: typeof OperationsFieldRoute
+  OperationsOnboardingRoute: typeof OperationsOnboardingRoute
+  OperationsPackagesRoute: typeof OperationsPackagesRoute
+  OperationsReportsRoute: typeof OperationsReportsRoute
   OperationsSlaRoute: typeof OperationsSlaRoute
   OperationsTeamRoute: typeof OperationsTeamRoute
+  OperationsUtvRoute: typeof OperationsUtvRoute
+  OperationsVendorWorkRoute: typeof OperationsVendorWorkRoute
   OperationsIndexRoute: typeof OperationsIndexRoute
 }
 
 const OperationsRouteChildren: OperationsRouteChildren = {
+  OperationsAnnexureRoute: OperationsAnnexureRoute,
   OperationsAssignmentsRoute: OperationsAssignmentsRoute,
+  OperationsAttentionRoute: OperationsAttentionRoute,
   OperationsCasesRoute: OperationsCasesRoute,
   OperationsClarificationsRoute: OperationsClarificationsRoute,
+  OperationsClientsRoute: OperationsClientsRoute,
+  OperationsDepartmentsRoute: OperationsDepartmentsRoute,
   OperationsExceptionsRoute: OperationsExceptionsRoute,
   OperationsFieldRoute: OperationsFieldRoute,
+  OperationsOnboardingRoute: OperationsOnboardingRoute,
+  OperationsPackagesRoute: OperationsPackagesRoute,
+  OperationsReportsRoute: OperationsReportsRoute,
   OperationsSlaRoute: OperationsSlaRoute,
   OperationsTeamRoute: OperationsTeamRoute,
+  OperationsUtvRoute: OperationsUtvRoute,
+  OperationsVendorWorkRoute: OperationsVendorWorkRoute,
   OperationsIndexRoute: OperationsIndexRoute,
 }
 
@@ -1843,15 +2459,25 @@ const SalesCrmRouteWithChildren = SalesCrmRoute._addFileChildren(
 
 interface SpocRmRouteChildren {
   SpocRmClientsRoute: typeof SpocRmClientsRoute
+  SpocRmOnboardingRoute: typeof SpocRmOnboardingRoute
+  SpocRmPaymentsRoute: typeof SpocRmPaymentsRoute
+  SpocRmPricingRoute: typeof SpocRmPricingRoute
   SpocRmRecordsRoute: typeof SpocRmRecordsRoute
+  SpocRmVendorWorkRoute: typeof SpocRmVendorWorkRoute
   SpocRmVendorsRoute: typeof SpocRmVendorsRoute
+  SpocRmWorkRoute: typeof SpocRmWorkRoute
   SpocRmIndexRoute: typeof SpocRmIndexRoute
 }
 
 const SpocRmRouteChildren: SpocRmRouteChildren = {
   SpocRmClientsRoute: SpocRmClientsRoute,
+  SpocRmOnboardingRoute: SpocRmOnboardingRoute,
+  SpocRmPaymentsRoute: SpocRmPaymentsRoute,
+  SpocRmPricingRoute: SpocRmPricingRoute,
   SpocRmRecordsRoute: SpocRmRecordsRoute,
+  SpocRmVendorWorkRoute: SpocRmVendorWorkRoute,
   SpocRmVendorsRoute: SpocRmVendorsRoute,
+  SpocRmWorkRoute: SpocRmWorkRoute,
   SpocRmIndexRoute: SpocRmIndexRoute,
 }
 
@@ -1876,6 +2502,7 @@ const SupportRouteWithChildren =
 interface VendorRouteChildren {
   VendorAllRoute: typeof VendorAllRoute
   VendorApprovedRoute: typeof VendorApprovedRoute
+  VendorChecksRoute: typeof VendorChecksRoute
   VendorLogsRoute: typeof VendorLogsRoute
   VendorPendingRoute: typeof VendorPendingRoute
   VendorRejectedRoute: typeof VendorRejectedRoute
@@ -1886,6 +2513,7 @@ interface VendorRouteChildren {
 const VendorRouteChildren: VendorRouteChildren = {
   VendorAllRoute: VendorAllRoute,
   VendorApprovedRoute: VendorApprovedRoute,
+  VendorChecksRoute: VendorChecksRoute,
   VendorLogsRoute: VendorLogsRoute,
   VendorPendingRoute: VendorPendingRoute,
   VendorRejectedRoute: VendorRejectedRoute,
@@ -1897,20 +2525,28 @@ const VendorRouteWithChildren =
   VendorRoute._addFileChildren(VendorRouteChildren)
 
 interface VerifierRouteChildren {
+  VerifierAnnexureRoute: typeof VerifierAnnexureRoute
   VerifierBlockersRoute: typeof VerifierBlockersRoute
   VerifierHistoryRoute: typeof VerifierHistoryRoute
+  VerifierMembersRoute: typeof VerifierMembersRoute
   VerifierPerformanceRoute: typeof VerifierPerformanceRoute
   VerifierQueueRoute: typeof VerifierQueueRoute
   VerifierSlaRoute: typeof VerifierSlaRoute
+  VerifierTeamRoute: typeof VerifierTeamRoute
+  VerifierUtvRoute: typeof VerifierUtvRoute
   VerifierIndexRoute: typeof VerifierIndexRoute
 }
 
 const VerifierRouteChildren: VerifierRouteChildren = {
+  VerifierAnnexureRoute: VerifierAnnexureRoute,
   VerifierBlockersRoute: VerifierBlockersRoute,
   VerifierHistoryRoute: VerifierHistoryRoute,
+  VerifierMembersRoute: VerifierMembersRoute,
   VerifierPerformanceRoute: VerifierPerformanceRoute,
   VerifierQueueRoute: VerifierQueueRoute,
   VerifierSlaRoute: VerifierSlaRoute,
+  VerifierTeamRoute: VerifierTeamRoute,
+  VerifierUtvRoute: VerifierUtvRoute,
   VerifierIndexRoute: VerifierIndexRoute,
 }
 
@@ -1924,11 +2560,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   ChangePasswordRoute: ChangePasswordRoute,
   ClientPortalRoute: ClientPortalRouteWithChildren,
+  DataEntryRoute: DataEntryRouteWithChildren,
   FieldExecutiveRoute: FieldExecutiveRoute,
   FinanceRoute: FinanceRoute,
   OperationsRoute: OperationsRouteWithChildren,
   QaReviewRoute: QaReviewRoute,
   SalesCrmRoute: SalesCrmRouteWithChildren,
+  SignupRoute: SignupRoute,
   SpocRmRoute: SpocRmRouteWithChildren,
   SupportRoute: SupportRouteWithChildren,
   VendorRoute: VendorRouteWithChildren,

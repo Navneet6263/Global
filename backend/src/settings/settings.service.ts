@@ -1,3 +1,4 @@
+import { roleIs } from "../common/auth/role-filter";
 import { ConflictException, Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
@@ -110,7 +111,7 @@ export class SettingsService {
             users: {
               where: {
                 status: "ACTIVE",
-                userRoles: { some: { role: { code: "FIELD_EXECUTIVE" } } },
+                userRoles: { some: { role: roleIs("FIELD_EXECUTIVE") } },
               },
             },
           },

@@ -12,6 +12,8 @@ export interface ClientInvoice {
   balance: number;
   issuedAt: string | null;
   dueAt: string | null;
+  /** Bill validation of the billing annexure. */
+  annexureStatus?: "PENDING" | "VALIDATED" | "QUERIED" | null;
 }
 export const getClientFinanceOverview = () =>
   apiRequest<FinanceOverview>("/client-finance/overview");

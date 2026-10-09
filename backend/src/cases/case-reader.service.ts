@@ -14,6 +14,7 @@ import type { CaseQueryDto } from "./dto/case-query.dto";
 import { rankedCasePage } from "./ranked-case-page";
 
 import { caseRegisterWhere, caseRegisterOrder } from "./case-register-query";
+import { documentScope } from "../verification/check-documents";
 export { caseRegisterWhere, caseRegisterOrder } from "./case-register-query";
 
 @Injectable()
@@ -97,7 +98,13 @@ export class CaseReaderService {
   async get(actor: Actor, publicId: string) {
     const row = await this.prisma.verificationCase.findFirst({
       where: { ...caseAccessScope(actor), publicId },
-      select: caseDetailSelect,
+      select: {
+        ...caseDetailSelect,
+        documents: {
+          ...caseDetailSelect.documents,
+          where: documentScope(actor),
+        },
+      },
     });
     if (!row) throw new NotFoundException("Case not found");
     return presentCaseDetail(row, actor, this.pii);

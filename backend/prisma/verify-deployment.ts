@@ -13,6 +13,7 @@ const requiredRoleCodes = [
   "FINANCE_MANAGER",
   "SPOC_RM",
   "VENDOR",
+  "DATA_ENTRY",
 ] as const;
 
 const requiredMigrations = [
@@ -44,6 +45,21 @@ const requiredMigrations = [
   "20260930100000_support_requests",
   "20261001100000_vendor_teams",
   "20261002100000_vendor_reports",
+  "20261007100000_internal_workflow_v2",
+  "20261008100000_client_rm_dispositions_stop",
+  "20261009100000_workflow_v2_db_fixes",
+  "20261010100000_self_signup_onboarding",
+  "20261011100000_candidate_link_completion",
+  "20261012100000_package_discounts",
+  "20261013100000_package_check_prices",
+  "20261014100000_intake_rules_initiation",
+  "20261015100000_verification_rhs_email_annexure",
+  "20261016100000_client_mis_custom_roles",
+  "20261017100000_release_before_payment",
+  "20261018100000_vendor_check_assignments",
+  "20261019100000_branch_scoping_switch",
+  "20261020100000_vendor_check_approval",
+  "20261021100000_review_and_approval_statuses",
 ] as const;
 
 function required(name: string): string {
@@ -116,6 +132,52 @@ async function main(): Promise<void> {
         }),
         prisma.verificationCase.findFirst({
           select: { servicePackageId: true },
+        }),
+        prisma.servicePackage.findFirst({
+          select: {
+            maxRmDiscountPercent: true,
+            checkPricesJson: true,
+            taxRate: true,
+          },
+        }),
+        prisma.client.findFirst({
+          select: { defaultDataEntryUserId: true, clientReviewFirst: true },
+        }),
+        prisma.caseCheck.findFirst({
+          select: {
+            initiationJson: true,
+            initiatedAt: true,
+            initiatedById: true,
+            verifiedJson: true,
+            verifiedAt: true,
+          },
+        }),
+        prisma.sourceEmail.findFirst({
+          select: { maxFollowUps: true, stoppedAt: true },
+        }),
+        prisma.clientMisSchedule.findFirst({
+          select: { preset: true, frequency: true, nextRunAt: true },
+        }),
+        prisma.role.findFirst({ select: { baseRoleCode: true } }),
+        prisma.vendorCheckAssignment.findFirst({
+          select: {
+            status: true,
+            submissionJson: true,
+            dueAt: true,
+            assignedAs: true,
+            requestReason: true,
+            approvedAt: true,
+          },
+        }),
+        prisma.vendorCheckEvidence.findFirst({ select: { sha256: true } }),
+        prisma.tenantAccessPolicy.findFirst({
+          select: { releaseBeforePayment: true, branchScopingEnabled: true },
+        }),
+        prisma.invoice.findFirst({
+          select: { annexureStatus: true, annexureValidatedAt: true },
+        }),
+        prisma.clientPackageDiscount.findFirst({
+          select: { discountPercent: true, setById: true },
         }),
         prisma.outboxEvent.findFirst({
           select: { claimedAt: true, claimToken: true },

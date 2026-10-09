@@ -56,6 +56,7 @@ void test("the fifth failed login applies lockout and records a security audit",
   const service = new AuthenticationService(
     prisma as unknown as PrismaService,
     {} as AuthTokenService,
+    { get: () => true } as never,
   );
 
   await assert.rejects(

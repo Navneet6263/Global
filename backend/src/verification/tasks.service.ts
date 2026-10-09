@@ -38,4 +38,12 @@ export class TasksService {
   update(actor: Actor, taskPublicId: string, input: UpdateTaskDto) {
     return this.workflow.update(actor, taskPublicId, input);
   }
+
+  forward(actor: Actor, taskPublicId: string, note?: string) {
+    return this.workflow.forward(actor, taskPublicId, note);
+  }
+
+  sendBack(actor: Actor, taskPublicId: string, reason: string) {
+    return this.workflow.sendBack(actor, taskPublicId, reason);
+  }
 }

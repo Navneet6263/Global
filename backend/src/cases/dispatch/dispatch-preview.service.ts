@@ -1,3 +1,4 @@
+import { roleIs } from "../../common/auth/role-filter";
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../../common/auth/actor";
 import { caseAccessScope } from "../../common/auth/access-scope";
@@ -29,7 +30,7 @@ export class DispatchPreviewService {
           where: {
             tenantId: actor.tenantId,
             status: "ACTIVE",
-            userRoles: { some: { role: { code: "VERIFIER" } } },
+            userRoles: { some: { role: roleIs("VERIFIER") } },
             OR: records.map((record) => ({
               AND: [
                 { OR: [{ branchId: null }, { branchId: record.branchId }] },

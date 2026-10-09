@@ -71,9 +71,16 @@ export const WORKSPACE_PRESENTATION: Record<NavWorkspace, WorkspacePresentation>
     security: "/change-password",
     quickCreate: false,
   },
+  "data-entry": {
+    label: "Data Entry",
+    heading: "Sapling Global — Intake Review",
+    home: "/data-entry",
+    security: "/change-password",
+    quickCreate: false,
+  },
   "spoc-rm": {
-    label: "SPOC-RM",
-    heading: "Sapling Global — Central Monitoring",
+    label: "RM / SPOC",
+    heading: "Sapling Global — Client Delivery",
     home: "/spoc-rm",
     security: "/change-password",
     quickCreate: false,

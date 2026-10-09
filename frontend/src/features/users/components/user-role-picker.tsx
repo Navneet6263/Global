@@ -3,14 +3,33 @@ import { ChevronDown, ShieldCheck } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
+import { SINGLE_ROLES } from "../role-guide";
 
-const EXCLUSIVE_ROLES: readonly Role[] = [
-  "PLATFORM_ADMIN",
-  "CLIENT_ADMIN",
-  "SPOC_RM",
-  "VENDOR",
-  "SUPPORT_AGENT",
+/** Roles shown in groups so the list is easy to scan; unknown roles fall into "Other". */
+const ROLE_GROUPS: ReadonlyArray<{ label: string; roles: readonly Role[] }> = [
+  {
+    label: "Verification team",
+    roles: ["DATA_ENTRY", "VERIFIER", "QA_REVIEWER", "FIELD_EXECUTIVE", "OPS_MANAGER"],
+  },
+  { label: "Clients", roles: ["SPOC_RM", "CLIENT_ADMIN"] },
+  { label: "Business & support", roles: ["SALES_MANAGER", "FINANCE_MANAGER", "SUPPORT_AGENT"] },
+  { label: "Partners", roles: ["VENDOR"] },
+  { label: "Platform", roles: ["PLATFORM_ADMIN"] },
 ];
+
+function groupRoles(roles: readonly Role[]) {
+  const known = new Set(ROLE_GROUPS.flatMap((group) => group.roles));
+  return [
+    ...ROLE_GROUPS.map((group) => ({
+      label: group.label,
+      roles: group.roles.filter((role) => roles.includes(role)),
+    })),
+    { label: "Other", roles: roles.filter((role) => !known.has(role)) },
+  ].filter((group) => group.roles.length);
+}
+
+// Always held alone (mirrors the API): RM may now be combined with a working role.
+const EXCLUSIVE_ROLES: readonly Role[] = SINGLE_ROLES;
 
 export function UserRolePicker({
   selected,
@@ -41,7 +60,7 @@ export function UserRolePicker({
     <fieldset className="space-y-3">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <legend className="text-sm font-semibold text-foreground">Primary role</legend>
+          <legend className="text-sm font-semibold text-foreground">1. Choose a role</legend>
           <p className="mt-0.5 text-[11px] text-muted-foreground">
             This decides the person&apos;s home workspace and normal access.
           </p>
@@ -56,16 +75,25 @@ export function UserRolePicker({
       <RadioGroup
         value={primary}
         onValueChange={(value) => choosePrimary(value as Role)}
-        className="grid gap-2 sm:grid-cols-2"
+        className="grid gap-3"
       >
-        {roles.map((role) => (
-          <label
-            key={role}
-            className="flex cursor-pointer items-start gap-2.5 rounded-2xl border border-border bg-muted/35 px-3 py-2.5 transition-colors hover:bg-muted/60 has-[[data-state=checked]]:border-primary/35 has-[[data-state=checked]]:bg-primary/5"
-          >
-            <RadioGroupItem value={role} className="mt-0.5" />
-            <RoleCopy role={role} />
-          </label>
+        {groupRoles(roles).map((group) => (
+          <div key={group.label} className="grid gap-1.5">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              {group.label}
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {group.roles.map((role) => (
+                <label
+                  key={role}
+                  className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-border bg-card px-3 py-2.5 transition-colors hover:border-primary/30 hover:bg-primary/[0.03] has-[[data-state=checked]]:border-primary/50 has-[[data-state=checked]]:bg-primary/5 has-[[data-state=checked]]:ring-1 has-[[data-state=checked]]:ring-primary/20"
+                >
+                  <RadioGroupItem value={role} className="mt-0.5" />
+                  <RoleCopy role={role} />
+                </label>
+              ))}
+            </div>
+          </div>
         ))}
       </RadioGroup>
 
@@ -110,8 +138,8 @@ export function UserRolePicker({
                   </label>
                 ))}
               <p className="sm:col-span-2 text-[10px] leading-4 text-warning-foreground">
-                Use this only when one employee genuinely performs both jobs. Platform Admin and
-                Client Admin stay exclusive to prevent cross-scope access.
+                Use this only when one employee genuinely performs both jobs. Platform Admin, Ops
+                Manager, Client Admin, Vendor and Support always stay single roles.
               </p>
             </div>
           ) : null}

@@ -9,6 +9,20 @@
 @import "./design/client-portal-queue.css";
 @import "./design/client-portal-register.css";
 @import "./design/client-portal-pages.css";
+@import "./design/operations-workspace.css";
+@import "./design/operations-analytics.css";
+@import "./design/operations-legacy.css";
+@import "./design/workflow-v2.css";
+@import "./design/workflow-polish.css";
+@import "./design/auth.css";
+@import "./design/landing.css";
+@import "./design/auth-split.css";
+@import "./design/attention.css";
+@import "./design/help-pill.css";
+@import "./design/candidate.css";
+@import "./design/onboarding.css";
+@import "./design/team.css";
+@import "./design/rm-overview.css";
 
 @theme inline {
   --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -157,14 +171,6 @@ button[aria-busy="true"] > svg {
 @keyframes action-spin {
   to {
     transform: rotate(360deg);
-  }
-}
-@keyframes request-progress {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(400%);
   }
 }
 @media (prefers-reduced-motion: reduce) {

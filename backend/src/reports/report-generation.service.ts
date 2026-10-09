@@ -1,7 +1,11 @@
+import { ConfigService } from "@nestjs/config";
+import { SecretBoxService } from "../common/security/secret-box.service";
+import { SubjectPiiService } from "../common/security/subject-pii.service";
 import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { PrismaService } from "../database/prisma.service";
@@ -9,6 +13,7 @@ import { LocalObjectStorageService } from "../documents/local-object-storage.ser
 import type { ApprovedReportSnapshot } from "./report-data";
 import { ReportPdfService } from "./report-pdf.service";
 import { releasePreparedReport } from "./report-release";
+import { releaseBeforePayment } from "./release-mode";
 
 @Injectable()
 export class ReportGenerationService {
@@ -16,7 +21,18 @@ export class ReportGenerationService {
     private readonly prisma: PrismaService,
     private readonly storage: LocalObjectStorageService,
     private readonly pdf: ReportPdfService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly pii?: SubjectPiiService,
+    @Optional() private readonly config?: ConfigService,
   ) {}
+
+  /** Release email delivery; absent in narrow unit tests. */
+  private releaseMail() {
+    const webOrigin = this.config?.get<string>("WEB_ORIGIN");
+    return this.secretBox && this.pii && webOrigin
+      ? { secretBox: this.secretBox, pii: this.pii, webOrigin }
+      : undefined;
+  }
 
   async generateApproved(
     tenantId: bigint,
@@ -98,6 +114,7 @@ export class ReportGenerationService {
     const sha256 = createHash("sha256").update(contents).digest("hex");
     const objectKey = `${report.tenant.publicId}/${casePublicId}/reports/${report.publicId}/v${version}-${randomUUID()}.pdf`;
     await this.storage.put(objectKey, contents);
+    const beforePayment = await releaseBeforePayment(this.prisma, tenantId);
     try {
       await this.prisma.$transaction(async (tx) => {
         const updated = await tx.report.updateMany({
@@ -139,8 +156,9 @@ export class ReportGenerationService {
             caseId: report.case.id,
             fromStatus: "REPORT_PENDING",
             toStatus: "PAYMENT_PENDING",
-            reason:
-              "Approved report prepared; awaiting billing and successful payment",
+            reason: beforePayment
+              ? "Approved report prepared for release"
+              : "Approved report prepared; awaiting billing and successful payment",
           },
         });
         await tx.auditEvent.create({
@@ -158,7 +176,14 @@ export class ReportGenerationService {
             }),
           },
         });
-        await releasePreparedReport(tx, tenantId, report.publicId);
+        await releasePreparedReport(
+          tx,
+          tenantId,
+          report.publicId,
+          undefined,
+          this.releaseMail(),
+          { beforePayment },
+        );
       });
     } catch (error) {
       const referenced = await this.prisma.reportVersion.findFirst({

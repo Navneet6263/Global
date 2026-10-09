@@ -129,7 +129,11 @@ void test("production object storage cannot use plaintext transport", () => {
     NOTIFICATION_WEBHOOK_SECRET: "notify-secret-0123456789abcdef012345678",
   };
   assert.throws(
-    () => validateEnvironment({ ...production, S3_ENDPOINT: "http://minio.internal" }),
+    () =>
+      validateEnvironment({
+        ...production,
+        S3_ENDPOINT: "http://minio.internal",
+      }),
     /S3_ENDPOINT/,
   );
   assert.throws(
@@ -153,9 +157,19 @@ void test("production object storage cannot use plaintext transport", () => {
 });
 
 void test("JWT TTLs use one bounded grammar", () => {
-  assert.throws(() => validateEnvironment({ ...base, JWT_ACCESS_TTL: "15 minutes" }), /JWT_ACCESS_TTL/);
-  assert.throws(() => validateEnvironment({ ...base, JWT_REFRESH_TTL: "12h" }), /JWT_REFRESH_TTL/);
-  const valid = validateEnvironment({ ...base, JWT_ACCESS_TTL: "30m", JWT_REFRESH_TTL: "14d" });
+  assert.throws(
+    () => validateEnvironment({ ...base, JWT_ACCESS_TTL: "15 minutes" }),
+    /JWT_ACCESS_TTL/,
+  );
+  assert.throws(
+    () => validateEnvironment({ ...base, JWT_REFRESH_TTL: "12h" }),
+    /JWT_REFRESH_TTL/,
+  );
+  const valid = validateEnvironment({
+    ...base,
+    JWT_ACCESS_TTL: "30m",
+    JWT_REFRESH_TTL: "14d",
+  });
   assert.equal(valid.JWT_ACCESS_TTL, "30m");
   assert.equal(valid.JWT_REFRESH_TTL, "14d");
 });
@@ -179,7 +193,10 @@ void test("public origins cannot contain credentials, paths, queries or fragment
     "https://verify.sapling.example?tenant=sapling",
     "https://verify.sapling.example#dashboard",
   ]) {
-    assert.throws(() => validateEnvironment({ ...base, WEB_ORIGIN: origin }), /WEB_ORIGIN/);
+    assert.throws(
+      () => validateEnvironment({ ...base, WEB_ORIGIN: origin }),
+      /WEB_ORIGIN/,
+    );
   }
   assert.equal(
     validateEnvironment({ ...base, PUBLIC_API_ORIGIN: "", S3_ENDPOINT: "" })

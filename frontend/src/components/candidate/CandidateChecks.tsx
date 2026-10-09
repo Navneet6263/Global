@@ -76,7 +76,7 @@ export function CandidateChecks({
   );
 }
 
-function ClarificationCard({
+export function ClarificationCard({
   accessId,
   token,
   item,

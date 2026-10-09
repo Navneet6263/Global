@@ -30,11 +30,8 @@ export function CaseContextView({ context }: { context: Context }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2">
       {rows.map(([label, value]) => (
-        <div
-          key={label}
-          className="rounded-[1.05rem] border border-white/80 bg-background/60 p-3.5 shadow-[var(--shadow-card)]"
-        >
-          <p className="text-[8.5px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+        <div key={label} className="rounded-xl border border-slate-200 bg-slate-50 p-3.5 shadow-sm">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
             {label}
           </p>
           <p className="mt-1.5 break-words text-[11.5px] font-medium">{value}</p>
@@ -76,7 +73,7 @@ export function ClarificationsView({ context }: { context: Context }) {
           event.preventDefault();
           if (subject.trim().length >= 3 && message.trim().length >= 3) create.mutate();
         }}
-        className="rounded-[1.2rem] border border-warning/20 bg-warning-soft/45 p-4"
+        className="rounded-xl border border-warning/20 bg-warning-soft/45 p-4"
       >
         <div className="flex items-center gap-2 text-[12px] font-semibold">
           <MessageSquarePlus className="size-4 text-warning-foreground" /> Raise a precise
@@ -88,7 +85,7 @@ export function ClarificationsView({ context }: { context: Context }) {
             onChange={(event) => setSubject(event.target.value)}
             maxLength={180}
             placeholder="What information is missing?"
-            className="h-10 rounded-xl border border-border bg-white/85 px-3 text-[11px] outline-none focus:border-warning/50"
+            className="h-10 rounded-xl border border-border bg-white px-3 text-[12.5px] outline-none focus:border-warning/50"
           />
           <textarea
             value={message}
@@ -96,12 +93,12 @@ export function ClarificationsView({ context }: { context: Context }) {
             rows={3}
             maxLength={1200}
             placeholder="State exactly what must be corrected or supplied"
-            className="rounded-xl border border-border bg-white/85 px-3 py-2.5 text-[11px] outline-none focus:border-warning/50"
+            className="rounded-xl border border-border bg-white px-3 py-2.5 text-[12.5px] outline-none focus:border-warning/50"
           />
           <button
             disabled={create.isPending || subject.trim().length < 3 || message.trim().length < 3}
             aria-busy={create.isPending}
-            className="ml-auto inline-flex items-center gap-2 rounded-full bg-warning px-4 py-2 text-[10.5px] font-semibold text-warning-foreground disabled:opacity-45"
+            className="ml-auto inline-flex items-center gap-2 rounded-full bg-warning px-4 py-2 text-[12.5px] font-semibold text-warning-foreground disabled:opacity-45"
           >
             {create.isPending ? (
               <Loader2 className="size-3.5 animate-spin" />
@@ -113,21 +110,18 @@ export function ClarificationsView({ context }: { context: Context }) {
         </div>
       </form>
       {clarifications.data?.items.map((item) => (
-        <article
-          key={item.id}
-          className="rounded-[1.1rem] border border-border/70 bg-background/55 p-3.5"
-        >
+        <article key={item.id} className="rounded-xl border border-border/70 bg-slate-50 p-3.5">
           <div className="flex items-center justify-between gap-3">
             <p className="text-[11.5px] font-semibold">{item.subject}</p>
-            <span className="rounded-full bg-mint-soft px-2 py-1 text-[8.5px] font-semibold text-mint-deep">
+            <span className="rounded-full bg-blue-50 px-2 py-1 text-[11px] font-semibold text-blue-700">
               {humanize(item.status)}
             </span>
           </div>
-          <p className="mt-1 text-[9px] text-muted-foreground">
+          <p className="mt-1 text-[11px] text-muted-foreground">
             Raised {formatDateTime(item.createdAt)} · {item.messages.length} messages
           </p>
           {item.messages.at(-1) ? (
-            <p className="mt-2 rounded-xl bg-white/75 p-3 text-[10.5px] leading-relaxed text-muted-foreground">
+            <p className="mt-2 rounded-xl bg-white p-3 text-[12.5px] leading-relaxed text-muted-foreground">
               {item.messages.at(-1)!.body}
             </p>
           ) : null}
@@ -175,9 +169,9 @@ export function ActivityView({ context }: { context: Context }) {
 
 function TimelineRow({ label, detail, at }: { label: string; detail: string; at: string }) {
   return (
-    <div className="relative ml-2 border-l border-mint/25 py-2 pl-5 before:absolute before:-left-1 before:top-4 before:size-2 before:rounded-full before:bg-mint-deep">
-      <p className="text-[11px] font-semibold">{label}</p>
-      <p className="mt-0.5 text-[9.5px] text-muted-foreground">
+    <div className="relative ml-2 border-l border-blue-200 py-2 pl-5 before:absolute before:-left-1 before:top-4 before:size-2 before:rounded-full before:bg-blue-600">
+      <p className="text-[12.5px] font-semibold">{label}</p>
+      <p className="mt-0.5 text-[11.5px] text-muted-foreground">
         {detail} · {formatDateTime(at)}
       </p>
     </div>
@@ -194,11 +188,11 @@ function EmptyContext({
   detail: string;
 }) {
   return (
-    <div className="grid min-h-40 place-items-center rounded-[1.2rem] border border-dashed border-border bg-background/35 p-6 text-center">
+    <div className="grid min-h-40 place-items-center rounded-xl border border-dashed border-border bg-slate-50 p-6 text-center">
       <div>
         <Icon className="mx-auto size-5 text-muted-foreground" />
         <p className="mt-2 text-[11.5px] font-semibold">{title}</p>
-        <p className="mt-1 max-w-sm text-[9.5px] text-muted-foreground">{detail}</p>
+        <p className="mt-1 max-w-sm text-[11.5px] text-muted-foreground">{detail}</p>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import { roleIs } from "../../common/auth/role-filter";
 import {
   BadRequestException,
   ConflictException,
@@ -96,7 +97,7 @@ export class DispatchCommitService {
                 in: input.allocations.map((item) => item.assigneeId),
               },
               status: "ACTIVE",
-              userRoles: { some: { role: { code: "VERIFIER" } } },
+              userRoles: { some: { role: roleIs("VERIFIER") } },
             },
             select: {
               id: true,

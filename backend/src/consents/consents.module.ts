@@ -6,6 +6,6 @@ import { ConsentsService } from "./consents.service";
 @Module({
   controllers: [ConsentsController],
   providers: [ConsentsService, ConsentIssuanceService],
-  exports: [ConsentIssuanceService],
+  exports: [ConsentIssuanceService, ConsentsService],
 })
 export class ConsentsModule {}

@@ -14,6 +14,7 @@ export const dispatchCaseSelect = {
   caseNumber: true,
   status: true,
   version: true,
+  workflowVersion: true,
   branchId: true,
   clientId: true,
   dueAt: true,
@@ -71,6 +72,10 @@ export function unassignedCheck(check: DispatchCheck) {
 
 export function dispatchIssues(record: DispatchCase, now = new Date()) {
   const issues: string[] = [];
+  if (record.workflowVersion === 2)
+    issues.push(
+      "This case follows the RM flow: the RM routes checks to departments and Team Leaders assign members",
+    );
   if (!["DOCUMENT_PENDING", "IN_PROGRESS"].includes(record.status))
     issues.push(
       "Complete consent/document preparation first; only document-pending or active cases can be dispatched",

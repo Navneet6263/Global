@@ -15,6 +15,7 @@ const stageStatuses: Record<NonNullable<CaseQueryDto["stage"]>, string[]> = {
   payment_pending: ["PAYMENT_PENDING"],
   completed: ["COMPLETED", "CLOSED", "CANCELLED"],
   cancelled: ["CANCELLED"],
+  stopped: ["STOPPED"],
   assignment: ["IN_PROGRESS"],
   field_visit: ["IN_PROGRESS", "CLARIFICATION_PENDING"],
 };
@@ -28,6 +29,12 @@ export function caseRegisterWhere(
   if (query.view === "operations" && query.stage === "completed") {
     and.push({ status: { in: ["COMPLETED", "CLOSED"] } });
   }
+  // The Operations work queue lists live cases unless a stage is chosen.
+  if (query.view === "active" && !query.status && !query.stage) {
+    and.push({
+      status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
+    });
+  }
   if (query.risk) {
     and.push(
       query.risk === "high"
@@ -38,6 +45,7 @@ export function caseRegisterWhere(
     );
   }
   if (query.unassigned) and.push({ assignedOpsUserId: null });
+  if (query.escalated) and.push({ escalatedAt: { not: null } });
   if (query.ownerId) and.push({ assignedOpsUser: { publicId: query.ownerId } });
   else if (query.owner)
     and.push({ assignedOpsUser: { displayName: query.owner } });

@@ -18,7 +18,7 @@ async function expectInsideViewport(page: Page, locator: Locator) {
     .toBe(true);
 }
 
-async function initiateCase(page: Page, invite = true) {
+async function initiateCase(page: Page) {
   const dialog = page.getByRole("dialog", { name: "Initiate a verification case", exact: true });
   await expectInsideViewport(page, dialog);
   await dialog.getByLabel("Candidate name", { exact: true }).fill("Layout Test Candidate");
@@ -30,8 +30,7 @@ async function initiateCase(page: Page, invite = true) {
   await dialog.getByRole("button", { name: /Standard BGV/ }).click();
   await expectInsideViewport(page, dialog);
   await dialog.getByRole("button", { name: "Continue", exact: true }).click();
-  if (!invite)
-    await dialog.getByRole("checkbox", { name: /Create secure document-upload link/ }).uncheck();
+  await expect(dialog.getByText("One secure link for the candidate")).toBeVisible();
   await expectInsideViewport(page, dialog);
   await expectInsideViewport(
     page,
@@ -53,14 +52,8 @@ for (const viewport of [
     const fixture = await caseInitiationFixture(page);
     const dialog = await initiateCase(page);
     const done = dialog.getByRole("button", { name: "Done", exact: true });
-    await expect(
-      dialog.getByText("Preparing candidate document link", { exact: true }),
-    ).toBeVisible();
-    await expectInsideViewport(page, dialog);
-    await expectInsideViewport(page, done);
-    fixture.releaseAccess();
     const uploadLink = dialog.getByRole("textbox", {
-      name: "1. Candidate document-upload link",
+      name: "Candidate link",
       exact: true,
     });
     await expect(uploadLink).toHaveValue(/candidate\/access-test#token=long-test-token/);
@@ -71,11 +64,9 @@ for (const viewport of [
     expect(
       await details.evaluate((element) => element.scrollWidth <= element.clientWidth + 1),
     ).toBe(true);
-    for (const name of [
-      "Copy 1. Candidate document-upload link",
-      "Copy 2. Candidate consent link",
-      "Copy development consent OTP",
-    ]) {
+    await expect(dialog.getByText(/Emailed to ca\*\*\*@example\.invalid/)).toBeVisible();
+    await expect(dialog.getByText(/consent link|consent OTP/i)).toHaveCount(0);
+    for (const name of ["Copy Candidate link"]) {
       const button = dialog.getByRole("button", { name, exact: true });
       await button.scrollIntoViewIfNeeded();
       await expectInsideViewport(page, button);
@@ -83,12 +74,8 @@ for (const viewport of [
     }
     await expect
       .poll(() => page.evaluate(() => Reflect.get(window, "testCopiedValues")))
-      .toEqual([
-        await uploadLink.inputValue(),
-        new URL("/consent/consent-test", page.url()).href,
-        "246810",
-      ]);
-    await expect(dialog.getByRole("status")).toHaveText("OTP copied");
+      .toEqual([await uploadLink.inputValue()]);
+    await expect(dialog.getByRole("status")).toHaveText("Candidate link copied");
     if (await details.evaluate((element) => element.scrollHeight > element.clientHeight)) {
       await details.focus();
       await page.keyboard.press("Home");
@@ -103,42 +90,8 @@ for (const viewport of [
     });
     await done.click();
     await expect(dialog).toHaveCount(0);
-    expect(fixture.writes).toEqual(["/cases", "/cases/case-test/candidate-access"]);
+    // One write: the case. Its single candidate link is issued and emailed with it.
+    expect(fixture.writes).toEqual(["/cases"]);
     expect(fixture.unexpected).toEqual([]);
   });
 }
-
-test("long invitation error remains contained and the created case can still be closed", async ({
-  page,
-}) => {
-  await page.setViewportSize({ width: 320, height: 568 });
-  const fixture = await caseInitiationFixture(page, true);
-  const dialog = await initiateCase(page);
-  fixture.releaseAccess();
-  await expect(dialog.getByText("Document link was not issued", { exact: true })).toBeVisible();
-  await expectInsideViewport(page, dialog);
-  const details = dialog.getByRole("region", { name: "Candidate access details" });
-  expect(await details.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(
-    true,
-  );
-  const done = dialog.getByRole("button", { name: "Done", exact: true });
-  await expectInsideViewport(page, done);
-  await done.click();
-  await expect(dialog).toHaveCount(0);
-  expect(fixture.writes).toEqual(["/cases", "/cases/case-test/candidate-access"]);
-  expect(fixture.unexpected).toEqual([]);
-});
-
-test("confirmation still fits when candidate invitation is skipped", async ({ page }) => {
-  await page.setViewportSize({ width: 667, height: 320 });
-  const fixture = await caseInitiationFixture(page);
-  const dialog = await initiateCase(page, false);
-  await expect(dialog.getByText("Document link was not requested", { exact: true })).toBeVisible();
-  await expectInsideViewport(page, dialog);
-  const done = dialog.getByRole("button", { name: "Done", exact: true });
-  await expectInsideViewport(page, done);
-  await done.click();
-  await expect(dialog).toHaveCount(0);
-  expect(fixture.writes).toEqual(["/cases"]);
-  expect(fixture.unexpected).toEqual([]);
-});

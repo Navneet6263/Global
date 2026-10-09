@@ -67,7 +67,8 @@ export class DashboardClientService {
       }))
       .sort((a, b) => b.count - a.count);
     const bottleneck = stageHealth.find(
-      (row) => !["COMPLETED", "CLOSED", "CANCELLED"].includes(row.status),
+      (row) =>
+        !["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"].includes(row.status),
     );
 
     return {

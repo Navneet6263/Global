@@ -10,6 +10,7 @@ import {
 import { ErrorState } from "@/components/feedback/error-state";
 import { ListSkeleton } from "@/components/feedback/skeletons";
 import type { ExceptionsDashboard, OperationsDashboard } from "@/lib/api/dashboards";
+import { rmInitials, useClientRm } from "./use-client-rm";
 
 export function ClientAttentionPanel({
   data,
@@ -31,6 +32,8 @@ export function ClientAttentionPanel({
     { label: "Discrepancy", key: "DISCREPANCY", color: "#b45309", icon: CircleAlert },
     { label: "Unable to verify", key: "UNABLE_TO_VERIFY", color: "#6d28d9", icon: CircleHelp },
   ];
+  const rm = useClientRm();
+  const person = rm.data?.rm ?? null;
   const total = results.reduce((sum, item) => sum + (operations?.outcomeMix[item.key] ?? 0), 0);
   return (
     <aside className="client-context-panels" aria-label="Client actions and support">
@@ -74,18 +77,45 @@ export function ClientAttentionPanel({
       </section>
       <section className="client-panel">
         <h2>Your relationship manager</h2>
-        <div className="client-contact-row">
-          <span className="client-contact-avatar">
-            <UsersRound aria-hidden />
-          </span>
-          <div>
-            <strong>Contact not available yet</strong>
-            <p>Use support until your RM contact details are available here.</p>
-          </div>
-        </div>
-        <Link to="/client-portal/support" className="client-outline-link">
-          Contact support
-        </Link>
+        {person ? (
+          <>
+            <div className="client-contact-row">
+              <span className="client-contact-avatar" aria-hidden>
+                {rmInitials(person.name)}
+              </span>
+              <div className="min-w-0">
+                <strong>{person.name}</strong>
+                <p>
+                  <a href={`mailto:${person.email}`}>{person.email}</a>
+                  {person.phone ? (
+                    <>
+                      <br />
+                      <a href={`tel:${person.phone}`}>{person.phone}</a>
+                    </>
+                  ) : null}
+                </p>
+              </div>
+            </div>
+            <a href={`mailto:${person.email}`} className="client-outline-link">
+              Email your RM
+            </a>
+          </>
+        ) : (
+          <>
+            <div className="client-contact-row">
+              <span className="client-contact-avatar">
+                <UsersRound aria-hidden />
+              </span>
+              <div>
+                <strong>{rm.isLoading ? "Loading…" : "RM being assigned"}</strong>
+                <p>Sapling Global will assign your RM soon. Use support meanwhile.</p>
+              </div>
+            </div>
+            <Link to="/client-portal/support" className="client-outline-link">
+              Contact support
+            </Link>
+          </>
+        )}
       </section>
       <section className="client-panel">
         <header className="client-panel-head">

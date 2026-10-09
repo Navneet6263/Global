@@ -1,5 +1,6 @@
 import { ForbiddenException } from "@nestjs/common";
 import type { Actor } from "./actor";
+import type { Prisma } from "../../generated/prisma/client";
 
 export function caseAccessScope(actor: Actor) {
   const isPlatformAdmin = actor.roles.includes("PLATFORM_ADMIN");
@@ -20,22 +21,62 @@ export function caseAccessScope(actor: Actor) {
   ) {
     return base;
   }
+  const ledDepartments = (actor.departments ?? [])
+    .filter((department) => department.role === "LEAD")
+    .map((department) => department.id);
+  // One clause per working role; a person with several roles (e.g. RM + Data Entry)
+  // sees the cases of each role, never more.
+  const clauses: Prisma.VerificationCaseWhereInput[] = [];
   if (actor.roles.includes("VERIFIER")) {
-    return {
-      ...base,
+    const assigned = {
       checks: { some: { tasks: { some: { assigneeId: actor.userId } } } },
     };
+    // A Team Leader also works every case routed to a department it leads.
+    clauses.push(
+      ledDepartments.length
+        ? {
+            OR: [
+              assigned,
+              { checks: { some: { departmentId: { in: ledDepartments } } } },
+            ],
+          }
+        : assigned,
+    );
+  }
+  if (actor.roles.includes("DATA_ENTRY")) {
+    // Members see their assigned intake; a Data Entry lead sees its whole team's intake.
+    clauses.push(
+      ledDepartments.length
+        ? {
+            workflowVersion: 2,
+            OR: [
+              { dataEntryUserId: actor.userId },
+              {
+                dataEntryUser: {
+                  departmentMemberships: {
+                    some: { departmentId: { in: ledDepartments } },
+                  },
+                },
+              },
+            ],
+          }
+        : { workflowVersion: 2, dataEntryUserId: actor.userId },
+    );
+  }
+  if (actor.roles.includes("SPOC_RM")) {
+    // RM works the cases of its mapped clients; owner-only actions are checked per action.
+    const clients = (actor.spocClients ?? []).map((client) => client.id);
+    clauses.push({ clientId: { in: clients.length ? clients : [-1n] } });
   }
   if (actor.roles.includes("QA_REVIEWER")) {
-    return { ...base, qaReviewerId: actor.userId };
+    clauses.push({ qaReviewerId: actor.userId });
   }
   if (actor.roles.includes("FIELD_EXECUTIVE")) {
-    return {
-      ...base,
-      fieldVisits: { some: { assigneeId: actor.userId } },
-    };
+    clauses.push({ fieldVisits: { some: { assigneeId: actor.userId } } });
   }
-  return { ...base, id: -1n };
+  if (!clauses.length) return { ...base, id: -1n };
+  if (clauses.length === 1) return { ...base, ...clauses[0] };
+  return { ...base, AND: [{ OR: clauses }] };
 }
 
 /**

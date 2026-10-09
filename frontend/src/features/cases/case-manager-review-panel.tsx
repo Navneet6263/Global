@@ -183,8 +183,8 @@ export function CaseManagerReviewPanel({ item }: { item: CaseDetail }) {
         </div>
       ) : waiting && !approval.isPending ? (
         <p className="mt-4 text-sm text-muted-foreground">
-          An independent manager who did not record source responses, complete verification or
-          perform QA must approve this case.
+          A manager who did not record source responses or complete verification must approve this
+          case (the QA reviewer may approve).
         </p>
       ) : null}
       {approval.data?.reviews.length ? (

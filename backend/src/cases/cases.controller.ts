@@ -10,6 +10,7 @@ import {
   StreamableFile,
 } from "@nestjs/common";
 import {
+  AllowViewOnlyAdmin,
   CurrentActor,
   RequirePermissions,
   RequireRoles,
@@ -22,7 +23,11 @@ import { CaseReaderService } from "./case-reader.service";
 import { CaseQueryDto } from "./dto/case-query.dto";
 import { CaseCatalogQueryDto } from "./dto/case-catalog-query.dto";
 import { CreateCaseDto } from "./dto/create-case.dto";
-import { AssignCaseOwnerDto, EscalateCaseDto } from "./dto/case-operations.dto";
+import {
+  AssignCaseOwnerDto,
+  ClientEscalateCaseDto,
+  EscalateCaseDto,
+} from "./dto/case-operations.dto";
 import { TransitionCaseDto } from "./dto/transition-case.dto";
 
 @Controller("cases")
@@ -72,6 +77,8 @@ export class CasesController {
     "VERIFIER",
     "QA_REVIEWER",
     "FIELD_EXECUTIVE",
+    "DATA_ENTRY",
+    "SPOC_RM",
   )
   @RequirePermissions(Permission.CaseRead)
   get(
@@ -97,7 +104,9 @@ export class CasesController {
     return this.cases.transition(actor, caseId, input);
   }
 
+  /** The view-only Platform Admin can escalate: the case moves to URGENT priority. */
   @Patch(":caseId/escalation")
+  @AllowViewOnlyAdmin()
   @RequirePermissions(Permission.CaseTransition)
   escalate(
     @CurrentActor() actor: Actor,
@@ -105,6 +114,18 @@ export class CasesController {
     @Body() input: EscalateCaseDto,
   ) {
     return this.operations.escalate(actor, caseId, input);
+  }
+
+  /** The Company Admin escalates its own case with a reason (agreed workflow). */
+  @Post(":caseId/client-escalation")
+  @RequireRoles("CLIENT_ADMIN")
+  @RequirePermissions(Permission.CaseRead)
+  clientEscalate(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Body() input: ClientEscalateCaseDto,
+  ) {
+    return this.operations.clientEscalate(actor, caseId, input);
   }
 
   @Patch(":caseId/owner")

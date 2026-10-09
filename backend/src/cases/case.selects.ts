@@ -17,7 +17,15 @@ export const caseListSelect = {
   createdAt: true,
   updatedAt: true,
   subject: { select: subjectPublicSelect },
-  client: { select: { publicId: true, code: true, displayName: true } },
+  client: {
+    select: {
+      publicId: true,
+      code: true,
+      displayName: true,
+      // Internal only: read into workflow.companyRm, stripped from the client output.
+      primaryRm: { select: { publicId: true, displayName: true } },
+    },
+  },
   servicePackage: {
     select: { publicId: true, code: true, name: true, tatHours: true },
   },
@@ -27,9 +35,22 @@ export const caseListSelect = {
   },
   branch: { select: { publicId: true, name: true, city: true } },
   assignedOpsUser: { select: { publicId: true, displayName: true } },
+  workflowVersion: true,
+  intakeStage: true,
+  dataEntryAssignedAt: true,
+  dataEntryReadyAt: true,
+  stoppedFromStatus: true,
+  stoppedAt: true,
+  stopReason: true,
+  escalatedAt: true,
+  escalationNote: true,
+  escalatedBy: { select: { publicId: true, displayName: true } },
+  dataEntryUser: { select: { publicId: true, displayName: true } },
   checks: {
     select: {
       ...checkPublicSelect,
+      routedAt: true,
+      department: { select: { publicId: true, name: true } },
       tasks: {
         select: {
           publicId: true,
@@ -77,6 +98,9 @@ export const caseDetailSelect = {
   checks: {
     select: {
       ...checkPublicSelect,
+      // Internal only: removed for the client view in the presenter.
+      initiationJson: true,
+      initiatedAt: true,
       findings: {
         select: {
           publicId: true,

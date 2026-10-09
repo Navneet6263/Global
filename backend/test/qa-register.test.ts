@@ -11,6 +11,9 @@ import {
 } from "../src/qa/qa-register";
 import { readQaHistory } from "../src/qa/qa-history-reader";
 
+// These cover the physical-visit rule, so field work is on here.
+process.env.FIELD_WORK_ENABLED = "true";
+
 const actor = { tenantId: 1n, userId: 2n, branchId: 3n, clientId: 4n } as Actor;
 const now = new Date("2026-09-05T10:00:00Z");
 

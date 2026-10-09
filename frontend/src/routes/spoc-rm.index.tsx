@@ -42,7 +42,7 @@ function SpocOverviewPage() {
   return (
     <>
       <PageHeader
-        title="Central monitoring"
+        title="Monitoring overview"
         description="View-only picture of work across operations, verification, QA, clients, field, sales and finance."
         meta={
           overview.data ? (

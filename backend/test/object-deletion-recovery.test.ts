@@ -16,7 +16,9 @@ import { OutboxWorkerService } from "../src/outbox/outbox-worker.service";
 import type { ReportRecoveryService } from "../src/reports/report-recovery.service";
 import type { ReportsService } from "../src/reports/reports.service";
 
-const payloadJson = JSON.stringify({ objectKey: "tenant/evidence/original.pdf" });
+const payloadJson = JSON.stringify({
+  objectKey: "tenant/evidence/original.pdf",
+});
 
 function actor(): Actor {
   return {
@@ -57,7 +59,13 @@ void test("terminal object deletion failure is durable, audited and alerted", as
   let notifications = 0;
   const tx = {
     outboxEvent: {
-      updateMany: ({ where, data }: { where: Record<string, unknown>; data: Record<string, unknown> }) => {
+      updateMany: ({
+        where,
+        data,
+      }: {
+        where: Record<string, unknown>;
+        data: Record<string, unknown>;
+      }) => {
         if (
           state.status !== where.status ||
           state.claimToken !== where.claimToken ||
@@ -103,7 +111,11 @@ void test("terminal object deletion failure is durable, audited and alerted", as
 });
 
 void test("platform admin can atomically requeue a failed deletion without losing its key", async () => {
-  const state = { ...claimedEvent(), status: "FAILED", processedAt: new Date() };
+  const state = {
+    ...claimedEvent(),
+    status: "FAILED",
+    processedAt: new Date(),
+  };
   let auditAction: unknown;
   const tx = {
     outboxEvent: {
@@ -126,7 +138,10 @@ void test("platform admin can atomically requeue a failed deletion without losin
     $transaction: (work: (client: typeof tx) => Promise<unknown>) => work(tx),
   } as unknown as PrismaService;
 
-  const result = await new ObjectDeletionRecoveryService(prisma).requeue(actor(), "41");
+  const result = await new ObjectDeletionRecoveryService(prisma).requeue(
+    actor(),
+    "41",
+  );
 
   assert.deepEqual(result, { id: "41", status: "RETRY" });
   assert.equal(state.status, "RETRY");
@@ -154,7 +169,9 @@ void test("worker delegates the tenth deletion failure to durable recovery", asy
       return Promise.resolve(true);
     },
   } as unknown as ObjectDeletionRecoveryService;
-  const cfg = { get: (_key: string, fallback: unknown) => fallback } as ConfigService;
+  const cfg = {
+    get: (_key: string, fallback: unknown) => fallback,
+  } as ConfigService;
   const worker = new OutboxWorkerService(
     {} as PrismaService,
     {} as ReportsService,
@@ -165,10 +182,13 @@ void test("worker delegates the tenth deletion failure to durable recovery", asy
     {} as ReportRecoveryService,
     recovery,
     new RuntimeHealthService(),
+    { configured: () => false } as never,
   );
 
   await (
-    worker as unknown as { process(event: ReturnType<typeof claimedEvent>): Promise<void> }
+    worker as unknown as {
+      process(event: ReturnType<typeof claimedEvent>): Promise<void>;
+    }
   ).process(claimedEvent());
 
   assert.equal(terminalCalls, 1);
