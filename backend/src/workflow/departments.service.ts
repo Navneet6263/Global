@@ -47,6 +47,7 @@ export class DepartmentsService {
         code: true,
         name: true,
         kind: true,
+        teamType: true,
         status: true,
         checkTypesJson: true,
         version: true,
@@ -110,6 +111,7 @@ export class DepartmentsService {
         code: row.code,
         name: row.name,
         kind: row.kind,
+        teamType: row.teamType,
         status: row.status,
         version: row.version,
         checkTypes: parseCheckTypes(row.checkTypesJson),
@@ -150,6 +152,10 @@ export class DepartmentsService {
     });
     if (exists)
       throw new ConflictException("A department with this code already exists");
+    if (input.kind === "VERIFICATION" && !input.teamType)
+      throw new BadRequestException(
+        "Choose the team type: Employment, Education, Vendor or Digital",
+      );
     const department = await this.prisma.$transaction(async (tx) => {
       const created = await tx.department.create({
         data: {
@@ -157,9 +163,16 @@ export class DepartmentsService {
           code: input.code,
           name: input.name.trim(),
           kind: input.kind,
+          teamType: input.kind === "VERIFICATION" ? input.teamType : null,
           checkTypesJson: JSON.stringify(input.checkTypes ?? []),
         },
-        select: { publicId: true, code: true, name: true, kind: true },
+        select: {
+          publicId: true,
+          code: true,
+          name: true,
+          kind: true,
+          teamType: true,
+        },
       });
       await tx.auditEvent.create({
         data: {
@@ -206,6 +219,9 @@ export class DepartmentsService {
           ...(input.checkTypes
             ? { checkTypesJson: JSON.stringify(input.checkTypes) }
             : {}),
+          ...(input.teamType && current.kind === "VERIFICATION"
+            ? { teamType: input.teamType }
+            : {}),
           version: { increment: 1 },
         },
       });
@@ -229,6 +245,7 @@ export class DepartmentsService {
             name: input.name,
             status: input.status,
             checkTypes: input.checkTypes,
+            teamType: input.teamType,
           }),
         },
       });

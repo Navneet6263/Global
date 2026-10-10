@@ -18,7 +18,9 @@ import {
   deleteMisSchedule,
   downloadBulkReports,
   downloadMis,
+  downloadRmMis,
   getMis,
+  getRmMis,
   getMisSchedules,
   type MisFrequency,
   type MisPreset,
@@ -70,17 +72,24 @@ export function ClientMisReports() {
   );
 }
 
-function PresetReports() {
+/**
+ * Ready-made MIS. For the Company Admin it is its own company; an RM passes `company`
+ * (one of its assigned companies) and the same report is built for that company.
+ */
+export function PresetReports({ company }: { company?: { id: string; name: string } }) {
   const [preset, setPreset] = useState<MisPreset>("CASE_STATUS");
   const [from, setFrom] = useState(monthAgo);
   const [to, setTo] = useState(today);
   const mis = useQuery({
-    queryKey: ["client-reports", "mis", preset, from, to],
-    queryFn: () => getMis(preset, from, to),
+    queryKey: ["client-reports", "mis", company?.id ?? "own", preset, from, to],
+    queryFn: () => (company ? getRmMis(company.id, preset, from, to) : getMis(preset, from, to)),
     placeholderData: keepPreviousData,
   });
   const download = useMutation({
-    mutationFn: () => downloadMis(preset, from, to),
+    mutationFn: () =>
+      company
+        ? downloadRmMis(company.id, company.name, preset, from, to)
+        : downloadMis(preset, from, to),
     onError: (error: Error) => toast.error("Not downloaded", { description: error.message }),
   });
   const data = mis.data;

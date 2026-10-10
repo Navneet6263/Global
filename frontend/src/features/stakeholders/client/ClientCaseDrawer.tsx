@@ -25,6 +25,7 @@ import { ClientCaseOverview } from "./ClientCaseOverview";
 import { ClientCaseChecks } from "./ClientCaseChecks";
 import { caseDate, clientCaseActivity } from "./client-case-activity";
 import { ClientClarificationCard } from "./ClientClarificationCard";
+import { ClientReportReady } from "./ClientReportReady";
 import { caseStatusLabel, humanize, relativeTime, statusTone } from "./client-portal-utils";
 
 export function ClientCaseDrawer({
@@ -146,6 +147,13 @@ export function ClientCaseDrawer({
                     />
                   </div>
                 </section>
+                {item.report ? (
+                  <ClientReportReady
+                    report={item.report}
+                    caseNumber={item.caseNumber}
+                    className="mb-5"
+                  />
+                ) : null}
                 <Tabs value={tab} onValueChange={setTab}>
                   <TabsList className="mb-4 grid h-auto w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:grid-cols-5">
                     {[
@@ -291,8 +299,9 @@ export function ClientCaseDrawer({
                   </Link>
                 </div>
                 <p className="text-[11px] leading-5 text-slate-500">
-                  Final report downloads are available in the Reports section after authorised
-                  release.
+                  {item.report
+                    ? "The final report is ready: download it above or from the Reports section."
+                    : "The final report appears here and in the Reports section once it is released."}
                 </p>
               </aside>
             </div>

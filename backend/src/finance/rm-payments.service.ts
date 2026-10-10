@@ -9,6 +9,10 @@ import { ConfigService } from "@nestjs/config";
 import type { Actor } from "../common/auth/actor";
 import { SecretBoxService } from "../common/security/secret-box.service";
 import { PrismaService } from "../database/prisma.service";
+import { roleIs } from "../common/auth/role-filter";
+import type { RecordPaymentDto } from "./dto/record-payment.dto";
+import { InvoiceIssueService } from "./invoice-issue.service";
+import { InvoicePaymentService } from "./invoice-payment.service";
 import {
   invoiceBalance,
   openInvoiceWhere,
@@ -29,7 +33,78 @@ export class RmPaymentsService {
     private readonly prisma: PrismaService,
     @Optional() private readonly secretBox?: SecretBoxService,
     @Optional() private readonly config?: ConfigService,
+    @Optional() private readonly invoicePayments?: InvoicePaymentService,
+    @Optional() private readonly invoiceIssues?: InvoiceIssueService,
   ) {}
+
+  /** An invoice of one of the RM's companies (Operations / Admin: any company). */
+  private async rmInvoice(actor: Actor, invoicePublicId: string) {
+    const ids = this.clientIds(actor);
+    const invoice = await this.prisma.invoice.findFirst({
+      where: {
+        tenantId: actor.tenantId,
+        publicId: invoicePublicId,
+        ...(ids ? { clientId: { in: ids } } : {}),
+      },
+      select: {
+        publicId: true,
+        invoiceNumber: true,
+        client: { select: { displayName: true } },
+      },
+    });
+    if (!invoice)
+      throw new NotFoundException("Invoice not found for your companies");
+    return invoice;
+  }
+
+  /**
+   * The RM records money received from its company. The payment rules, audit and
+   * report release are those of Finance; Finance is told who recorded it.
+   */
+  async recordPayment(
+    actor: Actor,
+    invoicePublicId: string,
+    input: RecordPaymentDto,
+  ) {
+    const invoice = await this.rmInvoice(actor, invoicePublicId);
+    if (!this.invoicePayments)
+      throw new ConflictException("Payments are not available right now");
+    const result = await this.invoicePayments.record(
+      actor,
+      invoicePublicId,
+      input,
+    );
+    const finance = await this.prisma.user.findMany({
+      where: {
+        tenantId: actor.tenantId,
+        status: "ACTIVE",
+        userRoles: { some: { role: roleIs("FINANCE_MANAGER") } },
+      },
+      select: { id: true },
+    });
+    if (finance.length)
+      await this.prisma.notification.createMany({
+        data: finance.map((user) => ({
+          tenantId: actor.tenantId,
+          userId: user.id,
+          type: "PAYMENT",
+          title: `Payment recorded on ${invoice.invoiceNumber}`,
+          body: `${actor.displayName} recorded ₹${input.amount.toLocaleString("en-IN")} (${input.method.replaceAll("_", " ").toLowerCase()}${input.reference ? `, ref ${input.reference}` : ""}) from ${invoice.client.displayName}.`.slice(
+            0,
+            1000,
+          ),
+          href: "/finance/invoices",
+        })),
+      });
+    return result;
+  }
+
+  async invoicePdf(actor: Actor, invoicePublicId: string) {
+    await this.rmInvoice(actor, invoicePublicId);
+    if (!this.invoiceIssues)
+      throw new ConflictException("Invoices are not available right now");
+    return this.invoiceIssues.download(actor, invoicePublicId);
+  }
 
   private clientIds(actor: Actor) {
     if (
@@ -68,6 +143,7 @@ export class RmPaymentsService {
             publicId: true,
             invoiceNumber: true,
             status: true,
+            version: true,
             dueAt: true,
             totalAmount: true,
             paidAmount: true,
@@ -108,6 +184,9 @@ export class RmPaymentsService {
             id: invoice.publicId,
             invoiceNumber: invoice.invoiceNumber,
             status: invoice.status,
+            version: invoice.version,
+            total: Number(invoice.totalAmount),
+            paid: Number(invoice.paidAmount),
             dueAt: invoice.dueAt,
             balance: invoiceBalance(invoice),
             overdue: Boolean(invoice.dueAt && invoice.dueAt < now),

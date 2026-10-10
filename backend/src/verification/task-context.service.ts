@@ -21,6 +21,7 @@ export class TaskContextService {
           select: {
             publicId: true,
             type: true,
+            department: { select: { name: true, teamType: true } },
             case: {
               select: {
                 publicId: true,

@@ -324,6 +324,13 @@ export interface SpocCaseDetail {
     currentVersion: number;
     publishedAt: string | null;
     createdAt: string;
+    releasedAt?: string | null;
+    downloadExpiresAt?: string | null;
+    latest?: { version: number; generatedAt: string; authenticityCode: string } | null;
+    /** Released and within its download period. */
+    canDownload?: boolean;
+    /** Approved and prepared / released: its PDF can be rebuilt. */
+    canRegenerate?: boolean;
   }>;
   invoices: Array<{
     id: string;

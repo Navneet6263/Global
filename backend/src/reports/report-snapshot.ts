@@ -15,6 +15,8 @@ export const reportApprovalSelect = {
   riskLevel: true,
   workflowVersion: true,
   assignedOpsUserId: true,
+  externalRef: true,
+  joiningDate: true,
   client: { select: { displayName: true } },
   subject: {
     select: {
@@ -38,7 +40,20 @@ export const reportApprovalSelect = {
       sourceSummary: true,
       initiationJson: true,
       verifiedJson: true,
+      verifiedAt: true,
+      verifiedById: true,
+      department: { select: { name: true } },
       caseService: { select: { serviceFamily: true } },
+      evidence: {
+        orderBy: { createdAt: "asc" },
+        select: {
+          publicId: true,
+          originalName: true,
+          contentType: true,
+          caption: true,
+          sha256: true,
+        },
+      },
       methodRuns: {
         where: { status: "RESPONDED" },
         select: {
@@ -133,6 +148,26 @@ export function snapshotForApproval(
   pii?: Pick<SubjectPiiService, "open">,
 ): ApprovedReportSnapshot {
   const review = row.qaReviews[0]!;
+  return {
+    ...reportBodyFor(row, pii),
+    completedAt: approvedAt.toISOString(),
+    reviewerName: review.reviewer.displayName,
+    reviewedAt: review.createdAt.toISOString(),
+    managerName,
+    approvedAt: approvedAt.toISOString(),
+    recommendation,
+  };
+}
+
+/**
+ * The client copy of a case's report from its current data: header, checks (stated vs
+ * verified, colour) and proof metadata. The approval snapshot and the live preview are
+ * both built from it, so the preview the RM checks is what the client receives.
+ */
+export function reportBodyFor(
+  row: ApprovalCase,
+  pii?: Pick<SubjectPiiService, "open">,
+): Omit<ApprovedReportSnapshot, "completedAt"> {
   const identityDetails: Array<[string, string]> = [];
   if (row.subject.piiCiphertext && !pii)
     throw new Error(
@@ -172,20 +207,27 @@ export function snapshotForApproval(
     caseNumber: row.caseNumber,
     clientName: row.client.displayName,
     candidateName: row.subject.fullName,
-    completedAt: approvedAt.toISOString(),
     riskLevel: row.riskLevel,
+    header: {
+      employeeCode: employeeCode ?? null,
+      joiningDate: row.joiningDate?.toISOString().slice(0, 10) ?? null,
+      clientProcess: row.externalRef ?? null,
+    },
     services: [
       ...new Set(row.services.map((service) => service.serviceFamily)),
     ],
     identityDetails,
-    reviewerName: review.reviewer.displayName,
-    reviewedAt: review.createdAt.toISOString(),
-    managerName,
-    approvedAt: approvedAt.toISOString(),
-    recommendation,
     evidence,
     checks: row.checks.map((check) => ({
       type: check.type,
+      id: check.publicId,
+      proofs: check.evidence.map((file) => ({
+        id: file.publicId,
+        name: file.originalName,
+        contentType: file.contentType,
+        caption: file.caption,
+        sha256: file.sha256,
+      })),
       result: check.result,
       disposition: check.disposition,
       riskLevel: check.riskLevel,

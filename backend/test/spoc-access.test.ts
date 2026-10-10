@@ -178,6 +178,26 @@ void test("the only SPOC_RM write handlers are vendor assign, re-assign and re-u
  * workflow actions (each re-checks case ownership) and read-only case evidence.
  */
 const RM_ALLOWED_HANDLERS = new Set([
+  // The standard colour matrix and the proof on the RM's own cases (final review).
+  "WorkflowController.colourMatrix",
+  "CheckEvidenceController",
+  "CheckEvidenceController.constructor",
+  "CheckEvidenceController.list",
+  "CheckEvidenceController.upload",
+  "CheckEvidenceController.caption",
+  "CheckEvidenceController.remove",
+  "CheckEvidenceController.file",
+  // Draft report preview (client copy) and report header details on the RM's cases.
+  "ReportPreviewController",
+  "ReportPreviewController.constructor",
+  "ReportPreviewController.reportPreview",
+  "ReportPreviewController.reportView",
+  "ReportPreviewController.reportDetails",
+  "ReportPreviewController.updateReportDetails",
+  // The RM rebuilds its case's approved report PDF (audited, reason required) and
+  // downloads the released PDF (same release rules as the client).
+  "ReportPreviewController.regenerateReport",
+  "ReportPreviewController.releasedReportPdf",
   "WorkflowController.listDepartments",
   "WorkflowController.rmQueue",
   "WorkflowController.assignDataEntry",
@@ -210,6 +230,16 @@ const RM_ALLOWED_HANDLERS = new Set([
   "RmPaymentsController.constructor",
   "RmPaymentsController.list",
   "RmPaymentsController.remind",
+  // RM finance on its own companies: record a payment received and download the
+  // invoice (service checks the company is the RM's; audited, Finance is notified),
+  // and the company's preset MIS (same check; exports audited).
+  "RmPaymentsController.recordPayment",
+  "RmPaymentsController.invoicePdf",
+  "RmClientMisController",
+  "RmClientMisController.constructor",
+  "RmClientMisController.clients",
+  "RmClientMisController.mis",
+  "RmClientMisController.misExport",
   // Vendor check work: an RM sends its own cases' checks to a vendor and reviews the
   // result (service checks case ownership; audited).
   "VendorChecksController",

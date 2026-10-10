@@ -1,4 +1,9 @@
 import {
+  COLOUR_MATRIX,
+  COLOUR_NAMES,
+  RESULT_FOR_COLOUR,
+} from "../verification/colour-matrix";
+import {
   Body,
   Controller,
   Delete,
@@ -198,6 +203,23 @@ export class WorkflowController {
   )
   initiationForms() {
     return this.intake.initiationForms();
+  }
+
+  /** Standard colour matrix: per check type, the situations and the colour each means. */
+  @Get("colour-matrix")
+  @RequireRoles(
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "SPOC_RM",
+    "VERIFIER",
+    "QA_REVIEWER",
+  )
+  colourMatrix() {
+    return {
+      matrix: COLOUR_MATRIX,
+      colourNames: COLOUR_NAMES,
+      resultFor: RESULT_FOR_COLOUR,
+    };
   }
 
   /** Data Entry records a check's initiation details (check-wise initiation). */

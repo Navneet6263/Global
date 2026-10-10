@@ -10,6 +10,7 @@ import { IsOptional, IsString, MaxLength } from "class-validator";
 import { CurrentActor, RequireRoles } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { RmPaymentsService } from "./rm-payments.service";
+import { RecordPaymentDto } from "./dto/record-payment.dto";
 
 export class PaymentReminderDto {
   @IsOptional() @IsString() @MaxLength(300) note?: string;
@@ -24,6 +25,24 @@ export class RmPaymentsController {
   @Get()
   list(@CurrentActor() actor: Actor) {
     return this.payments.list(actor);
+  }
+
+  /** Record money received against one of the RM's companies' invoices. */
+  @Post("invoices/:invoiceId/payments")
+  recordPayment(
+    @CurrentActor() actor: Actor,
+    @Param("invoiceId", ParseUUIDPipe) invoiceId: string,
+    @Body() input: RecordPaymentDto,
+  ) {
+    return this.payments.recordPayment(actor, invoiceId, input);
+  }
+
+  @Get("invoices/:invoiceId/pdf")
+  invoicePdf(
+    @CurrentActor() actor: Actor,
+    @Param("invoiceId", ParseUUIDPipe) invoiceId: string,
+  ) {
+    return this.payments.invoicePdf(actor, invoiceId);
   }
 
   @Post(":clientId/remind")

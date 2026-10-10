@@ -54,3 +54,55 @@ function params(input: Query) {
   if (input.search?.trim()) query.set("search", input.search.trim());
   return query.toString();
 }
+
+/** QA dashboard: live queue health and the reviewer's own decision trends. */
+export interface QaDashboard {
+  generatedAt: string;
+  queue: {
+    awaiting: number;
+    available: number;
+    mine: number;
+    reservedByOthers: number;
+    highRisk: number;
+    sla: { overdue: number; dueToday: number; later: number; noDueDate: number };
+    waiting: { under4h: number; under24h: number; under3d: number; over3d: number };
+  };
+  me: {
+    today: number;
+    week: number;
+    previousWeek: number;
+    approved30: number;
+    returned30: number;
+    approvalRate: number | null;
+    medianReviewMinutes: number | null;
+  };
+  teamToday: number;
+  trend: Array<{ date: string; approved: number; returned: number }>;
+  upNext: Array<{
+    id: string;
+    caseNumber: string;
+    candidateName: string;
+    clientName: string;
+    priority: string;
+    dueAt: string | null;
+    checks: number;
+    highRisk: boolean;
+    reservedByMe: boolean;
+    waitingHours: number;
+  }>;
+  reworkByType: Array<{ type: string; count: number }>;
+  recent: Array<{
+    id: string;
+    decision: string;
+    createdAt: string;
+    caseId: string;
+    caseNumber: string;
+    caseStatus: string;
+    candidateName: string;
+    clientName: string;
+  }>;
+}
+
+export function getQaDashboard(signal?: AbortSignal) {
+  return apiRequest<QaDashboard>("/qa/dashboard", { signal });
+}

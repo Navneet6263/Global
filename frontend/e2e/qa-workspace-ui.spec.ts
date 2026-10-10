@@ -9,7 +9,7 @@ test("QA summary views fetch only selected evidence and keep corrections separat
   const fixture = await qaBrowserFixture(page);
   await page.goto("/auth");
   await expect(page).toHaveURL(/\/qa-review$/, { timeout: 30_000 });
-  await expect(page.getByRole("heading", { name: "Check results and findings" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Executive summary" })).toBeVisible();
   // Development remounts may abort and retry the same read. No other case's evidence is loaded.
   expect([...new Set(fixture.details)]).toEqual(["qa-case-1"]);
   await page.screenshot({ path: "test-results/qa-review-layout.png" });
@@ -46,7 +46,7 @@ test("QA renewal locks conflicting actions and retains rationale while resetting
   await page.goto("/auth");
   await expect(page).toHaveURL(/\/qa-review$/, { timeout: 30_000 });
   const notes = page.getByRole("textbox", { name: "Reviewer rationale" });
-  await page.getByRole("button", { name: "Quality & decision" }).click();
+  await page.getByRole("button", { name: /^Decision/ }).click();
   await expect(notes).toBeDisabled();
   await page.getByRole("button", { name: "Claim case", exact: true }).click();
   await expect(notes).toBeEnabled();

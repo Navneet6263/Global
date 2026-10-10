@@ -32,6 +32,12 @@ export class QaController {
     return this.qa.register(actor, query);
   }
 
+  /** Queue health and the reviewer's own decision trends. */
+  @Get("dashboard")
+  dashboard(@CurrentActor() actor: Actor) {
+    return this.qa.dashboard(actor);
+  }
+
   @Get("history")
   history(@CurrentActor() actor: Actor, @Query() query: QaRegisterQueryDto) {
     return this.qa.history(actor, query);

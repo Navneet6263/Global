@@ -21,6 +21,13 @@ import { CheckTypes } from "../../cases/case.constants";
 
 export const DepartmentKinds = ["DATA_ENTRY", "VERIFICATION"] as const;
 export const MemberRoles = ["LEAD", "MEMBER"] as const;
+/** The four verification team types; each sees its own process. */
+export const TeamTypes = [
+  "EMPLOYMENT",
+  "EDUCATION",
+  "VENDOR",
+  "DIGITAL",
+] as const;
 
 /** Check-wise initiation entries; the service validates each field for the check type. */
 export class InitiateCheckDto {
@@ -104,6 +111,11 @@ export class CreateDepartmentDto {
   @IsIn(DepartmentKinds)
   kind!: (typeof DepartmentKinds)[number];
 
+  /** Verification teams only: Employment, Education, Vendor or Digital. */
+  @IsOptional()
+  @IsIn(TeamTypes)
+  teamType?: (typeof TeamTypes)[number];
+
   @IsOptional()
   @IsArray()
   @ArrayUnique()
@@ -125,6 +137,10 @@ export class UpdateDepartmentDto {
   @IsOptional()
   @IsIn(["ACTIVE", "INACTIVE"])
   status?: "ACTIVE" | "INACTIVE";
+
+  @IsOptional()
+  @IsIn(TeamTypes)
+  teamType?: (typeof TeamTypes)[number];
 
   @IsOptional()
   @IsArray()

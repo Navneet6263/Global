@@ -441,6 +441,7 @@ export const ModelName = {
   VerificationMethodRun: 'VerificationMethodRun',
   VendorCheckAssignment: 'VendorCheckAssignment',
   VendorCheckEvidence: 'VendorCheckEvidence',
+  CheckEvidence: 'CheckEvidence',
   ClientMisSchedule: 'ClientMisSchedule',
   SourceEmail: 'SourceEmail',
   SourceOutreach: 'SourceOutreach',
@@ -474,7 +475,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "signupRequest" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "vendorCheckAssignment" | "vendorCheckEvidence" | "clientMisSchedule" | "sourceEmail" | "sourceOutreach" | "clientPackageRate" | "clientPackageDiscount" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest" | "vendorTeamPolicy" | "vendorReport" | "department" | "departmentMember"
+    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "signupRequest" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "vendorCheckAssignment" | "vendorCheckEvidence" | "checkEvidence" | "clientMisSchedule" | "sourceEmail" | "sourceOutreach" | "clientPackageRate" | "clientPackageDiscount" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest" | "vendorTeamPolicy" | "vendorReport" | "department" | "departmentMember"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3382,6 +3383,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CheckEvidence: {
+      payload: Prisma.$CheckEvidencePayload<ExtArgs>
+      fields: Prisma.CheckEvidenceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CheckEvidenceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CheckEvidenceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>
+        }
+        findFirst: {
+          args: Prisma.CheckEvidenceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CheckEvidenceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>
+        }
+        findMany: {
+          args: Prisma.CheckEvidenceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>[]
+        }
+        create: {
+          args: Prisma.CheckEvidenceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>
+        }
+        createMany: {
+          args: Prisma.CheckEvidenceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.CheckEvidenceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>
+        }
+        update: {
+          args: Prisma.CheckEvidenceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>
+        }
+        deleteMany: {
+          args: Prisma.CheckEvidenceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CheckEvidenceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.CheckEvidenceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckEvidencePayload>
+        }
+        aggregate: {
+          args: Prisma.CheckEvidenceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCheckEvidence>
+        }
+        groupBy: {
+          args: Prisma.CheckEvidenceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CheckEvidenceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CheckEvidenceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CheckEvidenceCountAggregateOutputType> | number
+        }
+      }
+    }
     ClientMisSchedule: {
       payload: Prisma.$ClientMisSchedulePayload<ExtArgs>
       fields: Prisma.ClientMisScheduleFieldRefs
@@ -4870,6 +4937,7 @@ export const VerificationCaseScalarFieldEnum = {
   retentionHoldReason: 'retentionHoldReason',
   caseNumber: 'caseNumber',
   externalRef: 'externalRef',
+  joiningDate: 'joiningDate',
   status: 'status',
   priority: 'priority',
   dueAt: 'dueAt',
@@ -5509,6 +5577,24 @@ export const VendorCheckEvidenceScalarFieldEnum = {
 export type VendorCheckEvidenceScalarFieldEnum = (typeof VendorCheckEvidenceScalarFieldEnum)[keyof typeof VendorCheckEvidenceScalarFieldEnum]
 
 
+export const CheckEvidenceScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  checkId: 'checkId',
+  objectKey: 'objectKey',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  caption: 'caption',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type CheckEvidenceScalarFieldEnum = (typeof CheckEvidenceScalarFieldEnum)[keyof typeof CheckEvidenceScalarFieldEnum]
+
+
 export const ClientMisScheduleScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -5797,6 +5883,7 @@ export const DepartmentScalarFieldEnum = {
   name: 'name',
   kind: 'kind',
   checkTypesJson: 'checkTypesJson',
+  teamType: 'teamType',
   status: 'status',
   version: 'version',
   createdAt: 'createdAt',
@@ -6081,6 +6168,7 @@ export type GlobalOmitConfig = {
   verificationMethodRun?: Prisma.VerificationMethodRunOmit
   vendorCheckAssignment?: Prisma.VendorCheckAssignmentOmit
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceOmit
+  checkEvidence?: Prisma.CheckEvidenceOmit
   clientMisSchedule?: Prisma.ClientMisScheduleOmit
   sourceEmail?: Prisma.SourceEmailOmit
   sourceOutreach?: Prisma.SourceOutreachOmit

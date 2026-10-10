@@ -13,13 +13,12 @@ function allowed(constraint: string) {
     .sort()
     .map((name) => readFileSync(join(dir, name, "migration.sql"), "utf8"))
     .join("\n");
-  const pattern = new RegExp(
-    `\[${constraint}\][\s\S]*?CHECK \(\[status\] IN \(([^)]*)\)\)`,
-    "g",
-  );
-  const last = [...sql.matchAll(pattern)].at(-1);
-  assert.ok(last, `${constraint} not found`);
-  return last[1]!.split(",").map((value) => value.trim().replaceAll("'", ""));
+  // The newest definition: text after the last mention of the constraint, up to "))".
+  const at = sql.lastIndexOf(`[${constraint}]`);
+  assert.ok(at >= 0, `${constraint} not found`);
+  const list = /\[status\] IN \(([^)]*)\)/.exec(sql.slice(at));
+  assert.ok(list, `${constraint} has no status list`);
+  return list[1]!.split(",").map((value) => value.trim().replaceAll("'", ""));
 }
 
 void test("the database accepts every check status the workflow writes", () => {

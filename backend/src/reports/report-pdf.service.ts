@@ -1,37 +1,79 @@
 import { Injectable } from "@nestjs/common";
-import { PDFDocument, rgb } from "pdf-lib";
-import { ReportWriter, type Colour } from "../common/pdf/document-writer";
+import { PDFDocument } from "pdf-lib";
 export { wrapToWidth } from "../common/pdf/document-writer";
 import { SAPLING_WORDMARK_PNG } from "../common/pdf/brand-logo";
 import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
-import { serviceReportSections, type ReportData } from "./report-data";
+import type { ReportAssets, ReportData, ReportProof } from "./report-data";
+import { caseColour, type Disposition } from "../verification/dispositions";
+import { COLOUR_NAMES } from "../verification/colour-matrix";
 import {
-  DispositionLabels,
-  caseColour,
-  effectiveDisposition,
-  type Disposition,
-} from "../verification/dispositions";
-import {
-  checkStatusLabel,
-  verifiedFormFor,
-} from "../verification/verified-fields";
-import { INITIATION_FORMS } from "../workflow/initiation-fields";
-import {
-  groupedReportChecks,
-  reportTemplateConfig,
-} from "./report-template-config";
+  reportDate,
+  reportItems,
+  roman,
+  type AnnexureBlock,
+  type ReportItem,
+} from "./report-annexures";
+import { PALETTE, ReportLayout, type Cell, type RGB } from "./report-layout";
 
-const muted = rgb(0.36, 0.4, 0.38);
-
-/** Report colours for each disposition (band colour in the PDF). */
-const COLOURS: Record<Disposition, Colour> = {
-  GREEN: [0.09, 0.5, 0.24],
-  RED: [0.72, 0.11, 0.11],
-  YELLOW: [0.79, 0.62, 0.02],
-  AMBER: [0.85, 0.47, 0.02],
-  BLUE: [0.11, 0.3, 0.85],
-  CLIENT_REVIEW: [0.42, 0.45, 0.5],
+/**
+ * Severity colours (Green / Yellow / Orange / Red / Blue); "Insufficient / Interim"
+ * (client review) carries no colour.
+ */
+export const STATUS_FILL: Record<Disposition, RGB> = {
+  GREEN: [0.12, 0.56, 0.24],
+  YELLOW: [0.96, 0.76, 0.05],
+  AMBER: [0.96, 0.49, 0.0],
+  RED: [0.83, 0.18, 0.18],
+  BLUE: [0.12, 0.39, 0.78],
+  CLIENT_REVIEW: [1, 1, 1],
 };
+/** Yellow and "no colour" carry dark text; every other status colour carries white. */
+const STATUS_TEXT = (colour: Disposition): RGB =>
+  colour === "YELLOW" || colour === "CLIENT_REVIEW"
+    ? PALETTE.ink
+    : PALETTE.white;
+/** Colour names printed in the report. */
+const COLOUR_LABEL: Record<Disposition, string> = {
+  ...COLOUR_NAMES,
+  CLIENT_REVIEW: "No colour",
+};
+
+/** Severity legend printed on the executive summary, in the client's order. */
+const SEVERITY_LEGEND: Array<[Disposition, string, string]> = [
+  [
+    "GREEN",
+    "Green / Clear",
+    "Where there is no disparity between the stated and verified antecedents, or the difference is considered non-significant and treated as clear.",
+  ],
+  [
+    "YELLOW",
+    "Minor Discrepant",
+    "Where the verification response reports a mismatch and the mismatch is of a lesser degree / lower impact than discrepant.",
+  ],
+  [
+    "AMBER",
+    "Unable to Verify / Amber / Orange",
+    "Where the verification source (viz. previous employer or education institution) is unable to share a response due to lack of data / data accessibility, or refuses to give a complete response.",
+  ],
+  [
+    "CLIENT_REVIEW",
+    "Insufficient / Interim – No Colour",
+    "Where verification could not be completed due to the absence of mandatory data or documents.",
+  ],
+  [
+    "RED",
+    "Red / Major Discrepant",
+    "Where the verification source (viz. previous employer, education institution or address) is fake or suspect, or the verification response reports a mismatch with the stated antecedents.",
+  ],
+  [
+    "BLUE",
+    "Verbal",
+    "Where a written response could not be obtained from the verification source and the verification was completed verbally.",
+  ],
+];
+
+const DISCLAIMER =
+  "This report contains information that is confidential and proprietary in nature, and may also be attorney-client privileged and/or work-product privileged. It is for the exclusive use of the intended recipient(s). If you are not the intended recipient or the person responsible for delivering it to the intended recipient, any dissemination, distribution or copying of this report is strictly prohibited and may be unlawful. If you have received this report in error, please notify the sender immediately and delete the original. The findings describe the verified scope and the sources consulted; they are not an automated hiring or character decision.";
 
 const IST = new Intl.DateTimeFormat("en-IN", {
   timeZone: "Asia/Kolkata",
@@ -63,307 +105,613 @@ export function istDate(value: Date | string | null | undefined) {
     : String(value);
 }
 
-const readable = (value: string) =>
-  value
-    .replaceAll("_", " ")
-    .toLowerCase()
-    .replace(/^\w/, (letter) => letter.toUpperCase());
+/** Report date in IST as "10 Oct 2026". */
+const dayOf = (value: Date) =>
+  new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(value);
 
+const statusCell = (colour: Disposition | null, fallback: string): Cell =>
+  colour
+    ? {
+        text: COLOUR_LABEL[colour],
+        fill: STATUS_FILL[colour],
+        colour: STATUS_TEXT(colour),
+        bold: true,
+        align: "center",
+      }
+    : { text: fallback, colour: PALETTE.muted, align: "center" };
+
+const MAX_PDF_PAGES = 10;
+
+/**
+ * Background verification report in the Sample Report format: executive summary with
+ * header and colour-coded checks table, annexure index, one detailed annexure per
+ * check (stated vs verified), the verifier's proof (screenshots, written replies, lab
+ * reports) as figures, end-of-report marker and confidentiality notice.
+ */
 @Injectable()
 export class ReportPdfService {
-  async render(data: ReportData): Promise<Buffer> {
+  async render(data: ReportData, assets: ReportAssets = {}): Promise<Buffer> {
     const document = await PDFDocument.create();
     const { regular, bold } = await embedUnicodeFonts(document);
     const logo = await document.embedPng(
       Buffer.from(SAPLING_WORDMARK_PNG, "base64"),
     );
-    const writer = new ReportWriter(document, regular, bold, {
+    const internal = data.audience === "internal";
+    const items = reportItems(data);
+    const status = data.interim ? "Interim" : data.draft ? "Draft" : "Final";
+    const watermark = data.interim
+      ? "INTERIM"
+      : data.draft
+        ? internal
+          ? "INTERNAL DRAFT"
+          : "DRAFT"
+        : internal
+          ? "INTERNAL"
+          : undefined;
+    const layout = new ReportLayout(document, regular, bold, {
       logo,
-      caption: data.interim
-        ? "Interim verification report"
-        : "Background verification report",
-      watermark: data.interim ? "INTERIM" : undefined,
+      title: "Employee Background Screening Report",
+      subtitle: `${data.candidateName} · Sapling ID ${data.caseNumber}`,
+      watermark,
     });
-    writer.heading(
-      data.interim ? "INTERIM VERIFICATION REPORT" : "VERIFICATION REPORT",
-      18,
-    );
-    if (data.interim)
-      writer.text(
-        "Work in progress. Only checks already verified are reported; final results may change.",
-        8.5,
-      );
-    writer.space(4);
 
-    writer.table(
-      [
-        { label: "Candidate & case", width: 175 },
-        { label: "Detail", width: 350 },
-      ],
-      [
-        ["Candidate", data.candidateName],
-        ["Sapling case ID", data.caseNumber],
-        ...(data.identityDetails ?? []).map(([label, value]) => [label, value]),
-        ["Requesting organisation", data.clientName],
-        ["Report generated", istDate(data.generatedAt)],
-        [
-          data.interim ? "Status" : "Completed",
-          data.interim ? "Work in progress" : istDate(data.completedAt),
-        ],
-        [
-          "Overall risk",
-          data.riskLevel ? readable(data.riskLevel) : "Not classified",
-        ],
-      ],
-    );
-
-    const overall = data.interim ? null : caseColour(data.checks);
-    if (overall)
-      writer.section(
-        `OVERALL STATUS: ${DispositionLabels[overall].toUpperCase()}`,
-        "Taken from the most serious verified check in this report.",
-        COLOURS[overall],
-      );
-
-    writer.heading("SUMMARY OF CHECKS", 12);
-    writer.table(
-      [
-        { label: "#", width: 25 },
-        { label: "Check", width: 130 },
-        { label: "Status", width: 150 },
-        { label: "Remarks", width: 220 },
-      ],
-      data.checks.map((check, index) => [
-        String(index + 1),
-        readable(check.type),
-        this.status(check, data.interim),
-        check.result
-          ? (check.sourceSummary ?? "").slice(0, 140)
-          : "Verification in progress",
-      ]),
-      {
-        marks: {
-          column: 2,
-          colours: data.checks.map((check) => {
-            const colour = effectiveDisposition(check);
-            return colour ? COLOURS[colour] : null;
-          }),
-        },
-      },
-    );
-
-    const services = data.services?.length ? data.services : ["HIRECHECK"];
-    for (const family of services) {
-      const template = serviceReportSections[family];
-      const style = reportTemplateConfig[family];
-      writer.section(
-        template?.title ?? family,
-        style?.summary ?? "Approved service evidence",
-        style?.color ?? [0.08, 0.5, 0.38],
-      );
-      writer.text(
-        template?.focus ??
-          "Checks completed within the approved service scope.",
-      );
-      const checks = data.checks.filter(
-        (check) => check.serviceFamily === family || !check.serviceFamily,
-      );
-      writer.text(
-        `${checks.length} checks · ${checks.filter((check) => check.result === "CLEAR").length} clear · ${checks.filter((check) => check.result === "DISCREPANCY").length} discrepancy · ${checks.filter((check) => check.result === "UNABLE_TO_VERIFY").length} unable to verify`,
-        8,
-      );
-      for (const group of groupedReportChecks(family, checks)) {
-        writer.heading(group.heading.toUpperCase(), 10);
-        for (const check of group.items)
-          this.renderCheck(writer, check, data.interim);
+    this.summary(layout, data, items, status);
+    this.annexureIndex(layout, items);
+    const counter = { figure: 0 };
+    for (const item of items) {
+      layout.newPage();
+      this.annexure(layout, item);
+      if (item.proofs.length && item.proofAnnexure) {
+        const heading = `Annexure ${roman(item.proofAnnexure)}`;
+        const title = item.proofTitle.replace(/^\w/, (letter) =>
+          letter.toUpperCase(),
+        );
+        await this.proofs(document, layout, item.proofs, assets, counter, () =>
+          layout.annexureBar(heading, title),
+        );
       }
-      if (!checks.length)
-        writer.text("No check outcomes recorded in this service section.");
-      writer.space();
     }
+    this.closing(layout, data, internal);
 
-    writer.heading("EVIDENCE REGISTER", 12);
-    if (data.evidence?.length)
-      writer.table(
-        [
-          { label: "Document", width: 140 },
-          { label: "File", width: 175 },
-          { label: "SHA-256", width: 210 },
-        ],
-        data.evidence.map((item) => [
-          readable(item.type),
-          item.name,
-          item.sha256,
-        ]),
-        { size: 7.5 },
-      );
-    else writer.text("No document attachments referenced in this report.");
-    writer.space();
-    writer.heading(data.interim ? "STATUS" : "REVIEW AND RECOMMENDATION", 12);
-    if (!data.interim)
-      writer.table(
-        [
-          { label: "Step", width: 175 },
-          { label: "By", width: 175 },
-          { label: "When", width: 175 },
-        ],
-        [
-          [
-            "Quality review (QC)",
-            data.reviewerName ?? "Not recorded",
-            istDate(data.reviewedAt),
-          ],
-          [
-            "Final approval",
-            data.managerName ?? "Not recorded",
-            istDate(data.approvedAt),
-          ],
-        ],
-      );
-    writer.text(
-      data.recommendation ??
-        (data.interim
-          ? "This interim report is shared for information while verification continues."
-          : "Use the recorded findings within the agreed verification scope."),
+    layout.footers(
+      internal
+        ? `Internal working copy – not for client release · ${data.caseNumber}`
+        : data.draft
+          ? `Strictly confidential · Draft preview – not for release · ${data.caseNumber}`
+          : `Strictly confidential · Authenticity code ${data.authenticityCode} · verify on the Sapling Global portal`,
+      data.interim || data.draft
+        ? "Work in progress – results may change before the final report."
+        : undefined,
     );
-    writer.space();
-    writer.text(
-      "Findings describe the verified scope and sources. They are not an automated hiring or character decision.",
-      8,
-    );
-    writer.text(
-      "Report release and current authenticity status must be checked through the Sapling Global portal.",
-      8,
-    );
-
-    document.getPages().forEach((page, index, pages) => {
-      page.drawLine({
-        start: { x: 38, y: 47 },
-        end: { x: 557, y: 47 },
-        thickness: 0.5,
-        color: rgb(0.82, 0.86, 0.83),
-      });
-      page.drawText(`Authenticity: ${data.authenticityCode}`, {
-        x: 38,
-        y: 31,
-        size: 7.5,
-        font: regular,
-        color: muted,
-      });
-      page.drawText(`Page ${index + 1} of ${pages.length}`, {
-        x: 488,
-        y: 31,
-        size: 7.5,
-        font: regular,
-        color: muted,
-      });
-    });
     document.setTitle(
-      `Sapling Global ${data.interim ? "interim " : ""}report ${data.caseNumber}`,
+      `Sapling Global ${data.interim ? "interim " : data.draft ? "draft " : ""}report ${data.caseNumber}`,
     );
+    const services = data.services?.length ? data.services : ["HIRECHECK"];
     document.setSubject(
-      `${data.interim ? "Interim" : "Approved"} ${services.join(", ")} verification findings`,
+      `${data.interim ? "Interim" : data.draft ? "Draft" : "Approved"} ${services.join(", ")} verification findings`,
     );
+    document.setAuthor("Sapling Global Assurance Pvt. Ltd.");
+    document.setCreator("Sapling Global");
     document.setCreationDate(data.generatedAt);
     return Buffer.from(await document.save());
   }
 
-  private status(check: ReportData["checks"][number], interim?: boolean) {
-    if (!check.result) return interim ? "In progress" : "Pending";
-    return checkStatusLabel(
-      check.type,
-      check.result,
-      effectiveDisposition(check),
+  private summary(
+    layout: ReportLayout,
+    data: ReportData,
+    items: ReportItem[],
+    status: string,
+  ) {
+    layout.titleBar("Executive Summary – Employee Background Screening");
+    const overall = caseColour(data.checks);
+    const pendingChecks = data.checks.some((check) => !check.result);
+    const header = data.header ?? {};
+    const label = (text: string): Cell => ({
+      text,
+      fill: PALETTE.label,
+      bold: true,
+    });
+    layout.table(
+      [{ width: 112 }, { width: 148 }, { width: 112 }, { width: 147 }],
+      [
+        [
+          label("Report Status"),
+          { text: status, bold: true },
+          label("Report Disposition"),
+          statusCell(
+            data.interim && pendingChecks ? null : overall,
+            pendingChecks ? "In progress" : "Not classified",
+          ),
+        ],
+        [
+          label("Employee Code"),
+          header.employeeCode || "Not provided",
+          label("Report Date"),
+          dayOf(data.generatedAt),
+        ],
+        [
+          label("Employee Name"),
+          data.candidateName,
+          label("Client / Process"),
+          [data.clientName, header.clientProcess].filter(Boolean).join(" / "),
+        ],
+        [
+          label("Date of Joining"),
+          reportDate(header.joiningDate) || "Not provided",
+          label("Sapling ID"),
+          data.caseNumber,
+        ],
+      ],
+      { size: 8.5, middle: true },
+    );
+    // Service declarations and identity details other than the employee code.
+    const details = (data.identityDetails ?? []).filter(
+      ([name]) => !/^employee (code|reference)$/i.test(name),
+    );
+    if (details.length) {
+      layout.space(-4);
+      layout.table(
+        [{ width: 112 }, { width: 407 }],
+        details.map(([name, value]) => [label(name), value]),
+        { size: 8.5 },
+      );
+    }
+    layout.space(4);
+    layout.table(
+      [
+        { width: 36 },
+        { width: 160 },
+        { width: 158 },
+        { width: 95 },
+        { width: 70 },
+      ],
+      items.map((item, index) => [
+        { text: `${index + 1}.`, align: "center" },
+        { text: item.label, bold: true },
+        item.detail,
+        item.pending
+          ? { text: item.status, colour: PALETTE.muted }
+          : item.status,
+        statusCell(item.disposition, item.pending ? "Pending" : "—"),
+      ]),
+      {
+        middle: true,
+        header: [
+          { text: "S. No.", align: "center" },
+          "Checks Undertaken",
+          "Check Detail",
+          "Status",
+          { text: "Disposition", align: "center" },
+        ],
+        size: 8.5,
+      },
+    );
+    if (!items.length)
+      layout.paragraph("No checks are part of this report.", {
+        colour: PALETTE.muted,
+      });
+    this.severityLegend(layout);
+    if (data.interim)
+      layout.paragraph(
+        "Interim report: only checks already verified carry a result. Checks marked “In progress” are still being verified and the final report may differ.",
+        { size: 8, colour: PALETTE.muted },
+      );
+    if (data.draft)
+      layout.paragraph(
+        "Draft preview: this is how the report will read once it is approved. It is not released to the client until the final approval.",
+        { size: 8, colour: PALETTE.muted },
+      );
+    if (data.reviewerName || data.managerName) {
+      const parts = [
+        data.reviewerName
+          ? `Quality checked by ${data.reviewerName}${data.reviewedAt ? ` on ${istDate(data.reviewedAt)}` : ""}`
+          : "",
+        data.managerName
+          ? `approved by ${data.managerName}${data.approvedAt ? ` on ${istDate(data.approvedAt)}` : ""}`
+          : "",
+      ].filter(Boolean);
+      layout.paragraph(
+        `${parts.join("; ")}.`.replace(/^\w/, (c) => c.toUpperCase()),
+        {
+          size: 8,
+          colour: PALETTE.muted,
+        },
+      );
+    }
+    if (data.recommendation)
+      layout.paragraph(`Recommendation: ${data.recommendation}`, { size: 8.5 });
+    layout.space(6);
+    layout.paragraph("For Sapling Global Assurance Pvt. Ltd.", {
+      size: 9.5,
+      bold: true,
+      colour: PALETTE.navy,
+    });
+    layout.paragraph(
+      "(This is a computer-generated report and does not require a signature.)",
+      { size: 8, colour: PALETTE.muted },
     );
   }
 
-  private renderCheck(
-    writer: ReportWriter,
-    check: ReportData["checks"][number],
-    interim?: boolean,
-  ) {
-    writer.heading(
-      `${readable(check.type)} — ${this.status(check, interim)}`,
-      10.5,
+  /** Severity legend: colour name, colour and what it means, side by side. */
+  private severityLegend(layout: ReportLayout) {
+    const widths = [86, 86, 88, 87, 86, 86];
+    layout.space(2);
+    layout.table(
+      [{ width: 519 }],
+      [
+        [
+          {
+            text: "Severity Legend",
+            fill: PALETTE.navy,
+            colour: PALETTE.white,
+            bold: true,
+            align: "center",
+            size: 9.5,
+          },
+        ],
+      ],
     );
-    if (!check.result) {
-      writer.text("Verification is in progress for this check.", 8.5);
-      writer.space(6);
-      return;
-    }
-    const lhsForm = INITIATION_FORMS[check.type.toUpperCase()];
-    const rhsForm = verifiedFormFor(check.type);
-    const claimed = check.claimed ?? [];
-    const verified = check.verified ?? [];
-    const entries = Math.max(claimed.length, verified.length);
-    for (let index = 0; index < entries; index += 1) {
-      const lhs = claimed[index] ?? {};
-      const rhs = verified[index] ?? {};
-      const shared = (lhsForm?.fields ?? []).filter((field) =>
-        rhsForm.fields.some((other) => other.key === field.key),
-      );
-      if (entries > 1) writer.text(`Entry ${index + 1}`, 8.5, true);
-      if (shared.length)
-        writer.table(
-          [
-            { label: "Detail", width: 155 },
-            { label: "As provided", width: 185 },
-            { label: "As verified", width: 185 },
-          ],
-          shared.map((field) => [
-            field.label,
-            lhs[field.key] ?? "",
-            rhs[field.key] ?? "",
-          ]),
-          { size: 8 },
-        );
-      const sharedKeys = new Set(shared.map((field) => field.key));
-      const details = rhsForm.fields
-        .filter(
-          (field) =>
-            !sharedKeys.has(field.key) &&
-            !field.key.startsWith("extraCost") &&
-            rhs[field.key],
-        )
-        .map((field) => [
-          field.label.replace(/ \(confirmed\)$/, ""),
-          field.kind === "date" ? istDate(rhs[field.key]) : rhs[field.key]!,
+    layout.space(-8);
+    layout.table(
+      widths.map((width) => ({ width })),
+      [
+        SEVERITY_LEGEND.map(([, name]) => ({
+          text: name,
+          bold: true,
+          align: "center" as const,
+          size: 7.5,
+          fill: PALETTE.label,
+        })),
+        SEVERITY_LEGEND.map(([colour]) => ({
+          text: " ",
+          fill: STATUS_FILL[colour],
+        })),
+        SEVERITY_LEGEND.map(([, , meaning]) => ({
+          text: meaning,
+          align: "center" as const,
+          size: 6.8,
+          colour: PALETTE.ink,
+        })),
+      ],
+      { middle: true },
+    );
+  }
+
+  private annexureIndex(layout: ReportLayout, items: ReportItem[]) {
+    if (!items.length) return;
+    layout.space(8);
+    layout.sectionLabel("Annexure Details");
+    const rows: Cell[][] = [];
+    for (const item of items) {
+      rows.push([
+        { text: item.label, bold: true },
+        { text: `Annexure ${roman(item.annexure)}`, align: "center" },
+        item.annexureTitle,
+      ]);
+      if (item.proofs.length && item.proofAnnexure)
+        rows.push([
+          " ",
+          { text: `Annexure ${roman(item.proofAnnexure)}`, align: "center" },
+          item.proofTitle.replace(/^\w/, (letter) => letter.toUpperCase()),
         ]);
-      if (details.length)
-        writer.table(
-          [
-            { label: "Verification detail", width: 200 },
-            { label: "Recorded", width: 325 },
+    }
+    layout.table([{ width: 175 }, { width: 84 }, { width: 260 }], rows, {
+      header: ["Check", { text: "Annexure", align: "center" }, "Description"],
+      size: 8.5,
+      middle: true,
+    });
+  }
+
+  private annexure(layout: ReportLayout, item: ReportItem) {
+    layout.annexureBar(
+      `Annexure ${roman(item.annexure)}`,
+      item.annexureTitle,
+      item.disposition
+        ? {
+            text: `${COLOUR_LABEL[item.disposition]} · ${item.status}`,
+            fill: STATUS_FILL[item.disposition],
+            colour: STATUS_TEXT(item.disposition),
+          }
+        : item.pending
+          ? { text: "In progress", fill: PALETTE.grid, colour: PALETTE.ink }
+          : undefined,
+    );
+    for (const block of item.blocks) this.block(layout, block);
+  }
+
+  private block(layout: ReportLayout, block: AnnexureBlock) {
+    const banner = (text: string): Cell[] => [
+      {
+        text,
+        fill: PALETTE.band,
+        bold: true,
+        align: "center",
+        colour: PALETTE.navy,
+      },
+    ];
+    switch (block.kind) {
+      case "facts": {
+        if (block.title) layout.table([{ width: 519 }], [banner(block.title)]);
+        if (block.title) layout.space(-8);
+        layout.table(
+          [{ width: 200 }, { width: 319 }],
+          block.rows.map(([name, value]) => [name, value]),
+          { labelColumn: true },
+        );
+        return;
+      }
+      case "compare": {
+        if (block.title) layout.sectionLabel(block.title);
+        const plain = (value: string) => value.trim().toLowerCase();
+        const placeholder = (value: string) =>
+          ["not provided", "not disclosed", "—", ""].includes(plain(value));
+        layout.table(
+          [{ width: 175 }, { width: 172 }, { width: 172 }],
+          block.rows.map(([name, stated, verified]) => {
+            const differs =
+              !placeholder(stated) &&
+              !placeholder(verified) &&
+              plain(stated) !== plain(verified);
+            return [
+              name,
+              placeholder(stated)
+                ? { text: stated, colour: PALETTE.muted }
+                : stated,
+              differs
+                ? { text: verified, colour: PALETTE.red, bold: true }
+                : placeholder(verified)
+                  ? { text: verified, colour: PALETTE.muted }
+                  : verified,
+            ];
+          }),
+          {
+            header: ["Criteria", "Details Stated", "Details Verified"],
+            labelColumn: true,
+          },
+        );
+        return;
+      }
+      case "numbered": {
+        layout.table(
+          [{ width: 40 }, { width: 250 }, { width: 229 }],
+          block.rows.map(([name, value], index) => [
+            { text: String(index + 1), align: "center" },
+            { text: name, fill: PALETTE.label, bold: true },
+            value,
+          ]),
+          block.head
+            ? {
+                header: [
+                  { text: "S. No.", align: "center" },
+                  block.head[0],
+                  block.head[1],
+                ],
+              }
+            : {},
+        );
+        return;
+      }
+      case "results": {
+        if (block.title) layout.table([{ width: 519 }], [banner(block.title)]);
+        if (block.title) layout.space(-8);
+        const withStatus = Boolean(block.head[2]);
+        const columns = withStatus
+          ? [{ width: 279 }, { width: 150 }, { width: 90 }]
+          : [{ width: 359 }, { width: 160 }];
+        if (block.note) {
+          layout.table(
+            [{ width: 519 }],
+            [[{ text: block.note, size: 8, colour: PALETTE.muted }]],
+          );
+          layout.space(-8);
+        }
+        const rows: Cell[][] = [];
+        for (const group of block.groups) {
+          if (group.heading)
+            rows.push([
+              { text: group.heading, bold: true, fill: PALETTE.label },
+              { text: "", fill: PALETTE.label },
+              ...(withStatus ? [{ text: "", fill: PALETTE.label }] : []),
+            ]);
+          for (const row of group.rows) {
+            const result: Cell =
+              row.colour === "RED" && !withStatus
+                ? { text: row.result, colour: PALETTE.red, bold: true }
+                : row.result;
+            rows.push([
+              row.detail
+                ? { text: row.name, bold: true, sub: row.detail }
+                : row.name,
+              result,
+              ...(withStatus ? [statusCell(row.colour ?? null, "—")] : []),
+            ]);
+          }
+        }
+        layout.table(columns, rows, {
+          header: [
+            block.head[0],
+            block.head[1],
+            ...(withStatus
+              ? [{ text: block.head[2]!, align: "center" as const }]
+              : []),
           ],
-          details,
-          { size: 8 },
-        );
+          size: 8,
+        });
+        return;
+      }
+      case "note": {
+        if (block.title) layout.sectionLabel(block.title);
+        layout.table([{ width: 519 }], [[block.text]]);
+        return;
+      }
     }
-    if (check.riskLevel)
-      writer.text(`Check risk: ${readable(check.riskLevel)}`, 8);
-    writer.text(check.sourceSummary ?? "No source summary supplied.");
-    for (const method of check.methods ?? []) {
-      writer.text(
-        `${readable(method.method)}: ${method.result ? readable(method.result) : "Pending"} · source: ${method.provider ?? "Manual review"} · reference: ${method.reference ?? "Not supplied"}`,
-        8,
+  }
+
+  /** Images as figures; PDF proofs page by page; anything unreadable is listed. */
+  private async proofs(
+    document: PDFDocument,
+    layout: ReportLayout,
+    proofs: ReportProof[],
+    assets: ReportAssets,
+    counter: { figure: number },
+    heading: () => void,
+  ) {
+    const missing: ReportProof[] = [];
+    // Each proof fills a page of its own: wide screenshots on a landscape page, tall
+    // ones (and portrait PDF pages) on a portrait page. The first carries the heading.
+    let placed = 0;
+    const startFigure = (width: number, height: number) => {
+      layout.newPage(width > height * 1.1 ? "landscape" : "portrait");
+      if (placed === 0) heading();
+      placed += 1;
+    };
+    for (const proof of proofs) {
+      const bytes = assets.proofs?.get(proof.id);
+      if (!bytes) {
+        missing.push(proof);
+        continue;
+      }
+      const title = proof.caption?.trim() || proof.name;
+      const detail = `${proof.name} · SHA-256 ${proof.sha256.slice(0, 16)}…`;
+      try {
+        if (
+          proof.contentType === "image/png" ||
+          proof.contentType === "image/jpeg"
+        ) {
+          const image =
+            proof.contentType === "image/png"
+              ? await document.embedPng(bytes)
+              : await document.embedJpg(bytes);
+          counter.figure += 1;
+          startFigure(image.width, image.height);
+          layout.figure(
+            { image },
+            `Figure ${counter.figure} – ${title}`,
+            detail,
+            layout.remaining - 50,
+          );
+        } else if (proof.contentType === "application/pdf") {
+          const source = await PDFDocument.load(bytes, {
+            ignoreEncryption: true,
+          });
+          const count = Math.min(source.getPageCount(), MAX_PDF_PAGES);
+          const pages = await document.embedPdf(
+            source,
+            Array.from({ length: count }, (_, index) => index),
+          );
+          counter.figure += 1;
+          pages.forEach((page, index) => {
+            startFigure(page.width, page.height);
+            layout.figure(
+              { page },
+              `Figure ${counter.figure} – ${title}${count > 1 ? ` (page ${index + 1} of ${source.getPageCount()})` : ""}`,
+              detail,
+              layout.remaining - 50,
+            );
+          });
+          if (source.getPageCount() > count)
+            layout.paragraph(
+              `Only the first ${count} of ${source.getPageCount()} pages are reproduced; the full file is available on the Sapling Global portal.`,
+              { size: 8, colour: PALETTE.muted },
+            );
+        } else missing.push(proof);
+      } catch {
+        missing.push(proof);
+      }
+    }
+    if (missing.length) {
+      if (placed === 0) {
+        layout.newPage();
+        heading();
+      }
+      layout.sectionLabel("Proof held on the portal");
+      layout.table(
+        [{ width: 230 }, { width: 289 }],
+        missing.map((proof) => [
+          proof.caption?.trim() || proof.name,
+          { text: `${proof.name}`, sub: `SHA-256 ${proof.sha256}` },
+        ]),
+        { header: ["Proof", "File"], size: 8 },
       );
-      if (method.sourceContact)
-        writer.text(`Source contact: ${method.sourceContact}`, 8);
-      if (method.requestedAt)
-        writer.text(
-          `Requested: ${istDate(method.requestedAt)} · Responded: ${method.respondedAt ? istDate(method.respondedAt) : "Not recorded"}`,
-          8,
-        );
-      if (method.summary)
-        writer.text(`Response findings: ${method.summary}`, 8);
     }
-    for (const finding of check.findings) {
-      writer.text(
-        `${finding.severity}: ${finding.title} — ${finding.description}`,
-        8.5,
+  }
+
+  private closing(layout: ReportLayout, data: ReportData, internal: boolean) {
+    if (data.evidence?.length) {
+      layout.newPage();
+      layout.annexureBar("Register", "Documents reviewed for this report");
+      layout.table(
+        [{ width: 140 }, { width: 379 }],
+        data.evidence.map((item) => [
+          item.type
+            .replaceAll("_", " ")
+            .toLowerCase()
+            .replace(/^\w/, (c) => c.toUpperCase()),
+          { text: item.name, sub: `SHA-256 ${item.sha256}` },
+        ]),
+        { header: ["Document", "File"], size: 8, labelColumn: true },
       );
-      if (finding.source) writer.text(`Source: ${finding.source}`, 8);
     }
-    writer.space(6);
+    if (internal) this.internalLog(layout, data);
+    layout.ensure(150);
+    layout.space(16);
+    layout.paragraph("-----End of report-----", {
+      align: "center",
+      bold: true,
+      colour: PALETTE.navy,
+    });
+    layout.space(8);
+    layout.paragraph(DISCLAIMER, { size: 7.5, colour: PALETTE.muted });
+  }
+
+  /** Internal copy only: who verified each check, the team, sources and costs. */
+  private internalLog(layout: ReportLayout, data: ReportData) {
+    layout.newPage();
+    layout.annexureBar(
+      "Internal",
+      "Verification log – not part of the client report",
+      {
+        text: "Internal only",
+        fill: PALETTE.navy,
+        colour: PALETTE.white,
+      },
+    );
+    const rows: Cell[][] = data.checks.map((check) => {
+      const runs = (check.methods ?? [])
+        .map(
+          (run) =>
+            `${run.method.replaceAll("_", " ").toLowerCase()}: ${run.result ? run.result.replaceAll("_", " ").toLowerCase() : "pending"}${run.provider ? ` · ${run.provider}` : ""}${run.reference ? ` · ref ${run.reference}` : ""}`,
+        )
+        .join("\n");
+      const notes = (check.internal?.notes ?? [])
+        .map(([name, value]) => `${name}: ${value}`)
+        .join("\n");
+      return [
+        {
+          text: check.type
+            .replaceAll("_", " ")
+            .toLowerCase()
+            .replace(/^\w/, (c) => c.toUpperCase()),
+          bold: true,
+          sub: check.internal?.team ?? undefined,
+        },
+        {
+          text: check.internal?.verifiedBy || "Not recorded",
+          sub: check.internal?.verifiedAt
+            ? istDate(check.internal.verifiedAt)
+            : undefined,
+        },
+        [runs, notes].filter(Boolean).join("\n") || "—",
+      ];
+    });
+    layout.table([{ width: 150 }, { width: 140 }, { width: 229 }], rows, {
+      header: ["Check / team", "Verified by", "Sources, costs and references"],
+      size: 8,
+    });
   }
 }

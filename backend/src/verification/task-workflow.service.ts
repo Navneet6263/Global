@@ -1,3 +1,4 @@
+import { assertCheckReady } from "./check-readiness";
 import {
   BadRequestException,
   ConflictException,
@@ -139,6 +140,9 @@ export class TaskWorkflowService {
           includeWork: false,
         });
         await assertMethodOutcomesReady(tx, task.check.id, input.result);
+        // v2: no completion without verified details, proof and a real summary.
+        if (task.check.case.workflowVersion === 2)
+          await assertCheckReady(tx, task.check, input.sourceSummary);
       }
       const updated = await tx.checkTask.updateMany({
         where: { id: task.id, version: input.version },

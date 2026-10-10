@@ -23,12 +23,18 @@ export function QaDecisionForm({
 }) {
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border border-review/30 bg-gradient-to-br from-review-soft to-review-soft/20 p-4">
+      <section className="rounded-2xl border border-slate-200 bg-white p-4">
         <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-semibold">Quality checklist</h3>
-          <span className="num text-xs font-medium text-review-foreground">
+          <h3 className="text-[13.5px] font-semibold text-slate-900">Quality checklist</h3>
+          <span className="num rounded-full bg-slate-100 px-2 py-0.5 text-[12px] font-semibold text-slate-600">
             {checked.length}/{qaChecklist.length} confirmed
           </span>
+        </div>
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100">
+          <div
+            className="h-full rounded-full bg-emerald-500 transition-all"
+            style={{ width: `${(checked.length / qaChecklist.length) * 100}%` }}
+          />
         </div>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {qaChecklist.map((label) => {
@@ -36,7 +42,7 @@ export function QaDecisionForm({
             return (
               <label
                 key={label}
-                className={`flex items-start gap-2.5 rounded-xl border p-3 text-xs leading-relaxed transition ${active ? "border-success/25 bg-success-soft/70" : "border-border/70 bg-white"}`}
+                className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 text-[12.5px] leading-relaxed transition ${active ? "border-emerald-200 bg-emerald-50/70 text-emerald-900" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}
               >
                 <input
                   type="checkbox"
@@ -71,11 +77,11 @@ export function QaDecisionForm({
         />
       </div>
       {mode === "REWORK" ? (
-        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-warning/25 bg-warning-soft/60 p-3 text-xs text-warning-foreground">
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[12.5px] text-amber-900">
           <span>
             {reworkCount
-              ? `${reworkCount} checks selected for correction`
-              : "Select at least one check to return."}
+              ? `${reworkCount} ${reworkCount === 1 ? "check" : "checks"} selected for correction`
+              : "Select at least one check to return: tick Needs rework in the report."}
           </span>
           <button
             type="button"
@@ -86,22 +92,22 @@ export function QaDecisionForm({
           </button>
         </div>
       ) : null}
-      <label className="block text-xs font-semibold">
+      <label className="block text-[13px] font-semibold text-slate-900">
         Reviewer rationale
         <textarea
           value={notes}
           onChange={(event) => onNotes(event.target.value)}
           rows={3}
           placeholder="Explain your approval or the exact correction needed"
-          className="mt-2 block w-full rounded-2xl border border-border bg-white px-3 py-3 text-sm font-normal outline-none focus:border-review/40 focus:ring-2 focus:ring-review/10"
+          className="mt-2 block w-full rounded-xl border border-slate-200 bg-white px-3 py-3 text-[13px] font-normal outline-none focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
         />
         <span className="mt-1.5 block text-[12.5px] font-normal text-muted-foreground">
           Minimum 10 characters · saved in the decision history
         </span>
       </label>
-      <p className="text-xs leading-relaxed text-muted-foreground">
-        Approval sends the case to independent Manager Review. Report preparation and payment-based
-        release happen afterwards.
+      <p className="rounded-xl bg-slate-100/70 px-3 py-2.5 text-[12px] leading-relaxed text-slate-600">
+        Approval sends the case to the RM for final review. Once the RM approves, the report is
+        prepared and released to the client automatically.
       </p>
     </div>
   );

@@ -2,6 +2,11 @@ import { readFile } from "node:fs/promises";
 import { expect, test, type Page } from "@playwright/test";
 
 const now = Date.now();
+// A 1x1 PNG, used as an uploaded screenshot.
+const PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "base64",
+);
 const iso = (hours: number) => new Date(now + hours * 3_600_000).toISOString();
 
 const task = (id: string, name: string, status: string, due: number, extra = {}) => ({
@@ -16,6 +21,7 @@ const task = (id: string, name: string, status: string, due: number, extra = {})
     publicId: `chk-${id}`,
     type: "EMPLOYMENT",
     status: "ASSIGNED",
+    department: { name: "Employment", teamType: "EMPLOYMENT" },
     result: status === "COMPLETED" ? "CLEAR" : null,
     findings: [],
     case: {
@@ -38,12 +44,37 @@ async function teamLeader(page: Page) {
     task("t3", "Rohan Das", "BLOCKED", 30),
   ];
   const done = [task("t9", "Anita Rao", "COMPLETED", -10)];
+  const evidence: Array<Record<string, unknown>> = [
+    {
+      id: "ev-0",
+      name: "hr-reply.png",
+      contentType: "image/png",
+      sizeBytes: 2048,
+      caption: "HR email reply",
+      uploadedAt: iso(0),
+      uploadedBy: "Neeraj Gupta",
+    },
+  ];
+  // What the verifier saved as verified details (step 1 of the check).
+  let verifiedEntries: Array<Record<string, string>> = [
+    {
+      employerName: "Acme Solutions",
+      verifierName: "HR Associate",
+      method: "Email",
+      verificationDate: "2026-10-08",
+    },
+  ];
   await page.route("**/api/v1/**", async (route) => {
     const request = route.request();
     const url = new URL(request.url());
     const path = url.pathname.replace("/api/v1", "");
     const method = request.method();
-    const body = request.postData() ? (JSON.parse(request.postData()!) as unknown) : undefined;
+    let body: unknown;
+    try {
+      body = request.postData() ? (JSON.parse(request.postData()!) as unknown) : undefined;
+    } catch {
+      body = "<file>";
+    }
     requests.push({ method, path, body, search: url.search });
     const reply = (json: unknown) => route.fulfill({ json });
     if (path === "/auth/me")
@@ -377,6 +408,109 @@ async function teamLeader(page: Page) {
       });
     if (path === "/workflow/team/members/v-priya/reset-password") return reply({ reset: true });
     if (path === "/audit-events/exports") return reply({ logged: true });
+    if (path === "/workflow/colour-matrix")
+      return reply({
+        matrix: {
+          EMPLOYMENT: [
+            { id: "emp-1", text: "All details verified", colour: "GREEN" },
+            {
+              id: "emp-5",
+              text: "Period of employment differs by more than 1 month",
+              colour: "YELLOW",
+            },
+            { id: "emp-12", text: "Not an employee of the company", colour: "RED" },
+            {
+              id: "emp-13",
+              text: "Terminated for serious integrity issues (fraud, theft, misconduct, harassment, violence) as confirmed by the employer's HR records and the reporting manager in writing",
+              colour: "RED",
+            },
+            {
+              id: "emp-21",
+              text: "No response / company does not verify as policy",
+              colour: "AMBER",
+            },
+          ],
+        },
+        colourNames: { GREEN: "Green", YELLOW: "Yellow", AMBER: "Orange", RED: "Red" },
+        resultFor: {
+          GREEN: "CLEAR",
+          YELLOW: "DISCREPANCY",
+          RED: "DISCREPANCY",
+          AMBER: "UNABLE_TO_VERIFY",
+        },
+      });
+    if (path === "/checks/chk-t2/verified-details" && method === "PUT") {
+      verifiedEntries = (
+        JSON.parse(request.postData() ?? "{}") as { entries: typeof verifiedEntries }
+      ).entries;
+      return reply({ checkId: "chk-t2", verifiedAt: iso(0), entries: verifiedEntries });
+    }
+    if (path === "/checks/chk-t2/verified-details")
+      return reply({
+        checkId: "chk-t2",
+        type: "EMPLOYMENT",
+        statusLabel: "In progress",
+        lhs: {
+          form: {
+            repeatable: true,
+            fields: [{ key: "employerName", label: "Employer name", required: true }],
+          },
+          entries: [{ employerName: "Acme Solutions" }],
+        },
+        rhs: {
+          form: {
+            repeatable: true,
+            fields: [
+              {
+                key: "employerName",
+                label: "Employer name (confirmed)",
+                required: true,
+                group: "Employment as confirmed",
+              },
+              {
+                key: "verifierName",
+                label: "Verified by (name)",
+                required: true,
+                group: "Referee",
+              },
+              {
+                key: "method",
+                label: "Method of verification",
+                required: true,
+                kind: "select",
+                options: ["Email", "Verbal"],
+                group: "Method",
+              },
+              { key: "verificationDate", label: "Verification date", required: true, kind: "date" },
+            ],
+          },
+          entries: verifiedEntries,
+          verifiedAt: verifiedEntries.length ? iso(-1) : null,
+        },
+      });
+    if (/^\/checks\/chk-t2\/evidence$/.test(path) && method === "GET")
+      return reply({
+        checkId: "chk-t2",
+        canEdit: true,
+        maxFiles: 15,
+        maxBytes: 8388608,
+        items: evidence,
+      });
+    if (/^\/checks\/chk-t2\/evidence/.test(path) && method === "POST") {
+      const caption = url.searchParams.get("caption");
+      evidence.push({
+        id: `ev-${evidence.length + 1}`,
+        name: "uidai-portal.png",
+        contentType: "image/png",
+        sizeBytes: 2048,
+        caption,
+        uploadedAt: iso(0),
+        uploadedBy: "Neeraj Gupta",
+      });
+      return reply(evidence.at(-1));
+    }
+    if (/^\/checks\/chk-t2\/evidence\/ev-\d+$/.test(path) && method === "GET")
+      return route.fulfill({ contentType: "image/png", body: PNG });
     return reply({ items: [], total: 0, nextCursor: null });
   });
   return { requests };
@@ -561,4 +695,82 @@ test("a Team Leader finishing its own check is asked to forward it to QA", async
     page.getByText("Forwarded — the case goes to QA when its other checks are forwarded"),
   ).toBeVisible();
   expect(requests.some((r) => r.path === "/tasks/t2/forward")).toBe(true);
+});
+
+test("a check cannot be completed until details, proof and summary are done", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await teamLeader(page);
+  await page.goto("/verifier/queue?taskId=t2");
+  const steps = page.getByRole("navigation", { name: "Steps to complete this check" });
+  const complete = page.getByRole("button", { name: "Complete check" });
+  await expect(steps.getByText("2 of 4 done")).toBeVisible();
+  // Picking a situation alone is not enough: the summary must be written.
+  await page.getByLabel("What did you find").selectOption({ label: "All details verified" });
+  await expect(complete).toBeDisabled();
+  await page
+    .getByPlaceholder("Source, verification method, dates and response received")
+    .fill("Too short");
+  await expect(complete).toBeDisabled();
+  await steps.getByRole("button", { name: /Review & complete/ }).click();
+  const checklist = page.getByRole("list", { name: "Before you complete" });
+  await expect(checklist.getByText("Summary needs at least 20 characters")).toBeVisible();
+  await page.screenshot({ path: "test-results/verifier-steps-review.png" });
+  await checklist.getByRole("button", { name: "Go to step" }).click();
+  await page
+    .getByPlaceholder("Source, verification method, dates and response received")
+    .fill("HR confirmed tenure and designation by email on 8 Oct.");
+  await expect(steps.getByText("3 of 4 done")).toBeVisible();
+  await expect(complete).toBeEnabled();
+  await page.screenshot({ path: "test-results/verifier-steps-outcome.png" });
+  // Long matrix options stay inside the card at laptop and phone widths.
+  for (const width of [1280, 1024, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    const card = page.locator('[id^="task-steps-"]');
+    expect(await card.evaluate((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(
+      true,
+    );
+    const select = await page.getByLabel("What did you find").boundingBox();
+    const bounds = await card.boundingBox();
+    expect(select!.x + select!.width).toBeLessThanOrEqual(bounds!.x + bounds!.width + 1);
+  }
+});
+
+test("the verifier adds proof screenshots and picks the finding from the colour matrix", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const { requests } = await teamLeader(page);
+  await page.goto("/verifier/queue?taskId=t2");
+  const tabs = page.getByRole("navigation", { name: "Selected task workspace" });
+  // Employment team: its own process, no vendor tab.
+  await expect(tabs.getByRole("button", { name: "Vendor" })).toHaveCount(0);
+  const steps = page.getByRole("navigation", { name: "Steps to complete this check" });
+  // Details and proof are already in place, so the outcome step opens first.
+  await expect(steps.getByRole("button", { name: /Outcome & summary/ })).toHaveAttribute(
+    "aria-current",
+    "step",
+  );
+  await page
+    .getByLabel("What did you find")
+    .selectOption({ label: "Period of employment differs by more than 1 month" });
+  await expect(page.getByText(/Colour set to Yellow as per the matrix/)).toBeVisible();
+  await expect(page.getByRole("radio", { name: /Yellow · Minor discrepancy/ })).toHaveAttribute(
+    "aria-checked",
+    "true",
+  );
+  await steps.getByRole("button", { name: /Proof/ }).click();
+  const proof = page.getByRole("region", { name: "Proof" });
+  await proof.getByLabel("Caption for new proof").fill("Aadhaar verified on UIDAI portal");
+  await proof.getByLabel("Add proof files").setInputFiles({
+    name: "uidai-portal.png",
+    mimeType: "image/png",
+    buffer: PNG,
+  });
+  await expect(page.getByText("1 proof file added")).toBeVisible();
+  await expect(
+    proof.getByRole("list", { name: "Proof files" }).getByText("uidai-portal.png"),
+  ).toBeVisible();
+  const upload = requests.find((r) => r.method === "POST" && r.path === "/checks/chk-t2/evidence");
+  expect(decodeURIComponent(upload!.search)).toContain("caption=Aadhaar verified on UIDAI portal");
+  await page.screenshot({ path: "test-results/verifier-proof.png" });
 });

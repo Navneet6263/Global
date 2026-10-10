@@ -332,6 +332,9 @@ test("RM sees monthly dues and sends a payment reminder", async ({ page }) => {
                 id: "i-1",
                 invoiceNumber: "INV-2026-09",
                 status: "ISSUED",
+                version: 3,
+                total: 11800,
+                paid: 0,
                 dueAt: "2026-10-05T00:00:00Z",
                 balance: 11800,
                 overdue: true,
@@ -341,6 +344,9 @@ test("RM sees monthly dues and sends a payment reminder", async ({ page }) => {
                 id: "i-2",
                 invoiceNumber: "INV-2026-10",
                 status: "ISSUED",
+                version: 1,
+                total: 11800,
+                paid: 0,
                 dueAt: "2026-10-31T00:00:00Z",
                 balance: 11800,
                 overdue: false,
@@ -351,6 +357,8 @@ test("RM sees monthly dues and sends a payment reminder", async ({ page }) => {
         ],
         totals: { outstanding: 23600, overdue: 11800, unbilledReports: 3 },
       });
+    if (path === "/rm/payments/invoices/i-1/payments" && method === "POST")
+      return reply({ id: "i-1", status: "PARTIALLY_PAID" });
     if (path.endsWith("/remind") && method === "POST") {
       reminded = true;
       return reply({ clientId: "c", outstanding: 23600, clientAdmins: 2 });
@@ -359,7 +367,8 @@ test("RM sees monthly dues and sends a payment reminder", async ({ page }) => {
   });
   await page.goto("/spoc-rm/payments");
   await expect(page.getByRole("heading", { name: "Payments", level: 1 })).toBeVisible();
-  await expect(page.getByText("INV-2026-09 · ₹11,800 · overdue")).toBeVisible();
+  const company = page.getByRole("listitem", { name: "Northstar Labs" });
+  await expect(company.getByRole("row", { name: /INV-2026-09.*overdue/ })).toBeVisible();
   await expect(page.getByText(/3 released reports to bill/)).toBeVisible();
   await page.getByRole("button", { name: "Send payment reminder" }).click();
   await page.getByLabel("Reminder note for Northstar Labs").fill("September billing");
@@ -368,10 +377,63 @@ test("RM sees monthly dues and sends a payment reminder", async ({ page }) => {
     .poll(() => calls.find((call) => call.path.endsWith("/remind"))?.body)
     .toEqual({ note: "September billing" });
   await expect(page.getByText(/last reminder/)).toBeVisible();
+  // The RM records money received against an invoice of its company.
+  await company.getByRole("button", { name: "Record payment for INV-2026-09" }).click();
+  const dialog = page.getByRole("dialog", { name: "Record payment" });
+  await dialog.getByLabel("Amount received (₹)").fill("5000");
+  await expect(dialog.getByText(/Part payment · ₹6,800 will remain due/)).toBeVisible();
+  await dialog.getByLabel("Method").selectOption("UPI");
+  const submit = dialog.getByRole("button", { name: /Record ₹5,000/ });
+  await expect(submit).toBeDisabled();
+  await dialog.getByLabel(/Reference/).fill("UTR-4410023");
+  await page.screenshot({ path: "test-results/rm-record-payment.png" });
+  await submit.click();
+  await expect(page.getByText("Payment of ₹5,000 recorded")).toBeVisible();
+  await expect
+    .poll(() => calls.find((call) => call.path.endsWith("/i-1/payments"))?.body)
+    .toMatchObject({ amount: 5000, method: "UPI", reference: "UTR-4410023", version: 3 });
+  await page.screenshot({ path: "test-results/rm-payments.png", fullPage: true });
+  // Phone width, after a fresh load (toasts from the actions above are gone).
   await page.setViewportSize({ width: 390, height: 844 });
+  await page.reload();
+  await expect(company).toBeVisible();
+
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1),
   ).toBe(true);
+});
+
+test("RM generates a company's MIS and downloads it", async ({ page }) => {
+  await spocFixture(page);
+  const calls = await overlay(page, (path, _method, _body, reply) => {
+    if (path === "/rm/clients")
+      return reply({
+        items: [
+          { id: "55555555-5555-4555-8555-555555555555", name: "Northstar Labs" },
+          { id: "66666666-6666-4666-8666-666666666666", name: "Orbit Retail" },
+        ],
+      });
+    if (/^\/rm\/clients\/[^/]+\/mis(\?|$)/.test(path))
+      return reply({
+        preset: "CASE_STATUS",
+        title: "Case status",
+        from: "2026-09-10",
+        to: "2026-10-10",
+        columns: ["Sapling ID", "Candidate", "Status", "Colour"],
+        total: 1,
+        colours: { GREEN: 1 },
+        rows: [{ cells: ["SG-1", "Test Candidate", "Completed", "Green"], colour: "GREEN" }],
+      });
+    return undefined;
+  });
+  await page.goto("/spoc-rm/mis");
+  await expect(page.getByRole("heading", { name: "Company MIS", level: 1 })).toBeVisible();
+  await expect(page.getByRole("table", { name: "Case status preview" })).toBeVisible();
+  await page.getByLabel("Company", { exact: true }).selectOption({ label: "Orbit Retail" });
+  await expect
+    .poll(() => calls.some((call) => call.path.startsWith("/rm/clients/66666666")))
+    .toBe(true);
+  await page.screenshot({ path: "test-results/rm-company-mis.png", fullPage: true });
 });
 
 test("Operations overrides allocation: picks checks and the verifier with room", async ({

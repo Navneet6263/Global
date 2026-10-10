@@ -13,11 +13,27 @@ export interface DepartmentMember {
   openWork: number;
 }
 
+export type TeamType = "EMPLOYMENT" | "EDUCATION" | "VENDOR" | "DIGITAL";
+
+/** The four verification team types and what each one does. */
+export const TEAM_TYPES: ReadonlyArray<{ value: TeamType; label: string; hint: string }> = [
+  { value: "EMPLOYMENT", label: "Employment", hint: "HR email, portals, UAN and verbal checks" },
+  { value: "EDUCATION", label: "Education", hint: "University / board email, portals and letters" },
+  {
+    value: "DIGITAL",
+    label: "Digital",
+    hint: "Online portals and APIs: ID, address, database, court",
+  },
+  { value: "VENDOR", label: "Vendor", hint: "Sends field and physical work to vendors" },
+];
+
 export interface Department {
   id: string;
   code: string;
   name: string;
   kind: "DATA_ENTRY" | "VERIFICATION";
+  /** Verification teams: which process the verifier sees. */
+  teamType?: TeamType | null;
   status: "ACTIVE" | "INACTIVE";
   version: number;
   checkTypes: string[];
@@ -197,12 +213,19 @@ export const createDepartment = (input: {
   code: string;
   name: string;
   kind: Department["kind"];
+  teamType?: TeamType;
   checkTypes?: string[];
 }) => post<{ id: string }>("/workflow/departments", input);
 
 export const updateDepartment = (
   id: string,
-  input: { version: number; name?: string; status?: Department["status"]; checkTypes?: string[] },
+  input: {
+    version: number;
+    name?: string;
+    status?: Department["status"];
+    checkTypes?: string[];
+    teamType?: TeamType;
+  },
 ) =>
   apiRequest<{ id: string; version: number }>(`/workflow/departments/${id}`, {
     method: "PATCH",
@@ -325,8 +348,10 @@ export interface InitiationField {
   key: string;
   label: string;
   required?: boolean;
-  kind?: "text" | "select" | "email" | "phone" | "pincode" | "year" | "date";
+  kind?: "text" | "long" | "select" | "email" | "phone" | "pincode" | "year" | "date" | "time";
   options?: readonly string[];
+  /** Section heading; fields without one join the previous section. */
+  group?: string;
 }
 export interface InitiationForm {
   repeatable: boolean;
@@ -465,3 +490,12 @@ export const downloadDataEntryReport = async (
     ),
     `Sapling-Global-data-entry-${filter.from}-to-${filter.to}.csv`,
   );
+
+/** Standard colour matrix: per check type, the situations and the colour each means. */
+export interface ColourMatrix {
+  matrix: Record<string, Array<{ id: string; text: string; colour: string }>>;
+  colourNames: Record<string, string>;
+  resultFor: Record<string, string>;
+}
+
+export const getColourMatrix = () => apiRequest<ColourMatrix>("/workflow/colour-matrix");

@@ -67,6 +67,7 @@ export class TaskQueryService {
             publicId: true,
             type: true,
             status: true,
+            department: { select: { name: true, teamType: true } },
             result: true,
             riskLevel: true,
             sourceSummary: true,

@@ -97,11 +97,21 @@ export class ClientReportsService {
     return actor.clientId;
   }
 
-  async mis(actor: Actor, preset: MisPreset, from?: string, to?: string) {
+  /**
+   * Preset MIS for the Client Admin's company, or for `company` when an RM generates
+   * it for one of its assigned companies (the caller has checked the assignment).
+   */
+  async mis(
+    actor: Actor,
+    preset: MisPreset,
+    from?: string,
+    to?: string,
+    company?: { id: bigint; publicId: string },
+  ) {
     const window = range(from, to);
     const cases = await misCases(this.prisma, {
       tenantId: actor.tenantId,
-      clientId: this.clientId(actor),
+      clientId: company?.id ?? this.clientId(actor),
       ...window,
     });
     const rows = misRows(preset, cases);
@@ -120,11 +130,17 @@ export class ClientReportsService {
     };
   }
 
-  async misExport(actor: Actor, preset: MisPreset, from?: string, to?: string) {
+  async misExport(
+    actor: Actor,
+    preset: MisPreset,
+    from?: string,
+    to?: string,
+    company?: { id: bigint; publicId: string },
+  ) {
     const window = range(from, to);
     const cases = await misCases(this.prisma, {
       tenantId: actor.tenantId,
-      clientId: this.clientId(actor),
+      clientId: company?.id ?? this.clientId(actor),
       ...window,
     });
     const rows = misRows(preset, cases);
@@ -132,9 +148,9 @@ export class ClientReportsService {
       data: {
         tenantId: actor.tenantId,
         actorUserId: actor.userId,
-        action: "client.mis-exported",
+        action: company ? "rm.client-mis-exported" : "client.mis-exported",
         resourceType: "client",
-        resourcePublicId: actor.clientPublicId ?? "client",
+        resourcePublicId: company?.publicId ?? actor.clientPublicId ?? "client",
         afterJson: JSON.stringify({
           preset,
           from: window.from,

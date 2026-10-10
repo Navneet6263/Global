@@ -112,7 +112,7 @@ function NotificationInbox() {
   const [open, setOpen] = useState(false);
   const query = useQuery({
     queryKey: ["notifications"],
-    queryFn: listNotifications,
+    queryFn: () => listNotifications(),
     refetchInterval: 60_000,
     refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,

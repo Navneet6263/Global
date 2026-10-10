@@ -12,7 +12,10 @@ function PaymentsPage() {
       <header className="client-heading">
         <div>
           <h1>Payments</h1>
-          <p>What each of your companies owes, and a payment reminder when the month closes.</p>
+          <p>
+            What each of your companies owes: record payments received, download invoices and send
+            reminders.
+          </p>
         </div>
       </header>
       <RmPayments />

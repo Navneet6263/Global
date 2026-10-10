@@ -37,9 +37,7 @@ for (const width of [1440, 390]) {
       if (role === "qa") {
         await expect(header.getByText("2 awaiting review", { exact: true })).toBeVisible();
         await expect(page.getByRole("checkbox", { name: "Available to claim only" })).toBeVisible();
-        await expect(
-          page.getByRole("heading", { name: "Check results and findings" }),
-        ).toBeVisible();
+        await expect(page.getByRole("region", { name: "Executive summary" })).toBeVisible();
         await expect(page.getByRole("region", { name: "Live workspace summary" })).toHaveCount(0);
         if (width === 1440) {
           const review = await page

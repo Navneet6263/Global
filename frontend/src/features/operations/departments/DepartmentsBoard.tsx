@@ -20,6 +20,8 @@ import {
   removeDepartmentMember,
   setDepartmentMember,
   updateDepartment,
+  TEAM_TYPES,
+  type TeamType,
   type Department,
 } from "@/lib/backend-api/workflow";
 
@@ -127,6 +129,16 @@ export function DepartmentsBoard({ canManage }: { canManage: boolean }) {
                       <i aria-hidden />
                       {department.kind === "DATA_ENTRY" ? "Intake review" : "Verification"}
                     </span>
+                    {department.kind === "VERIFICATION" ? (
+                      <span
+                        className={`ops-stage-chip ${department.teamType ? "is-info" : "is-warning"}`}
+                      >
+                        <i aria-hidden />
+                        {department.teamType
+                          ? `${TEAM_TYPES.find((type) => type.value === department.teamType)?.label ?? department.teamType} team`
+                          : "No team type yet"}
+                      </span>
+                    ) : null}
                     {department.status === "INACTIVE" ? (
                       <span className="ops-stage-chip is-neutral">
                         <i aria-hidden />
@@ -387,6 +399,7 @@ function CreateDepartmentDialog({
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
   const [kind, setKind] = useState<Department["kind"]>("VERIFICATION");
+  const [teamType, setTeamType] = useState<TeamType | "">("");
   const [types, setTypes] = useState<string[]>([]);
   const validCode = /^[A-Z][A-Z0-9_]{1,31}$/.test(code);
   const mutation = useMutation({
@@ -395,6 +408,7 @@ function CreateDepartmentDialog({
         code,
         name: name.trim(),
         kind,
+        ...(kind === "VERIFICATION" && teamType ? { teamType } : {}),
         checkTypes: kind === "VERIFICATION" ? types : [],
       }),
     onSuccess: async () => {
@@ -446,14 +460,21 @@ function CreateDepartmentDialog({
             <option value="DATA_ENTRY">Intake review (Data Entry)</option>
           </select>
         </label>
-        {kind === "VERIFICATION" ? <CheckTypePicker value={types} onChange={setTypes} /> : null}
+        {kind === "VERIFICATION" ? (
+          <>
+            <TeamTypePicker value={teamType} onChange={setTeamType} />
+            <CheckTypePicker value={types} onChange={setTypes} />
+          </>
+        ) : null}
         <DialogFooter>
           <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
             Cancel
           </Button>
           <Button
             onClick={() => mutation.mutate()}
-            disabled={name.trim().length < 2 || !validCode}
+            disabled={
+              name.trim().length < 2 || !validCode || (kind === "VERIFICATION" && !teamType)
+            }
             loading={mutation.isPending}
           >
             Create
@@ -484,11 +505,14 @@ function EditDepartmentDialog({
 }) {
   const [name, setName] = useState(department.name);
   const [types, setTypes] = useState(department.checkTypes);
+  const [teamType, setTeamType] = useState<TeamType | "">(department.teamType ?? "");
   const mutation = useMutation({
     mutationFn: (status?: Department["status"]) =>
       updateDepartment(department.id, {
         version: department.version,
-        ...(status ? { status } : { name: name.trim(), checkTypes: types }),
+        ...(status
+          ? { status }
+          : { name: name.trim(), checkTypes: types, ...(teamType ? { teamType } : {}) }),
       }),
     onSuccess: async () => {
       toast.success("Department updated");
@@ -511,7 +535,10 @@ function EditDepartmentDialog({
           <input value={name} maxLength={80} onChange={(event) => setName(event.target.value)} />
         </label>
         {department.kind === "VERIFICATION" ? (
-          <CheckTypePicker value={types} onChange={setTypes} />
+          <>
+            <TeamTypePicker value={teamType} onChange={setTeamType} />
+            <CheckTypePicker value={types} onChange={setTypes} />
+          </>
         ) : null}
         <DialogFooter className="sm:justify-between">
           <Button
@@ -537,5 +564,44 @@ function EditDepartmentDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Employment, Education, Digital or Vendor: decides the process the team's verifiers see. */
+function TeamTypePicker({
+  value,
+  onChange,
+}: {
+  value: TeamType | "";
+  onChange: (value: TeamType) => void;
+}) {
+  return (
+    <fieldset className="grid gap-2">
+      <legend className="mb-1 text-[12.5px] font-semibold text-slate-700">Team type</legend>
+      <div className="grid gap-2 sm:grid-cols-2" role="radiogroup" aria-label="Team type">
+        {TEAM_TYPES.map((type) => (
+          <label
+            key={type.value}
+            className={`flex cursor-pointer items-start gap-2 rounded-xl border p-3 text-[12.5px] ${
+              value === type.value
+                ? "border-blue-400 bg-blue-50 ring-2 ring-blue-500/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <input
+              type="radio"
+              name="team-type"
+              className="mt-0.5 accent-blue-600"
+              checked={value === type.value}
+              onChange={() => onChange(type.value)}
+            />
+            <span>
+              <strong className="block text-[13px] text-slate-900">{type.label}</strong>
+              <span className="text-slate-500">{type.hint}</span>
+            </span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
   );
 }

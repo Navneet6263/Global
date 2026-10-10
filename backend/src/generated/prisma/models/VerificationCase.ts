@@ -71,6 +71,7 @@ export type VerificationCaseMinAggregateOutputType = {
   retentionHoldReason: string | null
   caseNumber: string | null
   externalRef: string | null
+  joiningDate: Date | null
   status: string | null
   priority: string | null
   dueAt: Date | null
@@ -107,6 +108,7 @@ export type VerificationCaseMaxAggregateOutputType = {
   retentionHoldReason: string | null
   caseNumber: string | null
   externalRef: string | null
+  joiningDate: Date | null
   status: string | null
   priority: string | null
   dueAt: Date | null
@@ -143,6 +145,7 @@ export type VerificationCaseCountAggregateOutputType = {
   retentionHoldReason: number
   caseNumber: number
   externalRef: number
+  joiningDate: number
   status: number
   priority: number
   dueAt: number
@@ -211,6 +214,7 @@ export type VerificationCaseMinAggregateInputType = {
   retentionHoldReason?: true
   caseNumber?: true
   externalRef?: true
+  joiningDate?: true
   status?: true
   priority?: true
   dueAt?: true
@@ -247,6 +251,7 @@ export type VerificationCaseMaxAggregateInputType = {
   retentionHoldReason?: true
   caseNumber?: true
   externalRef?: true
+  joiningDate?: true
   status?: true
   priority?: true
   dueAt?: true
@@ -283,6 +288,7 @@ export type VerificationCaseCountAggregateInputType = {
   retentionHoldReason?: true
   caseNumber?: true
   externalRef?: true
+  joiningDate?: true
   status?: true
   priority?: true
   dueAt?: true
@@ -406,6 +412,7 @@ export type VerificationCaseGroupByOutputType = {
   retentionHoldReason: string | null
   caseNumber: string
   externalRef: string | null
+  joiningDate: Date | null
   status: string
   priority: string
   dueAt: Date | null
@@ -465,6 +472,7 @@ export type VerificationCaseWhereInput = {
   retentionHoldReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  joiningDate?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   status?: Prisma.StringFilter<"VerificationCase"> | string
   priority?: Prisma.StringFilter<"VerificationCase"> | string
   dueAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
@@ -525,6 +533,7 @@ export type VerificationCaseOrderByWithRelationInput = {
   retentionHoldReason?: Prisma.SortOrderInput | Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrderInput | Prisma.SortOrder
+  joiningDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -589,6 +598,7 @@ export type VerificationCaseWhereUniqueInput = Prisma.AtLeast<{
   retentionHoldReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  joiningDate?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   status?: Prisma.StringFilter<"VerificationCase"> | string
   priority?: Prisma.StringFilter<"VerificationCase"> | string
   dueAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
@@ -649,6 +659,7 @@ export type VerificationCaseOrderByWithAggregationInput = {
   retentionHoldReason?: Prisma.SortOrderInput | Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrderInput | Prisma.SortOrder
+  joiningDate?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   dueAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -693,6 +704,7 @@ export type VerificationCaseScalarWhereWithAggregatesInput = {
   retentionHoldReason?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringWithAggregatesFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableWithAggregatesFilter<"VerificationCase"> | string | null
+  joiningDate?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
   status?: Prisma.StringWithAggregatesFilter<"VerificationCase"> | string
   priority?: Prisma.StringWithAggregatesFilter<"VerificationCase"> | string
   dueAt?: Prisma.DateTimeNullableWithAggregatesFilter<"VerificationCase"> | Date | string | null
@@ -722,6 +734,7 @@ export type VerificationCaseCreateInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -780,6 +793,7 @@ export type VerificationCaseUncheckedCreateInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -824,6 +838,7 @@ export type VerificationCaseUpdateInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -882,6 +897,7 @@ export type VerificationCaseUncheckedUpdateInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -932,6 +948,7 @@ export type VerificationCaseCreateManyInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -961,6 +978,7 @@ export type VerificationCaseUpdateManyMutationInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -995,6 +1013,7 @@ export type VerificationCaseUncheckedUpdateManyInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1046,6 +1065,7 @@ export type VerificationCaseCountOrderByAggregateInput = {
   retentionHoldReason?: Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrder
+  joiningDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
@@ -1097,6 +1117,7 @@ export type VerificationCaseMaxOrderByAggregateInput = {
   retentionHoldReason?: Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrder
+  joiningDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
@@ -1133,6 +1154,7 @@ export type VerificationCaseMinOrderByAggregateInput = {
   retentionHoldReason?: Prisma.SortOrder
   caseNumber?: Prisma.SortOrder
   externalRef?: Prisma.SortOrder
+  joiningDate?: Prisma.SortOrder
   status?: Prisma.SortOrder
   priority?: Prisma.SortOrder
   dueAt?: Prisma.SortOrder
@@ -1779,6 +1801,7 @@ export type VerificationCaseCreateWithoutTenantInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -1835,6 +1858,7 @@ export type VerificationCaseUncheckedCreateWithoutTenantInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -1914,6 +1938,7 @@ export type VerificationCaseScalarWhereInput = {
   retentionHoldReason?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
   caseNumber?: Prisma.StringFilter<"VerificationCase"> | string
   externalRef?: Prisma.StringNullableFilter<"VerificationCase"> | string | null
+  joiningDate?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
   status?: Prisma.StringFilter<"VerificationCase"> | string
   priority?: Prisma.StringFilter<"VerificationCase"> | string
   dueAt?: Prisma.DateTimeNullableFilter<"VerificationCase"> | Date | string | null
@@ -1943,6 +1968,7 @@ export type VerificationCaseCreateWithoutBranchInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -1999,6 +2025,7 @@ export type VerificationCaseUncheckedCreateWithoutBranchInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2068,6 +2095,7 @@ export type VerificationCaseCreateWithoutAssignedOpsUserInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2124,6 +2152,7 @@ export type VerificationCaseUncheckedCreateWithoutAssignedOpsUserInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2177,6 +2206,7 @@ export type VerificationCaseCreateWithoutQaReviewerInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2233,6 +2263,7 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewerInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2286,6 +2317,7 @@ export type VerificationCaseCreateWithoutDataEntryUserInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2343,6 +2375,7 @@ export type VerificationCaseUncheckedCreateWithoutDataEntryUserInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2395,6 +2428,7 @@ export type VerificationCaseCreateWithoutEscalatedByInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2452,6 +2486,7 @@ export type VerificationCaseUncheckedCreateWithoutEscalatedByInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2568,6 +2603,7 @@ export type VerificationCaseCreateWithoutClientInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2624,6 +2660,7 @@ export type VerificationCaseUncheckedCreateWithoutClientInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2693,6 +2730,7 @@ export type VerificationCaseCreateWithoutServicePackageInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2749,6 +2787,7 @@ export type VerificationCaseUncheckedCreateWithoutServicePackageInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2818,6 +2857,7 @@ export type VerificationCaseCreateWithoutSubjectInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2874,6 +2914,7 @@ export type VerificationCaseUncheckedCreateWithoutSubjectInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -2943,6 +2984,7 @@ export type VerificationCaseCreateWithoutChecksInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3000,6 +3042,7 @@ export type VerificationCaseUncheckedCreateWithoutChecksInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3059,6 +3102,7 @@ export type VerificationCaseUpdateWithoutChecksInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3116,6 +3160,7 @@ export type VerificationCaseUncheckedUpdateWithoutChecksInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3159,6 +3204,7 @@ export type VerificationCaseCreateWithoutStatusHistoryInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3216,6 +3262,7 @@ export type VerificationCaseUncheckedCreateWithoutStatusHistoryInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3275,6 +3322,7 @@ export type VerificationCaseUpdateWithoutStatusHistoryInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3332,6 +3380,7 @@ export type VerificationCaseUncheckedUpdateWithoutStatusHistoryInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3375,6 +3424,7 @@ export type VerificationCaseCreateWithoutConsentsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3432,6 +3482,7 @@ export type VerificationCaseUncheckedCreateWithoutConsentsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3491,6 +3542,7 @@ export type VerificationCaseUpdateWithoutConsentsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3548,6 +3600,7 @@ export type VerificationCaseUncheckedUpdateWithoutConsentsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3591,6 +3644,7 @@ export type VerificationCaseCreateWithoutDocumentsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3648,6 +3702,7 @@ export type VerificationCaseUncheckedCreateWithoutDocumentsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3707,6 +3762,7 @@ export type VerificationCaseUpdateWithoutDocumentsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3764,6 +3820,7 @@ export type VerificationCaseUncheckedUpdateWithoutDocumentsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3807,6 +3864,7 @@ export type VerificationCaseCreateWithoutClarificationsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3864,6 +3922,7 @@ export type VerificationCaseUncheckedCreateWithoutClarificationsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -3923,6 +3982,7 @@ export type VerificationCaseUpdateWithoutClarificationsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3980,6 +4040,7 @@ export type VerificationCaseUncheckedUpdateWithoutClarificationsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4023,6 +4084,7 @@ export type VerificationCaseCreateWithoutQaReviewsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4080,6 +4142,7 @@ export type VerificationCaseUncheckedCreateWithoutQaReviewsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4139,6 +4202,7 @@ export type VerificationCaseUpdateWithoutQaReviewsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4196,6 +4260,7 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4239,6 +4304,7 @@ export type VerificationCaseCreateWithoutReportsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4296,6 +4362,7 @@ export type VerificationCaseUncheckedCreateWithoutReportsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4355,6 +4422,7 @@ export type VerificationCaseUpdateWithoutReportsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4412,6 +4480,7 @@ export type VerificationCaseUncheckedUpdateWithoutReportsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4455,6 +4524,7 @@ export type VerificationCaseCreateWithoutFieldVisitsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4512,6 +4582,7 @@ export type VerificationCaseUncheckedCreateWithoutFieldVisitsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4571,6 +4642,7 @@ export type VerificationCaseUpdateWithoutFieldVisitsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4628,6 +4700,7 @@ export type VerificationCaseUncheckedUpdateWithoutFieldVisitsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4671,6 +4744,7 @@ export type VerificationCaseCreateWithoutInvoiceLinesInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4728,6 +4802,7 @@ export type VerificationCaseUncheckedCreateWithoutInvoiceLinesInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4787,6 +4862,7 @@ export type VerificationCaseUpdateWithoutInvoiceLinesInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4844,6 +4920,7 @@ export type VerificationCaseUncheckedUpdateWithoutInvoiceLinesInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4887,6 +4964,7 @@ export type VerificationCaseCreateWithoutManagerReviewsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -4944,6 +5022,7 @@ export type VerificationCaseUncheckedCreateWithoutManagerReviewsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5003,6 +5082,7 @@ export type VerificationCaseUpdateWithoutManagerReviewsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5060,6 +5140,7 @@ export type VerificationCaseUncheckedUpdateWithoutManagerReviewsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5103,6 +5184,7 @@ export type VerificationCaseCreateWithoutServicesInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5160,6 +5242,7 @@ export type VerificationCaseUncheckedCreateWithoutServicesInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5219,6 +5302,7 @@ export type VerificationCaseUpdateWithoutServicesInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5276,6 +5360,7 @@ export type VerificationCaseUncheckedUpdateWithoutServicesInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5319,6 +5404,7 @@ export type VerificationCaseCreateWithoutVendorCheckWorkInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5376,6 +5462,7 @@ export type VerificationCaseUncheckedCreateWithoutVendorCheckWorkInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5435,6 +5522,7 @@ export type VerificationCaseUpdateWithoutVendorCheckWorkInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5492,6 +5580,7 @@ export type VerificationCaseUncheckedUpdateWithoutVendorCheckWorkInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5535,6 +5624,7 @@ export type VerificationCaseCreateWithoutCandidateAccessInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5592,6 +5682,7 @@ export type VerificationCaseUncheckedCreateWithoutCandidateAccessInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5651,6 +5742,7 @@ export type VerificationCaseUpdateWithoutCandidateAccessInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5708,6 +5800,7 @@ export type VerificationCaseUncheckedUpdateWithoutCandidateAccessInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5751,6 +5844,7 @@ export type VerificationCaseCreateWithoutVendorAssignmentsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5808,6 +5902,7 @@ export type VerificationCaseUncheckedCreateWithoutVendorAssignmentsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -5867,6 +5962,7 @@ export type VerificationCaseUpdateWithoutVendorAssignmentsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5924,6 +6020,7 @@ export type VerificationCaseUncheckedUpdateWithoutVendorAssignmentsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5967,6 +6064,7 @@ export type VerificationCaseCreateWithoutSupportRequestsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6024,6 +6122,7 @@ export type VerificationCaseUncheckedCreateWithoutSupportRequestsInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6083,6 +6182,7 @@ export type VerificationCaseUpdateWithoutSupportRequestsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6140,6 +6240,7 @@ export type VerificationCaseUncheckedUpdateWithoutSupportRequestsInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6188,6 +6289,7 @@ export type VerificationCaseCreateManyTenantInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6217,6 +6319,7 @@ export type VerificationCaseUpdateWithoutTenantInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6273,6 +6376,7 @@ export type VerificationCaseUncheckedUpdateWithoutTenantInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6323,6 +6427,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutTenantInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6357,6 +6462,7 @@ export type VerificationCaseCreateManyBranchInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6386,6 +6492,7 @@ export type VerificationCaseUpdateWithoutBranchInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6442,6 +6549,7 @@ export type VerificationCaseUncheckedUpdateWithoutBranchInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6492,6 +6600,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutBranchInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6526,6 +6635,7 @@ export type VerificationCaseCreateManyAssignedOpsUserInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6560,6 +6670,7 @@ export type VerificationCaseCreateManyQaReviewerInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6595,6 +6706,7 @@ export type VerificationCaseCreateManyDataEntryUserInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6629,6 +6741,7 @@ export type VerificationCaseCreateManyEscalatedByInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -6657,6 +6770,7 @@ export type VerificationCaseUpdateWithoutAssignedOpsUserInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6713,6 +6827,7 @@ export type VerificationCaseUncheckedUpdateWithoutAssignedOpsUserInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6763,6 +6878,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6792,6 +6908,7 @@ export type VerificationCaseUpdateWithoutQaReviewerInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6848,6 +6965,7 @@ export type VerificationCaseUncheckedUpdateWithoutQaReviewerInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6898,6 +7016,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutQaReviewerInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6927,6 +7046,7 @@ export type VerificationCaseUpdateWithoutDataEntryUserInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -6984,6 +7104,7 @@ export type VerificationCaseUncheckedUpdateWithoutDataEntryUserInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7034,6 +7155,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutDataEntryUserInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7062,6 +7184,7 @@ export type VerificationCaseUpdateWithoutEscalatedByInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7119,6 +7242,7 @@ export type VerificationCaseUncheckedUpdateWithoutEscalatedByInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7169,6 +7293,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutEscalatedByInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7202,6 +7327,7 @@ export type VerificationCaseCreateManyClientInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -7231,6 +7357,7 @@ export type VerificationCaseUpdateWithoutClientInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7287,6 +7414,7 @@ export type VerificationCaseUncheckedUpdateWithoutClientInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7337,6 +7465,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutClientInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7371,6 +7500,7 @@ export type VerificationCaseCreateManyServicePackageInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -7400,6 +7530,7 @@ export type VerificationCaseUpdateWithoutServicePackageInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7456,6 +7587,7 @@ export type VerificationCaseUncheckedUpdateWithoutServicePackageInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7506,6 +7638,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutServicePackageInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7540,6 +7673,7 @@ export type VerificationCaseCreateManySubjectInput = {
   retentionHoldReason?: string | null
   caseNumber: string
   externalRef?: string | null
+  joiningDate?: Date | string | null
   status?: string
   priority?: string
   dueAt?: Date | string | null
@@ -7569,6 +7703,7 @@ export type VerificationCaseUpdateWithoutSubjectInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7625,6 +7760,7 @@ export type VerificationCaseUncheckedUpdateWithoutSubjectInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7675,6 +7811,7 @@ export type VerificationCaseUncheckedUpdateManyWithoutSubjectInput = {
   retentionHoldReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   caseNumber?: Prisma.StringFieldUpdateOperationsInput | string
   externalRef?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  joiningDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   priority?: Prisma.StringFieldUpdateOperationsInput | string
   dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -7868,6 +8005,7 @@ export type VerificationCaseSelect<ExtArgs extends runtime.Types.Extensions.Inte
   retentionHoldReason?: boolean
   caseNumber?: boolean
   externalRef?: boolean
+  joiningDate?: boolean
   status?: boolean
   priority?: boolean
   dueAt?: boolean
@@ -7931,6 +8069,7 @@ export type VerificationCaseSelectScalar = {
   retentionHoldReason?: boolean
   caseNumber?: boolean
   externalRef?: boolean
+  joiningDate?: boolean
   status?: boolean
   priority?: boolean
   dueAt?: boolean
@@ -7952,7 +8091,7 @@ export type VerificationCaseSelectScalar = {
   updatedAt?: boolean
 }
 
-export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "retentionHoldAt" | "retentionHoldReason" | "caseNumber" | "externalRef" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "workflowVersion" | "intakeStage" | "dataEntryUserId" | "dataEntryAssignedAt" | "dataEntryReadyAt" | "stoppedFromStatus" | "stoppedAt" | "stopReason" | "escalatedAt" | "escalatedById" | "escalationNote" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
+export type VerificationCaseOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "branchId" | "clientId" | "servicePackageId" | "subjectId" | "assignedOpsUserId" | "qaReviewerId" | "qaClaimedAt" | "retentionHoldAt" | "retentionHoldReason" | "caseNumber" | "externalRef" | "joiningDate" | "status" | "priority" | "dueAt" | "completedAt" | "riskLevel" | "workflowVersion" | "intakeStage" | "dataEntryUserId" | "dataEntryAssignedAt" | "dataEntryReadyAt" | "stoppedFromStatus" | "stoppedAt" | "stopReason" | "escalatedAt" | "escalatedById" | "escalationNote" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["verificationCase"]>
 export type VerificationCaseInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   dataEntryUser?: boolean | Prisma.VerificationCase$dataEntryUserArgs<ExtArgs>
@@ -8024,6 +8163,10 @@ export type $VerificationCasePayload<ExtArgs extends runtime.Types.Extensions.In
     retentionHoldReason: string | null
     caseNumber: string
     externalRef: string | null
+    /**
+     * Report header: the candidate's date of joining.
+     */
+    joiningDate: Date | null
     status: string
     priority: string
     dueAt: Date | null
@@ -8462,6 +8605,7 @@ export interface VerificationCaseFieldRefs {
   readonly retentionHoldReason: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly caseNumber: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly externalRef: Prisma.FieldRef<"VerificationCase", 'String'>
+  readonly joiningDate: Prisma.FieldRef<"VerificationCase", 'DateTime'>
   readonly status: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly priority: Prisma.FieldRef<"VerificationCase", 'String'>
   readonly dueAt: Prisma.FieldRef<"VerificationCase", 'DateTime'>

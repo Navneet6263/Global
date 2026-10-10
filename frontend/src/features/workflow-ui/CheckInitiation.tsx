@@ -203,9 +203,17 @@ export function Field({
 }) {
   const text = `${field.label}${field.required ? " *" : ""}`;
   return (
-    <label className="ops-field">
+    <label className={field.kind === "long" ? "ops-field col-span-full" : "ops-field"}>
       <span>{text}</span>
-      {field.kind === "select" ? (
+      {field.kind === "long" ? (
+        <textarea
+          rows={2}
+          maxLength={500}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          aria-label={label}
+        />
+      ) : field.kind === "select" ? (
         <select value={value} onChange={(event) => onChange(event.target.value)} aria-label={label}>
           <option value="">Choose…</option>
           {(field.options ?? []).map((option) => (
@@ -219,11 +227,13 @@ export function Field({
           type={
             field.kind === "date"
               ? "date"
-              : field.kind === "email"
-                ? "email"
-                : field.kind === "phone"
-                  ? "tel"
-                  : "text"
+              : field.kind === "time"
+                ? "time"
+                : field.kind === "email"
+                  ? "email"
+                  : field.kind === "phone"
+                    ? "tel"
+                    : "text"
           }
           inputMode={
             field.kind === "pincode" || field.kind === "year" || field.kind === "phone"

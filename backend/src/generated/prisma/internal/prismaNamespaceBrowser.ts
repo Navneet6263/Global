@@ -95,6 +95,7 @@ export const ModelName = {
   VerificationMethodRun: 'VerificationMethodRun',
   VendorCheckAssignment: 'VendorCheckAssignment',
   VendorCheckEvidence: 'VendorCheckEvidence',
+  CheckEvidence: 'CheckEvidence',
   ClientMisSchedule: 'ClientMisSchedule',
   SourceEmail: 'SourceEmail',
   SourceOutreach: 'SourceOutreach',
@@ -392,6 +393,7 @@ export const VerificationCaseScalarFieldEnum = {
   retentionHoldReason: 'retentionHoldReason',
   caseNumber: 'caseNumber',
   externalRef: 'externalRef',
+  joiningDate: 'joiningDate',
   status: 'status',
   priority: 'priority',
   dueAt: 'dueAt',
@@ -1031,6 +1033,24 @@ export const VendorCheckEvidenceScalarFieldEnum = {
 export type VendorCheckEvidenceScalarFieldEnum = (typeof VendorCheckEvidenceScalarFieldEnum)[keyof typeof VendorCheckEvidenceScalarFieldEnum]
 
 
+export const CheckEvidenceScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  checkId: 'checkId',
+  objectKey: 'objectKey',
+  originalName: 'originalName',
+  contentType: 'contentType',
+  sizeBytes: 'sizeBytes',
+  sha256: 'sha256',
+  caption: 'caption',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type CheckEvidenceScalarFieldEnum = (typeof CheckEvidenceScalarFieldEnum)[keyof typeof CheckEvidenceScalarFieldEnum]
+
+
 export const ClientMisScheduleScalarFieldEnum = {
   id: 'id',
   publicId: 'publicId',
@@ -1319,6 +1339,7 @@ export const DepartmentScalarFieldEnum = {
   name: 'name',
   kind: 'kind',
   checkTypesJson: 'checkTypesJson',
+  teamType: 'teamType',
   status: 'status',
   version: 'version',
   createdAt: 'createdAt',

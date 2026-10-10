@@ -11,6 +11,20 @@ test("QA sidebar opens focused pages and overview does not fetch case evidence",
   await page.goto("/qa-review/overview");
   await expect(page.getByRole("heading", { name: "QA overview", exact: true })).toBeVisible();
   await expect(page.getByText("2 awaiting review", { exact: true })).toBeVisible();
+  // A real dashboard: numbers, trend, queue health and what to review next.
+  const kpis = page.getByRole("region", { name: "Key numbers" });
+  await expect(kpis.getByText("87%")).toBeVisible();
+  await expect(kpis.getByText("vs last week")).toBeVisible();
+  await expect(
+    page.getByRole("list", { name: "Decisions per day" }).getByRole("listitem"),
+  ).toHaveCount(14);
+  await expect(
+    page.getByRole("region", { name: "Queue health" }).getByText("Overdue"),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: "What you return most" }).getByText("Employment"),
+  ).toBeVisible();
+  await page.screenshot({ path: "test-results/qa-dashboard.png", fullPage: true });
   expect(fixture.details).toEqual([]);
   const nav = page.getByRole("navigation", { name: "qa-reviewer navigation" });
   await expect(nav.getByRole("link", { name: "QA overview", exact: true })).toHaveAttribute(
@@ -28,10 +42,28 @@ test("QA sidebar opens focused pages and overview does not fetch case evidence",
   expect(fixture.unexpected).toEqual([]);
 });
 
+test("QA dashboard Up next opens that case in the review queue", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const fixture = await qaBrowserFixture(page);
+  await page.goto("/qa-review/overview");
+  await page
+    .getByRole("region", { name: "Up next" })
+    .getByRole("link", { name: /Second Test Candidate/ })
+    .click();
+  await expect(page).toHaveURL(/\/qa-review\?case=qa-case-2$/);
+  await expect(
+    page.getByRole("region", { name: "Selected case review" }).getByRole("heading", {
+      name: "Second Test Candidate",
+      level: 2,
+    }),
+  ).toBeVisible();
+  expect(fixture.unexpected).toEqual([]);
+});
+
 test("QA slow search keeps controls mounted and blocks old-case actions", async ({ page }) => {
   const fixture = await qaBrowserFixture(page);
   await page.goto("/qa-review");
-  await expect(page.getByRole("heading", { name: "Check results and findings" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "Executive summary" })).toBeVisible();
   const search = page.getByLabel("Search QA queue");
   const node = await search.elementHandle();
   let release!: () => void;

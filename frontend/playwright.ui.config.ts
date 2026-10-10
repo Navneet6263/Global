@@ -20,6 +20,7 @@ export default defineConfig({
     "operations-overview.spec.ts",
     "operations-manager-pages.spec.ts",
     "workflow-v2.spec.ts",
+    "notifications-inbox.spec.ts",
     "step6-ui.spec.ts",
     "signup-onboarding.spec.ts",
     "case-360.spec.ts",

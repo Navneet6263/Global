@@ -1,3 +1,4 @@
+import { canReadReleasedReport } from "../reports/report-payment-policy";
 import type { Actor } from "../common/auth/actor";
 import type { SubjectPiiService } from "../common/security/subject-pii.service";
 
@@ -178,6 +179,34 @@ function withoutDepartment(check: CaseRow) {
   return safe;
 }
 
+/**
+ * The case's report the client can download now (released, access not expired), shown
+ * where the case appears as completed. Null until then.
+ */
+function releasedReport(row: CaseRow) {
+  const now = new Date();
+  const report = rowList(row.reports).find((item) =>
+    canReadReleasedReport(
+      {
+        status: String(item.status),
+        workflowVersion: Number(item.workflowVersion ?? 2),
+        releasedAt: (item.releasedAt as Date | null | undefined) ?? null,
+        downloadExpiresAt:
+          (item.downloadExpiresAt as Date | null | undefined) ?? null,
+      },
+      now,
+    ),
+  );
+  return report
+    ? {
+        id: report.publicId,
+        version: report.currentVersion,
+        releasedAt: report.releasedAt ?? report.publishedAt ?? null,
+        downloadExpiresAt: report.downloadExpiresAt ?? null,
+      }
+    : null;
+}
+
 export function presentCaseListItem(
   row: CaseRow,
   actor: Actor,
@@ -196,6 +225,7 @@ export function presentCaseListItem(
       ...common,
       assignedOpsUser: row.assignedOpsUser,
       workflow: workflow(row),
+      report: releasedReport(row),
       checks: row.checks,
       fieldVisits: row.fieldVisits,
     };
@@ -216,6 +246,7 @@ export function presentCaseListItem(
   if (actor.roles.includes("CLIENT_ADMIN")) {
     return {
       ...common,
+      report: releasedReport(row),
       checks: rowList(row.checks).map((check) => {
         const safeCheck = withoutDepartment(check);
         delete safeCheck.tasks;

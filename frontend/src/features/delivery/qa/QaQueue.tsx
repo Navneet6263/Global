@@ -37,13 +37,13 @@ export function QaQueue(props: QaQueueProps) {
       aria-label="QA case list"
       className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-5 xl:self-start"
     >
-      <header className="border-b border-review/15 border-t-4 border-t-review/35 bg-gradient-to-br from-review-soft via-review-soft/35 to-white p-4">
+      <header className="border-b border-slate-200 p-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-[15px] font-semibold tracking-[-0.02em]">
+            <h2 className="text-[15px] font-semibold tracking-[-0.01em] text-slate-900">
               {props.corrections ? "Returned for correction" : "Quality review queue"}
             </h2>
-            <p className="mt-0.5 text-[12.5px] text-muted-foreground">
+            <p className="mt-0.5 text-[12px] text-slate-500">
               {props.corrections
                 ? "Waiting on verification work before the next QA review"
                 : "Claim one case before making a decision"}
@@ -51,7 +51,7 @@ export function QaQueue(props: QaQueueProps) {
           </div>
           <span
             role="status"
-            className="num flex items-center gap-1 rounded-full bg-review-soft px-2.5 py-1 text-xs font-medium text-review-foreground"
+            className="num flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-[12px] font-semibold text-slate-600"
           >
             {props.pending ? (
               <>
@@ -70,7 +70,7 @@ export function QaQueue(props: QaQueueProps) {
             onChange={(event) => props.onSearch(event.target.value)}
             placeholder="Search candidate, case or client"
             aria-label="Search QA queue"
-            className="h-10 w-full rounded-full border border-border bg-slate-50 pl-9 pr-3 text-[12px] outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/10"
+            className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-3 text-[12.5px] outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
         </div>
         {props.availableOnly !== undefined ? (
@@ -90,7 +90,7 @@ export function QaQueue(props: QaQueueProps) {
         aria-busy={props.pending}
         inert={props.pending || props.unavailable}
         className={cn(
-          "min-h-40 max-h-[50vh] space-y-2 overflow-y-auto overscroll-y-auto p-3",
+          "min-h-40 max-h-[60vh] space-y-1.5 overflow-y-auto overscroll-y-auto p-2",
           props.pending && "opacity-60",
         )}
       >
@@ -111,7 +111,7 @@ export function QaQueue(props: QaQueueProps) {
         ) : null}
       </div>
 
-      <footer className="flex items-center justify-between border-t border-border/70 px-4 py-3">
+      <footer className="flex items-center justify-between border-t border-slate-200 px-4 py-2.5">
         <span className="text-xs text-muted-foreground">
           Page {props.page} · {props.items.length} cases
         </span>
@@ -151,36 +151,45 @@ function QaQueueCard({
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "relative w-full overflow-hidden rounded-xl border p-3.5 text-left transition duration-200",
+        "relative w-full overflow-hidden rounded-xl border p-3 text-left transition duration-150",
         active
-          ? "border-review/40 bg-gradient-to-br from-review-soft to-review-soft/50 shadow-sm"
-          : highRisk || overdue
-            ? "border-critical/20 bg-critical-soft/40 hover:bg-critical-soft/65"
-            : "border-blue-200 bg-blue-50 hover:border-blue-200 hover:bg-blue-50",
+          ? "border-blue-300 bg-blue-50/70 ring-2 ring-blue-500/15"
+          : "border-transparent bg-white hover:border-slate-200 hover:bg-slate-50",
       )}
     >
-      {active ? <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-review" /> : null}
+      {active ? (
+        <span className="absolute inset-y-3 left-0 w-1 rounded-r-full bg-blue-600" />
+      ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="truncate text-[13px] font-semibold">{item.subject.fullName}</p>
-          <p className="mt-0.5 truncate text-[12.5px] text-muted-foreground">
+          <p className="flex items-center gap-1.5 truncate text-[13px] font-semibold text-slate-900">
+            <span
+              className={cn(
+                "size-1.5 shrink-0 rounded-full",
+                highRisk || overdue ? "bg-red-500" : "bg-emerald-500",
+              )}
+              aria-hidden
+            />
+            {item.subject.fullName}
+          </p>
+          <p className="mt-0.5 truncate text-[12px] text-slate-500">
             {item.caseNumber} · {item.client.displayName}
           </p>
         </div>
         <span
           className={cn(
-            "shrink-0 rounded-full border px-2 py-1 text-[11px] font-semibold",
+            "shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-semibold ring-1",
             highRisk || ["CRITICAL", "URGENT"].includes(item.priority)
-              ? "border-critical/25 bg-critical-soft text-critical-foreground"
+              ? "bg-red-50 text-red-700 ring-red-200"
               : item.priority === "HIGH"
-                ? "border-warning/25 bg-warning-soft text-warning-foreground"
-                : "border-border bg-muted text-muted-foreground",
+                ? "bg-amber-50 text-amber-800 ring-amber-200"
+                : "bg-slate-50 text-slate-600 ring-slate-200",
           )}
         >
           {highRisk ? "High risk" : humanize(item.priority)}
         </span>
       </div>
-      <div className="mt-3 flex items-center justify-between gap-2 text-[11.5px] text-muted-foreground">
+      <div className="mt-2 flex items-center justify-between gap-2 text-[11.5px] text-slate-500">
         <span>
           {item.completedCheckCount}/{item.checkCount} checks complete
         </span>

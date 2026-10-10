@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   Activity,
-  ClipboardCheck,
   FileSearch,
   Files,
   ListChecks,
@@ -27,14 +26,12 @@ import { ActivityView, CaseContextView, ClarificationsView } from "./VerifierCon
 import { VerifierDocumentsView } from "./VerifierDocumentsView";
 import { VerifierTaskWorkspace } from "./VerifierTaskWorkspace";
 import { VerificationMethodsPanel } from "./VerificationMethodsPanel";
-import { VerifiedDetailsPanel } from "./VerifiedDetailsPanel";
 import { SourceEmailPanel } from "./SourceEmailPanel";
 import { CheckVendorPanel } from "@/features/vendor-checks/CheckVendorPanel";
 import { internalVendorApi } from "@/lib/backend-api/vendor-checks";
 
 const tabs = [
   { id: "verification", label: "Verification", icon: ListChecks },
-  { id: "verified", label: "Verified details", icon: ClipboardCheck },
   { id: "email", label: "Source email", icon: Mail },
   { id: "vendor", label: "Vendor", icon: Truck },
   { id: "methods", label: "Sources & methods", icon: FileSearch },
@@ -64,7 +61,15 @@ export function VerifierTaskDesk({
     staleTime: 30_000,
   });
   const showVendor = Boolean(vendor.data?.canManage || vendor.data?.attempts?.length);
-  const visibleTabs = tabs.filter((item) => item.id !== "vendor" || showVendor);
+  // Each team sees its own process: Digital works online (no source email), Vendor
+  // works through the vendor job (no source email or manual methods).
+  const team = task.check.department?.teamType;
+  const visibleTabs = tabs.filter((item) => {
+    if (item.id === "vendor") return team === "VENDOR" || showVendor;
+    if (item.id === "email") return team !== "DIGITAL" && team !== "VENDOR";
+    if (item.id === "methods") return team !== "VENDOR";
+    return true;
+  });
   return (
     <div className="min-w-0 space-y-3">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -96,25 +101,28 @@ export function VerifierTaskDesk({
         </header>
         <nav
           aria-label="Selected task workspace"
-          className="flex flex-wrap gap-1 border-t border-slate-100 bg-slate-50/70 px-3 py-2"
+          className="flex flex-wrap gap-1 border-t border-slate-100 bg-slate-50/60 px-3 py-2"
         >
-          {visibleTabs.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              aria-pressed={tab === item.id}
-              onClick={() => setTab(item.id)}
-              className={cn(
-                "flex min-w-0 items-center gap-1.5 rounded-lg px-3 py-2 text-[12.5px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
-                tab === item.id
-                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-slate-200"
-                  : "text-slate-600 hover:bg-white hover:text-slate-900",
-              )}
-            >
-              <item.icon className="size-4 shrink-0" aria-hidden />
-              <span className="min-w-0 whitespace-normal">{item.label}</span>
-            </button>
-          ))}
+          {visibleTabs.map((item) => {
+            const active = tab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                aria-pressed={active}
+                onClick={() => setTab(item.id)}
+                className={cn(
+                  "flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[12.5px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
+                  active
+                    ? "bg-white text-blue-700 shadow-sm ring-1 ring-slate-200"
+                    : "text-slate-500 hover:bg-white hover:text-slate-900",
+                )}
+              >
+                <item.icon className="size-4 shrink-0" aria-hidden />
+                {item.label}
+              </button>
+            );
+          })}
         </nav>
       </div>
       {tab === "verification" ? (
@@ -122,14 +130,15 @@ export function VerifierTaskDesk({
           key={`${task.id}-${task.version}`}
           task={task}
           onUpdated={onUpdated}
+          onOpenTab={(id) => setTab(id as (typeof tabs)[number]["id"])}
+          quickTabs={visibleTabs
+            .filter((item) => ["documents", "email", "vendor", "methods"].includes(item.id))
+            .map((item) => ({ id: item.id, label: item.label }))}
+          vendorApproved={Boolean(
+            vendor.data?.attempts?.some((attempt) => attempt.status === "APPROVED"),
+          )}
         />
       ) : null}
-      {tab === "verified" && (
-        <VerifiedDetailsPanel
-          checkId={task.check.publicId}
-          readOnly={task.status === "COMPLETED"}
-        />
-      )}
       {tab === "vendor" && <CheckVendorPanel checkId={task.check.publicId} />}
       {tab === "email" && (
         <SourceEmailPanel checkId={task.check.publicId} readOnly={task.status === "COMPLETED"} />
@@ -141,15 +150,15 @@ export function VerifierTaskDesk({
           readOnly={task.status === "COMPLETED"}
         />
       )}
-      {!["verification", "methods", "verified", "email", "vendor"].includes(tab) &&
+      {!["verification", "methods", "verified", "email", "vendor", "proof"].includes(tab) &&
       context.isLoading ? (
         <WorkspaceLoading label="Loading protected case context" />
       ) : null}
-      {!["verification", "methods", "verified", "email", "vendor"].includes(tab) &&
+      {!["verification", "methods", "verified", "email", "vendor", "proof"].includes(tab) &&
       context.isError ? (
         <WorkspaceError message={context.error.message} onRetry={() => void context.refetch()} />
       ) : null}
-      {context.data && !["methods", "verified", "email", "vendor"].includes(tab) ? (
+      {context.data && !["methods", "verified", "email", "vendor", "proof"].includes(tab) ? (
         <section
           className={cn(
             "rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6",

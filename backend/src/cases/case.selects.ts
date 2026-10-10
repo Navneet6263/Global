@@ -26,6 +26,23 @@ export const caseListSelect = {
       primaryRm: { select: { publicId: true, displayName: true } },
     },
   },
+  // The latest released report, so lists can offer the download where the case shows
+  // as completed (the detail view below selects every report instead).
+  reports: {
+    where: { status: "PUBLISHED" },
+    orderBy: { createdAt: "desc" as const },
+    take: 1,
+    select: {
+      publicId: true,
+      status: true,
+      currentVersion: true,
+      publishedAt: true,
+      createdAt: true,
+      workflowVersion: true,
+      releasedAt: true,
+      downloadExpiresAt: true,
+    },
+  },
   servicePackage: {
     select: { publicId: true, code: true, name: true, tatHours: true },
   },
@@ -201,6 +218,9 @@ export const caseDetailSelect = {
       currentVersion: true,
       publishedAt: true,
       createdAt: true,
+      workflowVersion: true,
+      releasedAt: true,
+      downloadExpiresAt: true,
     },
     orderBy: { createdAt: "desc" as const },
   },

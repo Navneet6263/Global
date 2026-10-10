@@ -41,6 +41,25 @@ test("URL navigation restores filters and closes a case on browser Back", async 
   await expect(page.getByRole("searchbox")).toHaveValue("Candidate 1");
 });
 
+test("a completed case shows its released report where it says verification completed", async ({
+  page,
+}) => {
+  const { requests } = await clientWorkspaceFixture(page);
+  await page.goto("/client-portal/verifications?status=COMPLETED");
+  const row = page.locator("tr").filter({ hasText: "SG-TEST-3" }).first();
+  await expect(row.getByText("Report ready to download")).toBeVisible();
+  const download = page.waitForEvent("download");
+  await row.getByRole("button", { name: "Download report for Candidate 3" }).click();
+  expect((await download).suggestedFilename()).toBe("Sapling-Global-SG-TEST-3.pdf");
+  expect(requests.some((url) => url.pathname.endsWith("/reports/report-3/content"))).toBe(true);
+  await row.getByRole("button", { name: "Open case for Candidate 3", exact: true }).click();
+  const drawer = page.getByRole("dialog", { name: "Case detail" });
+  const ready = drawer.getByRole("region", { name: "Final report" });
+  await expect(ready.getByText("Final report ready")).toBeVisible();
+  await expect(ready.getByRole("button", { name: "Download report" })).toBeVisible();
+  await page.screenshot({ path: "test-results/client-report-ready.png" });
+});
+
 test("queue updates retain their layout and errors are not shown as empty results", async ({
   page,
 }) => {

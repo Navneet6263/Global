@@ -410,6 +410,7 @@ export type CaseCheckWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
   sourceEmails?: Prisma.SourceEmailListRelationFilter
   vendorWork?: Prisma.VendorCheckAssignmentListRelationFilter
+  evidence?: Prisma.CheckEvidenceListRelationFilter
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
@@ -447,6 +448,7 @@ export type CaseCheckOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   sourceEmails?: Prisma.SourceEmailOrderByRelationAggregateInput
   vendorWork?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  evidence?: Prisma.CheckEvidenceOrderByRelationAggregateInput
   tenant?: Prisma.TenantOrderByWithRelationInput
   case?: Prisma.VerificationCaseOrderByWithRelationInput
   department?: Prisma.DepartmentOrderByWithRelationInput
@@ -488,6 +490,7 @@ export type CaseCheckWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"CaseCheck"> | Date | string
   sourceEmails?: Prisma.SourceEmailListRelationFilter
   vendorWork?: Prisma.VendorCheckAssignmentListRelationFilter
+  evidence?: Prisma.CheckEvidenceListRelationFilter
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   department?: Prisma.XOR<Prisma.DepartmentNullableScalarRelationFilter, Prisma.DepartmentWhereInput> | null
@@ -585,6 +588,7 @@ export type CaseCheckCreateInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -622,6 +626,7 @@ export type CaseCheckUncheckedCreateInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -651,6 +656,7 @@ export type CaseCheckUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -688,6 +694,7 @@ export type CaseCheckUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -1083,6 +1090,20 @@ export type CaseCheckUpdateOneRequiredWithoutVendorWorkNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutVendorWorkInput, Prisma.CaseCheckUpdateWithoutVendorWorkInput>, Prisma.CaseCheckUncheckedUpdateWithoutVendorWorkInput>
 }
 
+export type CaseCheckCreateNestedOneWithoutEvidenceInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutEvidenceInput, Prisma.CaseCheckUncheckedCreateWithoutEvidenceInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutEvidenceInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+}
+
+export type CaseCheckUpdateOneRequiredWithoutEvidenceNestedInput = {
+  create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutEvidenceInput, Prisma.CaseCheckUncheckedCreateWithoutEvidenceInput>
+  connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutEvidenceInput
+  upsert?: Prisma.CaseCheckUpsertWithoutEvidenceInput
+  connect?: Prisma.CaseCheckWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CaseCheckUpdateToOneWithWhereWithoutEvidenceInput, Prisma.CaseCheckUpdateWithoutEvidenceInput>, Prisma.CaseCheckUncheckedUpdateWithoutEvidenceInput>
+}
+
 export type CaseCheckCreateNestedOneWithoutSourceEmailsInput = {
   create?: Prisma.XOR<Prisma.CaseCheckCreateWithoutSourceEmailsInput, Prisma.CaseCheckUncheckedCreateWithoutSourceEmailsInput>
   connectOrCreate?: Prisma.CaseCheckCreateOrConnectWithoutSourceEmailsInput
@@ -1163,6 +1184,7 @@ export type CaseCheckCreateWithoutTenantInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
@@ -1198,6 +1220,7 @@ export type CaseCheckUncheckedCreateWithoutTenantInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -1283,6 +1306,7 @@ export type CaseCheckCreateWithoutCaseInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
@@ -1318,6 +1342,7 @@ export type CaseCheckUncheckedCreateWithoutCaseInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -1372,6 +1397,7 @@ export type CaseCheckCreateWithoutTasksInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -1408,6 +1434,7 @@ export type CaseCheckUncheckedCreateWithoutTasksInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
@@ -1452,6 +1479,7 @@ export type CaseCheckUpdateWithoutTasksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -1488,6 +1516,7 @@ export type CaseCheckUncheckedUpdateWithoutTasksInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
@@ -1516,6 +1545,7 @@ export type CaseCheckCreateWithoutFindingsInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -1552,6 +1582,7 @@ export type CaseCheckUncheckedCreateWithoutFindingsInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
 }
@@ -1596,6 +1627,7 @@ export type CaseCheckUpdateWithoutFindingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -1632,6 +1664,7 @@ export type CaseCheckUncheckedUpdateWithoutFindingsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
 }
@@ -1660,6 +1693,7 @@ export type CaseCheckCreateWithoutCaseServiceInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -1695,6 +1729,7 @@ export type CaseCheckUncheckedCreateWithoutCaseServiceInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -1749,6 +1784,7 @@ export type CaseCheckCreateWithoutMethodRunsInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -1785,6 +1821,7 @@ export type CaseCheckUncheckedCreateWithoutMethodRunsInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
 }
@@ -1829,6 +1866,7 @@ export type CaseCheckUpdateWithoutMethodRunsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -1865,6 +1903,7 @@ export type CaseCheckUncheckedUpdateWithoutMethodRunsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
 }
@@ -1892,6 +1931,7 @@ export type CaseCheckCreateWithoutVendorWorkInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -1928,6 +1968,7 @@ export type CaseCheckUncheckedCreateWithoutVendorWorkInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -1972,6 +2013,7 @@ export type CaseCheckUpdateWithoutVendorWorkInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -2008,6 +2050,155 @@ export type CaseCheckUncheckedUpdateWithoutVendorWorkInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckCreateWithoutEvidenceInput = {
+  id?: bigint | number
+  publicId?: string
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
+  department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingCreateNestedManyWithoutCheckInput
+  caseService?: Prisma.CaseServiceCreateNestedOneWithoutChecksInput
+  methodRuns?: Prisma.VerificationMethodRunCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckUncheckedCreateWithoutEvidenceInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  caseServiceId?: bigint | number | null
+  reviewCycle?: number
+  type: string
+  status?: string
+  result?: string | null
+  riskLevel?: string | null
+  dueAt?: Date | string | null
+  completedAt?: Date | string | null
+  sourceSummary?: string | null
+  departmentId?: bigint | number | null
+  routedAt?: Date | string | null
+  initiationJson?: string | null
+  initiatedAt?: Date | string | null
+  initiatedById?: bigint | number | null
+  verifiedJson?: string | null
+  verifiedAt?: Date | string | null
+  verifiedById?: bigint | number | null
+  disposition?: string | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
+  findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
+  methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
+}
+
+export type CaseCheckCreateOrConnectWithoutEvidenceInput = {
+  where: Prisma.CaseCheckWhereUniqueInput
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutEvidenceInput, Prisma.CaseCheckUncheckedCreateWithoutEvidenceInput>
+}
+
+export type CaseCheckUpsertWithoutEvidenceInput = {
+  update: Prisma.XOR<Prisma.CaseCheckUpdateWithoutEvidenceInput, Prisma.CaseCheckUncheckedUpdateWithoutEvidenceInput>
+  create: Prisma.XOR<Prisma.CaseCheckCreateWithoutEvidenceInput, Prisma.CaseCheckUncheckedCreateWithoutEvidenceInput>
+  where?: Prisma.CaseCheckWhereInput
+}
+
+export type CaseCheckUpdateToOneWithWhereWithoutEvidenceInput = {
+  where?: Prisma.CaseCheckWhereInput
+  data: Prisma.XOR<Prisma.CaseCheckUpdateWithoutEvidenceInput, Prisma.CaseCheckUncheckedUpdateWithoutEvidenceInput>
+}
+
+export type CaseCheckUpdateWithoutEvidenceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
+  department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
+  findings?: Prisma.FindingUpdateManyWithoutCheckNestedInput
+  caseService?: Prisma.CaseServiceUpdateOneWithoutChecksNestedInput
+  methodRuns?: Prisma.VerificationMethodRunUpdateManyWithoutCheckNestedInput
+}
+
+export type CaseCheckUncheckedUpdateWithoutEvidenceInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseServiceId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewCycle?: Prisma.IntFieldUpdateOperationsInput | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  result?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  riskLevel?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  sourceSummary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  departmentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  routedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiationJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  initiatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  initiatedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  verifiedJson?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  verifiedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  disposition?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
+  vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -2036,6 +2227,7 @@ export type CaseCheckCreateWithoutSourceEmailsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   department?: Prisma.DepartmentCreateNestedOneWithoutChecksInput
@@ -2072,6 +2264,7 @@ export type CaseCheckUncheckedCreateWithoutSourceEmailsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -2116,6 +2309,7 @@ export type CaseCheckUpdateWithoutSourceEmailsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -2152,6 +2346,7 @@ export type CaseCheckUncheckedUpdateWithoutSourceEmailsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -2181,6 +2376,7 @@ export type CaseCheckCreateWithoutDepartmentInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceCreateNestedManyWithoutCheckInput
   tenant: Prisma.TenantCreateNestedOneWithoutChecksInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutChecksInput
   tasks?: Prisma.CheckTaskCreateNestedManyWithoutCheckInput
@@ -2216,6 +2412,7 @@ export type CaseCheckUncheckedCreateWithoutDepartmentInput = {
   updatedAt?: Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedCreateNestedManyWithoutCheckInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutCheckInput
+  evidence?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutCheckInput
   tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCheckInput
   findings?: Prisma.FindingUncheckedCreateNestedManyWithoutCheckInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedCreateNestedManyWithoutCheckInput
@@ -2296,6 +2493,7 @@ export type CaseCheckUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
@@ -2331,6 +2529,7 @@ export type CaseCheckUncheckedUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -2413,6 +2612,7 @@ export type CaseCheckUpdateWithoutCaseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
@@ -2448,6 +2648,7 @@ export type CaseCheckUncheckedUpdateWithoutCaseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -2530,6 +2731,7 @@ export type CaseCheckUpdateWithoutCaseServiceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   department?: Prisma.DepartmentUpdateOneWithoutChecksNestedInput
@@ -2565,6 +2767,7 @@ export type CaseCheckUncheckedUpdateWithoutCaseServiceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -2647,6 +2850,7 @@ export type CaseCheckUpdateWithoutDepartmentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUpdateManyWithoutCheckNestedInput
   tenant?: Prisma.TenantUpdateOneRequiredWithoutChecksNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutChecksNestedInput
   tasks?: Prisma.CheckTaskUpdateManyWithoutCheckNestedInput
@@ -2682,6 +2886,7 @@ export type CaseCheckUncheckedUpdateWithoutDepartmentInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sourceEmails?: Prisma.SourceEmailUncheckedUpdateManyWithoutCheckNestedInput
   vendorWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutCheckNestedInput
+  evidence?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutCheckNestedInput
   tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCheckNestedInput
   findings?: Prisma.FindingUncheckedUpdateManyWithoutCheckNestedInput
   methodRuns?: Prisma.VerificationMethodRunUncheckedUpdateManyWithoutCheckNestedInput
@@ -2722,6 +2927,7 @@ export type CaseCheckUncheckedUpdateManyWithoutDepartmentInput = {
 export type CaseCheckCountOutputType = {
   sourceEmails: number
   vendorWork: number
+  evidence: number
   tasks: number
   findings: number
   methodRuns: number
@@ -2730,6 +2936,7 @@ export type CaseCheckCountOutputType = {
 export type CaseCheckCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sourceEmails?: boolean | CaseCheckCountOutputTypeCountSourceEmailsArgs
   vendorWork?: boolean | CaseCheckCountOutputTypeCountVendorWorkArgs
+  evidence?: boolean | CaseCheckCountOutputTypeCountEvidenceArgs
   tasks?: boolean | CaseCheckCountOutputTypeCountTasksArgs
   findings?: boolean | CaseCheckCountOutputTypeCountFindingsArgs
   methodRuns?: boolean | CaseCheckCountOutputTypeCountMethodRunsArgs
@@ -2757,6 +2964,13 @@ export type CaseCheckCountOutputTypeCountSourceEmailsArgs<ExtArgs extends runtim
  */
 export type CaseCheckCountOutputTypeCountVendorWorkArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * CaseCheckCountOutputType without action
+ */
+export type CaseCheckCountOutputTypeCountEvidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CheckEvidenceWhereInput
 }
 
 /**
@@ -2809,6 +3023,7 @@ export type CaseCheckSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   updatedAt?: boolean
   sourceEmails?: boolean | Prisma.CaseCheck$sourceEmailsArgs<ExtArgs>
   vendorWork?: boolean | Prisma.CaseCheck$vendorWorkArgs<ExtArgs>
+  evidence?: boolean | Prisma.CaseCheck$evidenceArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   department?: boolean | Prisma.CaseCheck$departmentArgs<ExtArgs>
@@ -2853,6 +3068,7 @@ export type CaseCheckOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs 
 export type CaseCheckInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sourceEmails?: boolean | Prisma.CaseCheck$sourceEmailsArgs<ExtArgs>
   vendorWork?: boolean | Prisma.CaseCheck$vendorWorkArgs<ExtArgs>
+  evidence?: boolean | Prisma.CaseCheck$evidenceArgs<ExtArgs>
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   department?: boolean | Prisma.CaseCheck$departmentArgs<ExtArgs>
@@ -2868,6 +3084,7 @@ export type $CaseCheckPayload<ExtArgs extends runtime.Types.Extensions.InternalA
   objects: {
     sourceEmails: Prisma.$SourceEmailPayload<ExtArgs>[]
     vendorWork: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    evidence: Prisma.$CheckEvidencePayload<ExtArgs>[]
     tenant: Prisma.$TenantPayload<ExtArgs>
     case: Prisma.$VerificationCasePayload<ExtArgs>
     department: Prisma.$DepartmentPayload<ExtArgs> | null
@@ -3253,6 +3470,7 @@ export interface Prisma__CaseCheckClient<T, Null = never, ExtArgs extends runtim
   readonly [Symbol.toStringTag]: "PrismaPromise"
   sourceEmails<T extends Prisma.CaseCheck$sourceEmailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$sourceEmailsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SourceEmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorWork<T extends Prisma.CaseCheck$vendorWorkArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$vendorWorkArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  evidence<T extends Prisma.CaseCheck$evidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$evidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   department<T extends Prisma.CaseCheck$departmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CaseCheck$departmentArgs<ExtArgs>>): Prisma.Prisma__DepartmentClient<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -3706,6 +3924,30 @@ export type CaseCheck$vendorWorkArgs<ExtArgs extends runtime.Types.Extensions.In
   take?: number
   skip?: number
   distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * CaseCheck.evidence
+ */
+export type CaseCheck$evidenceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CheckEvidence
+   */
+  select?: Prisma.CheckEvidenceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CheckEvidence
+   */
+  omit?: Prisma.CheckEvidenceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CheckEvidenceInclude<ExtArgs> | null
+  where?: Prisma.CheckEvidenceWhereInput
+  orderBy?: Prisma.CheckEvidenceOrderByWithRelationInput | Prisma.CheckEvidenceOrderByWithRelationInput[]
+  cursor?: Prisma.CheckEvidenceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CheckEvidenceScalarFieldEnum | Prisma.CheckEvidenceScalarFieldEnum[]
 }
 
 /**

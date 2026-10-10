@@ -169,6 +169,7 @@ void test("approval snapshots include responded methods and current field eviden
         riskLevel: "LOW",
         sourceSummary: "Reviewed source",
         caseService: { serviceFamily: "VENDORCHECK" },
+        evidence: [],
         methodRuns: [
           {
             method: "MANUAL",

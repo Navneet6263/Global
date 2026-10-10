@@ -242,6 +242,11 @@ export type VendorCheckAssignment = Prisma.VendorCheckAssignmentModel
  */
 export type VendorCheckEvidence = Prisma.VendorCheckEvidenceModel
 /**
+ * Model CheckEvidence
+ * Proof a verifier attaches to a check (screenshots, replies, photos) for its annexure.
+ */
+export type CheckEvidence = Prisma.CheckEvidenceModel
+/**
  * Model ClientMisSchedule
  * Client scheduled MIS: a report preset emailed daily / weekly / monthly.
  */

@@ -6,19 +6,43 @@
 export const DISPOSITIONS = ["GREEN", "YELLOW", "RED", "AMBER", "BLUE", "CLIENT_REVIEW"] as const;
 export type Disposition = (typeof DISPOSITIONS)[number];
 
-export const dispositionMeta: Record<Disposition, { label: string; short: string; hint: string }> =
-  {
-    GREEN: { label: "Clear", short: "Clear", hint: "Verified, no discrepancy" },
-    YELLOW: { label: "Minor discrepancy", short: "Minor", hint: "Small mismatch, not adverse" },
-    RED: { label: "Major discrepancy", short: "Major", hint: "Adverse or material discrepancy" },
-    AMBER: { label: "Insufficient / UTV", short: "UTV", hint: "Could not be verified" },
-    BLUE: { label: "Verified verbally", short: "Verbal", hint: "Confirmed verbally by the source" },
-    CLIENT_REVIEW: {
-      label: "Client review",
-      short: "Client review",
-      hint: "Needs the client's decision",
-    },
-  };
+/** `name` is the industry colour name (AMBER is shown as Orange). */
+export const dispositionMeta: Record<
+  Disposition,
+  { label: string; short: string; hint: string; name: string }
+> = {
+  GREEN: { label: "Clear", short: "Clear", hint: "Verified, no discrepancy", name: "Green" },
+  YELLOW: {
+    label: "Minor discrepancy",
+    short: "Minor",
+    hint: "Small mismatch, not adverse",
+    name: "Yellow",
+  },
+  RED: {
+    label: "Major discrepancy",
+    short: "Major",
+    hint: "Adverse or material discrepancy",
+    name: "Red",
+  },
+  AMBER: {
+    label: "Insufficient / UTV",
+    short: "UTV",
+    hint: "Could not be verified or more information required",
+    name: "Orange",
+  },
+  BLUE: {
+    label: "Verified verbally",
+    short: "Verbal",
+    hint: "Confirmed verbally by the source",
+    name: "Blue",
+  },
+  CLIENT_REVIEW: {
+    label: "Client review",
+    short: "Client review",
+    hint: "Needs the client's decision",
+    name: "No colour",
+  },
+};
 
 export const ALLOWED_BY_RESULT: Record<string, readonly Disposition[]> = {
   CLEAR: ["GREEN", "BLUE"],

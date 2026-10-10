@@ -47,6 +47,7 @@ export type DepartmentMinAggregateOutputType = {
   name: string | null
   kind: string | null
   checkTypesJson: string | null
+  teamType: string | null
   status: string | null
   version: number | null
   createdAt: Date | null
@@ -61,6 +62,7 @@ export type DepartmentMaxAggregateOutputType = {
   name: string | null
   kind: string | null
   checkTypesJson: string | null
+  teamType: string | null
   status: string | null
   version: number | null
   createdAt: Date | null
@@ -75,6 +77,7 @@ export type DepartmentCountAggregateOutputType = {
   name: number
   kind: number
   checkTypesJson: number
+  teamType: number
   status: number
   version: number
   createdAt: number
@@ -103,6 +106,7 @@ export type DepartmentMinAggregateInputType = {
   name?: true
   kind?: true
   checkTypesJson?: true
+  teamType?: true
   status?: true
   version?: true
   createdAt?: true
@@ -117,6 +121,7 @@ export type DepartmentMaxAggregateInputType = {
   name?: true
   kind?: true
   checkTypesJson?: true
+  teamType?: true
   status?: true
   version?: true
   createdAt?: true
@@ -131,6 +136,7 @@ export type DepartmentCountAggregateInputType = {
   name?: true
   kind?: true
   checkTypesJson?: true
+  teamType?: true
   status?: true
   version?: true
   createdAt?: true
@@ -232,6 +238,7 @@ export type DepartmentGroupByOutputType = {
   name: string
   kind: string
   checkTypesJson: string
+  teamType: string | null
   status: string
   version: number
   createdAt: Date
@@ -269,6 +276,7 @@ export type DepartmentWhereInput = {
   name?: Prisma.StringFilter<"Department"> | string
   kind?: Prisma.StringFilter<"Department"> | string
   checkTypesJson?: Prisma.StringFilter<"Department"> | string
+  teamType?: Prisma.StringNullableFilter<"Department"> | string | null
   status?: Prisma.StringFilter<"Department"> | string
   version?: Prisma.IntFilter<"Department"> | number
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -286,6 +294,7 @@ export type DepartmentOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   checkTypesJson?: Prisma.SortOrder
+  teamType?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -307,6 +316,7 @@ export type DepartmentWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Department"> | string
   kind?: Prisma.StringFilter<"Department"> | string
   checkTypesJson?: Prisma.StringFilter<"Department"> | string
+  teamType?: Prisma.StringNullableFilter<"Department"> | string | null
   status?: Prisma.StringFilter<"Department"> | string
   version?: Prisma.IntFilter<"Department"> | number
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -324,6 +334,7 @@ export type DepartmentOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   checkTypesJson?: Prisma.SortOrder
+  teamType?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -346,6 +357,7 @@ export type DepartmentScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Department"> | string
   kind?: Prisma.StringWithAggregatesFilter<"Department"> | string
   checkTypesJson?: Prisma.StringWithAggregatesFilter<"Department"> | string
+  teamType?: Prisma.StringNullableWithAggregatesFilter<"Department"> | string | null
   status?: Prisma.StringWithAggregatesFilter<"Department"> | string
   version?: Prisma.IntWithAggregatesFilter<"Department"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Department"> | Date | string
@@ -359,6 +371,7 @@ export type DepartmentCreateInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -376,6 +389,7 @@ export type DepartmentUncheckedCreateInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -391,6 +405,7 @@ export type DepartmentUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -408,6 +423,7 @@ export type DepartmentUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -423,6 +439,7 @@ export type DepartmentCreateManyInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -436,6 +453,7 @@ export type DepartmentUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -450,6 +468,7 @@ export type DepartmentUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -484,6 +503,7 @@ export type DepartmentCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   checkTypesJson?: Prisma.SortOrder
+  teamType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -504,6 +524,7 @@ export type DepartmentMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   checkTypesJson?: Prisma.SortOrder
+  teamType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -518,6 +539,7 @@ export type DepartmentMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   kind?: Prisma.SortOrder
   checkTypesJson?: Prisma.SortOrder
+  teamType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   version?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -614,6 +636,7 @@ export type DepartmentCreateWithoutTenantInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -629,6 +652,7 @@ export type DepartmentUncheckedCreateWithoutTenantInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -673,6 +697,7 @@ export type DepartmentScalarWhereInput = {
   name?: Prisma.StringFilter<"Department"> | string
   kind?: Prisma.StringFilter<"Department"> | string
   checkTypesJson?: Prisma.StringFilter<"Department"> | string
+  teamType?: Prisma.StringNullableFilter<"Department"> | string | null
   status?: Prisma.StringFilter<"Department"> | string
   version?: Prisma.IntFilter<"Department"> | number
   createdAt?: Prisma.DateTimeFilter<"Department"> | Date | string
@@ -686,6 +711,7 @@ export type DepartmentCreateWithoutChecksInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -702,6 +728,7 @@ export type DepartmentUncheckedCreateWithoutChecksInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -732,6 +759,7 @@ export type DepartmentUpdateWithoutChecksInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -748,6 +776,7 @@ export type DepartmentUncheckedUpdateWithoutChecksInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -762,6 +791,7 @@ export type DepartmentCreateWithoutMembersInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -778,6 +808,7 @@ export type DepartmentUncheckedCreateWithoutMembersInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -808,6 +839,7 @@ export type DepartmentUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -824,6 +856,7 @@ export type DepartmentUncheckedUpdateWithoutMembersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -837,6 +870,7 @@ export type DepartmentCreateManyTenantInput = {
   name: string
   kind: string
   checkTypesJson?: string
+  teamType?: string | null
   status?: string
   version?: number
   createdAt?: Date | string
@@ -850,6 +884,7 @@ export type DepartmentUpdateWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -865,6 +900,7 @@ export type DepartmentUncheckedUpdateWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -880,6 +916,7 @@ export type DepartmentUncheckedUpdateManyWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   kind?: Prisma.StringFieldUpdateOperationsInput | string
   checkTypesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  teamType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -934,6 +971,7 @@ export type DepartmentSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   name?: boolean
   kind?: boolean
   checkTypesJson?: boolean
+  teamType?: boolean
   status?: boolean
   version?: boolean
   createdAt?: boolean
@@ -954,13 +992,14 @@ export type DepartmentSelectScalar = {
   name?: boolean
   kind?: boolean
   checkTypesJson?: boolean
+  teamType?: boolean
   status?: boolean
   version?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "name" | "kind" | "checkTypesJson" | "status" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
+export type DepartmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "name" | "kind" | "checkTypesJson" | "teamType" | "status" | "version" | "createdAt" | "updatedAt", ExtArgs["result"]["department"]>
 export type DepartmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   members?: boolean | Prisma.Department$membersArgs<ExtArgs>
@@ -989,6 +1028,10 @@ export type $DepartmentPayload<ExtArgs extends runtime.Types.Extensions.Internal
      * Check types suggested for this department when the RM routes a case.
      */
     checkTypesJson: string
+    /**
+     * Verification teams: EMPLOYMENT / EDUCATION / VENDOR / DIGITAL (decides the process shown).
+     */
+    teamType: string | null
     status: string
     version: number
     createdAt: Date
@@ -1372,6 +1415,7 @@ export interface DepartmentFieldRefs {
   readonly name: Prisma.FieldRef<"Department", 'String'>
   readonly kind: Prisma.FieldRef<"Department", 'String'>
   readonly checkTypesJson: Prisma.FieldRef<"Department", 'String'>
+  readonly teamType: Prisma.FieldRef<"Department", 'String'>
   readonly status: Prisma.FieldRef<"Department", 'String'>
   readonly version: Prisma.FieldRef<"Department", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Department", 'DateTime'>

@@ -13,9 +13,9 @@ export function QaReservation({
   pendingAction: "renew" | "release" | undefined;
 }) {
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50/70 px-4 py-3">
+    <div className="flex flex-wrap items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50/70 px-4 py-2.5">
       <Clock3 className="size-4 text-emerald-700" aria-hidden />
-      <p className="mr-auto text-xs font-medium text-emerald-900">
+      <p className="mr-auto text-[12.5px] font-medium text-emerald-900">
         Reserved for you · {minutes} min remaining
       </p>
       <Button

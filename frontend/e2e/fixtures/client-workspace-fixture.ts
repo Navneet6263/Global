@@ -31,6 +31,16 @@ export async function clientWorkspaceFixture(
     qaReviews: [],
     reports: [],
     statusHistory: [],
+    // Completed cases have a released report the client can download.
+    report:
+      statuses[i % statuses.length] === "COMPLETED"
+        ? {
+            id: `report-${i + 1}`,
+            version: 1,
+            releasedAt: now,
+            downloadExpiresAt: new Date(Date.now() + 30 * 86_400_000).toISOString(),
+          }
+        : null,
   }));
   await page.route("**/api/v1/**", async (route) => {
     const url = new URL(route.request().url());
@@ -138,6 +148,11 @@ export async function clientWorkspaceFixture(
       return reply({ id, escalated: true, escalatedAt: now, version: 2 });
     }
     if (/^\/cases\/[^/]+$/.test(path)) return reply(items.find((item) => path.endsWith(item.id)));
+    if (/^\/reports\/report-\d+\/content$/.test(path))
+      return route.fulfill({
+        contentType: "application/pdf",
+        body: Buffer.from("%PDF-1.4\n%%EOF\n"),
+      });
     if (path === "/reports" || path === "/clarifications")
       return reply({ items: [], total: 0, nextCursor: null });
     unexpected.push(path);

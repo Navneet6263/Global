@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import type { CaseListItem } from "@/lib/api/cases";
 import type { QueueColumn } from "./client-queue-columns";
 import { casePackageName } from "@/lib/backend-api/case-services";
+import { ClientReportDownloadButton } from "./ClientReportReady";
 import {
   caseStatusLabel,
   formatDate,
@@ -63,7 +64,7 @@ export function ClientQueueRow({
             <Icon aria-hidden />
             <div>
               <span>{caseStatusLabel(item.status)}</span>
-              <small>{description}</small>
+              <small>{item.report ? "Report ready to download" : description}</small>
             </div>
           </div>
         </td>
@@ -103,17 +104,26 @@ export function ClientQueueRow({
       )}
       {columns.includes("branch") && <td>{item.branch?.name ?? "Not assigned"}</td>}
       <td>
-        <Button
-          size="sm"
-          variant="outline"
-          disabled={disabled}
-          onClick={onOpen}
-          className="client-open-case"
-          aria-label={`Open case for ${item.subject.fullName}`}
-        >
-          <Eye aria-hidden />
-          {action}
-        </Button>
+        <span className="grid gap-1.5">
+          {item.report ? (
+            <ClientReportDownloadButton
+              report={item.report}
+              caseNumber={item.caseNumber}
+              candidateName={item.subject.fullName}
+            />
+          ) : null}
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={disabled}
+            onClick={onOpen}
+            className="client-open-case"
+            aria-label={`Open case for ${item.subject.fullName}`}
+          >
+            <Eye aria-hidden />
+            {action}
+          </Button>
+        </span>
       </td>
     </tr>
   );

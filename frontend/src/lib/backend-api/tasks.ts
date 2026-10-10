@@ -14,6 +14,11 @@ export interface VerificationTask {
     publicId: string;
     type: string;
     status: string;
+    /** The routed team: decides which process the verifier sees. */
+    department?: {
+      name: string;
+      teamType?: "EMPLOYMENT" | "EDUCATION" | "VENDOR" | "DIGITAL" | null;
+    } | null;
     result?: string | null;
     riskLevel?: string | null;
     sourceSummary?: string | null;

@@ -1,5 +1,34 @@
+/** A proof file the verifier attached to a check (screenshot, written reply, lab report). */
+export interface ReportProof {
+  id: string;
+  name: string;
+  contentType: string;
+  caption: string | null;
+  sha256: string;
+}
+
+/** Internal-only detail of a check, printed in the internal working copy only. */
+export interface ReportCheckInternal {
+  team?: string | null;
+  verifiedBy?: string | null;
+  verifiedAt?: string | null;
+  notes?: Array<[string, string]>;
+}
+
 export interface ReportData {
   caseNumber: string;
+  /** Executive-summary header fields (Sample Report). */
+  header?: {
+    employeeCode?: string | null;
+    /** YYYY-MM-DD */
+    joiningDate?: string | null;
+    /** Client process / reference code shown next to the client name. */
+    clientProcess?: string | null;
+  };
+  /** "client" (default) is what the client receives; "internal" adds the working log. */
+  audience?: "client" | "internal";
+  /** A preview before final approval: watermarked, status "Draft". */
+  draft?: boolean;
   generatedAt: Date;
   authenticityCode: string;
   clientName: string;
@@ -18,7 +47,12 @@ export interface ReportData {
   evidence?: Array<{ type: string; name: string; sha256: string }>;
   checks: Array<{
     type: string;
+    /** Check public id; ties proof files to the check. */
+    id?: string;
     serviceFamily?: string;
+    /** Proof files in upload order; bytes are passed to the renderer separately. */
+    proofs?: ReportProof[];
+    internal?: ReportCheckInternal;
     methods?: Array<{
       method: string;
       result: string | null;
@@ -45,6 +79,11 @@ export interface ReportData {
       source?: string | null;
     }>;
   }>;
+}
+
+/** Proof file bytes keyed by proof id, loaded from storage when the PDF is rendered. */
+export interface ReportAssets {
+  proofs?: ReadonlyMap<string, Uint8Array>;
 }
 
 export type ApprovedReportSnapshot = Omit<

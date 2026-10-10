@@ -14,6 +14,7 @@ import { claimCutoff } from "./qa-claim";
 import type { QaRegisterQueryDto } from "./dto/qa-register-query.dto";
 import { readQaDetail, readQaRegister } from "./qa-register";
 import { readQaHistory } from "./qa-history-reader";
+import { readQaDashboard } from "./qa-dashboard";
 import { fieldQaWhere } from "../field-visits/physical-field-policy";
 
 @Injectable()
@@ -26,6 +27,10 @@ export class QaService {
 
   detail(actor: Actor, caseId: string) {
     return readQaDetail(this.prisma, actor, caseId);
+  }
+
+  dashboard(actor: Actor) {
+    return readQaDashboard(this.prisma, actor);
   }
 
   history(actor: Actor, query: QaRegisterQueryDto) {

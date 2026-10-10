@@ -12,12 +12,24 @@ import {
   type VerifiedDetails,
 } from "@/lib/backend-api/verified-details";
 import { formatDateTime } from "@/lib/formatting";
+import type { InitiationField } from "@/lib/backend-api/workflow";
 
 const readable = (type: string) =>
   type
     .replaceAll("_", " ")
     .toLowerCase()
     .replace(/^\w/, (letter) => letter.toUpperCase());
+
+/** Report annexure sections (e.g. "Referee", "Exit and conduct"), in form order. */
+function groupFields(fields: readonly InitiationField[]) {
+  const groups: Array<{ title?: string; fields: InitiationField[] }> = [];
+  for (const field of fields) {
+    const last = groups.at(-1);
+    if (last && (!field.group || field.group === last.title)) last.fields.push(field);
+    else groups.push({ title: field.group, fields: [field] });
+  }
+  return groups;
+}
 
 const same = (a?: string, b?: string) =>
   (a ?? "").trim().toLowerCase() === (b ?? "").trim().toLowerCase();
@@ -177,17 +189,26 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
                     <BadgeCheck aria-hidden /> Matches what was provided
                   </p>
                 ) : null}
-                <div className="cki-grid">
-                  {data.rhs.form.fields.map((field) => (
-                    <Field
-                      key={field.key}
-                      field={field}
-                      value={entry[field.key] ?? ""}
-                      onChange={(value) => set(index, field.key, value)}
-                      label={`Verified ${index + 1} ${field.label}`}
-                    />
-                  ))}
-                </div>
+                {groupFields(data.rhs.form.fields).map((group) => (
+                  <div key={group.title ?? "details"} className="grid gap-2">
+                    {group.title ? (
+                      <h4 className="mt-1 border-b border-slate-100 pb-1 text-[11.5px] font-semibold uppercase tracking-wide text-slate-500">
+                        {group.title}
+                      </h4>
+                    ) : null}
+                    <div className="cki-grid">
+                      {group.fields.map((field) => (
+                        <Field
+                          key={field.key}
+                          field={field}
+                          value={entry[field.key] ?? ""}
+                          onChange={(value) => set(index, field.key, value)}
+                          label={`Verified ${index + 1} ${field.label}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </fieldset>
             </div>
           );

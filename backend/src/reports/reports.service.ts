@@ -7,6 +7,7 @@ import {
   NotFoundException,
   StreamableFile,
   Optional,
+  Logger,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
@@ -28,6 +29,7 @@ const versionSelect = {
 
 @Injectable()
 export class ReportsService {
+  private readonly logger = new Logger(ReportsService.name);
   constructor(
     private readonly prisma: PrismaService,
     private readonly storage: LocalObjectStorageService,
@@ -231,18 +233,31 @@ export class ReportsService {
       );
     }
     const version = report.versions[0];
-    const stream = await this.storage.auditedStream(version.objectKey, () =>
-      this.prisma.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "report.downloaded",
-          resourceType: "report",
-          resourcePublicId: reportPublicId,
-          afterJson: JSON.stringify({ version: version.version }),
-        },
-      }),
-    );
+    const stream = await this.storage
+      .auditedStream(version.objectKey, () =>
+        this.prisma.auditEvent.create({
+          data: {
+            tenantId: actor.tenantId,
+            actorUserId: actor.userId,
+            action: "report.downloaded",
+            resourceType: "report",
+            resourcePublicId: reportPublicId,
+            afterJson: JSON.stringify({ version: version.version }),
+          },
+        }),
+      )
+      .catch((error: unknown) => {
+        // The record exists but its PDF is gone from storage: say so instead of a 500.
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+          this.logger.error(
+            `Report ${reportPublicId} v${version.version}: stored PDF missing (${version.objectKey})`,
+          );
+          throw new NotFoundException(
+            "This report's PDF file is missing from storage. Operations can regenerate it; please contact Sapling support.",
+          );
+        }
+        throw error;
+      });
     return new StreamableFile(stream, {
       type: "application/pdf",
       disposition: `attachment; filename="Sapling-Global-report-v${version.version}.pdf"`,

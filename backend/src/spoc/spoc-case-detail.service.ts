@@ -1,3 +1,5 @@
+import { canReadReleasedReport } from "../reports/report-payment-policy";
+import { REGENERABLE } from "../reports/report-regeneration.service";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { spocScope } from "../common/auth/access-scope";
@@ -105,6 +107,15 @@ const detailSelect = {
       currentVersion: true,
       publishedAt: true,
       createdAt: true,
+      workflowVersion: true,
+      releasedAt: true,
+      downloadExpiresAt: true,
+      managerReview: { select: { decision: true } },
+      versions: {
+        orderBy: { version: "desc" as const },
+        take: 1,
+        select: { version: true, generatedAt: true, authenticityCode: true },
+      },
     },
     orderBy: { createdAt: "desc" as const },
   },
@@ -199,10 +210,18 @@ export class SpocCaseDetailService {
         ...review,
         reviewer: reviewer.displayName,
       })),
-      reports: row.reports.map(({ publicId: id, ...report }) => ({
-        id,
-        ...report,
-      })),
+      reports: row.reports.map(
+        ({ publicId: id, managerReview, versions, ...report }) => ({
+          id,
+          ...report,
+          latest: versions[0] ?? null,
+          canDownload: canReadReleasedReport(report),
+          canRegenerate:
+            report.workflowVersion === 2 &&
+            managerReview?.decision === "APPROVED" &&
+            REGENERABLE.includes(report.status),
+        }),
+      ),
       invoices: row.invoiceLines.map((line) => ({
         id: line.invoice.publicId,
         invoiceNumber: line.invoice.invoiceNumber,

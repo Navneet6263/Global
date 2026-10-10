@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import type { QaQueueItem } from "../../src/lib/backend-api/qa";
+import { PIXEL_PNG, sampleReportView } from "./report-view";
 
 // Browser contract fixture only. It is not imported by the application or stored in the DB.
 export async function qaBrowserFixture(
@@ -75,6 +76,90 @@ export async function qaBrowserFixture(
         summary: { awaiting: 2, overdue: 0, highRisk: 0, claimed: claimed ? 1 : 0 },
       });
     }
+    if (path === "/qa/dashboard") {
+      const day = 86_400_000;
+      const pattern = [3, 5, 2, 0, 4, 6, 5, 1, 0, 4, 7, 5, 3, 2];
+      return reply({
+        generatedAt: new Date().toISOString(),
+        queue: {
+          awaiting: 12,
+          available: 7,
+          mine: 2,
+          reservedByOthers: 3,
+          highRisk: 2,
+          sla: { overdue: 2, dueToday: 4, later: 5, noDueDate: 1 },
+          waiting: { under4h: 5, under24h: 4, under3d: 2, over3d: 1 },
+        },
+        me: {
+          today: 2,
+          week: 27,
+          previousWeek: 22,
+          approved30: 61,
+          returned30: 9,
+          approvalRate: 87,
+          medianReviewMinutes: 42,
+        },
+        teamToday: 11,
+        trend: pattern.map((total, index) => ({
+          date: new Date(Date.now() - (13 - index) * day).toISOString().slice(0, 10),
+          approved: total - (index % 4 === 0 && total ? 1 : 0),
+          returned: index % 4 === 0 && total ? 1 : 0,
+        })),
+        upNext: [
+          {
+            id: "qa-case-1",
+            caseNumber: "QA-TEST-001",
+            candidateName: "QA Test Candidate",
+            clientName: "QA Test Organisation",
+            priority: "HIGH",
+            dueAt: new Date(Date.now() - 5 * 3_600_000).toISOString(),
+            checks: 4,
+            highRisk: true,
+            reservedByMe: false,
+            waitingHours: 30,
+          },
+          {
+            id: "qa-case-2",
+            caseNumber: "QA-TEST-002",
+            candidateName: "Second Test Candidate",
+            clientName: "QA Test Organisation",
+            priority: "NORMAL",
+            dueAt: new Date(Date.now() + 20 * 3_600_000).toISOString(),
+            checks: 3,
+            highRisk: false,
+            reservedByMe: false,
+            waitingHours: 3,
+          },
+        ],
+        reworkByType: [
+          { type: "EMPLOYMENT", count: 5 },
+          { type: "ADDRESS", count: 3 },
+          { type: "EDUCATION", count: 1 },
+        ],
+        recent: [
+          {
+            id: "decision-1",
+            decision: "REWORK",
+            createdAt: new Date(Date.now() - 40 * 60_000).toISOString(),
+            caseId: "qa-case-1",
+            caseNumber: "QA-TEST-001",
+            caseStatus: "IN_PROGRESS",
+            candidateName: "QA Test Candidate",
+            clientName: "QA Test Organisation",
+          },
+          {
+            id: "decision-2",
+            decision: "APPROVED",
+            createdAt: new Date(Date.now() - 3 * 3_600_000).toISOString(),
+            caseId: "qa-case-9",
+            caseNumber: "QA-TEST-009",
+            caseStatus: "MANAGER_REVIEW",
+            candidateName: "Earlier Candidate",
+            clientName: "QA Test Organisation",
+          },
+        ],
+      });
+    }
     if (path === "/qa/history")
       return reply({
         items: [
@@ -119,6 +204,18 @@ export async function qaBrowserFixture(
         fieldVisits: evidence.fieldVisits ?? [],
       });
     }
+    if (/^\/cases\/qa-case-\d\/report-view$/.test(path)) {
+      const id = path.split("/")[2]!;
+      return reply(
+        sampleReportView(url.searchParams.get("audience") === "client" ? "client" : "internal", {
+          caseNumber: id === "qa-case-1" ? "QA-TEST-001" : "QA-TEST-002",
+          candidateName: id === "qa-case-1" ? "QA Test Candidate" : "Second Test Candidate",
+          checkId: "check-1",
+        }),
+      );
+    }
+    if (path === "/checks/check-1/evidence/proof-1")
+      return route.fulfill({ status: 200, contentType: "image/png", body: PIXEL_PNG });
     if (/\/qa\/cases\/qa-case-\d\/(claim|renew|release)$/.test(path)) {
       const action = path.split("/").at(-1);
       if (action === "renew") await renewGate;

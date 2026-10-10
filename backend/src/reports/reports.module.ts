@@ -13,10 +13,19 @@ import { CaseReopeningService } from "./case-reopening.service";
 import { ReportBillingService } from "./report-billing.service";
 import { ReportAccessService } from "./report-access.service";
 import { InterimReportService } from "./interim-report.service";
+import { ReportPreviewController } from "./report-preview.controller";
+import { RmClientMisController } from "./rm-client-mis.controller";
+import { ReportRegenerationService } from "./report-regeneration.service";
+import { ReportPreviewService } from "./report-preview.service";
 
 @Module({
   imports: [DocumentsModule],
-  controllers: [ReportsController, ClientReportsController],
+  controllers: [
+    ReportsController,
+    ClientReportsController,
+    ReportPreviewController,
+    RmClientMisController,
+  ],
   providers: [
     ReportsService,
     ReportPdfService,
@@ -27,6 +36,8 @@ import { InterimReportService } from "./interim-report.service";
     ReportBillingService,
     ReportAccessService,
     InterimReportService,
+    ReportPreviewService,
+    ReportRegenerationService,
     ClientReportsService,
     ClientMisScheduleService,
   ],

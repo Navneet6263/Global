@@ -123,12 +123,15 @@ test("RM gives final approval after QC", async ({ page }) => {
   await page.getByRole("button", { name: "Review & decide" }).click();
   const dialog = page.getByRole("dialog", { name: "Final review" });
   await expect(dialog.getByText(/QC approved by QC Team/)).toBeVisible();
-  const approve = dialog.getByRole("button", { name: "Approve case" });
+  const approve = dialog.getByRole("button", { name: "Approve & send to client" });
   await expect(approve).toBeDisabled();
-  // Every check is shown first; the decision opens only after the reviewed tick.
-  await expect(dialog.getByRole("region", { name: "Check results" })).toBeVisible();
+  // The full client report is shown first; the decision opens only after the tick.
+  const report = dialog.getByRole("region", { name: "Client report" });
+  await expect(report.getByRole("region", { name: "Executive summary" })).toBeVisible();
+  await expect(report.getByText("Differs")).toBeVisible();
+  await expect(report.getByRole("button", { name: /Open proof Email response/ })).toBeVisible();
   await expect(dialog.getByLabel(/Review notes/)).toHaveCount(0);
-  await dialog.getByRole("checkbox", { name: /I have reviewed every check/ }).check();
+  await dialog.getByRole("checkbox", { name: /I have read the client report/ }).check();
   await page.screenshot({ path: "test-results/rm-final-review.png" });
   await dialog.getByLabel(/Review notes/).fill("Evidence and findings reviewed end to end.");
   await dialog.getByLabel(/Final recommendation/).fill("Clear to report: all checks verified.");
@@ -138,6 +141,41 @@ test("RM gives final approval after QC", async ({ page }) => {
     (r) => r.method === "POST" && r.path === "/workflow/cases/flow-case-2/final-review",
   );
   expect(decided?.body).toMatchObject({ caseVersion: 7, decision: "APPROVED" });
+});
+
+test("RM opens the client copy of the report and fills the report header before approving", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 960 });
+  const fixture = await workflowFixture(page, "RM");
+  await page.goto("/spoc-rm/work?bucket=final_approval");
+  await page.getByRole("button", { name: "Review & decide" }).click();
+  const review = page.getByRole("dialog", { name: "Final review" });
+  await review.getByRole("button", { name: "Open client report" }).click();
+  const preview = page.getByRole("dialog", { name: /Report preview/ });
+  await expect(preview.getByTitle("Client copy of the report")).toBeVisible();
+  await expect(preview.getByText(/Exactly what the client will receive/)).toBeVisible();
+  // RM gets only the client copy: no internal toggle.
+  await expect(preview.getByRole("radiogroup", { name: "Report copy" })).toHaveCount(0);
+  const header = preview.getByRole("form", { name: "Report header details" });
+  await expect(header.getByLabel("Client process / reference")).toHaveValue("ABC-1212");
+  await header.getByLabel("Date of joining").fill("2026-11-02");
+  await header.getByRole("button", { name: "Save and refresh preview" }).click();
+  await expect(page.getByText("Report details saved")).toBeVisible();
+  const saved = fixture.requests.find(
+    (r) => r.method === "PATCH" && r.path === "/cases/flow-case-2/report-details",
+  );
+  expect(saved?.body).toMatchObject({ joiningDate: "2026-11-02", clientProcess: "ABC-1212" });
+  // Saving refreshes the preview; every load asks for the client copy only.
+  const loads = () =>
+    fixture.requests.filter((r) => r.path === "/cases/flow-case-2/report-preview");
+  await expect.poll(() => loads().length).toBeGreaterThanOrEqual(2);
+  expect(loads().every((r) => r.query === "?audience=client")).toBe(true);
+  await expect(preview.getByTitle("Client copy of the report")).toBeVisible();
+  await page.screenshot({ path: "test-results/rm-report-preview.png" });
+  await page.keyboard.press("Escape");
+  await expect(preview).toHaveCount(0);
+  await expect(review).toBeVisible();
 });
 
 test("Team Leader assigns a routed check to a team member", async ({ page }) => {

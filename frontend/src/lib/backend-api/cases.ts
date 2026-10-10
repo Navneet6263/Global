@@ -62,6 +62,13 @@ export interface CaseListItem {
   } | null;
   branch?: { publicId: string; name: string; city?: string | null } | null;
   assignedOpsUser?: { publicId: string; displayName: string } | null;
+  /** The released report the viewer can download now (null until released). */
+  report?: {
+    id: string;
+    version: number;
+    releasedAt: string | null;
+    downloadExpiresAt: string | null;
+  } | null;
   /** Internal roles only: position in the RM -> Data Entry -> department flow. */
   workflow?: {
     version: number;

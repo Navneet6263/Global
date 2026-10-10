@@ -60,6 +60,7 @@ const requiredMigrations = [
   "20261019100000_branch_scoping_switch",
   "20261020100000_vendor_check_approval",
   "20261021100000_review_and_approval_statuses",
+  "20261022100000_team_type_check_evidence",
 ] as const;
 
 function required(name: string): string {
@@ -170,6 +171,9 @@ async function main(): Promise<void> {
           },
         }),
         prisma.vendorCheckEvidence.findFirst({ select: { sha256: true } }),
+        prisma.checkEvidence.findFirst({ select: { sha256: true, caption: true } }),
+        prisma.department.findFirst({ select: { teamType: true } }),
+        prisma.verificationCase.findFirst({ select: { joiningDate: true } }),
         prisma.tenantAccessPolicy.findFirst({
           select: { releaseBeforePayment: true, branchScopingEnabled: true },
         }),

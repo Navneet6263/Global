@@ -17,35 +17,49 @@ for (const width of [1440, 390]) {
     await expect(nav.getByRole("button")).toHaveCount(3);
     await expect(page.getByText("Field evidence", { exact: true })).toHaveCount(0);
     await expect(page.getByRole("region", { name: "Live workspace summary" })).toHaveCount(0);
-    await expect(page.getByRole("heading", { name: "Check results and findings" })).toBeVisible();
+    await expect(page.getByRole("region", { name: "Executive summary" })).toBeVisible();
+    await expect(page.getByText("Verified by", { exact: false }).first()).toBeVisible();
+    await page.getByRole("region", { name: "Selected case review", exact: true }).screenshot({
+      path: `test-results/qa-report-summary-${width}.png`,
+    });
+    // A summary row jumps to its annexure (stated vs verified and proof).
+    await page
+      .getByRole("region", { name: "Executive summary" })
+      .getByRole("button", { name: /Employment/ })
+      .click();
+    await expect(page.getByRole("button", { name: /Open proof Email response/ })).toBeVisible();
+    await expect(page.getByText("Differs")).toBeVisible();
+    await page.waitForTimeout(600);
+    await page.getByRole("region", { name: "Selected case review", exact: true }).screenshot({
+      path: `test-results/qa-report-annexure-${width}.png`,
+    });
     await expect(page.getByRole("textbox", { name: "Reviewer rationale" })).toHaveCount(0);
     await page.getByRole("button", { name: "Claim case", exact: true }).click();
     await expect(page.getByRole("button", { name: "Release", exact: true })).toBeEnabled();
-    await page
-      .getByRole("checkbox", { name: "Employment Mark only if rework is required" })
-      .check();
+    await page.getByRole("checkbox", { name: "Return Employment for rework" }).check();
+    await expect(page.getByText("1 marked for rework")).toBeVisible();
     await nav.getByRole("button", { name: "Documents" }).click();
     await expect(page.getByText("No case documents attached.")).toBeVisible();
-    await expect(page.getByRole("heading", { name: "Check results and findings" })).toHaveCount(0);
+    await expect(page.getByRole("region", { name: "Executive summary" })).toHaveCount(0);
     await page.getByRole("button", { name: "Continue to decision" }).click();
     const notes = page.getByRole("textbox", { name: "Reviewer rationale" });
     await notes.fill("Source and supporting evidence reviewed independently.");
     for (const label of qaChecklist)
       await page.getByRole("checkbox", { name: label, exact: true }).check();
     await page.getByRole("button", { name: "Return selected checks", exact: true }).click();
-    await expect(page.getByText("1 checks selected for correction", { exact: true })).toBeVisible();
+    await expect(page.getByText("1 check selected for correction", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Submit controlled decision" })).toBeEnabled();
     await page.getByRole("button", { name: "Choose checks", exact: true }).click();
     await expect(
-      page.getByRole("checkbox", { name: "Employment Mark only if rework is required" }),
+      page.getByRole("checkbox", { name: "Return Employment for rework" }),
     ).toBeChecked();
-    await nav.getByRole("button", { name: "Quality & decision" }).click();
+    await nav.getByRole("button", { name: "Decision" }).click();
     await expect(notes).toHaveValue("Source and supporting evidence reviewed independently.");
     await expect(
       page.getByRole("button", { name: "Return selected checks", exact: true }),
     ).toHaveAttribute("aria-pressed", "true");
     const body = page.getByRole("region", { name: "Review section content" });
-    expect((await body.boundingBox())!.height).toBeLessThanOrEqual(541);
+    expect((await body.boundingBox())!.height).toBeLessThanOrEqual(640);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
     );

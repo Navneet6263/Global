@@ -39,6 +39,29 @@ export async function downloadMis(preset: MisPreset, from?: string, to?: string)
   saveBlob(blob, `Sapling-Global-${preset.toLowerCase()}-mis.csv`);
 }
 
+/** RM: the companies assigned to me, and their MIS (same presets as the Company Admin). */
+export const getRmClients = () =>
+  apiRequest<{ items: Array<{ id: string; name: string }> }>("/rm/clients");
+
+export const getRmMis = (clientId: string, preset: MisPreset, from?: string, to?: string) =>
+  apiRequest<MisResult>(
+    `/rm/clients/${encodeURIComponent(clientId)}/mis?${rangeQuery({ preset, from, to })}`,
+  );
+
+export async function downloadRmMis(
+  clientId: string,
+  companyName: string,
+  preset: MisPreset,
+  from?: string,
+  to?: string,
+) {
+  const blob = await apiDownload(
+    `/rm/clients/${encodeURIComponent(clientId)}/mis/export?${rangeQuery({ preset, from, to })}`,
+  );
+  const slug = companyName.replace(/[^A-Za-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  saveBlob(blob, `Sapling-Global-${slug}-${preset.toLowerCase()}-mis.csv`);
+}
+
 export async function downloadBulkReports(from?: string, to?: string, colour?: Disposition) {
   const blob = await apiDownload(`/client-reports/bulk?${rangeQuery({ from, to, colour })}`);
   saveBlob(blob, "Sapling-Global-reports.zip");

@@ -98,6 +98,7 @@ import { Route as SalesCrmSettingsRouteImport } from './routes/sales-crm.setting
 import { Route as SalesCrmTeamRouteImport } from './routes/sales-crm.team'
 import { Route as SpocRmIndexRouteImport } from './routes/spoc-rm.index'
 import { Route as SpocRmClientsRouteImport } from './routes/spoc-rm.clients'
+import { Route as SpocRmMisRouteImport } from './routes/spoc-rm.mis'
 import { Route as SpocRmOnboardingRouteImport } from './routes/spoc-rm.onboarding'
 import { Route as SpocRmPaymentsRouteImport } from './routes/spoc-rm.payments'
 import { Route as SpocRmPricingRouteImport } from './routes/spoc-rm.pricing'
@@ -576,6 +577,11 @@ const SpocRmClientsRoute = SpocRmClientsRouteImport.update({
   path: '/clients',
   getParentRoute: () => SpocRmRoute,
 } as any)
+const SpocRmMisRoute = SpocRmMisRouteImport.update({
+  id: '/mis',
+  path: '/mis',
+  getParentRoute: () => SpocRmRoute,
+} as any)
 const SpocRmOnboardingRoute = SpocRmOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -807,6 +813,7 @@ export interface FileRoutesByFullPath {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/mis': typeof SpocRmMisRoute
   '/spoc-rm/onboarding': typeof SpocRmOnboardingRoute
   '/spoc-rm/payments': typeof SpocRmPaymentsRoute
   '/spoc-rm/pricing': typeof SpocRmPricingRoute
@@ -918,6 +925,7 @@ export interface FileRoutesByTo {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/mis': typeof SpocRmMisRoute
   '/spoc-rm/onboarding': typeof SpocRmOnboardingRoute
   '/spoc-rm/payments': typeof SpocRmPaymentsRoute
   '/spoc-rm/pricing': typeof SpocRmPricingRoute
@@ -1039,6 +1047,7 @@ export interface FileRoutesById {
   '/sales-crm/settings': typeof SalesCrmSettingsRoute
   '/sales-crm/team': typeof SalesCrmTeamRoute
   '/spoc-rm/clients': typeof SpocRmClientsRoute
+  '/spoc-rm/mis': typeof SpocRmMisRoute
   '/spoc-rm/onboarding': typeof SpocRmOnboardingRoute
   '/spoc-rm/payments': typeof SpocRmPaymentsRoute
   '/spoc-rm/pricing': typeof SpocRmPricingRoute
@@ -1161,6 +1170,7 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/spoc-rm/clients'
+    | '/spoc-rm/mis'
     | '/spoc-rm/onboarding'
     | '/spoc-rm/payments'
     | '/spoc-rm/pricing'
@@ -1272,6 +1282,7 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/spoc-rm/clients'
+    | '/spoc-rm/mis'
     | '/spoc-rm/onboarding'
     | '/spoc-rm/payments'
     | '/spoc-rm/pricing'
@@ -1392,6 +1403,7 @@ export interface FileRouteTypes {
     | '/sales-crm/settings'
     | '/sales-crm/team'
     | '/spoc-rm/clients'
+    | '/spoc-rm/mis'
     | '/spoc-rm/onboarding'
     | '/spoc-rm/payments'
     | '/spoc-rm/pricing'
@@ -2087,6 +2099,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SpocRmClientsRouteImport
       parentRoute: typeof SpocRmRoute
     }
+    '/spoc-rm/mis': {
+      id: '/spoc-rm/mis'
+      path: '/mis'
+      fullPath: '/spoc-rm/mis'
+      preLoaderRoute: typeof SpocRmMisRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
     '/spoc-rm/onboarding': {
       id: '/spoc-rm/onboarding'
       path: '/onboarding'
@@ -2459,6 +2478,7 @@ const SalesCrmRouteWithChildren = SalesCrmRoute._addFileChildren(
 
 interface SpocRmRouteChildren {
   SpocRmClientsRoute: typeof SpocRmClientsRoute
+  SpocRmMisRoute: typeof SpocRmMisRoute
   SpocRmOnboardingRoute: typeof SpocRmOnboardingRoute
   SpocRmPaymentsRoute: typeof SpocRmPaymentsRoute
   SpocRmPricingRoute: typeof SpocRmPricingRoute
@@ -2471,6 +2491,7 @@ interface SpocRmRouteChildren {
 
 const SpocRmRouteChildren: SpocRmRouteChildren = {
   SpocRmClientsRoute: SpocRmClientsRoute,
+  SpocRmMisRoute: SpocRmMisRoute,
   SpocRmOnboardingRoute: SpocRmOnboardingRoute,
   SpocRmPaymentsRoute: SpocRmPaymentsRoute,
   SpocRmPricingRoute: SpocRmPricingRoute,

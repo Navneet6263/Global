@@ -11,6 +11,7 @@ import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { PrismaService } from "../database/prisma.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
 import type { ApprovedReportSnapshot } from "./report-data";
+import { loadProofBytes } from "./report-proofs";
 import { ReportPdfService } from "./report-pdf.service";
 import { releasePreparedReport } from "./report-release";
 import { releaseBeforePayment } from "./release-mode";
@@ -105,12 +106,24 @@ export class ReportGenerationService {
     const version = (previous._max.version ?? 0) + 1;
     const authenticityCode = `SG-${randomBytes(6).toString("hex").toUpperCase()}`;
     const generatedAt = new Date();
-    const contents = await this.pdf.render({
-      ...snapshot,
-      generatedAt,
-      authenticityCode,
-      completedAt: snapshot.completedAt ? new Date(snapshot.completedAt) : null,
-    });
+    const contents = await this.pdf.render(
+      {
+        ...snapshot,
+        generatedAt,
+        authenticityCode,
+        completedAt: snapshot.completedAt
+          ? new Date(snapshot.completedAt)
+          : null,
+      },
+      {
+        proofs: await loadProofBytes(
+          this.prisma,
+          this.storage,
+          tenantId,
+          snapshot,
+        ),
+      },
+    );
     const sha256 = createHash("sha256").update(contents).digest("hex");
     const objectKey = `${report.tenant.publicId}/${casePublicId}/reports/${report.publicId}/v${version}-${randomUUID()}.pdf`;
     await this.storage.put(objectKey, contents);

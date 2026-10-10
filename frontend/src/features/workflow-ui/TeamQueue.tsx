@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ReportPreviewButton } from "./ReportPreview";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -641,6 +642,14 @@ function ReviewDialog({ task, onClose }: { task: TeamTask; onClose: () => void }
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 text-[13px]">
+          <ReportPreviewButton
+            caseId={task.case.id}
+            caseNumber={task.case.caseNumber}
+            candidateName={task.case.candidateName}
+            audiences={["internal"]}
+            label="See it in the report"
+            className="w-fit"
+          />
           <div className="flex flex-wrap items-center gap-2">
             <Pill tone={RESULT_TONE[review.result ?? ""] ?? "neutral"}>
               {humanizeCode(review.result) || "No result"}

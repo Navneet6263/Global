@@ -95,3 +95,17 @@ export async function downloadInterimReport(caseId: string, caseNumber: string) 
   const blob = await apiDownload(`/cases/${caseId}/interim-report`);
   saveBlob(blob, `Sapling-Global-interim-${caseNumber}.pdf`);
 }
+
+/** Case team: the released report's latest PDF. */
+export async function downloadCaseReport(caseId: string, reportId: string, caseNumber: string) {
+  const blob = await apiDownload(`/cases/${caseId}/reports/${reportId}/pdf`);
+  saveBlob(blob, `Sapling-Global-${caseNumber}.pdf`);
+}
+
+/** Rebuild an approved report's PDF as a new version (reason is audited). */
+export function regenerateReport(caseId: string, reportId: string, reason: string) {
+  return apiRequest<{ id: string; status: string; version: number; authenticityCode: string }>(
+    `/cases/${caseId}/reports/${reportId}/regenerate`,
+    { method: "POST", body: JSON.stringify({ reason }) },
+  );
+}

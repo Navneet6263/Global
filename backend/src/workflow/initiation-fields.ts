@@ -9,8 +9,19 @@ export type InitiationField = {
   key: string;
   label: string;
   required?: boolean;
-  kind?: "text" | "select" | "email" | "phone" | "pincode" | "year" | "date";
+  kind?:
+    | "text"
+    | "long"
+    | "select"
+    | "email"
+    | "phone"
+    | "pincode"
+    | "year"
+    | "date"
+    | "time";
   options?: readonly string[];
+  /** Section heading the field is shown under (fields without one join the previous). */
+  group?: string;
 };
 
 export type InitiationForm = {

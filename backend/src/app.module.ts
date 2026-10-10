@@ -22,6 +22,7 @@ import { HealthModule } from "./health/health.module";
 import { QaModule } from "./qa/qa.module";
 import { ReportsModule } from "./reports/reports.module";
 import { VerificationModule } from "./verification/verification.module";
+import { CheckEvidenceModule } from "./verification/check-evidence.module";
 import { CasesModule } from "./cases/cases.module";
 import { UsersModule } from "./users/users.module";
 import { CrmModule } from "./crm/crm.module";
@@ -58,6 +59,7 @@ import { OnboardingModule } from "./onboarding/onboarding.module";
     ConsentsModule,
     DocumentsModule,
     VerificationModule,
+    CheckEvidenceModule,
     UsersModule,
     CrmModule,
     FinanceModule,

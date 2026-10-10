@@ -1,6 +1,30 @@
 import type { Page } from "@playwright/test";
+import { PIXEL_PNG, sampleReportView } from "./report-view";
 
 type Role = "RM" | "DATA_ENTRY" | "DATA_ENTRY_LEAD" | "TEAM_LEADER" | "OPS";
+
+/** A one-page PDF with a line of text, for report preview responses. */
+export function tinyPdf(text: string) {
+  const stream = `BT /F1 18 Tf 72 760 Td (${text}) Tj ET`;
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>",
+    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+  ];
+  let pdf = "%PDF-1.4\n";
+  const offsets: number[] = [];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xref = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  for (const offset of offsets) pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return Buffer.from(pdf, "latin1");
+}
 
 /**
  * Browser-only fixture for the RM -> Data Entry -> department flow. Synthetic data only;
@@ -17,6 +41,11 @@ export async function workflowFixture(page: Page, role: Role) {
     clarificationOpen: false,
     taskAssignee: null as null | { id: string; name: string },
     version: 3,
+    reportDetails: {
+      joiningDate: null as string | null,
+      clientProcess: "ABC-1212" as string | null,
+      canEdit: true,
+    },
     /** Checks whose initiation details Data Entry saved. */
     initiated: new Map<string, string>(),
   };
@@ -529,6 +558,28 @@ export async function workflowFixture(page: Page, role: Role) {
       });
     if (path === "/workflow/cases/flow-case-2/final-review" && method === "POST")
       return reply({ caseStatus: "REPORT_PENDING" });
+    if (path === "/cases/flow-case-2/report-preview")
+      return route.fulfill({
+        status: 200,
+        contentType: "application/pdf",
+        body: tinyPdf(`Sapling report preview - ${url.searchParams.get("audience")} copy`),
+      });
+    if (path === "/cases/flow-case-2/report-view")
+      return reply(
+        sampleReportView("client", {
+          caseNumber: "SG-FLOW-002",
+          candidateName: "Meera Joshi",
+          checkId: "chk-final",
+        }),
+      );
+    if (path === "/checks/chk-final/evidence/proof-1")
+      return route.fulfill({ status: 200, contentType: "image/png", body: PIXEL_PNG });
+    if (path === "/cases/flow-case-2/report-details" && method === "GET")
+      return reply(state.reportDetails);
+    if (path === "/cases/flow-case-2/report-details" && method === "PATCH") {
+      state.reportDetails = { ...state.reportDetails, ...(body as object) };
+      return reply(state.reportDetails);
+    }
     if (path === "/workflow/initiation-forms")
       return reply({
         forms: {

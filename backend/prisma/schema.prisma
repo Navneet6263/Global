@@ -142,6 +142,7 @@ model User {
   vendorChecksAssigned  VendorCheckAssignment[] @relation("VendorCheckAssigner")
   vendorChecksReviewed  VendorCheckAssignment[] @relation("VendorCheckReviewer")
   vendorChecksApproved  VendorCheckAssignment[] @relation("VendorCheckApprover")
+  checkEvidenceUploaded CheckEvidence[]         @relation("CheckEvidenceUploader")
   vendorCheckEvidence   VendorCheckEvidence[]   @relation("VendorCheckEvidenceUploader")
   departmentMemberships DepartmentMember[]
   primaryRmClients      Client[]                @relation("ClientPrimaryRm")
@@ -416,6 +417,8 @@ model VerificationCase {
   retentionHoldReason String?   @db.NVarChar(500)
   caseNumber          String    @db.VarChar(32)
   externalRef         String?   @db.VarChar(80)
+  /// Report header: the candidate's date of joining.
+  joiningDate         DateTime? @db.Date
   status              String    @default("DRAFT") @db.VarChar(32)
   priority            String    @default("NORMAL") @db.VarChar(16)
   dueAt               DateTime? @db.DateTime2
@@ -506,6 +509,7 @@ model CaseCheck {
   verifiedById   BigInt?
   sourceEmails   SourceEmail[]
   vendorWork     VendorCheckAssignment[]
+  evidence       CheckEvidence[]
   /// Colour-code disposition: GREEN, RED, YELLOW, AMBER, BLUE or CLIENT_REVIEW.
   disposition    String?                 @db.VarChar(24)
   version        Int                     @default(1)
@@ -1217,6 +1221,27 @@ model VendorCheckEvidence {
   @@index([assignmentId])
 }
 
+/// Proof a verifier attaches to a check (screenshots, replies, photos) for its annexure.
+model CheckEvidence {
+  id           BigInt   @id @default(autoincrement())
+  publicId     String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId     BigInt
+  checkId      BigInt
+  objectKey    String   @db.NVarChar(600)
+  originalName String   @db.NVarChar(255)
+  contentType  String   @db.VarChar(100)
+  sizeBytes    Int
+  sha256       String   @db.Char(64)
+  caption      String?  @db.NVarChar(300)
+  uploadedById BigInt
+  createdAt    DateTime @default(now()) @db.DateTime2
+
+  check      CaseCheck @relation(fields: [checkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  uploadedBy User      @relation("CheckEvidenceUploader", fields: [uploadedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([checkId])
+}
+
 /// Client scheduled MIS: a report preset emailed daily / weekly / monthly.
 model ClientMisSchedule {
   id             BigInt    @id @default(autoincrement())
@@ -1583,6 +1608,8 @@ model Department {
   kind           String   @db.VarChar(16)
   /// Check types suggested for this department when the RM routes a case.
   checkTypesJson String   @default("[]") @db.NVarChar(1000)
+  /// Verification teams: EMPLOYMENT / EDUCATION / VENDOR / DIGITAL (decides the process shown).
+  teamType       String?  @db.VarChar(16)
   status         String   @default("ACTIVE") @db.VarChar(16)
   version        Int      @default(1)
   createdAt      DateTime @default(now()) @db.DateTime2

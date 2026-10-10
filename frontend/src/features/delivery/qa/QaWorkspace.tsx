@@ -1,13 +1,14 @@
 import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, Clock3, LockKeyhole, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { DeliveryShell } from "@/features/delivery/DeliveryShell";
 import { QaQueue } from "@/features/delivery/qa/QaQueue";
 import { QaSelectedCase } from "@/features/delivery/qa/QaSelectedCase";
-import { QaOverview } from "./QaOverview";
+import { QaDashboard } from "./QaDashboard";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { QaHistory } from "@/features/delivery/qa/QaHistory";
-import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
+import { WorkspaceIntro } from "@/features/delivery/shared/WorkspaceIntro";
 import {
   WorkspaceEmpty,
   WorkspaceError,
@@ -21,7 +22,7 @@ import { invalidateWorkflow } from "@/lib/api/invalidate-workflow";
 
 export type QaPageView = "overview" | "all" | "mine" | "corrections" | "history";
 const titles: Record<QaPageView, [string, string]> = {
-  overview: ["QA overview", "See the quality queue, identify risk and choose your next review."],
+  overview: ["QA overview", "Queue health, SLA and your review trend at a glance."],
   all: ["Review queue", "Claim an available case, inspect the evidence and record your decision."],
   mine: ["My reviews", "Continue the cases currently reserved for your independent review."],
   corrections: [
@@ -34,9 +35,16 @@ const titles: Record<QaPageView, [string, string]> = {
   ],
 };
 
-export function QaWorkspace({ view = "all" }: { view?: QaPageView }) {
+export function QaWorkspace({
+  view = "all",
+  initialCaseId,
+}: {
+  view?: QaPageView;
+  /** Case to open first, e.g. from the dashboard's Up next list. */
+  initialCaseId?: string | undefined;
+}) {
   const queryClient = useQueryClient();
-  const [selectedId, setSelectedId] = useState<string>();
+  const [selectedId, setSelectedId] = useState<string | undefined>(initialCaseId);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -100,7 +108,14 @@ export function QaWorkspace({ view = "all" }: { view?: QaPageView }) {
                 : `${summary.awaiting} awaiting review`
         }
         actions={
-          view === "all" || view === "mine" || view === "corrections" ? (
+          view === "overview" ? (
+            <Link
+              to="/qa-review"
+              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition hover:bg-blue-700"
+            >
+              Start reviewing <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          ) : view === "all" || view === "mine" || view === "corrections" ? (
             <ExportSheetButton
               source={view === "all" ? "qa-queue" : view === "mine" ? "qa-mine" : "qa-corrections"}
               title={`Export ${titles[view][0].toLowerCase()}`}
@@ -113,53 +128,13 @@ export function QaWorkspace({ view = "all" }: { view?: QaPageView }) {
           ) : null
         }
       />
-      {view === "overview" && queue.data && !queue.isError ? (
-        <WorkspaceMetricGrid
-          items={[
-            {
-              label: "Awaiting review",
-              value: summary.awaiting,
-              detail: "Cases with completed checks at QA",
-              icon: ShieldCheck,
-              tone: "mint",
-            },
-            {
-              label: "SLA overdue",
-              value: summary.overdue,
-              detail: "Review queue beyond due time",
-              icon: Clock3,
-              tone: "red",
-              share: ratio(summary.overdue, summary.awaiting),
-            },
-            {
-              label: "High risk",
-              value: summary.highRisk,
-              detail: "Cases with high or critical findings",
-              icon: AlertTriangle,
-              tone: "amber",
-              share: ratio(summary.highRisk, summary.awaiting),
-            },
-            {
-              label: "Claimed",
-              value: summary.claimed,
-              detail: "Protected from duplicate review",
-              icon: LockKeyhole,
-              tone: "violet",
-              share: ratio(summary.claimed, summary.awaiting),
-            },
-          ]}
-        />
-      ) : null}
-      {view === "overview" ? <QaOverview /> : null}
+      {view === "overview" ? <QaDashboard /> : null}
       {view === "history" ? <QaHistory /> : null}
-      {view === "overview" && queue.isLoading ? (
-        <WorkspaceLoading label="Loading independent review queue" />
-      ) : null}
       {view !== "history" && queue.isError ? (
         <WorkspaceError message={queue.error.message} onRetry={() => void queue.refetch()} />
       ) : null}
       {view !== "history" && view !== "overview" ? (
-        <div className="grid gap-5 xl:grid-cols-[minmax(20rem,0.68fr)_minmax(0,1.32fr)]">
+        <div className="grid gap-5 xl:grid-cols-[19rem_minmax(0,1fr)] 2xl:grid-cols-[21rem_minmax(0,1fr)]">
           <QaQueue
             items={items}
             pending={pending}
@@ -210,8 +185,4 @@ export function QaWorkspace({ view = "all" }: { view?: QaPageView }) {
       ) : null}
     </DeliveryShell>
   );
-}
-
-function ratio(value: number, total: number) {
-  return total ? Math.round((value / total) * 100) : 0;
 }

@@ -44,6 +44,8 @@ export class InterimReportService {
         id: true,
         caseNumber: true,
         status: true,
+        externalRef: true,
+        joiningDate: true,
         client: { select: { displayName: true } },
         services: { select: { serviceFamily: true } },
         subject: {
@@ -88,6 +90,11 @@ export class InterimReportService {
       clientName: row.client.displayName,
       candidateName: row.subject.fullName,
       identityDetails: employeeCode ? [["Employee code", employeeCode]] : [],
+      header: {
+        employeeCode: employeeCode ?? null,
+        joiningDate: row.joiningDate?.toISOString().slice(0, 10) ?? null,
+        clientProcess: row.externalRef,
+      },
       completedAt: null,
       riskLevel: null,
       services: [
