@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Building2, ClipboardList, LayoutDashboard, Rocket } from "lucide-react";
-import { BrowserFrame } from "./BrowserFrame";
+import { GlassDashboard, type GlassVariant } from "./GlassDashboard";
 
 const TABS = [
   {
@@ -9,7 +9,7 @@ const TABS = [
     icon: LayoutDashboard,
     title: "Every case, owner and deadline at a glance",
     copy: "Your verification team sees live counts, the work queue due-first and who is holding each case.",
-    src: "/landing/shot-operations.jpg",
+    variant: "operations" as GlassVariant,
   },
   {
     id: "client",
@@ -17,7 +17,7 @@ const TABS = [
     icon: Building2,
     title: "Your HR team always knows where things stand",
     copy: "Start verifications, see what needs your action and download reports — without emails back and forth.",
-    src: "/landing/shot-client.jpg",
+    variant: "client" as GlassVariant,
   },
   {
     id: "rm",
@@ -25,7 +25,7 @@ const TABS = [
     icon: ClipboardList,
     title: "A dedicated RM moves every case forward",
     copy: "Cases grouped by step: data entry, routing to specialist teams and final approval before release.",
-    src: "/landing/shot-rm.jpg",
+    variant: "rm" as GlassVariant,
   },
   {
     id: "onboarding",
@@ -33,11 +33,11 @@ const TABS = [
     icon: Rocket,
     title: "Go live with a guided checklist",
     copy: "Company details, agreements and KYC in one place, with progress and your RM's notes as you go.",
-    src: "/landing/shot-onboarding.jpg",
+    variant: "onboarding" as GlassVariant,
   },
 ] as const;
 
-/** Tabbed tour of real product screens. */
+/** Tabbed tour of the product, drawn as glass illustrations with sample data. */
 export function ProductTour() {
   const [active, setActive] = useState<(typeof TABS)[number]["id"]>("ops");
   const tab = TABS.find((item) => item.id === active)!;
@@ -69,12 +69,14 @@ export function ProductTour() {
           <h3>{tab.title}</h3>
           <p>{tab.copy}</p>
         </div>
-        <BrowserFrame
-          key={tab.id}
-          src={tab.src}
-          alt={`${tab.label} screen`}
-          className="tour-frame"
-        />
+        <div className="mx-auto max-w-4xl px-4 pb-10 sm:px-10">
+          <GlassDashboard
+            key={tab.id}
+            variant={tab.variant}
+            label={`${tab.label} screen (illustration)`}
+            className="tour-frame"
+          />
+        </div>
       </div>
     </div>
   );

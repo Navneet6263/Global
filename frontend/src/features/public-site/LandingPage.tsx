@@ -25,7 +25,7 @@ import {
   UsersRound,
   Workflow,
 } from "lucide-react";
-import { BrowserFrame } from "./BrowserFrame";
+import { GlassDashboard } from "./GlassDashboard";
 import { ProductPreview } from "./ProductPreview";
 import { ProductTour } from "./ProductTour";
 import { SiteFooter } from "./SiteFooter";
@@ -192,11 +192,10 @@ export function LandingPage() {
             </div>
             <div className="site-preview is-shot">
               <img className="site-art is-globe" src="/landing/globe-dots.svg" alt="" />
-              <BrowserFrame
-                src="/landing/shot-operations.jpg"
-                alt="Sapling Global operations dashboard"
+              <GlassDashboard
+                variant="operations"
+                label="Sapling Global operations dashboard (illustration)"
                 className="hero-frame"
-                eager
               />
               <div className="hero-card">
                 <ProductPreview />
@@ -233,7 +232,7 @@ export function LandingPage() {
               <h2 id="tour-title" className="site-h2">
                 See the portal your team will use
               </h2>
-              <p>Real screens from Sapling Global, shown with sample data.</p>
+              <p>A look at the portal your team will use, shown with sample data.</p>
             </div>
             <ProductTour />
           </div>

@@ -2,15 +2,15 @@ import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, LockKeyhole, ShieldCheck } from "lucide-react";
 import { SaplingLogo } from "@/components/brand/sapling-logo";
-import { BrowserFrame } from "@/features/public-site/BrowserFrame";
+import { GlassDashboard } from "@/features/public-site/GlassDashboard";
 
 const SIGNUP_STEPS = ["Your account", "Verify email", "Onboarding", "Go live"];
 
 const YEAR = new Date().getFullYear();
 
 /**
- * Split-screen sign-in / sign-up: a clean form column and a product showcase with a real
- * screen of the portal. The showcase is hidden on small screens.
+ * Split-screen sign-in / sign-up: a clean form column and a product showcase with a glass
+ * illustration of the portal. The showcase is hidden on small screens.
  */
 export function AuthLayout({ children, step }: { children: ReactNode; step?: number }) {
   const signup = step !== undefined;
@@ -75,10 +75,14 @@ export function AuthLayout({ children, step }: { children: ReactNode; step?: num
           )}
         </div>
         <div className="auth-showcase-shot">
-          <BrowserFrame
-            src={signup ? "/landing/shot-onboarding.jpg" : "/landing/shot-operations.jpg"}
-            alt={signup ? "Guided onboarding checklist" : "Operations dashboard"}
-            eager
+          <GlassDashboard
+            variant={signup ? "onboarding" : "operations"}
+            label={
+              signup
+                ? "Guided onboarding checklist (illustration)"
+                : "Operations dashboard (illustration)"
+            }
+            className="mx-6 mb-4"
           />
         </div>
         <div className="auth-trust">

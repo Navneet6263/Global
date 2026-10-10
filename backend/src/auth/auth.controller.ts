@@ -110,12 +110,17 @@ export class AuthController {
   ) {
     const token = (request.cookies as Record<string, string> | undefined)
       ?.sg_refresh;
-    if (!token) throw new UnauthorizedException("Refresh cookie is missing");
+    if (!token) {
+      this.clearSessionHint(response);
+      throw new UnauthorizedException("Refresh cookie is missing");
+    }
     const deviceKey = this.deviceKey(request, response);
-    const tokens = await this.auth.refresh(
-      token,
-      this.meta(request, deviceKey),
-    );
+    const tokens = await this.auth
+      .refresh(token, this.meta(request, deviceKey))
+      .catch((error: unknown) => {
+        this.clearSessionHint(response);
+        throw error;
+      });
     this.setCookies(response, tokens);
     return { authenticated: true };
   }
@@ -131,6 +136,7 @@ export class AuthController {
     await this.auth.revoke(token);
     response.clearCookie("sg_access", { path: "/" });
     response.clearCookie("sg_refresh", { path: "/api/v1/auth" });
+    this.clearSessionHint(response);
     return { authenticated: false };
   }
 
@@ -174,6 +180,7 @@ export class AuthController {
     if (result.current) {
       response.clearCookie("sg_access", { path: "/" });
       response.clearCookie("sg_refresh", { path: "/api/v1/auth" });
+      this.clearSessionHint(response);
     }
     return result;
   }
@@ -210,6 +217,19 @@ export class AuthController {
       path: "/api/v1/auth",
       expires: tokens.refreshExpiresAt,
     });
+    // Readable "signed in" marker (no secret): lets the web app skip the session
+    // check when nobody is signed in, instead of logging 401s on every visit.
+    response.setCookie("sg_session", "1", {
+      httpOnly: false,
+      secure,
+      sameSite: "strict",
+      path: "/",
+      expires: tokens.refreshExpiresAt,
+    });
+  }
+
+  private clearSessionHint(response: FastifyReply): void {
+    response.clearCookie("sg_session", { path: "/" });
   }
 
   private meta(request: FastifyRequest, deviceKey?: string) {

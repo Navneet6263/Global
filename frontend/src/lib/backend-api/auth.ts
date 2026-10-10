@@ -1,4 +1,4 @@
-import { apiRequest, resetApiSession } from "./client";
+import { apiRequest, clearSessionHint, resetApiSession } from "./client";
 
 export type Session = {
   id: string;
@@ -63,6 +63,7 @@ export function login(input: { tenantCode: string; email: string; password: stri
 
 export async function logout() {
   resetApiSession();
+  clearSessionHint();
   return apiRequest<{ authenticated: false }>("/auth/logout", { method: "POST" }, false);
 }
 

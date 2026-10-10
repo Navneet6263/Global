@@ -21,6 +21,8 @@ export default defineConfig({
     "operations-manager-pages.spec.ts",
     "workflow-v2.spec.ts",
     "notifications-inbox.spec.ts",
+    "auth-quiet.spec.ts",
+    "public-visuals.spec.ts",
     "step6-ui.spec.ts",
     "signup-onboarding.spec.ts",
     "case-360.spec.ts",
@@ -51,6 +53,26 @@ export default defineConfig({
     reuseExistingServer: false,
     timeout: 60_000,
   },
-  use: { baseURL: origin, trace: "retain-on-failure", screenshot: "only-on-failure" },
+  use: {
+    baseURL: origin,
+    trace: "retain-on-failure",
+    screenshot: "only-on-failure",
+    // Tests start "signed in" (mocked API): the readable session marker the server sets.
+    storageState: {
+      cookies: [
+        {
+          name: "sg_session",
+          value: "1",
+          domain: "127.0.0.1",
+          path: "/",
+          expires: -1,
+          httpOnly: false,
+          secure: false,
+          sameSite: "Strict",
+        },
+      ],
+      origins: [],
+    },
+  },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

@@ -1,5 +1,9 @@
 import { getSession, type Session } from "@/lib/backend-api/auth";
-import { registerSessionExpiryHandler, resetApiSession } from "@/lib/backend-api/client";
+import {
+  hasSessionHint,
+  registerSessionExpiryHandler,
+  resetApiSession,
+} from "@/lib/backend-api/client";
 import { ROLES, type Role } from "@/config/roles";
 import { clearDeviceOfflineData, prepareDeviceOfflineData } from "./device-offline-data";
 import {
@@ -91,6 +95,8 @@ export function clearIdentity(): void {
 
 export async function loadIdentity(): Promise<AuthenticatedIdentity | null> {
   if (currentIdentity) return currentIdentity;
+  // Signed out: no session check (and no 401 in the console).
+  if (!hasSessionHint()) return null;
   if (!identityLoad) {
     const version = identityVersion;
     const pending = getSession()

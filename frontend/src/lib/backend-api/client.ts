@@ -37,7 +37,25 @@ export function registerSessionExpiryHandler(handler: () => Promise<void> | void
   expiryCleanup = handler;
 }
 
+const SESSION_HINT = "sg_session";
+
+/**
+ * The server keeps a readable "signed in" marker (no secret in it) beside the
+ * http-only session cookies. Without it nobody is signed in, so the app skips the
+ * session check and token refresh instead of logging 401s in the console.
+ */
+export function hasSessionHint(): boolean {
+  if (typeof document === "undefined") return true;
+  return document.cookie.split(";").some((part) => part.trim().startsWith(`${SESSION_HINT}=`));
+}
+
+export function clearSessionHint(): void {
+  if (typeof document === "undefined") return;
+  document.cookie = `${SESSION_HINT}=; Max-Age=0; path=/; SameSite=Strict`;
+}
+
 async function handleExpiredSession(): Promise<void> {
+  clearSessionHint();
   if (!expiryCleanup) return;
   if (!expiryCleanupPromise) {
     expiryCleanupPromise = Promise.resolve(expiryCleanup()).finally(() => {
@@ -89,6 +107,8 @@ async function coordinatedRefresh() {
 }
 
 function refreshSession(): Promise<boolean> {
+  // Nothing to refresh when nobody is signed in.
+  if (!hasSessionHint()) return Promise.resolve(false);
   if (!refreshPromise) {
     const pending = coordinatedRefresh();
     refreshPromise = pending;
