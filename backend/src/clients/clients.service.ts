@@ -1,10 +1,12 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
+import { Permission } from "../common/auth/permissions";
 import { clientPublicSelect } from "../common/persistence/public-selects";
 import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
@@ -70,6 +72,7 @@ export class ClientsService {
   }
 
   async create(actor: Actor, input: CreateClientDto) {
+    assertCanCreateClient(actor);
     const code = input.code.trim().toUpperCase();
     const exists = await this.prisma.client.findFirst({
       where: { tenantId: actor.tenantId, code },
@@ -221,4 +224,16 @@ export function clientDirectoryWhere(
         }
       : {}),
   };
+}
+
+/** Platform Admin and Operations set up companies; anyone else needs client:write. */
+export function assertCanCreateClient(actor: Actor): void {
+  if (actor.roles.some((role) => role === "PLATFORM_ADMIN" || role === "OPS_MANAGER"))
+    return;
+  if (
+    actor.permissions.includes("*") ||
+    actor.permissions.includes(Permission.ClientWrite)
+  )
+    return;
+  throw new ForbiddenException("You do not have permission to create companies");
 }

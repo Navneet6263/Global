@@ -15,7 +15,11 @@ import {
   Put,
   Query,
 } from "@nestjs/common";
-import { CurrentActor, RequireRoles } from "../common/auth/auth.decorators";
+import {
+  AllowViewOnlyAdmin,
+  CurrentActor,
+  RequireRoles,
+} from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { ManagerReviewDto } from "../reports/dto/manager-review.dto";
 import { ManagerReviewService } from "../reports/manager-review.service";
@@ -67,6 +71,8 @@ export class WorkflowController {
   }
 
   @Post("clients/:clientId/rm")
+  // Company set-up: a view-only Platform Admin may also assign the company's RM.
+  @AllowViewOnlyAdmin()
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   assignClientRm(
     @CurrentActor() actor: Actor,
@@ -88,6 +94,8 @@ export class WorkflowController {
   }
 
   @Post("clients/:clientId/rm/clear")
+  // Company set-up: a view-only Platform Admin may also assign the company's RM.
+  @AllowViewOnlyAdmin()
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
   clearClientRm(
     @CurrentActor() actor: Actor,

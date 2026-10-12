@@ -9,6 +9,7 @@ import {
   Query,
 } from "@nestjs/common";
 import {
+  AllowViewOnlyAdmin,
   CurrentActor,
   RequirePermissions,
   RequireRoles,
@@ -36,9 +37,13 @@ export class ClientsController {
     return this.clients.list(actor, query);
   }
 
+  /**
+   * Internal company set-up (no self sign-up). Platform Admin may do it even while
+   * view-only, Operations by its role; Sales still needs client:write (service check).
+   */
   @Post()
-  @RequireRoles("PLATFORM_ADMIN", "SALES_MANAGER")
-  @RequirePermissions(Permission.ClientWrite)
+  @AllowViewOnlyAdmin()
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "SALES_MANAGER")
   create(@CurrentActor() actor: Actor, @Body() input: CreateClientDto) {
     return this.clients.create(actor, input);
   }

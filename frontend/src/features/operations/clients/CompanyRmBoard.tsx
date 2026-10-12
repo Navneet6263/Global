@@ -32,22 +32,22 @@ import {
   type ClientRmRow,
 } from "@/lib/backend-api/workflow";
 import { initials, istDateTime } from "../workspace/ops-queue-model";
+import type { CompanySearch } from "./company-search";
 import { IntakeRulesDialog } from "./IntakeRulesDialog";
 
-export interface CompanySearch {
-  view?: "without_rm" | "with_rm";
-  q?: string;
-  page?: number;
-}
+export type { CompanySearch } from "./company-search";
 
 const PAGE = 15;
 
 export function CompanyRmBoard({
   search,
   onChange,
+  intakeRules = true,
 }: {
   search: CompanySearch;
   onChange: (patch: Partial<CompanySearch>) => void;
+  /** Intake rules stay an Operations decision; the Platform Admin only sets the RM. */
+  intakeRules?: boolean;
 }) {
   const [input, setInput] = useState(search.q ?? "");
   const [assigning, setAssigning] = useState<ClientRmRow>();
@@ -210,14 +210,16 @@ export function CompanyRmBoard({
                       <UserRoundCog aria-hidden />
                       {row.primaryRm ? "Change RM" : "Assign RM"}
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setRuling(row)}
-                      aria-label={`Intake rules for ${row.name}`}
-                    >
-                      Intake rules
-                    </Button>
+                    {intakeRules ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRuling(row)}
+                        aria-label={`Intake rules for ${row.name}`}
+                      >
+                        Intake rules
+                      </Button>
+                    ) : null}
                     {row.primaryRm ? (
                       <Button
                         size="sm"

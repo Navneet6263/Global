@@ -1,17 +1,10 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { CompanyRmBoard, type CompanySearch } from "@/features/operations/clients/CompanyRmBoard";
+import { AddCompanyButton } from "@/features/operations/clients/AddCompanyButton";
+import { CompanyRmBoard } from "@/features/operations/clients/CompanyRmBoard";
+import { parseCompanySearch } from "@/features/operations/clients/company-search";
 
 export const Route = createFileRoute("/operations/clients")({
-  validateSearch: (input: Record<string, unknown>): CompanySearch => {
-    const page = Number(input["page"]);
-    const q = typeof input["q"] === "string" ? input["q"].trim().slice(0, 120) : "";
-    return {
-      view:
-        input["view"] === "without_rm" || input["view"] === "with_rm" ? input["view"] : undefined,
-      q: q || undefined,
-      page: Number.isSafeInteger(page) && page > 1 && page <= 100_000 ? page : undefined,
-    };
-  },
+  validateSearch: parseCompanySearch,
   head: () => ({ meta: [{ title: "Companies & RMs — Sapling Global Operations" }] }),
   component: CompaniesPage,
 });
@@ -26,6 +19,9 @@ function CompaniesPage() {
           <h1>Companies & RMs</h1>
           <p>Assign one RM to each company. Its cases reach that RM automatically.</p>
         </div>
+        <AddCompanyButton
+          onCreated={(client) => void navigate({ search: { q: client.code }, resetScroll: false })}
+        />
       </header>
       <CompanyRmBoard
         search={search}

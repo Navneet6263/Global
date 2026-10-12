@@ -23,6 +23,7 @@ export default defineConfig({
     "notifications-inbox.spec.ts",
     "auth-quiet.spec.ts",
     "public-visuals.spec.ts",
+    "company-setup.spec.ts",
     "step6-ui.spec.ts",
     "signup-onboarding.spec.ts",
     "case-360.spec.ts",

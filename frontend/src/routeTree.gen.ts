@@ -31,6 +31,7 @@ import { Route as AdminAuditRouteImport } from './routes/admin.audit'
 import { Route as AdminCasesRouteImport } from './routes/admin.cases'
 import { Route as AdminClientPortalRouteImport } from './routes/admin.client-portal'
 import { Route as AdminClientsRouteImport } from './routes/admin.clients'
+import { Route as AdminCompanyRmsRouteImport } from './routes/admin.company-rms'
 import { Route as AdminExceptionsRouteImport } from './routes/admin.exceptions'
 import { Route as AdminFieldRouteImport } from './routes/admin.field'
 import { Route as AdminFinanceRouteImport } from './routes/admin.finance'
@@ -237,6 +238,11 @@ const AdminClientPortalRoute = AdminClientPortalRouteImport.update({
 const AdminClientsRoute = AdminClientsRouteImport.update({
   id: '/clients',
   path: '/clients',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCompanyRmsRoute = AdminCompanyRmsRouteImport.update({
+  id: '/company-rms',
+  path: '/company-rms',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminExceptionsRoute = AdminExceptionsRouteImport.update({
@@ -751,6 +757,7 @@ export interface FileRoutesByFullPath {
   '/admin/cases': typeof AdminCasesRoute
   '/admin/client-portal': typeof AdminClientPortalRoute
   '/admin/clients': typeof AdminClientsRoute
+  '/admin/company-rms': typeof AdminCompanyRmsRoute
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
@@ -863,6 +870,7 @@ export interface FileRoutesByTo {
   '/admin/cases': typeof AdminCasesRoute
   '/admin/client-portal': typeof AdminClientPortalRoute
   '/admin/clients': typeof AdminClientsRoute
+  '/admin/company-rms': typeof AdminCompanyRmsRoute
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
@@ -985,6 +993,7 @@ export interface FileRoutesById {
   '/admin/cases': typeof AdminCasesRoute
   '/admin/client-portal': typeof AdminClientPortalRoute
   '/admin/clients': typeof AdminClientsRoute
+  '/admin/company-rms': typeof AdminCompanyRmsRoute
   '/admin/exceptions': typeof AdminExceptionsRoute
   '/admin/field': typeof AdminFieldRoute
   '/admin/finance': typeof AdminFinanceRoute
@@ -1108,6 +1117,7 @@ export interface FileRouteTypes {
     | '/admin/cases'
     | '/admin/client-portal'
     | '/admin/clients'
+    | '/admin/company-rms'
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
@@ -1220,6 +1230,7 @@ export interface FileRouteTypes {
     | '/admin/cases'
     | '/admin/client-portal'
     | '/admin/clients'
+    | '/admin/company-rms'
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
@@ -1341,6 +1352,7 @@ export interface FileRouteTypes {
     | '/admin/cases'
     | '/admin/client-portal'
     | '/admin/clients'
+    | '/admin/company-rms'
     | '/admin/exceptions'
     | '/admin/field'
     | '/admin/finance'
@@ -1628,6 +1640,13 @@ declare module '@tanstack/react-router' {
       path: '/clients'
       fullPath: '/admin/clients'
       preLoaderRoute: typeof AdminClientsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/company-rms': {
+      id: '/admin/company-rms'
+      path: '/company-rms'
+      fullPath: '/admin/company-rms'
+      preLoaderRoute: typeof AdminCompanyRmsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/exceptions': {
@@ -2318,6 +2337,7 @@ interface AdminRouteChildren {
   AdminCasesRoute: typeof AdminCasesRoute
   AdminClientPortalRoute: typeof AdminClientPortalRoute
   AdminClientsRoute: typeof AdminClientsRoute
+  AdminCompanyRmsRoute: typeof AdminCompanyRmsRoute
   AdminExceptionsRoute: typeof AdminExceptionsRoute
   AdminFieldRoute: typeof AdminFieldRoute
   AdminFinanceRoute: typeof AdminFinanceRoute
@@ -2341,6 +2361,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminCasesRoute: AdminCasesRoute,
   AdminClientPortalRoute: AdminClientPortalRoute,
   AdminClientsRoute: AdminClientsRoute,
+  AdminCompanyRmsRoute: AdminCompanyRmsRoute,
   AdminExceptionsRoute: AdminExceptionsRoute,
   AdminFieldRoute: AdminFieldRoute,
   AdminFinanceRoute: AdminFinanceRoute,

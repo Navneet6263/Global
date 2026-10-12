@@ -14,8 +14,8 @@ export function ViewOnlyBanner() {
       <Eye className="size-4" aria-hidden />
       <strong>View-only oversight.</strong>
       <span>
-        You can see every workspace. To push a case, open it and use <em>Escalate</em> — Operations
-        handles it on high priority.
+        You can see every workspace and set up user IDs, companies and their RMs. To push a case,
+        open it and use <em>Escalate</em> — Operations handles it on high priority.
       </span>
     </div>
   );

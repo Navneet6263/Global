@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Building2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import type { ClientQuery, ClientStatus } from "@/lib/contracts/client";
@@ -61,6 +61,7 @@ function ClientsPage() {
   });
   const [openId, setOpenId] = useState<string | undefined>(undefined);
   const [creating, setCreating] = useState(false);
+  const navigate = useNavigate();
 
   const { data, isPending, isError, isFetching, refetch } = useClients(query);
   const createClient = useCreateClient();
@@ -173,7 +174,12 @@ function ClientsPage() {
             onSuccess: (client) => {
               setCreating(false);
               toast.success(`${client.name} onboarded`, {
-                description: "The client workspace is ready for user assignment.",
+                description: "Next: assign its RM, then create its Client Admin in User IDs.",
+                action: {
+                  label: "Assign RM",
+                  onClick: () =>
+                    void navigate({ to: "/admin/company-rms", search: { q: client.code } }),
+                },
               });
             },
             onError: (error: Error) =>

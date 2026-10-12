@@ -302,14 +302,16 @@ void test("Platform Admin is view-only: reads pass, writes fail, escalation and 
   assert.ok(!isViewOnlyAdmin(["PLATFORM_ADMIN"], false));
   assert.ok(passesGuard(CasesController, "list", admin));
   assert.ok(passesGuard(ClientsController, "list", admin));
-  assert.ok(!passesGuard(ClientsController, "create", admin));
+  // Company set-up stays open to the admin; editing a company does not.
+  assert.ok(passesGuard(ClientsController, "create", admin));
+  assert.ok(!passesGuard(ClientsController, "update", admin));
   assert.ok(!passesGuard(CasesController, "transition", admin));
   assert.ok(passesGuard(CasesController, "escalate", admin));
   assert.ok(passesGuard(AuthController, "changePassword", admin));
   assert.ok(passesGuard(NotificationsController, "markAllRead", admin));
   // Switched off, the admin writes again.
   assert.ok(
-    passesGuard(ClientsController, "create", admin, {
+    passesGuard(ClientsController, "update", admin, {
       platformAdminViewOnly: false,
     }),
   );

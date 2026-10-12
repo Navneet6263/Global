@@ -15,6 +15,7 @@ import {
   Settings2,
   ShieldCheck,
   TrendingUp,
+  UserRoundCog,
   Users,
 } from "lucide-react";
 import type { Role } from "./roles";
@@ -105,6 +106,14 @@ export const ADMIN_NAV_ITEMS: readonly NavItem[] = [
     "Client organisations and SLAs",
     Building2,
     "/admin/clients",
+    "stakeholders",
+    "client:read",
+  ),
+  item(
+    "Companies & RMs",
+    "Add a company and assign its RM",
+    UserRoundCog,
+    "/admin/company-rms",
     "stakeholders",
     "client:read",
   ),
