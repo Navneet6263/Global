@@ -111,6 +111,7 @@ function UsersPage() {
                   fullName: user.displayName,
                   email: user.email,
                   password: result.temporaryPassword,
+                  emailed: result.emailed,
                 }),
               onError: (error: Error) =>
                 toast.error("Password reset failed", { description: error.message }),

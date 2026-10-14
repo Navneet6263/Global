@@ -670,6 +670,8 @@ export async function workflowFixture(page: Page, role: Role) {
       return reply({ id: "doc-1", status: state.documentStatus });
     }
     if (path.endsWith("/activity")) return reply({ items: [], nextCursor: null });
+    if (path.endsWith("/insufficiency") && method === "POST")
+      return reply({ id: "clar-rm-1", status: "OPEN", subject: "raised" });
     return route.fulfill({ status: 500, json: { title: `Unexpected ${method} ${path}` } });
   });
   return { requests, state };

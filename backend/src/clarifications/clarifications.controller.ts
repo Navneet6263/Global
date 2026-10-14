@@ -59,6 +59,20 @@ export class ClarificationsController {
     return this.clarifications.create(actor, caseId, input);
   }
 
+  /**
+   * The company's RM raises insufficiency (L1 / L2) on its own clients' cases. Role-gated
+   * like the other RM actions; the same notices, reminders and audit as every other raise.
+   */
+  @Post("cases/:caseId/insufficiency")
+  @RequireRoles("SPOC_RM")
+  raiseAsRm(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Body() input: CreateClarificationDto,
+  ) {
+    return this.clarifications.create(actor, caseId, input);
+  }
+
   @Patch("cases/:caseId/clarifications/:clarificationId/resolve")
   @RequirePermissions(Permission.ClarificationWrite)
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER", "DATA_ENTRY")

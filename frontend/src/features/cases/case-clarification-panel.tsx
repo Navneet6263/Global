@@ -48,7 +48,7 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
       setSubject("");
       setMessage("");
       setCheckId("");
-      toast.success("Clarification raised", {
+      toast.success("Insufficiency raised", {
         description: "Secure candidate response link is ready to share.",
       });
       void Promise.all([
@@ -79,7 +79,10 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
   const rows = clarifications.data?.items ?? [];
 
   return (
-    <Panel title="Clarifications" subtitle="Secure questions and candidate responses">
+    <Panel
+      title="Insufficiency & clarifications"
+      subtitle="Ask the candidate / client for what is missing; follow their replies"
+    >
       {canWrite && ["IN_PROGRESS", "CLARIFICATION_PENDING"].includes(item.status) ? (
         <form
           onSubmit={(event) => {
@@ -93,7 +96,7 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
               value={subject}
               onChange={(event) => setSubject(event.target.value)}
               maxLength={180}
-              placeholder="Clarification subject"
+              placeholder="What is missing or wrong?"
               className="h-10 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring/30"
             />
             <select
@@ -125,7 +128,7 @@ export function ClarificationPanel({ item }: { item: CaseDetail }) {
               className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-50"
             >
               <MessageSquareText className="h-3.5 w-3.5" />
-              {create.isPending ? "Creating…" : "Raise clarification"}
+              {create.isPending ? "Raising…" : "Raise insufficiency"}
             </button>
           </div>
         </form>

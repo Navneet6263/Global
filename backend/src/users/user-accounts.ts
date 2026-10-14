@@ -1,7 +1,32 @@
 import { ConflictException, NotFoundException } from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
+import { queueEmail } from "../common/mail/queue-email";
+import type { SecretBoxService } from "../common/security/secret-box.service";
 import type { Prisma } from "../generated/prisma/client";
 
 type Tx = Prisma.TransactionClient;
+
+/** What a password reset needs to email the new temporary password to the person. */
+export interface PasswordEmail {
+  secretBox: SecretBoxService;
+  webOrigin: string;
+  temporaryPassword: string;
+  /** Shown in the email, e.g. "your administrator" or "your Team Leader". */
+  resetBy: string;
+}
+
+/** Email deps from the injected services; absent in narrow unit tests. */
+export function passwordEmailDeps(
+  secretBox: SecretBoxService | undefined,
+  config: ConfigService | undefined,
+  temporaryPassword: string,
+  resetBy: string,
+): PasswordEmail | undefined {
+  const webOrigin = config?.get<string>("WEB_ORIGIN");
+  return secretBox && webOrigin
+    ? { secretBox, webOrigin, temporaryPassword, resetBy }
+    : undefined;
+}
 
 /**
  * The one place a user account row is written, its password reset or its sessions
@@ -130,9 +155,11 @@ export async function resetAccountPassword(
     publicId: string;
     passwordHash: string;
     audit?: Record<string, unknown>;
+    /** Emails the temporary password to the person (queued in this transaction). */
+    email?: PasswordEmail;
   },
 ) {
-  await tx.user.update({
+  const user = await tx.user.update({
     where: { id: target.userId },
     data: {
       passwordHash: target.passwordHash,
@@ -140,8 +167,28 @@ export async function resetAccountPassword(
       passwordChangedAt: new Date(),
       version: { increment: 1 },
     },
+    select: { email: true, displayName: true },
   });
   await revokeSessions(tx, target.userId);
+  if (target.email)
+    // Sealed in the outbox like every email; the person must change it at sign-in.
+    await queueEmail(tx, target.email.secretBox, {
+      tenantId: target.tenantId,
+      aggregateType: "user",
+      aggregateId: target.publicId,
+      to: user.email,
+      template: "password-reset",
+      variables: {
+        name: user.displayName,
+        temporaryPassword: target.email.temporaryPassword,
+        resetBy: target.email.resetBy,
+        signInUrl: `${target.email.webOrigin}/auth`,
+      },
+    });
+  const audit = {
+    ...(target.audit ?? {}),
+    ...(target.email ? { emailed: true } : {}),
+  };
   await tx.auditEvent.create({
     data: {
       tenantId: target.tenantId,
@@ -149,7 +196,8 @@ export async function resetAccountPassword(
       action: "user.password.reset",
       resourceType: "user",
       resourcePublicId: target.publicId,
-      ...(target.audit ? { afterJson: JSON.stringify(target.audit) } : {}),
+      ...(Object.keys(audit).length ? { afterJson: JSON.stringify(audit) } : {}),
     },
   });
+  return { emailed: Boolean(target.email) };
 }

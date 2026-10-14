@@ -36,7 +36,7 @@ export interface UserRepository {
   list(query: UserQuery): Promise<Paginated<PlatformUser>>;
   create(input: CreateUserInput): Promise<CreatedUserResult>;
   setStatus(id: string, status: "active" | "suspended"): Promise<PlatformUser>;
-  resetPassword(id: string): Promise<{ temporaryPassword: string }>;
+  resetPassword(id: string): Promise<{ temporaryPassword: string; emailed?: boolean }>;
 }
 
 export interface AuditRepository {

@@ -108,8 +108,8 @@ export const userRepository: UserRepository = {
   },
   async resetPassword(id) {
     const password = temporaryPassword();
-    await resetUserPassword(id, password);
-    return { temporaryPassword: password };
+    const result = await resetUserPassword(id, password);
+    return { temporaryPassword: password, emailed: result.emailed === true };
   },
 };
 

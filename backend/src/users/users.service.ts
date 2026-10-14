@@ -13,6 +13,7 @@ import {
   Optional,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { SecretBoxService } from "../common/security/secret-box.service";
 import type { Actor } from "../common/auth/actor";
 import { assertAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
@@ -38,6 +39,7 @@ import { applyVendorTeamRulesOnEdit } from "../vendor-requests/services/vendor-t
 import {
   assertEmailAvailable,
   insertUserAccount,
+  passwordEmailDeps,
   resetAccountPassword,
   resolveRoles,
   revokeSessions,
@@ -63,6 +65,7 @@ export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     @Optional() private readonly config?: ConfigService,
+    @Optional() private readonly secretBox?: SecretBoxService,
   ) {}
 
   /** Role combination rule: normal (up to 3) unless ALLOW_ALL_INTERNAL_ROLES is on. */
@@ -602,16 +605,22 @@ export class UsersService {
       user.userRoles.map(({ role }) => effectiveRole(role)),
     );
     const passwordHash = await hashPassword(temporaryPassword);
-    await this.prisma.$transaction((tx) =>
+    const { emailed } = await this.prisma.$transaction((tx) =>
       resetAccountPassword(tx, {
         tenantId: actor.tenantId,
         actorUserId: actor.userId,
         userId: user.id,
         publicId,
         passwordHash,
+        email: passwordEmailDeps(
+          this.secretBox,
+          this.config,
+          temporaryPassword,
+          "your administrator",
+        ),
       }),
     );
-    return { reset: true };
+    return { reset: true, emailed };
   }
 
   async activity(actor: Actor, publicId: string, query: UserActivityQueryDto) {

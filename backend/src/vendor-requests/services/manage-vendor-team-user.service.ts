@@ -2,10 +2,14 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { hashPassword } from "../../auth/password";
+import { SecretBoxService } from "../../common/security/secret-box.service";
 import type { Actor } from "../../common/auth/actor";
 import {
+  passwordEmailDeps,
   resetAccountPassword,
   revokeSessions,
 } from "../../users/user-accounts";
@@ -21,7 +25,11 @@ import { assertTeamCapacity, releaseDelegations } from "./vendor-team-rules";
  */
 @Injectable()
 export class ManageVendorTeamUserService {
-  constructor(private readonly repository: VendorTeamRepository) {}
+  constructor(
+    private readonly repository: VendorTeamRepository,
+    @Optional() private readonly config?: ConfigService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+  ) {}
 
   async setStatus(
     actor: Actor,
@@ -95,7 +103,7 @@ export class ManageVendorTeamUserService {
   ) {
     assertMainVendor(actor);
     const passwordHash = await hashPassword(temporaryPassword);
-    await this.repository.transaction(async (tx) => {
+    const emailed = await this.repository.transaction(async (tx) => {
       const member = await this.repository.findMember(
         tx,
         actor.tenantId,
@@ -103,15 +111,22 @@ export class ManageVendorTeamUserService {
         memberPublicId,
       );
       if (!member) throw new NotFoundException("Team user not found");
-      await resetAccountPassword(tx, {
+      const result = await resetAccountPassword(tx, {
         tenantId: actor.tenantId,
         actorUserId: actor.userId,
         userId: member.id,
         publicId: member.publicId,
         passwordHash,
         audit: { via: "VENDOR_TEAM" },
+        email: passwordEmailDeps(
+          this.secretBox,
+          this.config,
+          temporaryPassword,
+          "your Main Vendor",
+        ),
       });
+      return result.emailed;
     });
-    return { reset: true };
+    return { reset: true, emailed };
   }
 }

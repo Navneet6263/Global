@@ -14,7 +14,20 @@ export const RM_COLUMNS: readonly ColumnOption<RmColumn>[] = [
 ];
 export const RM_DEFAULT_COLUMNS: readonly RmColumn[] = ["stage", "working", "checks", "due"];
 
-export type RmActionKind = "data-entry" | "route" | "send-back" | "final" | "stop";
+export type RmActionKind =
+  "data-entry" | "route" | "send-back" | "final" | "stop" | "insufficiency";
+
+/** Mirrors the API: insufficiency cannot be raised once the case is in final review or closed. */
+const NO_INSUFFICIENCY = [
+  "MANAGER_REVIEW",
+  "REPORT_PENDING",
+  "PAYMENT_PENDING",
+  "COMPLETED",
+  "CLOSED",
+  "CANCELLED",
+  "STOPPED",
+];
+export const canRaiseInsufficiency = (status: string) => !NO_INSUFFICIENCY.includes(status);
 
 /** The one thing the RM should do next on this case, if anything. */
 export function nextAction(item: QueueCase): { label: string; kind: RmActionKind } | null {

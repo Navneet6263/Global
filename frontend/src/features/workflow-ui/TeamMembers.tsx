@@ -278,11 +278,11 @@ function MemberRow({
   const reset = useMutation({
     mutationFn: async () => {
       const password = temporaryPassword();
-      await resetTeamMemberPassword(member.id, password);
-      return password;
+      const result = await resetTeamMemberPassword(member.id, password);
+      return { password, emailed: result.emailed === true };
     },
-    onSuccess: (password) =>
-      onReceipt({ kind: "reset", fullName: member.name, email: member.email, password }),
+    onSuccess: ({ password, emailed }) =>
+      onReceipt({ kind: "reset", fullName: member.name, email: member.email, password, emailed }),
     onError: (error: Error) => toast.error("Password not reset", { description: error.message }),
   });
   return (

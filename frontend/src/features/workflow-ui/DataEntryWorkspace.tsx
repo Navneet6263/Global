@@ -802,13 +802,16 @@ function RaiseCorrection({
     mutationFn: () =>
       createClarification(caseId, { subject: subject.trim(), message: message.trim() }),
     onSuccess: async () => {
-      toast.success("Correction requested from the candidate / client");
+      toast.success("Insufficiency (L1) raised", {
+        description: "The candidate gets a fresh link and the client is told.",
+      });
       setOpen(false);
       setSubject("");
       setMessage("");
       await onDone();
     },
-    onError: (error: Error) => toast.error("Correction not raised", { description: error.message }),
+    onError: (error: Error) =>
+      toast.error("Insufficiency not raised", { description: error.message }),
   });
   if (!open)
     return (
@@ -820,7 +823,7 @@ function RaiseCorrection({
         disabled={disabled}
       >
         <MessageSquareText aria-hidden />
-        Request correction
+        Raise insufficiency (L1)
       </Button>
     );
   return (
@@ -856,7 +859,7 @@ function RaiseCorrection({
           disabled={subject.trim().length < 3 || message.trim().length < 3}
           loading={create.isPending}
         >
-          Send request
+          Send to candidate &amp; client
         </Button>
         <Button
           type="button"

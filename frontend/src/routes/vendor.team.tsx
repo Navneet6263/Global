@@ -108,6 +108,7 @@ function VendorTeamPage() {
                   fullName: member.name,
                   email: member.email,
                   password: result.temporaryPassword,
+                  emailed: result.emailed,
                 }),
               onError: (error: Error) =>
                 toast.error("Password not reset", { description: error.message }),

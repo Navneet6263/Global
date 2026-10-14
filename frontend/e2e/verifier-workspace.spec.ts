@@ -406,7 +406,8 @@ async function teamLeader(page: Page) {
         email: "asha@example.invalid",
         customAccess: true,
       });
-    if (path === "/workflow/team/members/v-priya/reset-password") return reply({ reset: true });
+    if (path === "/workflow/team/members/v-priya/reset-password")
+      return reply({ reset: true, emailed: true });
     if (path === "/audit-events/exports") return reply({ logged: true });
     if (path === "/workflow/colour-matrix")
       return reply({
@@ -647,6 +648,10 @@ test("a Team Leader adds a team member with custom access and resets a password"
   await expect
     .poll(() => requests.some((r) => r.path === "/workflow/team/members/v-priya/reset-password"))
     .toBe(true);
+  // The new password is also emailed to the member.
+  const receipt = page.getByRole("dialog", { name: "New password issued" });
+  await expect(receipt.getByText(/Also emailed to/)).toBeVisible();
+  await page.screenshot({ path: "test-results/reset-password-emailed.png" });
 });
 
 test("the Active queue lists my checks and opens one in the new layout", async ({ page }) => {
@@ -773,4 +778,17 @@ test("the verifier adds proof screenshots and picks the finding from the colour 
   const upload = requests.find((r) => r.method === "POST" && r.path === "/checks/chk-t2/evidence");
   expect(decodeURIComponent(upload!.search)).toContain("caption=Aadhaar verified on UIDAI portal");
   await page.screenshot({ path: "test-results/verifier-proof.png" });
+});
+
+test("the verifier raises insufficiency from inside the steps", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await teamLeader(page);
+  await page.goto("/verifier/queue?taskId=t2");
+  await expect(page.getByText(/Missing a document or detail from the candidate/)).toBeVisible();
+  await page.getByRole("button", { name: "Raise insufficiency", exact: true }).click();
+  await expect(
+    page.getByText("Raise insufficiency (L2): ask for exactly what is missing"),
+  ).toBeVisible();
+  await expect(page.getByPlaceholder("What information is missing?")).toBeVisible();
+  await page.screenshot({ path: "test-results/verifier-insufficiency.png" });
 });

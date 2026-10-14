@@ -26,6 +26,13 @@ import { STATUS_COPY, fileSize, readable } from "./vendor-job-format";
 
 const WORKING = ["IN_PROGRESS", "RETURNED"];
 
+/** Quick decline reasons; the label is the text before the colon. */
+const DECLINE_REASONS = [
+  "Documents insufficient: a document is missing or not readable. Please share it and re-send.",
+  "Outside our coverage: we do not cover this location.",
+  "Source not reachable: we cannot reach the source within the due date.",
+];
+
 /** The vendor works one check here: accept, record, attach proof, submit. */
 export function VendorJobDrawer({ jobId, onClose }: { jobId: string | null; onClose: () => void }) {
   const detail = useQuery({
@@ -147,6 +154,20 @@ function JobBody({ job }: { job: VendorJobDetail }) {
       {job.status === "ASSIGNED" ? (
         <section className="vjd-card">
           <h3>Do you take this check?</h3>
+          {declining ? (
+            <div className="flex flex-wrap gap-1.5" aria-label="Quick reasons">
+              {DECLINE_REASONS.map((text) => (
+                <button
+                  key={text}
+                  type="button"
+                  onClick={() => setReason(text)}
+                  className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[12px] font-semibold text-slate-700 hover:bg-slate-50"
+                >
+                  {text.split(":")[0]}
+                </button>
+              ))}
+            </div>
+          ) : null}
           {declining ? (
             <label className="ops-field">
               <span>Why can't you take it? *</span>

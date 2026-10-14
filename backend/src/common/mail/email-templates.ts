@@ -12,7 +12,8 @@ export type EmailTemplate =
   | "stage-alert"
   | "report-released"
   | "source-verification"
-  | "client-mis";
+  | "client-mis"
+  | "password-reset";
 
 export type RenderedEmail = { subject: string; text: string; html: string };
 
@@ -101,6 +102,21 @@ export function renderEmail(
         ),
       };
     }
+    case "password-reset":
+      return {
+        subject: "Your Sapling Global password was reset",
+        text: `Hello ${v("name")},\n\nYour password was reset by ${v("resetBy") || "your administrator"}.\nTemporary password: ${v("temporaryPassword")}\nSign in: ${v("signInUrl")}\n\nYou will be asked to set your own password when you sign in. If you did not expect this, tell your administrator.`,
+        html: layout(
+          "Your password was reset",
+          [
+            `Hello ${escape(v("name"))},`,
+            `Your password was reset by ${escape(v("resetBy") || "your administrator")}. Sign in with this temporary password:`,
+            `<span style="display:inline-block;font-family:Consolas,Menlo,monospace;font-size:18px;font-weight:700;color:#14211a;background:#f0f6f2;border-radius:10px;padding:10px 16px">${escape(v("temporaryPassword"))}</span>`,
+            "You will be asked to set your own password as soon as you sign in. If you did not expect this, tell your administrator.",
+          ],
+          { label: "Sign in", url: v("signInUrl") },
+        ),
+      };
     case "candidate-access":
       // With a reason, the team needs something again: this is a fresh link.
       return v("reason")

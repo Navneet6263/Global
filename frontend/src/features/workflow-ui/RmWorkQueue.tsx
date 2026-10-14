@@ -35,10 +35,12 @@ import {
   AssignDataEntryDialog,
   FinalReviewDialog,
   RouteChecksDialog,
+  RaiseInsufficiencyDialog,
   SendBackDialog,
 } from "./RmDialogs";
 import {
   ACTION_TABS,
+  canRaiseInsufficiency,
   PAGE_SIZES,
   RM_COLUMNS,
   RM_DEFAULT_COLUMNS,
@@ -596,6 +598,9 @@ export function RmWorkQueue({
       {dialog?.kind === "send-back" ? (
         <SendBackDialog item={dialog.item} onClose={() => setDialog(undefined)} />
       ) : null}
+      {dialog?.kind === "insufficiency" ? (
+        <RaiseInsufficiencyDialog item={dialog.item} onClose={() => setDialog(undefined)} />
+      ) : null}
       {dialog?.kind === "final" ? (
         <FinalReviewDialog item={dialog.item} onClose={() => setDialog(undefined)} />
       ) : null}
@@ -679,6 +684,9 @@ function RmRow({
       : []),
     ...(item.intakeStage === "DATA_ENTRY" || item.intakeStage === "CORRECTION"
       ? [{ label: "Change Data Entry", kind: "data-entry" as const }]
+      : []),
+    ...(canRaiseInsufficiency(item.status)
+      ? [{ label: "Raise insufficiency", kind: "insufficiency" as const }]
       : []),
     ...(item.status === "STOPPED"
       ? [{ label: "Resume case", kind: "stop" as const }]

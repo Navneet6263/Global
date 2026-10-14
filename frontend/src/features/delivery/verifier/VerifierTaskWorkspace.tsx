@@ -327,6 +327,21 @@ export function VerifierTaskWorkspace({
           // minmax(0,1fr): long matrix options must not widen the steps past the card.
           <div className="mt-5 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-4">
             <StepNav steps={steps} current={step} onSelect={goTo} />
+            {onOpenTab ? (
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-200 bg-amber-50/70 px-3 py-2 text-[12.5px] text-amber-950">
+                <span>
+                  Missing a document or detail from the candidate? Raise insufficiency (L2): the
+                  candidate and the client are told what to supply.
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onOpenTab("clarifications")}
+                  className="shrink-0 rounded-lg bg-amber-500 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-amber-600"
+                >
+                  Raise insufficiency
+                </button>
+              </div>
+            ) : null}
             {step === "details" ? (
               <>
                 <StepIntro number={1} title="Verify at the source and record what it confirmed">

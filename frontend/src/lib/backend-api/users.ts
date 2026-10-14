@@ -95,7 +95,7 @@ export function updateUser(
 }
 
 export function resetUserPassword(userId: string, temporaryPassword: string) {
-  return apiRequest<{ reset: true }>(`/users/${userId}/reset-password`, {
+  return apiRequest<{ reset: true; emailed?: boolean }>(`/users/${userId}/reset-password`, {
     method: "POST",
     body: JSON.stringify({ temporaryPassword }),
   });

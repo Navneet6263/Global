@@ -58,7 +58,9 @@ export function ClarificationsView({ context }: { context: Context }) {
         message: message.trim(),
       }),
     onSuccess: () => {
-      toast.success("Clarification raised and delivery queued");
+      toast.success("Insufficiency (L2) raised", {
+        description: "The candidate and the client are told what to supply.",
+      });
       setSubject("");
       setMessage("");
       void queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] });
@@ -76,8 +78,8 @@ export function ClarificationsView({ context }: { context: Context }) {
         className="rounded-xl border border-warning/20 bg-warning-soft/45 p-4"
       >
         <div className="flex items-center gap-2 text-[12px] font-semibold">
-          <MessageSquarePlus className="size-4 text-warning-foreground" /> Raise a precise
-          clarification
+          <MessageSquarePlus className="size-4 text-warning-foreground" /> Raise insufficiency (L2):
+          ask for exactly what is missing
         </div>
         <div className="mt-3 grid gap-2">
           <input
@@ -105,7 +107,7 @@ export function ClarificationsView({ context }: { context: Context }) {
             ) : (
               <MessageSquarePlus className="size-3.5" />
             )}{" "}
-            Raise clarification
+            Raise insufficiency
           </button>
         </div>
       </form>

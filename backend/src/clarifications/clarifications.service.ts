@@ -97,10 +97,11 @@ export class ClarificationsService {
       verificationCase.workflowVersion === 2 &&
       level === "L1" &&
       ["DATA_ENTRY", "CORRECTION"].includes(verificationCase.intakeStage ?? "");
+    // An RM who also does Data Entry may still raise L2 as the case's RM.
     if (
       actor.roles.includes("DATA_ENTRY") &&
       !actor.roles.some((role) =>
-        ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role),
+        ["PLATFORM_ADMIN", "OPS_MANAGER", "SPOC_RM"].includes(role),
       ) &&
       !intakeCorrection
     )

@@ -19,6 +19,8 @@ export interface TemporaryPasswordReceipt {
   fullName: string;
   email: string;
   password: string;
+  /** Reset only: the server also emailed it to the person. */
+  emailed?: boolean;
 }
 
 interface TemporaryPasswordDialogProps {
@@ -124,9 +126,17 @@ export function TemporaryPasswordDialog({ receipt, onClose }: TemporaryPasswordD
             </div>
           </div>
 
-          <p className="rounded-2xl bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
-            Share it through an approved private channel. The user must change it at first sign-in.
-          </p>
+          {receipt?.emailed ? (
+            <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-xs leading-relaxed text-emerald-900">
+              Also emailed to <strong>{receipt.email}</strong> with a sign-in link. They must set
+              their own password when they sign in.
+            </p>
+          ) : (
+            <p className="rounded-2xl bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-900">
+              Share it through an approved private channel. The user must change it at first
+              sign-in.
+            </p>
+          )}
         </div>
 
         <DialogFooter className="border-t border-border/70 bg-white/80 px-6 py-4">

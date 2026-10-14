@@ -54,7 +54,7 @@ export const setTeamMemberStatus = (
   );
 
 export const resetTeamMemberPassword = (id: string, temporaryPassword: string) =>
-  apiRequest<{ reset: boolean }>(`${base}/${id}/reset-password`, {
+  apiRequest<{ reset: boolean; emailed?: boolean }>(`${base}/${id}/reset-password`, {
     method: "POST",
     body: JSON.stringify({ temporaryPassword }),
   });

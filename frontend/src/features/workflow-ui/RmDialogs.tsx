@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { ListSkeleton } from "@/components/feedback/skeletons";
 import { getCase } from "@/lib/api/cases";
+import { raiseInsufficiencyAsRm } from "@/lib/backend-api/clarifications";
 import {
   assignDataEntry,
   decideFinalReview,
@@ -239,6 +240,77 @@ export function SendBackDialog({ item, onClose }: { item: QueueCase; onClose: ()
           maxLength={1000}
           value={reason}
           onChange={(e) => setReason(e.target.value)}
+        />
+      </label>
+    </Frame>
+  );
+}
+
+/** The RM asks the candidate / client for what is missing (L1 before, L2 during verification). */
+export function RaiseInsufficiencyDialog({
+  item,
+  onClose,
+}: {
+  item: QueueCase;
+  onClose: () => void;
+}) {
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const refresh = useRefresh();
+  const mutation = useMutation({
+    mutationFn: () =>
+      raiseInsufficiencyAsRm(item.id, { subject: subject.trim(), message: message.trim() }),
+    onSuccess: async () => {
+      toast.success(`Insufficiency raised on ${item.caseNumber}`, {
+        description: "The candidate and the client are told what to supply.",
+      });
+      await refresh();
+      onClose();
+    },
+    onError: (error: Error) =>
+      toast.error("Insufficiency not raised", { description: error.message }),
+  });
+  return (
+    <Frame
+      title="Raise insufficiency"
+      item={item}
+      busy={mutation.isPending}
+      onClose={onClose}
+      footer={
+        <>
+          <Button variant="outline" onClick={onClose} disabled={mutation.isPending}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => mutation.mutate()}
+            disabled={subject.trim().length < 3 || message.trim().length < 3}
+            loading={mutation.isPending}
+          >
+            Send to candidate &amp; client
+          </Button>
+        </>
+      }
+    >
+      <p className="ops-dialog-note">
+        The candidate gets a fresh link and the client is told. Reminders go out every 24 hours
+        until they reply.
+      </p>
+      <label className="ops-field">
+        <span>What is missing or wrong?</span>
+        <input
+          value={subject}
+          maxLength={180}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="e.g. Relieving letter missing"
+        />
+      </label>
+      <label className="ops-field">
+        <span>Message to the candidate / client</span>
+        <textarea
+          rows={3}
+          maxLength={5000}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
         />
       </label>
     </Frame>

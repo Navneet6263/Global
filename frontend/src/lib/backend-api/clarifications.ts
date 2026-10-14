@@ -32,6 +32,17 @@ export function createClarification(
   });
 }
 
+/** The case's RM raises insufficiency (its own route; the RM holds no clarification:write). */
+export function raiseInsufficiencyAsRm(
+  caseId: string,
+  input: { checkId?: string; subject: string; message: string },
+) {
+  return apiRequest<{ id: string; status: string; subject: string }>(
+    `/cases/${caseId}/insufficiency`,
+    { method: "POST", body: JSON.stringify(input) },
+  );
+}
+
 export function resolveClarification(caseId: string, clarificationId: string, note?: string) {
   return apiRequest<{ id: string; status: "RESOLVED"; caseStatus: string }>(
     `/cases/${caseId}/clarifications/${clarificationId}/resolve`,

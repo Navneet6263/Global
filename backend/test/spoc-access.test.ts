@@ -210,6 +210,8 @@ const RM_ALLOWED_HANDLERS = new Set([
   "WorkflowController.resumeCase",
   "CasesController.get",
   "ClarificationsController.list",
+  // The RM raises insufficiency on its own clients' cases.
+  "ClarificationsController.raiseAsRm",
   "DocumentsController.download",
   "DocumentsController.preview",
   // Self sign-up onboarding: the RM sees its companies and may message the client;

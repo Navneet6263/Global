@@ -37,7 +37,7 @@ const tabs = [
   { id: "methods", label: "Sources & methods", icon: FileSearch },
   { id: "context", label: "Case context", icon: FileSearch },
   { id: "documents", label: "Documents", icon: Files },
-  { id: "clarifications", label: "Clarifications", icon: MessageSquareText },
+  { id: "clarifications", label: "Insufficiency", icon: MessageSquareText },
   { id: "activity", label: "Activity", icon: Activity },
 ] as const;
 

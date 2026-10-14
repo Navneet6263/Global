@@ -38,10 +38,10 @@ export const vendorTeamApi = {
     ),
   resetPassword: async (memberId: string) => {
     const password = temporaryPassword();
-    await apiRequest<{ reset: true }>(`/vendor/team/users/${id(memberId)}/reset-password`, {
-      method: "POST",
-      body: JSON.stringify({ temporaryPassword: password }),
-    });
-    return { temporaryPassword: password };
+    const result = await apiRequest<{ reset: true; emailed?: boolean }>(
+      `/vendor/team/users/${id(memberId)}/reset-password`,
+      { method: "POST", body: JSON.stringify({ temporaryPassword: password }) },
+    );
+    return { temporaryPassword: password, emailed: result.emailed === true };
   },
 };

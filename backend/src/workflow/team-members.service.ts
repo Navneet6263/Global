@@ -4,14 +4,18 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { hashPassword } from "../auth/password";
+import { SecretBoxService } from "../common/security/secret-box.service";
 import type { Actor } from "../common/auth/actor";
 import { effectiveRole } from "../common/auth/role-filter";
 import { PrismaService } from "../database/prisma.service";
 import {
   assertEmailAvailable,
   insertUserAccount,
+  passwordEmailDeps,
   resetAccountPassword,
   resolveRoles,
   revokeSessions,
@@ -44,7 +48,11 @@ const parsePermissions = (json: string) => {
  */
 @Injectable()
 export class TeamMembersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly config?: ConfigService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+  ) {}
 
   /** Teams the actor leads that can take members (verification and Data Entry). */
   private async ledTeams(actor: Actor) {
@@ -369,7 +377,7 @@ export class TeamMembersService {
   ) {
     const { user, team } = await this.manageable(actor, publicId);
     const passwordHash = await hashPassword(temporaryPassword);
-    await this.prisma.$transaction((tx) =>
+    const { emailed } = await this.prisma.$transaction((tx) =>
       resetAccountPassword(tx, {
         tenantId: actor.tenantId,
         actorUserId: actor.userId,
@@ -377,8 +385,14 @@ export class TeamMembersService {
         publicId: user.publicId,
         passwordHash,
         audit: { via: "TEAM_LEADER", team: team.name },
+        email: passwordEmailDeps(
+          this.secretBox,
+          this.config,
+          temporaryPassword,
+          "your Team Leader",
+        ),
       }),
     );
-    return { reset: true };
+    return { reset: true, emailed };
   }
 }

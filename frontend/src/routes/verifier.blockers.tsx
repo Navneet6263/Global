@@ -124,7 +124,7 @@ function RecoveryGuide() {
       "Confirm dependency",
       "Use a factual blocker reason—source, evidence or candidate input.",
     ],
-    ["2", "Raise clarification", "Ask only for the exact information required to continue."],
+    ["2", "Raise insufficiency", "Ask only for the exact information required to continue."],
     [
       "3",
       "Resume with evidence",

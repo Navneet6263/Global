@@ -59,12 +59,12 @@ test("Data Entry raises an L1 correction request", async ({ page }) => {
   const fixture = await workflowFixture(page, "DATA_ENTRY");
   await page.goto("/data-entry?caseId=flow-case-1");
   const review = page.getByRole("complementary", { name: "Intake review" });
-  await review.getByRole("button", { name: "Request correction" }).click();
+  await review.getByRole("button", { name: "Raise insufficiency (L1)" }).click();
   await review.getByLabel("What is missing or wrong?").fill("Relieving letter missing");
   await review
     .getByLabel("Message to the candidate / client")
     .fill("Please upload the relieving letter.");
-  await review.getByRole("button", { name: "Send request" }).click();
+  await review.getByRole("button", { name: "Send to candidate & client" }).click();
   await expect(review.getByText("Relieving letter missing")).toBeVisible();
   const created = fixture.requests.find(
     (r) => r.method === "POST" && r.path === "/cases/flow-case-1/clarifications",
@@ -325,4 +325,29 @@ test("Team Leader takes a check personally and exports a custom team sheet", asy
   await expect
     .poll(() => fixture.requests.find((r) => r.path === "/audit-events/exports")?.body)
     .toMatchObject({ source: "team-queue", rows: 1 });
+});
+
+test("RM raises insufficiency from the case's actions", async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  const fixture = await workflowFixture(page, "RM");
+  await page.goto("/spoc-rm/work");
+  await page.getByRole("button", { name: "More actions for Kabir Sethi" }).click();
+  await page.getByRole("menuitem", { name: "Raise insufficiency" }).click();
+  const dialog = page.getByRole("dialog", { name: "Raise insufficiency" });
+  const send = dialog.getByRole("button", { name: "Send to candidate & client" });
+  await expect(send).toBeDisabled();
+  await dialog.getByLabel("What is missing or wrong?").fill("Relieving letter missing");
+  await dialog
+    .getByLabel("Message to the candidate / client")
+    .fill("Please upload the relieving letter from your last employer.");
+  await page.screenshot({ path: "test-results/rm-insufficiency.png" });
+  await send.click();
+  await expect(dialog).toHaveCount(0);
+  const raised = fixture.requests.find(
+    (entry) => entry.method === "POST" && entry.path === "/cases/flow-case-1/insufficiency",
+  );
+  expect(raised?.body).toEqual({
+    subject: "Relieving letter missing",
+    message: "Please upload the relieving letter from your last employer.",
+  });
 });
