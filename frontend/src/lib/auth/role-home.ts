@@ -2,6 +2,10 @@ import type { Role } from "@/config/roles";
 
 /** Each working role's home; a person with several roles moves between these. */
 export const ROLE_HOME: Partial<Record<Role, string>> = {
+  // Combined only while ALLOW_ALL_INTERNAL_ROLES is on (normally single roles).
+  PLATFORM_ADMIN: "/admin",
+  OPS_MANAGER: "/operations",
+  SUPPORT_AGENT: "/support",
   SPOC_RM: "/spoc-rm/work",
   DATA_ENTRY: "/data-entry",
   VERIFIER: "/verifier",

@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ShieldCheck, UsersRound } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +17,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { sameClientSet, type ScopeOption } from "../client-scope";
 import { useUpdateUserRoles } from "../hooks/use-users";
 import { ClientScopePicker } from "./client-scope-picker";
-import { nextRoles } from "../role-guide";
+import { getUserSetupOptions } from "@/lib/backend-api/users";
+import { STANDARD_ROLE_RULES, nextRoles } from "../role-guide";
 import { RoleCards } from "./RoleCards";
 
 /**
@@ -41,6 +43,12 @@ export function EditUserRolesDialog({
   const initialClients = user.clientWorkspaceIds ?? [];
   const [clientIds, setClientIds] = useState<string[]>([...initialClients]);
   const update = useUpdateUserRoles();
+  const setup = useQuery({
+    queryKey: ["users", "setup-options"],
+    queryFn: getUserSetupOptions,
+    staleTime: 60_000,
+  });
+  const roleRules = setup.data?.roleRules ?? STANDARD_ROLE_RULES;
   const busy = useRef(false);
   const added = selected.filter((role) => !user.roles.includes(role));
   const removed = user.roles.filter((role) => !selected.includes(role));
@@ -119,9 +127,10 @@ export function EditUserRolesDialog({
             <RoleCards
               available={roles}
               selected={selected}
+              rules={roleRules}
               onToggle={(role) => {
                 setConfirmed(false);
-                setSelected((current) => nextRoles(current, role));
+                setSelected((current) => nextRoles(current, role, roleRules));
               }}
               disabledReason={(role) =>
                 ROLE_DEFINITIONS[role].scopeFields.includes("clientWorkspace") &&

@@ -187,7 +187,8 @@ void test("role edit DTO rejects empty, duplicate and over-limit roles", async (
   for (const roleCodes of [
     [],
     ["VERIFIER", "VERIFIER"],
-    ["VERIFIER", "OPS_MANAGER", "QA_REVIEWER", "SALES_MANAGER"],
+    // The DTO only caps the list; the 3-role rule is enforced by role-combination.
+    Array.from({ length: 13 }, (_, index) => `ROLE_${index}`),
   ]) {
     assert.ok(
       (

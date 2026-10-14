@@ -37,7 +37,7 @@ export class CreateUserDto extends UserIdentityDto {
   spocClientIds?: string[];
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(3)
+  @ArrayMaxSize(12)
   @IsString({ each: true })
   roleCodes!: string[];
   @IsOptional() @IsBoolean() additionalAccessConfirmed?: boolean;
@@ -51,7 +51,7 @@ export class CreateUserDto extends UserIdentityDto {
   /** Narrowed access for a role (creates a personal role on that base). */
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(3)
+  @ArrayMaxSize(12)
   @ValidateNested({ each: true })
   @Type(() => UserAccessDto)
   access?: UserAccessDto[];

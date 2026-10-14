@@ -555,3 +555,162 @@ test("Admin gives an RM the Data Entry role too; Field Executive is coming soon"
       spocClientIds: ["c-1"],
     });
 });
+
+const ALL_INTERNAL = {
+  maxRoles: 12,
+  singleRoles: ["CLIENT_ADMIN", "VENDOR"],
+};
+
+/** Admin opens Edit role & access for Niku (an RM), with the given role rule. */
+async function editNiku(page: import("@playwright/test").Page, roleRules?: object) {
+  await onboardingFixture(page, "ADMIN");
+  const calls = await overlay(page, (path, method, _body, reply) => {
+    if (path.startsWith("/users?") && method === "GET")
+      return reply({
+        items: [
+          {
+            id: "55555555-5555-4555-8555-555555555555",
+            displayName: "Niku",
+            email: "niku@example.invalid",
+            status: "ACTIVE",
+            mustChangePassword: false,
+            lastLoginAt: null,
+            createdAt: "2026-10-01T00:00:00Z",
+            version: 3,
+            roles: [{ code: "SPOC_RM", name: "RM / SPOC" }],
+            spocClients: [{ id: "c-1", displayName: "Vision India" }],
+            teams: [],
+          },
+        ],
+        total: 1,
+        page: 1,
+        pageSize: 10,
+        summary: { total: 1, active: 1, invited: 0, suspended: 0 },
+      });
+    if (path.startsWith("/users/55555555") && method === "PATCH")
+      return reply({ id: "55555555-5555-4555-8555-555555555555", version: 4 });
+    if (path === "/users/setup-options")
+      return reply({ departments: [], access: [], ...(roleRules ? { roleRules } : {}) });
+    return undefined;
+  });
+  await page.goto("/admin/users");
+  await page.getByRole("button", { name: "Actions for Niku" }).click();
+  await page.getByRole("menuitem", { name: "Edit role & access" }).click();
+  return { calls, dialog: page.getByRole("dialog", { name: /Edit role & access/ }) };
+}
+
+test("normal rule: Operations Manager stays a single role", async ({ page }) => {
+  const { dialog } = await editNiku(page);
+  const ops = dialog.getByRole("button", { name: /^Operations Manager/ });
+  await expect(ops).toContainText("single role");
+  await ops.click();
+  await expect(ops).toHaveAttribute("aria-pressed", "true");
+  await expect(dialog.getByRole("button", { name: /^RM \/ SPOC/ })).toHaveAttribute(
+    "aria-pressed",
+    "false",
+  );
+});
+
+test("test mode: one ID gets Admin, Operations, RM, QA, Finance and Sales together", async ({
+  page,
+}) => {
+  const { calls, dialog } = await editNiku(page, ALL_INTERNAL);
+  await expect(dialog.getByRole("button", { name: /^Operations Manager/ })).not.toContainText(
+    "single role",
+  );
+  for (const role of [
+    /^Platform Admin/,
+    /^Operations Manager/,
+    /^QA Reviewer/,
+    /^Finance Manager/,
+    /^Sales Manager/,
+  ])
+    await dialog.getByRole("button", { name: role }).click();
+  for (const role of [/^RM \/ SPOC/, /^Platform Admin/, /^Operations Manager/, /^Sales Manager/])
+    await expect(dialog.getByRole("button", { name: role })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  await page.screenshot({ path: "test-results/all-roles-edit.png" });
+  await dialog.getByRole("checkbox", { name: "Confirm combined roles" }).check();
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await expect
+    .poll(() =>
+      (calls.find((call) => call.method === "PATCH")?.body as { roleCodes?: string[] })?.roleCodes
+        ?.slice()
+        .sort(),
+    )
+    .toEqual(
+      [
+        "SPOC_RM",
+        "PLATFORM_ADMIN",
+        "OPS_MANAGER",
+        "QA_REVIEWER",
+        "FINANCE_MANAGER",
+        "SALES_MANAGER",
+      ].sort(),
+    );
+});
+
+const EVERY_ROLE_ME = {
+  id: "user-all",
+  tenantId: "tenant-1",
+  tenantName: "Sapling Global",
+  displayName: "Sales Desk",
+  email: "sales@example.invalid",
+  roles: [
+    "SPOC_RM",
+    "PLATFORM_ADMIN",
+    "OPS_MANAGER",
+    "QA_REVIEWER",
+    "FINANCE_MANAGER",
+    "SALES_MANAGER",
+    "SUPPORT_AGENT",
+  ],
+  permissions: ["*"],
+  clientScope: [],
+  mustChangePassword: false,
+};
+
+test("a person with every internal role sees every role in the switch", async ({ page }) => {
+  await spocFixture(page);
+  await overlay(page, (path, _method, _body, reply) =>
+    path === "/auth/me" ? reply(EVERY_ROLE_ME) : undefined,
+  );
+  await page.goto("/spoc-rm/work");
+  const switcher = page.getByRole("button", { name: "Switch role" });
+  await expect(switcher).toContainText("RM / SPOC");
+  await switcher.click();
+  for (const label of [
+    "Platform Admin",
+    "Operations Manager",
+    "QA Reviewer",
+    "Finance Manager",
+    "Sales Manager",
+    "Support Agent",
+  ])
+    await expect(page.getByRole("menuitem", { name: new RegExp(`^${label}`) })).toBeVisible();
+  await page.screenshot({ path: "test-results/all-roles-switch.png" });
+  await page.getByRole("menuitem", { name: /^Operations Manager/ }).click();
+  await expect(page).toHaveURL(/\/operations/);
+});
+
+test("the same person works in Operations, then switches to Platform Admin", async ({ page }) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await operationsOverviewFixture(page);
+  await overlay(page, (path, _method, _body, reply) =>
+    path === "/auth/me" ? reply(EVERY_ROLE_ME) : undefined,
+  );
+  await page.goto("/operations");
+  await expect(page.getByRole("heading", { name: "Operations overview" })).toBeVisible();
+  const switcher = page.getByRole("button", { name: "Switch role" });
+  await expect(switcher).toContainText("Operations Manager");
+  await page.screenshot({ path: "test-results/all-roles-operations.png" });
+  await switcher.click();
+  await page.getByRole("menuitem", { name: /^Platform Admin/ }).click();
+  await expect(page).toHaveURL(/\/admin/);
+  await expect(page.getByRole("button", { name: "Switch role" })).toContainText("Platform Admin");
+  await expect(page.getByText("This page didn't load")).toHaveCount(0);
+  expect(errors).toEqual([]);
+});

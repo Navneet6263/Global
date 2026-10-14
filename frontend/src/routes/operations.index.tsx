@@ -102,7 +102,7 @@ function OperationsOverview() {
       <OpsMetricsStrip
         counts={counts.data?.counts}
         dashboard={dashboard.data}
-        onTime={performance.data?.performance.slaPercentage}
+        onTime={performance.data?.performance?.slaPercentage}
       />
       <div className="client-workspace-grid ops-workspace-grid">
         <OpsWorkQueue

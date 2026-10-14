@@ -1,3 +1,4 @@
+import type { Role } from "@/config/roles";
 import { apiRequest } from "./client";
 import { toIndianMobileE164 } from "@/lib/indian-mobile";
 
@@ -172,6 +173,8 @@ export function getUserActivity(userId: string, input: { page?: number; pageSize
 export interface UserSetupOptions {
   departments: Array<{ id: string; name: string; kind: "DATA_ENTRY" | "VERIFICATION" | string }>;
   access: Array<{ role: string; name: string; permissions: string[] }>;
+  /** Which roles one person may hold together (normal: up to 3). */
+  roleRules?: { maxRoles: number; singleRoles: Role[] };
 }
 
 /** Teams to join and the access ticks for each customisable role. */

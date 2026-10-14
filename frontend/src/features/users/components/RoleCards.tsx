@@ -1,6 +1,6 @@
 import { Check } from "lucide-react";
 import { ROLE_DEFINITIONS, type Role } from "@/config/roles";
-import { COMING_SOON, ROLE_GUIDE, SINGLE_ROLES } from "../role-guide";
+import { COMING_SOON, ROLE_GUIDE, STANDARD_ROLE_RULES, type RoleRules } from "../role-guide";
 
 const GROUPS: ReadonlyArray<{ label: string; roles: readonly Role[] }> = [
   { label: "Delivery team", roles: ["DATA_ENTRY", "VERIFIER", "QA_REVIEWER", "FIELD_EXECUTIVE"] },
@@ -14,12 +14,15 @@ export function RoleCards({
   selected,
   onToggle,
   disabledReason,
+  rules = STANDARD_ROLE_RULES,
 }: {
   available: readonly Role[];
   selected: readonly Role[];
   onToggle: (role: Role) => void;
   /** A role that cannot be picked here, with the reason shown on its card. */
   disabledReason?: (role: Role) => string | null;
+  /** Which roles combine (from the API); marks the single roles. */
+  rules?: RoleRules;
 }) {
   return (
     <>
@@ -50,7 +53,7 @@ export function RoleCards({
                         {ROLE_DEFINITIONS[role].label}
                         {soon ? (
                           <em className="is-soon">Coming soon</em>
-                        ) : SINGLE_ROLES.includes(role) ? (
+                        ) : rules.singleRoles.includes(role) ? (
                           <em>single role</em>
                         ) : null}
                       </strong>

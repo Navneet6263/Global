@@ -21,7 +21,7 @@ export const ROLE_GUIDE: Partial<Record<Role, { does: string; cannot: string }>>
   },
   OPS_MANAGER: {
     does: "Runs delivery: teams, allocation, SLAs, escalations, packages and company onboarding.",
-    cannot: "Be combined with another role (always a single role).",
+    cannot: "Verify checks or approve QC.",
   },
   FINANCE_MANAGER: {
     does: "Raises invoices, records payments and credits, sends billing annexures.",
@@ -49,18 +49,24 @@ export const ROLE_GUIDE: Partial<Record<Role, { does: string; cannot: string }>>
   },
   PLATFORM_ADMIN: {
     does: "Full oversight: user IDs, roles, settings and audit across every workspace.",
-    cannot: "Be combined with another role.",
+    cannot: "Change case data (view-only oversight).",
   },
 };
 
-/** Roles that are always held alone (mirrors the API rule). */
-export const SINGLE_ROLES: readonly Role[] = [
-  "PLATFORM_ADMIN",
-  "OPS_MANAGER",
-  "CLIENT_ADMIN",
-  "VENDOR",
-  "SUPPORT_AGENT",
-];
+/** Which roles one person may hold together (sent by the API in /users/setup-options). */
+export interface RoleRules {
+  maxRoles: number;
+  singleRoles: readonly Role[];
+}
+
+/** The normal rule (mirrors the API): up to 3 roles, these always held alone. */
+export const STANDARD_ROLE_RULES: RoleRules = {
+  maxRoles: 3,
+  singleRoles: ["PLATFORM_ADMIN", "OPS_MANAGER", "CLIENT_ADMIN", "VENDOR", "SUPPORT_AGENT"],
+};
+
+/** Roles that are always held alone under the normal rule. */
+export const SINGLE_ROLES: readonly Role[] = STANDARD_ROLE_RULES.singleRoles;
 
 /** Roles whose access can be narrowed with ticks (a personal role is created). */
 export const CUSTOMISABLE_ROLES: readonly Role[] = [
@@ -113,10 +119,16 @@ export const COMING_SOON: readonly Role[] = FIELD_WORK_ENABLED ? [] : ["FIELD_EX
 
 /**
  * Pick one or more roles. Working roles combine (e.g. RM + Data Entry); single roles
- * replace everything else. Used by Create user and Edit role & access.
+ * replace everything else; past the limit the oldest pick drops off. Used by Create user
+ * and Edit role & access, with the rule the API sends.
  */
-export function nextRoles(current: readonly Role[], role: Role): Role[] {
+export function nextRoles(
+  current: readonly Role[],
+  role: Role,
+  rules: RoleRules = STANDARD_ROLE_RULES,
+): Role[] {
   if (current.includes(role)) return current.filter((value) => value !== role);
-  if (SINGLE_ROLES.includes(role)) return [role];
-  return [...current.filter((value) => !SINGLE_ROLES.includes(value)), role].slice(-3);
+  const single = rules.singleRoles;
+  if (single.includes(role)) return [role];
+  return [...current.filter((value) => !single.includes(value)), role].slice(-rules.maxRoles);
 }

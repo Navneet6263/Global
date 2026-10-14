@@ -18,7 +18,7 @@ export class UpdateUserDto {
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(3)
+  @ArrayMaxSize(12)
   @ArrayUnique()
   @IsString({ each: true })
   roleCodes?: string[];

@@ -29,7 +29,7 @@ import type { CreateUserInput } from "@/lib/contracts/user";
 import { cachedIdentity } from "@/lib/auth/platform-session";
 import { getUserSetupOptions } from "@/lib/backend-api/users";
 import type { ScopeOption } from "../client-scope";
-import { CUSTOMISABLE_ROLES, nextRoles, permissionLabel } from "../role-guide";
+import { CUSTOMISABLE_ROLES, STANDARD_ROLE_RULES, nextRoles, permissionLabel } from "../role-guide";
 import { ClientScopePicker } from "./client-scope-picker";
 import { RoleCards } from "./RoleCards";
 
@@ -98,6 +98,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
     enabled: props.open && withSetup,
     staleTime: 60_000,
   });
+  const roleRules = setup.data?.roleRules ?? STANDARD_ROLE_RULES;
 
   const clientRole = roles.includes("CLIENT_ADMIN");
   const rmRole = roles.includes("SPOC_RM");
@@ -135,7 +136,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
 
   const toggleRole = (role: Role) => {
     setError("");
-    setRoles((current) => nextRoles(current, role));
+    setRoles((current) => nextRoles(current, role, roleRules));
   };
 
   const next = async () => {
@@ -212,7 +213,12 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
                   title="What will this person do?"
                   hint="Working roles can be combined, e.g. RM + Data Entry. They then get a “Switch role” menu at the top."
                 />
-                <RoleCards available={available} selected={roles} onToggle={toggleRole} />
+                <RoleCards
+                  available={available}
+                  selected={roles}
+                  onToggle={toggleRole}
+                  rules={roleRules}
+                />
                 {roles.length > 1 ? (
                   <p className="cu-note">
                     <UsersRound aria-hidden /> {roles.length} roles:{" "}

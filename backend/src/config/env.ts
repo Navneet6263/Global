@@ -127,6 +127,11 @@ const envSchema = z
     SELF_SIGNUP_TENANT_CODE: z.string().default("SAPLING"),
     /** Platform Admin may view everything and escalate cases, but not change data. */
     PLATFORM_ADMIN_VIEW_ONLY: booleanString("true"),
+    /**
+     * TEMPORARY, for testing: one user may hold every internal role (only Client Admin
+     * and Vendor stay single). Off = the normal rule (up to 3 roles).
+     */
+    ALLOW_ALL_INTERNAL_ROLES: booleanString("false"),
     REPORT_DOWNLOAD_TTL_DAYS: z.coerce
       .number()
       .int()

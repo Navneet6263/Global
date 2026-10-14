@@ -6,7 +6,9 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import type { Actor } from "../common/auth/actor";
 import { assertAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
@@ -15,7 +17,7 @@ import type { CreateUserDto } from "./dto/create-user.dto";
 import type { UpdateUserDto } from "./dto/update-user.dto";
 import type { UserDirectoryQueryDto } from "./dto/user-directory-query.dto";
 import type { Prisma } from "../generated/prisma/client";
-import { assertSafeRoleCombination } from "./role-combination";
+import { assertSafeRoleCombination, roleRules } from "./role-combination";
 import {
   assertCanCreateUser,
   assertCanManageUser,
@@ -54,7 +56,17 @@ export function userDirectoryBranchScope(actor: Actor) {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly config?: ConfigService,
+  ) {}
+
+  /** Role combination rule: normal (up to 3) unless ALLOW_ALL_INTERNAL_ROLES is on. */
+  private roleRules() {
+    return roleRules(
+      this.config?.get<boolean>("ALLOW_ALL_INTERNAL_ROLES", false) ?? false,
+    );
+  }
 
   async list(actor: Actor, query: UserDirectoryQueryDto) {
     this.assertDirectoryRole(actor);
@@ -198,6 +210,7 @@ export class UsersService {
         name: role.name,
         permissions: this.parsePermissions(role.permissionsJson),
       })),
+      roleRules: this.roleRules(),
     };
   }
 
@@ -209,7 +222,11 @@ export class UsersService {
   async create(actor: Actor, input: CreateUserDto) {
     this.assertDirectoryRole(actor);
     const createdVia = await assertCanCreateUser(this.prisma, actor, input);
-    assertSafeRoleCombination(input.roleCodes, input.additionalAccessConfirmed);
+    assertSafeRoleCombination(
+      input.roleCodes,
+      input.additionalAccessConfirmed,
+      this.roleRules(),
+    );
     assertSpocClientInput(input.roleCodes, input);
     await assertEmailAvailable(this.prisma, actor.tenantId, input.email);
     const [roles, branch, client, scopeClients] = await Promise.all([
@@ -383,7 +400,11 @@ export class UsersService {
       currentRoleCodes.length !== nextRoleCodes.length ||
       currentRoleCodes.some((role) => !nextRoleCodes.includes(role));
     if (input.roleCodes) {
-      assertSafeRoleCombination(nextRoleCodes, input.additionalAccessConfirmed);
+      assertSafeRoleCombination(
+        nextRoleCodes,
+        input.additionalAccessConfirmed,
+        this.roleRules(),
+      );
     }
     if (nextRoleCodes.includes("CLIENT_ADMIN") && !user.clientId) {
       throw new ConflictException(
