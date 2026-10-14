@@ -32,6 +32,8 @@ import type { ScopeOption } from "../client-scope";
 import { CUSTOMISABLE_ROLES, STANDARD_ROLE_RULES, nextRoles, permissionLabel } from "../role-guide";
 import { ClientScopePicker } from "./client-scope-picker";
 import { RoleCards } from "./RoleCards";
+import { TeamPicker } from "./TeamPicker";
+import { teamKindsFor } from "./team-choice";
 
 const schema = z.object({
   fullName: z.string().min(3, "Enter the full name"),
@@ -102,10 +104,7 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
 
   const clientRole = roles.includes("CLIENT_ADMIN");
   const rmRole = roles.includes("SPOC_RM");
-  const teamKinds = [
-    ...(roles.includes("DATA_ENTRY") ? ["DATA_ENTRY"] : []),
-    ...(roles.includes("VERIFIER") ? ["VERIFICATION"] : []),
-  ];
+  const teamKinds = teamKindsFor(roles);
   const teamOptions = (setup.data?.departments ?? []).filter((team) =>
     teamKinds.includes(team.kind),
   );
@@ -272,62 +271,12 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
                 {teamKinds.length ? (
                   <div className="cu-block">
                     <h4>Team</h4>
-                    {setup.isPending ? (
-                      <p className="cu-muted">Loading teams…</p>
-                    ) : !teamOptions.length ? (
-                      <p className="cu-muted">
-                        No matching team yet. Create one in Departments &amp; teams, then add them.
-                      </p>
-                    ) : (
-                      <div className="cu-teams">
-                        {teamOptions.map((team) => {
-                          const chosen = teams[team.id];
-                          return (
-                            <div key={team.id} className="cu-team" data-on={Boolean(chosen)}>
-                              <label>
-                                <input
-                                  type="checkbox"
-                                  checked={Boolean(chosen)}
-                                  onChange={(event) =>
-                                    setTeams((current) => {
-                                      const copy = { ...current };
-                                      if (event.target.checked) copy[team.id] = { lead: false };
-                                      else delete copy[team.id];
-                                      return copy;
-                                    })
-                                  }
-                                  aria-label={`Team ${team.name}`}
-                                />
-                                <span>
-                                  <strong>{team.name}</strong>
-                                  <small>
-                                    {team.kind === "DATA_ENTRY"
-                                      ? "Data Entry team"
-                                      : "Verification team"}
-                                  </small>
-                                </span>
-                              </label>
-                              {chosen ? (
-                                <label className="cu-lead">
-                                  <input
-                                    type="checkbox"
-                                    checked={chosen.lead}
-                                    onChange={(event) =>
-                                      setTeams((current) => ({
-                                        ...current,
-                                        [team.id]: { lead: event.target.checked },
-                                      }))
-                                    }
-                                    aria-label={`Team Leader of ${team.name}`}
-                                  />
-                                  Team Leader
-                                </label>
-                              ) : null}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                    <TeamPicker
+                      options={teamOptions}
+                      value={teams}
+                      onChange={setTeams}
+                      loading={setup.isPending}
+                    />
                   </div>
                 ) : null}
                 {clientRole ? (

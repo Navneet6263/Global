@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "@tanstack/react-router";
 import { ShieldCheck, UsersRound } from "lucide-react";
 import { toast } from "sonner";
 import { ROLES, ROLE_DEFINITIONS, type Role } from "@/config/roles";
@@ -20,10 +19,22 @@ import { ClientScopePicker } from "./client-scope-picker";
 import { getUserSetupOptions } from "@/lib/backend-api/users";
 import { STANDARD_ROLE_RULES, nextRoles } from "../role-guide";
 import { RoleCards } from "./RoleCards";
+import { TeamPicker } from "./TeamPicker";
+import { teamKindsFor, type TeamChoice } from "./team-choice";
+
+/** Same teams with the same Team Leader ticks, in any order. */
+function sameTeams(next: ReadonlyArray<{ id: string; lead: boolean }>, before: TeamChoice) {
+  const ids = Object.keys(before);
+  return (
+    next.length === ids.length &&
+    next.every((team) => before[team.id] !== undefined && before[team.id]!.lead === team.lead)
+  );
+}
 
 /**
  * Edit role & access: the same role cards as Create. Tick another working role to give
- * it too (e.g. an RM who also does Data Entry); untick to take one away.
+ * it too (e.g. an RM who also does Data Entry); untick to take one away. Data Entry and
+ * Verifier people also get their team here, with Team Leader per team.
  */
 export function EditUserRolesDialog({
   user,
@@ -50,13 +61,25 @@ export function EditUserRolesDialog({
   });
   const roleRules = setup.data?.roleRules ?? STANDARD_ROLE_RULES;
   const busy = useRef(false);
+  const initialTeams: TeamChoice = Object.fromEntries(
+    (user.teams ?? []).map((team) => [team.id, { lead: team.lead }]),
+  );
+  const [teams, setTeams] = useState<TeamChoice>(initialTeams);
   const added = selected.filter((role) => !user.roles.includes(role));
   const removed = user.roles.filter((role) => !selected.includes(role));
   const spoc = selected.includes("SPOC_RM");
+  const teamKinds = teamKindsFor(selected);
+  const teamOptions = (setup.data?.departments ?? []).filter((team) =>
+    teamKinds.includes(team.kind),
+  );
+  // Teams of a removed role drop off with it; untouched until the team list has loaded.
+  const chosenTeams = Object.entries(teams)
+    .filter(([id]) => teamOptions.some((team) => team.id === id))
+    .map(([id, value]) => ({ id, lead: value.lead }));
+  const teamsChanged = Boolean(setup.data) && !sameTeams(chosenTeams, initialTeams);
   const rolesChanged = Boolean(added.length || removed.length);
   const clientsChanged = spoc && !sameClientSet(clientIds, initialClients);
-  const changed = rolesChanged || clientsChanged;
-  const needsTeam = added.some((role) => role === "DATA_ENTRY" || role === "VERIFIER");
+  const changed = rolesChanged || clientsChanged || teamsChanged;
   const options = [
     ...clients,
     ...initialClients
@@ -80,16 +103,26 @@ export function EditUserRolesDialog({
         roleCodes: selected,
         additionalAccessConfirmed: selected.length > 1 && confirmed,
         ...(spoc ? { spocClientIds: clientIds } : {}),
+        ...(teamsChanged ? { departments: chosenTeams } : {}),
       },
       {
         onSuccess: () => {
-          toast.success(rolesChanged ? "Roles updated" : "Company access updated", {
-            description: rolesChanged
-              ? selected.length > 1
-                ? "They sign in again and switch roles from “Working as” at the top."
-                : "They sign in again with the new access."
-              : "The new company access applies from their next action.",
-          });
+          toast.success(
+            rolesChanged
+              ? "Roles updated"
+              : teamsChanged
+                ? "Team updated"
+                : "Company access updated",
+            {
+              description: rolesChanged
+                ? selected.length > 1
+                  ? "They sign in again and switch roles from “Working as” at the top."
+                  : "They sign in again with the new access."
+                : teamsChanged
+                  ? "Their team and Team Leader access apply from their next page load."
+                  : "The new company access applies from their next action.",
+            },
+          );
           onClose();
         },
         onSettled: () => {
@@ -160,14 +193,19 @@ export function EditUserRolesDialog({
               {selected.map((role) => ROLE_DEFINITIONS[role].label).join(" + ")}.
             </label>
           ) : null}
-          {needsTeam ? (
-            <p className="cu-note">
-              <UsersRound aria-hidden /> Next, add them to their team in{" "}
-              <Link to="/operations/departments" className="rmo-link">
-                Departments &amp; teams
-              </Link>{" "}
-              so work reaches them.
-            </p>
+          {teamKinds.length ? (
+            <fieldset disabled={update.isPending} className="cu-block">
+              <h4>Team</h4>
+              <p className="cu-muted">
+                Tick their team so work reaches them; tick Team Leader to make them its TL.
+              </p>
+              <TeamPicker
+                options={teamOptions}
+                value={teams}
+                onChange={setTeams}
+                loading={setup.isPending}
+              />
+            </fieldset>
           ) : null}
           {changed ? (
             <div className="space-y-1 text-sm" aria-live="polite">

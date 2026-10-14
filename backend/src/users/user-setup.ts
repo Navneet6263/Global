@@ -160,3 +160,122 @@ export async function joinDepartments(
   }
   return joined;
 }
+
+/**
+ * Edit role & access: makes the person a member of exactly these teams (Team Leader per
+ * team). Each team needs the matching role; every add, removal and TL change is audited
+ * like the Departments page does it. Assigned work stays with the person.
+ */
+export async function syncDepartments(
+  tx: Tx,
+  input: {
+    tenantId: bigint;
+    actorUserId: bigint;
+    user: { id: bigint; publicId: string; displayName: string };
+    /** Base role codes the person will hold after this edit. */
+    roleCodes: readonly string[];
+    departments: ReadonlyArray<{ id: string; lead?: boolean }>;
+  },
+): Promise<Array<{ department: string; role: "LEAD" | "MEMBER" | "REMOVED" }>> {
+  const wanted = new Map(
+    input.departments.map((entry) => [entry.id, Boolean(entry.lead)]),
+  );
+  const [rows, current] = await Promise.all([
+    wanted.size
+      ? tx.department.findMany({
+          where: {
+            tenantId: input.tenantId,
+            status: "ACTIVE",
+            publicId: { in: [...wanted.keys()] },
+          },
+          select: { id: true, publicId: true, name: true, kind: true },
+        })
+      : Promise.resolve([]),
+    tx.departmentMember.findMany({
+      where: { userId: input.user.id, department: { tenantId: input.tenantId } },
+      select: {
+        role: true,
+        department: { select: { id: true, publicId: true, name: true } },
+      },
+    }),
+  ]);
+  if (rows.length !== wanted.size)
+    throw new BadRequestException("Choose active teams");
+  for (const department of rows) {
+    const needs = MEMBER_ROLE[department.kind];
+    if (needs && !input.roleCodes.includes(needs))
+      throw new BadRequestException(
+        `${department.name} is a ${needs === "DATA_ENTRY" ? "Data Entry" : "verification"} team: give the ${needs === "DATA_ENTRY" ? "Data Entry" : "Verifier"} role too`,
+      );
+  }
+  const changes: Array<{
+    department: string;
+    role: "LEAD" | "MEMBER" | "REMOVED";
+  }> = [];
+  const audit = (
+    department: { publicId: string; name: string },
+    action: string,
+    before: string | null,
+    after: string | null,
+  ) =>
+    tx.auditEvent.create({
+      data: {
+        tenantId: input.tenantId,
+        actorUserId: input.actorUserId,
+        action,
+        resourceType: "department",
+        resourcePublicId: department.publicId,
+        beforeJson: before
+          ? JSON.stringify({ userId: input.user.publicId, role: before })
+          : null,
+        afterJson: after
+          ? JSON.stringify({
+              userId: input.user.publicId,
+              userName: input.user.displayName,
+              role: after,
+              department: department.name,
+            })
+          : null,
+      },
+    });
+  for (const membership of current) {
+    if (wanted.has(membership.department.publicId)) continue;
+    await tx.departmentMember.delete({
+      where: {
+        departmentId_userId: {
+          departmentId: membership.department.id,
+          userId: input.user.id,
+        },
+      },
+    });
+    await audit(
+      membership.department,
+      "department.member-removed",
+      membership.role,
+      null,
+    );
+    changes.push({ department: membership.department.name, role: "REMOVED" });
+  }
+  for (const department of rows) {
+    const role = wanted.get(department.publicId) ? "LEAD" : "MEMBER";
+    const before = current.find(
+      (membership) => membership.department.id === department.id,
+    );
+    if (before?.role === role) continue;
+    await tx.departmentMember.upsert({
+      where: {
+        departmentId_userId: { departmentId: department.id, userId: input.user.id },
+      },
+      update: { role },
+      create: { departmentId: department.id, userId: input.user.id, role },
+    });
+    await audit(
+      department,
+      before ? "department.member-role-changed" : "department.member-added",
+      before?.role ?? null,
+      role,
+    );
+    changes.push({ department: department.name, role });
+  }
+  return changes;
+}

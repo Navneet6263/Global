@@ -1,5 +1,9 @@
 import { CUSTOM_ROLE_BASES } from "./custom-role-rules";
-import { joinDepartments, personalRoles } from "./user-setup";
+import {
+  joinDepartments,
+  personalRoles,
+  syncDepartments,
+} from "./user-setup";
 import { effectiveRole, roleIs } from "../common/auth/role-filter";
 import {
   ConflictException,
@@ -102,7 +106,10 @@ export class UsersService {
           },
           departmentMemberships: {
             where: { department: { status: "ACTIVE" } },
-            select: { role: true, department: { select: { name: true } } },
+            select: {
+              role: true,
+              department: { select: { publicId: true, name: true } },
+            },
           },
         },
         orderBy: [{ displayName: "asc" }, { publicId: "asc" }],
@@ -149,6 +156,7 @@ export class UsersService {
             toSpocClient(client),
           ),
           teams: departmentMemberships.map((membership) => ({
+            id: membership.department.publicId,
             name: membership.department.name,
             lead: membership.role === "LEAD",
           })),
@@ -386,15 +394,17 @@ export class UsersService {
       throw new NotFoundException("One or more roles were not found");
     const currentRoleCodes = user.userRoles.map(({ role }) => role.code);
     const nextRoleCodes = input.roleCodes ?? currentRoleCodes;
+    // A personal (custom) role counts as its base role.
+    const nextBaseRoleCodes = nextRoleCodes.map(
+      (code) =>
+        user.userRoles.find(({ role }) => role.code === code)?.role
+          .baseRoleCode ?? code,
+    );
     const changedVia = await assertCanManageUser(
       this.prisma,
       actor,
       user.userRoles.map(({ role }) => effectiveRole(role)),
-      nextRoleCodes.map(
-        (code) =>
-          user.userRoles.find(({ role }) => role.code === code)?.role
-            .baseRoleCode ?? code,
-      ),
+      nextBaseRoleCodes,
     );
     const rolesChanged =
       currentRoleCodes.length !== nextRoleCodes.length ||
@@ -516,6 +526,15 @@ export class UsersService {
               .map((client) => client.id),
           });
         }
+        const teamChanges = input.departments
+          ? await syncDepartments(tx, {
+              tenantId: actor.tenantId,
+              actorUserId: actor.userId,
+              user: { id: user.id, publicId, displayName: user.displayName },
+              roleCodes: nextBaseRoleCodes,
+              departments: input.departments,
+            })
+          : [];
         if (input.status === "SUSPENDED" || rolesChanged)
           await revokeSessions(tx, user.id);
         await tx.auditEvent.create({
@@ -541,6 +560,7 @@ export class UsersService {
               ...(currentScope.length || nextScope.length
                 ? { clients: nextScope.map((client) => client.publicId) }
                 : {}),
+              ...(teamChanges.length ? { teams: teamChanges } : {}),
             }),
           },
         });

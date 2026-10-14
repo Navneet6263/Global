@@ -10,7 +10,10 @@ import {
   IsString,
   IsUUID,
   Min,
+  ValidateNested,
 } from "class-validator";
+import { Type } from "class-transformer";
+import { UserDepartmentDto } from "./create-user.dto";
 
 export class UpdateUserDto {
   @IsInt() @Min(1) version!: number;
@@ -30,4 +33,11 @@ export class UpdateUserDto {
   @ArrayUnique()
   @IsUUID("all", { each: true })
   spocClientIds?: string[];
+  /** Every team the person should be in, Team Leader per team (replaces memberships). */
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(10)
+  @ValidateNested({ each: true })
+  @Type(() => UserDepartmentDto)
+  departments?: UserDepartmentDto[];
 }

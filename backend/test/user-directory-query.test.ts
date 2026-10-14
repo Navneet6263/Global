@@ -80,7 +80,10 @@ void test("directory list uses database pagination and returns the exact total",
             userRoles: [{ role: { code: "VERIFIER", name: "Verifier" } }],
             spocClientScopes: [],
             departmentMemberships: [
-              { role: "LEAD", department: { name: "Education" } },
+              {
+                role: "LEAD",
+                department: { publicId: "dept-education", name: "Education" },
+              },
             ],
           },
         ]);
@@ -105,6 +108,9 @@ void test("directory list uses database pagination and returns the exact total",
   assert.equal(result.total, 267);
   assert.equal(result.page, 2);
   assert.equal(result.items[0]?.roles[0]?.code, "VERIFIER");
-  assert.deepEqual(result.items[0]?.teams, [{ name: "Education", lead: true }]);
+  // The team id lets Edit role & access pre-tick the person's teams.
+  assert.deepEqual(result.items[0]?.teams, [
+    { id: "dept-education", name: "Education", lead: true },
+  ]);
   assert.equal(result.summary.total, 267);
 });

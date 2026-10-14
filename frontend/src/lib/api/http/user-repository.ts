@@ -29,6 +29,9 @@ export function mapUser(row: DirectoryUser): PlatformUser & { version: number } 
         : [],
     clientWorkspaceIds: row.spocClients?.map((client) => client.id) ?? [],
     vendorTeamOf: row.vendorTeamOf ?? null,
+    teams: (row.teams ?? []).flatMap((team) =>
+      team.id ? [{ id: team.id, name: team.name, lead: team.lead }] : [],
+    ),
     lastLoginAt: row.lastLoginAt ?? null,
     createdAt: row.createdAt,
     mfaEnabled: null,

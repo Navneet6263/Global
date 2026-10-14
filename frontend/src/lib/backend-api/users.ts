@@ -16,7 +16,7 @@ export interface DirectoryUser {
   client?: { publicId: string; displayName: string } | null;
   roles: Array<{ code: string; name: string; customRole?: string }>;
   /** Teams (departments) the person belongs to. */
-  teams?: Array<{ name: string; lead: boolean }>;
+  teams?: Array<{ id?: string; name: string; lead: boolean }>;
   /** SPOC-RM client workspaces (empty for every other role). */
   spocClients?: Array<{ id: string; displayName: string }>;
   /** Vendor team users only: the Main Vendor that manages this login. */
@@ -84,6 +84,8 @@ export function updateUser(
     roleCodes?: string[];
     additionalAccessConfirmed?: boolean;
     spocClientIds?: string[];
+    /** Every team the person should be in (replaces their memberships). */
+    departments?: Array<{ id: string; lead: boolean }>;
   },
 ) {
   return apiRequest<{ id: string; version: number }>(`/users/${userId}`, {

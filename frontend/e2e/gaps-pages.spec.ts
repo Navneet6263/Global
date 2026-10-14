@@ -541,7 +541,7 @@ test("Admin gives an RM the Data Entry role too; Field Executive is coming soon"
   await expect(dialog.getByRole("button", { name: /Field Executive/ })).toBeDisabled();
   await expect(dialog.getByText("Coming soon")).toBeVisible();
   await dialog.getByRole("button", { name: /^Data Entry/ }).click();
-  await expect(dialog.getByText(/Next, add them to their team/)).toBeVisible();
+  await expect(dialog.getByText(/No matching team yet/)).toBeVisible();
   const save = dialog.getByRole("button", { name: "Save", exact: true });
   await expect(save).toBeDisabled();
   await dialog.getByRole("checkbox", { name: "Confirm combined roles" }).check();
@@ -713,4 +713,116 @@ test("the same person works in Operations, then switches to Platform Admin", asy
   await expect(page.getByRole("button", { name: "Switch role" })).toContainText("Platform Admin");
   await expect(page.getByText("This page didn't load")).toHaveCount(0);
   expect(errors).toEqual([]);
+});
+
+const EMPLOYMENT_TEAM = "11111111-1111-4111-8111-111111111111";
+const EDUCATION_TEAM = "22222222-2222-4222-8222-222222222222";
+
+/** Admin edits an existing person; the team list comes from setup options. */
+async function editPerson(
+  page: import("@playwright/test").Page,
+  person: { roles: Array<{ code: string; name: string }>; teams: object[] },
+) {
+  await onboardingFixture(page, "ADMIN");
+  const calls = await overlay(page, (path, method, _body, reply) => {
+    if (path.startsWith("/users?") && method === "GET")
+      return reply({
+        items: [
+          {
+            id: "66666666-6666-4666-8666-666666666666",
+            displayName: "Asha",
+            email: "asha@example.invalid",
+            status: "ACTIVE",
+            mustChangePassword: false,
+            lastLoginAt: null,
+            createdAt: "2026-10-01T00:00:00Z",
+            version: 5,
+            roles: person.roles,
+            spocClients: [],
+            teams: person.teams,
+          },
+        ],
+        total: 1,
+        page: 1,
+        pageSize: 10,
+        summary: { total: 1, active: 1, invited: 0, suspended: 0 },
+      });
+    if (path.startsWith("/users/66666666") && method === "PATCH")
+      return reply({ id: "66666666-6666-4666-8666-666666666666", version: 6 });
+    if (path === "/users/setup-options")
+      return reply({
+        departments: [
+          { id: EMPLOYMENT_TEAM, name: "Employment", kind: "VERIFICATION" },
+          { id: EDUCATION_TEAM, name: "Education", kind: "VERIFICATION" },
+          { id: "33333333-3333-4333-8333-333333333333", name: "Intake", kind: "DATA_ENTRY" },
+        ],
+        access: [],
+      });
+    return undefined;
+  });
+  await page.goto("/admin/users");
+  await page.getByRole("button", { name: "Actions for Asha" }).click();
+  await page.getByRole("menuitem", { name: "Edit role & access" }).click();
+  return { calls, dialog: page.getByRole("dialog", { name: /Edit role & access/ }) };
+}
+
+const patchBody = (calls: Array<{ method: string; body?: unknown }>) =>
+  calls.find((call) => call.method === "PATCH")?.body;
+
+test("an existing verifier is made Team Leader from Edit role & access", async ({ page }) => {
+  const { calls, dialog } = await editPerson(page, {
+    roles: [{ code: "VERIFIER", name: "Verifier" }],
+    teams: [{ id: EMPLOYMENT_TEAM, name: "Employment", lead: false }],
+  });
+  await expect(dialog.getByRole("checkbox", { name: "Team Employment" })).toBeChecked();
+  const save = dialog.getByRole("button", { name: "Save", exact: true });
+  await expect(save).toBeDisabled();
+  await dialog.getByRole("checkbox", { name: "Team Leader of Employment" }).check();
+  await expect(save).toBeEnabled();
+  await page.screenshot({ path: "test-results/edit-make-tl.png" });
+  await save.click();
+  await expect
+    .poll(() => patchBody(calls))
+    .toMatchObject({
+      version: 5,
+      roleCodes: ["VERIFIER"],
+      departments: [{ id: EMPLOYMENT_TEAM, lead: true }],
+    });
+});
+
+test("an RM is given the Verifier role and made Team Leader in one save", async ({ page }) => {
+  const { calls, dialog } = await editPerson(page, {
+    roles: [{ code: "SPOC_RM", name: "RM / SPOC" }],
+    teams: [],
+  });
+  await expect(dialog.getByText("Tick their team so work reaches them")).toHaveCount(0);
+  await dialog.getByRole("button", { name: /^Verifier/ }).click();
+  await dialog.getByRole("checkbox", { name: "Team Education" }).check();
+  await dialog.getByRole("checkbox", { name: "Team Leader of Education" }).check();
+  // Data Entry teams are offered only with the Data Entry role.
+  await expect(dialog.getByRole("checkbox", { name: "Team Intake" })).toHaveCount(0);
+  await dialog.getByRole("checkbox", { name: "Confirm combined roles" }).check();
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await expect
+    .poll(() => patchBody(calls))
+    .toMatchObject({
+      roleCodes: ["SPOC_RM", "VERIFIER"],
+      additionalAccessConfirmed: true,
+      departments: [{ id: EDUCATION_TEAM, lead: true }],
+    });
+});
+
+test("removing the Verifier role also takes the person out of its teams", async ({ page }) => {
+  const { calls, dialog } = await editPerson(page, {
+    roles: [
+      { code: "SPOC_RM", name: "RM / SPOC" },
+      { code: "VERIFIER", name: "Verifier" },
+    ],
+    teams: [{ id: EMPLOYMENT_TEAM, name: "Employment", lead: true }],
+  });
+  await dialog.getByRole("button", { name: /^Verifier/ }).click();
+  await dialog.getByRole("button", { name: "Save", exact: true }).click();
+  await expect
+    .poll(() => patchBody(calls))
+    .toMatchObject({ roleCodes: ["SPOC_RM"], departments: [] });
 });

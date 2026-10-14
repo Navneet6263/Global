@@ -17,6 +17,8 @@ export interface PlatformUser {
   clientWorkspaceIds?: readonly string[];
   /** Vendor team users only: the Main Vendor that manages this login. */
   vendorTeamOf?: string | null;
+  /** Teams the person is in, used to pre-tick Edit role & access. */
+  teams?: ReadonlyArray<{ id: string; name: string; lead: boolean }>;
   lastLoginAt: string | null;
   createdAt: string;
   mfaEnabled: boolean | null;
