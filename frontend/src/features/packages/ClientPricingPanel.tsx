@@ -17,12 +17,13 @@ import { packageKeys } from "./package-keys";
  * Discounts for one client. An RM sees only its own clients and can go up to each
  * package's limit; Operations / Admin can give any discount. Every change is audited.
  */
-export function ClientPricingPanel() {
+export function ClientPricingPanel({ initialClientId }: { initialClientId?: string } = {}) {
   const clients = useQuery({
     queryKey: ["client-pricing", "clients"],
     queryFn: listPricingClients,
   });
-  const [picked, setClientId] = useState("");
+  // Opened from a client's profile: start on that client.
+  const [picked, setClientId] = useState(initialClientId ?? "");
   const options = clients.data?.items ?? [];
   // Until someone picks, show the first client in the list.
   const clientId = picked || options[0]?.id || "";

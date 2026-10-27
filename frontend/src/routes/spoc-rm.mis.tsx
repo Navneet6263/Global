@@ -6,6 +6,8 @@ import { PresetReports } from "@/features/stakeholders/client/ClientMisReports";
 import { getRmClients } from "@/lib/backend-api/client-reports";
 
 export const Route = createFileRoute("/spoc-rm/mis")({
+  validateSearch: (input: Record<string, unknown>): { client?: string } =>
+    typeof input["client"] === "string" ? { client: input["client"] } : {},
   head: () => ({ meta: [{ title: "Company MIS — Sapling Global" }] }),
   component: RmMisPage,
 });
@@ -13,7 +15,8 @@ export const Route = createFileRoute("/spoc-rm/mis")({
 /** RM: generate and download a company's MIS (Case status, TAT, UTV, Discrepancy). */
 function RmMisPage() {
   const clients = useQuery({ queryKey: ["rm", "clients"], queryFn: getRmClients });
-  const [chosen, setChosen] = useState<string>();
+  const { client } = Route.useSearch();
+  const [chosen, setChosen] = useState<string | undefined>(client);
   const items = clients.data?.items ?? [];
   const company = items.find((item) => item.id === chosen) ?? items[0];
   return (

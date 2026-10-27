@@ -165,3 +165,143 @@ test("RM opens a completed case, sees the full report with proof and regenerates
   await expect(panel.getByRole("button", { name: /Open proof Email response/ })).toBeVisible();
   await page.screenshot({ path: "test-results/rm-case-full-report.png" });
 });
+
+const NORTHSTAR_PROFILE = {
+  company: {
+    id: "c-1",
+    code: "NSL",
+    legalName: "Northstar Labs Private Limited",
+    name: "Northstar Labs",
+    status: "ACTIVE",
+    contactName: "Kavya Rao",
+    contactEmail: "kavya@northstar.example",
+    contactPhone: "+919876543210",
+    gstin: "29ABCDE1234F1Z5",
+    billingAddress: "Bengaluru",
+    slaHours: 72,
+    createdAt: "2026-10-01T00:00:00Z",
+    source: "ADDED_BY_SAPLING",
+    rm: { name: "Riya Mehta", since: "2026-10-02T00:00:00Z" },
+  },
+  numbers: { openCases: 16, overdueCases: 2, completedCases: 6 },
+  packages: {
+    agreement: false,
+    items: [
+      { id: "p-1", name: "Standard Employee", price: 2500, discountPercent: 10 },
+      { id: "p-2", name: "Executive", price: 6000, discountPercent: 0 },
+    ],
+  },
+  users: [
+    {
+      id: "u-kavya",
+      displayName: "Kavya Rao",
+      email: "kavya@northstar.example",
+      phone: null,
+      status: "ACTIVE",
+      mustChangePassword: false,
+      lastLoginAt: "2026-10-20T05:00:00Z",
+      createdAt: "2026-10-01T00:00:00Z",
+    },
+  ],
+};
+
+async function clientProfileFixture(page: import("@playwright/test").Page) {
+  await spocFixture(page);
+  const resets: unknown[] = [];
+  await page.route("**/api/v1/rm/clients/c-1/profile", (route) =>
+    route.fulfill({ json: NORTHSTAR_PROFILE }),
+  );
+  await page.route("**/api/v1/rm/clients/c-1/mis?*", (route) =>
+    route.fulfill({
+      json: {
+        company: { id: "c-1", name: "Northstar Labs" },
+        preset: "CASE_STATUS",
+        title: "Case status",
+        from: "2026-09-27",
+        to: "2026-10-27",
+        columns: ["Case", "Candidate", "Status"],
+        total: 1,
+        colours: { GREEN: 1 },
+        rows: [{ cells: ["SG-1", "Asha", "Completed"], colour: "GREEN" }],
+      },
+    }),
+  );
+  await page.route("**/api/v1/rm/clients/c-1/users/u-kavya/reset-password", (route) => {
+    resets.push(route.request().postDataJSON());
+    return route.fulfill({ json: { reset: true, emailed: true } });
+  });
+  return { resets };
+}
+
+test("RM opens a client's full profile from My clients", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await clientProfileFixture(page);
+  await page.goto("/spoc-rm/clients");
+  await page.getByRole("button", { name: "Open profile of Northstar Labs" }).click();
+  await expect(page).toHaveURL(/\/spoc-rm\/clients\/c-1$/);
+  await expect(page.getByRole("heading", { name: "Northstar Labs", level: 1 })).toBeVisible();
+  await expect(page.getByText("Northstar Labs Private Limited").first()).toBeVisible();
+  await expect(page.getByRole("region", { name: "Company details" })).toContainText(
+    "29ABCDE1234F1Z5",
+  );
+  await page.screenshot({ path: "test-results/rm-client-profile.png", fullPage: true });
+
+  const sections = page.getByRole("navigation", { name: "Client sections" });
+  await sections.getByRole("button", { name: "Cases" }).click();
+  await expect(page).toHaveURL(/tab=cases/);
+  await expect(page.getByRole("table", { name: "Client cases" })).toBeVisible();
+
+  await sections.getByRole("button", { name: "Packages" }).click();
+  await expect(page.getByRole("region", { name: "Packages they can use" })).toContainText("₹2,250");
+
+  await sections.getByRole("button", { name: "Reports & MIS" }).click();
+  await expect(page.getByRole("region", { name: "MIS" })).toBeVisible();
+  await page.screenshot({ path: "test-results/rm-client-reports.png", fullPage: true });
+});
+
+test("RM resets a Client Admin's password from the client's Logins tab", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const { resets } = await clientProfileFixture(page);
+  await page.goto("/spoc-rm/clients/c-1?tab=logins");
+  await page.getByRole("button", { name: "Reset password for Kavya Rao" }).click();
+  const receipt = page.getByRole("dialog", { name: "New password issued" });
+  await expect(receipt.getByText(/Also emailed to/)).toBeVisible();
+  expect((resets[0] as { temporaryPassword: string }).temporaryPassword.length).toBeGreaterThan(10);
+});
+
+test("RM downloads the client dossier as a styled Excel file", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await clientProfileFixture(page);
+  await page.goto("/spoc-rm/clients/c-1");
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: /Download client dossier/ }).click(),
+  ]);
+  expect(download.suggestedFilename()).toBe("Sapling-Global-NSL-client-dossier.xlsx");
+  const path = await download.path();
+  const { readFile } = await import("node:fs/promises");
+  const bytes = await readFile(path!);
+  // An .xlsx is a zip: it starts with "PK".
+  expect(bytes.subarray(0, 2).toString()).toBe("PK");
+  expect(bytes.length).toBeGreaterThan(4000);
+});
+
+test("from a client's profile the RM works elsewhere and comes back in one click", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await clientProfileFixture(page);
+  await page.goto("/spoc-rm/clients/c-1");
+  await page
+    .getByRole("region", { name: "Work for this client" })
+    .getByRole("link", { name: /Cases in Records/ })
+    .click();
+  // Records keeps a real (UUID) client id; the sample id "c-1" is dropped by its search rules.
+  await expect(page).toHaveURL(/\/spoc-rm\/records/);
+  const back = page.getByRole("navigation", { name: "Back to client" });
+  await expect(back).toContainText("Northstar Labs");
+  await page.screenshot({ path: "test-results/rm-back-to-client.png" });
+  await back.getByRole("link", { name: /Back to Northstar Labs/ }).click();
+  await expect(page).toHaveURL(/\/spoc-rm\/clients\/c-1$/);
+  await expect(page.getByRole("navigation", { name: "Back to client" })).toHaveCount(0);
+});

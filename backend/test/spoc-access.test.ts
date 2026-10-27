@@ -212,6 +212,11 @@ const RM_ALLOWED_HANDLERS = new Set([
   "ClarificationsController.list",
   // The RM raises insufficiency on its own clients' cases.
   "ClarificationsController.raiseAsRm",
+  // My clients: the company profile and its Client Admin password reset.
+  "RmClientProfileController",
+  "RmClientProfileController.constructor",
+  "RmClientProfileController.profile",
+  "RmClientProfileController.resetClientAdminPassword",
   "DocumentsController.download",
   "DocumentsController.preview",
   // Self sign-up onboarding: the RM sees its companies and may message the client;

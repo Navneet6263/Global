@@ -32,7 +32,7 @@ function SpocClientsPage() {
       />
       <SpocClientTable
         title="Client roll-up"
-        description="Select a client to open its cases. Finance figures are unsettled invoices only."
+        description="Select a client to open its profile: details, logins, packages and cases. Finance figures are unsettled invoices only."
         query={{
           page: search.page ?? 1,
           pageSize: 20,

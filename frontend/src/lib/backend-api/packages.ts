@@ -36,6 +36,8 @@ export interface PackageInput {
 export interface PackageUpdate {
   updatedAt: string;
   name?: string;
+  /** The checks the package includes (only sent when changed). */
+  checks?: string[];
   price?: number;
   tatHours?: number;
   maxRmDiscountPercent?: number;

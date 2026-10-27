@@ -2,7 +2,6 @@
 
 import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RequiredDocumentFields, ServiceFamilyField } from "./service-policy-fields";
 import { SERVICE_CHECKS } from "./service-policy-options";
-import { CheckPriceFields } from "@/features/packages/CheckPriceFields";
+import { PackageCheckPricing } from "@/features/packages/PackageCheckPricing";
 import { toCheckPrices, type CheckPriceDraft } from "@/features/packages/check-prices";
 
 export interface BranchDraft {
@@ -137,98 +136,96 @@ export function AddPackageDialog(
     Number(draft.taxRate) <= 100;
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent className="max-h-[88dvh] overflow-y-auto sm:max-w-xl">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Add service package</DialogTitle>
           <DialogDescription>
             Publish a reusable check bundle with commercial defaults.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Package code">
-            <Input
-              value={draft.code}
-              onChange={(e) => setDraft({ ...draft, code: e.target.value.toUpperCase() })}
-              placeholder="STANDARD_BGV"
-            />
-          </Field>
-          <Field label="Package name">
-            <Input
-              value={draft.name}
-              onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-              placeholder="Standard BGV"
-            />
-          </Field>
-          <Field label="Price (₹)">
-            <Input
-              type="number"
-              min="0"
-              value={draft.price}
-              onChange={(e) => setDraft({ ...draft, price: e.target.value })}
-            />
-          </Field>
-          <Field label="Turnaround hours">
-            <Input
-              type="number"
-              min="1"
-              max="8760"
-              value={draft.tatHours}
-              onChange={(e) => setDraft({ ...draft, tatHours: e.target.value })}
-            />
-          </Field>
-          {props.withRmDiscount ? (
-            <Field label="Max RM discount (%)">
+        <Step number={1} title="Basics">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Package code">
+              <Input
+                value={draft.code}
+                onChange={(e) => setDraft({ ...draft, code: e.target.value.toUpperCase() })}
+                placeholder="STANDARD_BGV"
+              />
+            </Field>
+            <Field label="Package name">
+              <Input
+                value={draft.name}
+                onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+                placeholder="Standard BGV"
+              />
+            </Field>
+            <Field label="Turnaround hours">
+              <Input
+                type="number"
+                min="1"
+                max="8760"
+                value={draft.tatHours}
+                onChange={(e) => setDraft({ ...draft, tatHours: e.target.value })}
+              />
+            </Field>
+          </div>
+          <ServiceFamilyField
+            value={draft.serviceFamily}
+            onChange={(serviceFamily) => setDraft({ ...draft, serviceFamily })}
+          />
+        </Step>
+        <Step number={2} title={props.withRmDiscount ? "Checks and their prices" : "Checks"}>
+          <PackageCheckPricing
+            allChecks={CHECKS}
+            selected={draft.checks}
+            onToggle={toggle}
+            prices={checkPrices}
+            onPrices={setCheckPrices}
+            packagePrice={draft.price ? Number(draft.price) : null}
+            onPackagePrice={(price) => setDraft((current) => ({ ...current, price }))}
+            taxRate={draft.taxRate}
+            onTaxRate={(taxRate) => setDraft((current) => ({ ...current, taxRate }))}
+            showPrices={Boolean(props.withRmDiscount)}
+          />
+        </Step>
+        <Step number={3} title="Package price">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Price (₹)">
               <Input
                 type="number"
                 min="0"
-                max="100"
-                step="0.5"
-                aria-label="Max RM discount (%)"
-                value={draft.maxRmDiscountPercent}
-                onChange={(e) => setDraft({ ...draft, maxRmDiscountPercent: e.target.value })}
+                value={draft.price}
+                onChange={(e) => setDraft({ ...draft, price: e.target.value })}
               />
               <p className="mt-1 text-[11px] text-muted-foreground">
-                The most a client RM can give on this package. 0 means only Operations can discount
-                it.
+                What a client pays for every check in the package.
               </p>
             </Field>
-          ) : null}
-        </div>
-        <ServiceFamilyField
-          value={draft.serviceFamily}
-          onChange={(serviceFamily) => setDraft({ ...draft, serviceFamily })}
-        />
-        <RequiredDocumentFields
-          value={draft.requiredDocuments}
-          onChange={(requiredDocuments) => setDraft({ ...draft, requiredDocuments })}
-        />
-        <fieldset className="space-y-2">
-          <legend className="text-xs font-medium">Included checks</legend>
-          <div className="grid gap-2 sm:grid-cols-2">
-            {CHECKS.map((check) => (
-              <label
-                key={check}
-                className="flex items-center gap-2 rounded-xl bg-muted/50 px-3 py-2 text-xs"
-              >
-                <Checkbox
-                  checked={draft.checks.includes(check)}
-                  onCheckedChange={() => toggle(check)}
+            {props.withRmDiscount ? (
+              <Field label="Max RM discount (%)">
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="0.5"
+                  aria-label="Max RM discount (%)"
+                  value={draft.maxRmDiscountPercent}
+                  onChange={(e) => setDraft({ ...draft, maxRmDiscountPercent: e.target.value })}
                 />
-                {check.replaceAll("_", " ")}
-              </label>
-            ))}
+                <p className="mt-1 text-[11px] text-muted-foreground">
+                  The most a client RM can give on this package. 0 means only Operations can
+                  discount it.
+                </p>
+              </Field>
+            ) : null}
           </div>
-        </fieldset>
-        {props.withRmDiscount ? (
-          <CheckPriceFields
-            checks={CHECKS.filter((check) => draft.checks.includes(check))}
-            value={checkPrices}
-            onChange={setCheckPrices}
-            packagePrice={draft.price ? Number(draft.price) : null}
-            taxRate={draft.taxRate}
-            onTaxRate={(taxRate) => setDraft({ ...draft, taxRate })}
+        </Step>
+        <Step number={4} title="Documents the candidate uploads">
+          <RequiredDocumentFields
+            value={draft.requiredDocuments}
+            onChange={(requiredDocuments) => setDraft({ ...draft, requiredDocuments })}
           />
-        ) : null}
+        </Step>
         <DialogFooter>
           <Button variant="ghost" onClick={() => props.onOpenChange(false)}>
             Cancel
@@ -260,6 +257,21 @@ export function AddPackageDialog(
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** A numbered part of the Add package form. */
+function Step({ number, title, children }: { number: number; title: string; children: ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <h3 className="flex items-center gap-2 text-[13px] font-semibold text-slate-900">
+        <span className="grid size-6 place-items-center rounded-full bg-blue-600 text-[11px] font-bold text-white">
+          {number}
+        </span>
+        {title}
+      </h3>
+      {children}
+    </section>
   );
 }
 

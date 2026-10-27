@@ -8,10 +8,13 @@ import { SpocOverviewService } from "./spoc-overview.service";
 import { SpocWorkRecordsService } from "./spoc-work-records.service";
 import { SpocController } from "./spoc.controller";
 
+import { RmClientProfileController } from "./rm-client-profile.controller";
+import { RmClientProfileService } from "./rm-client-profile.service";
 @Module({
-  controllers: [SpocController],
+  controllers: [SpocController, RmClientProfileController],
   providers: [
     CaseActivityService,
+    RmClientProfileService,
     SpocCaseDetailService,
     SpocCaseRecordsService,
     SpocClientsService,

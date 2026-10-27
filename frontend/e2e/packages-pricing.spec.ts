@@ -124,13 +124,24 @@ test("Operations builds a package with an RM discount limit and gives a client a
   await dialog.getByPlaceholder("STANDARD_BGV").fill("PREMIUM_BGV");
   await dialog.getByPlaceholder("Standard BGV").fill("Premium BGV");
   await dialog.getByLabel("Max RM discount (%)").fill("15");
-  await dialog.getByText("IDENTITY", { exact: true }).click();
+  const checks = dialog.getByRole("region", { name: "Checks and prices" });
+  // A check's price box opens on its own row only once the check is ticked.
+  await expect(checks.getByLabel("Identity price")).toHaveCount(0);
+  await checks.getByText("Identity", { exact: true }).click();
+  await checks.getByLabel("Identity price").fill("800");
+  await expect(checks.getByText("1 of", { exact: false })).toBeVisible();
+  await page.screenshot({ path: "test-results/packages-add-hierarchy.png" });
   await dialog.getByRole("button", { name: "Add package" }).click();
   await expect(table.getByText("Premium BGV")).toBeVisible();
   expect(writes[0]).toMatchObject({
     method: "POST",
     path: "/packages",
-    body: { code: "PREMIUM_BGV", maxRmDiscountPercent: 15 },
+    body: {
+      code: "PREMIUM_BGV",
+      maxRmDiscountPercent: 15,
+      checks: ["IDENTITY"],
+      checkPrices: { IDENTITY: 800 },
+    },
   });
 
   // Operations is not capped by the RM limit.
@@ -188,16 +199,20 @@ test("Operations sets a price per check and GST on a package", async ({ page }) 
   await expect(page.getByRole("table", { name: "Packages" })).toContainText("+ 18% GST");
   await page.getByRole("button", { name: "Edit Standard BGV" }).click();
   const dialog = page.getByRole("dialog", { name: "Edit STANDARD_BGV" });
-  await expect(dialog.getByText("Price per check & GST")).toBeVisible();
+  await expect(dialog.getByRole("region", { name: "Checks and prices" })).toBeVisible();
   // Two checks in a 2,000 package: an empty box means an equal share of 1,000.
-  await expect(dialog.getByLabel("EMPLOYMENT price")).toHaveAttribute("placeholder", "1000");
-  await dialog.getByLabel("EMPLOYMENT price").fill("1500");
+  await expect(dialog.getByLabel("Employment price")).toHaveAttribute("placeholder", "1000");
+  await dialog.getByLabel("Employment price").fill("1500");
   await dialog.getByLabel("GST percent").fill("12");
-  await expect(dialog.getByText(/All checks bought one by one: ₹2,500/)).toBeVisible();
+  await expect(dialog.getByText(/Checks bought one by one:/).locator("..")).toContainText("₹2,500");
   await page.screenshot({ path: "test-results/packages-check-prices.png" });
   await dialog.getByRole("button", { name: "Save" }).click();
   await expect
     .poll(() => writes.find((entry) => entry.method === "PATCH")?.body)
     .toMatchObject({ checkPrices: { EMPLOYMENT: 1500 }, taxRate: 12 });
+  // The checks did not change, so they are not sent.
+  expect(
+    (writes.find((entry) => entry.method === "PATCH")?.body as { checks?: string[] }).checks,
+  ).toBeUndefined();
   await expect(page.getByRole("table", { name: "Packages" })).toContainText("+ 12% GST");
 });

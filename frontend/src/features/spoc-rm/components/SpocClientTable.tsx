@@ -9,7 +9,7 @@ import { clientColumns } from "../config/spoc-work-columns";
 import { useSpocClients } from "../hooks/use-spoc";
 import { SpocDataTable } from "./SpocDataTable";
 
-/** Per-client roll-up. Selecting a client opens that client's cases on the Records page. */
+/** Per-client roll-up. Selecting a client opens its profile (details, logins, packages). */
 export function SpocClientTable({
   query,
   title,
@@ -45,9 +45,9 @@ export function SpocClientTable({
           columns={clientColumns}
           minWidth={900}
           onOpen={(row) =>
-            void navigate({ to: "/spoc-rm/records", search: { domain: "cases", clientId: row.id } })
+            void navigate({ to: "/spoc-rm/clients/$clientId", params: { clientId: row.id } })
           }
-          openLabel={(row) => `View cases for ${row.displayName}`}
+          openLabel={(row) => `Open profile of ${row.displayName}`}
           emptyTitle="No clients found"
           emptyDetail="Try another search or status."
         />

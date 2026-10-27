@@ -2,6 +2,7 @@ import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 import { ConfigNavigation } from "@/features/workspace-shell/ConfigNavigation";
 import { RoleWorkspaceShell } from "@/features/workspace-shell/RoleWorkspaceShell";
+import { ReturnToClientBar } from "@/features/spoc-rm/client-profile/ReturnToClientBar";
 
 export const Route = createFileRoute("/spoc-rm")({
   ssr: false,
@@ -88,6 +89,7 @@ function SpocLayout() {
         />
       )}
     >
+      <ReturnToClientBar />
       <Outlet />
     </RoleWorkspaceShell>
   );

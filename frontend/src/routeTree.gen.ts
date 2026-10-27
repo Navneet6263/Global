@@ -129,6 +129,7 @@ import { Route as VerifierSlaRouteImport } from './routes/verifier.sla'
 import { Route as VerifierTeamRouteImport } from './routes/verifier.team'
 import { Route as VerifierUtvRouteImport } from './routes/verifier.utv'
 import { Route as ReportsVerifyAuthenticityCodeRouteImport } from './routes/reports.verify.$authenticityCode'
+import { Route as SpocRmClientsClientIdRouteImport } from './routes/spoc-rm.clients_.$clientId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -734,6 +735,11 @@ const ReportsVerifyAuthenticityCodeRoute =
     path: '/reports/verify/$authenticityCode',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SpocRmClientsClientIdRoute = SpocRmClientsClientIdRouteImport.update({
+  id: '/clients_/$clientId',
+  path: '/clients/$clientId',
+  getParentRoute: () => SpocRmRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -856,6 +862,7 @@ export interface FileRoutesByFullPath {
   '/vendor/': typeof VendorIndexRoute
   '/verifier/': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
+  '/spoc-rm/clients/$clientId': typeof SpocRmClientsClientIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -969,6 +976,7 @@ export interface FileRoutesByTo {
   '/vendor': typeof VendorIndexRoute
   '/verifier': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
+  '/spoc-rm/clients/$clientId': typeof SpocRmClientsClientIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -1092,6 +1100,7 @@ export interface FileRoutesById {
   '/vendor/': typeof VendorIndexRoute
   '/verifier/': typeof VerifierIndexRoute
   '/reports/verify/$authenticityCode': typeof ReportsVerifyAuthenticityCodeRoute
+  '/spoc-rm/clients_/$clientId': typeof SpocRmClientsClientIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -1216,6 +1225,7 @@ export interface FileRouteTypes {
     | '/vendor/'
     | '/verifier/'
     | '/reports/verify/$authenticityCode'
+    | '/spoc-rm/clients/$clientId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1329,6 +1339,7 @@ export interface FileRouteTypes {
     | '/vendor'
     | '/verifier'
     | '/reports/verify/$authenticityCode'
+    | '/spoc-rm/clients/$clientId'
   id:
     | '__root__'
     | '/'
@@ -1451,6 +1462,7 @@ export interface FileRouteTypes {
     | '/vendor/'
     | '/verifier/'
     | '/reports/verify/$authenticityCode'
+    | '/spoc-rm/clients_/$clientId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -2328,6 +2340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportsVerifyAuthenticityCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/spoc-rm/clients_/$clientId': {
+      id: '/spoc-rm/clients_/$clientId'
+      path: '/clients/$clientId'
+      fullPath: '/spoc-rm/clients/$clientId'
+      preLoaderRoute: typeof SpocRmClientsClientIdRouteImport
+      parentRoute: typeof SpocRmRoute
+    }
   }
 }
 
@@ -2508,6 +2527,7 @@ interface SpocRmRouteChildren {
   SpocRmVendorsRoute: typeof SpocRmVendorsRoute
   SpocRmWorkRoute: typeof SpocRmWorkRoute
   SpocRmIndexRoute: typeof SpocRmIndexRoute
+  SpocRmClientsClientIdRoute: typeof SpocRmClientsClientIdRoute
 }
 
 const SpocRmRouteChildren: SpocRmRouteChildren = {
@@ -2521,6 +2541,7 @@ const SpocRmRouteChildren: SpocRmRouteChildren = {
   SpocRmVendorsRoute: SpocRmVendorsRoute,
   SpocRmWorkRoute: SpocRmWorkRoute,
   SpocRmIndexRoute: SpocRmIndexRoute,
+  SpocRmClientsClientIdRoute: SpocRmClientsClientIdRoute,
 }
 
 const SpocRmRouteWithChildren =

@@ -22,7 +22,8 @@ import {
   type PackageItem,
 } from "@/lib/backend-api/packages";
 import { formatInr } from "@/lib/formatting";
-import { CheckPriceFields } from "./CheckPriceFields";
+import { SERVICE_CHECKS } from "@/features/settings/components/service-policy-options";
+import { PackageCheckPricing } from "./PackageCheckPricing";
 import { toCheckPrices, type CheckPriceDraft } from "./check-prices";
 import { packageKeys } from "./package-keys";
 
@@ -173,6 +174,13 @@ function EditPackageDialog({
   );
   const [taxRate, setTaxRate] = useState(String(item.taxRate ?? 18));
   const [active, setActive] = useState(item.isActive);
+  const [checks, setChecks] = useState<string[]>([...item.checks]);
+  const checksChanged =
+    checks.length !== item.checks.length || checks.some((check) => !item.checks.includes(check));
+  const toggleCheck = (check: string) =>
+    setChecks((current) =>
+      current.includes(check) ? current.filter((value) => value !== check) : [...current, check],
+    );
   const save = useMutation({
     mutationFn: () =>
       updatePackage(item.id, {
@@ -181,7 +189,8 @@ function EditPackageDialog({
         ...(price !== "" ? { price: Number(price) } : {}),
         tatHours: Number(tat),
         maxRmDiscountPercent: Number(maxRm),
-        checkPrices: toCheckPrices(checkPrices, item.checks),
+        ...(checksChanged ? { checks } : {}),
+        checkPrices: toCheckPrices(checkPrices, checks),
         taxRate: Number(taxRate),
         isActive: active,
       }),
@@ -198,10 +207,11 @@ function EditPackageDialog({
     Number(maxRm) <= 100 &&
     Number(taxRate) >= 0 &&
     Number(taxRate) <= 100 &&
+    checks.length > 0 &&
     (price === "" || Number(price) >= 0);
   return (
     <Dialog open onOpenChange={(open) => (!open && !save.isPending ? onClose() : undefined)}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-3xl">
         <DialogHeader>
           <DialogTitle>Edit {item.code}</DialogTitle>
           <DialogDescription>
@@ -249,11 +259,14 @@ function EditPackageDialog({
             </p>
           </div>
           <div className="sm:col-span-2">
-            <CheckPriceFields
-              checks={item.checks}
-              value={checkPrices}
-              onChange={setCheckPrices}
+            <PackageCheckPricing
+              allChecks={SERVICE_CHECKS}
+              selected={checks}
+              onToggle={toggleCheck}
+              prices={checkPrices}
+              onPrices={setCheckPrices}
               packagePrice={price !== "" ? Number(price) : null}
+              onPackagePrice={setPrice}
               taxRate={taxRate}
               onTaxRate={setTaxRate}
             />
