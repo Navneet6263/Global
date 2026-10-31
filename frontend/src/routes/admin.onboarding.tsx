@@ -9,11 +9,11 @@ import { PageHeader } from "@/components/layout/page-header";
 
 export const Route = createFileRoute("/admin/onboarding")({
   validateSearch: parseOnboardingSearch,
-  head: () => ({ meta: [{ title: "Company sign-ups — Sapling Global" }] }),
+  head: () => ({ meta: [{ title: "Company onboarding — Sapling Global" }] }),
   component: AdminOnboardingPage,
 });
 
-/** Platform Admin oversight of self sign-ups: read-only; Operations approves. */
+/** Platform Admin sets up companies (details, documents, packages, RM); Operations approves. */
 function AdminOnboardingPage() {
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -25,10 +25,10 @@ function AdminOnboardingPage() {
   return (
     <>
       <PageHeader
-        title="Company sign-ups"
-        description="Self-registered companies, their documents and Operations decisions. View only."
+        title="Company onboarding"
+        description="Set up every company here: details, documents, packages and RM. Operations or the company's RM approves it."
       />
-      <OpsOnboardingBoard search={search} onChange={onChange} canAssignRm={false} />
+      <OpsOnboardingBoard search={search} onChange={onChange} canAssignRm />
     </>
   );
 }

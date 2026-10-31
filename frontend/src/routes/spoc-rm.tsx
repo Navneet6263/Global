@@ -21,7 +21,7 @@ const destinations = [
   },
   {
     label: "Onboarding companies",
-    detail: "New sign-ups you help to go live",
+    detail: "New companies you help to go live",
     to: "/spoc-rm/onboarding",
     terms: "onboarding signup sign-up new company kyc documents",
     permission: "case:read",

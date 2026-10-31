@@ -118,8 +118,8 @@ export const ADMIN_NAV_ITEMS: readonly NavItem[] = [
     "client:read",
   ),
   item(
-    "Company sign-ups",
-    "Self-registered companies in onboarding",
+    "Company onboarding",
+    "Set up every company: documents, packages and RM",
     Rocket,
     "/admin/onboarding",
     "stakeholders",

@@ -120,7 +120,7 @@ export const SPOC_NAV_ITEMS: readonly NavItem[] = [
   ),
   item(
     "Onboarding companies",
-    "New self sign-up companies you help to go live",
+    "New companies you help to go live: documents and packages",
     Rocket,
     "/spoc-rm/onboarding",
     "stakeholders",

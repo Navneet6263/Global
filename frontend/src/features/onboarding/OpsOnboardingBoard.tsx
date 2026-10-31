@@ -1,4 +1,5 @@
 import { OnboardingActivity } from "./OnboardingActivity";
+import { CompanyDetailsForm, TeamDocumentUpload } from "./OnboardingTeamForms";
 import { useEffect, useMemo, useState } from "react";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -73,7 +74,10 @@ export interface OnboardingSearch {
 
 const messageOf = (error: unknown) => (error instanceof Error ? error.message : "Try again");
 
-/** Self sign-up companies for Operations (approve), the RM (help) and Platform Admin (view). */
+/**
+ * One place to set up every company, self sign-up or added by the team: details, documents,
+ * packages, RM and approval. Operations or the assigned RM approve; Admin can set up only.
+ */
 export function OpsOnboardingBoard({
   search,
   onChange,
@@ -225,6 +229,10 @@ export function OpsOnboardingBoard({
                             <AtSign className="size-3" aria-hidden /> Personal email
                           </span>
                         ) : null}
+                        {row.status === "ACTIVE" &&
+                        row.progress.documentsApproved < row.progress.documentsRequired ? (
+                          <span className="onb-chip is-rejected">Documents missing</span>
+                        ) : null}
                         {row.flags.possibleDuplicates.length ? (
                           <span
                             className="onb-chip is-rejected"
@@ -252,7 +260,7 @@ export function OpsOnboardingBoard({
                     <span className="onb-row-cell">
                       {row.submittedAt
                         ? `Submitted ${shortDay(row.submittedAt)}`
-                        : `Signed up ${shortDay(row.signedUpAt)}`}
+                        : `${row.source === "ADDED_BY_SAPLING" ? "Added" : "Signed up"} ${shortDay(row.signedUpAt)}`}
                       <small>{daysSince(row.submittedAt ?? row.signedUpAt)} day(s) waiting</small>
                     </span>
                   </button>
@@ -265,7 +273,7 @@ export function OpsOnboardingBoard({
             <BadgeCheck aria-hidden />
             <p>
               {statusView === "ONBOARDING"
-                ? "No companies waiting. New sign-ups appear here automatically."
+                ? "No companies waiting. New companies appear here automatically."
                 : "Nothing here yet."}
             </p>
           </div>
@@ -325,7 +333,11 @@ function CompanySheet({
   const [assigning, setAssigning] = useState(false);
   const [decision, setDecision] = useState<"activate" | "reject" | null>(null);
   const company = detail.data;
-  const open = company?.status === "ONBOARDING";
+  // Approval is for onboarding only; set-up stays open after go-live (renewals, packages).
+  const awaiting = company?.status === "ONBOARDING";
+  const open = company?.status !== "SUSPENDED";
+  const canSetUp = company?.canSetUp ?? company?.canManage ?? false;
+  const refresh = useRefresh(clientId);
   return (
     <Sheet open onOpenChange={(value) => (!value ? onClose() : undefined)}>
       <SheetContent
@@ -347,11 +359,13 @@ function CompanySheet({
                   <div className="min-w-0 flex-1">
                     <SheetTitle className="text-lg">{company.displayName}</SheetTitle>
                     <SheetDescription>
-                      {company.code} · signed up {shortDate(company.signedUpAt)}
+                      {company.code} ·{" "}
+                      {company.source === "ADDED_BY_SAPLING" ? "added by Sapling" : "signed up"}{" "}
+                      {shortDate(company.signedUpAt)}
                     </SheetDescription>
                     <div className="onb-row-flags">
                       <DocStatus company={company} />
-                      {!company.canManage && !company.canMessage ? (
+                      {!canSetUp && !company.canMessage ? (
                         <span className="onb-viewonly">
                           <Eye className="size-3.5" aria-hidden /> View only
                         </span>
@@ -376,7 +390,12 @@ function CompanySheet({
               ) : null}
 
               <section className="onb-sheet-section" aria-label="Company">
-                <h3>Company</h3>
+                <div className="flex items-center justify-between gap-2">
+                  <h3>Company</h3>
+                  {canSetUp && open ? (
+                    <CompanyDetailsForm company={company} onDone={refresh} />
+                  ) : null}
+                </div>
                 <dl className="onb-facts">
                   <dt>Legal name</dt>
                   <dd>{company.legalName}</dd>
@@ -425,7 +444,7 @@ function CompanySheet({
                 </div>
               </section>
 
-              {company.canManage && open ? (
+              {company.canManage && awaiting ? (
                 <div className="grid gap-2">
                   <Button onClick={() => setDecision("activate")}>
                     <BadgeCheck className="size-4" aria-hidden /> Approve & activate
@@ -455,16 +474,17 @@ function CompanySheet({
                       clientId={company.id}
                       document={document}
                       canReview={company.canManage && open}
+                      canUpload={canSetUp && open}
                     />
                   ))}
                 </ul>
               </section>
 
-              <Commercial company={company} editable={company.canManage && open} />
+              <Commercial company={company} editable={canSetUp && open} />
 
               {company.canMessage && open ? <MessageBox company={company} /> : null}
 
-              {company.canManage && open && company.rates.some((rate) => rate.active) ? (
+              {canSetUp && open && company.rates.some((rate) => rate.active) ? (
                 <PackageDiscounts clientId={company.id} />
               ) : null}
 
@@ -528,10 +548,12 @@ function ReviewRow({
   clientId,
   document,
   canReview,
+  canUpload,
 }: {
   clientId: string;
   document: OnboardingDocument;
   canReview: boolean;
+  canUpload: boolean;
 }) {
   const refresh = useRefresh(clientId);
   const [mode, setMode] = useState<"APPROVED" | "REJECTED" | null>(null);
@@ -592,6 +614,11 @@ function ReviewRow({
         ) : (
           <p className="onb-doc-hint">Not uploaded yet.</p>
         )}
+        {document.state === "PENDING" && document.file?.uploadedByMe ? (
+          <p className="onb-doc-hint">
+            You uploaded this, so a different colleague must review it.
+          </p>
+        ) : null}
         {document.file?.reviewNotes && document.state !== "PENDING" ? (
           <p className="onb-doc-hint">Review: {document.file.reviewNotes}</p>
         ) : null}
@@ -639,14 +666,22 @@ function ReviewRow({
           </form>
         ) : null}
       </div>
-      {canReview && document.state === "PENDING" && !mode ? (
+      {!mode &&
+      ((canReview && document.state === "PENDING" && !document.file?.uploadedByMe) || canUpload) ? (
         <div className="onb-doc-actions">
-          <Button size="sm" variant="outline" onClick={() => start("REJECTED")}>
-            Send back
-          </Button>
-          <Button size="sm" onClick={() => start("APPROVED")}>
-            Approve
-          </Button>
+          {canReview && document.state === "PENDING" && !document.file?.uploadedByMe ? (
+            <>
+              <Button size="sm" variant="outline" onClick={() => start("REJECTED")}>
+                Send back
+              </Button>
+              <Button size="sm" onClick={() => start("APPROVED")}>
+                Approve
+              </Button>
+            </>
+          ) : null}
+          {canUpload ? (
+            <TeamDocumentUpload clientId={clientId} document={document} onDone={refresh} />
+          ) : null}
         </div>
       ) : null}
     </li>
@@ -703,6 +738,10 @@ function Commercial({ company, editable }: { company: OnboardingDetail; editable
       <h3>Packages & pricing</h3>
       {editable ? (
         <>
+          <p className="text-[12.5px] text-slate-500">
+            Tick the packages this company can order and set each price here. Once saved, it can
+            order only the ticked packages.
+          </p>
           {priceLocked ? (
             <p className="text-[12.5px] text-slate-500">
               Tick the packages this company uses. Prices are the package list prices; give a

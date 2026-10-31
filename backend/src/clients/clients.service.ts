@@ -92,6 +92,8 @@ export class ClientsService {
           contactEmail: input.contactEmail?.trim().toLowerCase(),
           contactPhone: input.contactPhone,
           slaHours: input.slaHours,
+          // Same process as a self sign-up: documents and packages, then approval.
+          status: "ONBOARDING",
         },
         select: clientPublicSelect,
       });
@@ -132,7 +134,6 @@ export class ClientsService {
         const onboarding = await tx.client.findUniqueOrThrow({
           where: { id: current.id },
           select: {
-            selfSignupAt: true,
             billingTerms: true,
             billingAddress: true,
             packageRates: {
@@ -153,11 +154,7 @@ export class ClientsService {
             },
           },
         });
-        assertClientActivation(
-          onboarding,
-          new Date(),
-          onboarding.selfSignupAt ? SELF_SIGNUP_KYC_TYPES : [],
-        );
+        assertClientActivation(onboarding, new Date(), SELF_SIGNUP_KYC_TYPES);
       }
       const result = await tx.client.updateMany({
         where: {

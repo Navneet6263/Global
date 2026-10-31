@@ -259,6 +259,97 @@ test("RM opens a client's full profile from My clients", async ({ page }) => {
   await page.screenshot({ path: "test-results/rm-client-reports.png", fullPage: true });
 });
 
+test("RM sees a client's documents and opens its set-up from the client page", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await clientProfileFixture(page);
+  const document = (type: string, label: string, file: object | null) => ({
+    type,
+    label,
+    hint: "Required for activation.",
+    required: true,
+    signed: false,
+    agreementId: file ? `agr-${type}` : null,
+    signedAt: null,
+    state: file ? "APPROVED" : "MISSING",
+    file,
+  });
+  await page.route("**/api/v1/onboarding/companies/c-1", (route) =>
+    route.fulfill({
+      json: {
+        id: "c-1",
+        code: "NSL",
+        legalName: "Northstar Labs Private Limited",
+        displayName: "Northstar Labs",
+        contactName: "Kavya Rao",
+        contactEmail: "kavya@northstar.example",
+        contactPhone: null,
+        status: "ACTIVE",
+        version: 3,
+        signedUpAt: "2026-10-01T00:00:00Z",
+        source: "ADDED_BY_SAPLING",
+        submittedAt: null,
+        rm: null,
+        rmAssignedAt: null,
+        progress: {
+          detailsDone: false,
+          documentsUploaded: 1,
+          documentsApproved: 1,
+          documentsRequired: 5,
+          commercialDone: false,
+          rmAssigned: false,
+          clientDone: false,
+          missing: [],
+          done: 2,
+          total: 13,
+          percent: 15,
+        },
+        gstin: null,
+        pan: null,
+        billingAddress: null,
+        billingTerms: null,
+        note: null,
+        packages: [],
+        documents: [
+          document("AGREEMENT", "Service agreement (MSA)", {
+            id: "file-1",
+            revision: 1,
+            status: "APPROVED",
+            name: "msa.pdf",
+            mimeType: "application/pdf",
+            sizeBytes: 1000,
+            uploadedAt: "2026-10-02T00:00:00Z",
+            reviewNotes: null,
+            reviewedAt: null,
+            version: 1,
+          }),
+          document("PAN", "Company PAN card", null),
+        ],
+        flags: { personalEmail: false, possibleDuplicates: [] },
+        rates: [],
+        catalog: [],
+        timeline: [],
+        canManage: true,
+        canSetUp: true,
+        canSetPrice: false,
+        canMessage: true,
+      },
+    }),
+  );
+  await page.goto("/spoc-rm/clients/c-1?tab=documents");
+  const list = page.getByRole("list", { name: "Company documents" });
+  await expect(list.getByText("msa.pdf")).toBeVisible();
+  await expect(list.getByText("Not uploaded yet")).toBeVisible();
+  await page.getByRole("link", { name: /Add or review documents/ }).click();
+  await expect(page).toHaveURL(/\/spoc-rm\/onboarding\?company=c-1/);
+  await expect(
+    page.getByRole("dialog").getByRole("button", { name: "Edit details" }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("navigation", { name: "Back to client" })).toContainText(
+    "Northstar Labs",
+  );
+});
+
 test("RM resets a Client Admin's password from the client's Logins tab", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const { resets } = await clientProfileFixture(page);

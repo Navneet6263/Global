@@ -26,8 +26,8 @@ function RmOnboardingPage() {
         <div>
           <h1>Onboarding companies</h1>
           <p>
-            Self sign-up companies assigned to you. Review their documents, choose packages and
-            approve them yourself.
+            Your companies, whether they registered themselves or were added by Sapling. Add or
+            review documents, choose packages and approve them yourself.
           </p>
         </div>
       </header>

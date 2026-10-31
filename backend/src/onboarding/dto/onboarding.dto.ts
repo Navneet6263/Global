@@ -58,6 +58,11 @@ export class OnboardingDocumentParamsDto {
   @IsIn(ONBOARDING_DOCUMENT_TYPES) type!: string;
 }
 
+export class CompanyDocumentParamsDto {
+  @IsUUID() clientId!: string;
+  @IsIn(ONBOARDING_DOCUMENT_TYPES) type!: string;
+}
+
 export class OnboardingUploadQueryDto {
   /** Signing date for signed contracts (AGREEMENT, DPA, NDA); defaults to today. */
   @IsOptional()

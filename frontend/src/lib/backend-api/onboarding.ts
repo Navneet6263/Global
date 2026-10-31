@@ -24,6 +24,8 @@ export interface OnboardingDocument {
     reviewedAt: string | null;
     version: number;
     uploadedBy?: string;
+    /** The viewer uploaded this file, so a different colleague must review it. */
+    uploadedByMe?: boolean;
   } | null;
 }
 
@@ -51,6 +53,7 @@ export interface OnboardingSummary {
   status: "ONBOARDING" | "ACTIVE" | "SUSPENDED";
   version: number;
   signedUpAt: string | null;
+  source?: "SELF_SIGNUP" | "ADDED_BY_SAPLING";
   submittedAt: string | null;
   rm: { id: string; name: string; email: string; phone: string | null } | null;
   rmAssignedAt: string | null;
@@ -82,6 +85,8 @@ export interface OnboardingDetail extends OnboardingCompany {
   catalog: Array<{ id: string; name: string; price: number | null; tatHours: number }>;
   timeline: Array<{ action: string; at: string; by: string }>;
   canManage: boolean;
+  /** May add details, documents and packages (Platform Admin too; it cannot approve). */
+  canSetUp?: boolean;
   /** Operations sets any price; the company's RM uses list prices plus a limited discount. */
   canSetPrice?: boolean;
   canMessage: boolean;
@@ -183,6 +188,42 @@ export function reviewOnboardingDocument(
       method: "POST",
       body: JSON.stringify({ ...input, version: document.file?.version }),
     },
+  );
+}
+
+export function updateOnboardingCompany(
+  clientId: string,
+  input: {
+    version: number;
+    legalName: string;
+    displayName: string;
+    gstin?: string;
+    pan?: string;
+    billingAddress?: string;
+    contactName?: string;
+    contactPhone?: string;
+  },
+) {
+  return apiRequest<OnboardingDetail>(`/onboarding/companies/${clientId}/company`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
+/** The team uploads a document for the company. */
+export async function uploadOnboardingDocument(
+  clientId: string,
+  type: string,
+  file: File,
+  signedOn?: string,
+) {
+  const body = new FormData();
+  body.append("file", file, file.name);
+  const digest = await fileSha256(file);
+  const query = signedOn ? `?signedOn=${encodeURIComponent(signedOn)}` : "";
+  return apiRequest<OnboardingDetail>(
+    `/onboarding/companies/${clientId}/documents/${type}${query}`,
+    { method: "POST", headers: { "x-content-sha256": digest }, body },
   );
 }
 

@@ -174,11 +174,12 @@ function ClientsPage() {
             onSuccess: (client) => {
               setCreating(false);
               toast.success(`${client.name} onboarded`, {
-                description: "Next: assign its RM, then create its Client Admin in User IDs.",
+                description:
+                  "Next: add its documents, packages and RM. It goes live once approved.",
                 action: {
-                  label: "Assign RM",
+                  label: "Set up",
                   onClick: () =>
-                    void navigate({ to: "/admin/company-rms", search: { q: client.code } }),
+                    void navigate({ to: "/admin/onboarding", search: { company: client.id } }),
                 },
               });
             },

@@ -3,14 +3,17 @@ import {
   FolderOpen,
   IndianRupee,
   KeyRound,
+  FileCheck2,
   LayoutDashboard,
   Package,
   type LucideIcon,
 } from "lucide-react";
 
-export type ProfileTab = "overview" | "cases" | "reports" | "billing" | "packages" | "logins";
+export type ProfileTab =
+  "overview" | "documents" | "cases" | "reports" | "billing" | "packages" | "logins";
 export const PROFILE_TABS: ReadonlyArray<{ id: ProfileTab; label: string; icon: LucideIcon }> = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "documents", label: "Documents", icon: FileCheck2 },
   { id: "cases", label: "Cases", icon: FolderOpen },
   { id: "reports", label: "Reports & MIS", icon: BarChart3 },
   { id: "billing", label: "Billing", icon: IndianRupee },

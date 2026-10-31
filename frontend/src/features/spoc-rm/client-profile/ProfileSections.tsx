@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight, FileText, KeyRound, Mail } from "lucide-react";
 import { toast } from "sonner";
@@ -10,6 +10,8 @@ import { PaginationBar } from "@/components/layout/pagination-bar";
 import { Button } from "@/components/ui/button";
 import type { TemporaryPasswordReceipt } from "@/features/users/components/temporary-password-dialog";
 import { temporaryPassword } from "@/lib/auth/temporary-password";
+import { DocChip } from "@/features/onboarding/onboarding-ui";
+import { getOnboarding } from "@/lib/backend-api/onboarding";
 import { downloadCaseReport } from "@/lib/backend-api/reports";
 import {
   resetRmClientAdminPassword,
@@ -63,7 +65,7 @@ export function Detail({ label: title, children }: { label: string; children: Re
   );
 }
 
-export type WorkPage = "records" | "mis" | "pricing" | "payments";
+export type WorkPage = "records" | "mis" | "pricing" | "payments" | "setup";
 
 /** A link to another RM page, opened for this client, that remembers where to come back. */
 export function WorkLink({
@@ -95,6 +97,12 @@ export function WorkLink({
   if (page === "mis")
     return (
       <Link to="/spoc-rm/mis" search={{ client: client.id }} {...props}>
+        {body}
+      </Link>
+    );
+  if (page === "setup")
+    return (
+      <Link to="/spoc-rm/onboarding" search={{ company: client.id }} {...props}>
         {body}
       </Link>
     );
@@ -193,6 +201,53 @@ export function ProfileLogins({
   );
 }
 
+export function ProfileDocuments({ profile }: { profile: RmClientProfile }) {
+  const detail = useQuery({
+    queryKey: ["onboarding", "detail", profile.company.id],
+    queryFn: () => getOnboarding(profile.company.id),
+  });
+  const documents = detail.data?.documents ?? [];
+  return (
+    <Card
+      title="Documents"
+      hint="Agreements and KYC for this company. Add, replace or review them in Company onboarding."
+      action={
+        <WorkLink client={profile.company} page="setup">
+          Add or review documents
+        </WorkLink>
+      }
+    >
+      {detail.isError ? (
+        <ErrorState
+          description={detail.error.message}
+          onRetry={() => void detail.refetch()}
+          retrying={detail.isFetching}
+        />
+      ) : !detail.data ? (
+        <TableSkeleton rows={5} />
+      ) : (
+        <ul className="grid gap-2" aria-label="Company documents">
+          {documents.map((document) => (
+            <li
+              key={document.type}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 px-4 py-3"
+            >
+              <span className="min-w-0">
+                <strong className="block text-[13.5px] text-slate-900">{document.label}</strong>
+                <small className="text-[12px] text-slate-500">
+                  {document.file ? document.file.name : "Not uploaded yet"}
+                  {document.required ? "" : " · optional"}
+                </small>
+              </span>
+              <DocChip state={document.state} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
 export function ProfilePackages({ profile }: { profile: RmClientProfile }) {
   return (
     <Card
@@ -203,9 +258,14 @@ export function ProfilePackages({ profile }: { profile: RmClientProfile }) {
           : "No agreement set, so every active package at its list price."
       }
       action={
-        <WorkLink client={profile.company} page="pricing">
-          Change discount
-        </WorkLink>
+        <div className="flex flex-wrap gap-2">
+          <WorkLink client={profile.company} page="setup">
+            Change packages
+          </WorkLink>
+          <WorkLink client={profile.company} page="pricing">
+            Change discount
+          </WorkLink>
+        </div>
       }
     >
       {profile.packages.items.length ? (

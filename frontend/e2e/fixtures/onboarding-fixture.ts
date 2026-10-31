@@ -38,7 +38,13 @@ export async function onboardingFixture(page: Page, start: Who) {
     billingAddress: "Baner Road, Pune 411045" as string | null,
     files: new Map<
       string,
-      { status: string; name: string; reviewNotes: string | null; version: number }
+      {
+        status: string;
+        name: string;
+        reviewNotes: string | null;
+        version: number;
+        uploadedByMe?: boolean;
+      }
     >([
       [
         "AGREEMENT",
@@ -131,7 +137,12 @@ export async function onboardingFixture(page: Page, start: Who) {
               reviewNotes: file.reviewNotes,
               reviewedAt: file.status === "PENDING" ? null : iso(-20),
               version: file.version,
-              ...(internal ? { uploadedBy: "Riya Mehta" } : {}),
+              ...(internal
+                ? {
+                    uploadedBy: file.uploadedByMe ? "You" : "Riya Mehta",
+                    uploadedByMe: file.uploadedByMe === true,
+                  }
+                : {}),
             }
           : null,
       };
@@ -152,7 +163,8 @@ export async function onboardingFixture(page: Page, start: Who) {
     ],
     // Operations, or the company's assigned RM (Arjun), approves; only Operations sets prices.
     canManage: who === "OPS" || who === "RM",
-    canSetPrice: who === "OPS",
+    canSetUp: who === "OPS" || who === "RM" || who === "ADMIN",
+    canSetPrice: who === "OPS" || who === "ADMIN",
     canMessage: who === "OPS" || who === "RM",
   });
   const session = () => {
@@ -407,6 +419,26 @@ export async function onboardingFixture(page: Page, start: Who) {
         status: input.status,
         reviewNotes: input.notes,
         version: file.version + 1,
+      });
+      state.version += 1;
+      return reply(detail());
+    }
+    if (path === "/onboarding/companies/client-acme/company" && method === "PATCH") {
+      const input = body as { gstin?: string; pan?: string; billingAddress?: string };
+      state.gstin = input.gstin ?? state.gstin;
+      state.pan = input.pan ?? state.pan;
+      state.billingAddress = input.billingAddress ?? state.billingAddress;
+      state.version += 1;
+      return reply(detail());
+    }
+    const teamUpload = path.match(/^\/onboarding\/companies\/client-acme\/documents\/([A-Z_]+)$/);
+    if (teamUpload && method === "POST") {
+      state.files.set(teamUpload[1]!, {
+        status: "PENDING",
+        name: "team-upload.pdf",
+        version: 1,
+        reviewNotes: null,
+        uploadedByMe: true,
       });
       state.version += 1;
       return reply(detail());

@@ -31,6 +31,7 @@ import {
   Detail,
   ProfileBilling,
   ProfileCases,
+  ProfileDocuments,
   ProfileLogins,
   ProfilePackages,
   WorkLink,
@@ -213,6 +214,7 @@ export function ClientProfilePage({
         </nav>
         <div className="space-y-5 bg-slate-50/60 p-4 sm:p-6">
           {tab === "overview" ? <Overview profile={data} onTab={onTab} /> : null}
+          {tab === "documents" ? <ProfileDocuments profile={data} /> : null}
           {tab === "cases" ? <ProfileCases profile={data} /> : null}
           {tab === "reports" ? (
             <>
@@ -296,6 +298,9 @@ function Overview({
           hint="Opens the page with this client; a bar brings you back here."
         >
           <div className="flex flex-wrap gap-2">
+            <WorkLink client={company} page="setup">
+              Documents &amp; packages
+            </WorkLink>
             <WorkLink client={company} page="records">
               Cases in Records
             </WorkLink>

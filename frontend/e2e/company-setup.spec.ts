@@ -28,14 +28,15 @@ async function mockCreate(page: Page) {
 
 async function addCompany(page: Page) {
   await page.getByRole("button", { name: "Add company" }).click();
-  const dialog = page.getByRole("dialog");
+  const dialog = page.getByRole("dialog", { name: "Onboard a client" });
   await dialog.getByLabel("Company name").fill("Nova Foods");
   await dialog.getByLabel("Primary contact").fill("Asha Rao");
   await dialog.getByLabel("Contact email").fill("asha@novafoods.example");
   await dialog.getByRole("button", { name: "Create client" }).click();
   await expect(dialog).toHaveCount(0);
   await expect(page.getByText("Nova Foods added")).toBeVisible();
-  await expect(page).toHaveURL(/q=NOVAFOODS/);
+  // A new company goes straight to its set-up: documents, packages and RM.
+  await expect(page).toHaveURL(/onboarding\?company=client-nova/);
 }
 
 test("Operations adds a company from Companies & RMs", async ({ page }) => {

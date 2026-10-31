@@ -64,8 +64,8 @@ function ClientAccount({ client }: { client: ClientOrganisation }) {
 
       {client.status === "onboarding" ? (
         <p className="rounded-xl border border-warning/20 bg-warning-soft/40 p-3 text-xs text-muted-foreground">
-          Complete billing address, terms, enabled packages and signed agreement/DPA references
-          under Commercial. Then choose Activate client from the account actions.
+          Add this company's details, documents and packages in Company onboarding. Operations or
+          its RM approves it there.
         </p>
       ) : null}
       <Tabs defaultValue={client.status === "onboarding" ? "commercial" : "contacts"}>

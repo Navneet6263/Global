@@ -257,7 +257,8 @@ export class UsersService {
             where: {
               tenantId: actor.tenantId,
               publicId: input.clientId,
-              status: "ACTIVE",
+              // A company being set up gets its Client Admin before it goes live.
+              status: { in: ["ACTIVE", "ONBOARDING"] },
             },
             select: { id: true },
           })

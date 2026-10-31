@@ -51,6 +51,7 @@ const companySelect = {
   billingTerms: true,
   version: true,
   selfSignupAt: true,
+  createdAt: true,
   onboardingSubmittedAt: true,
   onboardingNote: true,
   primaryRmUserId: true,
@@ -90,6 +91,7 @@ const companySelect = {
           reviewNotes: true,
           reviewedAt: true,
           version: true,
+          uploadedById: true,
           uploadedBy: { select: { displayName: true } },
         },
       },
@@ -102,11 +104,13 @@ type CompanyRow = Prisma.ClientGetPayload<{ select: typeof companySelect }>;
 const MANAGER_ROLES = ["OPS_MANAGER"];
 
 /**
- * Self sign-up onboarding. The company admin fills details and uploads documents; the
- * Operations Manager, or the company's assigned RM, reviews documents, sets the contracted
- * packages and activates (or rejects). An RM uses the package list prices and gives a
- * discount only within the package limit Operations set (Client pricing). Platform Admin
- * can see everything but changes nothing. Every step is audited.
+ * Company onboarding, the same for every company however it was created. The company admin
+ * or the team fills details and uploads documents; the Operations Manager, or the company's
+ * assigned RM, reviews documents and activates (or rejects). Packages are set here too. An
+ * RM uses the package list prices and gives a discount only within the package limit
+ * Operations set (Client pricing). Platform Admin may set up a company (details, documents,
+ * packages) but never reviews or approves. The uploader can never approve its own file.
+ * Every step is audited.
  */
 @Injectable()
 export class OnboardingService {
@@ -128,6 +132,16 @@ export class OnboardingService {
   async updateCompany(actor: Actor, input: OnboardingCompanyDto) {
     const row = await this.ownCompany(actor);
     this.assertOnboarding(row);
+    await this.saveDetails(actor, row, input, ["ONBOARDING"]);
+    return this.mine(actor);
+  }
+
+  private async saveDetails(
+    actor: Actor,
+    row: CompanyRow,
+    input: OnboardingCompanyDto,
+    statuses: string[],
+  ) {
     const data = {
       legalName: input.legalName,
       displayName: input.displayName,
@@ -139,7 +153,11 @@ export class OnboardingService {
     };
     await this.prisma.$transaction(async (tx) => {
       const changed = await tx.client.updateMany({
-        where: { id: row.id, version: input.version, status: "ONBOARDING" },
+        where: {
+          id: row.id,
+          version: input.version,
+          status: { in: statuses },
+        },
         data: { ...data, version: { increment: 1 } },
       });
       if (!changed.count)
@@ -163,7 +181,6 @@ export class OnboardingService {
         },
       });
     });
-    return this.mine(actor);
   }
 
   async uploadDocument(
@@ -172,14 +189,45 @@ export class OnboardingService {
     signedOn: string | undefined,
     file: UploadedBinary,
   ) {
-    const definition = ONBOARDING_DOCUMENTS.find((row) => row.type === type);
-    if (!definition) throw new BadRequestException("Unknown document type");
     const row = await this.ownCompany(actor);
     this.assertOnboarding(row);
     if (documentState(row, type) === "APPROVED")
       throw new ConflictException(
-        `${definition.label} is already approved. Ask your RM if it must be replaced.`,
+        "This document is already approved. Ask your RM if it must be replaced.",
       );
+    const uploaded = await this.storeDocument(
+      actor,
+      row,
+      type,
+      signedOn,
+      file,
+      "uploaded by the company",
+    );
+    if (row.onboardingSubmittedAt) {
+      // A re-upload after review goes straight back to Operations and the RM.
+      await this.notifyTeam(actor.tenantId, row, {
+        type: "ONBOARDING_DOCUMENT",
+        title: "Onboarding document re-uploaded",
+        body: `${row.displayName} uploaded ${uploaded.label} for review.`,
+      });
+    }
+    return {
+      id: uploaded.id,
+      revision: uploaded.revision,
+      company: await this.mine(actor),
+    };
+  }
+
+  private async storeDocument(
+    actor: Actor,
+    row: CompanyRow,
+    type: string,
+    signedOn: string | undefined,
+    file: UploadedBinary,
+    source: string,
+  ) {
+    const definition = ONBOARDING_DOCUMENTS.find((item) => item.type === type);
+    if (!definition) throw new BadRequestException("Unknown document type");
     const signedAt =
       definition.signed && signedOn
         ? new Date(`${signedOn}T00:00:00.000Z`)
@@ -192,7 +240,7 @@ export class OnboardingService {
         data: {
           clientId: row.id,
           type,
-          reference: `${definition.label} (uploaded by the company)`,
+          reference: `${definition.label} (${source})`,
           signedAt,
         },
         select: { publicId: true },
@@ -212,15 +260,7 @@ export class OnboardingService {
       agreement.publicId,
       file,
     );
-    if (row.onboardingSubmittedAt) {
-      // A re-upload after review goes straight back to Operations and the RM.
-      await this.notifyTeam(actor.tenantId, row, {
-        type: "ONBOARDING_DOCUMENT",
-        title: "Onboarding document re-uploaded",
-        body: `${row.displayName} uploaded ${definition.label} for review.`,
-      });
-    }
-    return { ...uploaded, company: await this.mine(actor) };
+    return { ...uploaded, label: definition.label };
   }
 
   async submit(actor: Actor, input: OnboardingSubmitDto) {
@@ -277,7 +317,6 @@ export class OnboardingService {
     const search = query.search?.trim();
     const base: Prisma.ClientWhereInput = {
       ...this.scope(actor),
-      selfSignupAt: { not: null },
       ...(status === "ALL" ? {} : { status }),
       ...(search
         ? {
@@ -302,7 +341,7 @@ export class OnboardingService {
       this.prisma.client.findMany({
         where,
         select: companySelect,
-        orderBy: [{ onboardingSubmittedAt: "desc" }, { selfSignupAt: "desc" }],
+        orderBy: [{ onboardingSubmittedAt: "desc" }, { createdAt: "desc" }],
         skip: (page - 1) * pageSize,
         take: pageSize,
       }),
@@ -365,7 +404,7 @@ export class OnboardingService {
       }),
     ]);
     return {
-      ...this.present(row, true),
+      ...this.present(row, true, actor.userId),
       flags: this.flags(row, duplicates.get(row.publicId) ?? []),
       rates: row.packageRates.map((rate) => ({
         servicePackageId: rate.servicePackage.publicId,
@@ -387,8 +426,10 @@ export class OnboardingService {
         by: event.actor?.displayName ?? "System",
       })),
       canManage: this.isApprover(actor, row),
-      /** Operations sets any price; the RM uses list prices plus a limited discount. */
-      canSetPrice: this.isManager(actor),
+      /** May add details, documents and packages (Platform Admin too; no approvals). */
+      canSetUp: this.canSetUp(actor, row),
+      /** Operations and Admin set any price; the RM uses list prices plus a limited discount. */
+      canSetPrice: this.canSetPrice(actor),
       canMessage: this.isManager(actor) || actor.roles.includes("SPOC_RM"),
     };
   }
@@ -412,7 +453,7 @@ export class OnboardingService {
   ) {
     const row = await this.company(actor, clientId);
     this.assertApprover(actor, row);
-    this.assertOnboarding(row);
+    this.assertOpen(row);
     const agreement = row.agreements.find(
       (item) => item.publicId === agreementId,
     );
@@ -438,17 +479,57 @@ export class OnboardingService {
     input: OnboardingCommercialDto,
   ) {
     const row = await this.company(actor, clientId);
-    this.assertApprover(actor, row);
-    this.assertOnboarding(row);
+    this.assertCanSetUp(actor, row);
+    this.assertOpen(row);
     await this.commercial.update(actor, row.publicId, {
       version: input.version,
       gstin: row.gstin ?? undefined,
       billingAddress: row.billingAddress ?? undefined,
       billingTerms: input.billingTerms,
-      packages: this.isManager(actor)
+      packages: this.canSetPrice(actor)
         ? input.packages
         : await this.listPriced(actor, row, input.packages),
       agreements: [],
+    });
+    return this.detail(actor, clientId);
+  }
+
+  /** The team fills in a company's details (GSTIN, PAN, billing address...). */
+  async updateCompanyDetails(
+    actor: Actor,
+    clientId: string,
+    input: OnboardingCompanyDto,
+  ) {
+    const row = await this.company(actor, clientId);
+    this.assertCanSetUp(actor, row);
+    this.assertOpen(row);
+    await this.saveDetails(actor, row, input, ["ONBOARDING", "ACTIVE"]);
+    return this.detail(actor, clientId);
+  }
+
+  /** The team uploads a document for the company; a different colleague must review it. */
+  async uploadCompanyDocument(
+    actor: Actor,
+    clientId: string,
+    type: string,
+    signedOn: string | undefined,
+    file: UploadedBinary,
+  ) {
+    const row = await this.company(actor, clientId);
+    this.assertCanSetUp(actor, row);
+    this.assertOpen(row);
+    const uploaded = await this.storeDocument(
+      actor,
+      row,
+      type,
+      signedOn,
+      file,
+      "uploaded by Sapling",
+    );
+    await this.notifyTeam(actor.tenantId, row, {
+      type: "ONBOARDING_DOCUMENT",
+      title: "Onboarding document to review",
+      body: `${uploaded.label} was uploaded for ${row.displayName}. A different colleague must review it.`,
     });
     return this.detail(actor, clientId);
   }
@@ -459,7 +540,7 @@ export class OnboardingService {
         "Only Operations or the company RM can message the client",
       );
     const row = await this.company(actor, clientId);
-    this.assertOnboarding(row);
+    this.assertOpen(row);
     await this.messageClient(actor, row, input.message);
     return this.detail(actor, clientId);
   }
@@ -618,7 +699,7 @@ export class OnboardingService {
 
   // ---- helpers -------------------------------------------------------------------
 
-  private present(row: CompanyRow, internal: boolean) {
+  private present(row: CompanyRow, internal: boolean, viewerId?: bigint) {
     return {
       ...this.summary(row),
       contactPhone: row.contactPhone,
@@ -656,7 +737,10 @@ export class OnboardingService {
                 reviewedAt: file.reviewedAt,
                 version: file.version,
                 ...(internal
-                  ? { uploadedBy: file.uploadedBy.displayName }
+                  ? {
+                      uploadedBy: file.uploadedBy.displayName,
+                      uploadedByMe: file.uploadedById === viewerId,
+                    }
                   : {}),
               }
             : null,
@@ -675,7 +759,9 @@ export class OnboardingService {
       contactEmail: row.contactEmail,
       status: row.status,
       version: row.version,
-      signedUpAt: row.selfSignupAt,
+      /** When the company signed up, or when the team added it. */
+      signedUpAt: row.selfSignupAt ?? row.createdAt,
+      source: row.selfSignupAt ? "SELF_SIGNUP" : "ADDED_BY_SAPLING",
       submittedAt: row.onboardingSubmittedAt,
       rm: row.primaryRm
         ? {
@@ -777,10 +863,7 @@ export class OnboardingService {
   private async company(actor: Actor, clientId: string) {
     const row = await this.prisma.client.findFirst({
       where: {
-        AND: [
-          this.scope(actor),
-          { publicId: clientId, selfSignupAt: { not: null } },
-        ],
+        AND: [this.scope(actor), { publicId: clientId }],
       },
       select: companySelect,
     });
@@ -792,6 +875,27 @@ export class OnboardingService {
     if (row.status !== "ONBOARDING")
       throw new ConflictException(
         "Onboarding is already closed for this company",
+      );
+  }
+
+  /** Set-up stays possible after go-live (renewed agreements, changed packages). */
+  private assertOpen(row: { status: string }) {
+    if (row.status === "SUSPENDED")
+      throw new ConflictException("This company is suspended");
+  }
+
+  private canSetPrice(actor: Actor) {
+    return this.isManager(actor) || actor.roles.includes("PLATFORM_ADMIN");
+  }
+
+  private canSetUp(actor: Actor, row: { primaryRmUserId: bigint | null }) {
+    return this.isApprover(actor, row) || actor.roles.includes("PLATFORM_ADMIN");
+  }
+
+  private assertCanSetUp(actor: Actor, row: { primaryRmUserId: bigint | null }) {
+    if (!this.canSetUp(actor, row))
+      throw new ForbiddenException(
+        "Only Operations, Admin or the company's assigned RM can set up this company",
       );
   }
 

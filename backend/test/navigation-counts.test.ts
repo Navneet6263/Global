@@ -32,7 +32,7 @@ void test("sidebar counts preserve branch scope and never load complete records"
   assert.equal(result.counts.opsClientsWithoutRm, 1);
   assert.deepEqual(clientFilters, [
     { tenantId: 1n, status: "ACTIVE", primaryRmUserId: null },
-    { tenantId: 1n, status: "ONBOARDING", selfSignupAt: { not: null } },
+    { tenantId: 1n, status: "ONBOARDING" },
   ]);
   assert.equal(result.counts.opsSignups, 1);
   assert.equal(result.counts.criticalExceptions, 4);

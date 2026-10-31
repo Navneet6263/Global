@@ -73,8 +73,8 @@ const destinations: readonly WorkspaceDestination[] = [
     permission: "case:read",
   },
   {
-    label: "New sign-ups",
-    detail: "Self-registered companies: review documents and approve",
+    label: "Company onboarding",
+    detail: "Every company: documents, packages, RM and approval",
     to: "/operations/onboarding",
     terms: "signup sign-up register onboarding new company approve kyc agreement",
     permission: "client:read",
@@ -132,7 +132,7 @@ const destinations: readonly WorkspaceDestination[] = [
 
 const titles: Record<string, string> = {
   attention: "Needs attention",
-  onboarding: "New sign-ups",
+  onboarding: "Company onboarding",
   packages: "Packages & pricing",
   utv: "UTV bucket",
   annexure: "Team annexure",

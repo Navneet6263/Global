@@ -43,11 +43,14 @@ export function CompanyRmBoard({
   search,
   onChange,
   intakeRules = true,
+  onSetUp,
 }: {
   search: CompanySearch;
   onChange: (patch: Partial<CompanySearch>) => void;
   /** Intake rules stay an Operations decision; the Platform Admin only sets the RM. */
   intakeRules?: boolean;
+  /** Opens the company's documents and packages (Company onboarding). */
+  onSetUp?: (companyId: string) => void;
 }) {
   const [input, setInput] = useState(search.q ?? "");
   const [assigning, setAssigning] = useState<ClientRmRow>();
@@ -210,6 +213,16 @@ export function CompanyRmBoard({
                       <UserRoundCog aria-hidden />
                       {row.primaryRm ? "Change RM" : "Assign RM"}
                     </Button>
+                    {onSetUp ? (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => onSetUp(row.id)}
+                        aria-label={`Documents and packages for ${row.name}`}
+                      >
+                        Documents &amp; packages
+                      </Button>
+                    ) : null}
                     {intakeRules ? (
                       <Button
                         size="sm"

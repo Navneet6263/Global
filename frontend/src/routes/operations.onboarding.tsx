@@ -10,7 +10,7 @@ import { getSession } from "@/lib/api/auth";
 
 export const Route = createFileRoute("/operations/onboarding")({
   validateSearch: parseOnboardingSearch,
-  head: () => ({ meta: [{ title: "New sign-ups — Sapling Global Operations" }] }),
+  head: () => ({ meta: [{ title: "Company onboarding — Sapling Global Operations" }] }),
   component: OnboardingPage,
 });
 
@@ -27,10 +27,10 @@ function OnboardingPage() {
     <>
       <header className="client-heading">
         <div>
-          <h1>New sign-ups</h1>
+          <h1>Company onboarding</h1>
           <p>
-            Companies that registered themselves. Assign an RM, review their documents and approve
-            them to go live.
+            Every company in one place, whether it registered itself or you added it. Set its RM,
+            documents and packages, then approve it to go live.
           </p>
         </div>
       </header>

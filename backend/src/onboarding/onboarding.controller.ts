@@ -13,10 +13,15 @@ import {
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import type { FastifyRequest } from "fastify";
-import { CurrentActor, RequireRoles } from "../common/auth/auth.decorators";
+import {
+  AllowViewOnlyAdmin,
+  CurrentActor,
+  RequireRoles,
+} from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { withUploadedBinary } from "../common/http/upload-capacity";
 import {
+  CompanyDocumentParamsDto,
   OnboardingActivityQueryDto,
   OnboardingCommercialDto,
   OnboardingCompanyDto,
@@ -91,13 +96,16 @@ export class ClientOnboardingController {
 }
 
 /**
- * Operations reviews and approves self sign-ups; the company RM sees its companies and can
- * request information; Platform Admin sees all (read-only by the view-only guard).
+ * Every company's onboarding. Operations or the assigned RM review and approve; Platform
+ * Admin may also set a company up (details, documents, packages) but never approves.
  */
 @Controller("onboarding/companies")
 @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "SPOC_RM")
 export class OpsOnboardingController {
-  constructor(private readonly onboarding: OnboardingService) {}
+  constructor(
+    private readonly onboarding: OnboardingService,
+    private readonly config: ConfigService,
+  ) {}
 
   @Get()
   list(@CurrentActor() actor: Actor, @Query() query: OnboardingQueryDto) {
@@ -144,7 +152,41 @@ export class OpsOnboardingController {
     return this.onboarding.review(actor, clientId, agreementId, fileId, input);
   }
 
+  @Patch(":clientId/company")
+  @AllowViewOnlyAdmin()
+  updateCompany(
+    @CurrentActor() actor: Actor,
+    @Param("clientId", ParseUUIDPipe) clientId: string,
+    @Body() input: OnboardingCompanyDto,
+  ) {
+    return this.onboarding.updateCompanyDetails(actor, clientId, input);
+  }
+
+  @Post(":clientId/documents/:type")
+  @AllowViewOnlyAdmin()
+  uploadDocument(
+    @CurrentActor() actor: Actor,
+    @Param() params: CompanyDocumentParamsDto,
+    @Query() query: OnboardingUploadQueryDto,
+    @Req() request: FastifyRequest,
+  ) {
+    return withUploadedBinary(
+      request,
+      this.config,
+      `${actor.tenantPublicId}:${actor.userPublicId}`,
+      (file) =>
+        this.onboarding.uploadCompanyDocument(
+          actor,
+          params.clientId,
+          params.type,
+          query.signedOn,
+          file,
+        ),
+    );
+  }
+
   @Put(":clientId/commercial")
+  @AllowViewOnlyAdmin()
   commercial(
     @CurrentActor() actor: Actor,
     @Param("clientId", ParseUUIDPipe) clientId: string,

@@ -185,7 +185,7 @@ export function OperationsNavigation({ onNavigate }: { onNavigate?: () => void }
             badge: <Badge value={c.opsExceptions} tone="warning" />,
           })}
         {can("client:read") &&
-          link("New sign-ups", "/operations/onboarding", {
+          link("Company onboarding", "/operations/onboarding", {
             icon: Rocket,
             badge: <Badge value={c.opsSignups} tone="warning" />,
           })}

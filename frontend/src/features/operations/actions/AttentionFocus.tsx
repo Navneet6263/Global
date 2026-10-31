@@ -40,7 +40,7 @@ export function AttentionFocus() {
       search: { view: "without_rm" as const },
     },
     {
-      label: "New sign-ups",
+      label: "Company onboarding",
       value: c?.opsSignups,
       hint: "Review and approve",
       tone: "info",

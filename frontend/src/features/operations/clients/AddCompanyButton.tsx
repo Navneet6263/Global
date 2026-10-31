@@ -8,8 +8,8 @@ import { useCreateClient } from "@/features/clients/hooks/use-clients";
 import type { ClientOrganisation } from "@/lib/contracts/client";
 
 /**
- * Internal company set-up (no self sign-up) for Operations and Platform Admin. The new
- * company is active at once; the next steps are its RM and its Client Admin user ID.
+ * Internal company set-up for Operations and Platform Admin. The new company starts in
+ * onboarding, like a self sign-up: documents, packages and RM, then approval.
  */
 export function AddCompanyButton({
   onCreated,
@@ -35,7 +35,7 @@ export function AddCompanyButton({
               setOpen(false);
               toast.success(`${client.name} added`, {
                 description:
-                  "Next: assign its RM here, then create its Client Admin in User IDs & Access.",
+                  "Next: add its documents, packages and RM here. It goes live once approved.",
               });
               await queryClient.invalidateQueries({ queryKey: ["workflow", "client-rms"] });
               onCreated(client);

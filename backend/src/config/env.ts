@@ -122,6 +122,11 @@ const envSchema = z
     /** Accepted alias of SMTP_PASSWORD. */
     SMTP_PASS: z.string().optional(),
     SMTP_FROM: z.string().optional(),
+    /** Alternative names for the SMTP settings, used when SMTP_HOST is not set. */
+    RESET_MAIL_HOST: z.string().optional(),
+    RESET_MAIL_PORT: z.coerce.number().int().positive().optional(),
+    RESET_MAIL_USER: z.string().optional(),
+    RESET_MAIL_PASS: z.string().optional(),
     /** Public company sign-up: the new company admin lands in Onboarding mode. */
     SELF_SIGNUP_ENABLED: booleanString("true"),
     SELF_SIGNUP_TENANT_CODE: z.string().default("SAPLING"),
@@ -417,11 +422,15 @@ const envSchema = z
           "Azure storage requires an account URL for managed identity or a connection string",
       });
     }
-    if (value.SMTP_HOST && !value.SMTP_FROM) {
+    // RESET_MAIL_* may leave SMTP_FROM out: mail then goes from RESET_MAIL_USER.
+    if (
+      !value.SMTP_FROM &&
+      (value.SMTP_HOST || (value.RESET_MAIL_HOST && !value.RESET_MAIL_USER))
+    ) {
       context.addIssue({
         code: "custom",
         path: ["SMTP_FROM"],
-        message: "SMTP_FROM is required when SMTP_HOST is set",
+        message: "SMTP_FROM is required when a mail host is set",
       });
     }
     if (value.MALWARE_SCAN_REQUIRED && !value.CLAMAV_HOST) {

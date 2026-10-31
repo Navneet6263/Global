@@ -146,12 +146,11 @@ export class NavigationCountsService {
           primaryRmUserId: null,
         },
       }),
-      // Self sign-up companies still in onboarding (Operations approves them).
+      // Companies still in onboarding (Operations approves them).
       this.prisma.client.count({
         where: {
           tenantId: actor.tenantId,
           status: "ONBOARDING",
-          selfSignupAt: { not: null },
         },
       }),
       this.prisma.verificationCase.count({

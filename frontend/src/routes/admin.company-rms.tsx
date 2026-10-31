@@ -22,13 +22,14 @@ function AdminCompanyRmsPage() {
         actions={
           <AddCompanyButton
             onCreated={(client) =>
-              void navigate({ search: { q: client.code }, resetScroll: false })
+              void navigate({ to: "/admin/onboarding", search: { company: client.id } })
             }
           />
         }
       />
       <CompanyRmBoard
         search={search}
+        onSetUp={(company) => void navigate({ to: "/admin/onboarding", search: { company } })}
         intakeRules={false}
         onChange={(patch) =>
           void navigate({ search: (current) => ({ ...current, ...patch }), resetScroll: false })

@@ -109,7 +109,7 @@ test("Operations reviews a sign-up: flags, document approval and activation guar
   await page.setViewportSize({ width: 1440, height: 1000 });
   const fixture = await onboardingFixture(page, "OPS");
   await page.goto("/operations/onboarding");
-  await expect(page.getByRole("heading", { name: "New sign-ups", level: 1 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Company onboarding", level: 1 })).toBeVisible();
   const list = page.getByRole("list", { name: "Sign-up companies" });
   await expect(list.getByText("Personal email")).toBeVisible();
   await expect(list.getByText("Possible duplicate")).toBeVisible();
@@ -157,15 +157,63 @@ test("company activity is grouped by day, filterable and paged", async ({ page }
   await expect(activity.getByRole("button", { name: "Older activity" })).toHaveCount(0);
 });
 
-test("Platform Admin sees sign-ups read-only", async ({ page }) => {
+test("Platform Admin sets a company up but cannot approve it", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await onboardingFixture(page, "ADMIN");
+  const fixture = await onboardingFixture(page, "ADMIN");
   await page.goto("/admin/onboarding?company=client-acme");
   const sheet = page.getByRole("dialog");
-  await expect(sheet.getByText("View only")).toBeVisible();
   await expect(sheet.getByRole("button", { name: "Approve & activate" })).toHaveCount(0);
-  await expect(sheet.getByRole("button", { name: "Approve" })).toHaveCount(0);
-  await expect(sheet.getByRole("button", { name: /Assign RM|Change RM/ })).toHaveCount(0);
+  await expect(sheet.getByRole("button", { name: "Approve", exact: true })).toHaveCount(0);
+  await expect(sheet.getByRole("button", { name: /Assign RM|Change RM/ })).toBeVisible();
+  await expect(sheet.getByRole("button", { name: "Edit details" })).toBeVisible();
+  await sheet.getByRole("checkbox", { name: "Enable Basic employee check" }).click();
+  await sheet.getByRole("button", { name: "Save packages" }).click();
+  await expect
+    .poll(() =>
+      fixture.requests.some(
+        (entry) =>
+          entry.method === "PUT" && entry.path === "/onboarding/companies/client-acme/commercial",
+      ),
+    )
+    .toBe(true);
+});
+
+test("Operations sets up a company in one place: details, documents and packages", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  const fixture = await onboardingFixture(page, "OPS");
+  await page.goto("/operations/onboarding?company=client-acme");
+  const sheet = page.getByRole("dialog");
+
+  await sheet.getByRole("button", { name: "Edit details" }).click();
+  await sheet.getByLabel("Billing address").fill("MG Road, Bengaluru");
+  await sheet.getByRole("button", { name: "Save details" }).click();
+  await expect
+    .poll(
+      () =>
+        fixture.requests.find(
+          (entry) =>
+            entry.method === "PATCH" && entry.path === "/onboarding/companies/client-acme/company",
+        )?.body,
+    )
+    .toMatchObject({ billingAddress: "MG Road, Bengaluru" });
+
+  const row = sheet.getByRole("listitem").filter({ hasText: "Certificate of incorporation" });
+  await expect(row.getByText("Not uploaded yet.")).toBeVisible();
+  await row.getByLabel("Upload Certificate of incorporation").setInputFiles({
+    name: "incorporation.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("%PDF-1.4 test"),
+  });
+  // The uploader can never approve its own file.
+  await expect(row.getByText(/a different colleague must review it/)).toBeVisible();
+  await expect(row.getByText(/^Review:/)).toHaveCount(0);
+  await expect(row.getByRole("button", { name: "Approve", exact: true })).toHaveCount(0);
+  await expect(row.getByRole("button", { name: "Replace" })).toBeVisible();
+
+  await expect(sheet.getByRole("checkbox", { name: "Enable Basic employee check" })).toBeVisible();
+  await page.screenshot({ path: "test-results/company-setup-sheet.png" });
 });
 
 test("the company's RM approves the sign-up itself: list prices and a discount within the limit", async ({

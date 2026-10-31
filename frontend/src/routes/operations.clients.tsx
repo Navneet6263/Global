@@ -20,11 +20,14 @@ function CompaniesPage() {
           <p>Assign one RM to each company. Its cases reach that RM automatically.</p>
         </div>
         <AddCompanyButton
-          onCreated={(client) => void navigate({ search: { q: client.code }, resetScroll: false })}
+          onCreated={(client) =>
+            void navigate({ to: "/operations/onboarding", search: { company: client.id } })
+          }
         />
       </header>
       <CompanyRmBoard
         search={search}
+        onSetUp={(company) => void navigate({ to: "/operations/onboarding", search: { company } })}
         onChange={(patch) =>
           void navigate({ search: (current) => ({ ...current, ...patch }), resetScroll: false })
         }
