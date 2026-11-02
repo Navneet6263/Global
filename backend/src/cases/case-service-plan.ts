@@ -1,3 +1,4 @@
+import { checkRequirements } from "./check-requirements";
 import {
   BadRequestException,
   ConflictException,
@@ -246,6 +247,7 @@ export async function caseServiceCatalog(
           serviceFamily: pkg.serviceFamily,
           checks: packageChecks(pkg.checksJson),
           requiredDocuments: stringList(pkg.requiredDocumentsJson),
+          checkRequirements: checkRequirements(packageChecks(pkg.checksJson)),
           ...(!client || commercialAccess
             ? {
                 price: pricing.full,

@@ -210,3 +210,16 @@ void test("role edit DTO rejects empty, duplicate and over-limit roles", async (
     0,
   );
 });
+
+void test("editing someone's teams does not re-judge roles they already hold", async () => {
+  const setup = fixture(["PLATFORM_ADMIN", "VERIFIER"]);
+  await setup.service.update(actor, "target", {
+    version: 4,
+    roleCodes: ["PLATFORM_ADMIN", "VERIFIER"],
+    additionalAccessConfirmed: true,
+  });
+  assert.equal(
+    setup.writes.some((row) => row.kind === "user"),
+    true,
+  );
+});

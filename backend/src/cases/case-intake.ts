@@ -1,3 +1,4 @@
+import { requiredDocumentsForChecks } from "./check-requirements";
 import { BadRequestException, ConflictException } from "@nestjs/common";
 import { randomUUID } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
@@ -110,7 +111,10 @@ export async function createVerificationCase(
           servicePackageId: service.pkg.id,
           serviceFamily: service.pkg.serviceFamily,
           configurationJson: JSON.stringify(service.details),
-          requiredDocumentsJson: service.pkg.requiredDocumentsJson,
+          requiredDocumentsJson: requiredDocumentsForChecks(
+            service.pkg.requiredDocumentsJson,
+            service.checks,
+          ),
           unitPrice: service.unitPrice,
           taxRate: service.taxRate,
           tatHours: service.tatHours,

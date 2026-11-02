@@ -5,6 +5,7 @@ import { ClientReviewController } from "./client-review.controller";
 import { ClientReviewService } from "./client-review.service";
 import { ClientsService } from "./clients.service";
 import { CasesModule } from "../cases/cases.module";
+import { BulkIntakeController } from "./bulk-intake.controller";
 import { ClientIntakeController } from "./client-intake.controller";
 import { ClientCommercialController } from "./client-commercial.controller";
 import { ClientCommercialService } from "./client-commercial.service";
@@ -17,6 +18,7 @@ import { DocumentsModule } from "../documents/documents.module";
   controllers: [
     ClientsController,
     ClientIntakeController,
+    BulkIntakeController,
     ClientCommercialController,
     ClientAgreementFilesController,
     ClientAccountController,

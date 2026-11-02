@@ -40,7 +40,8 @@ export function OpsPeople() {
   });
   const refuse = () =>
     toast.error("Not available", {
-      description: "Operations can change only the IDs it may create. Ask the Platform Admin.",
+      description:
+        "Operations can change only the IDs it may create. To make this person a Team Leader, use Departments & teams: Add member, then tick Team Leader.",
     });
 
   return (

@@ -52,6 +52,8 @@ import { dueLabel, readableCheck, sinceLabel } from "./flow-model";
 export type TeamView = "unassigned" | "review" | "mine" | "team" | "all";
 
 export interface TeamSearch {
+  /** Show one team only, chosen from the role dropdown. */
+  department?: string;
   view?: Exclude<TeamView, "unassigned">;
   q?: string;
   page?: number;
@@ -111,9 +113,12 @@ export function TeamQueue({
   const [reviewing, setReviewing] = useState<TeamTask>();
   useEffect(() => setInput(search.q ?? ""), [search.q]);
   const queue = useQuery({
-    queryKey: ["workflow", "team-queue", view, search.q ?? "", page],
+    queryKey: ["workflow", "team-queue", view, search.q ?? "", page, search.department ?? ""],
     queryFn: ({ signal }) =>
-      getTeamQueue({ view, search: search.q, page, pageSize: PAGE_SIZE }, signal),
+      getTeamQueue(
+        { view, search: search.q, page, pageSize: PAGE_SIZE, departmentId: search.department },
+        signal,
+      ),
     placeholderData: keepPreviousData,
     refetchInterval: 60_000,
   });

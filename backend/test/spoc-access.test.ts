@@ -178,6 +178,13 @@ void test("the only SPOC_RM write handlers are vendor assign, re-assign and re-u
  * workflow actions (each re-checks case ownership) and read-only case evidence.
  */
 const RM_ALLOWED_HANDLERS = new Set([
+  "BulkIntakeController",
+  "BulkIntakeController.clients",
+  "BulkIntakeController.catalog",
+  "BulkIntakeController.constructor",
+  "BulkIntakeController.create",
+  "BulkIntakeController.clientScope",
+  "BulkIntakeController.assertClient",
   // The standard colour matrix and the proof on the RM's own cases (final review).
   "WorkflowController.colourMatrix",
   "CheckEvidenceController",

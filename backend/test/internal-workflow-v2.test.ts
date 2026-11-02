@@ -11,7 +11,10 @@ import { CaseWorkflowPolicy } from "../src/cases/case-workflow.policy";
 import type { PrismaService } from "../src/database/prisma.service";
 import { assertFinalApprover } from "../src/reports/manager-review.service";
 import { IntakeService } from "../src/workflow/intake.service";
-import { RoutingService } from "../src/workflow/routing.service";
+import {
+  RoutingService,
+  departmentsForChecks,
+} from "../src/workflow/routing.service";
 
 const UUID = (n: number) =>
   `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
@@ -602,4 +605,81 @@ void test("an RM who also holds Data Entry may take the data entry itself, no te
     ),
     /departmentMemberships/,
   );
+});
+
+void test("after Data Entry each check goes to the first department with a Team Leader", () => {
+  const lead = [{ role: "LEAD" }];
+  const plan = departmentsForChecks(
+    [
+      { publicId: "a", type: "EMPLOYMENT" },
+      { publicId: "b", type: "EDUCATION" },
+      { publicId: "c", type: "CRIMINAL" },
+    ],
+    [
+      {
+        publicId: "no-lead",
+        checkTypesJson: '["EMPLOYMENT"]',
+        members: [{ role: "MEMBER" }],
+      },
+      { publicId: "emp", checkTypesJson: '["EMPLOYMENT"]', members: lead },
+      { publicId: "edu", checkTypesJson: '["EDUCATION"]', members: lead },
+    ],
+  );
+  assert.equal(plan.requested.get("a"), "emp");
+  assert.equal(plan.requested.get("b"), "edu");
+  assert.deepEqual(plan.missing, ["CRIMINAL"]);
+});
+
+const readyCase = () =>
+  v2Case({
+    intakeStage: "READY",
+    checks: [
+      {
+        id: 1n,
+        publicId: UUID(101),
+        type: "EMPLOYMENT",
+        status: "PENDING",
+        tasks: [],
+      },
+    ],
+  });
+
+void test("after Data Entry the case goes to verification without the RM", async () => {
+  const { prisma, writes } = prismaDouble({
+    verificationCase: { findFirst: () => Promise.resolve(readyCase()) },
+    department: {
+      findMany: () =>
+        Promise.resolve([department(7n, "Employment", ["EMPLOYMENT"])]),
+    },
+  });
+  const result = await new RoutingService(
+    prisma,
+    new CaseWorkflowPolicy(prisma),
+  ).autoRoute(actorOf(["DATA_ENTRY"], { userId: 60n }), UUID(30));
+  assert.equal(result.routed, true);
+  assert.equal(writes.filter((w) => w.kind === "task.create").length, 1);
+  const history = writes.find((w) => w.kind === "history")?.data as {
+    data: { toStatus: string; reason: string };
+  };
+  assert.equal(history.data.toStatus, "IN_PROGRESS");
+  assert.match(history.data.reason, /after Data Entry/);
+});
+
+void test("a check with no department leaves the case Ready for the RM", async () => {
+  const { prisma, writes } = prismaDouble({
+    verificationCase: { findFirst: () => Promise.resolve(readyCase()) },
+    department: {
+      findMany: () =>
+        Promise.resolve([department(7n, "Education", ["EDUCATION"])]),
+    },
+  });
+  const result = await new RoutingService(
+    prisma,
+    new CaseWorkflowPolicy(prisma),
+  ).autoRoute(actorOf(["DATA_ENTRY"], { userId: 60n }), UUID(30));
+  assert.deepEqual(result, {
+    routed: false,
+    reason: "No department with a Team Leader for: employment",
+  });
+  assert.equal(writes.filter((w) => w.kind === "history").length, 0);
 });

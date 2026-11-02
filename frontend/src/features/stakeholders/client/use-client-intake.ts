@@ -20,7 +20,11 @@ export function useClientIntake() {
     setRows(values.map((input) => ({ input, key: crypto.randomUUID(), status: "ready" })));
   const update = (key: string, patch: Partial<IntakeResult>) =>
     setRows((current) => current.map((row) => (row.key === key ? { ...row, ...patch } : row)));
-  const start = async (servicePackageId: string) => {
+  /** Internal teams post to their own endpoint and name the client for every row. */
+  const start = async (
+    servicePackageId: string,
+    target: { endpoint: string; clientId?: string } = { endpoint: "/client-intake/rows" },
+  ) => {
     if (locked.current || !servicePackageId) return;
     locked.current = true;
     setRunning(true);
@@ -29,14 +33,15 @@ export function useClientIntake() {
         if (row.status === "created") continue;
         update(row.key, { status: "submitting", error: undefined });
         try {
-          const created = await apiRequest<{ id: string; caseNumber: string }>(
-            "/client-intake/rows",
-            {
-              method: "POST",
-              headers: { "idempotency-key": row.key },
-              body: JSON.stringify({ ...row.input, servicePackageId }),
-            },
-          );
+          const created = await apiRequest<{ id: string; caseNumber: string }>(target.endpoint, {
+            method: "POST",
+            headers: { "idempotency-key": row.key },
+            body: JSON.stringify({
+              ...row.input,
+              servicePackageId,
+              ...(target.clientId ? { clientId: target.clientId } : {}),
+            }),
+          });
           update(row.key, {
             status: "created",
             caseNumber: created.caseNumber,

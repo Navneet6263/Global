@@ -28,6 +28,8 @@ export interface CandidatePortalData {
       state: "NEEDED" | "UPLOADED" | "VERIFIED" | "REUPLOAD";
       reviewNote: string | null;
       version: number;
+      /** The ordered checks this document is for. */
+      forChecks?: string[];
     }>;
     readyToComplete: boolean;
     clarifications: Array<{

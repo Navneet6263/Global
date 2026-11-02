@@ -90,6 +90,10 @@ function VerifierLayout() {
     session.data?.departments?.some((d) => d.kind === "VERIFICATION" && d.role === "LEAD"),
   );
   const team = session.data?.departments?.find((d) => d.kind === "VERIFICATION");
+  // Operations and Platform Admin may work any team's queue; the API allows it.
+  const supervisor = Boolean(
+    session.data?.roles.some((role) => role === "PLATFORM_ADMIN" || role === "OPS_MANAGER"),
+  );
   return (
     <RoleWorkspaceShell
       workspace="verifier"
@@ -133,7 +137,9 @@ function VerifierLayout() {
         <ConfigNavigation
           workspace="verifier"
           subtitle={team ? `${team.name}${isLead ? " · Team Leader" : ""}` : "Verification"}
-          extraItems={isLead ? [TEAM_QUEUE, TEAM_MEMBERS, TEAM_ANNEXURE] : []}
+          extraItems={
+            isLead ? [TEAM_QUEUE, TEAM_MEMBERS, TEAM_ANNEXURE] : supervisor ? [TEAM_QUEUE] : []
+          }
           onNavigate={onNavigate}
         />
       )}

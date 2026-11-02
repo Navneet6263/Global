@@ -96,12 +96,22 @@ export function DepartmentsBoard({ canManage }: { canManage: boolean }) {
       />
     );
   const items = departments.data.items;
+  const uncovered = CHECK_TYPES.filter(
+    (type) =>
+      !items.some(
+        (item) =>
+          item.kind === "VERIFICATION" &&
+          item.status !== "INACTIVE" &&
+          item.checkTypes.includes(type) &&
+          item.members.some((member) => member.role === "LEAD"),
+      ),
+  );
   return (
     <>
       <div className="ops-dept-toolbar">
         <p className="ops-subtle">
-          Packages decide the checks. The RM routes each check to a department, and its Team Leader
-          assigns a member.
+          Packages decide the checks. After Data Entry, each check goes to the department that takes
+          its type, and the Team Leader assigns a member.
         </p>
         {canManage ? (
           <Button onClick={() => setCreating(true)}>
@@ -110,6 +120,13 @@ export function DepartmentsBoard({ canManage }: { canManage: boolean }) {
           </Button>
         ) : null}
       </div>
+      {uncovered.length ? (
+        <p role="status" className="client-panel text-[13px] text-warning-foreground">
+          These checks have no active department with a Team Leader, so their cases stop with the RM
+          instead of going to verification by themselves:{" "}
+          <strong>{uncovered.map(readable).join(", ")}</strong>
+        </p>
+      ) : null}
       <div className="ops-dept-grid">
         {items.map((department) => {
           const leads = department.members.filter((m) => m.role === "LEAD");

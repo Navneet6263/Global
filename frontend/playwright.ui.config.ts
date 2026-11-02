@@ -18,6 +18,8 @@ export default defineConfig({
     "compact-workspace-headers.spec.ts",
     "operations-action-inbox.spec.ts",
     "operations-overview.spec.ts",
+    "role-switch-teams.spec.ts",
+    "flow-requirements.spec.ts",
     "operations-manager-pages.spec.ts",
     "workflow-v2.spec.ts",
     "notifications-inbox.spec.ts",

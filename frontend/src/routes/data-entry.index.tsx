@@ -1,3 +1,4 @@
+import { InternalBulkIntake } from "@/features/stakeholders/client/ClientBulkIntake";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   DataEntryWorkspace,
@@ -31,6 +32,9 @@ function DataEntryPage() {
         <div>
           <h1>Intake queue</h1>
           <p>Check each case is complete and readable. Ready sends it back to the RM.</p>
+        </div>
+        <div className="client-heading-actions">
+          <InternalBulkIntake />
         </div>
       </header>
       <DataEntryWorkspace

@@ -1,3 +1,4 @@
+import { checksForDocument } from "../cases/check-requirements";
 import {
   ConflictException,
   Injectable,
@@ -106,7 +107,13 @@ export class CandidatePortalService {
         clientName: access.case.client.displayName,
         dueAt: access.case.dueAt,
         requiredDocumentTypes: requested,
-        uploadItems: uploads.items,
+        uploadItems: uploads.items.map((item) => ({
+          ...item,
+          forChecks: checksForDocument(
+            item.type,
+            access.case.checks.map((check) => check.type),
+          ),
+        })),
         readyToComplete: uploads.complete,
         checks: access.case.checks.map((check) => ({
           type: check.type,

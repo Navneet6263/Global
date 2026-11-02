@@ -459,8 +459,12 @@ function ReviewBody({
   const due = dueLabel(item.dueAt ?? queueItem?.dueAt ?? null);
   const ready = useMutation({
     mutationFn: () => markCaseReady(item.id, { version: item.version }),
-    onSuccess: async () => {
-      toast.success(`${item.caseNumber} is Ready — sent back to the RM`);
+    onSuccess: async (result) => {
+      if (result.routed) toast.success(`${item.caseNumber} sent to the verification departments`);
+      else
+        toast.success(`${item.caseNumber} is Ready — with the RM to route`, {
+          description: result.routeNote,
+        });
       await refresh();
       onClose();
     },

@@ -1,3 +1,4 @@
+import { InternalBulkIntake } from "@/features/stakeholders/client/ClientBulkIntake";
 import { useQueryClient, useIsFetching } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
@@ -50,6 +51,7 @@ function RmWorkPage() {
           <p>Your clients. Every handover. The next decision.</p>
         </div>
         <div className="client-heading-actions">
+          <InternalBulkIntake />
           <Button
             variant="outline"
             onClick={() =>

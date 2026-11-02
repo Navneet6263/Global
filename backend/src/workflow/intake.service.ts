@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
 import { caseAccessScope } from "../common/auth/access-scope";
 import type { Actor } from "../common/auth/actor";
@@ -20,6 +21,7 @@ import type {
   WorkQueueQueryDto,
 } from "./dto/workflow.dto";
 import { INITIATION_FORMS, cleanInitiation } from "./initiation-fields";
+import { RoutingService } from "./routing.service";
 import {
   OPEN_CLARIFICATION,
   assertCaseOwner,
@@ -164,7 +166,10 @@ export const RM_BUCKETS: Record<string, Prisma.VerificationCaseWhereInput> = {
 
 @Injectable()
 export class IntakeService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Optional() private readonly routing?: RoutingService,
+  ) {}
 
   /** RM (or its Data Entry lead, or Operations) hands the case to a Data Entry user. */
   async assignDataEntry(
@@ -437,22 +442,48 @@ export class IntakeService {
           }),
         },
       });
-      if (current.assignedOpsUserId)
-        await tx.notification.create({
-          data: {
-            tenantId: actor.tenantId,
-            userId: current.assignedOpsUserId,
-            type: "DATA_ENTRY_READY",
-            title: "Case ready for routing",
-            body: `${current.caseNumber}: Data Entry marked the case Ready. Route its checks to departments.`,
-            href: `/spoc-rm/work?caseId=${casePublicId}`,
-          },
-        });
     });
+    const auto = this.routing
+      ? await this.routing.autoRoute(actor, casePublicId)
+      : ({ routed: false, reason: "" } as const);
+    if (current.assignedOpsUserId) {
+      const rm = current.assignedOpsUserId;
+      await this.prisma.$transaction((tx) =>
+        tx.notification.create({
+          data: auto.routed
+            ? {
+                tenantId: actor.tenantId,
+                userId: rm,
+                type: "CHECKS_ROUTED",
+                title: "Case sent to verification",
+                body: `${current.caseNumber}: Data Entry finished and its checks went to their departments.`,
+                href: `/spoc-rm/work?caseId=${casePublicId}`,
+              }
+            : {
+                tenantId: actor.tenantId,
+                userId: rm,
+                type: "DATA_ENTRY_READY",
+                title: "Case ready for routing",
+                body: `${current.caseNumber}: Data Entry marked the case Ready. Route its checks to verification.${auto.reason ? ` ${auto.reason}.` : ""}`,
+                href: `/spoc-rm/work?caseId=${casePublicId}`,
+              },
+        }),
+      );
+    }
+    if (auto.routed)
+      return {
+        id: casePublicId,
+        intakeStage: auto.intakeStage,
+        status: auto.status,
+        version: auto.version,
+        routed: true,
+      };
     return {
       id: casePublicId,
       intakeStage: "READY",
       version: current.version + 1,
+      routed: false,
+      routeNote: auto.reason || undefined,
     };
   }
 

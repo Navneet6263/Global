@@ -1,3 +1,4 @@
+import { InternalBulkIntake } from "@/features/stakeholders/client/ClientBulkIntake";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
@@ -86,6 +87,7 @@ function OperationsOverview() {
           <h1>{viewLabel ? `Operations · ${viewLabel}` : "Operations overview"}</h1>
           <p>Your cases, owners and next actions.</p>
         </div>
+        <InternalBulkIntake />
         <p className="ops-updated" aria-live="polite">
           {counts.dataUpdatedAt
             ? `Updated ${istDateTime(new Date(counts.dataUpdatedAt).toISOString())}`

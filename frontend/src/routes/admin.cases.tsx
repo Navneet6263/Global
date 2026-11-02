@@ -1,3 +1,4 @@
+import { InternalBulkIntake } from "@/features/stakeholders/client/ClientBulkIntake";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -85,6 +86,7 @@ function CasesPage() {
         title="Verification register"
         description="Every case across clients with live stage, SLA and ownership. Saved views mirror how operations triage the day."
         meta={data ? `${data.total} cases match the current filters` : undefined}
+        actions={<InternalBulkIntake />}
       />
 
       {isError ? <ErrorState onRetry={() => void refetch()} retrying={isFetching} /> : null}

@@ -26,6 +26,8 @@ export type CaseServicePackage = {
   checks: string[];
   serviceFamily?: string;
   requiredDocuments?: string[];
+  /** What each check in this package needs: its document and required details. */
+  checkRequirements?: Array<{ type: string; documents: string[]; details: string[] }>;
   price?: string | number | null;
   /** Each check on its own, after the agreed rate and discount (commercial viewers only). */
   checkPrices?: Record<string, number>;

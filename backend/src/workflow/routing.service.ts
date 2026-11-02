@@ -3,6 +3,7 @@ import {
   BadRequestException,
   ConflictException,
   ForbiddenException,
+  HttpException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -28,6 +29,52 @@ import {
   ledDepartmentIds,
   trimNote,
 } from "./workflow-access";
+
+const ROUTING_CASE = {
+  id: true,
+  publicId: true,
+  caseNumber: true,
+  status: true,
+  version: true,
+  workflowVersion: true,
+  intakeStage: true,
+  assignedOpsUserId: true,
+  checks: {
+    select: {
+      id: true,
+      publicId: true,
+      type: true,
+      status: true,
+      tasks: {
+        where: { status: { in: ACTIVE_TASK } },
+        select: { id: true },
+      },
+    },
+  },
+} satisfies Prisma.VerificationCaseSelect;
+
+/** Each check goes to the first department that takes its type and has a Team Leader. */
+export function departmentsForChecks(
+  checks: ReadonlyArray<{ publicId: string; type: string }>,
+  departments: ReadonlyArray<{
+    publicId: string;
+    checkTypesJson: string;
+    members: ReadonlyArray<{ role: string }>;
+  }>,
+) {
+  const requested = new Map<string, string>();
+  const missing: string[] = [];
+  for (const check of checks) {
+    const department = departments.find(
+      (item) =>
+        parseCheckTypes(item.checkTypesJson).includes(check.type) &&
+        item.members.some((member) => member.role === "LEAD"),
+    );
+    if (department) requested.set(check.publicId, department.publicId);
+    else if (!missing.includes(check.type)) missing.push(check.type);
+  }
+  return { requested, missing };
+}
 
 @Injectable()
 export class RoutingService {
@@ -170,7 +217,87 @@ export class RoutingService {
           `${department.name} has no Team Leader to receive the work`,
         );
     }
-    const note = trimNote(input.note);
+    return this.applyRouting(actor, current, open, requested, byId, {
+      version: input.version,
+      note: trimNote(input.note),
+      reason: "RM routed checks to verification departments",
+    });
+  }
+
+  /**
+   * After Data Entry: send every open check to its department without waiting for the
+   * RM. Whatever stops this (no department or Team Leader for a check, or an evidence or
+   * consent gate) leaves the case Ready for the RM, with the reason.
+   */
+  async autoRoute(
+    actor: Actor,
+    casePublicId: string,
+  ): Promise<
+    | { routed: true; status: string; intakeStage: string; version: number }
+    | { routed: false; reason: string }
+  > {
+    const current = await this.prisma.verificationCase.findFirst({
+      where: { tenantId: actor.tenantId, publicId: casePublicId },
+      select: ROUTING_CASE,
+    });
+    if (
+      !current ||
+      current.intakeStage !== "READY" ||
+      current.status !== "DOCUMENT_PENDING"
+    )
+      return { routed: false, reason: "The case is not waiting to be routed" };
+    const open = current.checks.filter((check) => check.status !== "COMPLETED");
+    const departments = await this.verificationDepartments(actor);
+    const plan = departmentsForChecks(open, departments);
+    if (plan.missing.length)
+      return {
+        routed: false,
+        reason: `No department with a Team Leader for: ${plan.missing
+          .map((type) => type.replaceAll("_", " ").toLowerCase())
+          .join(", ")}`,
+      };
+    try {
+      const result = await this.applyRouting(
+        actor,
+        current,
+        open,
+        plan.requested,
+        new Map(departments.map((item) => [item.publicId, item])),
+        {
+          version: current.version,
+          note: null,
+          reason: "Sent to verification departments after Data Entry",
+          automatic: true,
+        },
+      );
+      return { routed: true, ...result };
+    } catch (error) {
+      if (error instanceof HttpException)
+        return { routed: false, reason: error.message };
+      throw error;
+    }
+  }
+
+  private async applyRouting(
+    actor: Actor,
+    current: Prisma.VerificationCaseGetPayload<{ select: typeof ROUTING_CASE }>,
+    open: Prisma.VerificationCaseGetPayload<{
+      select: typeof ROUTING_CASE;
+    }>["checks"],
+    requested: ReadonlyMap<string, string>,
+    byId: ReadonlyMap<
+      string,
+      Awaited<ReturnType<RoutingService["verificationDepartments"]>>[number]
+    >,
+    input: {
+      version: number;
+      note: string | null | undefined;
+      reason: string;
+      automatic?: boolean;
+    },
+  ) {
+    const casePublicId = current.publicId;
+    const note = input.note;
     const now = new Date();
 
     await this.prisma.$transaction(async (tx) => {
@@ -204,7 +331,7 @@ export class RoutingService {
           fromStatus: "DOCUMENT_PENDING",
           toStatus: "IN_PROGRESS",
           changedById: actor.userId,
-          reason: "RM routed checks to verification departments",
+          reason: input.reason,
         },
       });
       for (const check of open) {
@@ -249,6 +376,7 @@ export class RoutingService {
             intakeStage: "ROUTED",
             routes: summary,
             note,
+            ...(input.automatic ? { automatic: true } : {}),
           }),
         },
       });

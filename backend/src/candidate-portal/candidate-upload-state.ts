@@ -1,3 +1,5 @@
+import { CHECK_DOCUMENTS } from "../cases/check-requirements";
+
 type CandidateDocument = {
   type: string;
   status: string;
@@ -50,15 +52,6 @@ export function candidateUploadItems(
     ),
   };
 }
-
-/** The document a candidate uploads for each check that needs one. */
-export const CHECK_DOCUMENTS: Readonly<Record<string, string>> = {
-  IDENTITY: "AADHAAR",
-  ADDRESS: "ADDRESS_PROOF",
-  EMPLOYMENT: "EMPLOYMENT_PROOF",
-  EDUCATION: "EDUCATION_CERTIFICATE",
-  PAN_VALIDATION: "PAN",
-};
 
 /**
  * Everything the candidate is asked for: the package's required documents, plus the

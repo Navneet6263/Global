@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import type { CaseDetail } from "@/lib/api/cases";
-import { uploadDocument } from "@/lib/api/documents";
+import { createDocument, uploadDocument, type DocumentType } from "@/lib/api/documents";
 import { humanize, statusTone } from "./client-portal-utils";
 import { DocumentFileActions } from "@/features/cases/document-file-actions";
 
@@ -22,12 +22,17 @@ export function ClientCaseDocuments({
   caseId,
   caseStatus,
   items,
+  requirements = [],
 }: {
   caseId: string;
   caseStatus: string;
   items: CaseDocument[];
+  /** Every document this case asks for, and the checks it is for. */
+  requirements?: ReadonlyArray<{ type: string; checks: string[] }>;
 }) {
   const canUpload = uploadableStatuses.has(caseStatus);
+  const forChecks = (type: string) => requirements.find((item) => item.type === type)?.checks ?? [];
+  const missing = requirements.filter((item) => !items.some((doc) => doc.type === item.type));
   return (
     <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
       <header className="border-b border-border px-4 py-3">
@@ -43,9 +48,19 @@ export function ClientCaseDocuments({
             caseId={caseId}
             item={document}
             canUpload={canUpload}
+            checks={forChecks(document.type)}
           />
         ))}
-        {!items.length ? (
+        {missing.map((item) => (
+          <MissingDocumentRow
+            key={item.type}
+            caseId={caseId}
+            type={item.type}
+            checks={item.checks}
+            canUpload={canUpload}
+          />
+        ))}
+        {!items.length && !missing.length ? (
           <div className="flex flex-col items-center py-7 text-center">
             <FileUp className="size-5 text-muted-foreground/45" />
             <p className="mt-2 text-xs text-muted-foreground">
@@ -58,14 +73,86 @@ export function ClientCaseDocuments({
   );
 }
 
+function ForChecks({ checks }: { checks: readonly string[] }) {
+  if (!checks.length) return null;
+  return (
+    <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
+      For: {checks.map(humanize).join(", ")}
+    </p>
+  );
+}
+
+/** A required document nobody has uploaded yet; the client may upload it for the candidate. */
+function MissingDocumentRow({
+  caseId,
+  type,
+  checks,
+  canUpload,
+}: {
+  caseId: string;
+  type: string;
+  checks: readonly string[];
+  canUpload: boolean;
+}) {
+  const queryClient = useQueryClient();
+  const upload = useMutation({
+    mutationFn: async (file: File) => {
+      const created = await createDocument(caseId, type as DocumentType);
+      return uploadDocument(created.id, file);
+    },
+    onSuccess: () => {
+      toast.success("Document uploaded securely");
+      void queryClient.invalidateQueries({ queryKey: ["cases", caseId] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
+  return (
+    <article className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-dashed border-slate-300 bg-white p-3.5">
+      <div className="flex min-w-0 items-start gap-3">
+        <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-slate-100 text-slate-500">
+          <FileUp className="h-4 w-4" />
+        </span>
+        <div className="min-w-0">
+          <p className="truncate text-xs font-semibold text-foreground">{humanize(type)}</p>
+          <ForChecks checks={checks} />
+          <p className="mt-0.5 text-[10px] text-muted-foreground">Not uploaded yet</p>
+        </div>
+      </div>
+      {canUpload ? (
+        <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-semibold text-foreground hover:bg-slate-50">
+          {upload.isPending ? (
+            <LoaderCircle className="size-3.5 animate-spin" aria-hidden />
+          ) : (
+            <UploadCloud className="size-3.5" aria-hidden />
+          )}
+          Upload {humanize(type)}
+          <input
+            type="file"
+            className="sr-only"
+            aria-label={`Upload ${humanize(type)}`}
+            disabled={upload.isPending}
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              if (file) upload.mutate(file);
+            }}
+          />
+        </label>
+      ) : null}
+    </article>
+  );
+}
+
 function DocumentRow({
   caseId,
   item,
   canUpload,
+  checks,
 }: {
   caseId: string;
   item: CaseDocument;
   canUpload: boolean;
+  checks: readonly string[];
 }) {
   const queryClient = useQueryClient();
   const [file, setFile] = useState<File>();
@@ -95,6 +182,7 @@ function DocumentRow({
           </span>
           <div className="min-w-0">
             <p className="truncate text-xs font-semibold text-foreground">{humanize(item.type)}</p>
+            <ForChecks checks={checks} />
             <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
               {latest
                 ? `${latest.originalName} · version ${item.currentVersion}`

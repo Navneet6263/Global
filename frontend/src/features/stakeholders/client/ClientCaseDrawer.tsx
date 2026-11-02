@@ -201,6 +201,13 @@ export function ClientCaseDrawer({
                   </TabsContent>
                   <TabsContent value="documents">
                     <ClientCaseDocuments
+                      requirements={
+                        (
+                          item as {
+                            documentRequirements?: Array<{ type: string; checks: string[] }>;
+                          }
+                        ).documentRequirements
+                      }
                       caseId={caseId}
                       caseStatus={item.status}
                       items={item.documents}

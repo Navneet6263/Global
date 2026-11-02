@@ -28,6 +28,7 @@ for (const width of [390, 1440]) {
               completedAt: "2026-10-01T10:00:00Z",
             },
           ],
+          documentRequirements: [{ type: "IDENTITY_PROOF_TEST", checks: ["ADDRESS"] }],
           documents: [
             {
               publicId: "doc-1",
@@ -93,6 +94,8 @@ for (const width of [390, 1440]) {
     await dialog.getByRole("tab", { name: /Documents/ }).click();
     await expect(dialog.getByText("Version 1 uploaded · file details restricted")).toBeVisible();
     await expect(dialog.getByText("Upload is still pending")).toHaveCount(0);
+    await expect(dialog.getByText("Not uploaded yet")).toBeVisible();
+    await expect(dialog.getByText("For: Address")).toBeVisible();
     const before = reads;
     await dialog.getByRole("button", { name: "Refresh case", exact: true }).click();
     await expect.poll(() => reads).toBeGreaterThan(before);

@@ -341,6 +341,13 @@ function DocumentRow({
           </span>
         </strong>
         <small>{meta.hint}</small>
+        {item.forChecks?.length ? (
+          <small className="block">
+            For your{" "}
+            {item.forChecks.map((check) => check.replaceAll("_", " ").toLowerCase()).join(", ")}{" "}
+            check
+          </small>
+        ) : null}
         {again && item.reviewNote ? <p className="cand-doc-reason">{item.reviewNote}</p> : null}
         {error ? <p className="cand-doc-reason">{error}</p> : null}
       </div>

@@ -1,3 +1,4 @@
+import { caseDocumentRequirements } from "./check-requirements";
 import { canReadReleasedReport } from "../reports/report-payment-policy";
 import type { Actor } from "../common/auth/actor";
 import type { SubjectPiiService } from "../common/security/subject-pii.service";
@@ -344,6 +345,12 @@ export function presentCaseDetail(
   if (actor.roles.includes("CLIENT_ADMIN")) {
     return {
       ...safe,
+      documentRequirements: caseDocumentRequirements(
+        rowList(safe.services).flatMap(
+          (service) => (service.requiredDocuments as string[] | undefined) ?? [],
+        ),
+        rowList(safe.checks).map((check) => String(check.type)),
+      ),
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
       documents: rowList(row.documents).map((document) => {

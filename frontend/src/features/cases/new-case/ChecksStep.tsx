@@ -4,6 +4,7 @@ import { checkCatalog, type CaseDraft, type CheckKey, type ServiceSelection } fr
 import { ServiceDetailsFields } from "./ServiceDetailsFields";
 import { serviceSelectionError } from "./service-selection";
 import { priceLabel } from "./case-price-estimate";
+import { CheckRequirementsPanel } from "../CheckRequirementsPanel";
 
 export function ChecksStep({
   draft,
@@ -208,6 +209,18 @@ export function ChecksStep({
         Only selected checks are created. Assignment, required evidence and final release remain
         controlled by the verification team.
       </p>
+      <CheckRequirementsPanel
+        requirements={services.flatMap(
+          (service) =>
+            packages.find((pkg) => pkg.id === service.servicePackageId)?.checkRequirements ?? [],
+        )}
+        checks={services.flatMap(
+          (service) =>
+            service.selectedChecks ??
+            packages.find((pkg) => pkg.id === service.servicePackageId)?.checks ??
+            [],
+        )}
+      />
     </div>
   );
 }

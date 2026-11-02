@@ -413,7 +413,7 @@ export class UsersService {
     const rolesChanged =
       currentRoleCodes.length !== nextRoleCodes.length ||
       currentRoleCodes.some((role) => !nextRoleCodes.includes(role));
-    if (input.roleCodes) {
+    if (input.roleCodes && rolesChanged) {
       assertSafeRoleCombination(
         nextRoleCodes,
         input.additionalAccessConfirmed,

@@ -281,7 +281,12 @@ export const assignDataEntry = (
   );
 
 export const markCaseReady = (caseId: string, input: { version: number; note?: string }) =>
-  post<{ intakeStage: IntakeStage; version: number }>(`/workflow/cases/${caseId}/ready`, input);
+  post<{
+    intakeStage: IntakeStage;
+    version: number;
+    routed?: boolean;
+    routeNote?: string;
+  }>(`/workflow/cases/${caseId}/ready`, input);
 
 export const sendBackToDataEntry = (caseId: string, input: { version: number; reason: string }) =>
   post<{ intakeStage: IntakeStage; version: number }>(`/workflow/cases/${caseId}/send-back`, input);
