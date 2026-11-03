@@ -3,7 +3,7 @@ import type { CaseServicePackage } from "@/lib/api/cases";
 import { checkCatalog, type CaseDraft, type CheckKey, type ServiceSelection } from "./model";
 import { ServiceDetailsFields } from "./ServiceDetailsFields";
 import { serviceSelectionError } from "./service-selection";
-import { priceLabel } from "./case-price-estimate";
+import { priceLabel, servicePrice } from "./case-price-estimate";
 import { CheckRequirementsPanel } from "../CheckRequirementsPanel";
 
 export function ChecksStep({
@@ -65,7 +65,8 @@ export function ChecksStep({
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         {packages.map((pkg) => {
-          const selected = services.some((service) => service.servicePackageId === pkg.id);
+          const service = services.find((item) => item.servicePackageId === pkg.id);
+          const selected = Boolean(service);
           return (
             <button
               key={pkg.id}
@@ -75,7 +76,7 @@ export function ChecksStep({
               onClick={() =>
                 update(
                   selected
-                    ? services.filter((service) => service.servicePackageId !== pkg.id)
+                    ? services.filter((item) => item.servicePackageId !== pkg.id)
                     : [...services, { servicePackageId: pkg.id, selectedChecks: [...pkg.checks] }],
                 )
               }
@@ -95,7 +96,9 @@ export function ChecksStep({
               </span>
               <span className="mt-3 flex items-center justify-between gap-2 border-t border-slate-200/70 pt-3">
                 <span className="text-xs font-bold text-slate-800">
-                  {pkg.price != null ? `${priceLabel(Number(pkg.price))} + tax` : "Rate on request"}
+                  {pkg.price != null
+                    ? `${priceLabel(servicePrice(pkg, service?.selectedChecks))} + tax`
+                    : "Rate on request"}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] text-slate-500">
                   <Clock3 className="size-3" />
@@ -168,9 +171,14 @@ export function ChecksStep({
                       }
                     />
                     <Icon className="size-4 shrink-0 text-blue-600" />
-                    <span className="text-xs font-medium text-slate-700">
+                    <span className="min-w-0 flex-1 text-xs font-medium text-slate-700">
                       {check?.label ?? key.replaceAll("_", " ")}
                     </span>
+                    {pkg.checkPrices?.[key] != null ? (
+                      <span className="whitespace-nowrap text-[11px] font-semibold text-slate-500">
+                        {priceLabel(pkg.checkPrices[key])}
+                      </span>
+                    ) : null}
                   </label>
                 );
               })}

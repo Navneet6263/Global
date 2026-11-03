@@ -200,11 +200,12 @@ test("Operations sets a price per check and GST on a package", async ({ page }) 
   await page.getByRole("button", { name: "Edit Standard BGV" }).click();
   const dialog = page.getByRole("dialog", { name: "Edit STANDARD_BGV" });
   await expect(dialog.getByRole("region", { name: "Checks and prices" })).toBeVisible();
-  // Two checks in a 2,000 package: an empty box means an equal share of 1,000.
+  // Two checks in a 2,000 package: empty boxes share it, 1,000 each.
   await expect(dialog.getByLabel("Employment price")).toHaveAttribute("placeholder", "1000");
   await dialog.getByLabel("Employment price").fill("1500");
   await dialog.getByLabel("GST percent").fill("12");
-  await expect(dialog.getByText(/Checks bought one by one:/).locator("..")).toContainText("₹2,500");
+  // The other check now shares what is left of the package, so they still add up.
+  await expect(dialog.getByText(/Checks bought one by one:/).locator("..")).toContainText("₹2,000");
   await page.screenshot({ path: "test-results/packages-check-prices.png" });
   await dialog.getByRole("button", { name: "Save" }).click();
   await expect

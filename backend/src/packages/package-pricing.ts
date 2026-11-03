@@ -28,8 +28,10 @@ export function parseCheckPrices(value: string | null | undefined) {
 
 /**
  * What a client pays for a package and for each check in it, after its agreed rate and
- * any discount. Checks without their own price share the list price equally. The
- * client's agreed rate scales every check by the same ratio as the full package.
+ * any discount. Check prices always add up to the package, so removing a check always
+ * lowers the case: checks without their own price share what the priced checks leave,
+ * and every check is scaled by the same ratio to the client's price. A package with no
+ * price of its own (and no agreed rate above zero) costs the total of its checks.
  */
 export function effectivePackagePricing(input: {
   listPrice: DecimalLike;
@@ -38,19 +40,32 @@ export function effectivePackagePricing(input: {
   checkPrices: Record<string, number>;
   discountPercent?: DecimalLike;
 }) {
+  const priced = input.checks.filter(
+    (check) => input.checkPrices[check] !== undefined,
+  );
+  const pricedTotal = priced.reduce(
+    (sum, check) => sum + input.checkPrices[check]!,
+    0,
+  );
   const list = num(input.listPrice) ?? 0;
-  const agreed = num(input.agreedPrice) ?? list;
-  const ratio = list > 0 ? agreed / list : 1;
-  // No list price: share the agreed price instead (the ratio is then 1).
-  const basis = list > 0 ? list : agreed;
-  const share = input.checks.length ? basis / input.checks.length : 0;
+  const rate = num(input.agreedPrice);
+  const basis = list > 0 ? list : rate || pricedTotal;
+  const agreed = list > 0 ? (rate ?? list) : basis;
+  const unpriced = input.checks.length - priced.length;
+  const share = unpriced ? Math.max(basis - pricedTotal, 0) / unpriced : 0;
+  const weight = (check: string) => input.checkPrices[check] ?? share;
+  const weights = input.checks.reduce((sum, check) => sum + weight(check), 0);
   const discount = num(input.discountPercent) ?? 0;
   const full = discountedPrice(agreed, discount);
   const perCheck = Object.fromEntries(
     input.checks.map((check) => [
       check,
       discountedPrice(
-        round((input.checkPrices[check] ?? share) * ratio),
+        round(
+          weights > 0
+            ? (weight(check) / weights) * agreed
+            : agreed / input.checks.length,
+        ),
         discount,
       ),
     ]),

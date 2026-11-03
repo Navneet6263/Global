@@ -62,6 +62,7 @@ export async function caseInitiationFixture(page: Page) {
             serviceFamily: "BGV",
             requiredDocuments: [],
             price: 2500,
+            checkPrices: { IDENTITY: 2000, ADDRESS: 500 },
             taxRate: 18,
             tatHours: 72,
           },

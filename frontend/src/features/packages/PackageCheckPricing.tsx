@@ -14,8 +14,9 @@ const round = (value: number) => Math.round(value * 100) / 100;
 
 /**
  * Checks and their prices in one list: tick a check and its own price box opens on the same
- * row. A case that orders fewer checks pays only those (never more than the package); an
- * empty box uses an equal share of the package price.
+ * row. A case that orders fewer checks pays only those. An empty box shares what the priced
+ * checks leave of the package price; if the prices do not add up to the package, cases scale
+ * every check by the same ratio so the package price still holds.
  */
 export function PackageCheckPricing({
   allChecks,
@@ -43,8 +44,10 @@ export function PackageCheckPricing({
   showPrices?: boolean;
 }) {
   const ordered = allChecks.filter((check) => selected.includes(check));
-  const share = packagePrice && ordered.length ? packagePrice / ordered.length : null;
   const priced = ordered.filter((check) => (prices[check] ?? "") !== "");
+  const pricedSum = priced.reduce((total, check) => total + Number(prices[check]), 0);
+  const empty = ordered.length - priced.length;
+  const share = packagePrice && empty ? Math.max(packagePrice - pricedSum, 0) / empty : null;
   const sum = ordered.reduce((total, check) => {
     const own = prices[check];
     return total + (own !== undefined && own !== "" ? Number(own) : (share ?? 0));
@@ -60,7 +63,7 @@ export function PackageCheckPricing({
           <h3 className="text-[13px] font-semibold text-slate-900">Checks in this package</h3>
           <p className="text-[11.5px] text-slate-500">
             {showPrices
-              ? "Tick a check, then give it its own price. Leave a price empty to use an equal share."
+              ? "Tick a check, then give it its own price. Leave a price empty to share what is left of the package price."
               : "Tick every check this package includes."}
           </p>
         </div>
@@ -164,6 +167,15 @@ export function PackageCheckPricing({
                 </span>
               ) : null}
             </div>
+            {packagePrice !== null &&
+            packagePrice > 0 &&
+            ordered.length > 0 &&
+            Math.abs(round(sum) - packagePrice) >= 0.01 ? (
+              <p className="text-[11.5px] font-medium text-amber-700">
+                The checks do not add up to the package, so cases adjust each check to fit it.
+                Removing a check then takes off more or less than its price here.
+              </p>
+            ) : null}
             {onPackagePrice && priced.length === ordered.length && ordered.length > 0 ? (
               <div>
                 <button

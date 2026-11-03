@@ -84,12 +84,17 @@ test("new verification submits selected checks, shows tax and emails one candida
   await dialog.getByLabel("Candidate name", { exact: true }).fill("Layout Test Candidate");
   await dialog.getByLabel("Email", { exact: true }).fill("candidate@example.invalid");
   await dialog.getByRole("button", { name: "Continue", exact: true }).click();
-  await dialog.getByRole("button", { name: /Standard BGV/ }).click();
+  const card = dialog.getByRole("button", { name: /Standard BGV/ });
+  await card.click();
+  await expect(card).toContainText("₹2,500.00 + tax");
+  await expect(dialog.getByRole("region", { name: "Price estimate" })).toContainText("₹2,950.00");
   await dialog
     .getByRole("checkbox", { name: "Standard BGV: Address (physical)", exact: true })
     .uncheck();
   await expect(dialog.getByText("1 of 2 checks selected")).toBeVisible();
-  await expect(dialog.getByRole("region", { name: "Price estimate" })).toContainText("₹2,950.00");
+  // Removing the ₹500 check takes ₹500 off the package card and the estimate.
+  await expect(card).toContainText("₹2,000.00 + tax");
+  await expect(dialog.getByRole("region", { name: "Price estimate" })).toContainText("₹2,360.00");
   await page.screenshot({ path: "test-results/client-intake-checks.png", animations: "disabled" });
   await dialog
     .getByRole("checkbox", { name: "Standard BGV: Identity (Aadhaar / PAN)", exact: true })
