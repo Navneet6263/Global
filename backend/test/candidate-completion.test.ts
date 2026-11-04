@@ -148,11 +148,16 @@ void test("a package without a document list still asks for the proofs its check
     ["EMPLOYMENT_PROOF", "EDUCATION_CERTIFICATE", "ADDRESS_PROOF"],
   );
   // Package documents come first; nothing is asked twice; database-only checks ask nothing.
+  // A package that asks for the PAN as the ID is not asked for Aadhaar as well.
   assert.deepEqual(
     candidateRequestedTypes(
       ["PAN", "EMPLOYMENT_PROOF"],
       [{ type: "EMPLOYMENT" }, { type: "CRIMINAL" }, { type: "identity" }],
     ),
-    ["PAN", "EMPLOYMENT_PROOF", "AADHAAR"],
+    ["PAN", "EMPLOYMENT_PROOF"],
+  );
+  assert.deepEqual(
+    candidateRequestedTypes(["EMPLOYMENT_PROOF"], [{ type: "IDENTITY" }]),
+    ["EMPLOYMENT_PROOF", "AADHAAR"],
   );
 });

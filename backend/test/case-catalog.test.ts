@@ -127,13 +127,14 @@ void test("catalogue query accepts an optional UUID and rejects malformed client
   );
 });
 
-void test("selected-client catalogue filters entitlements and returns tighter SLA without exposing Ops prices", async () => {
+void test("selected-client catalogue filters entitlements and returns the agreed TAT without exposing Ops prices", async () => {
   const result = await caseServiceCatalog(database().prisma, user(), clientId);
   assert.deepEqual(
     result.items.map((item) => item.id),
     ["package-1"],
   );
-  assert.equal(result.items[0]?.tatHours, 36);
+  // The agreed TAT (72h), not the client's tighter general SLA (36h).
+  assert.equal(result.items[0]?.tatHours, 72);
   assert.equal(Object.hasOwn(result.items[0], "price"), false);
 });
 
@@ -165,7 +166,7 @@ void test("client-bound no-argument caller retains its own catalogue and price",
     ["package-1"],
   );
   assert.equal(result.items[0]?.price, 650);
-  assert.equal(result.items[0]?.tatHours, 36);
+  assert.equal(result.items[0]?.tatHours, 72);
 });
 
 void test("client scope cannot be replaced with query parameters, even with mixed admin roles", async () => {
@@ -217,7 +218,8 @@ void test("tenant catalogue compatibility and unmapped-client fallback retain ac
     clientId,
   );
   assert.equal(fallback.items.length, 2);
-  assert.equal(fallback.items[0]?.tatHours, 36);
+  // No agreement: the package TAT.
+  assert.equal(fallback.items[0]?.tatHours, 96);
 });
 
 void test("all-disabled entitlements cannot fall back to the tenant catalogue", async () => {

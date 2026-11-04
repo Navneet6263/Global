@@ -1,4 +1,4 @@
-import { CHECK_DOCUMENTS } from "../cases/check-requirements";
+import { caseDocumentTypes } from "../cases/check-requirements";
 
 type CandidateDocument = {
   type: string;
@@ -62,12 +62,8 @@ export function candidateRequestedTypes(
   requiredTypes: readonly string[],
   checks: ReadonlyArray<{ type: string }>,
 ) {
-  return [
-    ...new Set([
-      ...requiredTypes,
-      ...checks
-        .map((check) => CHECK_DOCUMENTS[check.type.toUpperCase()])
-        .filter((type): type is string => Boolean(type)),
-    ]),
-  ];
+  return caseDocumentTypes(
+    requiredTypes,
+    checks.map((check) => check.type.toUpperCase()),
+  );
 }

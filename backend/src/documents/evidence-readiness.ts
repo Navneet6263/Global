@@ -2,6 +2,7 @@ import { BadRequestException, NotFoundException } from "@nestjs/common";
 import type { Prisma } from "../generated/prisma/client";
 import { caseMethodIssues } from "../verification/case-method-readiness";
 import { physicalFieldIssues } from "../field-visits/physical-field-policy";
+import { caseDocumentTypes } from "../cases/check-requirements";
 
 export const DOCUMENT_TYPES = [
   "AADHAAR",
@@ -80,6 +81,9 @@ export function documentReadiness(
   for (const doc of current) {
     if (["REJECTED", "REUPLOAD_REQUIRED"].includes(doc.status)) {
       issues.push(`${doc.type}: correction and review required`);
+    } else if (doc.currentVersion > 0 && doc.status !== "VERIFIED") {
+      // Uploaded but not yet accepted: Data Entry reviews every upload first.
+      issues.push(`${doc.type}: accept the uploaded document first`);
     }
   }
   return {
@@ -97,11 +101,9 @@ export async function caseEvidenceReadiness(
   const record = await tx.verificationCase.findUnique({
     where: { id: caseId },
     select: {
+      checks: { select: { type: true } },
       ...(options.includeWork !== false
-        ? {
-            checks: { select: { type: true } },
-            fieldVisits: { select: { status: true } },
-          }
+        ? { fieldVisits: { select: { status: true } } }
         : {}),
       documents: {
         select: {
@@ -121,13 +123,18 @@ export async function caseEvidenceReadiness(
   });
   // Pre-upgrade cases had no required-document policy. Never apply a later
   // package edit retroactively; new intake always stores immutable snapshots.
-  const requiredTypes = [
-    ...new Set(
-      services.flatMap((service) =>
-        requiredDocumentTypes(service.requiredDocumentsJson),
+  // What the candidate was asked for: the package's documents plus each check's own
+  // (a package saved before documents were tied to checks may list none).
+  const requiredTypes = caseDocumentTypes(
+    [
+      ...new Set(
+        services.flatMap((service) =>
+          requiredDocumentTypes(service.requiredDocumentsJson),
+        ),
       ),
-    ),
-  ];
+    ],
+    (record.checks ?? []).map((check) => check.type),
+  );
   const result = documentReadiness(requiredTypes, record.documents);
   if (options.includeWork !== false) {
     result.issues.push(...(await caseMethodIssues(tx, caseId)));

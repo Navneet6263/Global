@@ -115,7 +115,9 @@ void test("specialised checks retain identity and unsupported types cannot enter
     packageChecks('["MCA_VALIDATION","CONFLICT_OF_INTEREST","WRONG"]'),
     ["MCA_VALIDATION", "CONFLICT_OF_INTEREST"],
   );
-  assert.equal(caseTatHours("URGENT", 72, 48), 24);
+  // The agreed TAT wins; priority and the client's general SLA do not cut it.
+  assert.equal(caseTatHours(14 * 24, 10 * 24), 14 * 24);
+  assert.equal(caseTatHours(null, 14 * 24), 14 * 24);
 });
 
 void test("selected checks use package whitelist and keep contracted commercial terms", async () => {

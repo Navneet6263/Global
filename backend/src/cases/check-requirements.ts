@@ -72,6 +72,16 @@ export function checkRequirements(checks: readonly string[]) {
   });
 }
 
+/** The document types a case asks the candidate for (package list plus check defaults). */
+export function caseDocumentTypes(
+  requiredDocuments: readonly string[],
+  checks: readonly string[],
+) {
+  return caseDocumentRequirements(requiredDocuments, checks).map(
+    (row) => row.type,
+  );
+}
+
 /** Every document this case asks for, each with the ordered checks it is for. */
 export function caseDocumentRequirements(
   requiredDocuments: readonly string[],

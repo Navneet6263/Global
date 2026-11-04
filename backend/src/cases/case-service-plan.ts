@@ -56,16 +56,16 @@ export function packageChecks(value: string): string[] {
   );
 }
 
+/**
+ * A case's TAT is the one agreed for its package: the client agreement's TAT when set,
+ * otherwise the package's own. Priority orders the work queue; it does not shorten the
+ * agreed TAT, and the client's general SLA does not cut a package TAT either.
+ */
 export function caseTatHours(
-  priority: string,
-  clientSla: number,
-  serviceTat: number,
+  agreedTat: number | null | undefined,
+  packageTat: number,
 ) {
-  const priorityCap =
-    ({ URGENT: 24, HIGH: 48, NORMAL: 120, LOW: 168 } as Record<string, number>)[
-      priority
-    ] ?? 120;
-  return Math.min(clientSla, serviceTat, priorityCap);
+  return agreedTat && agreedTat > 0 ? agreedTat : packageTat;
 }
 
 export async function loadCaseServicePlan(
@@ -161,11 +161,7 @@ export async function loadCaseServicePlan(
         checks,
       ),
       taxRate: rate?.taxRate ?? pkg.taxRate ?? 0,
-      tatHours: caseTatHours(
-        input.priority,
-        client.slaHours,
-        rate?.tatHours ?? pkg.tatHours,
-      ),
+      tatHours: caseTatHours(rate?.tatHours, pkg.tatHours),
     };
   });
   return { client, services };
@@ -257,10 +253,7 @@ export async function caseServiceCatalog(
                 taxRate: rate?.taxRate ?? pkg.taxRate ?? 0,
               }
             : {}),
-          tatHours: Math.min(
-            rate?.tatHours ?? pkg.tatHours,
-            client?.slaHours ?? Number.POSITIVE_INFINITY,
-          ),
+          tatHours: caseTatHours(rate?.tatHours, pkg.tatHours),
         };
       })
       .filter((pkg) => pkg.checks.length),

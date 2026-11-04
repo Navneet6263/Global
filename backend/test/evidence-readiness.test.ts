@@ -189,3 +189,25 @@ void test("reminders reflect overdue facts and do not flag recent complete intak
     [],
   );
 });
+
+void test("an uploaded document that nobody accepted stops verification from starting", () => {
+  const uploaded = { ...accepted, type: "PAN", status: "AVAILABLE" };
+  const result = documentReadiness(["AADHAAR"], [accepted, uploaded]);
+  assert.equal(result.ready, false);
+  assert.deepEqual(result.issues, ["PAN: accept the uploaded document first"]);
+});
+
+void test("a check's own document is required even when the package lists none", async () => {
+  const tx = {
+    verificationCase: {
+      findUnique: () =>
+        Promise.resolve({ checks: [{ type: "EDUCATION" }], documents: [] }),
+    },
+    caseService: {
+      findMany: () => Promise.resolve([{ requiredDocumentsJson: "[]" }]),
+    },
+  } as unknown as Prisma.TransactionClient;
+  const result = await caseEvidenceReadiness(tx, 1n, { includeWork: false });
+  assert.deepEqual(result.requiredTypes, ["EDUCATION_CERTIFICATE"]);
+  assert.equal(result.ready, false);
+});

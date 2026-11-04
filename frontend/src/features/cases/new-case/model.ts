@@ -106,9 +106,9 @@ export const checkCatalog: Array<{
 
 export const priorities = ["Standard", "Priority", "Critical"] as const;
 
-export function estimatedTatDays(packageTatHours: number, priority: Priority): number {
-  const priorityCap = priority === "Critical" ? 24 : priority === "Priority" ? 48 : 120;
-  return Math.max(1, Math.ceil(Math.min(packageTatHours, priorityCap) / 24));
+/** The package's agreed TAT in working days; priority orders the queue, not the TAT. */
+export function estimatedTatDays(packageTatHours: number, _priority?: Priority): number {
+  return Math.max(1, Math.ceil(packageTatHours / 24));
 }
 
 export function createEmptyCaseDraft(): CaseDraft {

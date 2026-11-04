@@ -53,23 +53,73 @@ const ROUTING_CASE = {
   },
 } satisfies Prisma.VerificationCaseSelect;
 
-/** Each check goes to the first department that takes its type and has a Team Leader. */
+/** Checks each kind of verification team works when the team lists none of its own. */
+export const TEAM_TYPE_CHECKS: Readonly<Record<string, readonly string[]>> = {
+  EMPLOYMENT: ["EMPLOYMENT", "UAN_CHECK", "REFERENCE"],
+  EDUCATION: ["EDUCATION"],
+  DIGITAL: [
+    "IDENTITY",
+    "PAN_VALIDATION",
+    "DIGITAL_ADDRESS",
+    "GLOBAL_DATABASE",
+    "INDIA_DATABASE",
+    "SOCIAL_MEDIA",
+    "ADVERSE_MEDIA",
+    "SANCTIONS",
+    "DIRECTORSHIP",
+    "CREDIT_CHECK",
+    "BANK_ACCOUNT",
+    "RESUME_CONSISTENCY",
+    "CONFLICT_OF_INTEREST",
+    "ANTI_BRIBERY",
+    "MISCONDUCT",
+    "BUSINESS_INTEREST",
+    "COMPANY_REGISTRATION",
+    "GST_VALIDATION",
+    "MCA_VALIDATION",
+  ],
+  VENDOR: [
+    "ADDRESS",
+    "CORPORATE_ADDRESS",
+    "CRIMINAL",
+    "COURT_RECORD",
+    "DRUG_TEST",
+  ],
+};
+
+type RoutableDepartment = {
+  publicId: string;
+  checkTypesJson: string;
+  teamType?: string | null;
+  members: ReadonlyArray<{ role: string }>;
+};
+
+/** A team's own check list wins; without one it takes its team type's checks. */
+export function departmentTakes(department: RoutableDepartment, type: string) {
+  const own = parseCheckTypes(department.checkTypesJson);
+  return own.length
+    ? own.includes(type)
+    : (TEAM_TYPE_CHECKS[department.teamType ?? ""] ?? []).includes(type);
+}
+
+/**
+ * Each check goes to a department that takes its type and has a Team Leader: one that
+ * lists the type itself first, then one whose team type covers it.
+ */
 export function departmentsForChecks(
   checks: ReadonlyArray<{ publicId: string; type: string }>,
-  departments: ReadonlyArray<{
-    publicId: string;
-    checkTypesJson: string;
-    members: ReadonlyArray<{ role: string }>;
-  }>,
+  departments: ReadonlyArray<RoutableDepartment>,
 ) {
   const requested = new Map<string, string>();
   const missing: string[] = [];
+  const led = departments.filter((item) =>
+    item.members.some((member) => member.role === "LEAD"),
+  );
   for (const check of checks) {
-    const department = departments.find(
-      (item) =>
-        parseCheckTypes(item.checkTypesJson).includes(check.type) &&
-        item.members.some((member) => member.role === "LEAD"),
-    );
+    const department =
+      led.find((item) =>
+        parseCheckTypes(item.checkTypesJson).includes(check.type),
+      ) ?? led.find((item) => departmentTakes(item, check.type));
     if (department) requested.set(check.publicId, department.publicId);
     else if (!missing.includes(check.type)) missing.push(check.type);
   }
@@ -135,9 +185,13 @@ export class RoutingService {
           ? { id: check.department.publicId, name: check.department.name }
           : null,
         suggestedDepartmentId:
+          departmentsForChecks([check], departments).requested.get(
+            check.publicId,
+          ) ??
           departments.find((department) =>
-            parseCheckTypes(department.checkTypesJson).includes(check.type),
-          )?.publicId ?? null,
+            departmentTakes(department, check.type),
+          )?.publicId ??
+          null,
       })),
     };
   }
@@ -795,6 +849,7 @@ export class RoutingService {
         publicId: true,
         name: true,
         checkTypesJson: true,
+        teamType: true,
         members: {
           where: { user: { status: "ACTIVE" } },
           select: {

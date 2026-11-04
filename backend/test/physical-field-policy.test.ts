@@ -56,7 +56,15 @@ function scenario() {
   const tx = {
     verificationCase: {
       findUnique: () => ({
-        documents: [],
+        // The Address check's own proof is in and accepted; only field work is pending.
+        documents: [
+          {
+            type: "ADDRESS_PROOF",
+            status: "VERIFIED",
+            currentVersion: 1,
+            expiresAt: null,
+          },
+        ],
         checks: address,
         fieldVisits: visits,
       }),

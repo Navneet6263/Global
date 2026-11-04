@@ -89,7 +89,10 @@ function prismaDouble(overrides: Record<string, Record<string, unknown>> = {}) {
       createMany: record("notifyMany"),
     },
     clarification: { count: () => Promise.resolve(0) },
-    document: { count: () => Promise.resolve(0) },
+    document: {
+      count: () => Promise.resolve(0),
+      findMany: () => Promise.resolve([]),
+    },
     consent: { count: () => Promise.resolve(1) },
     caseService: { findMany: () => Promise.resolve([]) },
     ...overrides["tx"],
@@ -628,6 +631,39 @@ void test("after Data Entry each check goes to the first department with a Team 
   assert.equal(plan.requested.get("a"), "emp");
   assert.equal(plan.requested.get("b"), "edu");
   assert.deepEqual(plan.missing, ["CRIMINAL"]);
+});
+
+void test("a team with no check list of its own takes its team type's checks", () => {
+  const lead = [{ role: "LEAD" }];
+  const team = (publicId: string, teamType: string, own = "[]") => ({
+    publicId,
+    checkTypesJson: own,
+    teamType,
+    members: lead,
+  });
+  const plan = departmentsForChecks(
+    [
+      { publicId: "a", type: "EMPLOYMENT" },
+      { publicId: "b", type: "EDUCATION" },
+      { publicId: "c", type: "IDENTITY" },
+      { publicId: "d", type: "ADDRESS" },
+      { publicId: "e", type: "REFERENCE" },
+    ],
+    [
+      team("vendor", "VENDOR", '["ADDRESS","CRIMINAL","COURT_RECORD"]'),
+      team("emp", "EMPLOYMENT"),
+      team("edu", "EDUCATION"),
+      team("dig", "DIGITAL"),
+    ],
+  );
+  assert.deepEqual(Object.fromEntries(plan.requested), {
+    a: "emp",
+    b: "edu",
+    c: "dig",
+    d: "vendor",
+    e: "emp",
+  });
+  assert.deepEqual(plan.missing, []);
 });
 
 const readyCase = () =>

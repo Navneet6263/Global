@@ -393,6 +393,22 @@ export class IntakeService {
         throw new BadRequestException(
           "Rejected documents must be replaced before marking Ready",
         );
+      const notAccepted = await tx.document.findMany({
+        where: {
+          caseId: current.id,
+          currentVersion: { gt: 0 },
+          status: { notIn: ["VERIFIED", "REJECTED", "REUPLOAD_REQUIRED"] },
+        },
+        select: { type: true },
+      });
+      if (notAccepted.length)
+        throw new BadRequestException(
+          `Accept every uploaded document before marking Ready: ${[
+            ...new Set(notAccepted.map((doc) => doc.type)),
+          ]
+            .map((type) => type.replaceAll("_", " ").toLowerCase())
+            .join(", ")}`,
+        );
       const notInitiated = await tx.caseCheck.findMany({
         where: {
           caseId: current.id,
