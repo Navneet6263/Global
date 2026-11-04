@@ -365,6 +365,8 @@ model ServicePackage {
   maxRmDiscountPercent  Decimal  @default(0) @db.Decimal(5, 2)
   /// Price of each check on its own, e.g. {"EMPLOYMENT": 2500}. Used when a case picks fewer checks.
   checkPricesJson       String   @default("{}") @db.NVarChar(Max)
+  /// Per-check options, e.g. {"EDUCATION": {"levels": ["GRADUATION"]}}; they decide the candidate's documents.
+  checkOptionsJson      String   @default("{}") @db.NVarChar(Max)
   /// GST % charged on this package unless the client agreement sets its own.
   taxRate               Decimal  @default(18) @db.Decimal(5, 2)
   tatHours              Int      @default(72)

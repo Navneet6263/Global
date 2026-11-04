@@ -21,10 +21,12 @@ import {
   updatePackage,
   type PackageItem,
 } from "@/lib/backend-api/packages";
-import { formatInr } from "@/lib/formatting";
+import { daysToHours, formatInr, formatTatDays, hoursToDays } from "@/lib/formatting";
 import { SERVICE_CHECKS } from "@/features/settings/components/service-policy-options";
 import { PackageCheckPricing } from "./PackageCheckPricing";
 import { toCheckPrices, type CheckPriceDraft } from "./check-prices";
+import { RequiredDocumentFields } from "@/features/settings/components/service-policy-fields";
+import { documentPlan, packageRequiredDocuments, type CheckOptions } from "./check-catalogue";
 import { packageKeys } from "./package-keys";
 
 /** Operations / Admin: build packages and decide how much an RM may discount each. */
@@ -76,6 +78,7 @@ export function PackagesBoard() {
                 <th className="px-3 py-2.5 font-medium">Checks</th>
                 <th className="px-3 py-2.5 text-right font-medium">List price</th>
                 <th className="px-3 py-2.5 text-right font-medium">TAT</th>
+                <th className="px-3 py-2.5 font-medium">Candidate uploads</th>
                 <th className="px-3 py-2.5 text-right font-medium">Max RM discount</th>
                 <th className="px-3 py-2.5 font-medium">Status</th>
                 <th className="px-4 py-2.5" aria-label="Actions" />
@@ -97,7 +100,12 @@ export function PackagesBoard() {
                       + {row.taxRate}% GST
                     </small>
                   </td>
-                  <td className="px-3 py-3 text-right tabular-nums">{row.tatHours} h</td>
+                  <td className="px-3 py-3 text-right tabular-nums">
+                    {formatTatDays(row.tatHours)}
+                  </td>
+                  <td className="px-3 py-3">
+                    <UploadsCell row={row} />
+                  </td>
                   <td className="px-3 py-3 text-right tabular-nums">
                     {row.maxRmDiscountPercent ? `${row.maxRmDiscountPercent}%` : "Ops only"}
                   </td>
@@ -154,6 +162,23 @@ export function PackagesBoard() {
   );
 }
 
+/** "5 uploads · 7 documents" with the list on hover / focus. */
+function UploadsCell({ row }: { row: PackageItem }) {
+  const plan =
+    row.documentPlan ?? documentPlan(row.checks, row.checkOptions ?? {}, row.requiredDocuments);
+  if (!plan.totalUploads) return <span className="text-muted-foreground">None</span>;
+  return (
+    <span title={plan.uploads.map((upload) => upload.label).join(", ")}>
+      {plan.totalUploads} {plan.totalUploads === 1 ? "upload" : "uploads"}
+      {plan.totalPapers > plan.totalUploads ? (
+        <small className="block text-[11px] text-muted-foreground">
+          {plan.totalPapers} documents in all
+        </small>
+      ) : null}
+    </span>
+  );
+}
+
 function EditPackageDialog({
   item,
   onClose,
@@ -165,7 +190,7 @@ function EditPackageDialog({
 }) {
   const [name, setName] = useState(item.name);
   const [price, setPrice] = useState(item.price === null ? "" : String(item.price));
-  const [tat, setTat] = useState(String(item.tatHours));
+  const [tat, setTat] = useState(String(hoursToDays(item.tatHours)));
   const [maxRm, setMaxRm] = useState(String(item.maxRmDiscountPercent));
   const [checkPrices, setCheckPrices] = useState<CheckPriceDraft>(() =>
     Object.fromEntries(
@@ -175,8 +200,29 @@ function EditPackageDialog({
   const [taxRate, setTaxRate] = useState(String(item.taxRate ?? 18));
   const [active, setActive] = useState(item.isActive);
   const [checks, setChecks] = useState<string[]>([...item.checks]);
+  const [checkOptions, setCheckOptions] = useState<Record<string, CheckOptions>>(
+    () => item.checkOptions ?? {},
+  );
+  // Extra documents: what the package asks for beyond its checks' own documents.
+  const [extras, setExtras] = useState<string[]>(() => {
+    const own = packageRequiredDocuments(item.checks, item.checkOptions ?? {});
+    return item.requiredDocuments.filter((type) => !own.includes(type));
+  });
+  const fromChecks = packageRequiredDocuments(checks, pickOptions(checkOptions, checks));
   const checksChanged =
     checks.length !== item.checks.length || checks.some((check) => !item.checks.includes(check));
+  const optionsChanged =
+    JSON.stringify(pickOptions(checkOptions, checks)) !==
+    JSON.stringify(pickOptions(item.checkOptions ?? {}, checks));
+  const extrasChanged =
+    JSON.stringify([...extras].sort()) !==
+    JSON.stringify(
+      item.requiredDocuments
+        .filter(
+          (type) => !packageRequiredDocuments(item.checks, item.checkOptions ?? {}).includes(type),
+        )
+        .sort(),
+    );
   const toggleCheck = (check: string) =>
     setChecks((current) =>
       current.includes(check) ? current.filter((value) => value !== check) : [...current, check],
@@ -187,9 +233,16 @@ function EditPackageDialog({
         updatedAt: item.updatedAt,
         name: name.trim(),
         ...(price !== "" ? { price: Number(price) } : {}),
-        tatHours: Number(tat),
+        tatHours: daysToHours(Number(tat)),
         maxRmDiscountPercent: Number(maxRm),
         ...(checksChanged ? { checks } : {}),
+        // The documents are worked out again from the checks, options and extras.
+        ...(checksChanged || optionsChanged || extrasChanged
+          ? {
+              checkOptions: pickOptions(checkOptions, checks),
+              requiredDocuments: extras.filter((type) => !fromChecks.includes(type)),
+            }
+          : {}),
         checkPrices: toCheckPrices(checkPrices, checks),
         taxRate: Number(taxRate),
         isActive: active,
@@ -202,7 +255,8 @@ function EditPackageDialog({
   });
   const valid =
     name.trim().length >= 2 &&
-    Number(tat) > 0 &&
+    daysToHours(Number(tat)) >= 1 &&
+    Number(tat) <= 365 &&
     Number(maxRm) >= 0 &&
     Number(maxRm) <= 100 &&
     Number(taxRate) >= 0 &&
@@ -234,11 +288,13 @@ function EditPackageDialog({
             />
           </div>
           <div>
-            <Label htmlFor="pkg-tat">Turnaround hours</Label>
+            <Label htmlFor="pkg-tat">Turnaround (days)</Label>
             <Input
               id="pkg-tat"
               type="number"
-              min="1"
+              min="0.5"
+              max="365"
+              step="0.5"
               value={tat}
               onChange={(e) => setTat(e.target.value)}
             />
@@ -265,10 +321,23 @@ function EditPackageDialog({
               onToggle={toggleCheck}
               prices={checkPrices}
               onPrices={setCheckPrices}
+              options={checkOptions}
+              onOptions={setCheckOptions}
+              extraDocuments={extras.filter((type) => !fromChecks.includes(type))}
               packagePrice={price !== "" ? Number(price) : null}
               onPackagePrice={setPrice}
               taxRate={taxRate}
               onTaxRate={setTaxRate}
+              onTatDays={setTat}
+            />
+          </div>
+          <div className="sm:col-span-2">
+            <RequiredDocumentFields
+              value={extras}
+              onChange={setExtras}
+              exclude={fromChecks}
+              legend="Extra documents (optional)"
+              description="The checks decide the candidate's documents (see the summary above). Tick a document here only if this package needs one more."
             />
           </div>
           <label className="flex items-center justify-between gap-3 rounded-xl border border-border px-3 py-2.5 text-sm sm:col-span-2">
@@ -286,5 +355,12 @@ function EditPackageDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Options of the package's checks only. */
+function pickOptions(options: Record<string, CheckOptions>, checks: readonly string[]) {
+  return Object.fromEntries(
+    checks.filter((check) => options[check]).map((check) => [check, options[check]!]),
   );
 }

@@ -4,7 +4,7 @@ import type { PlatformSettings, PolicyToggle } from "@/lib/contracts/settings";
 import { Section } from "@/components/layout/section";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { Switch } from "@/components/ui/switch";
-import { formatInr } from "@/lib/formatting";
+import { formatInr, formatTatDays } from "@/lib/formatting";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { PackageRequirementsEditor } from "./package-requirements-editor";
@@ -102,7 +102,7 @@ export function PackagesPanel({
             <div className="min-w-0 flex-1">
               <p className="text-[13px] font-medium text-foreground">{pkg.name}</p>
               <p className="text-[11px] text-muted-foreground">
-                {pkg.checks} checks · {pkg.tatHours}h turnaround
+                {pkg.checks} checks · {formatTatDays(pkg.tatHours)} turnaround
               </p>
               <p className="mt-0.5 text-[10px] text-muted-foreground/80">
                 Includes required checks, committed TAT and commercial price
@@ -170,7 +170,7 @@ export function SlaDefaultsPanel({ settings }: { settings: PlatformSettings }) {
           <li key={entry.id} className="flex items-center gap-3 px-5 py-3">
             <p className="min-w-0 flex-1 text-[13px] text-foreground">{entry.checkLabel}</p>
             <span className="num text-[12px] text-muted-foreground">
-              {entry.standardHours} hours
+              {formatTatDays(entry.standardHours)}
             </span>
           </li>
         ))}

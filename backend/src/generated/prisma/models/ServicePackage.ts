@@ -56,6 +56,7 @@ export type ServicePackageMinAggregateOutputType = {
   price: runtime.Decimal | null
   maxRmDiscountPercent: runtime.Decimal | null
   checkPricesJson: string | null
+  checkOptionsJson: string | null
   taxRate: runtime.Decimal | null
   tatHours: number | null
   isActive: boolean | null
@@ -75,6 +76,7 @@ export type ServicePackageMaxAggregateOutputType = {
   price: runtime.Decimal | null
   maxRmDiscountPercent: runtime.Decimal | null
   checkPricesJson: string | null
+  checkOptionsJson: string | null
   taxRate: runtime.Decimal | null
   tatHours: number | null
   isActive: boolean | null
@@ -94,6 +96,7 @@ export type ServicePackageCountAggregateOutputType = {
   price: number
   maxRmDiscountPercent: number
   checkPricesJson: number
+  checkOptionsJson: number
   taxRate: number
   tatHours: number
   isActive: number
@@ -133,6 +136,7 @@ export type ServicePackageMinAggregateInputType = {
   price?: true
   maxRmDiscountPercent?: true
   checkPricesJson?: true
+  checkOptionsJson?: true
   taxRate?: true
   tatHours?: true
   isActive?: true
@@ -152,6 +156,7 @@ export type ServicePackageMaxAggregateInputType = {
   price?: true
   maxRmDiscountPercent?: true
   checkPricesJson?: true
+  checkOptionsJson?: true
   taxRate?: true
   tatHours?: true
   isActive?: true
@@ -171,6 +176,7 @@ export type ServicePackageCountAggregateInputType = {
   price?: true
   maxRmDiscountPercent?: true
   checkPricesJson?: true
+  checkOptionsJson?: true
   taxRate?: true
   tatHours?: true
   isActive?: true
@@ -277,6 +283,7 @@ export type ServicePackageGroupByOutputType = {
   price: runtime.Decimal | null
   maxRmDiscountPercent: runtime.Decimal
   checkPricesJson: string
+  checkOptionsJson: string
   taxRate: runtime.Decimal
   tatHours: number
   isActive: boolean
@@ -319,6 +326,7 @@ export type ServicePackageWhereInput = {
   price?: Prisma.DecimalNullableFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFilter<"ServicePackage"> | string
+  checkOptionsJson?: Prisma.StringFilter<"ServicePackage"> | string
   taxRate?: Prisma.DecimalFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFilter<"ServicePackage"> | number
   isActive?: Prisma.BoolFilter<"ServicePackage"> | boolean
@@ -343,6 +351,7 @@ export type ServicePackageOrderByWithRelationInput = {
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   maxRmDiscountPercent?: Prisma.SortOrder
   checkPricesJson?: Prisma.SortOrder
+  checkOptionsJson?: Prisma.SortOrder
   taxRate?: Prisma.SortOrder
   tatHours?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -371,6 +380,7 @@ export type ServicePackageWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.DecimalNullableFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFilter<"ServicePackage"> | string
+  checkOptionsJson?: Prisma.StringFilter<"ServicePackage"> | string
   taxRate?: Prisma.DecimalFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFilter<"ServicePackage"> | number
   isActive?: Prisma.BoolFilter<"ServicePackage"> | boolean
@@ -395,6 +405,7 @@ export type ServicePackageOrderByWithAggregationInput = {
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   maxRmDiscountPercent?: Prisma.SortOrder
   checkPricesJson?: Prisma.SortOrder
+  checkOptionsJson?: Prisma.SortOrder
   taxRate?: Prisma.SortOrder
   tatHours?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -422,6 +433,7 @@ export type ServicePackageScalarWhereWithAggregatesInput = {
   price?: Prisma.DecimalNullableWithAggregatesFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalWithAggregatesFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringWithAggregatesFilter<"ServicePackage"> | string
+  checkOptionsJson?: Prisma.StringWithAggregatesFilter<"ServicePackage"> | string
   taxRate?: Prisma.DecimalWithAggregatesFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntWithAggregatesFilter<"ServicePackage"> | number
   isActive?: Prisma.BoolWithAggregatesFilter<"ServicePackage"> | boolean
@@ -440,6 +452,7 @@ export type ServicePackageCreateInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -464,6 +477,7 @@ export type ServicePackageUncheckedCreateInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -486,6 +500,7 @@ export type ServicePackageUpdateInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -510,6 +525,7 @@ export type ServicePackageUncheckedUpdateInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -532,6 +548,7 @@ export type ServicePackageCreateManyInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -550,6 +567,7 @@ export type ServicePackageUpdateManyMutationInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -569,6 +587,7 @@ export type ServicePackageUncheckedUpdateManyInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -603,6 +622,7 @@ export type ServicePackageCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxRmDiscountPercent?: Prisma.SortOrder
   checkPricesJson?: Prisma.SortOrder
+  checkOptionsJson?: Prisma.SortOrder
   taxRate?: Prisma.SortOrder
   tatHours?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -631,6 +651,7 @@ export type ServicePackageMaxOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxRmDiscountPercent?: Prisma.SortOrder
   checkPricesJson?: Prisma.SortOrder
+  checkOptionsJson?: Prisma.SortOrder
   taxRate?: Prisma.SortOrder
   tatHours?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -650,6 +671,7 @@ export type ServicePackageMinOrderByAggregateInput = {
   price?: Prisma.SortOrder
   maxRmDiscountPercent?: Prisma.SortOrder
   checkPricesJson?: Prisma.SortOrder
+  checkOptionsJson?: Prisma.SortOrder
   taxRate?: Prisma.SortOrder
   tatHours?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
@@ -795,6 +817,7 @@ export type ServicePackageCreateWithoutTenantInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -817,6 +840,7 @@ export type ServicePackageUncheckedCreateWithoutTenantInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -868,6 +892,7 @@ export type ServicePackageScalarWhereInput = {
   price?: Prisma.DecimalNullableFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFilter<"ServicePackage"> | string
+  checkOptionsJson?: Prisma.StringFilter<"ServicePackage"> | string
   taxRate?: Prisma.DecimalFilter<"ServicePackage"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFilter<"ServicePackage"> | number
   isActive?: Prisma.BoolFilter<"ServicePackage"> | boolean
@@ -886,6 +911,7 @@ export type ServicePackageCreateWithoutCasesInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -909,6 +935,7 @@ export type ServicePackageUncheckedCreateWithoutCasesInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -946,6 +973,7 @@ export type ServicePackageUpdateWithoutCasesInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -969,6 +997,7 @@ export type ServicePackageUncheckedUpdateWithoutCasesInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -990,6 +1019,7 @@ export type ServicePackageCreateWithoutCaseServicesInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1013,6 +1043,7 @@ export type ServicePackageUncheckedCreateWithoutCaseServicesInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1050,6 +1081,7 @@ export type ServicePackageUpdateWithoutCaseServicesInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1073,6 +1105,7 @@ export type ServicePackageUncheckedUpdateWithoutCaseServicesInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1094,6 +1127,7 @@ export type ServicePackageCreateWithoutClientRatesInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1117,6 +1151,7 @@ export type ServicePackageUncheckedCreateWithoutClientRatesInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1154,6 +1189,7 @@ export type ServicePackageUpdateWithoutClientRatesInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1177,6 +1213,7 @@ export type ServicePackageUncheckedUpdateWithoutClientRatesInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1198,6 +1235,7 @@ export type ServicePackageCreateWithoutClientDiscountsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1221,6 +1259,7 @@ export type ServicePackageUncheckedCreateWithoutClientDiscountsInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1258,6 +1297,7 @@ export type ServicePackageUpdateWithoutClientDiscountsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1281,6 +1321,7 @@ export type ServicePackageUncheckedUpdateWithoutClientDiscountsInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1301,6 +1342,7 @@ export type ServicePackageCreateManyTenantInput = {
   price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: string
+  checkOptionsJson?: string
   taxRate?: runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: number
   isActive?: boolean
@@ -1319,6 +1361,7 @@ export type ServicePackageUpdateWithoutTenantInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1341,6 +1384,7 @@ export type ServicePackageUncheckedUpdateWithoutTenantInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1363,6 +1407,7 @@ export type ServicePackageUncheckedUpdateManyWithoutTenantInput = {
   price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   maxRmDiscountPercent?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   checkPricesJson?: Prisma.StringFieldUpdateOperationsInput | string
+  checkOptionsJson?: Prisma.StringFieldUpdateOperationsInput | string
   taxRate?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   tatHours?: Prisma.IntFieldUpdateOperationsInput | number
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1440,6 +1485,7 @@ export type ServicePackageSelect<ExtArgs extends runtime.Types.Extensions.Intern
   price?: boolean
   maxRmDiscountPercent?: boolean
   checkPricesJson?: boolean
+  checkOptionsJson?: boolean
   taxRate?: boolean
   tatHours?: boolean
   isActive?: boolean
@@ -1467,6 +1513,7 @@ export type ServicePackageSelectScalar = {
   price?: boolean
   maxRmDiscountPercent?: boolean
   checkPricesJson?: boolean
+  checkOptionsJson?: boolean
   taxRate?: boolean
   tatHours?: boolean
   isActive?: boolean
@@ -1474,7 +1521,7 @@ export type ServicePackageSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ServicePackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "name" | "checksJson" | "serviceFamily" | "requiredDocumentsJson" | "price" | "maxRmDiscountPercent" | "checkPricesJson" | "taxRate" | "tatHours" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["servicePackage"]>
+export type ServicePackageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "code" | "name" | "checksJson" | "serviceFamily" | "requiredDocumentsJson" | "price" | "maxRmDiscountPercent" | "checkPricesJson" | "checkOptionsJson" | "taxRate" | "tatHours" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["servicePackage"]>
 export type ServicePackageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   cases?: boolean | Prisma.ServicePackage$casesArgs<ExtArgs>
@@ -1511,6 +1558,10 @@ export type $ServicePackagePayload<ExtArgs extends runtime.Types.Extensions.Inte
      * Price of each check on its own, e.g. {"EMPLOYMENT": 2500}. Used when a case picks fewer checks.
      */
     checkPricesJson: string
+    /**
+     * Per-check options, e.g. {"EDUCATION": {"levels": ["GRADUATION"]}}; they decide the candidate's documents.
+     */
+    checkOptionsJson: string
     /**
      * GST % charged on this package unless the client agreement sets its own.
      */
@@ -1904,6 +1955,7 @@ export interface ServicePackageFieldRefs {
   readonly price: Prisma.FieldRef<"ServicePackage", 'Decimal'>
   readonly maxRmDiscountPercent: Prisma.FieldRef<"ServicePackage", 'Decimal'>
   readonly checkPricesJson: Prisma.FieldRef<"ServicePackage", 'String'>
+  readonly checkOptionsJson: Prisma.FieldRef<"ServicePackage", 'String'>
   readonly taxRate: Prisma.FieldRef<"ServicePackage", 'Decimal'>
   readonly tatHours: Prisma.FieldRef<"ServicePackage", 'Int'>
   readonly isActive: Prisma.FieldRef<"ServicePackage", 'Boolean'>

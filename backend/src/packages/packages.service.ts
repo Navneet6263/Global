@@ -13,6 +13,12 @@ import type {
 } from "./dto/packages.dto";
 import { discountedPrice } from "./package-discount";
 import { parseCheckPrices } from "./package-pricing";
+import {
+  cleanCheckOptions,
+  documentPlan,
+  packageRequiredDocuments,
+  parseCheckOptions,
+} from "./check-catalogue";
 
 /** Keeps only valid, non-negative prices for checks that are in the package. */
 function checkPriceMap(
@@ -45,6 +51,7 @@ const PACKAGE_SELECT = {
   tatHours: true,
   maxRmDiscountPercent: true,
   checkPricesJson: true,
+  checkOptionsJson: true,
   taxRate: true,
   isActive: true,
   createdAt: true,
@@ -62,6 +69,7 @@ type PackageRow = {
   tatHours: number;
   maxRmDiscountPercent: { toString(): string };
   checkPricesJson: string;
+  checkOptionsJson: string;
   taxRate: { toString(): string };
   isActive: boolean;
   createdAt: Date;
@@ -80,13 +88,19 @@ function list(value: string): string[] {
 }
 
 function present(row: PackageRow) {
+  const checks = list(row.checksJson);
+  const checkOptions = parseCheckOptions(row.checkOptionsJson, checks);
+  const requiredDocuments = list(row.requiredDocumentsJson);
   return {
     id: row.publicId,
     code: row.code,
     name: row.name,
     serviceFamily: row.serviceFamily,
-    checks: list(row.checksJson),
-    requiredDocuments: list(row.requiredDocumentsJson),
+    checks,
+    checkOptions,
+    requiredDocuments,
+    /** What the candidate uploads for this package, and why. */
+    documentPlan: documentPlan(checks, checkOptions, requiredDocuments),
     price: row.price === null ? null : Number(row.price.toString()),
     tatHours: row.tatHours,
     maxRmDiscountPercent: Number(row.maxRmDiscountPercent.toString()),
@@ -132,6 +146,12 @@ export class PackagesService {
     });
     if (exists)
       throw new ConflictException("A package with this code already exists");
+    const checkOptions = cleanCheckOptions(input.checkOptions, input.checks);
+    const requiredDocuments = packageRequiredDocuments(
+      input.checks,
+      checkOptions,
+      input.requiredDocuments,
+    );
     return this.prisma.$transaction(async (tx) => {
       const row = await tx.servicePackage.create({
         data: {
@@ -139,8 +159,9 @@ export class PackagesService {
           code,
           name: input.name.trim(),
           checksJson: JSON.stringify(input.checks),
+          checkOptionsJson: JSON.stringify(checkOptions),
           serviceFamily: input.serviceFamily,
-          requiredDocumentsJson: JSON.stringify(input.requiredDocuments),
+          requiredDocumentsJson: JSON.stringify(requiredDocuments),
           price: input.price,
           tatHours: input.tatHours,
           maxRmDiscountPercent: input.maxRmDiscountPercent ?? 0,
@@ -167,6 +188,8 @@ export class PackagesService {
             checkPrices: checkPriceMap(input.checkPrices, input.checks),
             taxRate: input.taxRate ?? 18,
             checks: input.checks,
+            checkOptions,
+            requiredDocuments,
           }),
         },
       });
@@ -185,11 +208,30 @@ export class PackagesService {
       new Date(input.updatedAt).toISOString()
     )
       throw new ConflictException("Package changed; refresh and try again");
+    const checks = input.checks ?? list(current.checksJson);
+    // Checks, options or extra documents changed: work the documents out again.
+    const recompute =
+      input.checks !== undefined ||
+      input.checkOptions !== undefined ||
+      input.requiredDocuments !== undefined;
+    const checkOptions =
+      input.checkOptions !== undefined
+        ? cleanCheckOptions(input.checkOptions, checks)
+        : parseCheckOptions(current.checkOptionsJson, checks);
     const data = {
       ...(input.name !== undefined ? { name: input.name.trim() } : {}),
       ...(input.checks ? { checksJson: JSON.stringify(input.checks) } : {}),
-      ...(input.requiredDocuments
-        ? { requiredDocumentsJson: JSON.stringify(input.requiredDocuments) }
+      ...(recompute
+        ? {
+            checkOptionsJson: JSON.stringify(checkOptions),
+            requiredDocumentsJson: JSON.stringify(
+              packageRequiredDocuments(
+                checks,
+                checkOptions,
+                input.requiredDocuments ?? list(current.requiredDocumentsJson),
+              ),
+            ),
+          }
         : {}),
       ...(input.price !== undefined ? { price: input.price } : {}),
       ...(input.tatHours !== undefined ? { tatHours: input.tatHours } : {}),

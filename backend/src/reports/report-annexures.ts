@@ -73,16 +73,23 @@ const ORDER = [
   "IDENTITY",
   "PAN_VALIDATION",
   "ADDRESS",
+  "DIGITAL_ADDRESS",
+  "CORPORATE_ADDRESS",
   "EDUCATION",
   "EMPLOYMENT",
+  "UAN_CHECK",
   "COURT_RECORD",
   "CRIMINAL",
   "REFERENCE",
   "DRUG_TEST",
   "GLOBAL_DATABASE",
+  "INDIA_DATABASE",
   "SANCTIONS",
   "DIRECTORSHIP",
   "ADVERSE_MEDIA",
+  "SOCIAL_MEDIA",
+  "CREDIT_CHECK",
+  "BANK_ACCOUNT",
 ];
 
 /** Keys that stay inside Sapling: costs, approvals and payment references. */

@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   CheckCheck,
+  CheckCircle2,
   FileText,
   Clock3,
   MessageSquare,
@@ -26,7 +27,7 @@ import { ClientCaseChecks } from "./ClientCaseChecks";
 import { caseDate, clientCaseActivity } from "./client-case-activity";
 import { ClientClarificationCard } from "./ClientClarificationCard";
 import { ClientReportReady } from "./ClientReportReady";
-import { caseStatusLabel, humanize, relativeTime, statusTone } from "./client-portal-utils";
+import { clientStatus, humanize, relativeTime, statusTone, tatText } from "./client-portal-utils";
 
 export function ClientCaseDrawer({
   caseId,
@@ -86,9 +87,9 @@ export function ClientCaseDrawer({
           </div>
           {item && (
             <span
-              className={`hidden rounded-full px-3 py-1.5 text-xs font-semibold sm:block ${statusTone(item.status)}`}
+              className={`hidden rounded-full px-3 py-1.5 text-xs font-semibold sm:block ${clientStatus(item).tone}`}
             >
-              {caseStatusLabel(item.status)}
+              {clientStatus(item).label}
             </span>
           )}
         </header>
@@ -121,11 +122,10 @@ export function ClientCaseDrawer({
                 >
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <p className="text-sm font-bold text-slate-900">
-                        {caseStatusLabel(item.status)}
-                      </p>
+                      <p className="text-sm font-bold text-slate-900">{clientStatus(item).label}</p>
                       <p className="mt-1 text-xs text-slate-500">
-                        {completed} of {item.checks.length} checks completed
+                        {clientStatus(item).detail ??
+                          `${completed} of ${item.checks.length} checks completed`}
                       </p>
                     </div>
                     <div className="text-right">
@@ -146,6 +146,16 @@ export function ClientCaseDrawer({
                       style={{ width: `${progress}%` }}
                     />
                   </div>
+                  {item.clientProgress?.candidateSubmittedAt ? (
+                    <p
+                      className="mt-3 flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800"
+                      role="status"
+                    >
+                      <CheckCircle2 className="size-4 shrink-0" aria-hidden />
+                      Candidate uploaded all documents on{" "}
+                      {caseDate(item.clientProgress.candidateSubmittedAt)}.
+                    </p>
+                  ) : null}
                 </section>
                 {item.report ? (
                   <ClientReportReady
@@ -276,7 +286,7 @@ export function ClientCaseDrawer({
                 </Button>
                 <dl className="space-y-4">
                   {[
-                    ["Expected by", caseDate(item.dueAt)],
+                    ["Turnaround", tatText(item.tatWorkingDays)],
                     ["Created", caseDate(item.createdAt)],
                     ["Priority", humanize(item.priority)],
                     [

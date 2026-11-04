@@ -38,6 +38,13 @@ export function clientCaseActivity(item: CaseDetail): CaseActivity[] {
     if (at && Number.isFinite(Date.parse(at))) events.push({ id, kind, title, at, detail });
   };
   add("created", "Case", "Verification case created", item.createdAt, item.caseNumber);
+  add(
+    "candidate-submitted",
+    "Documents",
+    "Candidate uploaded all documents",
+    item.clientProgress?.candidateSubmittedAt,
+    "The case moved to our team for checking",
+  );
   item.statusHistory.forEach((event, index) =>
     add(
       `stage-${index}`,
@@ -175,7 +182,36 @@ const nextSteps: Record<string, { title: string; text: string; target: string; a
     action: "View case history",
   },
 };
-export function clientNextStep(status: string) {
+const stageSteps: Record<string, { title: string; text: string; target: string; action: string }> =
+  {
+    DOCUMENTS_RECEIVED: {
+      title: "Documents received: our team is checking them",
+      text: "The candidate uploaded every document. Nothing is needed from you; verification starts once the documents are checked.",
+      target: "documents",
+      action: "View uploaded documents",
+    },
+    YOUR_REVIEW: {
+      title: "Review the candidate's documents",
+      text: "The candidate uploaded every document. Check them and approve to start verification.",
+      target: "documents",
+      action: "View uploaded documents",
+    },
+    CORRECTION: {
+      title: "A correction was requested",
+      text: "A document or detail needs correcting. Open Requests to see what is needed; verification continues once it is in.",
+      target: "requests",
+      action: "Open requests",
+    },
+    WAITING_CANDIDATE: {
+      title: "Waiting for the candidate",
+      text: "The candidate has a secure link to give consent and upload documents. You will see each upload here as it comes in.",
+      target: "documents",
+      action: "View documents",
+    },
+  };
+
+export function clientNextStep(status: string, stage?: string | null) {
+  if (stage && stageSteps[stage]) return stageSteps[stage];
   return (
     nextSteps[status === "QA_PENDING" ? "QA_REVIEW" : status] ?? {
       title: caseStatusLabel(status),

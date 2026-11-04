@@ -10,6 +10,7 @@ export const documentTypes = [
   "ADDRESS_PROOF",
   "EDUCATION_CERTIFICATE",
   "EMPLOYMENT_PROOF",
+  "BANK_PROOF",
   "OTHER",
 ] as const;
 

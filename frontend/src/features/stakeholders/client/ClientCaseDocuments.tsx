@@ -7,6 +7,15 @@ import type { CaseDetail } from "@/lib/api/cases";
 import { createDocument, uploadDocument, type DocumentType } from "@/lib/api/documents";
 import { humanize, statusTone } from "./client-portal-utils";
 import { DocumentFileActions } from "@/features/cases/document-file-actions";
+import { caseDate } from "./client-case-activity";
+
+const fileSize = (bytes: string | number) => {
+  const size = Number(bytes);
+  if (!Number.isFinite(size) || size <= 0) return "size unknown";
+  return size >= 1_048_576
+    ? `${(size / 1_048_576).toFixed(1)} MB`
+    : `${Math.max(1, Math.round(size / 1024))} KB`;
+};
 
 type CaseDocument = CaseDetail["documents"][number];
 
@@ -38,7 +47,7 @@ export function ClientCaseDocuments({
       <header className="border-b border-border px-4 py-3">
         <h3 className="text-xs font-semibold text-foreground">Documents</h3>
         <p className="mt-0.5 text-[10px] text-muted-foreground">
-          Secure versions, current review state and re-upload controls
+          What the candidate uploaded, its review status, and what is still missing
         </p>
       </header>
       <div className="space-y-2 p-3">
@@ -185,9 +194,9 @@ function DocumentRow({
             <ForChecks checks={checks} />
             <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
               {latest
-                ? `${latest.originalName} · version ${item.currentVersion}`
+                ? `${latest.originalName} · ${fileSize(latest.sizeBytes)} · uploaded ${caseDate(latest.createdAt)}`
                 : item.currentVersion > 0
-                  ? `Version ${item.currentVersion} uploaded · file details restricted`
+                  ? "Uploaded · being scanned before it can be opened"
                   : "Upload is still pending"}
             </p>
           </div>

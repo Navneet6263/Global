@@ -40,11 +40,15 @@ const DOCS: Record<string, { label: string; hint: string; expiry?: boolean }> = 
   },
   EDUCATION_CERTIFICATE: {
     label: "Education certificate",
-    hint: "Your highest degree certificate or final marksheet.",
+    hint: "The certificate or final marksheet of each qualification asked for, in one PDF.",
   },
   EMPLOYMENT_PROOF: {
     label: "Employment proof",
-    hint: "Relieving letter, experience letter or recent payslips.",
+    hint: "Relieving or experience letter of each employer asked for, in one PDF.",
+  },
+  BANK_PROOF: {
+    label: "Bank proof",
+    hint: "A cancelled cheque or a recent bank statement showing the account number and IFSC.",
   },
   OTHER: { label: "Other requested document", hint: "The document the team asked you for." },
 };

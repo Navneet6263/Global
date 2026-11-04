@@ -1,4 +1,5 @@
 import { apiRequest } from "./client";
+import type { CheckOptions, DocumentPlan } from "@/features/packages/check-catalogue";
 
 /** A service package with its list price and the most an RM may discount it. */
 export interface PackageItem {
@@ -7,7 +8,11 @@ export interface PackageItem {
   name: string;
   serviceFamily: string;
   checks: string[];
+  /** What each check covers, e.g. { EDUCATION: { levels: ["GRADUATION"] } }. */
+  checkOptions?: Record<string, CheckOptions>;
   requiredDocuments: string[];
+  /** What the candidate uploads for this package, and why. */
+  documentPlan?: DocumentPlan;
   price: number | null;
   tatHours: number;
   maxRmDiscountPercent: number;
@@ -24,9 +29,11 @@ export interface PackageInput {
   code: string;
   name: string;
   checks: string[];
+  checkOptions?: Record<string, CheckOptions>;
   price?: number;
   tatHours: number;
   serviceFamily?: string;
+  /** Documents asked for besides the checks' own. */
   requiredDocuments?: string[];
   maxRmDiscountPercent?: number;
   checkPrices?: Record<string, number>;
@@ -38,6 +45,9 @@ export interface PackageUpdate {
   name?: string;
   /** The checks the package includes (only sent when changed). */
   checks?: string[];
+  /** Sent with the extra documents whenever checks, options or extras change. */
+  checkOptions?: Record<string, CheckOptions>;
+  requiredDocuments?: string[];
   price?: number;
   tatHours?: number;
   maxRmDiscountPercent?: number;

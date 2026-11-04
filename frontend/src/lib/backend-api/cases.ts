@@ -42,6 +42,16 @@ export interface CaseListItem {
   status: string;
   priority: string;
   dueAt?: string | null;
+  /** Client Admin only: the turnaround in working days (the due date stays internal). */
+  tatWorkingDays?: number | null;
+  /** Client Admin only: where the case waits on documents, in the client's words. */
+  clientProgress?: {
+    stage: "WAITING_CANDIDATE" | "DOCUMENTS_RECEIVED" | "YOUR_REVIEW" | "CORRECTION" | null;
+    label: string | null;
+    detail: string | null;
+    /** When the candidate confirmed every document was uploaded. */
+    candidateSubmittedAt: string | null;
+  } | null;
   completedAt?: string | null;
   riskLevel?: string | null;
   version: number;
@@ -165,6 +175,7 @@ export interface CaseDetail extends CaseListItem {
       version: number;
       originalName: string;
       contentType: string;
+      /** A number for Client Admin, who gets only the latest clean file. */
       sizeBytes: string;
       sha256: string;
       malwareState: string;

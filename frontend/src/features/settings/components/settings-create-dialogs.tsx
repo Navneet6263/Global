@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { daysToHours } from "@/lib/formatting";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +17,7 @@ import { RequiredDocumentFields, ServiceFamilyField } from "./service-policy-fie
 import { SERVICE_CHECKS } from "./service-policy-options";
 import { PackageCheckPricing } from "@/features/packages/PackageCheckPricing";
 import { toCheckPrices, type CheckPriceDraft } from "@/features/packages/check-prices";
+import { packageRequiredDocuments, type CheckOptions } from "@/features/packages/check-catalogue";
 
 export interface BranchDraft {
   code: string;
@@ -26,9 +28,12 @@ export interface PackageDraft {
   code: string;
   name: string;
   checks: string[];
+  /** What each check covers: IDs, addresses, qualifications, counts, drug panel. */
+  checkOptions: Record<string, CheckOptions>;
   price?: number;
   tatHours: number;
   serviceFamily: string;
+  /** Documents asked for besides the checks' own. */
   requiredDocuments: string[];
   /** Most an RM may discount this package (Packages & pricing only). */
   maxRmDiscountPercent?: number;
@@ -111,13 +116,15 @@ export function AddPackageDialog(
     name: "",
     checks: [] as string[],
     price: "",
-    tatHours: "72",
+    tatDays: "3",
     serviceFamily: "HIRECHECK",
     requiredDocuments: [] as string[],
     maxRmDiscountPercent: "0",
     taxRate: "18",
   });
   const [checkPrices, setCheckPrices] = useState<CheckPriceDraft>({});
+  const [checkOptions, setCheckOptions] = useState<Record<string, CheckOptions>>({});
+  const fromChecks = packageRequiredDocuments(draft.checks, pick(checkOptions, draft.checks));
   const toggle = (check: string) =>
     setDraft((current) => ({
       ...current,
@@ -129,7 +136,8 @@ export function AddPackageDialog(
     /^[A-Za-z0-9_-]{2,40}$/.test(draft.code) &&
     draft.name.trim().length >= 2 &&
     draft.checks.length > 0 &&
-    Number(draft.tatHours) > 0 &&
+    daysToHours(Number(draft.tatDays)) >= 1 &&
+    Number(draft.tatDays) <= 365 &&
     Number(draft.maxRmDiscountPercent) >= 0 &&
     Number(draft.maxRmDiscountPercent) <= 100 &&
     Number(draft.taxRate) >= 0 &&
@@ -159,13 +167,14 @@ export function AddPackageDialog(
                 placeholder="Standard BGV"
               />
             </Field>
-            <Field label="Turnaround hours">
+            <Field label="Turnaround (days)">
               <Input
                 type="number"
-                min="1"
-                max="8760"
-                value={draft.tatHours}
-                onChange={(e) => setDraft({ ...draft, tatHours: e.target.value })}
+                min="0.5"
+                max="365"
+                step="0.5"
+                value={draft.tatDays}
+                onChange={(e) => setDraft({ ...draft, tatDays: e.target.value })}
               />
             </Field>
           </div>
@@ -181,6 +190,10 @@ export function AddPackageDialog(
             onToggle={toggle}
             prices={checkPrices}
             onPrices={setCheckPrices}
+            options={checkOptions}
+            onOptions={setCheckOptions}
+            extraDocuments={draft.requiredDocuments.filter((type) => !fromChecks.includes(type))}
+            onTatDays={(tatDays) => setDraft((current) => ({ ...current, tatDays }))}
             packagePrice={draft.price ? Number(draft.price) : null}
             onPackagePrice={(price) => setDraft((current) => ({ ...current, price }))}
             taxRate={draft.taxRate}
@@ -220,10 +233,13 @@ export function AddPackageDialog(
             ) : null}
           </div>
         </Step>
-        <Step number={4} title="Documents the candidate uploads">
+        <Step number={4} title="Any other document? (optional)">
           <RequiredDocumentFields
             value={draft.requiredDocuments}
             onChange={(requiredDocuments) => setDraft({ ...draft, requiredDocuments })}
+            exclude={fromChecks}
+            legend="Extra documents"
+            description="The checks above already decide the candidate's documents (see the summary in step 2). Tick a document here only if this package needs one more."
           />
         </Step>
         <DialogFooter>
@@ -238,10 +254,13 @@ export function AddPackageDialog(
                 code: draft.code,
                 name: draft.name,
                 checks: draft.checks,
+                checkOptions: pick(checkOptions, draft.checks),
                 price: draft.price ? Number(draft.price) : undefined,
-                tatHours: Number(draft.tatHours),
+                tatHours: daysToHours(Number(draft.tatDays)),
                 serviceFamily: draft.serviceFamily,
-                requiredDocuments: draft.requiredDocuments,
+                requiredDocuments: draft.requiredDocuments.filter(
+                  (type) => !fromChecks.includes(type),
+                ),
                 ...(props.withRmDiscount
                   ? {
                       maxRmDiscountPercent: Number(draft.maxRmDiscountPercent),
@@ -257,6 +276,13 @@ export function AddPackageDialog(
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** Options of the ticked checks only. */
+function pick(options: Record<string, CheckOptions>, checks: readonly string[]) {
+  return Object.fromEntries(
+    checks.filter((check) => options[check]).map((check) => [check, options[check]!]),
   );
 }
 

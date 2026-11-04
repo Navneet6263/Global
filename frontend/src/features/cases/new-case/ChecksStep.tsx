@@ -3,6 +3,7 @@ import type { CaseServicePackage } from "@/lib/api/cases";
 import { checkCatalog, type CaseDraft, type CheckKey, type ServiceSelection } from "./model";
 import { ServiceDetailsFields } from "./ServiceDetailsFields";
 import { serviceSelectionError } from "./service-selection";
+import { formatTatDays } from "@/lib/formatting";
 import { priceLabel, servicePrice } from "./case-price-estimate";
 import { CheckRequirementsPanel } from "../CheckRequirementsPanel";
 
@@ -102,7 +103,7 @@ export function ChecksStep({
                 </span>
                 <span className="flex items-center gap-1 text-[11px] text-slate-500">
                   <Clock3 className="size-3" />
-                  {pkg.tatHours % 24 ? `${pkg.tatHours}h` : `${pkg.tatHours / 24}d`} TAT
+                  {formatTatDays(pkg.tatHours)} TAT
                 </span>
               </span>
             </button>

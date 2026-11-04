@@ -1,17 +1,14 @@
 /**
- * Self sign-up onboarding checklist. Documents are stored as ClientAgreement rows (one per
- * type) with reviewed ClientAgreementFile revisions, so the existing independent review
- * and activation rules apply unchanged.
+ * Company onboarding checklist: the four documents Sapling collects from every company.
+ * Documents are stored as ClientAgreement rows (one per type) with reviewed
+ * ClientAgreementFile revisions, so the existing independent review and activation rules
+ * apply unchanged.
  */
 export type OnboardingDocumentType =
   | "AGREEMENT"
-  | "DPA"
   | "GST_CERTIFICATE"
   | "PAN"
-  | "SIGNATORY_AUTHORITY"
-  | "CONFIDENTIALITY"
-  | "INCORPORATION"
-  | "PURCHASE_ORDER";
+  | "INCORPORATION";
 
 export const ONBOARDING_DOCUMENTS: ReadonlyArray<{
   type: OnboardingDocumentType;
@@ -25,13 +22,6 @@ export const ONBOARDING_DOCUMENTS: ReadonlyArray<{
     type: "AGREEMENT",
     label: "Service agreement (MSA)",
     hint: "Signed and stamped by your authorised signatory.",
-    required: true,
-    signed: true,
-  },
-  {
-    type: "DPA",
-    label: "Data processing agreement (DPA)",
-    hint: "Covers how candidate data is handled and protected.",
     required: true,
     signed: true,
   },
@@ -50,31 +40,10 @@ export const ONBOARDING_DOCUMENTS: ReadonlyArray<{
     signed: false,
   },
   {
-    type: "SIGNATORY_AUTHORITY",
-    label: "Authorised signatory letter / board resolution",
-    hint: "Confirms who may sign agreements for the company.",
-    required: true,
-    signed: false,
-  },
-  {
-    type: "CONFIDENTIALITY",
-    label: "NDA / confidentiality agreement",
-    hint: "Optional, if your company requires one.",
-    required: false,
-    signed: true,
-  },
-  {
     type: "INCORPORATION",
     label: "Certificate of incorporation",
-    hint: "Optional company registration proof.",
-    required: false,
-    signed: false,
-  },
-  {
-    type: "PURCHASE_ORDER",
-    label: "Purchase order",
-    hint: "Optional, if your procurement issues one.",
-    required: false,
+    hint: "Company registration proof issued by the MCA.",
+    required: true,
     signed: false,
   },
 ];
@@ -82,11 +51,11 @@ export const ONBOARDING_DOCUMENTS: ReadonlyArray<{
 export const ONBOARDING_DOCUMENT_TYPES = ONBOARDING_DOCUMENTS.map(
   (row) => row.type,
 );
-/** Approved before a self sign-up company is activated (AGREEMENT/DPA are always required). */
+/** Approved before a self sign-up company is activated (AGREEMENT is always required). */
 export const SELF_SIGNUP_KYC_TYPES: readonly string[] = [
   "GST_CERTIFICATE",
   "PAN",
-  "SIGNATORY_AUTHORITY",
+  "INCORPORATION",
 ];
 
 export type ChecklistCompany = {

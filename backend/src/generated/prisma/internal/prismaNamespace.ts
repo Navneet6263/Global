@@ -4894,6 +4894,7 @@ export const ServicePackageScalarFieldEnum = {
   price: 'price',
   maxRmDiscountPercent: 'maxRmDiscountPercent',
   checkPricesJson: 'checkPricesJson',
+  checkOptionsJson: 'checkOptionsJson',
   taxRate: 'taxRate',
   tatHours: 'tatHours',
   isActive: 'isActive',

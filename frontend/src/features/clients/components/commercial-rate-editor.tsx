@@ -1,4 +1,5 @@
 import type { ClientRate, CommercialSettings } from "@/lib/backend-api/client-commercial";
+import { daysToHours, hoursToDays } from "@/lib/formatting";
 
 export const commercialInput =
   "h-10 w-full rounded-xl border border-border bg-card px-3 text-xs outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/10";
@@ -73,16 +74,19 @@ export function CommercialRateEditor({
               />
             </label>
             <label className="space-y-1 text-[10px] text-muted-foreground">
-              TAT hours
+              TAT days
               <input
-                aria-label="Contract TAT hours"
+                aria-label="Contract TAT days"
                 type="number"
-                min="4"
-                max="720"
-                value={rate.tatHours ?? ""}
+                min="0.5"
+                max="30"
+                step="0.5"
+                value={rate.tatHours == null ? "" : hoursToDays(rate.tatHours)}
                 placeholder="Default"
                 onChange={(e) =>
-                  update(index, { tatHours: e.target.value ? Number(e.target.value) : null })
+                  update(index, {
+                    tatHours: e.target.value ? daysToHours(Number(e.target.value)) : null,
+                  })
                 }
                 className={commercialInput}
               />

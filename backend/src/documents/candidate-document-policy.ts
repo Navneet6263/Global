@@ -10,6 +10,7 @@ const candidateTypes = new Set([
   "ADDRESS_PROOF",
   "EDUCATION_CERTIFICATE",
   "EMPLOYMENT_PROOF",
+  "BANK_PROOF",
 ]);
 
 export async function assertCandidateDocumentType(

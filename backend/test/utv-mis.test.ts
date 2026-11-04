@@ -4,6 +4,7 @@ import type { Actor } from "../src/common/auth/actor";
 import { crc32, storeZip } from "../src/common/zip/store-zip";
 import type { PrismaService } from "../src/database/prisma.service";
 import {
+  MIS_COLUMNS,
   misCsv,
   misRows,
   nextMisRun,
@@ -68,11 +69,14 @@ void test("case status MIS shows colour only after release", () => {
   assert.equal(rows[1]!.cells[5], "1/1");
 });
 
-void test("TAT MIS flags late open cases", () => {
+void test("TAT MIS counts working days, flags late open cases and hides the due date", () => {
   const rows = misRows("TAT", cases, day("2026-10-07T05:00:00Z"));
-  assert.deepEqual(rows[0]!.cells.slice(5), ["4", "Yes"]);
+  // 1 to 5 Oct has Sunday 4 Oct; 20 Sep to 7 Oct has three Sundays (20, 27 Sep, 4 Oct).
+  assert.deepEqual(rows[0]!.cells.slice(4), ["3", "Yes"]);
   assert.equal(rows[0]!.colour, "GREEN");
-  assert.deepEqual(rows[1]!.cells.slice(5), ["17", "No (open)"]);
+  assert.equal(rows[0]!.cells.length, MIS_COLUMNS.TAT.length);
+  assert.equal(MIS_COLUMNS.TAT.includes("Due"), false);
+  assert.deepEqual(rows[1]!.cells.slice(4), ["14", "No (open)"]);
   assert.equal(rows[1]!.colour, "RED");
 });
 

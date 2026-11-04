@@ -54,6 +54,13 @@ export const caseListSelect = {
   assignedOpsUser: { select: { publicId: true, displayName: true } },
   workflowVersion: true,
   intakeStage: true,
+  // When the candidate last confirmed "all documents uploaded" (client progress only).
+  candidateAccess: {
+    where: { completedAt: { not: null } },
+    orderBy: { completedAt: "desc" as const },
+    take: 1,
+    select: { completedAt: true },
+  },
   dataEntryAssignedAt: true,
   dataEntryReadyAt: true,
   stoppedFromStatus: true,

@@ -50,6 +50,10 @@ export const VENDOR_CHECK_DOCUMENTS: Readonly<
   IDENTITY: ["AADHAAR"],
   PAN_VALIDATION: ["PAN"],
   REFERENCE: [],
+  DIGITAL_ADDRESS: ["ADDRESS_PROOF", "AADHAAR"],
+  CORPORATE_ADDRESS: [],
+  CREDIT_CHECK: ["PAN"],
+  BANK_ACCOUNT: ["BANK_PROOF"],
 };
 
 export const defaultSharedTypes = (checkType: string) =>

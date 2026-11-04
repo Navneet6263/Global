@@ -89,6 +89,7 @@ export function createServicePackage(input: {
   code: string;
   name: string;
   checks: string[];
+  checkOptions?: Record<string, unknown>;
   price?: number;
   tatHours: number;
   serviceFamily?: string;

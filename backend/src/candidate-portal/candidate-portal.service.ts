@@ -209,7 +209,31 @@ export class CandidatePortalService {
           })),
         });
       // Route A (client reviews first) or the client's auto Data Entry rule.
-      return applyIntakeRules(tx, access.caseId);
+      const next = await applyIntakeRules(tx, access.caseId);
+      // Route A already asks the client to review; otherwise tell them the documents are in.
+      if (next !== "client-review" && next !== "client-review-again") {
+        const admins = await tx.user.findMany({
+          where: {
+            tenantId: access.tenantId,
+            clientId: access.case.clientId,
+            status: "ACTIVE",
+            userRoles: { some: { role: { code: "CLIENT_ADMIN" } } },
+          },
+          select: { id: true },
+        });
+        if (admins.length)
+          await tx.notification.createMany({
+            data: admins.map((admin) => ({
+              tenantId: access.tenantId,
+              userId: admin.id,
+              type: "CASE_DOCUMENTS_RECEIVED",
+              title: "Candidate uploaded all documents",
+              body: `${access.case.caseNumber}: ${access.case.subject.fullName} uploaded every requested document. Our team is checking them; verification starts next.`,
+              href: `/client-portal/verifications?caseId=${access.case.publicId}`,
+            })),
+          });
+      }
+      return next;
     });
     return { completed: true, completedAt, next };
   }

@@ -1,6 +1,7 @@
 import { CheckCircle2, Clock3, Layers3, ShieldCheck } from "lucide-react";
 
 import type { CaseServiceScope } from "@/lib/backend-api/case-services";
+import { formatTatDays } from "@/lib/formatting";
 import { humanize } from "./case-detail-formatting";
 import { Panel } from "./case-detail-ui";
 
@@ -46,7 +47,7 @@ export function CaseServiceScopePanel({ services }: { services?: CaseServiceScop
                   <h3 className="mt-1 text-sm font-semibold">{service.servicePackage.name}</h3>
                 </div>
                 <span className="flex shrink-0 items-center gap-1 rounded-full bg-white/75 px-2 py-1 text-[11px]">
-                  <Clock3 className="size-3" aria-hidden /> {service.tatHours}h TAT
+                  <Clock3 className="size-3" aria-hidden /> {formatTatDays(service.tatHours)} TAT
                 </span>
               </div>
               <div className="mt-4 flex items-center justify-between text-xs">

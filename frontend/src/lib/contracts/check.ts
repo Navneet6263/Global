@@ -20,6 +20,13 @@ export const CHECK_LABELS = {
   gst_validation: "GST validation",
   pan_validation: "PAN validation",
   mca_validation: "MCA validation",
+  digital_address: "Digital address",
+  corporate_address: "Corporate address",
+  uan_check: "Digital employment (UAN)",
+  india_database: "Indian database",
+  social_media: "Social media",
+  credit_check: "Credit check (CIBIL)",
+  bank_account: "Bank account",
   other: "Other",
 } as const;
 

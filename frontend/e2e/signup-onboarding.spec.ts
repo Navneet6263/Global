@@ -118,11 +118,11 @@ test("Operations reviews a sign-up: flags, document approval and activation guar
   await list.getByRole("button", { name: /Acme Technologies/ }).click();
   const sheet = page.getByRole("dialog");
   await expect(sheet.getByText("Check before approving")).toBeVisible();
-  const dpa = sheet.getByRole("listitem").filter({ hasText: "Data processing agreement" });
-  await dpa.getByRole("button", { name: "Approve" }).click();
-  await dpa.getByRole("checkbox").click();
-  await dpa.getByRole("button", { name: "Approve" }).click();
-  await expect(page.getByText("Data processing agreement (DPA) approved")).toBeVisible();
+  const msa = sheet.getByRole("listitem").filter({ hasText: "Service agreement" });
+  await msa.getByRole("button", { name: "Approve" }).click();
+  await msa.getByRole("checkbox").click();
+  await msa.getByRole("button", { name: "Approve" }).click();
+  await expect(page.getByText("Service agreement (MSA) approved")).toBeVisible();
   const review = fixture.requests.find((entry) => entry.path.endsWith("/review"));
   expect(review?.body).toMatchObject({ status: "APPROVED", signaturesChecked: true, version: 1 });
   await page.screenshot({ path: "test-results/ops-signup-sheet.png" });
@@ -153,7 +153,7 @@ test("company activity is grouped by day, filterable and paged", async ({ page }
   await page.screenshot({ path: "test-results/onboarding-activity.png" });
   await activity.getByRole("button", { name: "RM & messages" }).click();
   await expect(activity.getByText("2 events")).toBeVisible();
-  await expect(activity.getByText("Please upload the signed DPA.")).toBeVisible();
+  await expect(activity.getByText("Please upload the signed service agreement.")).toBeVisible();
   await expect(activity.getByRole("button", { name: "Older activity" })).toHaveCount(0);
 });
 
@@ -246,6 +246,6 @@ test("the company's RM approves the sign-up itself: list prices and a discount w
       () => fixture.requests.find((r) => r.path === "/client-pricing/client-acme/pkg-basic")?.body,
     )
     .toEqual({ discountPercent: 8 });
-  const dpa = sheet.getByRole("listitem").filter({ hasText: "Data processing agreement" });
-  await expect(dpa.getByRole("button", { name: "Approve" })).toBeVisible();
+  const msa = sheet.getByRole("listitem").filter({ hasText: "Service agreement" });
+  await expect(msa.getByRole("button", { name: "Approve" })).toBeVisible();
 });

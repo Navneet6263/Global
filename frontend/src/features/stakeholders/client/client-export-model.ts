@@ -16,7 +16,7 @@ export const exportColumns: Record<ExportKind, ExportColumn[]> = {
     ["completed", "Completed checks"],
     ["created", "Created at (IST)"],
     ["updated", "Updated at (IST)"],
-    ["due", "Due at (IST)"],
+    ["tat", "Turnaround (working days)"],
   ]),
   invoices: columns([
     ["invoiceNumber", "Invoice number"],

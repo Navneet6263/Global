@@ -20,6 +20,14 @@ export const CheckTypes = [
   "GST_VALIDATION",
   "PAN_VALIDATION",
   "MCA_VALIDATION",
+  // A la carte checks from the price reference.
+  "DIGITAL_ADDRESS",
+  "CORPORATE_ADDRESS",
+  "UAN_CHECK",
+  "INDIA_DATABASE",
+  "SOCIAL_MEDIA",
+  "CREDIT_CHECK",
+  "BANK_ACCOUNT",
 ] as const;
 
 export const CaseStatuses = [

@@ -1,10 +1,12 @@
 import {
   Briefcase,
+  Building2,
   FlaskConical,
   GraduationCap,
   Globe2,
   Home,
   IdCard,
+  Landmark,
   Scale,
   Users,
   type LucideIcon,
@@ -32,7 +34,14 @@ export type CheckKey =
   | "COMPANY_REGISTRATION"
   | "GST_VALIDATION"
   | "PAN_VALIDATION"
-  | "MCA_VALIDATION";
+  | "MCA_VALIDATION"
+  | "DIGITAL_ADDRESS"
+  | "CORPORATE_ADDRESS"
+  | "UAN_CHECK"
+  | "INDIA_DATABASE"
+  | "SOCIAL_MEDIA"
+  | "CREDIT_CHECK"
+  | "BANK_ACCOUNT";
 
 export type ServiceSelection = {
   servicePackageId: string;
@@ -79,12 +88,19 @@ export const checkCatalog: Array<{
 }> = [
   { key: "IDENTITY", label: "Identity (Aadhaar / PAN)", icon: IdCard },
   { key: "ADDRESS", label: "Address (physical)", icon: Home },
+  { key: "DIGITAL_ADDRESS", label: "Address (digital)", icon: Home },
+  { key: "CORPORATE_ADDRESS", label: "Corporate address", icon: Building2 },
   { key: "EMPLOYMENT", label: "Employment history", icon: Briefcase },
+  { key: "UAN_CHECK", label: "Digital employment (UAN)", icon: Briefcase },
   { key: "EDUCATION", label: "Education", icon: GraduationCap },
   { key: "CRIMINAL", label: "Criminal record", icon: Scale },
   { key: "COURT_RECORD", label: "Court record", icon: Scale },
   { key: "REFERENCE", label: "Reference check", icon: Users },
   { key: "GLOBAL_DATABASE", label: "Global database", icon: Globe2 },
+  { key: "INDIA_DATABASE", label: "Indian database", icon: Globe2 },
+  { key: "SOCIAL_MEDIA", label: "Social media", icon: Globe2 },
+  { key: "CREDIT_CHECK", label: "Credit check (CIBIL)", icon: Landmark },
+  { key: "BANK_ACCOUNT", label: "Bank account", icon: Landmark },
   { key: "DRUG_TEST", label: "Drug test", icon: FlaskConical },
 ];
 

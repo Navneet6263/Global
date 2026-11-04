@@ -67,6 +67,27 @@ export function relativeTime(value: string): string {
   return `${Math.round(hours / 24)}d ${suffix}`;
 }
 
+/** The status the client reads: the document stage while it waits on documents. */
+export function clientStatus(item: {
+  status: string;
+  clientProgress?: { stage: string | null; label: string | null; detail: string | null } | null;
+}) {
+  const progress = item.clientProgress;
+  return {
+    stage: progress?.stage ?? null,
+    label: progress?.label ?? caseStatusLabel(item.status),
+    detail: progress?.detail ?? null,
+    /** Colour: documents received is the team's turn, not an action for the client. */
+    tone: statusTone(progress?.stage === "DOCUMENTS_RECEIVED" ? "IN_PROGRESS" : item.status),
+  };
+}
+
+/** Turnaround as the client sees it, e.g. "14 working days". */
+export function tatText(days: number | null | undefined): string {
+  if (!days) return "—";
+  return `${days} working ${days === 1 ? "day" : "days"}`;
+}
+
 export function slaText(dueAt: string | null | undefined, status: string): string {
   if (!dueAt) return "SLA not assigned";
   if (terminalCaseStatuses.has(status)) return `Closed ${formatDate(dueAt)}`;

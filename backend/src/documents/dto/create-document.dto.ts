@@ -9,6 +9,7 @@ export class CreateDocumentDto {
     "ADDRESS_PROOF",
     "EDUCATION_CERTIFICATE",
     "EMPLOYMENT_PROOF",
+    "BANK_PROOF",
     "OTHER",
   ])
   type!: string;

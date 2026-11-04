@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export const queueColumns = [
   { key: "status", label: "Current status" },
   { key: "checks", label: "Checks" },
-  { key: "due", label: "Expected by" },
+  { key: "due", label: "Turnaround" },
   { key: "package", label: "Package" },
   { key: "priority", label: "Priority" },
   { key: "updated", label: "Last updated" },

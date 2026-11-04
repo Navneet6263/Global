@@ -4,6 +4,10 @@ import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CreateBranchDto } from "./dto/create-branch.dto";
 import type { CreateServicePackageDto } from "./dto/create-service-package.dto";
+import {
+  cleanCheckOptions,
+  packageRequiredDocuments,
+} from "../packages/check-catalogue";
 import type { UpdateFieldPolicyDto } from "./dto/update-field-policy.dto";
 
 @Injectable()
@@ -207,6 +211,12 @@ export class SettingsService {
       throw new ConflictException(
         "A service package with this code already exists",
       );
+    const checkOptions = cleanCheckOptions(input.checkOptions, input.checks);
+    const requiredDocuments = packageRequiredDocuments(
+      input.checks,
+      checkOptions,
+      input.requiredDocuments,
+    );
     return this.prisma.$transaction(async (tx) => {
       const row = await tx.servicePackage.create({
         data: {
@@ -214,8 +224,9 @@ export class SettingsService {
           code,
           name: input.name.trim(),
           checksJson: JSON.stringify(input.checks),
+          checkOptionsJson: JSON.stringify(checkOptions),
           serviceFamily: input.serviceFamily,
-          requiredDocumentsJson: JSON.stringify(input.requiredDocuments),
+          requiredDocumentsJson: JSON.stringify(requiredDocuments),
           price: input.price,
           tatHours: input.tatHours,
         },
@@ -243,8 +254,9 @@ export class SettingsService {
         id: publicId,
         ...servicePackage,
         checks: input.checks,
+        checkOptions,
         serviceFamily: input.serviceFamily,
-        requiredDocuments: input.requiredDocuments,
+        requiredDocuments,
       };
     });
   }

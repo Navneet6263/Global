@@ -5,9 +5,10 @@ import type { QueueColumn } from "./client-queue-columns";
 import { casePackageName } from "@/lib/backend-api/case-services";
 import { ClientReportDownloadButton } from "./ClientReportReady";
 import {
-  caseStatusLabel,
+  clientStatus,
   formatDate,
   statusTone,
+  tatText,
   terminalCaseStatuses,
 } from "./client-portal-utils";
 
@@ -24,9 +25,12 @@ export function ClientQueueRow({
 }) {
   const completed = item.checks.filter((check) => check.status === "COMPLETED").length;
   const closed = terminalCaseStatuses.has(item.status);
-  const needsAction = ["DOCUMENT_PENDING", "CLARIFICATION_PENDING", "CONSENT_PENDING"].includes(
-    item.status,
-  );
+  const shown = clientStatus(item);
+  // Documents received: the next move is the team's, not the client's.
+  const needsAction =
+    shown.stage === "YOUR_REVIEW" ||
+    (shown.stage !== "DOCUMENTS_RECEIVED" &&
+      ["DOCUMENT_PENDING", "CLARIFICATION_PENDING", "CONSENT_PENDING"].includes(item.status));
   const action = needsAction ? "View request" : closed ? "View case" : "Track case";
   const Icon =
     item.status === "CANCELLED"
@@ -40,7 +44,14 @@ export function ClientQueueRow({
     {
       DRAFT: "Case being prepared",
       CONSENT_PENDING: "Consent pending",
-      DOCUMENT_PENDING: "Candidate upload pending",
+      DOCUMENT_PENDING:
+        shown.stage === "DOCUMENTS_RECEIVED"
+          ? "Candidate uploaded everything · our team is checking"
+          : shown.stage === "YOUR_REVIEW"
+            ? "Approve the documents to start verification"
+            : shown.stage === "CORRECTION"
+              ? "A correction was requested"
+              : "Candidate upload pending",
       IN_PROGRESS: "Checks underway",
       CLARIFICATION_PENDING: "Additional details requested",
       QA_REVIEW: "Evidence under review",
@@ -60,10 +71,10 @@ export function ClientQueueRow({
       </td>
       {columns.includes("status") && (
         <td data-column="status">
-          <div className={`client-row-status ${statusTone(item.status)}`}>
+          <div className={`client-row-status ${shown.tone}`}>
             <Icon aria-hidden />
             <div>
-              <span>{caseStatusLabel(item.status)}</span>
+              <span>{shown.label}</span>
               <small>{item.report ? "Report ready to download" : description}</small>
             </div>
           </div>
@@ -88,8 +99,8 @@ export function ClientQueueRow({
       )}
       {columns.includes("due") && (
         <td>
-          {item.dueAt ? (
-            <time dateTime={item.dueAt}>{formatDate(item.dueAt)}</time>
+          {item.tatWorkingDays ? (
+            tatText(item.tatWorkingDays)
           ) : (
             <span className="text-muted-foreground">Not set</span>
           )}

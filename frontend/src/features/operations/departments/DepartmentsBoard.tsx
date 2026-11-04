@@ -47,6 +47,13 @@ const CHECK_TYPES = [
   "GST_VALIDATION",
   "PAN_VALIDATION",
   "MCA_VALIDATION",
+  "DIGITAL_ADDRESS",
+  "CORPORATE_ADDRESS",
+  "UAN_CHECK",
+  "INDIA_DATABASE",
+  "SOCIAL_MEDIA",
+  "CREDIT_CHECK",
+  "BANK_ACCOUNT",
 ];
 const readable = (value: string) =>
   value

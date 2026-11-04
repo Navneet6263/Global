@@ -56,6 +56,21 @@ export function formatDuration(totalMinutes: number): string {
   return `${mins}m`;
 }
 
+/** Turnaround is stored in hours; people enter and read it in days. */
+export function hoursToDays(hours: number): number {
+  return Math.round((hours / 24) * 100) / 100;
+}
+
+export function daysToHours(days: number): number {
+  return Math.round(days * 24);
+}
+
+/** "1 day", "3 days", "1.5 days". */
+export function formatTatDays(hours: number): string {
+  const days = hoursToDays(hours);
+  return `${days} ${days === 1 ? "day" : "days"}`;
+}
+
 export function formatRelativeToNow(iso: string, now: Date = new Date()): string {
   const diffMinutes = Math.round((now.getTime() - new Date(iso).getTime()) / 60000);
   if (diffMinutes < 1) return "just now";

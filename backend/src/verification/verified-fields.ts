@@ -759,6 +759,8 @@ export function checkStatusLabel(
     "COURT_RECORD",
     "CRIMINAL",
     "GLOBAL_DATABASE",
+    "INDIA_DATABASE",
+    "SOCIAL_MEDIA",
     "ADVERSE_MEDIA",
     "SANCTIONS",
   ];

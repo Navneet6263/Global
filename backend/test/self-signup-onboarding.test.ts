@@ -240,19 +240,16 @@ void test("checklist: client part done when details and required documents are u
   assert.ok(empty.missing.some((item) => item.startsWith("company details")));
   const uploaded = checklistProgress({
     ...company,
-    agreements: [
-      "AGREEMENT",
-      "DPA",
-      "GST_CERTIFICATE",
-      "PAN",
-      "SIGNATORY_AUTHORITY",
-    ].map((type) => ({
-      type,
-      files: [{ status: type === "PAN" ? "APPROVED" : "PENDING" }],
-    })),
+    agreements: ["AGREEMENT", "GST_CERTIFICATE", "PAN", "INCORPORATION"].map(
+      (type) => ({
+        type,
+        files: [{ status: type === "PAN" ? "APPROVED" : "PENDING" }],
+      }),
+    ),
   });
   assert.equal(uploaded.clientDone, true);
-  assert.equal(uploaded.documentsUploaded, 5);
+  assert.equal(uploaded.documentsRequired, 4);
+  assert.equal(uploaded.documentsUploaded, 4);
   assert.equal(uploaded.documentsApproved, 1);
   assert.ok(uploaded.percent > 40 && uploaded.percent < 100);
   const rejected = checklistProgress({
@@ -262,7 +259,7 @@ void test("checklist: client part done when details and required documents are u
   assert.ok(rejected.missing.includes("Company PAN card (re-upload)"));
 });
 
-void test("self sign-up activation needs approved KYC proofs as well as AGREEMENT and DPA", () => {
+void test("self sign-up activation needs approved KYC proofs as well as the AGREEMENT", () => {
   const approved = (type: string) => ({
     type,
     signedAt: new Date(Date.now() - 86_400_000),
@@ -273,13 +270,14 @@ void test("self sign-up activation needs approved KYC proofs as well as AGREEMEN
     billingTerms: "30 days",
     billingAddress: "Pune",
     packageRates: [{ active: true }],
-    agreements: [approved("AGREEMENT"), approved("DPA")],
+    agreements: [approved("AGREEMENT")],
   };
   assert.doesNotThrow(() => assertClientActivation(base));
   assert.throws(
     () => assertClientActivation(base, new Date(), SELF_SIGNUP_KYC_TYPES),
     /GST_CERTIFICATE/,
   );
+  assert.deepEqual(SELF_SIGNUP_KYC_TYPES, ["GST_CERTIFICATE", "PAN", "INCORPORATION"]);
   assert.doesNotThrow(() =>
     assertClientActivation(
       {

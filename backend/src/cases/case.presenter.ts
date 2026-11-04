@@ -1,5 +1,6 @@
 import { caseDocumentRequirements } from "./check-requirements";
 import { canReadReleasedReport } from "../reports/report-payment-policy";
+import { tatWorkingDays } from "./working-days";
 import type { Actor } from "../common/auth/actor";
 import type { SubjectPiiService } from "../common/security/subject-pii.service";
 
@@ -134,6 +135,70 @@ function redactVisit(visit: CaseRow) {
   };
 }
 
+/**
+ * Where the case stands for the client while it waits on documents, in the client's words:
+ * the internal intake stage, Data Entry and RM never show. Null once verification runs.
+ */
+export function clientProgress(row: CaseRow) {
+  const submitted = rowList(row.candidateAccess)[0]?.completedAt ?? null;
+  const stage = typeof row.intakeStage === "string" ? row.intakeStage : null;
+  const progress = (key: string, label: string, detail: string) => ({
+    stage: key,
+    label,
+    detail,
+    candidateSubmittedAt: submitted,
+  });
+  if (row.status !== "CONSENT_PENDING" && row.status !== "DOCUMENT_PENDING")
+    return { stage: null, label: null, detail: null, candidateSubmittedAt: submitted };
+  if (stage === "CLIENT_REVIEW")
+    return progress(
+      "YOUR_REVIEW",
+      "Waiting for your review",
+      "The candidate uploaded every document. Review them and approve to start verification.",
+    );
+  if (stage === "CLIENT_RETURNED" || stage === "CORRECTION")
+    return progress(
+      "CORRECTION",
+      "Correction requested",
+      "A document or detail needs correcting. Verification continues once it is in.",
+    );
+  if (submitted || ["DATA_ENTRY", "READY", "ROUTED"].includes(stage ?? ""))
+    return progress(
+      "DOCUMENTS_RECEIVED",
+      "Documents received",
+      "The candidate uploaded every document. Our team is checking them; verification starts next.",
+    );
+  return progress(
+    "WAITING_CANDIDATE",
+    row.status === "CONSENT_PENDING"
+      ? "Waiting for the candidate's consent"
+      : "Waiting for the candidate's documents",
+    "The candidate has a secure link to give consent and upload the documents.",
+  );
+}
+
+/** The client sees each document's latest clean file: name, size and when it came in. */
+function clientDocument(document: CaseRow) {
+  const safe = { ...document };
+  const latest = rowList(document.versions).find(
+    (version) => version.malwareState === "CLEAN",
+  );
+  return {
+    ...safe,
+    versions: latest
+      ? [
+          {
+            version: latest.version,
+            originalName: latest.originalName,
+            contentType: latest.contentType,
+            sizeBytes: Number(latest.sizeBytes),
+            createdAt: latest.createdAt,
+          },
+        ]
+      : [],
+  };
+}
+
 /** Internal v2 flow position. Never returned to Client Admin. */
 /**
  * The company's own escalation only (its reason, when). Internal escalations by the
@@ -245,13 +310,20 @@ export function presentCaseListItem(
     return { ...common, checks: verifierChecks(row, actor) };
   }
   if (actor.roles.includes("CLIENT_ADMIN")) {
+    // Due dates stay internal: the client sees only the turnaround in working days.
     return {
       ...common,
+      dueAt: null,
+      clientProgress: clientProgress(row),
+      tatWorkingDays: tatWorkingDays(
+        rowList(row.services).map((service) => Number(service.tatHours)),
+      ),
       report: releasedReport(row),
       checks: rowList(row.checks).map((check) => {
         const safeCheck = withoutDepartment(check);
         delete safeCheck.tasks;
         delete safeCheck.findings;
+        delete safeCheck.dueAt;
         return safeCheck;
       }),
     };
@@ -353,14 +425,7 @@ export function presentCaseDetail(
       ),
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
-      documents: rowList(row.documents).map((document) => {
-        const safeDocument = { ...document };
-        delete safeDocument.versions;
-        return {
-          ...safeDocument,
-          versions: [],
-        };
-      }),
+      documents: rowList(row.documents).map(clientDocument),
       clarifications: row.clarifications ?? [],
       reports: row.reports ?? [],
       clientEscalation: clientEscalation(row),

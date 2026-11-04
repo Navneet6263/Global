@@ -66,7 +66,7 @@ export async function loadClientExport(
           completed: item.checks.filter((check) => check.status === "COMPLETED").length,
           created: date(item.createdAt),
           updated: date(item.updatedAt),
-          due: date(item.dueAt),
+          tat: item.tatWorkingDays ?? "",
         });
       }
       if (ids.size < expected && !result.items.length)

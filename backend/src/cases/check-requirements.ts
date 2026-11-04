@@ -7,6 +7,9 @@ export const CHECK_DOCUMENTS: Readonly<Record<string, string>> = {
   EMPLOYMENT: "EMPLOYMENT_PROOF",
   EDUCATION: "EDUCATION_CERTIFICATE",
   PAN_VALIDATION: "PAN",
+  DIGITAL_ADDRESS: "ADDRESS_PROOF",
+  CREDIT_CHECK: "PAN",
+  BANK_ACCOUNT: "BANK_PROOF",
 };
 
 /** Which checks use a document. A document not listed here is general (OTHER). */
@@ -14,10 +17,11 @@ const DOCUMENT_CHECKS: Readonly<Record<string, readonly string[]>> = {
   AADHAAR: ["IDENTITY"],
   PASSPORT: ["IDENTITY"],
   DRIVING_LICENCE: ["IDENTITY"],
-  PAN: ["IDENTITY", "PAN_VALIDATION"],
-  ADDRESS_PROOF: ["ADDRESS"],
+  PAN: ["IDENTITY", "PAN_VALIDATION", "CREDIT_CHECK"],
+  ADDRESS_PROOF: ["ADDRESS", "DIGITAL_ADDRESS"],
   EMPLOYMENT_PROOF: ["EMPLOYMENT"],
   EDUCATION_CERTIFICATE: ["EDUCATION"],
+  BANK_PROOF: ["BANK_ACCOUNT"],
 };
 
 /**
@@ -76,7 +80,10 @@ export function caseDocumentRequirements(
   const types = new Set(requiredDocuments);
   for (const check of checks) {
     const document = CHECK_DOCUMENTS[check];
-    if (document) types.add(document);
+    const served = [...types].some((type) =>
+      (DOCUMENT_CHECKS[type] ?? []).includes(check),
+    );
+    if (document && !served) types.add(document);
   }
   return [...types].map((type) => ({
     type,

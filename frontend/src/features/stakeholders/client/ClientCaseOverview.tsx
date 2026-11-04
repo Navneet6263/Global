@@ -14,7 +14,7 @@ export function ClientCaseOverview({
   requestCount?: number;
   onSelect: (tab: string) => void;
 }) {
-  const next = clientNextStep(item.status);
+  const next = clientNextStep(item.status, item.clientProgress?.stage);
   const recorded = new Set(
     item.statusHistory.flatMap((event) => [event.fromStatus, event.toStatus]),
   );

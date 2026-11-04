@@ -56,10 +56,6 @@ export function ClientCaseChecks({ checks }: { checks: CaseDetail["checks"] }) {
             </summary>
             <dl className="grid gap-3 border-t border-slate-100 bg-slate-50/50 px-4 py-3 text-xs sm:grid-cols-2">
               <div>
-                <dt className="text-[11px] text-slate-500">Expected by</dt>
-                <dd className="mt-1 font-medium">{caseDate(check.dueAt)}</dd>
-              </div>
-              <div>
                 <dt className="text-[11px] text-slate-500">Completed at</dt>
                 <dd className="mt-1 font-medium">{caseDate(check.completedAt)}</dd>
               </div>

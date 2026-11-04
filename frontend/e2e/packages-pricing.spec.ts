@@ -126,10 +126,24 @@ test("Operations builds a package with an RM discount limit and gives a client a
   await dialog.getByLabel("Max RM discount (%)").fill("15");
   const checks = dialog.getByRole("region", { name: "Checks and prices" });
   // A check's price box opens on its own row only once the check is ticked.
-  await expect(checks.getByLabel("Identity price")).toHaveCount(0);
-  await checks.getByText("Identity", { exact: true }).click();
-  await checks.getByLabel("Identity price").fill("800");
-  await expect(checks.getByText("1 of", { exact: false })).toBeVisible();
+  await expect(checks.getByLabel("National ID check price")).toHaveCount(0);
+  await checks.getByText("National ID check", { exact: true }).click();
+  // The price sheet fills the price; it can still be changed.
+  await expect(checks.getByLabel("National ID check price")).toHaveValue("100");
+  await checks.getByLabel("National ID check price").fill("800");
+  await checks.getByRole("button", { name: "PAN", exact: true }).click();
+  await checks.getByText("Education credential check", { exact: true }).click();
+  await expect(checks.getByLabel("Education credential check price")).toHaveValue("350");
+  await checks.getByRole("button", { name: "Graduation", exact: true }).click();
+  await checks.getByRole("button", { name: "Post graduation / MBA" }).click();
+  await checks.getByRole("button", { name: "Highest qualification" }).click();
+  await expect(checks.getByText("2 of", { exact: false })).toBeVisible();
+  // 2 checks, 3 uploads: Aadhaar, PAN and one file with both degrees.
+  const documents = dialog.getByRole("region", { name: "Candidate documents" });
+  await expect(documents).toContainText("2 checks · 3 uploads · 4 documents in all");
+  await expect(documents).toContainText("Contains: Graduation, Post graduation / MBA");
+  await expect(documents).toContainText("2 in one file");
+  await checks.getByRole("button", { name: "Use as the package TAT" }).click();
   await page.screenshot({ path: "test-results/packages-add-hierarchy.png" });
   await dialog.getByRole("button", { name: "Add package" }).click();
   await expect(table.getByText("Premium BGV")).toBeVisible();
@@ -139,8 +153,14 @@ test("Operations builds a package with an RM discount limit and gives a client a
     body: {
       code: "PREMIUM_BGV",
       maxRmDiscountPercent: 15,
-      checks: ["IDENTITY"],
-      checkPrices: { IDENTITY: 800 },
+      checks: ["IDENTITY", "EDUCATION"],
+      checkOptions: {
+        IDENTITY: { ids: ["AADHAAR", "PAN"] },
+        EDUCATION: { levels: ["GRADUATION", "POST_GRADUATION"] },
+      },
+      checkPrices: { IDENTITY: 800, EDUCATION: 350 },
+      // Education is 14 working days on the sheet.
+      tatHours: 14 * 24,
     },
   });
 
@@ -201,8 +221,11 @@ test("Operations sets a price per check and GST on a package", async ({ page }) 
   const dialog = page.getByRole("dialog", { name: "Edit STANDARD_BGV" });
   await expect(dialog.getByRole("region", { name: "Checks and prices" })).toBeVisible();
   // Two checks in a 2,000 package: empty boxes share it, 1,000 each.
-  await expect(dialog.getByLabel("Employment price")).toHaveAttribute("placeholder", "1000");
-  await dialog.getByLabel("Employment price").fill("1500");
+  await expect(dialog.getByLabel("Employment credential check price")).toHaveAttribute(
+    "placeholder",
+    "1000",
+  );
+  await dialog.getByLabel("Employment credential check price").fill("1500");
   await dialog.getByLabel("GST percent").fill("12");
   // The other check now shares what is left of the package, so they still add up.
   await expect(dialog.getByText(/Checks bought one by one:/).locator("..")).toContainText("₹2,000");

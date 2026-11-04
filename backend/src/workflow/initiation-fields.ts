@@ -167,6 +167,34 @@ export const INITIATION_FORMS: Readonly<Record<string, InitiationForm>> = {
       },
     ],
   },
+  CORPORATE_ADDRESS: {
+    repeatable: false,
+    fields: [
+      { key: "companyName", label: "Company name", required: true },
+      { key: "address", label: "Address", required: true },
+      { key: "city", label: "City", required: true },
+      { key: "state", label: "State", required: true },
+      { key: "pincode", label: "Pin code", required: true, kind: "pincode" },
+      { key: "contactNumber", label: "Contact number", kind: "phone" },
+    ],
+  },
+  UAN_CHECK: {
+    repeatable: false,
+    fields: [{ key: "uan", label: "UAN number", required: true }],
+  },
+  CREDIT_CHECK: {
+    repeatable: false,
+    fields: [{ key: "idNumber", label: "PAN number", required: true }],
+  },
+  BANK_ACCOUNT: {
+    repeatable: false,
+    fields: [
+      { key: "accountHolder", label: "Account holder name", required: true },
+      { key: "accountNumber", label: "Account number", required: true },
+      { key: "ifsc", label: "IFSC", required: true },
+      { key: "bankName", label: "Bank name" },
+    ],
+  },
   REFERENCE: {
     repeatable: true,
     fields: [
@@ -177,6 +205,10 @@ export const INITIATION_FORMS: Readonly<Record<string, InitiationForm>> = {
     ],
   },
 };
+
+// A digital address check takes the same details as the physical one.
+(INITIATION_FORMS as Record<string, InitiationForm>).DIGITAL_ADDRESS =
+  INITIATION_FORMS.ADDRESS!;
 
 /** Checks without a form (e.g. database or drug checks) need no initiation details. */
 export function needsInitiation(checkType: string) {

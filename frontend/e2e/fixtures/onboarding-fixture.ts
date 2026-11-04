@@ -21,13 +21,9 @@ export async function onboardingFixture(page: Page, start: Who) {
   const iso = (hours: number) => new Date(now + hours * 3_600_000).toISOString();
   const docs = [
     ["AGREEMENT", "Service agreement (MSA)", true, true],
-    ["DPA", "Data processing agreement (DPA)", true, true],
     ["GST_CERTIFICATE", "GST registration certificate", true, false],
     ["PAN", "Company PAN card", true, false],
-    ["SIGNATORY_AUTHORITY", "Authorised signatory letter / board resolution", true, false],
-    ["CONFIDENTIALITY", "NDA / confidentiality agreement", false, true],
-    ["INCORPORATION", "Certificate of incorporation", false, false],
-    ["PURCHASE_ORDER", "Purchase order", false, false],
+    ["INCORPORATION", "Certificate of incorporation", true, false],
   ] as const;
   const state = {
     status: "ONBOARDING" as "ONBOARDING" | "ACTIVE",
@@ -46,11 +42,7 @@ export async function onboardingFixture(page: Page, start: Who) {
         uploadedByMe?: boolean;
       }
     >([
-      [
-        "AGREEMENT",
-        { status: "APPROVED", name: "MSA-signed.pdf", reviewNotes: "Checked", version: 2 },
-      ],
-      ["DPA", { status: "PENDING", name: "DPA-signed.pdf", reviewNotes: null, version: 1 }],
+      ["AGREEMENT", { status: "PENDING", name: "MSA-signed.pdf", reviewNotes: null, version: 1 }],
       ["GST_CERTIFICATE", { status: "PENDING", name: "GST.pdf", reviewNotes: null, version: 1 }],
       [
         "PAN",
@@ -385,7 +377,7 @@ export async function onboardingFixture(page: Page, start: Who) {
           at: iso(-45),
           by: "Niku",
           byRole: "RM / SPOC",
-          detail: "Please upload the signed DPA.",
+          detail: "Please upload the signed service agreement.",
           outcome: null,
         },
         {

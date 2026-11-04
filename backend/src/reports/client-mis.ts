@@ -5,6 +5,7 @@ import {
   type Disposition,
 } from "../verification/dispositions";
 import { checkStatusLabel } from "../verification/verified-fields";
+import { workingDaysBetween } from "../cases/working-days";
 
 export const MIS_PRESETS = [
   "CASE_STATUS",
@@ -71,9 +72,8 @@ export const MIS_COLUMNS: Record<MisPreset, string[]> = {
     "Sapling ID",
     "Candidate",
     "Initiated",
-    "Due",
     "Completed",
-    "TAT (days)",
+    "TAT (working days)",
     "Within TAT",
   ],
   UTV: ["Sapling ID", "Candidate", "Check", "Closed", "Reason", "Colour code"],
@@ -116,10 +116,8 @@ export function misRows(
   if (preset === "TAT")
     return cases.map((row) => {
       const end = row.completedAt ?? now;
-      const days = Math.max(
-        0,
-        Math.round((end.getTime() - row.createdAt.getTime()) / 86_400_000),
-      );
+      // Sundays are not counted; the due date itself stays internal.
+      const days = workingDaysBetween(row.createdAt, end);
       const within = row.dueAt ? end <= row.dueAt : null;
       return {
         colour: within === null ? null : within ? "GREEN" : "RED",
@@ -127,7 +125,6 @@ export function misRows(
           row.caseNumber,
           row.subject.fullName,
           istDay(row.createdAt),
-          istDay(row.dueAt),
           istDay(row.completedAt),
           String(days),
           within === null

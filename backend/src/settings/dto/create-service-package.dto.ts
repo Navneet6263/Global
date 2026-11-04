@@ -6,6 +6,7 @@ import {
   IsIn,
   IsInt,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Length,
@@ -31,15 +32,20 @@ export class CreateServicePackageDto {
 
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(24)
+  @ArrayMaxSize(CheckTypes.length)
   @IsIn(CheckTypes, { each: true })
   checks!: string[];
+
+  /** Per-check options, e.g. { EDUCATION: { levels: ["GRADUATION"] } }. */
+  @IsOptional()
+  @IsObject()
+  checkOptions?: Record<string, unknown>;
 
   @IsIn(ServiceFamilies)
   serviceFamily: string = "HIRECHECK";
 
   @IsArray()
-  @ArrayMaxSize(8)
+  @ArrayMaxSize(RequiredDocumentTypes.length)
   @IsIn(RequiredDocumentTypes, { each: true })
   requiredDocuments: string[] = [];
 

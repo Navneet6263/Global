@@ -92,7 +92,9 @@ for (const width of [390, 1440]) {
       animations: "disabled",
     });
     await dialog.getByRole("tab", { name: /Documents/ }).click();
-    await expect(dialog.getByText("Version 1 uploaded · file details restricted")).toBeVisible();
+    await expect(
+      dialog.getByText("Uploaded · being scanned before it can be opened"),
+    ).toBeVisible();
     await expect(dialog.getByText("Upload is still pending")).toHaveCount(0);
     await expect(dialog.getByText("Not uploaded yet")).toBeVisible();
     await expect(dialog.getByText("For: Address")).toBeVisible();

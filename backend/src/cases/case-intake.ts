@@ -9,6 +9,7 @@ import type { CreateCaseDto } from "./dto/create-case.dto";
 import { loadCaseServicePlan } from "./case-service-plan";
 import { issueCandidateLink } from "../candidate-portal/candidate-link";
 import { internalWorkflowV2Enabled } from "../workflow/workflow-access";
+import { addWorkingHours } from "./working-days";
 
 export async function createVerificationCase(
   prisma: PrismaService,
@@ -23,9 +24,10 @@ export async function createVerificationCase(
     );
   const { client, services } = await loadCaseServicePlan(prisma, actor, input);
   const now = new Date();
-  const dueAt = new Date(
-    now.getTime() +
-      Math.max(...services.map((service) => service.tatHours)) * 3_600_000,
+  // TAT is in working days: Sundays are not counted.
+  const dueAt = addWorkingHours(
+    now,
+    Math.max(...services.map((service) => service.tatHours)),
   );
   const caseNumber = `SG-${now.toISOString().slice(0, 10).replaceAll("-", "")}-${randomUUID().slice(0, 6).toUpperCase()}`;
   const created = await prisma.$transaction(async (tx) => {
@@ -127,7 +129,7 @@ export async function createVerificationCase(
           caseServiceId: row.id,
           type,
           status: "PENDING",
-          dueAt: new Date(now.getTime() + service.tatHours * 3_600_000),
+          dueAt: addWorkingHours(now, service.tatHours),
         })),
       });
     }

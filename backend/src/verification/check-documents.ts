@@ -15,6 +15,13 @@ export const CHECK_DOCUMENTS: Readonly<Record<string, readonly string[]>> = {
   IDENTITY: ["AADHAAR", "PAN", "PASSPORT", "DRIVING_LICENCE"],
   PAN_VALIDATION: ["PAN"],
   REFERENCE: [],
+  DIGITAL_ADDRESS: ["ADDRESS_PROOF", "AADHAAR"],
+  CORPORATE_ADDRESS: [],
+  UAN_CHECK: ["EMPLOYMENT_PROOF"],
+  INDIA_DATABASE: [],
+  SOCIAL_MEDIA: [],
+  CREDIT_CHECK: ["PAN"],
+  BANK_ACCOUNT: ["BANK_PROOF"],
 };
 
 /** Always visible to the verifier of any check, to match the person's name and identity. */

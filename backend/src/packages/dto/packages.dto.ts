@@ -56,13 +56,19 @@ export class UpdatePackageDto {
   @IsOptional()
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(24)
+  @ArrayMaxSize(CheckTypes.length)
   @IsIn(CheckTypes, { each: true })
   checks?: string[];
 
+  /** Per-check options, e.g. { IDENTITY: { ids: ["AADHAAR", "PAN"] } }. */
+  @IsOptional()
+  @IsObject()
+  checkOptions?: Record<string, unknown>;
+
+  /** Documents asked for besides those the checks need. */
   @IsOptional()
   @IsArray()
-  @ArrayMaxSize(8)
+  @ArrayMaxSize(RequiredDocumentTypes.length)
   @IsIn(RequiredDocumentTypes, { each: true })
   requiredDocuments?: string[];
 

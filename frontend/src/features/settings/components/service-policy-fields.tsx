@@ -5,19 +5,23 @@ import { DOCUMENT_TYPES, SERVICE_FAMILIES } from "./service-policy-options";
 export function RequiredDocumentFields({
   value,
   onChange,
+  exclude = [],
+  legend = "Required reviewed documents",
+  description = "Every selected document is required before verification can start. Select only what this service needs.",
 }: {
   value: string[];
   onChange: (value: string[]) => void;
+  /** Documents already asked for (e.g. by the package's checks), not offered again. */
+  exclude?: readonly string[];
+  legend?: string;
+  description?: string;
 }) {
   return (
     <fieldset className="rounded-2xl border border-mint/20 bg-mint-soft/40 p-4">
-      <legend className="px-1 text-xs font-semibold">Required reviewed documents</legend>
-      <p className="mb-3 text-xs text-muted-foreground">
-        Every selected document is required before verification can start. Select only what this
-        service needs.
-      </p>
+      <legend className="px-1 text-xs font-semibold">{legend}</legend>
+      <p className="mb-3 text-xs text-muted-foreground">{description}</p>
       <div className="grid gap-2 sm:grid-cols-2">
-        {DOCUMENT_TYPES.map((type) => (
+        {DOCUMENT_TYPES.filter((type) => !exclude.includes(type)).map((type) => (
           <label key={type} className="flex items-center gap-2 text-xs">
             <Checkbox
               checked={value.includes(type)}

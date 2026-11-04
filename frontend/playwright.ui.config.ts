@@ -15,6 +15,7 @@ export default defineConfig({
     "client-density.spec.ts",
     "client-workspace-enhancements.spec.ts",
     "client-case-activity.spec.ts",
+    "client-candidate-uploads.spec.ts",
     "compact-workspace-headers.spec.ts",
     "operations-action-inbox.spec.ts",
     "operations-overview.spec.ts",
