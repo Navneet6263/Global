@@ -14,6 +14,7 @@ export function updateCaseDraft(current: CaseDraft, patch: Partial<CaseDraft>): 
   };
 }
 
+/** The longest agreed TAT of the chosen packages; priority orders the queue, not the TAT. */
 export function estimatedServiceHours(draft: CaseDraft, packages: CaseServicePackage[]) {
   const selectedIds = draft.services?.length
     ? draft.services.map((service) => service.servicePackageId)
@@ -24,6 +25,5 @@ export function estimatedServiceHours(draft: CaseDraft, packages: CaseServicePac
     selected.some((pkg) => !pkg || !Number.isFinite(pkg.tatHours) || pkg.tatHours <= 0)
   )
     return null;
-  const priorityCap = draft.priority === "Critical" ? 24 : draft.priority === "Priority" ? 48 : 120;
-  return Math.max(...selected.map((pkg) => Math.min(pkg!.tatHours, priorityCap)));
+  return Math.max(...selected.map((pkg) => pkg!.tatHours));
 }

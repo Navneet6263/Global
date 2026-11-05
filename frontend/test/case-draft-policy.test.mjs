@@ -61,13 +61,14 @@ test("review estimate uses current effective catalogue TAT, not stale draft days
     { id: "package-b", tatHours: 72 },
   ];
   assert.equal(estimatedServiceHours(draft, packages), 36);
-  assert.equal(estimatedServiceHours({ ...draft, priority: "Critical" }, packages), 24);
+  // Priority does not shorten the agreed TAT.
+  assert.equal(estimatedServiceHours({ ...draft, priority: "Critical" }, packages), 36);
   const selected = {
     ...draft,
     services: [{ servicePackageId: "package-a" }, { servicePackageId: "package-b" }],
   };
   assert.equal(estimatedServiceHours(selected, packages), 72);
-  assert.equal(estimatedServiceHours({ ...selected, priority: "Priority" }, packages), 48);
+  assert.equal(estimatedServiceHours({ ...selected, priority: "Priority" }, packages), 72);
   assert.equal(estimatedServiceHours(draft, [{ id: "package-a", tatHours: 12 }]), 12);
 });
 

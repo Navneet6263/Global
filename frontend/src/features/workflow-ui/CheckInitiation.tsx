@@ -35,10 +35,13 @@ function savedEntries(json?: string | null): Entry[] {
 export function CheckInitiation({
   item,
   editable,
+  lockedReason,
   onSaved,
 }: {
   item: CaseDetail;
   editable: boolean;
+  /** Why the forms are locked (e.g. documents not accepted yet). */
+  lockedReason?: string;
   onSaved: () => Promise<unknown>;
 }) {
   const forms = useQuery({
@@ -61,6 +64,11 @@ export function CheckInitiation({
       <p className="ops-subtle">
         Record what each check needs. Every check must be initiated before you mark Ready.
       </p>
+      {lockedReason ? (
+        <p className="flow-pill is-warn" role="status">
+          {lockedReason}
+        </p>
+      ) : null}
       <div className="cki-list">
         {checks.map((check) => (
           <CheckForm
@@ -91,7 +99,10 @@ function CheckForm({
   onSaved: () => Promise<unknown>;
 }) {
   const saved = savedEntries(check.initiationJson);
-  const [open, setOpen] = useState(!check.initiatedAt && editable);
+  // Unset until the user toggles: an unfilled check opens by itself once it is editable
+  // (e.g. right after the last document is accepted).
+  const [toggled, setOpen] = useState<boolean | null>(null);
+  const open = toggled ?? (!check.initiatedAt && editable);
   const [entries, setEntries] = useState<Entry[]>(saved.length ? saved : [{}]);
   const save = useMutation({
     mutationFn: () => initiateCheck(caseId, check.publicId, entries),
@@ -115,7 +126,7 @@ function CheckForm({
         type="button"
         className="cki-head"
         aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => setOpen(!open)}
       >
         {check.initiatedAt ? <CircleCheck aria-hidden /> : <CircleDashed aria-hidden />}
         <span>

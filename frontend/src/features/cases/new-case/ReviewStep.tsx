@@ -3,6 +3,7 @@ import { BadgeCheck, Clock3, FileText } from "lucide-react";
 import type { CaseDraft } from "./model";
 import type { CaseServicePackage } from "@/lib/api/cases";
 import { estimatedServiceHours } from "./case-draft-policy";
+import { formatTatDays } from "@/lib/formatting";
 
 export function ReviewStep({
   draft,
@@ -12,7 +13,7 @@ export function ReviewStep({
   packages: CaseServicePackage[];
 }) {
   const hours = estimatedServiceHours(draft, packages);
-  const estimatedTat = hours === null ? "—" : hours % 24 === 0 ? `${hours / 24}d` : `${hours}h`;
+  const estimatedTat = hours === null ? "—" : formatTatDays(hours);
 
   return (
     <div className="space-y-3">
@@ -46,7 +47,7 @@ export function ReviewStep({
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <Clock3 className="size-4 text-muted-foreground" />
           <p className="mt-2 text-2xl font-semibold tabular-nums">{estimatedTat}</p>
-          <p className="text-[11px] text-muted-foreground">estimated turnaround</p>
+          <p className="text-[11px] text-muted-foreground">turnaround · Sundays not counted</p>
         </div>
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <FileText className="size-4 text-muted-foreground" />

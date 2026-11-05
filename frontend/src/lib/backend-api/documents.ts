@@ -59,7 +59,11 @@ export function reviewDocument(
 }
 
 export function getEvidenceReadiness(caseId: string) {
-  return apiRequest<{ ready: boolean; issues: string[]; requiredTypes: string[] }>(
-    `/cases/${caseId}/evidence-readiness`,
-  );
+  return apiRequest<{
+    ready: boolean;
+    issues: string[];
+    requiredTypes: string[];
+    /** Document problems only (missing, not accepted, rejected). */
+    documentIssues?: string[];
+  }>(`/cases/${caseId}/evidence-readiness`);
 }

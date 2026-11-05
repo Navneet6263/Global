@@ -407,9 +407,13 @@ function ReviewBody({
   );
   const rejected = item.documents.filter((document) => document.status === "REJECTED");
   const accepted = item.documents.filter((document) => document.status === "VERIFIED");
-  const docIssues = (readiness.data?.issues ?? []).filter((issue) =>
-    (readiness.data?.requiredTypes ?? []).some((type) => issue.startsWith(`${type}:`)),
-  );
+  const docIssues =
+    readiness.data?.documentIssues ??
+    (readiness.data?.issues ?? []).filter((issue) =>
+      (readiness.data?.requiredTypes ?? []).some((type) => issue.startsWith(`${type}:`)),
+    );
+  // The check forms open only after every document is accepted.
+  const documentsAccepted = readiness.isSuccess && !docIssues.length && !rejected.length;
   const consentAccepted = item.consents.some((consent) => consent.status === "ACCEPTED");
   const forms = useQuery({
     queryKey: ["workflow", "initiation-forms"],
@@ -593,7 +597,14 @@ function ReviewBody({
         <div className="dei-section is-plain">
           <CheckInitiation
             item={item}
-            editable={["DATA_ENTRY", "CORRECTION"].includes(stage ?? "")}
+            editable={["DATA_ENTRY", "CORRECTION"].includes(stage ?? "") && documentsAccepted}
+            lockedReason={
+              ["DATA_ENTRY", "CORRECTION"].includes(stage ?? "") && !documentsAccepted
+                ? readiness.isSuccess
+                  ? "Accept every document above first. The check details open once all documents are accepted."
+                  : "Checking the documents…"
+                : undefined
+            }
             onSaved={refresh}
           />
         </div>

@@ -10,7 +10,10 @@ import {
 import { caseAccessScope } from "../common/auth/access-scope";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
-import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
+import {
+  assertCaseEvidenceReady,
+  caseEvidenceReadiness,
+} from "../documents/evidence-readiness";
 import type { Prisma } from "../generated/prisma/client";
 import type {
   AssignDataEntryDto,
@@ -328,6 +331,22 @@ export class IntakeService {
       select: { id: true, type: true, initiatedAt: true },
     });
     if (!check) throw new NotFoundException("Check not found in this case");
+    // Documents first: nothing is filled in until Data Entry has accepted every document.
+    const documents = await caseEvidenceReadiness(this.prisma, current.id, {
+      includeWork: false,
+    });
+    if (documents.documentIssues.length)
+      throw new BadRequestException(
+        `Accept the candidate's documents before filling the checks: ${documents.documentIssues
+          .map((issue) =>
+            issue.replace(
+              /^(\w+):/,
+              (_m, type: string) =>
+                `${type.replaceAll("_", " ").toLowerCase()}:`,
+            ),
+          )
+          .join("; ")}`,
+      );
     const entries = cleanInitiation(check.type, input.entries);
     const initiatedAt = new Date();
     await this.prisma.$transaction(async (tx) => {

@@ -719,3 +719,55 @@ void test("a check with no department leaves the case Ready for the RM", async (
   });
   assert.equal(writes.filter((w) => w.kind === "history").length, 0);
 });
+
+void test("Data Entry fills a check only after every document is accepted", async () => {
+  const dataEntry = actorOf(["DATA_ENTRY"], { userId: 60n });
+  const education = (status: string) =>
+    prismaDouble({
+      verificationCase: {
+        findFirst: () =>
+          Promise.resolve(
+            v2Case({ intakeStage: "DATA_ENTRY", dataEntryUserId: 60n }),
+          ),
+        findUnique: () =>
+          Promise.resolve({
+            checks: [{ type: "EDUCATION" }],
+            documents: [
+              {
+                type: "EDUCATION_CERTIFICATE",
+                status,
+                currentVersion: 1,
+                expiresAt: null,
+              },
+            ],
+          }),
+      },
+      caseService: { findMany: () => Promise.resolve([]) },
+      caseCheck: {
+        findFirst: () =>
+          Promise.resolve({ id: 1n, type: "EDUCATION", initiatedAt: null }),
+      },
+    });
+  const entries = [
+    { institute: "Pune University", degree: "B.Com", passingYear: "2020" },
+  ];
+  const pending = education("AVAILABLE");
+  await assert.rejects(
+    new IntakeService(pending.prisma).initiateCheck(
+      dataEntry,
+      UUID(30),
+      UUID(101),
+      { entries },
+    ),
+    /Accept the candidate's documents before filling the checks/,
+  );
+  assert.equal(pending.writes.length, 0);
+  const accepted = education("VERIFIED");
+  const saved = await new IntakeService(accepted.prisma).initiateCheck(
+    dataEntry,
+    UUID(30),
+    UUID(101),
+    { entries },
+  );
+  assert.equal(saved.entries.length, 1);
+});

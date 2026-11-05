@@ -135,7 +135,13 @@ export async function caseEvidenceReadiness(
     ],
     (record.checks ?? []).map((check) => check.type),
   );
-  const result = documentReadiness(requiredTypes, record.documents);
+  const documents = documentReadiness(requiredTypes, record.documents);
+  const result = {
+    ...documents,
+    issues: [...documents.issues],
+    /** Document problems only: what Data Entry must accept before filling the checks. */
+    documentIssues: documents.issues,
+  };
   if (options.includeWork !== false) {
     result.issues.push(...(await caseMethodIssues(tx, caseId)));
     const clarifications = await tx.clarification.count({

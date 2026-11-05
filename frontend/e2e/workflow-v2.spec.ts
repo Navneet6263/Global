@@ -13,7 +13,11 @@ test("Data Entry accepts documents, then marks the case Ready for the RM", async
   const ready = review.getByRole("button", { name: "Mark Ready and return to RM" });
   await expect(review.getByText(/Employment letter: reviewed/)).toBeVisible();
   await expect(ready).toBeDisabled();
+  // Nothing below can be filled until the documents are accepted.
+  await expect(review.getByText(/Accept every document above first/)).toBeVisible();
+  await expect(review.getByLabel("Employment 1 Employer name")).toHaveCount(0);
   await review.getByRole("button", { name: "Accept", exact: true }).click();
+  await expect(review.getByText(/Accept every document above first/)).toHaveCount(0);
   // Check-wise initiation: every check needs its details before Ready.
   const initiation = review.getByRole("region", { name: "Check-wise initiation" });
   await expect(initiation.getByText("0/2 done")).toBeVisible();
