@@ -30,7 +30,7 @@ const destinations = [
   },
   {
     label: "Intake queue",
-    detail: "Review documents, request corrections, mark Ready",
+    detail: "Accept documents, fill checks, complete work",
     to: "/data-entry",
     terms: "intake documents correction ready insufficiency l1",
     permission: "case:read",

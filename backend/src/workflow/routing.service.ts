@@ -332,6 +332,168 @@ export class RoutingService {
     }
   }
 
+  /**
+   * Data Entry's "Complete work": send the given accepted checks to their teams. The first
+   * time it starts verification. With checks still waiting for the candidate (finish false)
+   * the case stays with Data Entry, who completes again once those documents are accepted.
+   */
+  async routeAccepted(
+    actor: Actor,
+    current: {
+      id: bigint;
+      publicId: string;
+      caseNumber: string;
+      status: string;
+      version: number;
+    },
+    checks: ReadonlyArray<{
+      id: bigint;
+      publicId: string;
+      type: string;
+      tasks: ReadonlyArray<{ id: bigint }>;
+    }>,
+    options: { finish: boolean; waiting: string[]; note?: string | null },
+  ) {
+    const departments = await this.verificationDepartments(actor);
+    const plan = departmentsForChecks(checks, departments);
+    if (plan.missing.length)
+      throw new BadRequestException(
+        `No team with a Team Leader for: ${plan.missing
+          .map((type) => type.replaceAll("_", " ").toLowerCase())
+          .join(", ")}. Ask the RM to route it.`,
+      );
+    const byId = new Map(departments.map((item) => [item.publicId, item]));
+    const starting = current.status === "DOCUMENT_PENDING";
+    if (!starting && current.status !== "IN_PROGRESS")
+      throw new ConflictException("This case is not waiting for verification");
+    const now = new Date();
+    const intakeStage = options.finish ? "ROUTED" : "DATA_ENTRY";
+    await this.prisma.$transaction(async (tx) => {
+      if (starting) {
+        const consent = await tx.consent.count({
+          where: { caseId: current.id, status: "ACCEPTED" },
+        });
+        if (!consent)
+          throw new BadRequestException("Accepted consent is required");
+      }
+      const updated = await tx.verificationCase.updateMany({
+        where: {
+          id: current.id,
+          version: current.version,
+          intakeStage: "DATA_ENTRY",
+          status: current.status,
+        },
+        data: {
+          intakeStage,
+          ...(starting ? { status: "IN_PROGRESS" } : {}),
+          ...(options.finish ? { dataEntryReadyAt: now } : {}),
+          version: { increment: 1 },
+        },
+      });
+      if (updated.count !== 1)
+        throw new ConflictException(
+          "Case changed since it was loaded; refresh and try again",
+        );
+      if (starting)
+        await tx.caseStatusHistory.create({
+          data: {
+            caseId: current.id,
+            fromStatus: "DOCUMENT_PENDING",
+            toStatus: "IN_PROGRESS",
+            changedById: actor.userId,
+            reason: options.finish
+              ? "Sent to verification departments after Data Entry"
+              : "Accepted checks sent to verification; others wait for documents",
+          },
+        });
+      for (const check of checks) {
+        const department = byId.get(plan.requested.get(check.publicId)!)!;
+        await tx.caseCheck.update({
+          where: { id: check.id },
+          data: {
+            departmentId: department.id,
+            routedAt: now,
+            status: "PENDING",
+          },
+        });
+        if (!check.tasks.length)
+          await tx.checkTask.create({
+            data: {
+              tenantId: actor.tenantId,
+              checkId: check.id,
+              status: "UNASSIGNED",
+            },
+          });
+      }
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: "case.checks-routed",
+          resourceType: "case",
+          resourcePublicId: current.publicId,
+          beforeJson: JSON.stringify({
+            status: current.status,
+            intakeStage: "DATA_ENTRY",
+            version: current.version,
+          }),
+          afterJson: JSON.stringify({
+            caseNumber: current.caseNumber,
+            status: "IN_PROGRESS",
+            intakeStage,
+            routes: checks.map((check) => ({
+              checkId: check.publicId,
+              type: check.type,
+              department: byId.get(plan.requested.get(check.publicId)!)!.name,
+            })),
+            ...(options.waiting.length
+              ? { waitingForDocuments: options.waiting }
+              : {}),
+            note: options.note ?? null,
+            automatic: true,
+          }),
+        },
+      });
+      if (starting)
+        await tx.outboxEvent.create({
+          data: {
+            tenantId: actor.tenantId,
+            topic: "case.status.changed",
+            aggregateType: "case",
+            aggregateId: current.publicId,
+            payloadJson: JSON.stringify({
+              from: "DOCUMENT_PENDING",
+              to: "IN_PROGRESS",
+            }),
+          },
+        });
+      const leadIds = new Set<bigint>();
+      for (const departmentId of new Set(plan.requested.values()))
+        for (const member of byId.get(departmentId)!.members)
+          if (member.role === "LEAD") leadIds.add(member.user.id);
+      if (leadIds.size)
+        await tx.notification.createMany({
+          data: [...leadIds].map((userId) => ({
+            tenantId: actor.tenantId,
+            userId,
+            type: "CHECKS_ROUTED",
+            title: "New checks for your team",
+            body: `${current.caseNumber}: checks routed to your department. Assign a team member.`,
+            href: "/verifier/team",
+          })),
+        });
+    });
+    return {
+      id: current.publicId,
+      status: "IN_PROGRESS",
+      intakeStage,
+      version: current.version + 1,
+      routed: true,
+      sent: checks.length,
+      waiting: options.waiting,
+    };
+  }
+
   private async applyRouting(
     actor: Actor,
     current: Prisma.VerificationCaseGetPayload<{ select: typeof ROUTING_CASE }>,

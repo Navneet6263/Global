@@ -40,6 +40,7 @@ import {
   SendBackDto,
   SetMemberDto,
   UpdateDepartmentDto,
+  MarkReadyDto,
   VersionedNoteDto,
   WorkQueueQueryDto,
 } from "./dto/workflow.dto";
@@ -247,7 +248,7 @@ export class WorkflowController {
   markReady(
     @CurrentActor() actor: Actor,
     @Param("caseId", ParseUUIDPipe) caseId: string,
-    @Body() input: VersionedNoteDto,
+    @Body() input: MarkReadyDto,
   ) {
     return this.intake.markReady(actor, caseId, input);
   }

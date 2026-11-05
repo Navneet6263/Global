@@ -14,6 +14,7 @@ import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import type { ReviewDocumentDto } from "./dto/review-document.dto";
 import { caseEvidenceReadiness } from "./evidence-readiness";
+import { loadCheckDocumentStates } from "../workflow/check-document-state";
 import {
   documentExpiry,
   lockMutableCaseEvidence,
@@ -35,7 +36,23 @@ export class DocumentReviewService {
       select: { id: true },
     });
     if (!record) throw new NotFoundException("Case not found");
-    return caseEvidenceReadiness(this.prisma, record.id);
+    const [readiness, perCheck] = await Promise.all([
+      caseEvidenceReadiness(this.prisma, record.id),
+      loadCheckDocumentStates(this.prisma, record.id),
+    ]);
+    return {
+      ...readiness,
+      /** Each check's document state, so Data Entry works check by check. */
+      checks: perCheck.states.map((row) => ({
+        id: row.check.publicId,
+        type: row.check.type,
+        state: row.state,
+        documents: row.documents,
+        waiting: row.waiting,
+        toReview: row.toReview,
+        sentToTeam: Boolean(row.check.departmentId),
+      })),
+    };
   }
 
   async review(actor: Actor, publicId: string, input: ReviewDocumentDto) {

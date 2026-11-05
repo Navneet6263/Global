@@ -96,24 +96,28 @@ export function RoleSwitcher() {
         <DropdownMenuSeparator />
         {roles.map((role) => (
           <Fragment key={role}>
-            <DropdownMenuItem
-              onSelect={() => {
-                rememberRole(role);
-                void navigate({ to: ROLE_HOME[role]! as "/" });
-              }}
-              className="flex items-start gap-2"
-            >
-              <Check
-                aria-hidden
-                className={`mt-0.5 size-4 shrink-0 ${role === current && !activeTeam ? "text-blue-600" : "opacity-0"}`}
-              />
-              <span className="grid">
-                <span className="text-[13px] font-semibold">{ROLE_DEFINITIONS[role].label}</span>
-                <span className="text-[11px] text-slate-500">
-                  {ROLE_DEFINITIONS[role].description}
+            {/* With "TL <team>" choices listed, a plain "Verifier" row repeats them: each
+                TL choice opens the same workspace, whose menu also has your own queue. */}
+            {role === "VERIFIER" && teams.length ? null : (
+              <DropdownMenuItem
+                onSelect={() => {
+                  rememberRole(role);
+                  void navigate({ to: ROLE_HOME[role]! as "/" });
+                }}
+                className="flex items-start gap-2"
+              >
+                <Check
+                  aria-hidden
+                  className={`mt-0.5 size-4 shrink-0 ${role === current && !activeTeam ? "text-blue-600" : "opacity-0"}`}
+                />
+                <span className="grid">
+                  <span className="text-[13px] font-semibold">{ROLE_DEFINITIONS[role].label}</span>
+                  <span className="text-[11px] text-slate-500">
+                    {ROLE_DEFINITIONS[role].description}
+                  </span>
                 </span>
-              </span>
-            </DropdownMenuItem>
+              </DropdownMenuItem>
+            )}
             {role === "VERIFIER"
               ? teams.map((team) => (
                   <DropdownMenuItem

@@ -97,8 +97,22 @@ function prismaDouble(overrides: Record<string, Record<string, unknown>> = {}) {
     caseService: { findMany: () => Promise.resolve([]) },
     ...overrides["tx"],
   };
+  // Per-check document state reads (Data Entry): nothing to review unless a test says so.
+  const reads = {
+    caseCheck: { findMany: () => Promise.resolve([]) },
+    document: { findMany: () => Promise.resolve([]) },
+    caseService: { findMany: () => Promise.resolve([]) },
+    clarification: { count: () => Promise.resolve(0) },
+    notification: { create: record("notify") },
+  };
   const prisma = {
-    ...overrides,
+    ...reads,
+    ...Object.fromEntries(
+      Object.entries(overrides).map(([key, value]) => [
+        key,
+        { ...(reads as Record<string, object>)[key], ...value },
+      ]),
+    ),
     $transaction: (work: (client: typeof tx) => Promise<unknown>) => work(tx),
   };
   return { prisma: prisma as unknown as PrismaService, writes };
@@ -720,38 +734,70 @@ void test("a check with no department leaves the case Ready for the RM", async (
   assert.equal(writes.filter((w) => w.kind === "history").length, 0);
 });
 
-void test("Data Entry fills a check only after every document is accepted", async () => {
+const checkRow = (
+  publicId: string,
+  type: string,
+  extra: Record<string, unknown> = {},
+) => ({
+  id: BigInt(publicId.slice(-3)),
+  publicId,
+  type,
+  status: "PENDING",
+  departmentId: null,
+  initiatedAt: null,
+  tasks: [],
+  ...extra,
+});
+const doc = (type: string, status: string) => ({
+  type,
+  status,
+  currentVersion: 1,
+  expiresAt: null,
+  createdAt: new Date("2026-11-05T05:00:00Z"),
+});
+
+void test("a check's form opens once its own documents are accepted", async () => {
   const dataEntry = actorOf(["DATA_ENTRY"], { userId: 60n });
-  const education = (status: string) =>
+  const caseWith = (documents: unknown[]) =>
     prismaDouble({
       verificationCase: {
         findFirst: () =>
           Promise.resolve(
             v2Case({ intakeStage: "DATA_ENTRY", dataEntryUserId: 60n }),
           ),
-        findUnique: () =>
-          Promise.resolve({
-            checks: [{ type: "EDUCATION" }],
-            documents: [
-              {
-                type: "EDUCATION_CERTIFICATE",
-                status,
-                currentVersion: 1,
-                expiresAt: null,
-              },
-            ],
-          }),
       },
-      caseService: { findMany: () => Promise.resolve([]) },
       caseCheck: {
         findFirst: () =>
-          Promise.resolve({ id: 1n, type: "EDUCATION", initiatedAt: null }),
+          Promise.resolve({
+            id: 101n,
+            type: "EDUCATION",
+            initiatedAt: null,
+            departmentId: null,
+          }),
+        findMany: () =>
+          Promise.resolve([
+            checkRow(UUID(101), "EDUCATION"),
+            checkRow(UUID(102), "EMPLOYMENT"),
+          ]),
       },
+      document: { findMany: () => Promise.resolve(documents) },
     });
   const entries = [
     { institute: "Pune University", degree: "B.Com", passingYear: "2020" },
   ];
-  const pending = education("AVAILABLE");
+  // Employment's letter is still unreviewed, but Education's certificate is accepted.
+  const education = caseWith([
+    doc("EDUCATION_CERTIFICATE", "VERIFIED"),
+    doc("EMPLOYMENT_PROOF", "AVAILABLE"),
+  ]);
+  const saved = await new IntakeService(education.prisma).initiateCheck(
+    dataEntry,
+    UUID(30),
+    UUID(101),
+    { entries },
+  );
+  assert.equal(saved.entries.length, 1);
+  const pending = caseWith([doc("EDUCATION_CERTIFICATE", "AVAILABLE")]);
   await assert.rejects(
     new IntakeService(pending.prisma).initiateCheck(
       dataEntry,
@@ -759,15 +805,81 @@ void test("Data Entry fills a check only after every document is accepted", asyn
       UUID(101),
       { entries },
     ),
-    /Accept the candidate's documents before filling the checks/,
+    /Accept this check's documents first: education certificate/,
   );
-  assert.equal(pending.writes.length, 0);
-  const accepted = education("VERIFIED");
-  const saved = await new IntakeService(accepted.prisma).initiateCheck(
-    dataEntry,
-    UUID(30),
-    UUID(101),
-    { entries },
+  const rejected = caseWith([doc("EDUCATION_CERTIFICATE", "REJECTED")]);
+  await assert.rejects(
+    new IntakeService(rejected.prisma).initiateCheck(
+      dataEntry,
+      UUID(30),
+      UUID(101),
+      { entries },
+    ),
+    /waits for the candidate to upload again/,
   );
-  assert.equal(saved.entries.length, 1);
+});
+
+void test("Complete work: process the accepted checks now, or wait for the candidate", async () => {
+  const dataEntry = actorOf(["DATA_ENTRY"], { userId: 60n });
+  const partial = (processNow?: boolean) => {
+    const double = prismaDouble({
+      verificationCase: {
+        findFirst: () =>
+          Promise.resolve(
+            v2Case({ intakeStage: "DATA_ENTRY", dataEntryUserId: 60n }),
+          ),
+      },
+      caseCheck: {
+        findMany: () =>
+          Promise.resolve([
+            checkRow(UUID(101), "EDUCATION", { initiatedAt: new Date() }),
+            checkRow(UUID(102), "EMPLOYMENT"),
+          ]),
+      },
+      document: {
+        findMany: () =>
+          Promise.resolve([
+            doc("EDUCATION_CERTIFICATE", "VERIFIED"),
+            doc("EMPLOYMENT_PROOF", "REJECTED"),
+          ]),
+      },
+      department: {
+        findMany: () =>
+          Promise.resolve([
+            department(7n, "Employment", ["EMPLOYMENT"]),
+            department(8n, "Education", ["EDUCATION"]),
+          ]),
+      },
+    });
+    const routing = new RoutingService(
+      double.prisma,
+      new CaseWorkflowPolicy(double.prisma),
+    );
+    return {
+      ...double,
+      run: () =>
+        new IntakeService(double.prisma, routing).markReady(
+          dataEntry,
+          UUID(30),
+          {
+            version: 4,
+            ...(processNow === undefined ? {} : { processNow }),
+          },
+        ),
+    };
+  };
+  // Without a choice, Data Entry is asked to process now or wait.
+  const ask = partial();
+  await assert.rejects(ask.run(), /Process the accepted checks now, or wait/);
+  assert.equal(ask.writes.length, 0);
+  // Process now: Education goes to its team, Employment waits; the case stays here.
+  const now = partial(true);
+  const result = await now.run();
+  assert.deepEqual(
+    [result.intakeStage, result.status, result.sent, result.waiting],
+    ["DATA_ENTRY", "IN_PROGRESS", 1, ["EMPLOYMENT"]],
+  );
+  const routed = now.writes.filter((write) => write.kind === "check.update");
+  assert.equal(routed.length, 1);
+  assert.equal((routed[0]!.data as { where: { id: bigint } }).where.id, 101n);
 });

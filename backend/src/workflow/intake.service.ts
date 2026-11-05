@@ -10,17 +10,15 @@ import {
 import { caseAccessScope } from "../common/auth/access-scope";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
-import {
-  assertCaseEvidenceReady,
-  caseEvidenceReadiness,
-} from "../documents/evidence-readiness";
+import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
+import { loadCheckDocumentStates } from "./check-document-state";
 import type { Prisma } from "../generated/prisma/client";
 import type {
   AssignDataEntryDto,
   InitiateCheckDto,
+  MarkReadyDto,
   RmQueueQueryDto,
   SendBackDto,
-  VersionedNoteDto,
   WorkQueueQueryDto,
 } from "./dto/workflow.dto";
 import { INITIATION_FORMS, cleanInitiation } from "./initiation-fields";
@@ -328,24 +326,21 @@ export class IntakeService {
     );
     const check = await this.prisma.caseCheck.findFirst({
       where: { caseId: current.id, publicId: checkPublicId },
-      select: { id: true, type: true, initiatedAt: true },
+      select: { id: true, type: true, initiatedAt: true, departmentId: true },
     });
     if (!check) throw new NotFoundException("Check not found in this case");
-    // Documents first: nothing is filled in until Data Entry has accepted every document.
-    const documents = await caseEvidenceReadiness(this.prisma, current.id, {
-      includeWork: false,
-    });
-    if (documents.documentIssues.length)
+    if (check.departmentId)
+      throw new ConflictException("This check was already sent to its team");
+    // Check by check: its form opens once its own documents are accepted.
+    const { states } = await loadCheckDocumentStates(this.prisma, current.id);
+    const own = states.find((row) => row.check.publicId === checkPublicId);
+    if (own?.state === "TO_REVIEW")
       throw new BadRequestException(
-        `Accept the candidate's documents before filling the checks: ${documents.documentIssues
-          .map((issue) =>
-            issue.replace(
-              /^(\w+):/,
-              (_m, type: string) =>
-                `${type.replaceAll("_", " ").toLowerCase()}:`,
-            ),
-          )
-          .join("; ")}`,
+        `Accept this check's documents first: ${readable(own.toReview)}`,
+      );
+    if (own?.state === "WAITING_CANDIDATE")
+      throw new BadRequestException(
+        `This check waits for the candidate to upload again: ${readable(own.waiting)}`,
       );
     const entries = cleanInitiation(check.type, input.entries);
     const initiatedAt = new Date();
@@ -382,7 +377,7 @@ export class IntakeService {
   }
 
   /** Data Entry confirms completeness; the case returns to the RM, never to Operations. */
-  async markReady(actor: Actor, casePublicId: string, input: VersionedNoteDto) {
+  async markReady(actor: Actor, casePublicId: string, input: MarkReadyDto) {
     const current = await this.findCase(actor, casePublicId);
     assertWorkflowV2(current);
     assertVersion(current.version, input.version);
@@ -395,6 +390,74 @@ export class IntakeService {
         : "This case is not with Data Entry",
     );
     const note = trimNote(input.note);
+    // Check by check: which checks are ready to go and which wait for the candidate.
+    const { states, unreviewed } = await loadCheckDocumentStates(
+      this.prisma,
+      current.id,
+    );
+    const open = states.filter(
+      (row) => !row.check.departmentId && row.check.status !== "COMPLETED",
+    );
+    const held = open.filter((row) => row.state === "WAITING_CANDIDATE");
+    if (held.length || current.status === "IN_PROGRESS") {
+      const openRequests = await this.prisma.clarification.count({
+        where: { caseId: current.id, status: { in: OPEN_CLARIFICATION } },
+      });
+      if (openRequests)
+        throw new BadRequestException(
+          "Resolve every open correction request before completing",
+        );
+      if (unreviewed.length)
+        throw new BadRequestException(
+          `Accept or reject every document first: ${readable(unreviewed)}`,
+        );
+      const ready = open.filter((row) => row.state === "ACCEPTED");
+      const notInitiated = ready.filter(
+        (row) => !row.check.initiatedAt && INITIATION_FORMS[row.check.type],
+      );
+      if (notInitiated.length)
+        throw new BadRequestException(
+          `Initiate every accepted check first: ${readable(notInitiated.map((row) => row.check.type))}`,
+        );
+      if (held.length && !input.processNow)
+        throw new BadRequestException(
+          `${held.length === 1 ? "1 check waits" : `${held.length} checks wait`} for the candidate to upload again (${readable(
+            [...new Set(held.flatMap((row) => row.waiting))],
+          )}). Process the accepted checks now, or wait for the candidate.`,
+        );
+      if (!ready.length)
+        throw new BadRequestException(
+          "No check is ready yet. Wait for the candidate to upload again.",
+        );
+      if (!this.routing)
+        throw new ConflictException("Routing is not available");
+      const result = await this.routing.routeAccepted(
+        actor,
+        current,
+        ready.map((row) => row.check),
+        {
+          finish: !held.length,
+          waiting: held.map((row) => row.check.type),
+          note,
+        },
+      );
+      if (current.assignedOpsUserId)
+        await this.prisma.notification.create({
+          data: {
+            tenantId: actor.tenantId,
+            userId: current.assignedOpsUserId,
+            type: "CHECKS_ROUTED",
+            title: held.length
+              ? "Some checks sent to verification"
+              : "Case sent to verification",
+            body: held.length
+              ? `${current.caseNumber}: ${ready.length} accepted check(s) went to their teams; ${readable(held.map((row) => row.check.type))} wait for the candidate's documents.`
+              : `${current.caseNumber}: Data Entry finished and the remaining checks went to their departments.`,
+            href: `/spoc-rm/work?caseId=${casePublicId}`,
+          },
+        });
+      return result;
+    }
     await this.prisma.$transaction(async (tx) => {
       const [openRequests, rejected] = await Promise.all([
         tx.clarification.count({
@@ -842,4 +905,11 @@ export function searchWhere(search: string): Prisma.VerificationCaseWhereInput {
       { client: { displayName: { contains: term } } },
     ],
   };
+}
+
+/** "aadhaar, employment proof" for messages. */
+function readable(types: readonly string[]) {
+  return types
+    .map((type) => type.replaceAll("_", " ").toLowerCase())
+    .join(", ");
 }

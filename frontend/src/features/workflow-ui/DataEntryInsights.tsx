@@ -154,7 +154,7 @@ export function DataEntryDashboard() {
           tone="good"
           label="Marked Ready today"
           value={k ? k.readyToday : "—"}
-          hint="Sent back to the RM"
+          hint="Sent to the verification teams"
         />
       </section>
       <section className="grid grid-cols-2 gap-3 xl:grid-cols-4" aria-label="Recent output">
@@ -194,7 +194,7 @@ export function DataEntryDashboard() {
               <div>
                 <h2 id="de-trend-title">Marked Ready, last 14 days</h2>
                 <p>
-                  {trendTotal} case{trendTotal === 1 ? "" : "s"} sent back to the RM.
+                  {trendTotal} case{trendTotal === 1 ? "" : "s"} sent to the verification teams.
                 </p>
               </div>
             </header>

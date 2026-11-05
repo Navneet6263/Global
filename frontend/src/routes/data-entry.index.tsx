@@ -31,7 +31,10 @@ function DataEntryPage() {
       <header className="client-heading">
         <div>
           <h1>Intake queue</h1>
-          <p>Check each case is complete and readable. Ready sends it back to the RM.</p>
+          <p>
+            Accept the documents, fill each check, then complete the work. Checks go straight to
+            their teams.
+          </p>
         </div>
         <div className="client-heading-actions">
           <InternalBulkIntake />

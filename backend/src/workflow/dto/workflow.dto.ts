@@ -49,6 +49,13 @@ export class VersionedNoteDto {
   note?: string;
 }
 
+/** "Complete work": processNow sends the accepted checks on while others wait. */
+export class MarkReadyDto extends VersionedNoteDto {
+  @IsOptional()
+  @IsBoolean()
+  processNow?: boolean;
+}
+
 export class AssignDataEntryDto extends VersionedNoteDto {
   @IsUUID()
   assigneeId!: string;

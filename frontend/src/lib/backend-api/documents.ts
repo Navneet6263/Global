@@ -58,6 +58,18 @@ export function reviewDocument(
   });
 }
 
+export type CheckDocumentState = {
+  id: string;
+  type: string;
+  /** ACCEPTED: its form opens. TO_REVIEW: accept or reject its documents. WAITING_CANDIDATE: re-upload. */
+  state: "ACCEPTED" | "TO_REVIEW" | "WAITING_CANDIDATE";
+  documents: string[];
+  waiting: string[];
+  toReview: string[];
+  /** Already sent to its verification team. */
+  sentToTeam: boolean;
+};
+
 export function getEvidenceReadiness(caseId: string) {
   return apiRequest<{
     ready: boolean;
@@ -65,5 +77,7 @@ export function getEvidenceReadiness(caseId: string) {
     requiredTypes: string[];
     /** Document problems only (missing, not accepted, rejected). */
     documentIssues?: string[];
+    /** Each check's own document state, so Data Entry works check by check. */
+    checks?: CheckDocumentState[];
   }>(`/cases/${caseId}/evidence-readiness`);
 }

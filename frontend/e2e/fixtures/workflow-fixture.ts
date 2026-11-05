@@ -539,8 +539,17 @@ export async function workflowFixture(page: Page, role: Role) {
       return reply({ status: "IN_PROGRESS", version: state.version });
     }
     if (path === "/workflow/cases/flow-case-1/ready" && method === "POST") {
-      state.intakeStage = "READY";
       state.version += 1;
+      // Process now: the accepted checks go to their teams, the rest wait; it stays here.
+      if ((body as { processNow?: boolean }).processNow)
+        return reply({
+          intakeStage: "DATA_ENTRY",
+          version: state.version,
+          routed: true,
+          sent: 1,
+          waiting: ["EMPLOYMENT"],
+        });
+      state.intakeStage = "READY";
       return reply({ intakeStage: "READY", version: state.version });
     }
     if (path === "/workflow/cases/flow-case-2/final-review" && method === "GET")
@@ -655,16 +664,47 @@ export async function workflowFixture(page: Page, role: Role) {
         tokenExpiresAt: iso(100),
       });
     }
-    if (path === "/cases/flow-case-1/evidence-readiness")
+    if (path === "/cases/flow-case-1/evidence-readiness") {
+      // Employment waits on its letter; Education needs no document and is open at once.
+      const letter = state.documentStatus;
+      const checks = [
+        {
+          id: "chk-emp",
+          type: "EMPLOYMENT",
+          state:
+            letter === "VERIFIED"
+              ? "ACCEPTED"
+              : ["REJECTED", "REUPLOAD_REQUIRED"].includes(letter)
+                ? "WAITING_CANDIDATE"
+                : "TO_REVIEW",
+          documents: ["EMPLOYMENT_LETTER"],
+          waiting: ["REJECTED", "REUPLOAD_REQUIRED"].includes(letter) ? ["EMPLOYMENT_LETTER"] : [],
+          toReview: ["VERIFIED", "REJECTED", "REUPLOAD_REQUIRED"].includes(letter)
+            ? []
+            : ["EMPLOYMENT_LETTER"],
+          sentToTeam: false,
+        },
+        {
+          id: "chk-edu",
+          type: "EDUCATION",
+          state: "ACCEPTED",
+          documents: [],
+          waiting: [],
+          toReview: [],
+          sentToTeam: false,
+        },
+      ];
       return reply(
-        state.documentStatus === "VERIFIED"
-          ? { ready: true, issues: [], requiredTypes: ["EMPLOYMENT_LETTER"] }
+        letter === "VERIFIED"
+          ? { ready: true, issues: [], requiredTypes: ["EMPLOYMENT_LETTER"], checks }
           : {
               ready: false,
               issues: ["EMPLOYMENT_LETTER: reviewed, unexpired document required"],
               requiredTypes: ["EMPLOYMENT_LETTER"],
+              checks,
             },
       );
+    }
     if (path === "/documents/doc-1/review" && method === "PATCH") {
       state.documentStatus = (body as { decision: string }).decision;
       return reply({ id: "doc-1", status: state.documentStatus });

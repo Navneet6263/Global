@@ -121,7 +121,7 @@ export function DataEntryWorkspace({
           tone="good"
           label="Marked Ready today"
           value={kpis ? kpis.readyToday : "—"}
-          hint="Sent back to the RM"
+          hint="Sent to the verification teams"
         />
       </section>
       <section className="rmo-card dei-queue" aria-label="Data Entry queue">
@@ -131,7 +131,7 @@ export function DataEntryWorkspace({
               {view === "team" ? "Team cases" : "My cases"}
               <span className="dei-count">{queue.data?.total ?? 0}</span>
             </h2>
-            <p>Open a case, check documents, initiate checks, then mark Ready.</p>
+            <p>Open a case, accept documents, fill each check, then complete the work.</p>
           </div>
           {isLead ? (
             <div className="ops-segment" role="group" aria-label="Queue">
@@ -405,15 +405,21 @@ function ReviewBody({
   const open = (requests.data?.items ?? []).filter((request) =>
     ["OPEN", "RESPONDED"].includes(request.status),
   );
-  const rejected = item.documents.filter((document) => document.status === "REJECTED");
+  const rejected = item.documents.filter((document) =>
+    ["REJECTED", "REUPLOAD_REQUIRED"].includes(document.status),
+  );
   const accepted = item.documents.filter((document) => document.status === "VERIFIED");
-  const docIssues =
-    readiness.data?.documentIssues ??
-    (readiness.data?.issues ?? []).filter((issue) =>
-      (readiness.data?.requiredTypes ?? []).some((type) => issue.startsWith(`${type}:`)),
-    );
-  // The check forms open only after every document is accepted.
-  const documentsAccepted = readiness.isSuccess && !docIssues.length && !rejected.length;
+  const toReview = item.documents.filter(
+    (document) =>
+      document.currentVersion > 0 &&
+      !["VERIFIED", "REJECTED", "REUPLOAD_REQUIRED"].includes(document.status),
+  );
+  // Check by check: ready to go, still to review, or waiting for the candidate.
+  const checkStates = readiness.data?.checks;
+  const openChecks = (checkStates ?? []).filter((row) => !row.sentToTeam);
+  const waitingChecks = openChecks.filter((row) => row.state === "WAITING_CANDIDATE");
+  const sentChecks = (checkStates ?? []).filter((row) => row.sentToTeam);
+  const [choosing, setChoosing] = useState(false);
   const consentAccepted = item.consents.some((consent) => consent.status === "ACCEPTED");
   const forms = useQuery({
     queryKey: ["workflow", "initiation-forms"],
@@ -421,14 +427,20 @@ function ReviewBody({
     staleTime: Infinity,
   });
   const initiable = item.checks.filter((check) => forms.data?.forms[check.type.toUpperCase()]);
-  const notInitiated = initiable.filter((check) => !check.initiatedAt);
+  // Checks waiting for the candidate, or already with their team, are not filled now.
+  const notInitiated = initiable.filter((check) => {
+    const row = checkStates?.find((state) => state.id === check.publicId);
+    return !check.initiatedAt && row?.state !== "WAITING_CANDIDATE" && !row?.sentToTeam;
+  });
   const blockers = [
     ...(!consentAccepted ? ["Candidate consent is not accepted yet"] : []),
     ...(open.length
       ? [`${open.length} correction request${open.length > 1 ? "s" : ""} still open`]
       : []),
-    ...(rejected.length
-      ? [`${rejected.length} rejected document${rejected.length > 1 ? "s" : ""} to be replaced`]
+    ...(toReview.length
+      ? [
+          `Accept or reject: ${[...new Set(toReview.map((document) => readableCheck(document.type)))].join(", ")}`,
+        ]
       : []),
     ...(notInitiated.length
       ? [
@@ -437,21 +449,21 @@ function ReviewBody({
             .join(", ")}`,
         ]
       : []),
-    ...docIssues.map((issue) =>
-      issue.replace(/^(\w+):/, (_m, type: string) => `${readableCheck(type)}:`),
-    ),
+    ...(checkStates && openChecks.length === waitingChecks.length && waitingChecks.length
+      ? ["Every remaining check waits for the candidate's documents"]
+      : []),
   ];
   const steps = [
     { label: "Consent", done: consentAccepted, detail: consentAccepted ? "Accepted" : "Pending" },
     {
       label: "Documents",
-      done: !docIssues.length && !rejected.length && item.documents.length > 0,
-      detail: `${accepted.length}/${item.documents.length} accepted`,
+      done: !toReview.length && !rejected.length && item.documents.length > 0,
+      detail: `${accepted.length}/${item.documents.length} accepted${rejected.length ? ` · ${rejected.length} rejected` : ""}`,
     },
     {
       label: "Checks",
       done: !notInitiated.length,
-      detail: `${initiable.length - notInitiated.length}/${initiable.length} initiated`,
+      detail: `${initiable.filter((check) => check.initiatedAt).length}/${initiable.length} initiated`,
     },
     {
       label: "Corrections",
@@ -462,17 +474,26 @@ function ReviewBody({
   const progress = Math.round((steps.filter((step) => step.done).length / steps.length) * 100);
   const due = dueLabel(item.dueAt ?? queueItem?.dueAt ?? null);
   const ready = useMutation({
-    mutationFn: () => markCaseReady(item.id, { version: item.version }),
+    mutationFn: (processNow: boolean) =>
+      markCaseReady(item.id, { version: item.version, ...(processNow ? { processNow } : {}) }),
     onSuccess: async (result) => {
-      if (result.routed) toast.success(`${item.caseNumber} sent to the verification departments`);
+      setChoosing(false);
+      if (result.waiting?.length) {
+        toast.success(`${result.sent ?? 0} check(s) sent to their teams`, {
+          description: `${result.waiting.map(readableCheck).join(", ")} wait for the candidate. The case stays with you until they upload again.`,
+        });
+        await refresh();
+        return;
+      }
+      if (result.routed) toast.success(`${item.caseNumber} sent to the verification teams`);
       else
-        toast.success(`${item.caseNumber} is Ready — with the RM to route`, {
+        toast.success(`${item.caseNumber} is complete — with the RM to route`, {
           description: result.routeNote,
         });
       await refresh();
       onClose();
     },
-    onError: (error: Error) => toast.error("Not marked Ready", { description: error.message }),
+    onError: (error: Error) => toast.error("Not completed", { description: error.message }),
   });
   return (
     <div className="dei-review">
@@ -538,6 +559,15 @@ function ReviewBody({
                 ))}
               </ul>
             </div>
+          ) : waitingChecks.length ? (
+            <div className="flow-callout is-warn">
+              <CircleAlert aria-hidden />
+              <span>
+                {waitingChecks.map((row) => readableCheck(row.type)).join(", ")}{" "}
+                {waitingChecks.length === 1 ? "waits" : "wait"} for the candidate. The other checks
+                are ready to send.
+              </span>
+            </div>
           ) : (
             <div className="flow-callout is-good">
               <ShieldCheck aria-hidden />
@@ -547,16 +577,62 @@ function ReviewBody({
               </span>
             </div>
           )}
+          {choosing && waitingChecks.length ? (
+            <div
+              className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[12.5px] text-amber-950"
+              role="group"
+              aria-label="Rejected documents"
+            >
+              <p className="font-semibold">
+                You accepted {accepted.length} document{accepted.length === 1 ? "" : "s"} and
+                rejected {rejected.length}.
+              </p>
+              <p>
+                {waitingChecks.map((row) => readableCheck(row.type)).join(", ")}{" "}
+                {waitingChecks.length === 1 ? "waits" : "wait"} for the candidate. The candidate has
+                been emailed to upload the rejected documents again.
+              </p>
+              <p>Process the accepted checks now, or wait for the candidate?</p>
+              <div className="grid gap-2">
+                <Button size="sm" onClick={() => ready.mutate(true)} loading={ready.isPending}>
+                  Process accepted checks now
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setChoosing(false);
+                    toast.message("Waiting for the candidate", {
+                      description:
+                        "The case stays with you. Accept the new documents when they arrive, then complete the work.",
+                    });
+                  }}
+                >
+                  Wait for the candidate
+                </Button>
+              </div>
+            </div>
+          ) : null}
           <Button
             className="w-full"
             size="lg"
-            onClick={() => ready.mutate()}
-            disabled={Boolean(blockers.length) || stage !== "DATA_ENTRY"}
-            loading={ready.isPending}
+            onClick={() => (waitingChecks.length ? setChoosing(true) : ready.mutate(false))}
+            disabled={
+              Boolean(blockers.length) ||
+              stage !== "DATA_ENTRY" ||
+              Boolean(checkStates && !openChecks.length)
+            }
+            loading={ready.isPending && !choosing}
           >
             <Send aria-hidden />
-            Mark Ready and return to RM
+            Complete work
           </Button>
+          {sentChecks.length ? (
+            <p className="dei-foot-note">
+              Already with their teams:{" "}
+              {sentChecks.map((row) => readableCheck(row.type)).join(", ")}
+            </p>
+          ) : null}
           {queueItem?.dataEntryAssignedAt ? (
             <p className="dei-foot-note">Assigned {istDateTime(queueItem.dataEntryAssignedAt)}</p>
           ) : null}
@@ -597,14 +673,8 @@ function ReviewBody({
         <div className="dei-section is-plain">
           <CheckInitiation
             item={item}
-            editable={["DATA_ENTRY", "CORRECTION"].includes(stage ?? "") && documentsAccepted}
-            lockedReason={
-              ["DATA_ENTRY", "CORRECTION"].includes(stage ?? "") && !documentsAccepted
-                ? readiness.isSuccess
-                  ? "Accept every document above first. The check details open once all documents are accepted."
-                  : "Checking the documents…"
-                : undefined
-            }
+            editable={["DATA_ENTRY", "CORRECTION"].includes(stage ?? "") && readiness.isSuccess}
+            checkStates={checkStates}
             onSaved={refresh}
           />
         </div>

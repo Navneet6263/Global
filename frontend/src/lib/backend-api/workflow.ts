@@ -280,12 +280,18 @@ export const assignDataEntry = (
     input,
   );
 
-export const markCaseReady = (caseId: string, input: { version: number; note?: string }) =>
+export const markCaseReady = (
+  caseId: string,
+  input: { version: number; note?: string; processNow?: boolean },
+) =>
   post<{
     intakeStage: IntakeStage;
     version: number;
     routed?: boolean;
     routeNote?: string;
+    /** Checks sent to their teams now, and checks still waiting for documents. */
+    sent?: number;
+    waiting?: string[];
   }>(`/workflow/cases/${caseId}/ready`, input);
 
 export const sendBackToDataEntry = (caseId: string, input: { version: number; reason: string }) =>

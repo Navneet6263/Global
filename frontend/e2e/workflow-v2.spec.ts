@@ -10,14 +10,14 @@ test("Data Entry accepts documents, then marks the case Ready for the RM", async
   await expect(page.getByRole("heading", { name: "Intake queue", level: 1 })).toBeVisible();
   await page.getByRole("button", { name: "Review Kabir Sethi" }).click();
   const review = page.getByRole("complementary", { name: "Intake review" });
-  const ready = review.getByRole("button", { name: "Mark Ready and return to RM" });
-  await expect(review.getByText(/Employment letter: reviewed/)).toBeVisible();
+  const ready = review.getByRole("button", { name: "Complete work" });
+  await expect(review.getByText(/Accept or reject: Employment letter/)).toBeVisible();
   await expect(ready).toBeDisabled();
-  // Nothing below can be filled until the documents are accepted.
-  await expect(review.getByText(/Accept every document above first/)).toBeVisible();
+  // Check by check: Employment stays locked until its letter is accepted.
+  await expect(review.getByText(/Accept its documents first: Employment letter/)).toBeVisible();
   await expect(review.getByLabel("Employment 1 Employer name")).toHaveCount(0);
   await review.getByRole("button", { name: "Accept", exact: true }).click();
-  await expect(review.getByText(/Accept every document above first/)).toHaveCount(0);
+  await expect(review.getByText(/Accept its documents first/)).toHaveCount(0);
   // Check-wise initiation: every check needs its details before Ready.
   const initiation = review.getByRole("region", { name: "Check-wise initiation" });
   await expect(initiation.getByText("0/2 done")).toBeVisible();
@@ -59,6 +59,40 @@ test("Data Entry accepts documents, then marks the case Ready for the RM", async
   ).toBeTruthy();
 });
 
+test("Data Entry rejects a document, then processes the accepted checks or waits", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1600, height: 1000 });
+  const fixture = await workflowFixture(page, "DATA_ENTRY");
+  await page.goto("/data-entry?caseId=flow-case-1");
+  const review = page.getByRole("complementary", { name: "Intake review" });
+  await review.getByRole("button", { name: "Reject", exact: true }).click();
+  await review.getByLabel(/Reason to reject/).fill("Letter is not readable");
+  await review.getByRole("button", { name: "Reject", exact: true }).last().click();
+  const initiation = review.getByRole("region", { name: "Check-wise initiation" });
+  // Education has its documents, so it opens; Employment waits for the candidate.
+  await expect(initiation.getByText(/Waiting for the candidate to upload again/)).toBeVisible();
+  await initiation.getByLabel("Education 1 Institute / college").fill("Pune University");
+  await initiation.getByLabel("Education 1 Degree / course").fill("B.Com");
+  await initiation.getByLabel("Education 1 Passing year").fill("2018");
+  await initiation.getByRole("button", { name: "Save initiation" }).click();
+  await review.getByRole("button", { name: "Complete work" }).click();
+  const choice = review.getByRole("group", { name: "Rejected documents" });
+  await expect(choice).toContainText("You accepted 0 documents and rejected 1.");
+  await expect(choice).toContainText("The candidate has been emailed");
+  await page.screenshot({ path: "test-results/data-entry-partial-choice.png", fullPage: true });
+  // Wait: nothing is sent.
+  await choice.getByRole("button", { name: "Wait for the candidate" }).click();
+  await expect(choice).toHaveCount(0);
+  expect(fixture.requests.some((r) => r.path.endsWith("/ready"))).toBeFalsy();
+  // Process now: the accepted checks go on, Employment waits.
+  await review.getByRole("button", { name: "Complete work" }).click();
+  await review.getByRole("button", { name: "Process accepted checks now" }).click();
+  await expect(page.getByText("1 check(s) sent to their teams")).toBeVisible();
+  const sent = fixture.requests.find((r) => r.path === "/workflow/cases/flow-case-1/ready");
+  expect(sent?.body).toMatchObject({ processNow: true });
+});
+
 test("Data Entry raises an L1 correction request", async ({ page }) => {
   const fixture = await workflowFixture(page, "DATA_ENTRY");
   await page.goto("/data-entry?caseId=flow-case-1");
@@ -77,7 +111,7 @@ test("Data Entry raises an L1 correction request", async ({ page }) => {
     subject: "Relieving letter missing",
     message: "Please upload the relieving letter.",
   });
-  await expect(review.getByRole("button", { name: "Mark Ready and return to RM" })).toBeDisabled();
+  await expect(review.getByRole("button", { name: "Complete work" })).toBeDisabled();
 });
 
 test("RM routes a Ready case and blocks departments without a Team Leader", async ({ page }) => {
@@ -283,7 +317,7 @@ test("Data Entry review opens as a roomy slide-over on a laptop", async ({ page 
   await page.getByRole("button", { name: "Review Kabir Sethi" }).click();
   const review = page.getByRole("complementary", { name: "Intake review" });
   await expect(review.getByText("Kabir Sethi")).toBeVisible();
-  await expect(review.getByRole("button", { name: "Mark Ready and return to RM" })).toBeVisible();
+  await expect(review.getByRole("button", { name: "Complete work" })).toBeVisible();
   const work = review.locator(".dei-panel-body");
   expect((await work.boundingBox())?.height ?? 0).toBeGreaterThan(640);
   expect((await review.boundingBox())?.width ?? 0).toBeGreaterThan(900);

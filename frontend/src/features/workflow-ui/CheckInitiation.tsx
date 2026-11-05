@@ -4,6 +4,7 @@ import { ChevronDown, CircleCheck, CircleDashed, Plus, Trash2 } from "lucide-rea
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import type { CaseDetail } from "@/lib/api/cases";
+import type { CheckDocumentState } from "@/lib/backend-api/documents";
 import {
   getInitiationForms,
   initiateCheck,
@@ -35,13 +36,13 @@ function savedEntries(json?: string | null): Entry[] {
 export function CheckInitiation({
   item,
   editable,
-  lockedReason,
+  checkStates,
   onSaved,
 }: {
   item: CaseDetail;
   editable: boolean;
-  /** Why the forms are locked (e.g. documents not accepted yet). */
-  lockedReason?: string;
+  /** Each check's document state: a form opens once its own documents are accepted. */
+  checkStates?: readonly CheckDocumentState[];
   onSaved: () => Promise<unknown>;
 }) {
   const forms = useQuery({
@@ -62,13 +63,9 @@ export function CheckInitiation({
         </span>
       </h3>
       <p className="ops-subtle">
-        Record what each check needs. Every check must be initiated before you mark Ready.
+        A check opens as soon as its own documents are accepted. Fill each accepted check, then
+        complete the work.
       </p>
-      {lockedReason ? (
-        <p className="flow-pill is-warn" role="status">
-          {lockedReason}
-        </p>
-      ) : null}
       <div className="cki-list">
         {checks.map((check) => (
           <CheckForm
@@ -76,6 +73,7 @@ export function CheckInitiation({
             caseId={item.id}
             check={check}
             form={forms.data!.forms[check.type.toUpperCase()]!}
+            state={checkStates?.find((row) => row.id === check.publicId)}
             editable={editable}
             onSaved={onSaved}
           />
@@ -89,16 +87,27 @@ function CheckForm({
   caseId,
   check,
   form,
-  editable,
+  state,
+  editable: canEdit,
   onSaved,
 }: {
   caseId: string;
   check: CaseDetail["checks"][number];
   form: InitiationForm;
+  state?: CheckDocumentState;
   editable: boolean;
   onSaved: () => Promise<unknown>;
 }) {
   const saved = savedEntries(check.initiationJson);
+  // Open only when this check's own documents are accepted and it is not with a team yet.
+  const lock = state?.sentToTeam
+    ? "Sent to its team"
+    : state?.state === "TO_REVIEW"
+      ? `Accept its documents first: ${state.toReview.map(readable).join(", ")}`
+      : state?.state === "WAITING_CANDIDATE"
+        ? `Waiting for the candidate to upload again: ${state.waiting.map(readable).join(", ")}`
+        : null;
+  const editable = canEdit && !lock;
   // Unset until the user toggles: an unfilled check opens by itself once it is editable
   // (e.g. right after the last document is accepted).
   const [toggled, setOpen] = useState<boolean | null>(null);
@@ -135,6 +144,7 @@ function CheckForm({
             {check.initiatedAt
               ? `Initiated · ${saved.length} ${saved.length === 1 ? "entry" : "entries"}`
               : "Details needed"}
+            {lock && canEdit ? ` · ${lock}` : ""}
           </small>
         </span>
         <ChevronDown aria-hidden className={open ? "rotate-180" : ""} />

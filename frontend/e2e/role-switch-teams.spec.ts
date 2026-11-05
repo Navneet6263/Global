@@ -63,6 +63,8 @@ test("the role dropdown lists each Team Leader and opens only that team's queue"
     "Team queue of Education",
   );
   await expect(page.getByRole("menuitem", { name: /^TL Data Entry/ })).toHaveCount(0);
+  // The TL choices replace a plain "Verifier" row.
+  await expect(page.getByRole("menuitem", { name: /^Verifier/ })).toHaveCount(0);
   await expect(page.getByRole("menuitem", { name: /^TL Old team/ })).toHaveCount(0);
   await page.getByRole("menuitem", { name: /^TL Education/ }).click();
   await expect(page).toHaveURL(new RegExp(`/verifier/team\\?department=${EDUCATION}`));
