@@ -1,6 +1,5 @@
 import { expect as baseExpect, test } from "@playwright/test";
 import { qaBrowserFixture } from "./fixtures/qa-browser-fixture";
-import { qaChecklist } from "../src/features/delivery/utils";
 
 const expect = baseExpect.configure({ timeout: 20_000 });
 for (const width of [1440, 390]) {
@@ -44,8 +43,6 @@ for (const width of [1440, 390]) {
     await page.getByRole("button", { name: "Continue to decision" }).click();
     const notes = page.getByRole("textbox", { name: "Reviewer rationale" });
     await notes.fill("Source and supporting evidence reviewed independently.");
-    for (const label of qaChecklist)
-      await page.getByRole("checkbox", { name: label, exact: true }).check();
     await page.getByRole("button", { name: "Return selected checks", exact: true }).click();
     await expect(page.getByText("1 check selected for correction", { exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Submit controlled decision" })).toBeEnabled();

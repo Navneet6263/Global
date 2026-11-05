@@ -22,7 +22,23 @@ export type InitiationField = {
   options?: readonly string[];
   /** Section heading the field is shown under (fields without one join the previous). */
   group?: string;
+  /** Shown (and required) only when another field has, or has not, one of these values. */
+  showWhen?: { key: string; in?: readonly string[]; notIn?: readonly string[] };
 };
+
+/** Whether a field applies to an entry, given its showWhen rule. */
+export function fieldShown(
+  field: Pick<InitiationField, "showWhen">,
+  entry: Readonly<Record<string, unknown>>,
+) {
+  const rule = field.showWhen;
+  if (!rule) return true;
+  const value =
+    typeof entry[rule.key] === "string" ? (entry[rule.key] as string) : "";
+  if (rule.in) return rule.in.includes(value);
+  if (rule.notIn) return !rule.notIn.includes(value);
+  return true;
+}
 
 export type InitiationForm = {
   /** More than one entry, e.g. previous employers or addresses ("option Add"). */

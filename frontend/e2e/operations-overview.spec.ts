@@ -98,3 +98,22 @@ test("mobile overview has no page-level horizontal scroll", async ({ page }) => 
   ).toBeTruthy();
   await page.screenshot({ path: "test-results/operations-overview-mobile.png", fullPage: true });
 });
+
+test("the Assign RM dialog fits a short laptop screen and its button stays reachable", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1366, height: 560 });
+  await operationsOverviewFixture(page);
+  await page.goto("/operations?view=needs-rm");
+  await page.getByRole("button", { name: "Assign RM for Ops Candidate 2", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Assign responsible RM" });
+  await expect(dialog).toBeVisible();
+  // Never taller than the screen: nothing is cut off at the top or bottom.
+  const box = (await dialog.boundingBox())!;
+  expect(box.y).toBeGreaterThanOrEqual(0);
+  expect(box.y + box.height).toBeLessThanOrEqual(560);
+  const submit = dialog.getByRole("button", { name: "Assign RM", exact: true });
+  await submit.scrollIntoViewIfNeeded();
+  await expect(submit).toBeInViewport();
+  await page.screenshot({ path: "test-results/assign-rm-short-screen.png" });
+});

@@ -874,7 +874,12 @@ void test("Complete work: process the accepted checks now, or wait for the candi
   assert.equal(ask.writes.length, 0);
   // Process now: Education goes to its team, Employment waits; the case stays here.
   const now = partial(true);
-  const result = await now.run();
+  const result = (await now.run()) as {
+    intakeStage: string;
+    status: string;
+    sent?: number;
+    waiting?: string[];
+  };
   assert.deepEqual(
     [result.intakeStage, result.status, result.sent, result.waiting],
     ["DATA_ENTRY", "IN_PROGRESS", 1, ["EMPLOYMENT"]],

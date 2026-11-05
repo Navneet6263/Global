@@ -34,7 +34,6 @@ import {
 import { cachedIdentity } from "@/lib/auth/platform-session";
 import { getColourMatrix } from "@/lib/backend-api/workflow";
 import { formatDate, humanize } from "../utils";
-import { FindingEditor } from "./FindingEditor";
 import { CheckEvidencePanel } from "./CheckEvidencePanel";
 import { VerifiedDetailsPanel } from "./VerifiedDetailsPanel";
 import { ReviewChecklist, StepIntro, StepNav, type StepItem } from "./verification-steps";
@@ -176,8 +175,7 @@ export function VerifierTaskWorkspace({
     task.status === "IN_PROGRESS",
   );
   const summaryDone = sourceSummary.trim().length >= MIN_SUMMARY;
-  const outcomeDone =
-    summaryDone && findingsValid && (result !== "DISCREPANCY" || findings.length > 0);
+  const outcomeDone = summaryDone && findingsValid;
   // Completion needs every step: verified details, proof, outcome and summary.
   const ready = readiness.detailsDone && readiness.proofDone && outcomeDone;
   const steps: StepItem[] = [
@@ -510,7 +508,6 @@ export function VerifierTaskWorkspace({
                     </button>
                   ) : null}
                 </label>
-                <FindingEditor value={findings} onChange={setFindings} />
               </>
             ) : null}
             {step === "review" ? (
@@ -544,9 +541,7 @@ export function VerifierTaskWorkspace({
                       done: outcomeDone,
                       detail: !summaryDone
                         ? `Summary needs at least ${MIN_SUMMARY} characters`
-                        : result === "DISCREPANCY" && !findings.length
-                          ? "A discrepancy needs at least one finding"
-                          : `${humanize(result)}${chosenColour ? ` · ${dispositionMeta[chosenColour].name}` : ""}`,
+                        : `${humanize(result)}${chosenColour ? ` · ${dispositionMeta[chosenColour].name}` : ""}`,
                     },
                   ]}
                 />

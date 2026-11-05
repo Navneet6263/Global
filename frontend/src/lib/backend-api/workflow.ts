@@ -363,6 +363,18 @@ export interface InitiationField {
   options?: readonly string[];
   /** Section heading; fields without one join the previous section. */
   group?: string;
+  /** Shown (and required) only when another field has, or has not, one of these values. */
+  showWhen?: { key: string; in?: readonly string[]; notIn?: readonly string[] };
+}
+
+/** Whether a field applies to an entry (same rule as the API). */
+export function fieldShown(field: InitiationField, entry: Readonly<Record<string, string>>) {
+  const rule = field.showWhen;
+  if (!rule) return true;
+  const value = entry[rule.key] ?? "";
+  if (rule.in) return rule.in.includes(value);
+  if (rule.notIn) return !rule.notIn.includes(value);
+  return true;
 }
 export interface InitiationForm {
   repeatable: boolean;

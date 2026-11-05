@@ -1,7 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import { qaBrowserFixture } from "./fixtures/qa-browser-fixture";
-import { qaChecklist } from "../src/features/delivery/utils";
 
 test("QA summary views fetch only selected evidence and keep corrections separate", async ({
   page,
@@ -51,8 +50,6 @@ test("QA renewal locks conflicting actions and retains rationale while resetting
   await page.getByRole("button", { name: "Claim case", exact: true }).click();
   await expect(notes).toBeEnabled();
   await notes.fill("Supporting records reviewed; source confirmation is complete.");
-  for (const label of qaChecklist)
-    await page.getByRole("checkbox", { name: label, exact: true }).check();
   const submit = page.getByRole("button", { name: "Submit controlled decision" });
   await expect(submit).toBeEnabled();
   fixture.pauseRenew();
@@ -72,9 +69,6 @@ test("QA renewal locks conflicting actions and retains rationale while resetting
   fixture.resumeRenew();
   await expect(notes).toBeEnabled();
   await expect(notes).toHaveValue("Supporting records reviewed; source confirmation is complete.");
-  for (const label of qaChecklist)
-    await expect(page.getByRole("checkbox", { name: label, exact: true })).not.toBeChecked();
-  await expect(submit).toBeDisabled();
   await page.getByRole("button", { name: "Release", exact: true }).click();
   await expect(page.getByRole("button", { name: "Claim case", exact: true })).toBeEnabled();
   await expect(notes).toBeDisabled();

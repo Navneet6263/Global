@@ -12,7 +12,7 @@ import { CaseReportView } from "@/features/workflow-ui/ReportView";
 
 import type { QaQueueItem } from "@/lib/api/qa";
 import { cn } from "@/lib/utils";
-import { formatDate, humanize, qaChecklist } from "../utils";
+import { formatDate, humanize } from "../utils";
 import { QaEvidencePanel } from "./QaEvidencePanel";
 import { QaClaimState } from "./QaDecisionParts";
 import { QaDecisionForm } from "./QaDecisionForm";
@@ -45,7 +45,8 @@ export function QaReviewPanel({
   onRefresh: () => Promise<void>;
   refreshing?: boolean;
 }) {
-  const [checked, setChecked] = useState<string[]>([]);
+  // QA's comment on each document: its verification of that document.
+  const [comments, setComments] = useState<Record<string, string>>({});
   const [notes, setNotes] = useState("");
   const [reworkIds, setReworkIds] = useState<string[]>([]);
   const [mode, setMode] = useState<"APPROVED" | "REWORK">("APPROVED");
@@ -54,9 +55,13 @@ export function QaReviewPanel({
   const reservation = useQaClaim(item, reviewerId);
   const claimedByMe = reservation.mine;
   useEffect(() => {
-    setChecked([]);
+    setComments({});
     setReworkIds([]);
   }, [item.version]);
+  const uploaded = item.documents.filter((document) => document.versions.length > 0);
+  const commented = uploaded.filter(
+    (document) => (comments[document.publicId] ?? "").trim().length >= 3,
+  ).length;
   const {
     claim,
     decision,
@@ -67,7 +72,12 @@ export function QaReviewPanel({
     {
       decision: mode,
       caseVersion: item.version,
-      checklist: checked,
+      documentComments: uploaded
+        .filter((document) => (comments[document.publicId] ?? "").trim())
+        .map((document) => ({
+          documentId: document.publicId,
+          comment: comments[document.publicId]!.trim(),
+        })),
       notes: notes.trim(),
       reworkCheckIds: mode === "REWORK" ? reworkIds : [],
     },
@@ -75,9 +85,8 @@ export function QaReviewPanel({
   );
   const ready =
     claimedByMe &&
-    checked.length === qaChecklist.length &&
     notes.trim().length >= 10 &&
-    (mode === "APPROVED" || reworkIds.length > 0);
+    (mode === "APPROVED" ? commented === uploaded.length : reworkIds.length > 0);
   const hasField = item.fieldVisits.length > 0;
   const steps: QaReviewTab[] = hasField
     ? ["report", "documents", "field", "decision"]
@@ -171,8 +180,8 @@ export function QaReviewPanel({
         checks={item.checks.length}
         documents={item.documents.length}
         fieldVisits={item.fieldVisits.length}
-        checked={checked.length}
-        checklistTotal={qaChecklist.length}
+        commented={commented}
+        toComment={uploaded.length}
         disabled={busy || refreshing}
       />
       <div
@@ -233,8 +242,9 @@ export function QaReviewPanel({
             </legend>
             {currentTab === "decision" ? (
               <QaDecisionForm
-                checked={checked}
-                onChecked={setChecked}
+                commented={commented}
+                toComment={uploaded.length}
+                onOpenDocuments={() => changeTab("documents")}
                 notes={notes}
                 onNotes={setNotes}
                 mode={mode}
@@ -243,7 +253,14 @@ export function QaReviewPanel({
                 onSelectChecks={() => changeTab("report")}
               />
             ) : (
-              <QaEvidencePanel item={item} view={currentTab} />
+              <QaEvidencePanel
+                item={item}
+                view={currentTab}
+                comments={comments}
+                onComment={(documentId, comment) =>
+                  setComments((current) => ({ ...current, [documentId]: comment }))
+                }
+              />
             )}
           </fieldset>
         )}

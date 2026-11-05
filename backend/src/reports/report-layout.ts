@@ -11,17 +11,33 @@ import { wrapToWidth } from "../common/pdf/document-writer";
 
 export type RGB = [number, number, number];
 
-/** Report palette: navy headings, quiet grid, industry status colours. */
+/**
+ * Report palette from the Sample Report: black text and table lines, light blue label
+ * cells, a dark blue legend bar, the cyan company name in the footer.
+ */
 export const PALETTE = {
-  ink: [0.1, 0.14, 0.2] as RGB,
+  ink: [0.05, 0.05, 0.05] as RGB,
   muted: [0.36, 0.4, 0.46] as RGB,
-  navy: [0.09, 0.2, 0.32] as RGB,
+  navy: [0.12, 0.23, 0.45] as RGB,
   brand: [0.11, 0.3, 0.85] as RGB,
-  grid: [0.79, 0.83, 0.88] as RGB,
-  label: [0.93, 0.95, 0.97] as RGB,
-  band: [0.86, 0.9, 0.95] as RGB,
+  grid: [0.15, 0.15, 0.15] as RGB,
+  label: [0.776, 0.851, 0.945] as RGB,
+  band: [0.776, 0.851, 0.945] as RGB,
   white: [1, 1, 1] as RGB,
   red: [0.78, 0.16, 0.16] as RGB,
+  /** Company name in the footer. */
+  cyan: [0.0, 0.69, 0.94] as RGB,
+  /** Email and web links in the footer. */
+  link: [0.02, 0.2, 0.8] as RGB,
+};
+
+/** Company footer printed on every page, as in the Sample Report. */
+export const COMPANY_FOOTER = {
+  name: "Sapling Global Assurance Private Limited",
+  office: "A-43 SECTOR 67 NOIDA 201301",
+  cin: "U74999UP2020PTC125447",
+  email: "reachus@saplingglobal.com",
+  web: "www.saplingglobal.com",
 };
 
 export interface CellStyle {
@@ -46,7 +62,8 @@ type Line = {
 const LEFT = 38;
 const WIDTH = 519;
 const TOP = 752;
-const BOTTOM = 62;
+/** Content stops above the company footer. */
+const BOTTOM = 96;
 const PAD = 5;
 
 export interface LayoutOptions {
@@ -95,8 +112,20 @@ export class ReportLayout {
     this.page = this.document.addPage([pageWidth, pageHeight]);
     this.width = pageWidth - LEFT * 2;
     this.top = pageHeight - 90;
-    const right = pageWidth - LEFT;
-    const { logo, title, subtitle, watermark } = this.options;
+    const { logo, watermark } = this.options;
+    // Double page border, as in the Sample Report.
+    for (const [inset, thickness] of [
+      [18, 1.4],
+      [21.5, 0.5],
+    ] as const)
+      this.page.drawRectangle({
+        x: inset,
+        y: inset,
+        width: pageWidth - inset * 2,
+        height: pageHeight - inset * 2,
+        borderColor: rgb(...PALETTE.ink),
+        borderWidth: thickness,
+      });
     if (watermark) {
       const size = watermark.length > 8 ? 64 : 96;
       this.page.drawText(watermark, {
@@ -111,41 +140,17 @@ export class ReportLayout {
         opacity: 0.55,
       });
     }
+    // The Sapling Global logo at the top right of every page.
     if (logo) {
-      const height = 26;
+      const height = 34;
       const width = (logo.width / logo.height) * height;
       this.page.drawImage(logo, {
-        x: LEFT,
-        y: pageHeight - 50,
+        x: pageWidth - LEFT - width,
+        y: pageHeight - 66,
         width,
         height,
       });
     }
-    this.write(
-      title,
-      right - this.widthOf(title, 9, true),
-      pageHeight - 34,
-      9,
-      PALETTE.navy,
-      true,
-    );
-    if (subtitle) {
-      const text = this.fit(subtitle, 7.5, 330);
-      this.write(
-        text,
-        right - this.widthOf(text, 7.5),
-        pageHeight - 47,
-        7.5,
-        PALETTE.muted,
-      );
-    }
-    this.page.drawRectangle({
-      x: 0,
-      y: pageHeight - 64,
-      width: pageWidth,
-      height: 2,
-      color: rgb(...PALETTE.brand),
-    });
     this.y = this.top;
   }
 
@@ -157,108 +162,75 @@ export class ReportLayout {
     if (this.y - height < BOTTOM) this.newPage();
   }
 
-  /** Full-width navy band with white text (executive summary title). */
-  titleBar(text: string, size = 12) {
-    const height = size + 14;
-    this.ensure(height + 20);
-    this.page.drawRectangle({
-      x: LEFT,
-      y: this.y - height,
-      width: this.width,
-      height,
-      color: rgb(...PALETTE.navy),
+  /** Centred, bold, underlined title (executive summary). */
+  titleBar(text: string, size = 13) {
+    this.ensure(size + 30);
+    const width = this.widthOf(text, size, true);
+    const x = LEFT + (this.width - width) / 2;
+    this.write(text, x, this.y - size, size, PALETTE.ink, true);
+    this.page.drawLine({
+      start: { x, y: this.y - size - 2.5 },
+      end: { x: x + width, y: this.y - size - 2.5 },
+      thickness: 0.8,
+      color: rgb(...PALETTE.ink),
     });
-    this.write(
-      text,
-      LEFT + (this.width - this.widthOf(text, size, true)) / 2,
-      this.y - height / 2 - size / 2 + 2,
-      size,
-      PALETTE.white,
-      true,
-    );
-    this.y -= height + 10;
+    this.y -= size + 14;
   }
 
-  /** "Annexure III | Detailed Check Report – Education" with an optional status chip. */
-  annexureBar(
-    number: string,
-    title: string,
-    chip?: { text: string; fill: RGB; colour: RGB },
-  ) {
-    const chipWidth = chip
-      ? Math.max(70, this.widthOf(chip.text, 8, true) + 18)
-      : 0;
-    const room = this.width - 92 - 20 - (chip ? chipWidth + 10 : 0);
+  /** "Annexure III | Detailed Check Report – Education": a light blue and a plain cell. */
+  annexureBar(number: string, title: string) {
+    const left = 175;
+    const room = this.width - left - PAD * 2;
     // Long titles wrap onto a second line instead of being cut.
-    const lines = wrapToWidth(title, this.bold, 10, room).slice(0, 2);
-    const height = lines.length > 1 ? 40 : 30;
+    const lines = wrapToWidth(title, this.bold, 9.5, room).slice(0, 2);
+    const height = lines.length > 1 ? 32 : 20;
     this.ensure(height + 60);
     const top = this.y;
     this.page.drawRectangle({
       x: LEFT,
       y: top - height,
-      width: this.width,
+      width: left,
       height,
-      color: rgb(...PALETTE.band),
+      color: rgb(...PALETTE.label),
     });
-    this.page.drawRectangle({
-      x: LEFT,
-      y: top - height,
-      width: 92,
-      height,
-      color: rgb(...PALETTE.navy),
-    });
+    for (const [x, width] of [
+      [LEFT, left],
+      [LEFT + left, this.width - left],
+    ] as const)
+      this.page.drawRectangle({
+        x,
+        y: top - height,
+        width,
+        height,
+        borderColor: rgb(...PALETTE.grid),
+        borderWidth: 0.6,
+      });
     this.write(
       number,
-      LEFT + (92 - this.widthOf(number, 9.5, true)) / 2,
-      top - height / 2 - 3.5,
+      LEFT + PAD,
+      top - height / 2 - 3.3,
       9.5,
-      PALETTE.white,
+      PALETTE.ink,
       true,
     );
     lines.forEach((line, index) => {
       this.write(
-        this.fit(line, 10, room),
-        LEFT + 92 + 10,
-        top - height / 2 - 3.5 + (lines.length > 1 ? 6.5 - index * 13 : 0),
-        10,
-        PALETTE.navy,
+        this.fit(line, 9.5, room),
+        LEFT + left + PAD,
+        top - height / 2 - 3.3 + (lines.length > 1 ? 6 - index * 12 : 0),
+        9.5,
+        PALETTE.ink,
         true,
       );
     });
-    if (chip) {
-      const x = LEFT + this.width - chipWidth - 7;
-      const chipTop = top - height / 2 + 8;
-      this.page.drawRectangle({
-        x,
-        y: chipTop - 16,
-        width: chipWidth,
-        height: 16,
-        color: rgb(...chip.fill),
-      });
-      this.write(
-        chip.text,
-        x + (chipWidth - this.widthOf(chip.text, 8, true)) / 2,
-        chipTop - 11,
-        8,
-        chip.colour,
-        true,
-      );
-    }
-    this.y -= height + 10;
+    this.y -= height + 12;
   }
 
-  /** Small navy heading with a hairline under it. */
+  /** Bold heading, e.g. "Annexures Details:". */
   sectionLabel(text: string) {
     this.ensure(40);
-    this.write(text, LEFT, this.y - 10, 10, PALETTE.navy, true);
-    this.page.drawLine({
-      start: { x: LEFT, y: this.y - 15 },
-      end: { x: LEFT + this.width, y: this.y - 15 },
-      thickness: 0.6,
-      color: rgb(...PALETTE.grid),
-    });
-    this.y -= 24;
+    this.write(text, LEFT, this.y - 10, 10, PALETTE.ink, true);
+    this.y -= 20;
   }
 
   paragraph(
@@ -374,47 +346,92 @@ export class ReportLayout {
     this.y -= captionHeight;
   }
 
-  /** Page footer on every page: left note and "Page n of N". */
+  /**
+   * Company footer on every page (Sample Report): company name, registered office, CIN,
+   * email and web, then the page number. A small note (authenticity code, draft or
+   * internal copy) sits just above it.
+   */
   footers(left: string, right?: string) {
     const pages = this.document.getPages();
     pages.forEach((page, index) => {
-      const end = page.getWidth() - LEFT;
-      page.drawLine({
-        start: { x: LEFT, y: 46 },
-        end: { x: end, y: 46 },
-        thickness: 0.5,
-        color: rgb(...PALETTE.grid),
-      });
-      const note = this.fit(left, 7, 380);
-      page.drawText(note, {
-        x: LEFT,
-        y: 32,
-        size: 7,
-        font: this.regular,
-        color: rgb(...PALETTE.muted),
-      });
-      if (right)
-        page.drawText(this.fit(right, 7, 380), {
-          x: LEFT,
-          y: 22,
-          size: 7,
-          font: this.regular,
-          color: rgb(...PALETTE.muted),
+      const centre = page.getWidth() / 2;
+      const line = (
+        parts: Array<{
+          text: string;
+          bold?: boolean;
+          colour?: RGB;
+          underline?: boolean;
+        }>,
+        y: number,
+        size: number,
+      ) => {
+        const widths = parts.map((part) =>
+          (part.bold ? this.bold : this.regular).widthOfTextAtSize(
+            part.text,
+            size,
+          ),
+        );
+        let x = centre - widths.reduce((sum, width) => sum + width, 0) / 2;
+        parts.forEach((part, at) => {
+          const font = part.bold ? this.bold : this.regular;
+          const colour = rgb(...(part.colour ?? PALETTE.ink));
+          page.drawText(part.text, { x, y, size, font, color: colour });
+          if (part.bold)
+            page.drawText(part.text, {
+              x: x + 0.3,
+              y,
+              size,
+              font,
+              color: colour,
+            });
+          if (part.underline)
+            page.drawLine({
+              start: { x, y: y - 1.2 },
+              end: { x: x + widths[at]!, y: y - 1.2 },
+              thickness: 0.4,
+              color: colour,
+            });
+          x += widths[at]!;
         });
-      const number = `Page ${index + 1} of ${pages.length}`;
-      page.drawText(number, {
-        x: end - this.regular.widthOfTextAtSize(number, 7.5),
-        y: 32,
-        size: 7.5,
-        font: this.regular,
-        color: rgb(...PALETTE.muted),
-      });
+      };
+      const note = this.fit(
+        [left, right].filter(Boolean).join(" · "),
+        6.5,
+        500,
+      );
+      line([{ text: note, colour: PALETTE.muted }], 88, 6.5);
+      line(
+        [{ text: COMPANY_FOOTER.name, bold: true, colour: PALETTE.cyan }],
+        74,
+        9,
+      );
+      line(
+        [
+          { text: "Registered Office: ", bold: true },
+          { text: COMPANY_FOOTER.office },
+        ],
+        64,
+        7.5,
+      );
+      line([{ text: `CIN: ${COMPANY_FOOTER.cin}` }], 55, 7);
+      line(
+        [
+          { text: "email-", bold: true, colour: PALETTE.link, underline: true },
+          { text: COMPANY_FOOTER.email, colour: PALETTE.link, underline: true },
+          { text: "  I  " },
+          { text: "web: ", bold: true, colour: PALETTE.link, underline: true },
+          { text: COMPANY_FOOTER.web, colour: PALETTE.link, underline: true },
+        ],
+        45,
+        7.5,
+      );
+      line([{ text: String(index + 1) }], 33, 8);
     });
   }
 
   private headerCell(cell: Cell): Cell {
     const base = typeof cell === "string" ? { text: cell } : cell;
-    return { fill: PALETTE.navy, colour: PALETTE.white, bold: true, ...base };
+    return { fill: PALETTE.label, colour: PALETTE.ink, bold: true, ...base };
   }
 
   private linesOf(cell: Cell, width: number, size: number): Line[] {
@@ -458,7 +475,11 @@ export class ReportLayout {
     const heightOf = (list: Line[]) =>
       list.reduce((sum, line) => sum + lineHeight(line), 0);
     const full = Math.max(...lines.map(heightOf)) + PAD * 2;
-    if (keepTogether && full <= this.top - BOTTOM - 40 && full > this.remaining) {
+    if (
+      keepTogether &&
+      full <= this.top - BOTTOM - 40 &&
+      full > this.remaining
+    ) {
       this.newPage();
       onBreak?.();
     }

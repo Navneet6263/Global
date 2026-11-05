@@ -12,7 +12,7 @@ import {
   type VerifiedDetails,
 } from "@/lib/backend-api/verified-details";
 import { formatDateTime } from "@/lib/formatting";
-import type { InitiationField } from "@/lib/backend-api/workflow";
+import { fieldShown, type InitiationField } from "@/lib/backend-api/workflow";
 
 const readable = (type: string) =>
   type
@@ -99,7 +99,9 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
       }),
     );
   const missing = entries.some((entry) =>
-    data.rhs.form.fields.some((field) => field.required && !entry[field.key]?.trim()),
+    data.rhs.form.fields.some(
+      (field) => field.required && fieldShown(field, entry) && !entry[field.key]?.trim(),
+    ),
   );
   const label = readable(data.type);
   const compared = (data.lhs.form?.fields ?? []).filter((field) => rhsKeys.has(field.key));
@@ -189,7 +191,10 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
                     <BadgeCheck aria-hidden /> Matches what was provided
                   </p>
                 ) : null}
-                {groupFields(data.rhs.form.fields).map((group) => (
+                {groupFields(
+                  // Only the fields that apply, e.g. no referee for an online check.
+                  data.rhs.form.fields.filter((field) => fieldShown(field, entry)),
+                ).map((group) => (
                   <div key={group.title ?? "details"} className="grid gap-2">
                     {group.title ? (
                       <h4 className="mt-1 border-b border-slate-100 pb-1 text-[11.5px] font-semibold uppercase tracking-wide text-slate-500">

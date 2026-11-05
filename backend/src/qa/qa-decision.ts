@@ -6,7 +6,6 @@ import {
 import type { Actor } from "../common/auth/actor";
 import type { PrismaService } from "../database/prisma.service";
 import type { QaDecisionDto } from "./dto/qa-decision.dto";
-import { QA_REQUIRED_CHECKLIST } from "./qa.constants";
 import { assertLiveClaim, claimCutoff } from "./qa-claim";
 import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
 import { restartCheckMethods } from "../verification/restart-check-methods";
@@ -27,6 +26,9 @@ export async function decideQaCase(
       ...(actor.clientId ? { clientId: actor.clientId } : {}),
     },
     include: {
+      documents: {
+        select: { publicId: true, type: true, currentVersion: true },
+      },
       checks: {
         select: {
           id: true,
@@ -80,12 +82,45 @@ export async function decideQaCase(
       "A verifier cannot independently QA their own completed work",
     );
   }
+  // QA verifies each document by commenting on it; approval needs every one.
+  const uploaded = verificationCase.documents.filter(
+    (document) => document.currentVersion > 0,
+  );
+  const comments = new Map(
+    (input.documentComments ?? []).map((row) => [
+      row.documentId.toLowerCase(),
+      row.comment.trim(),
+    ]),
+  );
   if (
-    input.checklist.length !== QA_REQUIRED_CHECKLIST.length ||
-    QA_REQUIRED_CHECKLIST.some((item) => !input.checklist.includes(item))
-  ) {
-    throw new BadRequestException("Complete the full controlled QA checklist");
-  }
+    [...comments.keys()].some(
+      (id) =>
+        !uploaded.some((document) => document.publicId.toLowerCase() === id),
+    )
+  )
+    throw new BadRequestException(
+      "A comment is for a document of another case",
+    );
+  const uncommented = uploaded.filter(
+    (document) =>
+      (comments.get(document.publicId.toLowerCase()) ?? "").length < 3,
+  );
+  if (input.decision === "APPROVED" && uncommented.length)
+    throw new BadRequestException(
+      `Comment on every document before approving: ${[
+        ...new Set(
+          uncommented.map((document) =>
+            document.type.replaceAll("_", " ").toLowerCase(),
+          ),
+        ),
+      ].join(", ")}`,
+    );
+  const documentNotes = uploaded
+    .filter((document) => comments.has(document.publicId.toLowerCase()))
+    .map(
+      (document) =>
+        `${document.type.replaceAll("_", " ").toLowerCase()}: ${comments.get(document.publicId.toLowerCase())}`,
+    );
   if (verificationCase.checks.some((check) => check.status !== "COMPLETED")) {
     throw new BadRequestException(
       "All checks must be completed before QA decision",
@@ -121,7 +156,8 @@ export async function decideQaCase(
         reviewerId: actor.userId,
         decision: input.decision,
         notes: input.notes?.trim(),
-        checklistJson: JSON.stringify(input.checklist),
+        // The document comments are QA's record of what it verified.
+        checklistJson: JSON.stringify(documentNotes),
       },
       select: {
         publicId: true,
@@ -261,7 +297,7 @@ export async function decideQaCase(
         resourcePublicId: casePublicId,
         afterJson: JSON.stringify({
           decision: input.decision,
-          checklist: input.checklist,
+          documentComments: documentNotes,
           reworkCheckIds: input.reworkCheckIds,
         }),
       },

@@ -1,6 +1,6 @@
+import { Type } from "class-transformer";
 import {
   ArrayMaxSize,
-  ArrayMinSize,
   IsArray,
   IsIn,
   IsInt,
@@ -9,7 +9,18 @@ import {
   IsUUID,
   Length,
   Min,
+  ValidateNested,
 } from "class-validator";
+
+/** QA's comment on one document of the case: QA's verification of that document. */
+export class QaDocumentCommentDto {
+  @IsUUID()
+  documentId!: string;
+
+  @IsString()
+  @Length(3, 500)
+  comment!: string;
+}
 
 export class QaDecisionDto {
   @IsIn(["APPROVED", "REWORK"])
@@ -19,11 +30,20 @@ export class QaDecisionDto {
   @Min(1)
   caseVersion!: number;
 
+  /** Older clients still send the checklist; it is no longer required. */
+  @IsOptional()
   @IsArray()
-  @ArrayMinSize(5)
   @ArrayMaxSize(50)
   @IsString({ each: true })
-  checklist!: string[];
+  checklist: string[] = [];
+
+  /** One comment per uploaded document; every one is needed to approve. */
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(50)
+  @ValidateNested({ each: true })
+  @Type(() => QaDocumentCommentDto)
+  documentComments: QaDocumentCommentDto[] = [];
 
   @IsString()
   @Length(10, 2000)

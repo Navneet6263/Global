@@ -1,5 +1,8 @@
 import { BadRequestException } from "@nestjs/common";
-import type { InitiationField } from "../workflow/initiation-fields";
+import {
+  fieldShown,
+  type InitiationField,
+} from "../workflow/initiation-fields";
 import { DIRECTORSHIP_DATABASES } from "./check-sources";
 
 /**
@@ -13,6 +16,9 @@ export type VerifiedForm = {
 };
 
 const YES_NO = ["Yes", "No"] as const;
+/** Education methods done online: no referee, the online source link instead. */
+export const ONLINE_METHODS = ["Online portal", "Online database"] as const;
+const offline = { key: "method", notIn: ONLINE_METHODS } as const;
 const DATE = {
   key: "verificationDate",
   label: "Verification date",
@@ -213,6 +219,29 @@ export const VERIFIED_FORMS: Readonly<Record<string, VerifiedForm>> = {
   EDUCATION: {
     repeatable: true,
     fields: [
+      // The method comes first: an online check needs the source link, not a referee.
+      {
+        key: "method",
+        label: "Method of verification",
+        required: true,
+        kind: "select",
+        options: [
+          "Email",
+          "Online portal",
+          "Online database",
+          "Written response",
+          "Site visit",
+          "Vendor",
+        ],
+        group: "Method",
+      },
+      {
+        key: "onlineSource",
+        label: "Online source (link)",
+        required: true,
+        group: "Method",
+        showWhen: { key: "method", in: ONLINE_METHODS },
+      },
       {
         key: "institute",
         label: "Institute / college (confirmed)",
@@ -259,33 +288,26 @@ export const VERIFIED_FORMS: Readonly<Record<string, VerifiedForm>> = {
         key: "verifierName",
         label: "Verified by (name)",
         group: "Referee",
+        showWhen: offline,
       },
       {
         key: "verifierDesignation",
         label: "Verifier designation",
         group: "Referee",
+        showWhen: offline,
       },
-      { key: "verifierContact", label: "Verifier contact", group: "Referee" },
+      {
+        key: "verifierContact",
+        label: "Verifier contact",
+        group: "Referee",
+        showWhen: offline,
+      },
       {
         key: "refereeComments",
         label: "Referee's comments",
         kind: "long",
         group: "Referee",
-      },
-      {
-        key: "method",
-        label: "Method of verification",
-        required: true,
-        kind: "select",
-        options: [
-          "Email",
-          "Online portal",
-          "Online database",
-          "Written response",
-          "Site visit",
-          "Vendor",
-        ],
-        group: "Method",
+        showWhen: offline,
       },
       DATE,
       ...extraCost,
@@ -723,6 +745,8 @@ export function cleanVerified(
     const where = form.repeatable ? ` (entry ${index + 1})` : "";
     const clean: Record<string, string> = {};
     for (const field of form.fields) {
+      // A field that does not apply (e.g. the referee of an online check) is not kept.
+      if (!fieldShown(field, entry)) continue;
       const raw = entry[field.key];
       const value = typeof raw === "string" ? raw.trim() : "";
       if (!value) {

@@ -1,10 +1,10 @@
 import { CheckCircle2, RotateCcw } from "lucide-react";
-import { qaChecklist } from "../utils";
 import { QaDecisionButton } from "./QaDecisionParts";
 
 export function QaDecisionForm({
-  checked,
-  onChecked,
+  commented,
+  toComment,
+  onOpenDocuments,
   notes,
   onNotes,
   mode,
@@ -12,8 +12,10 @@ export function QaDecisionForm({
   reworkCount,
   onSelectChecks,
 }: {
-  checked: string[];
-  onChecked: (value: string[]) => void;
+  /** Documents commented on, of those uploaded: every one is needed to approve. */
+  commented: number;
+  toComment: number;
+  onOpenDocuments: () => void;
   notes: string;
   onNotes: (value: string) => void;
   mode: "APPROVED" | "REWORK";
@@ -23,43 +25,25 @@ export function QaDecisionForm({
 }) {
   return (
     <div className="space-y-4">
-      <section className="rounded-2xl border border-slate-200 bg-white p-4">
-        <div className="flex items-center justify-between gap-3">
-          <h3 className="text-[13.5px] font-semibold text-slate-900">Quality checklist</h3>
-          <span className="num rounded-full bg-slate-100 px-2 py-0.5 text-[12px] font-semibold text-slate-600">
-            {checked.length}/{qaChecklist.length} confirmed
+      {toComment ? (
+        <div
+          className={`flex flex-wrap items-center justify-between gap-2 rounded-xl border p-3 text-[12.5px] ${commented === toComment ? "border-emerald-200 bg-emerald-50 text-emerald-900" : "border-amber-200 bg-amber-50 text-amber-900"}`}
+        >
+          <span>
+            Document comments: {commented}/{toComment}
+            {commented === toComment
+              ? " · every document verified"
+              : " · comment on every document to approve"}
           </span>
+          <button
+            type="button"
+            onClick={onOpenDocuments}
+            className="font-semibold underline underline-offset-4"
+          >
+            Open documents
+          </button>
         </div>
-        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100">
-          <div
-            className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${(checked.length / qaChecklist.length) * 100}%` }}
-          />
-        </div>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {qaChecklist.map((label) => {
-            const active = checked.includes(label);
-            return (
-              <label
-                key={label}
-                className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 text-[12.5px] leading-relaxed transition ${active ? "border-emerald-200 bg-emerald-50/70 text-emerald-900" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={active}
-                  onChange={() =>
-                    onChecked(
-                      active ? checked.filter((value) => value !== label) : [...checked, label],
-                    )
-                  }
-                  className="mt-0.5 size-4 shrink-0 accent-primary"
-                />
-                <span>{label}</span>
-              </label>
-            );
-          })}
-        </div>
-      </section>
+      ) : null}
       <div className="grid gap-2 sm:grid-cols-2">
         <QaDecisionButton
           active={mode === "APPROVED"}

@@ -11,9 +11,14 @@ import type { QaReviewTab } from "./QaReviewTabs";
 export function QaEvidencePanel({
   item,
   view,
+  comments = {},
+  onComment,
 }: {
   item: QaQueueItem;
   view: Exclude<QaReviewTab, "decision" | "report">;
+  /** QA's comment on each document (its verification of that document). */
+  comments?: Readonly<Record<string, string>>;
+  onComment?: (documentId: string, comment: string) => void;
 }) {
   if (view === "documents")
     return (
@@ -50,6 +55,20 @@ export function QaEvidencePanel({
                     filename={version.originalName}
                     label={humanize(document.type)}
                   />
+                ) : null}
+                {version && onComment ? (
+                  <label className="w-full text-[12px] font-medium text-slate-600">
+                    Your comment (QA verification of this document)
+                    <textarea
+                      rows={2}
+                      maxLength={500}
+                      value={comments[document.publicId] ?? ""}
+                      onChange={(event) => onComment(document.publicId, event.target.value)}
+                      placeholder="e.g. Clear copy; name and number match the candidate"
+                      aria-label={`QA comment on ${humanize(document.type)}`}
+                      className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-[12.5px] font-normal text-slate-800 outline-none focus:border-blue-300 focus:ring-4 focus:ring-blue-100"
+                    />
+                  </label>
                 ) : null}
               </li>
             );

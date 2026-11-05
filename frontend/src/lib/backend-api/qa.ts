@@ -95,7 +95,8 @@ export function submitQaDecision(
   input: {
     decision: "APPROVED" | "REWORK";
     caseVersion: number;
-    checklist: string[];
+    /** QA's comment on each uploaded document; every one is needed to approve. */
+    documentComments: Array<{ documentId: string; comment: string }>;
     notes?: string;
     reworkCheckIds: string[];
   },

@@ -10,8 +10,8 @@ export function QaReviewTabs({
   checks,
   documents,
   fieldVisits,
-  checked,
-  checklistTotal,
+  commented,
+  toComment,
   disabled,
 }: {
   value: QaReviewTab;
@@ -19,13 +19,19 @@ export function QaReviewTabs({
   checks: number;
   documents: number;
   fieldVisits: number;
-  checked: number;
-  checklistTotal: number;
+  /** Documents QA has commented on, of those uploaded. */
+  commented: number;
+  toComment: number;
   disabled: boolean;
 }) {
   const tabs = [
     { id: "report", label: "Report", icon: FileText, count: String(checks) },
-    { id: "documents", label: "Documents", icon: FileCheck2, count: String(documents) },
+    {
+      id: "documents",
+      label: "Documents",
+      icon: FileCheck2,
+      count: toComment ? `${commented}/${toComment}` : String(documents),
+    },
     ...(fieldVisits
       ? [{ id: "field", label: "Field evidence", icon: MapPin, count: String(fieldVisits) }]
       : []),
@@ -33,7 +39,7 @@ export function QaReviewTabs({
       id: "decision",
       label: "Decision",
       icon: ClipboardCheck,
-      count: `${checked}/${checklistTotal}`,
+      count: "",
     },
   ] as const;
   return (

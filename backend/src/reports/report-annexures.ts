@@ -342,13 +342,20 @@ const LAYOUTS: Record<string, Layout> = {
       },
       {
         kind: "facts",
-        rows: [
-          ["Referee's comments", disclosed(rhs.refereeComments)],
-          [
-            "Referee name and designation",
-            join(rhs.verifierName, rhs.verifierDesignation) || NOT_DISCLOSED,
-          ],
-        ],
+        // Verified online: the source link takes the referee's place.
+        rows: rhs.onlineSource
+          ? [
+              ["Verified online", disclosed(rhs.method)],
+              ["Online source", rhs.onlineSource],
+            ]
+          : [
+              ["Referee's comments", disclosed(rhs.refereeComments)],
+              [
+                "Referee name and designation",
+                join(rhs.verifierName, rhs.verifierDesignation) ||
+                  NOT_DISCLOSED,
+              ],
+            ],
       },
       ...closing(check, rhs, proofNote),
     ],

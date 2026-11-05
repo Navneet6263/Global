@@ -114,6 +114,21 @@ const dayOf = (value: Date) =>
     year: "numeric",
   }).format(value);
 
+/** Disposition as coloured text ("Green" in green), as in the Sample Report's table. */
+const statusText = (colour: Disposition | null, fallback: string): Cell =>
+  colour && colour !== "CLIENT_REVIEW"
+    ? {
+        text: COLOUR_LABEL[colour],
+        colour: colour === "YELLOW" ? [0.72, 0.56, 0.0] : STATUS_FILL[colour],
+        bold: true,
+        align: "center",
+      }
+    : {
+        text: colour ? COLOUR_LABEL[colour] : fallback,
+        colour: PALETTE.muted,
+        align: "center",
+      };
+
 const statusCell = (colour: Disposition | null, fallback: string): Cell =>
   colour
     ? {
@@ -216,35 +231,49 @@ export class ReportPdfService {
       fill: PALETTE.label,
       bold: true,
     });
+    const value = (text: string): Cell => ({ text, align: "center" });
+    const disposition = data.interim && pendingChecks ? null : overall;
+    // Report Status is filled with the report's colour, as in the Sample Report.
+    const statusFill: Cell = disposition
+      ? {
+          text: status,
+          fill: STATUS_FILL[disposition],
+          colour: STATUS_TEXT(disposition),
+          bold: true,
+          align: "center",
+        }
+      : { text: status, bold: true, align: "center" };
     layout.table(
       [{ width: 112 }, { width: 148 }, { width: 112 }, { width: 147 }],
       [
         [
           label("Report Status"),
-          { text: status, bold: true },
+          statusFill,
           label("Report Disposition"),
           statusCell(
-            data.interim && pendingChecks ? null : overall,
+            disposition,
             pendingChecks ? "In progress" : "Not classified",
           ),
         ],
         [
           label("Employee Code"),
-          header.employeeCode || "Not provided",
+          value(header.employeeCode || "Not provided"),
           label("Report Date"),
-          dayOf(data.generatedAt),
+          value(dayOf(data.generatedAt)),
         ],
         [
           label("Employee Name"),
-          data.candidateName,
+          value(data.candidateName),
           label("Client / Process"),
-          [data.clientName, header.clientProcess].filter(Boolean).join(" / "),
+          value(
+            [data.clientName, header.clientProcess].filter(Boolean).join(" / "),
+          ),
         ],
         [
           label("Date of Joining"),
-          reportDate(header.joiningDate) || "Not provided",
+          value(reportDate(header.joiningDate) || "Not provided"),
           label("Sapling ID"),
-          data.caseNumber,
+          value(data.caseNumber),
         ],
       ],
       { size: 8.5, middle: true },
@@ -261,6 +290,8 @@ export class ReportPdfService {
         { size: 8.5 },
       );
     }
+    // The severity legend comes before the checks, as in the Sample Report.
+    this.severityLegend(layout);
     layout.space(4);
     layout.table(
       [
@@ -272,12 +303,12 @@ export class ReportPdfService {
       ],
       items.map((item, index) => [
         { text: `${index + 1}.`, align: "center" },
-        { text: item.label, bold: true },
+        item.label,
         item.detail,
         item.pending
           ? { text: item.status, colour: PALETTE.muted }
           : item.status,
-        statusCell(item.disposition, item.pending ? "Pending" : "—"),
+        statusText(item.disposition, item.pending ? "Pending" : "—"),
       ]),
       {
         middle: true,
@@ -288,14 +319,13 @@ export class ReportPdfService {
           "Status",
           { text: "Disposition", align: "center" },
         ],
-        size: 8.5,
+        size: 8,
       },
     );
     if (!items.length)
       layout.paragraph("No checks are part of this report.", {
         colour: PALETTE.muted,
       });
-    this.severityLegend(layout);
     if (data.interim)
       layout.paragraph(
         "Interim report: only checks already verified carry a result. Checks marked “In progress” are still being verified and the final report may differ.",
@@ -329,11 +359,11 @@ export class ReportPdfService {
     layout.paragraph("For Sapling Global Assurance Pvt. Ltd.", {
       size: 9.5,
       bold: true,
-      colour: PALETTE.navy,
+      colour: PALETTE.ink,
     });
     layout.paragraph(
-      "(This is a computer-generated report and does not require a signature.)",
-      { size: 8, colour: PALETTE.muted },
+      "(This is a computer-generated report and does not require signature)",
+      { size: 9, colour: PALETTE.ink },
     );
   }
 
@@ -364,8 +394,7 @@ export class ReportPdfService {
           text: name,
           bold: true,
           align: "center" as const,
-          size: 7.5,
-          fill: PALETTE.label,
+          size: 7,
         })),
         SEVERITY_LEGEND.map(([colour]) => ({
           text: " ",
@@ -374,7 +403,7 @@ export class ReportPdfService {
         SEVERITY_LEGEND.map(([, , meaning]) => ({
           text: meaning,
           align: "center" as const,
-          size: 6.8,
+          size: 5.5,
           colour: PALETTE.ink,
         })),
       ],
@@ -384,55 +413,42 @@ export class ReportPdfService {
 
   private annexureIndex(layout: ReportLayout, items: ReportItem[]) {
     if (!items.length) return;
-    layout.space(8);
-    layout.sectionLabel("Annexure Details");
+    // On its own page, as in the Sample Report.
+    layout.newPage();
+    layout.sectionLabel("Annexures Details:");
     const rows: Cell[][] = [];
     for (const item of items) {
       rows.push([
-        { text: item.label, bold: true },
+        { text: item.label, align: "center" },
         { text: `Annexure ${roman(item.annexure)}`, align: "center" },
-        item.annexureTitle,
+        { text: item.annexureTitle, align: "center" },
       ]);
       if (item.proofs.length && item.proofAnnexure)
         rows.push([
           " ",
           { text: `Annexure ${roman(item.proofAnnexure)}`, align: "center" },
-          item.proofTitle.replace(/^\w/, (letter) => letter.toUpperCase()),
+          {
+            text: item.proofTitle.replace(/^\w/, (letter) =>
+              letter.toUpperCase(),
+            ),
+            align: "center",
+          },
         ]);
     }
-    layout.table([{ width: 175 }, { width: 84 }, { width: 260 }], rows, {
-      header: ["Check", { text: "Annexure", align: "center" }, "Description"],
-      size: 8.5,
+    layout.table([{ width: 160 }, { width: 84 }, { width: 275 }], rows, {
+      size: 9,
       middle: true,
     });
   }
 
   private annexure(layout: ReportLayout, item: ReportItem) {
-    layout.annexureBar(
-      `Annexure ${roman(item.annexure)}`,
-      item.annexureTitle,
-      item.disposition
-        ? {
-            text: `${COLOUR_LABEL[item.disposition]} · ${item.status}`,
-            fill: STATUS_FILL[item.disposition],
-            colour: STATUS_TEXT(item.disposition),
-          }
-        : item.pending
-          ? { text: "In progress", fill: PALETTE.grid, colour: PALETTE.ink }
-          : undefined,
-    );
+    layout.annexureBar(`Annexure ${roman(item.annexure)}`, item.annexureTitle);
     for (const block of item.blocks) this.block(layout, block);
   }
 
   private block(layout: ReportLayout, block: AnnexureBlock) {
     const banner = (text: string): Cell[] => [
-      {
-        text,
-        fill: PALETTE.band,
-        bold: true,
-        align: "center",
-        colour: PALETTE.navy,
-      },
+      { text, bold: true, align: "center", colour: PALETTE.ink },
     ];
     switch (block.kind) {
       case "facts": {
@@ -663,10 +679,10 @@ export class ReportPdfService {
     layout.paragraph("-----End of report-----", {
       align: "center",
       bold: true,
-      colour: PALETTE.navy,
+      colour: PALETTE.ink,
     });
-    layout.space(8);
-    layout.paragraph(DISCLAIMER, { size: 7.5, colour: PALETTE.muted });
+    layout.space(14);
+    layout.paragraph(DISCLAIMER, { size: 8.5, colour: PALETTE.ink });
   }
 
   /** Internal copy only: who verified each check, the team, sources and costs. */
@@ -675,11 +691,6 @@ export class ReportPdfService {
     layout.annexureBar(
       "Internal",
       "Verification log – not part of the client report",
-      {
-        text: "Internal only",
-        fill: PALETTE.navy,
-        colour: PALETTE.white,
-      },
     );
     const rows: Cell[][] = data.checks.map((check) => {
       const runs = (check.methods ?? [])

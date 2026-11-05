@@ -82,6 +82,7 @@ async function run(tx: Prisma.TransactionClient) {
     caseVersion: 1,
     notes: "All required evidence was independently checked.",
     checklist: [...QA_REQUIRED_CHECKLIST],
+    documentComments: [],
     reworkCheckIds: [],
   };
   await assert.rejects(
