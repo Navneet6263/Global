@@ -402,3 +402,65 @@ void test("stage alerts fire once per step and level, to the owners and Operatio
   assert.equal(await service.run(new Date("2026-10-05T11:30:00Z")), 0);
   assert.equal(writes.length, 0);
 });
+
+void test("changing the company RM can move the previous RM's open cases to the new RM", async () => {
+  const { writes, record } = recorder();
+  const tx = {
+    client: { updateMany: record("client.update") },
+    spocClientScope: {
+      findUnique: () => Promise.resolve({ userId: 61n }),
+      create: record("scope.create"),
+    },
+    verificationCase: {
+      findMany: (input: unknown) => {
+        writes.push({ kind: "cases.find", data: input });
+        return Promise.resolve([
+          {
+            id: 1n,
+            publicId: UUID(101),
+            caseNumber: "SG-1",
+            assignedOpsUserId: 50n,
+          },
+        ]);
+      },
+      updateMany: record("cases.update"),
+    },
+    auditEvent: { create: record("audit"), createMany: record("auditMany") },
+    notification: { create: record("notify") },
+  };
+  const prisma = {
+    client: {
+      findFirst: () =>
+        Promise.resolve({
+          id: 40n,
+          displayName: "Horizon Tech",
+          version: 2,
+          primaryRmUserId: 50n,
+          primaryRm: { publicId: UUID(50), displayName: "Old RM" },
+        }),
+    },
+    user: {
+      findFirst: () =>
+        Promise.resolve({ id: 61n, publicId: UUID(61), displayName: "New RM" }),
+    },
+    $transaction: (work: (client: typeof tx) => Promise<unknown>) => work(tx),
+  } as unknown as PrismaService;
+  const result = await new ClientRmService(prisma).assign(ops, UUID(40), {
+    rmUserId: UUID(61),
+    version: 2,
+    apply: "PREVIOUS_RM",
+  });
+  assert.equal(result.casesMoved, 1);
+  const find = writes.find((w) => w.kind === "cases.find")?.data as {
+    where: { OR: Array<{ assignedOpsUserId: bigint | null }> };
+  };
+  // The old RM's cases and unassigned ones; another RM's cases are not touched.
+  assert.deepEqual(
+    find.where.OR.map((row) => row.assignedOpsUserId),
+    [null, 50n],
+  );
+  const moved = writes.find((w) => w.kind === "cases.update")?.data as {
+    data: { assignedOpsUserId: bigint };
+  };
+  assert.equal(moved.data.assignedOpsUserId, 61n);
+});

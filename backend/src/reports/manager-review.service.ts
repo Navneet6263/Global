@@ -7,7 +7,6 @@ import {
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
-import { hasRecordedCaseSource } from "../common/auth/review-independence";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { PrismaService } from "../database/prisma.service";
 import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
@@ -121,14 +120,10 @@ export class ManagerReviewService {
         reviewerName: review.reviewer.displayName,
       })),
       legacyApprovalRequired: legacyApprovalRequired(row),
+      // One person may verify, QA and approve the same case (people hold several roles).
       canApprove:
         (row.status === "MANAGER_REVIEW" || legacyApprovalRequired(row)) &&
-        qa?.decision === "APPROVED" &&
-        qa?.reviewerId !== actor.userId &&
-        !row.checks.some((check) =>
-          check.tasks.some((task) => task.completedById === actor.userId),
-        ) &&
-        !(await hasRecordedCaseSource(this.prisma, actor, casePublicId)),
+        qa?.decision === "APPROVED",
     };
   }
 
@@ -168,18 +163,6 @@ export class ManagerReviewService {
       const qa = row.qaReviews[0];
       if (!qa || qa.decision !== "APPROVED")
         throw new BadRequestException("Approved QA review is required");
-      // The RM may also be the case's QA reviewer (same person); approval still has to be
-      // independent of the verification work itself.
-      if (
-        row.checks.some((check) =>
-          check.tasks.some((task) => task.completedById === actor.userId),
-        ) ||
-        (await hasRecordedCaseSource(tx, actor, publicId))
-      ) {
-        throw new ForbiddenException(
-          "Final approval must be independent of the verification work: someone who verified a check cannot approve it",
-        );
-      }
       const approved = input.decision === "APPROVED";
       if (approved) {
         await assertCaseEvidenceReady(tx, row.id);

@@ -47,7 +47,7 @@ void test("clients cannot preview unpaid reports or renew download access", asyn
   );
 });
 
-void test("a source responder cannot manager-approve a case completed and QA-reviewed by other people", async () => {
+void test("one person may verify, QA and give the final approval (people hold several roles)", async () => {
   const actor = { tenantId: 1n, userId: 2n, roles: ["OPS_MANAGER"] } as Actor;
   let lookup: unknown;
   const tx = {
@@ -57,8 +57,9 @@ void test("a source responder cannot manager-approve a case completed and QA-rev
         version: 3,
         status: "MANAGER_REVIEW",
         reports: [],
-        checks: [{ tasks: [{ completedById: 9n }] }],
-        qaReviews: [{ decision: "APPROVED", reviewerId: 10n }],
+        // The approver verified the check and QA-reviewed the case.
+        checks: [{ tasks: [{ completedById: 2n }] }],
+        qaReviews: [{ decision: "APPROVED", reviewerId: 2n }],
       }),
     },
     auditEvent: {
@@ -71,6 +72,7 @@ void test("a source responder cannot manager-approve a case completed and QA-rev
   const prisma = {
     $transaction: (work: (value: typeof tx) => Promise<unknown>) => work(tx),
   } as unknown as PrismaService;
+  // It goes on to the evidence check (not mocked here) instead of being refused.
   await assert.rejects(
     new ManagerReviewService(prisma, {} as SubjectPiiService).decide(
       actor,
@@ -82,18 +84,10 @@ void test("a source responder cannot manager-approve a case completed and QA-rev
         recommendation: "Reviewed outcome stated",
       },
     ),
-    /independent of the verification work/,
+    (error: Error) => !/independent/.test(error.message),
   );
-  assert.deepEqual(lookup, {
-    where: {
-      tenantId: 1n,
-      actorUserId: 2n,
-      resourceType: "case",
-      resourcePublicId: "case-id",
-      action: "verification.method-responded",
-    },
-    select: { id: true },
-  });
+  // The "who recorded a source" lookup is no longer made.
+  assert.equal(lookup, undefined);
 });
 
 void test("manager renewal cannot revive a concurrently superseded report", async () => {

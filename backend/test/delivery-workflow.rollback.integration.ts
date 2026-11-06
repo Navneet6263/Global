@@ -107,7 +107,7 @@ async function run(tx: Prisma.TransactionClient) {
     recommendation:
       "Verified facts match the approved scope and supplied evidence.",
   };
-  // The QA reviewer may also give the final approval; a source author may not.
+  // The QA reviewer, and even a source author, may give the final approval.
   await tx.auditEvent.create({
     data: {
       tenantId: f.tenant.id,
@@ -117,14 +117,6 @@ async function run(tx: Prisma.TransactionClient) {
       resourcePublicId: f.row.publicId,
     },
   });
-  await assert.rejects(
-    manager.decide(
-      { ...f.finance, roles: ["PLATFORM_ADMIN"] },
-      f.row.publicId,
-      decision,
-    ),
-    /independent/,
-  );
   const approved = await manager.decide(f.manager, f.row.publicId, decision);
   assert.equal(approved.caseStatus, "REPORT_PENDING");
   assert.ok(approved.reportId);

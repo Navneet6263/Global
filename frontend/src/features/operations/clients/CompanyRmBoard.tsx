@@ -307,7 +307,10 @@ export function AssignCompanyRmDialog({
     staleTime: 60_000,
   });
   const [rmId, setRmId] = useState("");
-  const [apply, setApply] = useState<"NONE" | "UNASSIGNED" | "ALL_OPEN">("UNASSIGNED");
+  // Changing the RM: the old RM's open cases move too, so the new RM can finish them.
+  const [apply, setApply] = useState<"NONE" | "UNASSIGNED" | "PREVIOUS_RM" | "ALL_OPEN">(
+    company.primaryRm ? "PREVIOUS_RM" : "UNASSIGNED",
+  );
   const [filter, setFilter] = useState("");
   const queryClient = useQueryClient();
   const options = (rms.data?.items ?? [])
@@ -351,9 +354,20 @@ export function AssignCompanyRmDialog({
       value: "UNASSIGNED" as const,
       title: "New cases + open cases without an RM",
       detail: `${company.casesWithoutRm} open case(s) waiting for an RM will move.`,
-      help: "New cases go to this RM, and so do open cases that have no RM yet. Cases another RM is already handling are not touched. Safest for most companies, so it is recommended.",
-      recommended: true,
+      help: "New cases go to this RM, and so do open cases that have no RM yet. Cases another RM is already handling are not touched.",
+      recommended: !company.primaryRm,
     },
+    ...(company.primaryRm
+      ? [
+          {
+            value: "PREVIOUS_RM" as const,
+            title: `New cases + ${company.primaryRm.name}'s open cases`,
+            detail: `Open cases of ${company.primaryRm.name} (and any without an RM) move to this RM.`,
+            help: "Use it when the company changes hands: the new RM takes over the previous RM's open cases, including final approval. Cases another RM is handling are not touched.",
+            recommended: true,
+          },
+        ]
+      : []),
     {
       value: "ALL_OPEN" as const,
       title: "New cases + every open case",

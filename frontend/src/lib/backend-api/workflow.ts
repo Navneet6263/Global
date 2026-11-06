@@ -411,7 +411,7 @@ export const assignClientRm = (
   input: {
     rmUserId: string;
     version: number;
-    apply: "NONE" | "UNASSIGNED" | "ALL_OPEN";
+    apply: "NONE" | "UNASSIGNED" | "PREVIOUS_RM" | "ALL_OPEN";
     note?: string;
   },
 ) => post<{ casesMoved: number; version: number }>(`/workflow/clients/${clientId}/rm`, input);

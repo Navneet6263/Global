@@ -10,7 +10,6 @@ import { assertLiveClaim, claimCutoff } from "./qa-claim";
 import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
 import { restartCheckMethods } from "../verification/restart-check-methods";
 import { updateCaseRisk } from "../verification/case-risk";
-import { hasRecordedCaseSource } from "../common/auth/review-independence";
 
 export async function decideQaCase(
   prisma: PrismaService,
@@ -73,15 +72,6 @@ export async function decideQaCase(
     );
   }
   assertLiveClaim(verificationCase.qaClaimedAt);
-  if (
-    verificationCase.checks.some((check) =>
-      check.tasks.some((task) => task.completedById === actor.userId),
-    )
-  ) {
-    throw new BadRequestException(
-      "A verifier cannot independently QA their own completed work",
-    );
-  }
   // QA verifies each document by commenting on it; approval needs every one.
   const uploaded = verificationCase.documents.filter(
     (document) => document.currentVersion > 0,
@@ -143,11 +133,6 @@ export async function decideQaCase(
   const nextStatus =
     input.decision === "APPROVED" ? "MANAGER_REVIEW" : "IN_PROGRESS";
   const review = await prisma.$transaction(async (tx) => {
-    if (await hasRecordedCaseSource(tx, actor, casePublicId)) {
-      throw new BadRequestException(
-        "A source-response author cannot independently QA the same case",
-      );
-    }
     if (input.decision === "APPROVED")
       await assertCaseEvidenceReady(tx, verificationCase.id);
     const created = await tx.qaReview.create({

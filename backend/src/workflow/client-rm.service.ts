@@ -282,12 +282,22 @@ export class ClientRmService {
       status: OPEN,
       ...(apply === "UNASSIGNED"
         ? { assignedOpsUserId: null }
-        : {
-            OR: [
-              { assignedOpsUserId: null },
-              { assignedOpsUserId: { not: rm.id } },
-            ],
-          }),
+        : apply === "PREVIOUS_RM"
+          ? {
+              // The previous company RM's open cases (and any without an RM) follow the change.
+              OR: [
+                { assignedOpsUserId: null },
+                ...(client.primaryRmUserId && client.primaryRmUserId !== rm.id
+                  ? [{ assignedOpsUserId: client.primaryRmUserId }]
+                  : []),
+              ],
+            }
+          : {
+              OR: [
+                { assignedOpsUserId: null },
+                { assignedOpsUserId: { not: rm.id } },
+              ],
+            }),
     };
     const result = await this.prisma.$transaction(async (tx) => {
       const updated = await tx.client.updateMany({

@@ -266,10 +266,13 @@ export class AssignClientRmDto {
   @Min(1)
   version!: number;
 
-  /** NONE: only new cases; UNASSIGNED: also open cases without an RM; ALL_OPEN: every open case. */
+  /**
+   * NONE: only new cases; UNASSIGNED: also open cases without an RM; PREVIOUS_RM: also the
+   * open cases of the company's previous RM; ALL_OPEN: every open case.
+   */
   @IsOptional()
-  @IsIn(["NONE", "UNASSIGNED", "ALL_OPEN"])
-  apply?: "NONE" | "UNASSIGNED" | "ALL_OPEN";
+  @IsIn(["NONE", "UNASSIGNED", "PREVIOUS_RM", "ALL_OPEN"])
+  apply?: "NONE" | "UNASSIGNED" | "PREVIOUS_RM" | "ALL_OPEN";
 
   @IsOptional()
   @IsString()
