@@ -40,14 +40,16 @@ export function QaEvidencePanel({
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-[13px] font-medium text-slate-900">
-                    {version?.originalName ?? humanize(document.type)}
+                    {humanize(document.type)}
                   </p>
                   <p className="truncate text-[12px] text-slate-500">
-                    {humanize(document.type)} ·{" "}
-                    {version
-                      ? `${humanize(version.malwareState)} · SHA ${version.sha256.slice(0, 12)}…`
-                      : "Awaiting upload"}
+                    {version?.originalName ?? "Awaiting upload"}
                   </p>
+                  {version ? (
+                    <p className="truncate text-[12px] text-slate-500">
+                      {humanize(version.malwareState)} · SHA {version.sha256.slice(0, 12)}…
+                    </p>
+                  ) : null}
                 </div>
                 {version ? (
                   <DocumentFileActions

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Download, ExternalLink, FileText, Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,12 +10,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  reportPreviewApi,
-  type ReportAudience,
-  type ReportDetails,
-} from "@/lib/backend-api/report-preview";
+import { saveBlob } from "@/lib/backend-api/client";
+import { openDocumentPreview } from "@/lib/backend-api/document-preview";
+import { reportPreviewApi, type ReportAudience } from "@/lib/backend-api/report-preview";
 import { cn } from "@/lib/utils";
+import { ReportHeaderDetails } from "./ReportHeaderDetails";
+
+export { ReportHeaderDetails } from "./ReportHeaderDetails";
 
 const AUDIENCE: Record<ReportAudience, { label: string; hint: string }> = {
   client: {
@@ -91,25 +92,52 @@ export function ReportPreviewDialog({
   const pdf = useQuery({
     queryKey: ["report-preview", caseId, audience],
     queryFn: () => reportPreviewApi.pdf(caseId, audience),
-    staleTime: 0,
-    gcTime: 0,
-    retry: false,
+    staleTime: 30_000,
+    gcTime: 5 * 60_000,
+    retry: 1,
   });
-  const [url, setUrl] = useState<string>();
+
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+
   useEffect(() => {
-    if (!pdf.data) return;
-    const next = URL.createObjectURL(pdf.data);
-    setUrl(next);
+    if (!pdf.data) {
+      setBlobUrl(null);
+      return;
+    }
+    const pdfBlob =
+      pdf.data.type === "application/pdf"
+        ? pdf.data
+        : new Blob([pdf.data], { type: "application/pdf" });
+    const next = URL.createObjectURL(pdfBlob);
+    setBlobUrl(next);
     return () => URL.revokeObjectURL(next);
   }, [pdf.data]);
+
   const fileName = `Sapling-Global-${audience === "internal" ? "internal-" : ""}draft-${caseNumber}.pdf`;
+
   const download = () => {
-    if (!url) return;
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = fileName;
-    link.click();
+    if (!pdf.data) return;
+    saveBlob(
+      pdf.data.type === "application/pdf"
+        ? pdf.data
+        : new Blob([pdf.data], { type: "application/pdf" }),
+      fileName,
+    );
   };
+
+  const openNewTab = () => {
+    void openDocumentPreview(async () => {
+      if (pdf.data) {
+        return pdf.data.type === "application/pdf"
+          ? pdf.data
+          : new Blob([pdf.data], { type: "application/pdf" });
+      }
+      return reportPreviewApi.pdf(caseId, audience);
+    }).catch((err: Error) => {
+      toast.error("Could not open preview", { description: err.message });
+    });
+  };
+
   return (
     <Dialog open onOpenChange={(next) => (!next ? onClose() : undefined)}>
       <DialogContent className="flex h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-6xl flex-col gap-0 overflow-hidden rounded-2xl p-0">
@@ -155,12 +183,12 @@ export function ReportPreviewDialog({
               type="button"
               size="sm"
               variant="outline"
-              disabled={!url}
-              onClick={() => window.open(url, "_blank", "noopener")}
+              disabled={!pdf.data}
+              onClick={openNewTab}
             >
               <ExternalLink aria-hidden /> New tab
             </Button>
-            <Button type="button" size="sm" disabled={!url} onClick={download}>
+            <Button type="button" size="sm" disabled={!pdf.data} onClick={download}>
               <Download aria-hidden /> Download
             </Button>
           </div>
@@ -185,13 +213,29 @@ export function ReportPreviewDialog({
                   </Button>
                 </div>
               </div>
-            ) : url && !pdf.isFetching ? (
-              <iframe
-                key={url}
-                src={url}
-                title={`${AUDIENCE[audience].label} of the report`}
-                className="absolute inset-0 h-full w-full border-0"
-              />
+            ) : pdf.isFetching && !blobUrl ? (
+              <div className="grid h-full place-items-center text-[13px] text-slate-500">
+                <span className="flex items-center gap-2">
+                  <Loader2 className="size-4 animate-spin" aria-hidden /> Building the report…
+                </span>
+              </div>
+            ) : blobUrl ? (
+              <div className="relative h-full w-full">
+                {pdf.isFetching && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/70 backdrop-blur-xs">
+                    <span className="flex items-center gap-2 rounded-lg bg-white px-3 py-1.5 text-[12.5px] font-medium text-slate-700 shadow-md ring-1 ring-slate-200">
+                      <Loader2 className="size-4 animate-spin text-blue-600" aria-hidden /> Updating
+                      preview…
+                    </span>
+                  </div>
+                )}
+                <iframe
+                  key={blobUrl}
+                  src={blobUrl}
+                  title={`${AUDIENCE[audience].label} of the report`}
+                  className="absolute inset-0 h-full w-full border-0"
+                />
+              </div>
             ) : (
               <div className="grid h-full place-items-center text-[13px] text-slate-500">
                 <span className="flex items-center gap-2">
@@ -203,103 +247,5 @@ export function ReportPreviewDialog({
         </div>
       </DialogContent>
     </Dialog>
-  );
-}
-
-/** Date of joining and client process for the report header. */
-export function ReportHeaderDetails({ caseId }: { caseId: string }) {
-  const queryClient = useQueryClient();
-  const details = useQuery({
-    queryKey: ["report-details", caseId],
-    queryFn: () => reportPreviewApi.details(caseId),
-  });
-  if (details.isPending)
-    return <p className="text-[12.5px] text-slate-500">Loading report details…</p>;
-  if (details.isError) return <p className="text-[12.5px] text-red-600">{details.error.message}</p>;
-  return (
-    <HeaderForm
-      key={`${details.data.joiningDate}-${details.data.clientProcess}`}
-      caseId={caseId}
-      data={details.data}
-      onSaved={async () => {
-        await queryClient.invalidateQueries({ queryKey: ["report-details", caseId] });
-        await queryClient.invalidateQueries({ queryKey: ["report-preview", caseId] });
-        await queryClient.invalidateQueries({ queryKey: ["report-view", caseId] });
-      }}
-    />
-  );
-}
-
-function HeaderForm({
-  caseId,
-  data,
-  onSaved,
-}: {
-  caseId: string;
-  data: ReportDetails;
-  onSaved: () => Promise<void>;
-}) {
-  const [joiningDate, setJoiningDate] = useState(data.joiningDate ?? "");
-  const [clientProcess, setClientProcess] = useState(data.clientProcess ?? "");
-  const changed =
-    joiningDate !== (data.joiningDate ?? "") || clientProcess !== (data.clientProcess ?? "");
-  const save = useMutation({
-    mutationFn: () =>
-      reportPreviewApi.saveDetails(caseId, {
-        joiningDate: joiningDate || null,
-        clientProcess: clientProcess.trim() || null,
-      }),
-    onSuccess: async () => {
-      toast.success("Report details saved", { description: "The preview is updated." });
-      await onSaved();
-    },
-    onError: (error: Error) => toast.error("Not saved", { description: error.message }),
-  });
-  const input =
-    "h-9 w-full rounded-lg border border-slate-200 px-2.5 text-[13px] outline-none focus:border-blue-300 focus:ring-4 focus:ring-blue-100 disabled:bg-slate-50 disabled:text-slate-500";
-  return (
-    <form
-      aria-label="Report header details"
-      className="grid gap-3 rounded-xl border border-slate-200 p-3"
-      onSubmit={(event) => {
-        event.preventDefault();
-        save.mutate();
-      }}
-    >
-      <div>
-        <h3 className="text-[13px] font-semibold text-slate-900">Report header</h3>
-        <p className="text-[12px] text-slate-500">
-          {data.canEdit
-            ? "Printed on the executive summary."
-            : "Only Operations, the case RM or its Data Entry can change these before approval."}
-        </p>
-      </div>
-      <label className="grid gap-1 text-[12.5px] font-medium text-slate-700">
-        Date of joining
-        <input
-          type="date"
-          value={joiningDate}
-          disabled={!data.canEdit}
-          onChange={(event) => setJoiningDate(event.target.value)}
-          className={input}
-        />
-      </label>
-      <label className="grid gap-1 text-[12.5px] font-medium text-slate-700">
-        Client process / reference
-        <input
-          value={clientProcess}
-          maxLength={80}
-          disabled={!data.canEdit}
-          placeholder="e.g. ABC-1212"
-          onChange={(event) => setClientProcess(event.target.value)}
-          className={input}
-        />
-      </label>
-      {data.canEdit ? (
-        <Button type="submit" size="sm" disabled={!changed} loading={save.isPending}>
-          Save and refresh preview
-        </Button>
-      ) : null}
-    </form>
   );
 }

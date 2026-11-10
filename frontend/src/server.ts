@@ -43,7 +43,7 @@ function withSecurityHeaders(response: Response, request?: Request): Response {
   headers.set("permissions-policy", "camera=(self), geolocation=(self), microphone=()");
   headers.set(
     "content-security-policy",
-    "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; object-src 'none'; form-action 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https: wss: http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*",
+    "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; frame-src 'self' blob:; object-src 'self' blob:; form-action 'self'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self' https: wss: http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*",
   );
   if (request && new URL(request.url).protocol === "https:") {
     headers.set("strict-transport-security", "max-age=63072000; includeSubDomains; preload");

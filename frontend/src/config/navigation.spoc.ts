@@ -80,13 +80,6 @@ export const SPOC_NAV_ITEMS: readonly NavItem[] = [
     "info",
   ),
   step(
-    "Ready to route",
-    "Data Entry finished: route checks to departments",
-    "ready",
-    "rmReady",
-    "info",
-  ),
-  step(
     "Final reviews",
     "QC passed: your approve or return decision",
     "final_approval",
