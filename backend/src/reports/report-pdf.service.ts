@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, type PDFImage } from "pdf-lib";
 export { wrapToWidth } from "../common/pdf/document-writer";
 import { SAPLING_WORDMARK_PNG } from "../common/pdf/brand-logo";
 import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
@@ -415,17 +415,17 @@ export class ReportPdfService {
     if (!items.length) return;
     // On its own page, as in the Sample Report.
     layout.newPage();
-    layout.sectionLabel("Annexures Details:");
-    const rows: Cell[][] = [];
-    for (const item of items) {
-      rows.push([
-        { text: item.label, align: "center" },
-        { text: `Annexure ${roman(item.annexure)}`, align: "center" },
-        { text: item.annexureTitle, align: "center" },
-      ]);
+    layout.sectionLabel("Annexures Details:", true);
+    // One merged name cell per entry, spanning its report and its proof (Sample Report).
+    const groups = items.map((item) => {
+      const rows: Cell[][] = [
+        [
+          { text: `Annexure ${roman(item.annexure)}`, align: "center" },
+          { text: item.annexureTitle, align: "center" },
+        ],
+      ];
       if (item.proofs.length && item.proofAnnexure)
         rows.push([
-          " ",
           { text: `Annexure ${roman(item.proofAnnexure)}`, align: "center" },
           {
             text: item.proofTitle.replace(/^\w/, (letter) =>
@@ -434,11 +434,14 @@ export class ReportPdfService {
             align: "center",
           },
         ]);
-    }
-    layout.table([{ width: 160 }, { width: 84 }, { width: 275 }], rows, {
-      size: 9,
-      middle: true,
+      const label: Cell = { text: item.label, align: "center" };
+      return { label, rows };
     });
+    layout.groupedTable(
+      [{ width: 160 }, { width: 84 }, { width: 275 }],
+      groups,
+      9,
+    );
   }
 
   private annexure(layout: ReportLayout, item: ReportItem) {
@@ -467,7 +470,8 @@ export class ReportPdfService {
         const placeholder = (value: string) =>
           ["not provided", "not disclosed", "—", ""].includes(plain(value));
         layout.table(
-          [{ width: 175 }, { width: 172 }, { width: 172 }],
+          // Same label column as the other tables, so the lines run straight down the page.
+          [{ width: 200 }, { width: 160 }, { width: 159 }],
           block.rows.map(([name, stated, verified]) => {
             const differs =
               !placeholder(stated) &&
@@ -568,7 +572,11 @@ export class ReportPdfService {
     }
   }
 
-  /** Images as figures; PDF proofs page by page; anything unreadable is listed. */
+  /**
+   * Photos side by side in a captioned grid (Sample Report: PHOTOGRAPH | HOUSE
+   * PHOTOGRAPH | LOCATION PHOTOGRAPH); PDF proofs page by page; anything unreadable is
+   * listed. Uploaded file names are never printed: only the caption the verifier gave.
+   */
   private async proofs(
     document: PDFDocument,
     layout: ReportLayout,
@@ -578,9 +586,10 @@ export class ReportPdfService {
     heading: () => void,
   ) {
     const missing: ReportProof[] = [];
-    // Each proof fills a page of its own: wide screenshots on a landscape page, tall
-    // ones (and portrait PDF pages) on a portrait page. The first carries the heading.
+    // PDF pages fill a page of their own (landscape when wide); photos share a grid.
+    // The first page carries the heading.
     let placed = 0;
+    const photos: Array<{ image: PDFImage; caption: string }> = [];
     const startFigure = (width: number, height: number) => {
       layout.newPage(width > height * 1.1 ? "landscape" : "portrait");
       if (placed === 0) heading();
@@ -592,8 +601,8 @@ export class ReportPdfService {
         missing.push(proof);
         continue;
       }
-      const title = proof.caption?.trim() || proof.name;
-      const detail = `${proof.name} · SHA-256 ${proof.sha256.slice(0, 16)}…`;
+      const title = proof.caption?.trim() || "Supporting document";
+      const detail = `SHA-256 ${proof.sha256.slice(0, 16)}…`;
       try {
         if (
           proof.contentType === "image/png" ||
@@ -603,14 +612,10 @@ export class ReportPdfService {
             proof.contentType === "image/png"
               ? await document.embedPng(bytes)
               : await document.embedJpg(bytes);
-          counter.figure += 1;
-          startFigure(image.width, image.height);
-          layout.figure(
-            { image },
-            `Figure ${counter.figure} – ${title}`,
-            detail,
-            layout.remaining - 50,
-          );
+          photos.push({
+            image,
+            caption: proof.caption?.trim() || `Photograph ${photos.length + 1}`,
+          });
         } else if (proof.contentType === "application/pdf") {
           const source = await PDFDocument.load(bytes, {
             ignoreEncryption: true,
@@ -640,6 +645,20 @@ export class ReportPdfService {
         missing.push(proof);
       }
     }
+    if (photos.length) {
+      // Below the PDF pages if there were any, else on a page of their own.
+      if (placed === 0) {
+        layout.newPage();
+        heading();
+        placed += 1;
+      } else layout.space(12);
+      // Screenshots (all wide) two to a row so they stay readable; photos three.
+      const wide = photos.every(
+        (photo) => photo.image.width > photo.image.height * 1.1,
+      );
+      // One or two proofs use the full width instead of leaving empty cells.
+      layout.photoGrid(photos, Math.min(wide ? 2 : 3, photos.length));
+    }
     if (missing.length) {
       if (placed === 0) {
         layout.newPage();
@@ -648,11 +667,11 @@ export class ReportPdfService {
       layout.sectionLabel("Proof held on the portal");
       layout.table(
         [{ width: 230 }, { width: 289 }],
-        missing.map((proof) => [
-          proof.caption?.trim() || proof.name,
-          { text: `${proof.name}`, sub: `SHA-256 ${proof.sha256}` },
+        missing.map((proof, index) => [
+          proof.caption?.trim() || `Supporting proof ${index + 1}`,
+          { text: proof.sha256, size: 7 },
         ]),
-        { header: ["Proof", "File"], size: 8 },
+        { header: ["Proof", "SHA-256 fingerprint"], size: 8, middle: true },
       );
     }
   }
@@ -661,6 +680,8 @@ export class ReportPdfService {
     if (data.evidence?.length) {
       layout.newPage();
       layout.annexureBar("Register", "Documents reviewed for this report");
+      // The candidate's own file names are not printed. QA's comment on each document
+      // is, with the file's fingerprint under it.
       layout.table(
         [{ width: 140 }, { width: 379 }],
         data.evidence.map((item) => [
@@ -668,9 +689,19 @@ export class ReportPdfService {
             .replaceAll("_", " ")
             .toLowerCase()
             .replace(/^\w/, (c) => c.toUpperCase()),
-          { text: item.name, sub: `SHA-256 ${item.sha256}` },
+          {
+            text:
+              item.qaComment ??
+              (item.type.startsWith("FIELD_") ? "Field visit evidence" : "—"),
+            sub: `SHA-256 ${item.sha256}`,
+          },
         ]),
-        { header: ["Document", "File"], size: 8, labelColumn: true },
+        {
+          header: ["Document", "QA remarks"],
+          size: 8,
+          labelColumn: true,
+          middle: true,
+        },
       );
     }
     if (internal) this.internalLog(layout, data);

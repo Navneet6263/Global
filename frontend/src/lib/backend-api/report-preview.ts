@@ -65,7 +65,7 @@ export interface ReportView {
     verifiedAt?: string | null;
     notes?: Array<[string, string]>;
   }>;
-  documents: Array<{ type: string; name: string }>;
+  documents: Array<{ type: string; qaComment?: string | null }>;
 }
 
 export interface ReportDetails {

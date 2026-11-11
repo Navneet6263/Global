@@ -306,7 +306,8 @@ const LAYOUTS: Record<string, Layout> = {
           rhs.institute ||
           claimed.institute,
       ) || "Education",
-    title: () => "Detailed Check Report – Education",
+    // "Education II" when there are several, as in the Sample Report.
+    title: (label) => `Detailed Check Report – ${label}`,
     proofTitle: "Written response for education verification",
     blocks: (claimed, rhs, check, _data, proofNote) => [
       {
@@ -364,7 +365,8 @@ const LAYOUTS: Record<string, Layout> = {
     label: numbered("Employment"),
     detail: (claimed, rhs) =>
       rhs.employerName || claimed.employerName || "Employment",
-    title: () => "Detailed Check Report – Employment",
+    // "Employment I", "Employment II" when there are several (Sample Report).
+    title: (label) => `Detailed Check Report – ${label}`,
     proofTitle: "Email response for employment verification",
     blocks: (claimed, rhs, check, _data, proofNote) => [
       {

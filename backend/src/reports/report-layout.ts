@@ -226,11 +226,186 @@ export class ReportLayout {
     this.y -= height + 12;
   }
 
-  /** Bold heading, e.g. "Annexures Details:". */
-  sectionLabel(text: string) {
+  /** Bold heading, e.g. "Annexures Details:" (underlined in the Sample Report). */
+  sectionLabel(text: string, underline = false) {
     this.ensure(40);
     this.write(text, LEFT, this.y - 10, 10, PALETTE.ink, true);
-    this.y -= 20;
+    if (underline)
+      this.page.drawLine({
+        start: { x: LEFT, y: this.y - 12.5 },
+        end: { x: LEFT + this.widthOf(text, 10, true), y: this.y - 12.5 },
+        thickness: 0.8,
+        color: rgb(...PALETTE.ink),
+      });
+    this.y -= 22;
+  }
+
+  /**
+   * Table whose first column is one merged cell per group, centred over the group's rows
+   * (the Sample Report's annexure index: "Employment I" spans its report and its email
+   * response). A group is kept on one page.
+   */
+  groupedTable(
+    columns: readonly Column[],
+    groups: ReadonlyArray<{
+      label: Cell;
+      rows: ReadonlyArray<readonly Cell[]>;
+    }>,
+    size = 8.5,
+  ) {
+    const [first, ...rest] = columns;
+    if (!first) return;
+    const lineHeight = (line: Line) => line.size + 3.2;
+    const heightOf = (cell: Cell, width: number) =>
+      this.linesOf(cell, width - PAD * 2, size).reduce(
+        (sum, line) => sum + lineHeight(line),
+        0,
+      ) +
+      PAD * 2;
+    for (const group of groups) {
+      const heights = group.rows.map((row) =>
+        Math.max(
+          ...rest.map((column, index) =>
+            heightOf(row[index] ?? "", column.width),
+          ),
+        ),
+      );
+      const rowsHeight = heights.reduce((sum, height) => sum + height, 0);
+      const labelHeight = heightOf(group.label, first.width);
+      // A tall label stretches the last row so the merged cell still fits.
+      if (labelHeight > rowsHeight && heights.length)
+        heights[heights.length - 1]! += labelHeight - rowsHeight;
+      const total = Math.max(rowsHeight, labelHeight);
+      if (total > this.remaining) this.newPage();
+      const top = this.y;
+      this.cellAt(LEFT, top, first.width, total, group.label, size);
+      let rowTop = top;
+      group.rows.forEach((row, at) => {
+        let x = LEFT + first.width;
+        rest.forEach((column, index) => {
+          this.cellAt(
+            x,
+            rowTop,
+            column.width,
+            heights[at]!,
+            row[index] ?? "",
+            size,
+          );
+          x += column.width;
+        });
+        rowTop -= heights[at]!;
+      });
+      this.y -= total;
+    }
+    this.y -= 8;
+  }
+
+  /**
+   * Photos side by side, as in the Sample Report: a row of bold captions and the photos
+   * under them, `perRow` to a row. A row is kept on one page.
+   */
+  photoGrid(
+    photos: ReadonlyArray<{ image: PDFImage; caption: string }>,
+    perRow = 3,
+  ) {
+    const column = this.width / perRow;
+    const room = column - 10;
+    const size = 8.5;
+    for (let at = 0; at < photos.length; at += perRow) {
+      const row = photos.slice(at, at + perRow);
+      const captions: Cell[] = Array.from({ length: perRow }, (_, index) => ({
+        text: row[index]?.caption.toUpperCase() ?? " ",
+        bold: true,
+        align: "center",
+      }));
+      const captionHeight = Math.max(
+        18,
+        ...captions.map(
+          (cell) =>
+            this.linesOf(cell, room, size).reduce(
+              (sum, line) => sum + line.size + 3.2,
+              0,
+            ) +
+            PAD * 2,
+        ),
+      );
+      const scaled = row.map(({ image }) => {
+        const scale = Math.min(room / image.width, 300 / image.height);
+        return { width: image.width * scale, height: image.height * scale };
+      });
+      const photoHeight = Math.max(...scaled.map((item) => item.height)) + 10;
+      if (captionHeight + photoHeight > this.remaining) this.newPage();
+      const top = this.y;
+      captions.forEach((cell, index) => {
+        const x = LEFT + index * column;
+        this.cellAt(x, top, column, captionHeight, cell, size);
+        this.page.drawRectangle({
+          x,
+          y: top - captionHeight - photoHeight,
+          width: column,
+          height: photoHeight,
+          borderColor: rgb(...PALETTE.grid),
+          borderWidth: 0.6,
+        });
+        const photo = row[index];
+        const box = scaled[index];
+        if (photo && box)
+          this.page.drawImage(photo.image, {
+            x: x + (column - box.width) / 2,
+            y: top - captionHeight - 5 - box.height,
+            width: box.width,
+            height: box.height,
+          });
+      });
+      this.y -= captionHeight + photoHeight;
+    }
+    this.y -= 8;
+  }
+
+  /** One bordered cell of a fixed size, text centred vertically. */
+  private cellAt(
+    x: number,
+    top: number,
+    width: number,
+    height: number,
+    cell: Cell,
+    size: number,
+  ) {
+    const style = typeof cell === "object" ? cell : undefined;
+    if (style?.fill)
+      this.page.drawRectangle({
+        x,
+        y: top - height,
+        width,
+        height,
+        color: rgb(...style.fill),
+      });
+    const lines = this.linesOf(cell, width - PAD * 2, size);
+    const block = lines.reduce((sum, line) => sum + line.size + 3.2, 0);
+    let lineTop = top - (height - block) / 2;
+    for (const line of lines) {
+      const lineX =
+        style?.align === "center"
+          ? x + (width - this.widthOf(line.text, line.size, line.bold)) / 2
+          : x + PAD;
+      this.write(
+        line.text,
+        lineX,
+        lineTop - line.size,
+        line.size,
+        line.colour,
+        line.bold,
+      );
+      lineTop -= line.size + 3.2;
+    }
+    this.page.drawRectangle({
+      x,
+      y: top - height,
+      width,
+      height,
+      borderColor: rgb(...PALETTE.grid),
+      borderWidth: 0.6,
+    });
   }
 
   paragraph(

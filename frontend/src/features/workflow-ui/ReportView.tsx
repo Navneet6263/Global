@@ -346,14 +346,19 @@ export function ReportView({
         >
           <h3 className="text-[13px] font-semibold text-slate-900">Documents reviewed</h3>
           <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
-            {data.documents.map((document) => (
+            {data.documents.map((document, index) => (
               <li
-                key={`${document.type}-${document.name}`}
-                className="flex min-w-0 items-center gap-2 text-[12.5px] text-slate-600"
+                key={`${document.type}-${index}`}
+                className="flex min-w-0 items-start gap-2 text-[12.5px] text-slate-600"
               >
-                <FileText className="size-3.5 shrink-0 text-slate-400" aria-hidden />
-                <span className="truncate">
-                  {document.type.replaceAll("_", " ").toLowerCase()} · {document.name}
+                <FileText className="mt-0.5 size-3.5 shrink-0 text-slate-400" aria-hidden />
+                <span className="min-w-0">
+                  <span className="font-medium capitalize text-slate-800">
+                    {document.type.replaceAll("_", " ").toLowerCase()}
+                  </span>
+                  {document.qaComment ? (
+                    <span className="block text-slate-500">QA: {document.qaComment}</span>
+                  ) : null}
                 </span>
               </li>
             ))}

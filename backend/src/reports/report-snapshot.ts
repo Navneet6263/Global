@@ -1,5 +1,5 @@
 import type { Prisma } from "../generated/prisma/client";
-import type { ApprovedReportSnapshot } from "./report-data";
+import type { ApprovedReportSnapshot, ReportData } from "./report-data";
 import type { SubjectPiiService } from "../common/security/subject-pii.service";
 
 export const reportApprovalSelect = {
@@ -113,6 +113,7 @@ export const reportApprovalSelect = {
       reviewerId: true,
       createdAt: true,
       notes: true,
+      checklistJson: true,
       reviewer: { select: { displayName: true } },
     },
   },
@@ -185,12 +186,18 @@ export function reportBodyFor(
   for (const service of row.services) {
     identityDetails.push(...safeServiceDetails(service.configurationJson));
   }
-  const evidence = row.documents.flatMap((document) =>
-    document.versions.map((version) => ({
-      type: document.type,
-      name: version.originalName,
-      sha256: version.sha256,
-    })),
+  const qaNotes = qaDocumentNotes(row.qaReviews[0]);
+  const evidence: NonNullable<ReportData["evidence"]> = row.documents.flatMap(
+    (document) =>
+      document.versions.map((version) => {
+        const qaComment = qaNotes.get(documentLabel(document.type))?.shift();
+        return {
+          type: document.type,
+          name: version.originalName,
+          sha256: version.sha256,
+          ...(qaComment ? { qaComment } : {}),
+        };
+      }),
   );
   for (const visit of row.fieldVisits) {
     for (const item of visit.evidence.filter(
@@ -277,6 +284,35 @@ function safeServiceDetails(json: string): Array<[string, string]> {
 }
 
 /** Reads {"entries":[...]} stored on a check; anything else is treated as none. */
+const documentLabel = (type: string) => type.replaceAll("_", " ").toLowerCase();
+
+/**
+ * QA's document comments from an approved QA review ("aadhaar: Clear copy; matches"),
+ * grouped by document type in the order they were written.
+ */
+function qaDocumentNotes(
+  review: { decision: string; checklistJson?: string | null } | undefined,
+) {
+  const notes = new Map<string, string[]>();
+  if (review?.decision !== "APPROVED" || !review.checklistJson) return notes;
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(review.checklistJson);
+  } catch {
+    return notes;
+  }
+  if (!Array.isArray(parsed)) return notes;
+  for (const line of parsed) {
+    if (typeof line !== "string") continue;
+    const at = line.indexOf(": ");
+    if (at < 1) continue;
+    const key = line.slice(0, at).trim().toLowerCase();
+    const comment = line.slice(at + 2).trim();
+    if (comment) notes.set(key, [...(notes.get(key) ?? []), comment]);
+  }
+  return notes;
+}
+
 export function entriesOf(
   json: string | null | undefined,
 ): Array<Record<string, string>> {

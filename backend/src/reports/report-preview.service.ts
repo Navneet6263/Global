@@ -216,9 +216,10 @@ export class ReportPreviewService {
               ...(check.internal ?? {}),
             }))
           : [],
+      // As in the PDF: no uploaded file names, QA's remark per document.
       documents: (data.evidence ?? []).map((item) => ({
         type: item.type,
-        name: item.name,
+        qaComment: item.qaComment ?? null,
       })),
     };
   }

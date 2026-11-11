@@ -44,7 +44,13 @@ export interface ReportData {
   managerName?: string;
   approvedAt?: string;
   recommendation?: string;
-  evidence?: Array<{ type: string; name: string; sha256: string }>;
+  evidence?: Array<{
+    type: string;
+    name: string;
+    sha256: string;
+    /** QA's comment on this document (approved QA review), printed in the register. */
+    qaComment?: string;
+  }>;
   checks: Array<{
     type: string;
     /** Check public id; ties proof files to the check. */
