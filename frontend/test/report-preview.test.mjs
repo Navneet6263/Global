@@ -3,10 +3,7 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 test("server security headers allow blob framing and object plugins for report PDF previews", () => {
-  const serverSource = readFileSync(
-    new URL("../src/server.ts", import.meta.url),
-    "utf8",
-  );
+  const serverSource = readFileSync(new URL("../src/server.ts", import.meta.url), "utf8");
 
   assert.match(
     serverSource,
@@ -66,9 +63,6 @@ test("all report preview source files remain strictly below 300 lines", () => {
   for (const file of files) {
     const content = readFileSync(new URL(file, import.meta.url), "utf8");
     const lines = content.split("\n").length;
-    assert.ok(
-      lines < 300,
-      `File ${file} has ${lines} lines, which exceeds the 300 line limit`,
-    );
+    assert.ok(lines < 300, `File ${file} has ${lines} lines, which exceeds the 300 line limit`);
   }
 });
