@@ -79,6 +79,11 @@ export class VerificationMethodsService {
       throw new NotFoundException(
         "Verification check not found or not assigned to you",
       );
+    if (write && check.case.status === "CLARIFICATION_PENDING") {
+      throw new ConflictException(
+        "The case is on hold for an insufficiency. Open the Insufficiency tab, review the candidate's reply and resolve it; then the work can be saved.",
+      );
+    }
     if (
       write &&
       (check.case.status !== "IN_PROGRESS" || check.status === "COMPLETED")

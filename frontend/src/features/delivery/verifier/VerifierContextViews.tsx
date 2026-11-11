@@ -4,7 +4,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { formatDateTime, humanize } from "@/features/cases/case-detail-formatting";
-import { createClarification, listClarifications } from "@/lib/api/clarifications";
+import {
+  createClarification,
+  listClarifications,
+  resolveClarification,
+} from "@/lib/api/clarifications";
 import type { VerifierTaskContext } from "@/lib/api/tasks";
 
 type Context = VerifierTaskContext;
@@ -68,6 +72,21 @@ export function ClarificationsView({ context }: { context: Context }) {
     },
     onError: (error: Error) => toast.error(error.message),
   });
+  // The candidate's reply is reviewed here; when nothing else is open, the case resumes.
+  const resolve = useMutation({
+    mutationFn: (clarificationId: string) => resolveClarification(caseId, clarificationId),
+    onSuccess: (result) => {
+      toast.success("Reply reviewed", {
+        description:
+          result.caseStatus === "IN_PROGRESS"
+            ? "The case has resumed. On the Verification tab press Start verification, then save."
+            : "Closed. Another insufficiency on this case is still open.",
+      });
+      void queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] });
+      void queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+    onError: (error: Error) => toast.error(error.message),
+  });
   return (
     <div className="space-y-4">
       <form
@@ -126,6 +145,27 @@ export function ClarificationsView({ context }: { context: Context }) {
             <p className="mt-2 rounded-xl bg-white p-3 text-[12.5px] leading-relaxed text-muted-foreground">
               {item.messages.at(-1)!.body}
             </p>
+          ) : null}
+          {item.status === "RESPONDED" ? (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
+              <span className="text-[12px] text-emerald-900">
+                The candidate has replied. Check the reply and the new documents, then resume.
+              </span>
+              <button
+                type="button"
+                onClick={() => resolve.mutate(item.id)}
+                disabled={resolve.isPending}
+                aria-busy={resolve.isPending && resolve.variables === item.id}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+              >
+                {resolve.isPending && resolve.variables === item.id ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="size-3.5" />
+                )}
+                Reviewed – resume verification
+              </button>
+            </div>
           ) : null}
         </article>
       ))}

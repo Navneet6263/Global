@@ -125,6 +125,28 @@ export function VerifierTaskDesk({
           })}
         </nav>
       </div>
+      {context.data?.check.case.status === "CLARIFICATION_PENDING" ? (
+        <div
+          role="status"
+          className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-[12.5px] text-amber-950"
+        >
+          <span>
+            <strong>On hold for an insufficiency.</strong>{" "}
+            {context.data.check.case.clarifications.some((item) => item.status === "RESPONDED")
+              ? "The candidate has replied. Review the reply and resolve it to continue; until then your work cannot be saved."
+              : "Waiting for the candidate's reply. Your work can be saved once the reply is reviewed and resolved."}
+          </span>
+          {tab !== "clarifications" ? (
+            <button
+              type="button"
+              onClick={() => setTab("clarifications")}
+              className="shrink-0 rounded-lg bg-amber-500 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-amber-600"
+            >
+              Open Insufficiency
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       {tab === "verification" ? (
         <VerifierTaskWorkspace
           key={`${task.id}-${task.version}`}
