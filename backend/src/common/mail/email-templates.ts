@@ -78,7 +78,7 @@ function layout(
     : "";
   const link = (href: string, text: string) =>
     `<a href="${href}" style="color:#1d4ed8;text-decoration:underline">${escape(text)}</a>`;
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(title)}</title></head>
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only"><style>:root{color-scheme:light only;supported-color-schemes:light only}</style><title>${escape(title)}</title></head>
 <body style="margin:0;padding:0;background:#eef2f6;font-family:${FONT}">
 <div style="display:none;max-height:0;overflow:hidden;opacity:0">${escape(title)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#eef2f6"><tr><td align="center" style="padding:32px 12px">
@@ -86,7 +86,7 @@ function layout(
 <tr><td style="height:5px;line-height:5px;font-size:0;background:#1f7a4d;background-image:linear-gradient(90deg,#1f7a4d,#00b0f0);border-radius:12px 12px 0 0">&nbsp;</td></tr>
 <tr><td style="background:#ffffff;padding:22px 32px;border-bottom:1px solid #edf2f7;${SIDES}">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-<td><img src="cid:${EMAIL_LOGO_CID}" alt="Sapling Global" width="140" height="32" style="display:block;border:0;outline:none;height:32px;width:auto"></td>
+<td><img src="cid:${EMAIL_LOGO_CID}" alt="Sapling Global" width="150" height="42" style="display:block;border:0;outline:none;height:42px;width:150px"></td>
 <td align="right" style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#64748b">Background verification</td>
 </tr></table></td></tr>
 <tr><td style="background:#ffffff;padding:30px 32px 8px;${SIDES}">${label}<h1 style="margin:0 0 18px;font-size:22px;line-height:1.3;font-weight:700;color:#0f172a">${escape(title)}</h1>${body}${button}</td></tr>

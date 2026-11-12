@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createTransport, type Transporter } from "nodemailer";
-import { SAPLING_WORDMARK_PNG } from "../pdf/brand-logo";
+import { EMAIL_LOGO_PNG } from "./email-logo";
 import {
   EMAIL_LOGO_CID,
   renderEmail,
@@ -11,7 +11,7 @@ import {
 /** The logo travels inside the email (inline), so it shows without loading images. */
 const LOGO = {
   filename: "sapling-global.png",
-  content: Buffer.from(SAPLING_WORDMARK_PNG, "base64"),
+  content: Buffer.from(EMAIL_LOGO_PNG, "base64"),
   contentType: "image/png",
   cid: EMAIL_LOGO_CID,
 };
