@@ -544,11 +544,56 @@ function Block({ block }: { block: AnnexureBlock }) {
           </div>
         </div>
       );
+    case "courts":
+      return (
+        <div>
+          {block.heading ? (
+            <h4 className="mb-1 text-[12.5px] font-bold uppercase text-slate-900 underline">
+              {block.heading}
+            </h4>
+          ) : null}
+          {titleOf(block.title)}
+          <div className={frame}>
+            <table className={table}>
+              <thead className="bg-slate-50">
+                <tr>
+                  <th className={cn(th, "w-[38%]")}>Court</th>
+                  <th className={th}>Court name</th>
+                  <th className={cn(th, "w-28 text-center")}>Result</th>
+                </tr>
+              </thead>
+              <tbody>
+                {block.rows.map((row) => (
+                  <tr key={`${row.court}-${row.name}`}>
+                    <td className={td}>{row.court}</td>
+                    <td className={td}>{row.name}</td>
+                    <td
+                      className={cn(
+                        td,
+                        "text-center font-semibold",
+                        row.colour === "RED" && "text-red-700",
+                      )}
+                    >
+                      {row.result}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
     case "note":
       return (
         <div>
           {titleOf(block.title)}
-          <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[12.5px] leading-relaxed text-slate-700">
+          <p
+            className={cn(
+              "rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-[12.5px] leading-relaxed text-slate-700",
+              block.tone === "GREEN" && "border-emerald-200 bg-emerald-50 text-emerald-800",
+              block.tone === "RED" && "border-red-200 bg-red-50 text-red-800",
+            )}
+          >
             {block.text}
           </p>
         </div>

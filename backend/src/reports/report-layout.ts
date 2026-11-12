@@ -8,6 +8,7 @@ import {
   type PDFPage,
 } from "pdf-lib";
 import { wrapToWidth } from "../common/pdf/document-writer";
+import { COMPANY_FOOTER } from "../common/company-details";
 
 export type RGB = [number, number, number];
 
@@ -25,20 +26,16 @@ export const PALETTE = {
   band: [0.776, 0.851, 0.945] as RGB,
   white: [1, 1, 1] as RGB,
   red: [0.78, 0.16, 0.16] as RGB,
+  /** Conclusion text when nothing adverse was found (court record certificate). */
+  green: [0.09, 0.55, 0.27] as RGB,
   /** Company name in the footer. */
   cyan: [0.0, 0.69, 0.94] as RGB,
   /** Email and web links in the footer. */
   link: [0.02, 0.2, 0.8] as RGB,
 };
 
-/** Company footer printed on every page, as in the Sample Report. */
-export const COMPANY_FOOTER = {
-  name: "Sapling Global Assurance Private Limited",
-  office: "A-43 SECTOR 67 NOIDA 201301",
-  cin: "U74999UP2020PTC125447",
-  email: "reachus@saplingglobal.com",
-  web: "www.saplingglobal.com",
-};
+/** Company footer printed on every page, as in the Sample Report (shared with emails). */
+export { COMPANY_FOOTER };
 
 export interface CellStyle {
   fill?: RGB;

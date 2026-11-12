@@ -24,7 +24,18 @@ export type AnnexureBlock =
         }>;
       }>;
     }
-  | { kind: "note"; title?: string; text: string };
+  | {
+      kind: "courts";
+      heading?: string;
+      title: string;
+      rows: Array<{
+        court: string;
+        name: string;
+        result: string;
+        colour?: ReportColour | null;
+      }>;
+    }
+  | { kind: "note"; title?: string; text: string; tone?: ReportColour | null };
 
 export interface ReportViewItem {
   checkId: string | null;

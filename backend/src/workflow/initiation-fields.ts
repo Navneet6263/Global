@@ -131,6 +131,7 @@ export const INITIATION_FORMS: Readonly<Record<string, InitiationForm>> = {
   COURT_RECORD: {
     repeatable: true,
     fields: [
+      { key: "fatherName", label: "Father's name" },
       {
         key: "addressBasis",
         label: "Search address",

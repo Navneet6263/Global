@@ -53,16 +53,27 @@ export const DRUG_SUBSTANCES: ReadonlyArray<{ key: string; label: string }> = [
 const RECORDS = ["No record found", "Record found", "Not searched"] as const;
 const DISCLOSED = ["Yes", "No", "Not disclosed"] as const;
 
-const court = (prefix: string, label: string): InitiationField[] => [
-  { key: `${prefix}Name`, label: `${label} name`, group: "Courts searched" },
+const court = (
+  prefix: string,
+  label: string,
+  group = "Courts searched",
+): InitiationField[] => [
+  {
+    key: `${prefix}Name`,
+    label: `${label}: court name (optional)`,
+    group,
+  },
   {
     key: `${prefix}Status`,
-    label: `${label} status`,
+    label: `${label}: result`,
     kind: "select",
     options: ["No records found", "Record found", "Not searched"],
-    group: "Courts searched",
+    group,
   },
 ];
+
+const CIVIL = "Civil proceedings";
+const CRIMINAL = "Criminal proceedings";
 
 /** Referee questions of the Sample Report's reference annexure, in order. */
 export const REFERENCE_QUESTIONS: ReadonlyArray<{
@@ -430,11 +441,20 @@ export const VERIFIED_FORMS: Readonly<Record<string, VerifiedForm>> = {
   COURT_RECORD: {
     repeatable: false,
     fields: [
-      ...court("districtCourt", "District court"),
-      ...court("highCourt", "High court"),
-      ...court("supremeCourt", "Supreme court"),
-      ...court("magistrateCourt", "Magistrate court"),
-      ...court("sessionCourt", "Session court"),
+      // Report: "1. Civil Proceedings" and "2. Criminal Proceedings" tables.
+      ...court("districtCourt", "District / lower / civil court", CIVIL),
+      ...court("highCourt", "High court", CIVIL),
+      ...court("supremeCourt", "Supreme court", CIVIL),
+      ...court("magistrateCourt", "Magistrate court", CRIMINAL),
+      ...court("sessionCourt", "Sessions court", CRIMINAL),
+      ...court("criminalHighCourt", "High court", CRIMINAL),
+      ...court("criminalSupremeCourt", "Supreme court", CRIMINAL),
+      {
+        key: "recordDetails",
+        label: "Record details (when a record is found)",
+        kind: "long",
+        group: "Method",
+      },
       {
         key: "years",
         label: "Duration of records check",

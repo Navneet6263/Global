@@ -564,9 +564,45 @@ export class ReportPdfService {
         });
         return;
       }
+      case "courts": {
+        if (block.heading) layout.sectionLabel(block.heading, true);
+        layout.paragraph(block.title, { size: 9, bold: true });
+        layout.space(4);
+        layout.table(
+          [{ width: 200 }, { width: 190 }, { width: 129 }],
+          block.rows.map((row) => [
+            row.court,
+            row.name,
+            {
+              text: row.result,
+              bold: true,
+              align: "center",
+              colour: row.colour === "RED" ? PALETTE.red : PALETTE.ink,
+            },
+          ]),
+          {
+            header: [
+              { text: "COURT", align: "center" },
+              { text: "COURT NAME", align: "center" },
+              { text: "RESULT", align: "center" },
+            ],
+            middle: true,
+          },
+        );
+        return;
+      }
       case "note": {
         if (block.title) layout.sectionLabel(block.title);
-        layout.table([{ width: 519 }], [[block.text]]);
+        const colour =
+          block.tone === "GREEN"
+            ? PALETTE.green
+            : block.tone === "RED"
+              ? PALETTE.red
+              : undefined;
+        layout.table(
+          [{ width: 519 }],
+          [[colour ? { text: block.text, colour } : block.text]],
+        );
         return;
       }
     }

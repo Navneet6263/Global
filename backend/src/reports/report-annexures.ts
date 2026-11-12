@@ -47,7 +47,19 @@ export type AnnexureBlock =
         }>;
       }>;
     }
-  | { kind: "note"; title?: string; text: string };
+  | {
+      /** Court record search table (COURT | COURT NAME | RESULT). */
+      kind: "courts";
+      heading?: string;
+      title: string;
+      rows: Array<{
+        court: string;
+        name: string;
+        result: string;
+        colour?: Disposition | null;
+      }>;
+    }
+  | { kind: "note"; title?: string; text: string; tone?: Disposition | null };
 
 /** One line of the executive summary and the annexure that details it. */
 export interface ReportItem {
@@ -466,7 +478,7 @@ const LAYOUTS: Record<string, Layout> = {
     ],
   },
   COURT_RECORD: {
-    label: numbered("Criminal Court Record Verification"),
+    label: numbered("Court Record Verification"),
     detail: (claimed, rhs) =>
       join(
         claimed.addressBasis ? `${claimed.addressBasis} address` : "",
@@ -474,55 +486,141 @@ const LAYOUTS: Record<string, Layout> = {
       ) || "Criminal court record verification",
     title: (label) => `Detailed Check Report – ${label}`,
     proofTitle: "Supporting proof for court record verification",
+    // Laid out like the court record certificate: search details, then the civil and
+    // the criminal proceedings searched, then the conclusion.
     blocks: (claimed, rhs, check, data, proofNote) => {
-      const courts = [
-        ["districtCourt", "District court"],
-        ["sessionCourt", "Session court"],
-        ["magistrateCourt", "Magistrate court"],
-        ["highCourt", "High court"],
-        ["supremeCourt", "Supreme court"],
-      ] as const;
-      const rows = courts
-        .filter(([key]) => rhs[`${key}Status`] || rhs[`${key}Name`])
-        .map(([key, label]) => {
-          const status = rhs[`${key}Status`] ?? "";
-          const result =
-            status === "No records found"
-              ? "No Record Found"
-              : status === "Record found"
-                ? "Record Found"
-                : status || "Not searched";
-          return {
-            name: label,
-            detail: rhs[`${key}Name`],
-            result,
-            colour: recordColour(result),
-          };
-        });
+      const pending = !check.result;
+      const row = (
+        key: string,
+        court: string,
+        name: string,
+        fallback?: string,
+      ) => {
+        const status =
+          rhs[`${key}Status`] || (fallback ? rhs[`${fallback}Status`] : "");
+        const result =
+          status === "No records found"
+            ? "No Record"
+            : status === "Record found"
+              ? "Record Found"
+              : status === "Not searched"
+                ? "Not Searched"
+                : pending
+                  ? "In progress"
+                  : check.result === "CLEAR"
+                    ? "No Record"
+                    : "Refer to remarks";
+        return {
+          court,
+          name:
+            rhs[`${key}Name`]?.trim() ||
+            (fallback ? rhs[`${fallback}Name`]?.trim() : "") ||
+            name,
+          result,
+          colour:
+            result === "Record Found"
+              ? ("RED" as const)
+              : result === "No Record"
+                ? ("GREEN" as const)
+                : null,
+        };
+      };
+      const civil = [
+        row(
+          "districtCourt",
+          "District Court / Lower Court / Civil Court & Small Causes",
+          "All India Courts",
+        ),
+        row("highCourt", "High Court", "All High Courts"),
+        row("supremeCourt", "Supreme Court", "Supreme Court of India"),
+      ];
+      const criminal = [
+        row("magistrateCourt", "Magistrate Court", "All Magistrate Courts"),
+        row("sessionCourt", "Sessions Court", "All Sessions Courts"),
+        row("criminalHighCourt", "High Court", "All High Courts", "highCourt"),
+        row(
+          "criminalSupremeCourt",
+          "Supreme Court",
+          "Supreme Court of India",
+          "supremeCourt",
+        ),
+      ];
+      const found = [...civil, ...criminal].some(
+        (item) => item.result === "Record Found",
+      );
+      const outcome = pending
+        ? "In progress"
+        : found
+          ? "Record Found"
+          : "No Record Found";
+      // The searched address: the candidate's address of that type, if it was given.
+      const basis = claimed.addressBasis?.trim();
+      const address = data.checks
+        .filter((item) => item.type.toUpperCase() === "ADDRESS")
+        .flatMap((item) => item.claimed ?? [])
+        .find(
+          (entry) =>
+            !basis ||
+            (entry.addressType ?? "").toLowerCase() === basis.toLowerCase(),
+        );
+      const birth = data.identityDetails?.find(([name]) =>
+        /date of birth/i.test(name),
+      )?.[1];
+      const years = rhs.years || claimed.years;
       return [
         {
           kind: "facts",
           rows: [
-            ["Candidate name", data.candidateName],
-            ["Address searched", given(claimed.addressBasis)],
+            ["Ref. No.", data.caseNumber],
+            ["Name", data.candidateName],
+            ["Date of Birth", given(reportDate(birth))],
+            ["Father's Name", given(claimed.fatherName)],
             [
-              "Duration of records check",
-              rhs.years || claimed.years
-                ? `${rhs.years || claimed.years} years`
-                : NOT_DISCLOSED,
+              "Address",
+              (address
+                ? join(
+                    address.address,
+                    address.city,
+                    address.state,
+                    address.pincode,
+                  )
+                : "") || (basis ? `${basis} address` : NOT_GIVEN),
             ],
+            ["Date Of Verification", given(reportDate(rhs.verificationDate))],
+            [
+              "Duration Of Records Check",
+              years ? `Last ${years} years` : NOT_DISCLOSED,
+            ],
+            ["Verification Result", outcome],
           ],
         },
-        ...(rows.length
-          ? [
+        {
+          kind: "courts",
+          heading: "RESULTS",
+          title:
+            "1. Civil Proceedings: Original Suit / Miscellaneous Suit / Execution Petition",
+          rows: civil,
+        },
+        {
+          kind: "courts",
+          title:
+            "2. Criminal Proceedings: Criminal Petitions / Criminal Appeal / Sessions Case / Criminal Miscellaneous Petition / Criminal Revision Appeal",
+          rows: criminal,
+        },
+        ...(pending
+          ? []
+          : [
               {
-                kind: "results" as const,
-                head: ["Court", "Result", "Status"] as [string, string, string],
-                groups: [{ rows }],
+                kind: "note" as const,
+                title: "Conclusion",
+                tone: found ? ("RED" as const) : ("GREEN" as const),
+                text: found
+                  ? `As on the date of this search, case record(s) were found against the candidate in the courts marked above.${rhs.recordDetails?.trim() ? ` ${rhs.recordDetails.trim()}` : ""} The information is subject to the search conducted within the jurisdictional limits of the address of the candidate provided.`
+                  : "As on the date of this search and as per the online litigation database there is no Civil or Criminal case instituted against the candidate. The information is subject to the search conducted within the jurisdictional limits of the address of the candidate provided. Hence, this information is subjective in nature.",
               },
-            ]
-          : []),
-        ...closing(check, rhs, proofNote),
+            ]),
+        // The date of verification is already in the search details above.
+        ...closing(check, { ...rhs, verificationDate: "" }, proofNote),
       ];
     },
   },
