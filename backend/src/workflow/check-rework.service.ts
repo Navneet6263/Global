@@ -3,25 +3,30 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  StreamableFile,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
+import { hasAnyRole, OPERATIONS_ROLES } from "../common/auth/roles";
 import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
 import { updateCaseRisk } from "../verification/case-risk";
-import {
-  DispositionLabels,
-  effectiveDisposition,
-} from "../verification/dispositions";
 import { restartCheckMethods } from "../verification/restart-check-methods";
-import { checkStatusLabel } from "../verification/verified-fields";
+import {
+  resolveVerificationDepartmentId,
+  verificationLedDepartmentIds,
+} from "../verification/task-query.helpers";
+import {
+  ACTIVE_REWORK_CASE_STATUSES,
+  buildAnnexureCsvFile,
+  fetchAnnexureRows,
+  type AnnexurePeriod,
+  UTV_ROW_SELECT,
+} from "./check-annexure.helpers";
 
+export { periodStart, type AnnexurePeriod } from "./check-annexure.helpers";
 export type ReworkMode = "REOPEN" | "REINITIATE" | "REJECT";
-export type AnnexurePeriod = "week" | "month" | "year";
 
 /** QA and later stages have their own return paths; rework is for live verification. */
-const ACTIVE_CASE = ["IN_PROGRESS", "CLARIFICATION_PENDING"];
 const MODE_TEXT: Record<ReworkMode, { audit: string; task: string }> = {
   REOPEN: { audit: "check.utv-reopened", task: "Re-opened from UTV" },
   REINITIATE: {
@@ -29,35 +34,6 @@ const MODE_TEXT: Record<ReworkMode, { audit: string; task: string }> = {
     task: "Re-initiated from UTV",
   },
   REJECT: { audit: "check.rejected-by-lead", task: "Sent back by Team Leader" },
-};
-
-const IST_DATE = new Intl.DateTimeFormat("en-IN", {
-  timeZone: "Asia/Kolkata",
-  day: "2-digit",
-  month: "short",
-  year: "numeric",
-});
-
-/** First instant of the current IST week (Monday), month or year. */
-export function periodStart(period: AnnexurePeriod, now = new Date()) {
-  const ist = new Date(now.getTime() + 330 * 60_000);
-  const start = new Date(
-    Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate()),
-  );
-  if (period === "week")
-    start.setUTCDate(start.getUTCDate() - ((start.getUTCDay() + 6) % 7));
-  if (period === "month") start.setUTCDate(1);
-  if (period === "year") start.setUTCMonth(0, 1);
-  return new Date(start.getTime() - 330 * 60_000);
-}
-
-/** Byte-order mark so Excel opens the UTF-8 CSV correctly. */
-const BOM = String.fromCharCode(0xfeff);
-
-const csvCell = (value: string | number | null | undefined) => {
-  const text = String(value ?? "");
-  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
-  return /[",\n]/.test(safe) ? `"${safe.replaceAll('"', '""')}"` : safe;
 };
 
 /**
@@ -72,21 +48,43 @@ export class CheckReworkService {
 
   private canAct(actor: Actor) {
     return (
-      actor.roles.some((role) =>
-        ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role),
-      ) ||
-      (actor.departments ?? []).some((department) => department.role === "LEAD")
+      hasAnyRole(actor, OPERATIONS_ROLES) ||
+      verificationLedDepartmentIds(actor).length > 0
     );
+  }
+
+  private async departmentFilter(actor: Actor, departmentId?: string) {
+    const resolved = await resolveVerificationDepartmentId(
+      this.prisma,
+      actor,
+      departmentId,
+    );
+    if (resolved !== undefined) return resolved;
+    if (hasAnyRole(actor, OPERATIONS_ROLES)) return undefined;
+    const led = verificationLedDepartmentIds(actor);
+    return led.length ? { in: led } : undefined;
   }
 
   async utvBucket(
     actor: Actor,
-    query: { page: number; pageSize: number; search?: string },
+    query: {
+      page: number;
+      pageSize: number;
+      search?: string;
+      departmentId?: string;
+    },
   ) {
     const search = query.search?.trim();
+    const departmentFilter = await this.departmentFilter(
+      actor,
+      query.departmentId,
+    );
     const where: Prisma.CaseCheckWhereInput = {
       tenantId: actor.tenantId,
       result: "UNABLE_TO_VERIFY",
+      ...(departmentFilter !== undefined
+        ? { departmentId: departmentFilter }
+        : {}),
       case: {
         ...caseAccessScope(actor),
         ...(search
@@ -106,27 +104,7 @@ export class CheckReworkService {
         orderBy: [{ completedAt: "desc" }, { id: "desc" }],
         skip: (query.page - 1) * query.pageSize,
         take: query.pageSize,
-        select: {
-          publicId: true,
-          type: true,
-          status: true,
-          sourceSummary: true,
-          completedAt: true,
-          case: {
-            select: {
-              publicId: true,
-              caseNumber: true,
-              status: true,
-              client: { select: { displayName: true } },
-              subject: { select: { fullName: true } },
-            },
-          },
-          tasks: {
-            orderBy: { createdAt: "desc" },
-            take: 1,
-            select: { assignee: { select: { displayName: true } } },
-          },
-        },
+        select: UTV_ROW_SELECT,
       }),
     ]);
     const canAct = this.canAct(actor);
@@ -142,7 +120,8 @@ export class CheckReworkService {
         caseStatus: row.case.status,
         candidateName: row.case.subject.fullName,
         clientName: row.case.client.displayName,
-        canRework: canAct && ACTIVE_CASE.includes(row.case.status),
+        canRework:
+          canAct && ACTIVE_REWORK_CASE_STATUSES.includes(row.case.status),
       })),
       total,
       page: query.page,
@@ -160,6 +139,8 @@ export class CheckReworkService {
       throw new ForbiddenException(
         "Only Operations or a Team Leader can send a check back",
       );
+    const manager = hasAnyRole(actor, OPERATIONS_ROLES);
+    const led = verificationLedDepartmentIds(actor);
     const note = reason.trim();
     return this.prisma.$transaction(async (tx) => {
       const check = await tx.caseCheck.findFirst({
@@ -167,6 +148,7 @@ export class CheckReworkService {
           publicId: checkId,
           tenantId: actor.tenantId,
           case: caseAccessScope(actor),
+          ...(!manager && led.length ? { departmentId: { in: led } } : {}),
         },
         select: {
           id: true,
@@ -184,7 +166,7 @@ export class CheckReworkService {
         },
       });
       if (!check) throw new NotFoundException("Check not found");
-      if (!ACTIVE_CASE.includes(check.case.status))
+      if (!ACTIVE_REWORK_CASE_STATUSES.includes(check.case.status))
         throw new ConflictException(
           "The case is closed. Re-open the case from its page first.",
         );
@@ -265,72 +247,13 @@ export class CheckReworkService {
     });
   }
 
-  private async annexureRows(actor: Actor, period: AnnexurePeriod) {
-    const since = periodStart(period);
-    const led = (actor.departments ?? [])
-      .filter((department) => department.role === "LEAD")
-      .map((department) => department.id);
-    const manager = actor.roles.some((role) =>
-      ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role),
+  async annexure(actor: Actor, period: AnnexurePeriod, departmentId?: string) {
+    const { since, rows } = await fetchAnnexureRows(
+      this.prisma,
+      actor,
+      period,
+      departmentId,
     );
-    if (!manager && !led.length)
-      throw new ForbiddenException("The annexure is for Team Leaders");
-    const rows = await this.prisma.caseCheck.findMany({
-      where: {
-        tenantId: actor.tenantId,
-        status: "COMPLETED",
-        completedAt: { gte: since },
-        case: caseAccessScope(actor),
-        ...(manager ? {} : { departmentId: { in: led } }),
-      },
-      orderBy: { completedAt: "desc" },
-      take: 5000,
-      select: {
-        publicId: true,
-        type: true,
-        result: true,
-        disposition: true,
-        completedAt: true,
-        case: {
-          select: {
-            publicId: true,
-            caseNumber: true,
-            status: true,
-            client: { select: { displayName: true } },
-            subject: { select: { fullName: true } },
-          },
-        },
-        tasks: {
-          orderBy: { createdAt: "desc" },
-          take: 1,
-          select: { assignee: { select: { displayName: true } } },
-        },
-      },
-    });
-    return {
-      since,
-      rows: rows.map((row) => {
-        const colour = effectiveDisposition(row);
-        return {
-          checkId: row.publicId,
-          caseId: row.case.publicId,
-          caseNumber: row.case.caseNumber,
-          candidateName: row.case.subject.fullName,
-          clientName: row.case.client.displayName,
-          checkType: row.type,
-          verifier: row.tasks[0]?.assignee?.displayName ?? null,
-          completedAt: row.completedAt,
-          status: checkStatusLabel(row.type, row.result, colour),
-          colour,
-          colourLabel: colour ? DispositionLabels[colour] : "Not set",
-          canSendBack: ACTIVE_CASE.includes(row.case.status),
-        };
-      }),
-    };
-  }
-
-  async annexure(actor: Actor, period: AnnexurePeriod) {
-    const { since, rows } = await this.annexureRows(actor, period);
     const colours: Record<string, number> = {};
     for (const row of rows)
       colours[row.colour ?? "NONE"] = (colours[row.colour ?? "NONE"] ?? 0) + 1;
@@ -343,34 +266,19 @@ export class CheckReworkService {
     };
   }
 
-  async annexureCsv(actor: Actor, period: AnnexurePeriod, columnList?: string) {
-    const { rows } = await this.annexureRows(actor, period);
-    type Row = (typeof rows)[number];
-    const all: Record<string, [string, (row: Row) => string]> = {
-      caseNumber: ["Sapling ID", (row) => row.caseNumber],
-      candidate: ["Candidate", (row) => row.candidateName],
-      client: ["Client", (row) => row.clientName],
-      check: ["Check", (row) => row.checkType.replaceAll("_", " ")],
-      verifier: ["Verifier", (row) => row.verifier ?? ""],
-      completedAt: [
-        "Completed (IST)",
-        (row) => (row.completedAt ? IST_DATE.format(row.completedAt) : ""),
-      ],
-      status: ["Status", (row) => row.status],
-      colour: ["Colour code", (row) => row.colourLabel],
-    };
-    const picked = (columnList ?? "")
-      .split(",")
-      .map((key) => key.trim())
-      .filter((key) => key in all);
-    const columns = picked.length ? picked : Object.keys(all);
-    const header = columns.map((key) => all[key]![0]);
-    const lines = rows.map((row) =>
-      columns
-        .map((key) => all[key]![1](row))
-        .map(csvCell)
-        .join(","),
+  async annexureCsv(
+    actor: Actor,
+    period: AnnexurePeriod,
+    columnList?: string,
+    departmentId?: string,
+  ) {
+    const { rows } = await fetchAnnexureRows(
+      this.prisma,
+      actor,
+      period,
+      departmentId,
     );
+    const { columns, file } = buildAnnexureCsvFile(period, rows, columnList);
     await this.prisma.auditEvent.create({
       data: {
         tenantId: actor.tenantId,
@@ -381,12 +289,6 @@ export class CheckReworkService {
         afterJson: JSON.stringify({ period, rows: rows.length, columns }),
       },
     });
-    return new StreamableFile(
-      Buffer.from(`${BOM}${[header.join(","), ...lines].join("\r\n")}`),
-      {
-        type: "text/csv; charset=utf-8",
-        disposition: `attachment; filename="Sapling-Global-team-annexure-${period}.csv"`,
-      },
-    );
+    return file;
   }
 }

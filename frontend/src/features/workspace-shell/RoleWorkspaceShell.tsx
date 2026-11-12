@@ -25,6 +25,7 @@ export function RoleWorkspaceShell({
   titles,
   destinations,
   caseSearchTo,
+  caseSearchParams,
   searchPlaceholder = "Find a case or a page",
   navigation,
   children,
@@ -35,6 +36,7 @@ export function RoleWorkspaceShell({
   titles: Record<string, string>;
   destinations: readonly WorkspaceDestination[];
   caseSearchTo: string;
+  caseSearchParams?: Record<string, string>;
   searchPlaceholder?: string;
   navigation: (onNavigate?: () => void) => ReactNode;
   children: ReactNode;
@@ -87,7 +89,9 @@ export function RoleWorkspaceShell({
                 <Menu aria-hidden />
               </Button>
               <div className="client-breadcrumb">
-                <Link to={presentation.home as "/admin"}>{presentation.label}</Link>
+                <Link to={presentation.home as "/admin"} search={caseSearchParams as never}>
+                  {presentation.label}
+                </Link>
                 <span aria-hidden>/</span>
                 <strong>{section}</strong>
               </div>
@@ -96,6 +100,7 @@ export function RoleWorkspaceShell({
               <ClientWorkspaceSearch
                 destinations={destinations}
                 caseSearchTo={caseSearchTo}
+                caseSearchParams={caseSearchParams}
                 placeholder={searchPlaceholder}
               />
             </div>

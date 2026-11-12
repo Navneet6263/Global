@@ -527,6 +527,11 @@ export const DocumentVersionScalarFieldEnum = {
   sha256: 'sha256',
   malwareState: 'malwareState',
   uploadedById: 'uploadedById',
+  reviewStatus: 'reviewStatus',
+  reviewNote: 'reviewNote',
+  reviewedById: 'reviewedById',
+  reviewedAt: 'reviewedAt',
+  clarificationId: 'clarificationId',
   createdAt: 'createdAt'
 } as const
 
@@ -586,6 +591,20 @@ export const ClarificationScalarFieldEnum = {
   raisedById: 'raisedById',
   responseTokenHash: 'responseTokenHash',
   responseTokenExpiresAt: 'responseTokenExpiresAt',
+  requestedDocumentType: 'requestedDocumentType',
+  submittedDocumentId: 'submittedDocumentId',
+  submittedDocumentVersion: 'submittedDocumentVersion',
+  opsReviewedById: 'opsReviewedById',
+  opsReviewedAt: 'opsReviewedAt',
+  opsReviewNote: 'opsReviewNote',
+  dataEntryReviewedById: 'dataEntryReviewedById',
+  dataEntryReviewedAt: 'dataEntryReviewedAt',
+  dataEntryReviewNote: 'dataEntryReviewNote',
+  reentryCompletedById: 'reentryCompletedById',
+  reentryCompletedAt: 'reentryCompletedAt',
+  rejectionCount: 'rejectionCount',
+  lastRejectedAt: 'lastRejectedAt',
+  lastRejectedReason: 'lastRejectedReason',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

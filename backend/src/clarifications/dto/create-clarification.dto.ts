@@ -22,4 +22,9 @@ export class CreateClarificationDto {
   @IsOptional()
   @IsDateString()
   dueAt?: string;
+
+  @IsOptional()
+  @IsString()
+  @Length(2, 48)
+  requestedDocumentType?: string;
 }

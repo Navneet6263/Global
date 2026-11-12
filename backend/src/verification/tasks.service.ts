@@ -23,12 +23,12 @@ export class TasksService {
     return this.queries.mine(actor, query);
   }
 
-  insights(actor: Actor) {
-    return this.insightsService.mine(actor);
+  insights(actor: Actor, departmentId?: string) {
+    return this.insightsService.mine(actor, departmentId);
   }
 
-  context(actor: Actor, taskPublicId: string) {
-    return this.contextService.get(actor, taskPublicId);
+  context(actor: Actor, taskPublicId: string, departmentId?: string) {
+    return this.contextService.get(actor, taskPublicId, departmentId);
   }
 
   create(actor: Actor, checkPublicId: string, input: CreateTaskDto) {

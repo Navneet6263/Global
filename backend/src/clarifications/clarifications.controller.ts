@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 import {
@@ -17,8 +18,15 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
+import { ClarificationL1QueueService } from "./clarification-l1-queue.service";
+import { ClarificationL2OpsService } from "./clarification-l2-ops.service";
 import { ClarificationsService } from "./clarifications.service";
 import { CreateClarificationDto } from "./dto/create-clarification.dto";
+import {
+  L1ClarificationQueueQueryDto,
+  OpsClarificationQueueQueryDto,
+  OpsCompleteClarificationDto,
+} from "./dto/l2-clarification.dto";
 import { RespondClarificationDto } from "./dto/respond-clarification.dto";
 import { ResolveClarificationDto } from "./dto/resolve-clarification.dto";
 import { ClientClarificationResponseService } from "./client-clarification-response.service";
@@ -28,7 +36,88 @@ export class ClarificationsController {
   constructor(
     private readonly clarifications: ClarificationsService,
     private readonly clientResponses: ClientClarificationResponseService,
+    private readonly l2Ops: ClarificationL2OpsService,
+    private readonly l1Queue: ClarificationL1QueueService,
   ) {}
+
+  @Get("clarifications/l1-queue")
+  @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  l1OpsQueue(
+    @CurrentActor() actor: Actor,
+    @Query() query: L1ClarificationQueueQueryDto,
+  ) {
+    return this.l1Queue.queue(actor, query);
+  }
+
+  @Get("workflow/clarifications/rm-l1-queue")
+  @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("SPOC_RM")
+  rmL1Queue(
+    @CurrentActor() actor: Actor,
+    @Query() query: L1ClarificationQueueQueryDto,
+  ) {
+    return this.l1Queue.queue(actor, query);
+  }
+
+  @Get("workflow/clarifications/rm-l2-queue")
+  @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("SPOC_RM")
+  rmL2Queue(
+    @CurrentActor() actor: Actor,
+    @Query() query: OpsClarificationQueueQueryDto,
+  ) {
+    return this.l2Ops.opsQueue(actor, query);
+  }
+
+  @Post("workflow/clarifications/:clarificationId/rm-handoff")
+  @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("SPOC_RM")
+  rmHandoff(
+    @CurrentActor() actor: Actor,
+    @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
+    @Body() input: OpsCompleteClarificationDto,
+  ) {
+    return this.l2Ops.completeOpsReview(actor, clarificationId, input);
+  }
+
+  @Patch("workflow/cases/:caseId/clarifications/:clarificationId/rm-resolve")
+  @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("SPOC_RM")
+  rmResolve(
+    @CurrentActor() actor: Actor,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
+    @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
+    @Body() input: ResolveClarificationDto,
+  ) {
+    return this.clarifications.resolve(
+      actor,
+      caseId,
+      clarificationId,
+      input.note,
+    );
+  }
+
+  @Get("clarifications/l2/ops-queue")
+  @RequirePermissions(Permission.ClarificationRead)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  opsQueue(
+    @CurrentActor() actor: Actor,
+    @Query() query: OpsClarificationQueueQueryDto,
+  ) {
+    return this.l2Ops.opsQueue(actor, query);
+  }
+
+  @Post("clarifications/:clarificationId/ops-complete")
+  @RequirePermissions(Permission.ClarificationWrite)
+  @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER")
+  opsComplete(
+    @CurrentActor() actor: Actor,
+    @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
+    @Body() input: OpsCompleteClarificationDto,
+  ) {
+    return this.l2Ops.completeOpsReview(actor, clarificationId, input);
+  }
 
   @Get("cases/:caseId/clarifications")
   @RequirePermissions(Permission.ClarificationRead)

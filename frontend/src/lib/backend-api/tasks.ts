@@ -1,5 +1,20 @@
 import { apiRequest } from "./client";
 
+export interface TaskClarificationSummary {
+  id: string;
+  level?: string | null;
+  status: string;
+  subject: string;
+  requestedDocumentType?: string | null;
+  submittedDocumentVersion?: number | null;
+  opsReviewedAt?: string | null;
+  reentryCompletedAt?: string | null;
+  rejectionCount?: number;
+  lastRejectedReason?: string | null;
+  dueAt?: string | null;
+  createdAt: string;
+}
+
 export interface VerificationTask {
   id: string;
   status: string;
@@ -10,12 +25,16 @@ export interface VerificationTask {
   blockerReason?: string | null;
   blockedAt?: string | null;
   version: number;
+  assignee?: { id: string; name: string } | null;
   check: {
     publicId: string;
     type: string;
     status: string;
+    initiationJson?: string | null;
+    initiatedAt?: string | null;
     /** The routed team: decides which process the verifier sees. */
     department?: {
+      id?: string;
       name: string;
       teamType?: "EMPLOYMENT" | "EDUCATION" | "VENDOR" | "DIGITAL" | null;
     } | null;
@@ -23,6 +42,7 @@ export interface VerificationTask {
     riskLevel?: string | null;
     sourceSummary?: string | null;
     findings: Array<FindingInput & { publicId: string }>;
+    clarifications?: TaskClarificationSummary[];
     case: {
       publicId: string;
       caseNumber: string;
@@ -63,6 +83,8 @@ export interface VerifierInsights {
 
 export interface VerifierTaskContext {
   publicId: string;
+  status?: string;
+  assignee?: { id: string; name: string } | null;
   createdAt: string;
   startedAt?: string | null;
   blockedAt?: string | null;
@@ -70,6 +92,13 @@ export interface VerifierTaskContext {
   check: {
     publicId: string;
     type: string;
+    initiationJson?: string | null;
+    initiatedAt?: string | null;
+    department?: {
+      id?: string;
+      name: string;
+      teamType?: "EMPLOYMENT" | "EDUCATION" | "VENDOR" | "DIGITAL" | null;
+    } | null;
     case: {
       publicId: string;
       caseNumber: string;
@@ -104,13 +133,30 @@ export interface VerifierTaskContext {
           sizeBytes: string;
           sha256: string;
           malwareState: string;
+          reviewStatus?: string;
+          reviewNote?: string | null;
+          reviewedAt?: string | null;
           createdAt: string;
         }>;
       }>;
       clarifications: Array<{
         publicId: string;
+        level?: string | null;
         status: string;
         subject: string;
+        isForCurrentCheck?: boolean;
+        requestedDocumentType?: string | null;
+        submittedDocumentVersion?: number | null;
+        submittedDocument?: {
+          id: string;
+          type: string;
+          status: string;
+          currentVersion: number;
+        } | null;
+        opsReviewedAt?: string | null;
+        reentryCompletedAt?: string | null;
+        rejectionCount?: number;
+        lastRejectedReason?: string | null;
         dueAt?: string | null;
         createdAt: string;
       }>;
@@ -131,6 +177,7 @@ export function getMyTasks(
     search?: string;
     cursor?: string;
     taskId?: string;
+    departmentId?: string;
     sla?: "OVERDUE" | "DUE_TODAY" | "DUE_SOON";
     limit?: number;
   } = {},
@@ -147,12 +194,14 @@ export function getMyTasks(
   }>(`/tasks/mine${query ? `?${query}` : ""}`);
 }
 
-export function getVerifierInsights() {
-  return apiRequest<VerifierInsights>("/tasks/mine/insights");
+export function getVerifierInsights(departmentId?: string) {
+  const query = departmentId ? `?departmentId=${encodeURIComponent(departmentId)}` : "";
+  return apiRequest<VerifierInsights>(`/tasks/mine/insights${query}`);
 }
 
-export function getVerifierTaskContext(taskId: string) {
-  return apiRequest<VerifierTaskContext>(`/tasks/${taskId}/context`);
+export function getVerifierTaskContext(taskId: string, departmentId?: string) {
+  const query = departmentId ? `?departmentId=${encodeURIComponent(departmentId)}` : "";
+  return apiRequest<VerifierTaskContext>(`/tasks/${taskId}/context${query}`);
 }
 
 export function updateTask(

@@ -18,8 +18,10 @@ export const VendorDocumentStatuses = [
 ] as const;
 export type VendorDocumentStatus = (typeof VendorDocumentStatuses)[number];
 
-/** No new vendor work starts on a case in these stages. */
+/** No new vendor work starts on a case before consent or once closed. */
 export const VENDOR_BLOCKED_CASE_STATUSES: readonly string[] = [
+  "DRAFT",
+  "CONSENT_PENDING",
   "CANCELLED",
   "CLOSED",
 ];

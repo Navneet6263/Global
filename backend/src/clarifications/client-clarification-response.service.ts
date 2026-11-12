@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
-import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
+import { notifyClarificationStakeholders } from "../common/persistence/clarification-recipients";
 import { PrismaService } from "../database/prisma.service";
 
 @Injectable()
@@ -74,24 +74,17 @@ export class ClientClarificationResponseService {
           body: body.trim(),
         },
       });
-      const recipients = await activeOperationsRecipients(tx, {
+      await notifyClarificationStakeholders(tx, {
         tenantId: actor.tenantId,
         branchId: clarification.case.branchId,
         clientId: clarification.case.clientId,
         assignedUserId: clarification.case.assignedOpsUserId,
+        type: "CLARIFICATION_RESPONDED",
+        title: "Client response received",
+        body: `${clarification.case.caseNumber}: ${clarification.subject}`,
+        opsHref: `/operations/clarifications`,
+        rmHref: `/spoc-rm/work?bucket=correction`,
       });
-      if (recipients.length) {
-        await tx.notification.createMany({
-          data: recipients.map((recipient) => ({
-            tenantId: actor.tenantId,
-            userId: recipient.id,
-            type: "CLARIFICATION_RESPONDED",
-            title: "Client response received",
-            body: `${clarification.case.caseNumber}: ${clarification.subject}`,
-            href: `/cases/${clarification.case.publicId}`,
-          })),
-        });
-      }
       await tx.auditEvent.create({
         data: {
           tenantId: actor.tenantId,

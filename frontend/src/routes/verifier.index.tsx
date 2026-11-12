@@ -6,21 +6,30 @@ import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/
 import { VerifierOverviewPanels } from "@/features/delivery/verifier/VerifierOverviewPanels";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
+import {
+  useVerifierDepartment,
+  validateVerifierDepartmentSearch,
+} from "@/lib/auth/verifier-department";
 
 export const Route = createFileRoute("/verifier/")({
   head: () => ({ meta: [{ title: "Verifier Overview — Sapling Global" }] }),
+  validateSearch: validateVerifierDepartmentSearch,
   component: VerifierOverview,
 });
 
 function VerifierOverview() {
+  const { department } = Route.useSearch();
+  const { departmentId: resolvedDepartmentId } = useVerifierDepartment();
+  const departmentId = department ?? resolvedDepartmentId;
   const insights = useQuery({
-    queryKey: ["verifier", "insights"],
-    queryFn: getVerifierInsights,
+    queryKey: ["verifier", "insights", departmentId ?? "all"],
+    queryFn: () => getVerifierInsights(departmentId),
     staleTime: 20_000,
   });
   const focus = useQuery({
-    queryKey: ["tasks", "mine", "overview-focus"],
-    queryFn: () => getMyTasks({ view: "ACTIVE", limit: 8 }),
+    queryKey: ["tasks", "mine", "overview-focus", departmentId ?? "all"],
+    queryFn: () =>
+      getMyTasks({ view: "ACTIVE", limit: 8, ...(departmentId ? { departmentId } : {}) }),
     staleTime: 20_000,
   });
   if (insights.isLoading || focus.isLoading)
@@ -82,7 +91,11 @@ function VerifierOverview() {
           },
         ]}
       />
-      <VerifierOverviewPanels insights={insights.data} focus={focus.data?.items ?? []} />
+      <VerifierOverviewPanels
+        insights={insights.data}
+        focus={focus.data?.items ?? []}
+        departmentId={departmentId}
+      />
     </div>
   );
 }

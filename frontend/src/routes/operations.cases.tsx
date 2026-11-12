@@ -207,6 +207,10 @@ function OperationsCasesPage() {
       <OpsCaseDrawer
         caseDetail={detail.data}
         loading={detail.isPending && Boolean(search.caseId)}
+        error={detail.isError}
+        errorMessage={detail.error instanceof Error ? detail.error.message : undefined}
+        retrying={detail.isFetching}
+        onRetry={() => void detail.refetch()}
         open={Boolean(search.caseId)}
         onClose={() => setCaseId(undefined)}
       />

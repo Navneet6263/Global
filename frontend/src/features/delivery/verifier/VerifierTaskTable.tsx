@@ -19,6 +19,7 @@ export function VerifierTaskTable({
   title,
   detail,
   items,
+  departmentId,
   hasPrevious,
   hasNext,
   onPrevious,
@@ -28,6 +29,7 @@ export function VerifierTaskTable({
   title: string;
   detail: string;
   items: VerificationTask[];
+  departmentId?: string;
   hasPrevious: boolean;
   hasNext: boolean;
   onPrevious: () => void;
@@ -58,7 +60,7 @@ export function VerifierTaskTable({
       </div>
       <div className="divide-y divide-border/60">
         {items.map((task) => (
-          <TaskRow key={task.id} task={task} />
+          <TaskRow key={task.id} task={task} departmentId={departmentId} />
         ))}
         {!items.length ? (
           <div className="grid min-h-64 place-items-center p-8 text-center">
@@ -89,7 +91,7 @@ export function VerifierTaskTable({
   );
 }
 
-function TaskRow({ task }: { task: VerificationTask }) {
+function TaskRow({ task, departmentId }: { task: VerificationTask; departmentId?: string }) {
   const overdue = Boolean(
     task.dueAt && new Date(task.dueAt).getTime() < Date.now() && task.status !== "COMPLETED",
   );
@@ -97,7 +99,11 @@ function TaskRow({ task }: { task: VerificationTask }) {
   return (
     <Link
       to="/verifier/queue"
-      search={{ taskId: task.id, status: done ? "COMPLETED" : undefined }}
+      search={{
+        taskId: task.id,
+        status: done ? "COMPLETED" : undefined,
+        ...(departmentId ? { department: departmentId } : {}),
+      }}
       className="group grid gap-3 px-5 py-4 transition hover:bg-blue-50 md:grid-cols-[minmax(13rem,1.25fr)_minmax(10rem,0.8fr)_minmax(8rem,0.6fr)_minmax(9rem,0.65fr)_2.5rem] md:items-center"
     >
       <div className="min-w-0">

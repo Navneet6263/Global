@@ -9,6 +9,8 @@ import {
 import { CurrentActor, RequireRoles } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { DataEntryInsightsService } from "./data-entry-insights.service";
+import { DataEntryUnifiedQueueService } from "./data-entry-unified-queue.service";
+import { DataEntryUnifiedQueueQueryDto } from "./dto/data-entry-queue.dto";
 
 export class DataEntryScopeDto {
   @IsOptional() @IsIn(["mine", "team"]) scope?: "mine" | "team";
@@ -24,7 +26,15 @@ export class DataEntryReportQueryDto extends DataEntryScopeDto {
 @Controller("workflow/data-entry")
 @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "DATA_ENTRY")
 export class DataEntryInsightsController {
-  constructor(private readonly insights: DataEntryInsightsService) {}
+  constructor(
+    private readonly insights: DataEntryInsightsService,
+    private readonly unifiedQueue: DataEntryUnifiedQueueService,
+  ) {}
+
+  @Get("unified-queue")
+  queue(@CurrentActor() actor: Actor, @Query() query: DataEntryUnifiedQueueQueryDto) {
+    return this.unifiedQueue.queue(actor, query);
+  }
 
   @Get("overview")
   overview(@CurrentActor() actor: Actor, @Query() query: DataEntryScopeDto) {

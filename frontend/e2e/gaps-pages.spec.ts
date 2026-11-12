@@ -482,7 +482,10 @@ test("a person with RM + Data Entry switches role from the top bar", async ({ pa
         clientScope: [],
         mustChangePassword: false,
       });
-    if (path.startsWith("/workflow/data-entry/queue"))
+    if (
+      path.startsWith("/workflow/data-entry/queue") ||
+      path.startsWith("/workflow/data-entry/unified-queue")
+    )
       return reply({
         items: [],
         total: 0,

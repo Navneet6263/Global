@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader } from "@/components/layout/page-header";
 import { TeamAnnexure } from "@/features/workflow-ui/TeamAnnexure";
+import { validateVerifierDepartmentSearch } from "@/lib/auth/verifier-department";
 
 export const Route = createFileRoute("/verifier/annexure")({
   head: () => ({ meta: [{ title: "Team annexure — Sapling Global" }] }),
+  validateSearch: validateVerifierDepartmentSearch,
   component: Page,
 });
 

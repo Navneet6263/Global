@@ -1,3 +1,4 @@
+import type { Prisma } from "../generated/prisma/client";
 import {
   checkPublicSelect,
   subjectPublicSelect,
@@ -114,7 +115,7 @@ export const caseListSelect = {
     },
     orderBy: { createdAt: "desc" as const },
   },
-} as const;
+} as const satisfies Prisma.VerificationCaseSelect;
 
 export const caseDetailSelect = {
   ...caseListSelect,
@@ -191,6 +192,10 @@ export const caseDetailSelect = {
           sizeBytes: true,
           sha256: true,
           malwareState: true,
+          reviewStatus: true,
+          reviewNote: true,
+          reviewedAt: true,
+          clarification: { select: { publicId: true } },
           createdAt: true,
         },
         orderBy: { version: "desc" as const },
@@ -200,11 +205,21 @@ export const caseDetailSelect = {
   clarifications: {
     select: {
       publicId: true,
+      level: true,
       status: true,
       subject: true,
+      requestedDocumentType: true,
+      submittedDocumentVersion: true,
+      rejectionCount: true,
+      lastRejectedAt: true,
+      lastRejectedReason: true,
+      reentryCompletedAt: true,
       dueAt: true,
       resolvedAt: true,
       createdAt: true,
+      submittedDocument: {
+        select: { publicId: true, type: true, currentVersion: true },
+      },
     },
     orderBy: { createdAt: "desc" as const },
   },
@@ -261,4 +276,4 @@ export const caseDetailSelect = {
     },
     orderBy: { createdAt: "desc" as const },
   },
-} as const;
+} as const satisfies Prisma.VerificationCaseSelect;

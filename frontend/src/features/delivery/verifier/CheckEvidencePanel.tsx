@@ -17,7 +17,13 @@ const sizeText = (bytes: number) =>
  * verified (e.g. the Aadhaar / UAN portal), written or email replies, photos or lab
  * reports, each with a short caption; QA and the RM see the same files in the report.
  */
-export function CheckEvidencePanel({ checkId }: { checkId: string }) {
+export function CheckEvidencePanel({
+  checkId,
+  readOnly = false,
+}: {
+  checkId: string;
+  readOnly?: boolean;
+}) {
   const queryClient = useQueryClient();
   const input = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
@@ -77,7 +83,7 @@ export function CheckEvidencePanel({ checkId }: { checkId: string }) {
           </span>
         ) : null}
       </header>
-      {data?.canEdit ? (
+      {!readOnly && data?.canEdit ? (
         <div className="grid gap-2">
           <input
             value={caption}
@@ -156,7 +162,7 @@ export function CheckEvidencePanel({ checkId }: { checkId: string }) {
               key={file.id}
               checkId={checkId}
               file={file}
-              canEdit={data.canEdit}
+              canEdit={!readOnly && data.canEdit}
               onChanged={() => queryClient.invalidateQueries({ queryKey: key })}
             />
           ))}

@@ -1,4 +1,3 @@
-import { checksForDocument } from "../cases/check-requirements";
 import {
   ConflictException,
   Injectable,
@@ -18,6 +17,10 @@ import { CANDIDATE_PRIVACY_NOTICE } from "../documents/candidate-privacy-notice"
 import { RequesterSupportRequestsService } from "../support/services/requester-support-requests.service";
 import { authorizeCandidateAccess } from "./candidate-access-authorizer";
 import { issueCandidateLink } from "./candidate-link";
+import {
+  presentCandidatePortalSummary,
+  recordCandidateClarificationResponse,
+} from "./candidate-portal-presenter";
 import { applyIntakeRules } from "../workflow/intake-rules";
 import {
   candidateRequestedTypes,
@@ -95,55 +98,12 @@ export class CandidatePortalService {
       access.case.checks,
     );
     const uploads = candidateUploadItems(requested, access.case.documents);
-    return {
-      id: access.publicId,
-      expiresAt: access.expiresAt,
-      completedAt: access.completedAt,
-      privacyNotice: CANDIDATE_PRIVACY_NOTICE,
-      case: {
-        caseNumber: access.case.caseNumber,
-        status: access.case.status,
-        candidateName: access.case.subject.fullName,
-        clientName: access.case.client.displayName,
-        dueAt: access.case.dueAt,
-        requiredDocumentTypes: requested,
-        uploadItems: uploads.items.map((item) => ({
-          ...item,
-          forChecks: checksForDocument(
-            item.type,
-            access.case.checks.map((check) => check.type),
-          ),
-        })),
-        readyToComplete: uploads.complete,
-        checks: access.case.checks.map((check) => ({
-          type: check.type,
-          status: check.status,
-        })),
-        documents: access.case.documents.map((document) => ({
-          type: document.type,
-          status: document.status,
-          currentVersion: document.currentVersion,
-          reviewNote: document.reviewNote,
-          expiresAt: document.expiresAt,
-        })),
-        clarifications: access.case.clarifications.map((item) => ({
-          id: item.publicId,
-          subject: item.subject,
-          status: item.status,
-          dueAt: item.dueAt,
-          messages: item.messages.map(({ senderType, body, createdAt }) => ({
-            sender: senderType,
-            body,
-            createdAt,
-          })),
-        })),
-        consentStatus: access.case.consents[0]?.status ?? "NOT_REQUESTED",
-        reportAvailable: access.case.reports.some(
-          (report) => report.status === "PUBLISHED",
-        ),
-        supportRequests,
-      },
-    };
+    return presentCandidatePortalSummary(
+      access,
+      requested,
+      uploads,
+      supportRequests,
+    );
   }
 
   /**
@@ -294,61 +254,21 @@ export class CandidatePortalService {
       (item) => item.publicId === clarificationPublicId,
     );
     if (!clarification) throw new NotFoundException("Clarification not found");
+    if (clarification.level === "L2" && clarification.requestedDocumentType) {
+      throw new ConflictException(
+        "Upload the requested corrected document using your clarification form",
+      );
+    }
     if (clarification.status !== "OPEN") {
       throw new ConflictException(
         "Only an open information request can receive a response",
       );
     }
-    const respondedAt = new Date();
-    await this.prisma.$transaction(async (tx) => {
-      const updated = await tx.clarification.updateMany({
-        where: { id: clarification.id, caseId: access.caseId, status: "OPEN" },
-        data: {
-          status: "RESPONDED",
-          responseTokenHash: null,
-          responseTokenExpiresAt: null,
-        },
-      });
-      if (updated.count !== 1) {
-        throw new ConflictException(
-          "Information request changed; refresh and try again",
-        );
-      }
-      await tx.clarificationMessage.create({
-        data: {
-          clarificationId: clarification.id,
-          senderType: "CANDIDATE",
-          body: message.trim(),
-        },
-      });
-      const recipients = await activeOperationsRecipients(tx, {
-        tenantId: access.tenantId,
-        branchId: access.case.branchId,
-        clientId: access.case.clientId,
-        assignedUserId: access.case.assignedOpsUserId,
-      });
-      if (recipients.length) {
-        await tx.notification.createMany({
-          data: recipients.map((recipient) => ({
-            tenantId: access.tenantId,
-            userId: recipient.id,
-            type: "CLARIFICATION_RESPONDED",
-            title: "Candidate response received",
-            body: `${access.case.caseNumber}: ${clarification.subject}`,
-            href: `/cases/${access.case.publicId}`,
-          })),
-        });
-      }
-      await tx.auditEvent.create({
-        data: {
-          tenantId: access.tenantId,
-          action: "clarification.candidate-responded",
-          resourceType: "clarification",
-          resourcePublicId: clarificationPublicId,
-          afterJson: JSON.stringify({ status: "RESPONDED", respondedAt }),
-        },
-      });
-    });
-    return { received: true, respondedAt };
+    return recordCandidateClarificationResponse(
+      this.prisma,
+      access,
+      clarification,
+      message,
+    );
   }
 }

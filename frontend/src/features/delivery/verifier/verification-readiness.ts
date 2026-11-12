@@ -7,6 +7,20 @@ export const MIN_SUMMARY = 20;
 
 export type StepId = "details" | "proof" | "outcome" | "review";
 
+export const STEP_ORDER: readonly StepId[] = ["details", "proof", "outcome", "review"];
+
+/** First incomplete step chosen once on load; edits do not auto-advance after this is latched. */
+export function resolveInitialStep(input: {
+  detailsDone: boolean;
+  proofDone: boolean;
+  outcomeDone: boolean;
+}): StepId {
+  if (!input.detailsDone) return "details";
+  if (!input.proofDone) return "proof";
+  if (!input.outcomeDone) return "outcome";
+  return "review";
+}
+
 /**
  * Whether the verified details and proof are in place, from the same queries the
  * details form and proof panel use (so saving there updates the steps at once).

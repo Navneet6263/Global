@@ -29,10 +29,20 @@ class LeadReviewDto {
   @IsOptional() @IsString() @MaxLength(1000) note?: string;
 }
 
+class DepartmentFilterDto {
+  @IsOptional()
+  @IsUUID()
+  departmentId?: string;
+}
+
 class TaskQueryDto extends PageQueryDto {
   @IsOptional()
   @IsUUID()
   taskId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  departmentId?: string;
 
   @IsOptional()
   @IsIn(["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED", "COMPLETED"])
@@ -65,8 +75,11 @@ export class TasksController {
   @Get("tasks/mine/insights")
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
   @RequirePermissions(Permission.TaskRead)
-  insights(@CurrentActor() actor: Actor) {
-    return this.tasks.insights(actor);
+  insights(
+    @CurrentActor() actor: Actor,
+    @Query() query: DepartmentFilterDto,
+  ) {
+    return this.tasks.insights(actor, query.departmentId);
   }
 
   @Get("tasks/:taskId/context")
@@ -75,8 +88,9 @@ export class TasksController {
   context(
     @CurrentActor() actor: Actor,
     @Param("taskId", ParseUUIDPipe) taskId: string,
+    @Query() query: DepartmentFilterDto,
   ) {
-    return this.tasks.context(actor, taskId);
+    return this.tasks.context(actor, taskId, query.departmentId);
   }
 
   @Post("checks/:checkId/tasks")

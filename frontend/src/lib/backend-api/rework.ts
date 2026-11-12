@@ -33,9 +33,10 @@ export interface AnnexureItem {
   canSendBack: boolean;
 }
 
-export const getUtvBucket = (params: { page: number; search?: string }) => {
+export const getUtvBucket = (params: { page: number; search?: string; departmentId?: string }) => {
   const query = new URLSearchParams({ page: String(params.page), pageSize: "20" });
   if (params.search) query.set("search", params.search);
+  if (params.departmentId) query.set("departmentId", params.departmentId);
   return apiRequest<{ items: UtvItem[]; total: number; page: number; pageSize: number }>(
     `/workflow/utv?${query}`,
   );
@@ -47,18 +48,26 @@ export const reworkCheck = (checkId: string, mode: ReworkMode, reason: string) =
     { method: "POST", body: JSON.stringify({ mode, reason }) },
   );
 
-export const getTeamAnnexure = (period: AnnexurePeriod) =>
-  apiRequest<{
+export const getTeamAnnexure = (period: AnnexurePeriod, departmentId?: string) => {
+  const query = new URLSearchParams({ period });
+  if (departmentId) query.set("departmentId", departmentId);
+  return apiRequest<{
     period: AnnexurePeriod;
     since: string;
     total: number;
     colours: Record<string, number>;
     items: AnnexureItem[];
-  }>(`/workflow/team-annexure?period=${period}`);
+  }>(`/workflow/team-annexure?${query}`);
+};
 
-export async function downloadTeamAnnexure(period: AnnexurePeriod, columns?: readonly string[]) {
+export async function downloadTeamAnnexure(
+  period: AnnexurePeriod,
+  columns?: readonly string[],
+  departmentId?: string,
+) {
   const query = new URLSearchParams({ period });
   if (columns?.length) query.set("columns", columns.join(","));
+  if (departmentId) query.set("departmentId", departmentId);
   const blob = await apiDownload(`/workflow/team-annexure/export?${query}`);
   saveBlob(blob, `Sapling-Global-team-annexure-${period}.csv`);
 }

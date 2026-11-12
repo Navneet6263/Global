@@ -18,6 +18,7 @@ export const Route = createFileRoute("/spoc-rm/work")({
       bucket: rmBuckets.some((bucket) => bucket.value === input["bucket"])
         ? (input["bucket"] as RmBucket)
         : undefined,
+      tab: input["tab"] === "l2" || input["tab"] === "l1" ? input["tab"] : undefined,
       q: q || undefined,
       page: Number.isSafeInteger(page) && page > 1 && page <= 100_000 ? page : undefined,
       caseId:
@@ -67,7 +68,11 @@ function RmWorkPage() {
         search={search}
         onChange={(patch, replace) =>
           void navigate({
-            search: (current) => ({ ...current, ...patch }),
+            search: (current) => {
+              const next = { ...current, ...patch };
+              if (next.bucket !== "correction") next.tab = undefined;
+              return next;
+            },
             replace,
             resetScroll: false,
           })

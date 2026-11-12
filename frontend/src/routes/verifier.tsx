@@ -1,9 +1,8 @@
 import { Outlet, createFileRoute } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
 import { FileSpreadsheet, UserCog, UsersRound } from "lucide-react";
 import type { NavItem } from "@/config/navigation";
-import { getSession } from "@/lib/api/auth";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
+import { useVerifierDepartment } from "@/lib/auth/verifier-department";
 import { ConfigNavigation } from "@/features/workspace-shell/ConfigNavigation";
 import { RoleWorkspaceShell } from "@/features/workspace-shell/RoleWorkspaceShell";
 
@@ -85,19 +84,12 @@ const destinations = [
 ];
 
 function VerifierLayout() {
-  const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
-  const isLead = Boolean(
-    session.data?.departments?.some((d) => d.kind === "VERIFICATION" && d.role === "LEAD"),
-  );
-  const team = session.data?.departments?.find((d) => d.kind === "VERIFICATION");
-  // Operations and Platform Admin may work any team's queue; the API allows it.
-  const supervisor = Boolean(
-    session.data?.roles.some((role) => role === "PLATFORM_ADMIN" || role === "OPS_MANAGER"),
-  );
+  const { activeTeam, departmentId, isLead, supervisor } = useVerifierDepartment();
+  const sharedSearch = departmentId ? { department: departmentId } : undefined;
   return (
     <RoleWorkspaceShell
       workspace="verifier"
-      roleLabel={isLead ? "Team Leader" : "Verifier"}
+      roleLabel={isLead || Boolean(activeTeam) ? "Team Leader" : "Verifier"}
       titles={{
         "": "Overview",
         queue: "Active queue",
@@ -132,14 +124,20 @@ function VerifierLayout() {
           : destinations
       }
       caseSearchTo="/verifier/queue"
+      caseSearchParams={sharedSearch}
       searchPlaceholder="Find a check or page"
       navigation={(onNavigate) => (
         <ConfigNavigation
           workspace="verifier"
-          subtitle={team ? `${team.name}${isLead ? " · Team Leader" : ""}` : "Verification"}
+          subtitle={
+            activeTeam
+              ? `${activeTeam.name}${isLead || supervisor ? " · Team Leader" : ""}`
+              : "Verification"
+          }
           extraItems={
             isLead ? [TEAM_QUEUE, TEAM_MEMBERS, TEAM_ANNEXURE] : supervisor ? [TEAM_QUEUE] : []
           }
+          sharedSearch={sharedSearch}
           onNavigate={onNavigate}
         />
       )}

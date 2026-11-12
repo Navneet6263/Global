@@ -50,9 +50,25 @@ export async function authorizeCandidateAccess(
             select: {
               id: true,
               publicId: true,
+              level: true,
               subject: true,
               status: true,
               dueAt: true,
+              requestedDocumentType: true,
+              submittedDocumentVersion: true,
+              rejectionCount: true,
+              lastRejectedAt: true,
+              lastRejectedReason: true,
+              opsReviewedAt: true,
+              reentryCompletedAt: true,
+              submittedDocument: {
+                select: {
+                  publicId: true,
+                  type: true,
+                  status: true,
+                  currentVersion: true,
+                },
+              },
               messages: {
                 select: { senderType: true, body: true, createdAt: true },
                 orderBy: { createdAt: "asc" },

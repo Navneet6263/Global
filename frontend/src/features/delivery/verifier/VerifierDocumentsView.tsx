@@ -82,7 +82,14 @@ export function VerifierDocumentsView({ context }: { context: VerifierTaskContex
                   <FileText className="size-5" aria-hidden />
                 </span>
                 <div className="min-w-0 flex-[1_1_180px]">
-                  <h3 className="text-sm font-semibold">{humanize(document.type)}</h3>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-sm font-semibold">{humanize(document.type)}</h3>
+                    {version?.reviewStatus ? (
+                      <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10.5px] font-semibold text-slate-700">
+                        {humanize(version.reviewStatus)}
+                      </span>
+                    ) : null}
+                  </div>
                   <p className="mt-1 break-words text-xs text-muted-foreground">
                     {version?.originalName ?? "Awaiting upload"}
                   </p>
@@ -90,6 +97,9 @@ export function VerifierDocumentsView({ context }: { context: VerifierTaskContex
                     <p className="mt-1 text-xs text-muted-foreground">
                       v{version.version} · {formatBytes(version.sizeBytes)} · Scan:{" "}
                       {humanize(version.malwareState)}
+                      {document.versions.length > 1
+                        ? ` · ${document.versions.length} versions`
+                        : ""}
                     </p>
                   ) : null}
                 </div>
@@ -98,15 +108,45 @@ export function VerifierDocumentsView({ context }: { context: VerifierTaskContex
                     documentId={document.publicId}
                     filename={version.originalName}
                     label={humanize(document.type)}
+                    version={version.version}
                     compact={false}
                   />
                 ) : null}
               </div>
               {version ? (
                 <details className="mt-3 border-t border-border/60 pt-2 text-xs text-muted-foreground">
-                  <summary className="cursor-pointer font-medium">File details</summary>
-                  <p className="mt-2">Uploaded {formatDateTime(version.createdAt)}</p>
-                  <p className="mt-1 break-all font-mono text-xs">SHA-256 {version.sha256}</p>
+                  <summary className="cursor-pointer font-medium">
+                    Version history ({document.versions.length})
+                  </summary>
+                  <div className="mt-2 space-y-2">
+                    {document.versions.map((entry) => (
+                      <div
+                        key={entry.version}
+                        className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-medium text-slate-800">
+                            v{entry.version} · {entry.originalName}{" "}
+                            {entry.reviewStatus ? `(${humanize(entry.reviewStatus)})` : ""}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {formatBytes(entry.sizeBytes)} · Uploaded{" "}
+                            {formatDateTime(entry.createdAt)}
+                            {entry.reviewNote ? ` · Note: ${entry.reviewNote}` : ""}
+                          </p>
+                        </div>
+                        <DocumentFileActions
+                          documentId={document.publicId}
+                          filename={entry.originalName}
+                          label={`${humanize(document.type)} v${entry.version}`}
+                          version={entry.version}
+                        />
+                      </div>
+                    ))}
+                    <p className="break-all font-mono text-[11px]">
+                      Latest SHA-256 {version.sha256}
+                    </p>
+                  </div>
                 </details>
               ) : null}
             </article>

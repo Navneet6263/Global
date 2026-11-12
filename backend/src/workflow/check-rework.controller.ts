@@ -13,6 +13,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
+  IsUUID,
   Length,
   Max,
   MaxLength,
@@ -35,6 +36,7 @@ export class UtvQueryDto {
   @Type(() => Number) @IsInt() @Min(1) @Max(10000) page = 1;
   @Type(() => Number) @IsInt() @Min(5) @Max(100) pageSize = 20;
   @IsOptional() @IsString() @MaxLength(80) search?: string;
+  @IsOptional() @IsUUID() departmentId?: string;
 }
 
 export class ReworkDto {
@@ -44,6 +46,7 @@ export class ReworkDto {
 
 export class AnnexureQueryDto {
   @IsIn(["week", "month", "year"]) period: AnnexurePeriod = "month";
+  @IsOptional() @IsUUID() departmentId?: string;
 }
 
 export class AnnexureExportQueryDto extends AnnexureQueryDto {
@@ -78,7 +81,7 @@ export class CheckReworkController {
   @RequireRoles("PLATFORM_ADMIN", "OPS_MANAGER", "VERIFIER")
   @RequirePermissions(Permission.CaseRead)
   annexure(@CurrentActor() actor: Actor, @Query() query: AnnexureQueryDto) {
-    return this.rework.annexure(actor, query.period);
+    return this.rework.annexure(actor, query.period, query.departmentId);
   }
 
   @Get("team-annexure/export")
@@ -88,6 +91,11 @@ export class CheckReworkController {
     @CurrentActor() actor: Actor,
     @Query() query: AnnexureExportQueryDto,
   ) {
-    return this.rework.annexureCsv(actor, query.period, query.columns);
+    return this.rework.annexureCsv(
+      actor,
+      query.period,
+      query.columns,
+      query.departmentId,
+    );
   }
 }

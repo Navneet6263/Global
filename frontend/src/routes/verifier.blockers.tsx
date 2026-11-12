@@ -13,23 +13,37 @@ import {
 } from "@/features/delivery/verifier/task-export";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
+import {
+  useVerifierDepartment,
+  validateVerifierDepartmentSearch,
+} from "@/lib/auth/verifier-department";
 
 export const Route = createFileRoute("/verifier/blockers")({
   head: () => ({ meta: [{ title: "Verifier Blockers — Sapling Global" }] }),
+  validateSearch: validateVerifierDepartmentSearch,
   component: VerifierBlockersPage,
 });
 
 function VerifierBlockersPage() {
+  const { department } = Route.useSearch();
+  const { departmentId: resolvedDepartmentId } = useVerifierDepartment();
+  const departmentId = department ?? resolvedDepartmentId;
   const [cursor, setCursor] = useState<string>();
   const [history, setHistory] = useState<Array<string | undefined>>([]);
   const insights = useQuery({
-    queryKey: ["verifier", "insights"],
-    queryFn: getVerifierInsights,
+    queryKey: ["verifier", "insights", departmentId ?? "all"],
+    queryFn: () => getVerifierInsights(departmentId),
     staleTime: 20_000,
   });
   const tasks = useQuery({
-    queryKey: ["tasks", "mine", "BLOCKED", cursor],
-    queryFn: () => getMyTasks({ status: "BLOCKED", ...(cursor ? { cursor } : {}), limit: 20 }),
+    queryKey: ["tasks", "mine", "BLOCKED", departmentId ?? "all", cursor],
+    queryFn: () =>
+      getMyTasks({
+        status: "BLOCKED",
+        ...(departmentId ? { departmentId } : {}),
+        ...(cursor ? { cursor } : {}),
+        limit: 20,
+      }),
   });
   if (tasks.isLoading || insights.isLoading)
     return <WorkspaceLoading label="Loading blocker recovery desk" />;
@@ -85,6 +99,7 @@ function VerifierBlockersPage() {
       />
       <RecoveryGuide />
       <VerifierTaskTable
+        departmentId={departmentId}
         exporter={
           <ExportSheetButton
             source="verifier-blockers"
@@ -93,7 +108,9 @@ function VerifierBlockersPage() {
             columns={TASK_EXPORT_COLUMNS}
             defaults={TASK_EXPORT_DEFAULTS}
             scopeNote="Blocked checks"
-            loadRows={() => loadAllTasks({ status: "BLOCKED" })}
+            loadRows={() =>
+              loadAllTasks({ status: "BLOCKED", ...(departmentId ? { departmentId } : {}) })
+            }
           />
         }
         title="Blocked assignments"

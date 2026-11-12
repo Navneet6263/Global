@@ -70,9 +70,12 @@ export async function sendInsufficiencyNotice(
     },
     select: { id: true, email: true },
   });
-  if (admins.length) {
+  const uniqueAdmins = Array.from(
+    new Map(admins.map((admin) => [admin.id.toString(), admin])).values(),
+  );
+  if (uniqueAdmins.length) {
     await tx.notification.createMany({
-      data: admins.map((admin) => ({
+      data: uniqueAdmins.map((admin) => ({
         tenantId: input.tenantId,
         userId: admin.id,
         type: "INSUFFICIENCY_RAISED",
@@ -83,12 +86,16 @@ export async function sendInsufficiencyNotice(
         href: "/client-portal/actions",
       })),
     });
-    for (const admin of admins)
+    const uniqueEmails = new Set<string>();
+    for (const admin of uniqueAdmins) {
+      const normalizedEmail = admin.email.trim().toLowerCase();
+      if (!normalizedEmail || uniqueEmails.has(normalizedEmail)) continue;
+      uniqueEmails.add(normalizedEmail);
       await queueEmail(tx, deps.secretBox, {
         tenantId: input.tenantId,
         aggregateType: "case",
         aggregateId: record.publicId,
-        to: admin.email,
+        to: admin.email.trim(),
         template: "insufficiency",
         variables: {
           caseNumber: record.caseNumber,
@@ -100,9 +107,10 @@ export async function sendInsufficiencyNotice(
           url: `${deps.webOrigin}/client-portal/actions`,
         },
       });
+    }
   }
   return {
     candidateReached: link.delivery.queued,
-    clientAdmins: admins.length,
+    clientAdmins: uniqueAdmins.length,
   };
 }

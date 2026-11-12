@@ -1,169 +1,32 @@
-import { roleIs } from "../common/auth/role-filter";
 import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-  Optional,
+  BadRequestException, ConflictException, ForbiddenException,
+  Injectable, NotFoundException, Optional,
 } from "@nestjs/common";
 import { caseAccessScope } from "../common/auth/access-scope";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
-import { assertCaseEvidenceReady } from "../documents/evidence-readiness";
-import { loadCheckDocumentStates } from "./check-document-state";
 import type { Prisma } from "../generated/prisma/client";
+import { loadCheckDocumentStates } from "./check-document-state";
 import type {
-  AssignDataEntryDto,
-  InitiateCheckDto,
-  MarkReadyDto,
-  RmQueueQueryDto,
-  SendBackDto,
-  WorkQueueQueryDto,
+  AssignDataEntryDto, InitiateCheckDto, MarkReadyDto,
+  RmQueueQueryDto, SendBackDto, WorkQueueQueryDto,
 } from "./dto/workflow.dto";
 import { INITIATION_FORMS, cleanInitiation } from "./initiation-fields";
+import { executeAssignDataEntry } from "./intake-assign.helpers";
+import { intakeSelect, readableTypes, searchWhere } from "./intake-queue.presenter";
+import { executeMarkReady } from "./intake-ready.helpers";
+import { pageQueueCases, queryRmQueue } from "./intake-rm-queue.helpers";
 import { RoutingService } from "./routing.service";
 import {
-  OPEN_CLARIFICATION,
-  assertCaseOwner,
-  assertStage,
-  assertVersion,
-  assertWorkflowV2,
-  isSupervisor,
-  ledDepartmentIds,
-  trimNote,
+  assertCaseOwner, assertStage, assertVersion,
+  assertWorkflowV2, isSupervisor, ledDepartmentIds,
 } from "./workflow-access";
 
-const intakeSelect = {
-  id: true,
-  publicId: true,
-  caseNumber: true,
-  status: true,
-  version: true,
-  workflowVersion: true,
-  intakeStage: true,
-  assignedOpsUserId: true,
-  dataEntryUserId: true,
-  branchId: true,
-  clientId: true,
-} satisfies Prisma.VerificationCaseSelect;
-
-/** Fields every work-queue row needs; nothing private to another role. */
-export const queueCaseSelect = {
-  publicId: true,
-  caseNumber: true,
-  status: true,
-  priority: true,
-  version: true,
-  workflowVersion: true,
-  intakeStage: true,
-  dueAt: true,
-  createdAt: true,
-  updatedAt: true,
-  dataEntryAssignedAt: true,
-  dataEntryReadyAt: true,
-  escalatedAt: true,
-  escalationNote: true,
-  subject: { select: { fullName: true } },
-  client: { select: { publicId: true, displayName: true } },
-  assignedOpsUser: { select: { publicId: true, displayName: true } },
-  dataEntryUser: { select: { publicId: true, displayName: true } },
-  documents: { select: { status: true } },
-  clarifications: {
-    where: { status: { in: OPEN_CLARIFICATION } },
-    select: { level: true, status: true },
-  },
-  checks: {
-    select: {
-      status: true,
-      department: { select: { publicId: true, name: true } },
-      tasks: {
-        where: {
-          status: { in: ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"] },
-        },
-        select: { status: true, assignee: { select: { displayName: true } } },
-      },
-    },
-  },
-} satisfies Prisma.VerificationCaseSelect;
-
-type QueueCase = Prisma.VerificationCaseGetPayload<{
-  select: typeof queueCaseSelect;
-}>;
-
-export function presentQueueCase(row: QueueCase) {
-  const done = row.checks.filter(
-    (check) => check.status === "COMPLETED",
-  ).length;
-  return {
-    id: row.publicId,
-    caseNumber: row.caseNumber,
-    status: row.status,
-    priority: row.priority,
-    version: row.version,
-    workflowVersion: row.workflowVersion,
-    intakeStage: row.intakeStage,
-    dueAt: row.dueAt,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-    dataEntryAssignedAt: row.dataEntryAssignedAt,
-    dataEntryReadyAt: row.dataEntryReadyAt,
-    candidateName: row.subject.fullName,
-    client: { id: row.client.publicId, name: row.client.displayName },
-    // Internal queues only: who escalated is not exposed here, just when and why.
-    escalation: row.escalatedAt
-      ? { at: row.escalatedAt, note: row.escalationNote }
-      : null,
-    rm: row.assignedOpsUser
-      ? {
-          id: row.assignedOpsUser.publicId,
-          name: row.assignedOpsUser.displayName,
-        }
-      : null,
-    dataEntry: row.dataEntryUser
-      ? { id: row.dataEntryUser.publicId, name: row.dataEntryUser.displayName }
-      : null,
-    documents: {
-      total: row.documents.length,
-      rejected: row.documents.filter(
-        (document) => document.status === "REJECTED",
-      ).length,
-    },
-    openInsufficiency: {
-      l1: row.clarifications.filter((item) => item.level === "L1").length,
-      l2: row.clarifications.filter((item) => item.level !== "L1").length,
-    },
-    checks: {
-      total: row.checks.length,
-      completed: done,
-      unassigned: row.checks.filter((check) =>
-        check.tasks.some((task) => task.status === "UNASSIGNED"),
-      ).length,
-      departments: [
-        ...new Set(
-          row.checks.flatMap((check) =>
-            check.department ? [check.department.name] : [],
-          ),
-        ),
-      ],
-    },
-  };
-}
-
-const CLOSED_STATUSES = ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"];
-
-export const RM_BUCKETS: Record<string, Prisma.VerificationCaseWhereInput> = {
-  needs_data_entry: { intakeStage: "INTAKE", status: "DOCUMENT_PENDING" },
-  with_data_entry: { intakeStage: "DATA_ENTRY" },
-  correction: { intakeStage: "CORRECTION" },
-  ready: { intakeStage: "READY" },
-  in_verification: {
-    intakeStage: "ROUTED",
-    status: { in: ["IN_PROGRESS", "CLARIFICATION_PENDING"] },
-  },
-  qc: { status: "QA_REVIEW" },
-  final_approval: { status: "MANAGER_REVIEW" },
-};
+export {
+  PRE_CONSENT_STATUSES, RM_BUCKETS, RM_ELIGIBLE_CASE_WHERE,
+  RM_EXCLUDED_STATUSES, presentQueueCase, queueCaseSelect,
+  rmEligibleWhere, searchWhere,
+} from "./intake-queue.presenter";
 
 @Injectable()
 export class IntakeService {
@@ -179,126 +42,13 @@ export class IntakeService {
     input: AssignDataEntryDto,
   ) {
     const current = await this.findCase(actor, casePublicId);
-    assertWorkflowV2(current);
-    assertVersion(current.version, input.version);
-    const leads = ledDepartmentIds(actor, "DATA_ENTRY");
-    if (!(
-      actor.roles.includes("DATA_ENTRY") &&
-      leads.length &&
-      current.dataEntryUserId
-    ))
-      assertCaseOwner(actor, current.assignedOpsUserId);
-    if (!current.assignedOpsUserId)
-      throw new ConflictException(
-        "Assign the responsible RM before Data Entry",
-      );
-    if (current.status !== "DOCUMENT_PENDING")
-      throw new ConflictException(
-        "Data Entry starts after the candidate has given consent and submitted documents",
-      );
-    assertStage(
+    return executeAssignDataEntry(
+      this.prisma,
+      actor,
       current,
-      ["INTAKE", "DATA_ENTRY", "CORRECTION"],
-      "Data Entry has already marked this case Ready",
+      casePublicId,
+      input,
     );
-    // The case RM who also holds Data Entry may take the data entry itself without
-    // being in a Data Entry team (RM-does-data-entry way of working).
-    const selfDataEntry =
-      input.assigneeId === actor.userPublicId &&
-      actor.roles.includes("SPOC_RM") &&
-      actor.roles.includes("DATA_ENTRY") &&
-      current.assignedOpsUserId === actor.userId;
-    const assignee = await this.prisma.user.findFirst({
-      where: {
-        tenantId: actor.tenantId,
-        publicId: input.assigneeId,
-        status: "ACTIVE",
-        userRoles: { some: { role: roleIs("DATA_ENTRY") } },
-        ...(selfDataEntry
-          ? {}
-          : {
-              departmentMemberships: {
-                some: {
-                  department: {
-                    tenantId: actor.tenantId,
-                    kind: "DATA_ENTRY",
-                    status: "ACTIVE",
-                  },
-                  ...(leads.length &&
-                  !isSupervisor(actor) &&
-                  !actor.roles.includes("SPOC_RM")
-                    ? { departmentId: { in: leads } }
-                    : {}),
-                },
-              },
-            }),
-      },
-      select: { id: true, publicId: true, displayName: true },
-    });
-    if (!assignee)
-      throw new BadRequestException(
-        "Choose an active member of the Data Entry team",
-      );
-    if (assignee.id === current.dataEntryUserId)
-      throw new ConflictException(
-        "This case is already with this Data Entry user",
-      );
-    const note = trimNote(input.note);
-    const stage =
-      current.intakeStage === "CORRECTION" ? "CORRECTION" : "DATA_ENTRY";
-    await this.prisma.$transaction(async (tx) => {
-      const updated = await tx.verificationCase.updateMany({
-        where: { id: current.id, version: input.version },
-        data: {
-          dataEntryUserId: assignee.id,
-          dataEntryAssignedAt: new Date(),
-          intakeStage: stage,
-          version: { increment: 1 },
-        },
-      });
-      if (updated.count !== 1)
-        throw new ConflictException(
-          "Case changed since it was loaded; refresh and try again",
-        );
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: current.dataEntryUserId
-            ? "case.data-entry-reassigned"
-            : "case.data-entry-assigned",
-          resourceType: "case",
-          resourcePublicId: casePublicId,
-          beforeJson: JSON.stringify({
-            intakeStage: current.intakeStage,
-            version: current.version,
-          }),
-          afterJson: JSON.stringify({
-            caseNumber: current.caseNumber,
-            dataEntryUserId: assignee.publicId,
-            dataEntryUserName: assignee.displayName,
-            intakeStage: stage,
-            note,
-          }),
-        },
-      });
-      await tx.notification.create({
-        data: {
-          tenantId: actor.tenantId,
-          userId: assignee.id,
-          type: "DATA_ENTRY_ASSIGNED",
-          title: "Case assigned for Data Entry",
-          body: `${current.caseNumber} is ready for completeness review.${note ? ` Note: ${note}` : ""}`,
-          href: `/data-entry?caseId=${casePublicId}`,
-        },
-      });
-    });
-    return {
-      id: casePublicId,
-      dataEntry: { id: assignee.publicId, name: assignee.displayName },
-      intakeStage: stage,
-      version: current.version + 1,
-    };
   }
 
   /** Check-wise initiation forms, so the screen and the validation never drift apart. */
@@ -331,16 +81,15 @@ export class IntakeService {
     if (!check) throw new NotFoundException("Check not found in this case");
     if (check.departmentId)
       throw new ConflictException("This check was already sent to its team");
-    // Check by check: its form opens once its own documents are accepted.
     const { states } = await loadCheckDocumentStates(this.prisma, current.id);
     const own = states.find((row) => row.check.publicId === checkPublicId);
     if (own?.state === "TO_REVIEW")
       throw new BadRequestException(
-        `Accept this check's documents first: ${readable(own.toReview)}`,
+        `Accept this check's documents first: ${readableTypes(own.toReview)}`,
       );
     if (own?.state === "WAITING_CANDIDATE")
       throw new BadRequestException(
-        `This check waits for the candidate to upload again: ${readable(own.waiting)}`,
+        `This check waits for the candidate to upload again: ${readableTypes(own.waiting)}`,
       );
     const entries = cleanInitiation(check.type, input.entries);
     const initiatedAt = new Date();
@@ -379,210 +128,15 @@ export class IntakeService {
   /** Data Entry confirms completeness; the case returns to the RM, never to Operations. */
   async markReady(actor: Actor, casePublicId: string, input: MarkReadyDto) {
     const current = await this.findCase(actor, casePublicId);
-    assertWorkflowV2(current);
-    assertVersion(current.version, input.version);
     this.assertDataEntryActor(actor, current);
-    assertStage(
-      current,
-      ["DATA_ENTRY"],
-      current.intakeStage === "CORRECTION"
-        ? "Resolve the open correction request before marking Ready"
-        : "This case is not with Data Entry",
-    );
-    const note = trimNote(input.note);
-    // Check by check: which checks are ready to go and which wait for the candidate.
-    const { states, unreviewed } = await loadCheckDocumentStates(
+    return executeMarkReady(
       this.prisma,
-      current.id,
+      this.routing,
+      actor,
+      current,
+      casePublicId,
+      input,
     );
-    const open = states.filter(
-      (row) => !row.check.departmentId && row.check.status !== "COMPLETED",
-    );
-    const held = open.filter((row) => row.state === "WAITING_CANDIDATE");
-    if (held.length || current.status === "IN_PROGRESS") {
-      const openRequests = await this.prisma.clarification.count({
-        where: { caseId: current.id, status: { in: OPEN_CLARIFICATION } },
-      });
-      if (openRequests)
-        throw new BadRequestException(
-          "Resolve every open correction request before completing",
-        );
-      if (unreviewed.length)
-        throw new BadRequestException(
-          `Accept or reject every document first: ${readable(unreviewed)}`,
-        );
-      const ready = open.filter((row) => row.state === "ACCEPTED");
-      const notInitiated = ready.filter(
-        (row) => !row.check.initiatedAt && INITIATION_FORMS[row.check.type],
-      );
-      if (notInitiated.length)
-        throw new BadRequestException(
-          `Initiate every accepted check first: ${readable(notInitiated.map((row) => row.check.type))}`,
-        );
-      if (held.length && !input.processNow)
-        throw new BadRequestException(
-          `${held.length === 1 ? "1 check waits" : `${held.length} checks wait`} for the candidate to upload again (${readable(
-            [...new Set(held.flatMap((row) => row.waiting))],
-          )}). Process the accepted checks now, or wait for the candidate.`,
-        );
-      if (!ready.length)
-        throw new BadRequestException(
-          "No check is ready yet. Wait for the candidate to upload again.",
-        );
-      if (!this.routing)
-        throw new ConflictException("Routing is not available");
-      const result = await this.routing.routeAccepted(
-        actor,
-        current,
-        ready.map((row) => row.check),
-        {
-          finish: !held.length,
-          waiting: held.map((row) => row.check.type),
-          note,
-        },
-      );
-      if (current.assignedOpsUserId)
-        await this.prisma.notification.create({
-          data: {
-            tenantId: actor.tenantId,
-            userId: current.assignedOpsUserId,
-            type: "CHECKS_ROUTED",
-            title: held.length
-              ? "Some checks sent to verification"
-              : "Case sent to verification",
-            body: held.length
-              ? `${current.caseNumber}: ${ready.length} accepted check(s) went to their teams; ${readable(held.map((row) => row.check.type))} wait for the candidate's documents.`
-              : `${current.caseNumber}: Data Entry finished and the remaining checks went to their departments.`,
-            href: `/spoc-rm/work?caseId=${casePublicId}`,
-          },
-        });
-      return result;
-    }
-    await this.prisma.$transaction(async (tx) => {
-      const [openRequests, rejected] = await Promise.all([
-        tx.clarification.count({
-          where: { caseId: current.id, status: { in: OPEN_CLARIFICATION } },
-        }),
-        tx.document.count({
-          where: { caseId: current.id, status: "REJECTED" },
-        }),
-      ]);
-      if (openRequests)
-        throw new BadRequestException(
-          "Resolve every open correction request before marking Ready",
-        );
-      if (rejected)
-        throw new BadRequestException(
-          "Rejected documents must be replaced before marking Ready",
-        );
-      const notAccepted = await tx.document.findMany({
-        where: {
-          caseId: current.id,
-          currentVersion: { gt: 0 },
-          status: { notIn: ["VERIFIED", "REJECTED", "REUPLOAD_REQUIRED"] },
-        },
-        select: { type: true },
-      });
-      if (notAccepted.length)
-        throw new BadRequestException(
-          `Accept every uploaded document before marking Ready: ${[
-            ...new Set(notAccepted.map((doc) => doc.type)),
-          ]
-            .map((type) => type.replaceAll("_", " ").toLowerCase())
-            .join(", ")}`,
-        );
-      const notInitiated = await tx.caseCheck.findMany({
-        where: {
-          caseId: current.id,
-          initiatedAt: null,
-          type: { in: Object.keys(INITIATION_FORMS) },
-        },
-        select: { type: true },
-      });
-      if (notInitiated.length)
-        throw new BadRequestException(
-          `Initiate every check before marking Ready: ${notInitiated
-            .map((check) => check.type.replaceAll("_", " ").toLowerCase())
-            .join(", ")}`,
-        );
-      await assertCaseEvidenceReady(tx, current.id, { includeWork: false });
-      const updated = await tx.verificationCase.updateMany({
-        where: {
-          id: current.id,
-          version: input.version,
-          intakeStage: "DATA_ENTRY",
-        },
-        data: {
-          intakeStage: "READY",
-          dataEntryReadyAt: new Date(),
-          version: { increment: 1 },
-        },
-      });
-      if (updated.count !== 1)
-        throw new ConflictException(
-          "Case changed since it was loaded; refresh and try again",
-        );
-      await tx.auditEvent.create({
-        data: {
-          tenantId: actor.tenantId,
-          actorUserId: actor.userId,
-          action: "case.data-entry-ready",
-          resourceType: "case",
-          resourcePublicId: casePublicId,
-          beforeJson: JSON.stringify({
-            intakeStage: "DATA_ENTRY",
-            version: current.version,
-          }),
-          afterJson: JSON.stringify({
-            caseNumber: current.caseNumber,
-            intakeStage: "READY",
-            note,
-          }),
-        },
-      });
-    });
-    const auto = this.routing
-      ? await this.routing.autoRoute(actor, casePublicId)
-      : ({ routed: false, reason: "" } as const);
-    if (current.assignedOpsUserId) {
-      const rm = current.assignedOpsUserId;
-      await this.prisma.$transaction((tx) =>
-        tx.notification.create({
-          data: auto.routed
-            ? {
-                tenantId: actor.tenantId,
-                userId: rm,
-                type: "CHECKS_ROUTED",
-                title: "Case sent to verification",
-                body: `${current.caseNumber}: Data Entry finished and its checks went to their departments.`,
-                href: `/spoc-rm/work?caseId=${casePublicId}`,
-              }
-            : {
-                tenantId: actor.tenantId,
-                userId: rm,
-                type: "DATA_ENTRY_READY",
-                title: "Case ready for routing",
-                body: `${current.caseNumber}: Data Entry marked the case Ready. Route its checks to verification.${auto.reason ? ` ${auto.reason}.` : ""}`,
-                href: `/spoc-rm/work?caseId=${casePublicId}`,
-              },
-        }),
-      );
-    }
-    if (auto.routed)
-      return {
-        id: casePublicId,
-        intakeStage: auto.intakeStage,
-        status: auto.status,
-        version: auto.version,
-        routed: true,
-      };
-    return {
-      id: casePublicId,
-      intakeStage: "READY",
-      version: current.version + 1,
-      routed: false,
-      routeNote: auto.reason || undefined,
-    };
   }
 
   /** RM returns a Ready case to Data Entry with a reason. */
@@ -671,7 +225,8 @@ export class IntakeService {
       intakeStage: { in: ["DATA_ENTRY", "CORRECTION"] },
       AND: [scope, ...(query.search ? [searchWhere(query.search)] : [])],
     };
-    return this.page(
+    return pageQueueCases(
+      this.prisma,
       where,
       query,
       [{ dueAt: "asc" }, { dataEntryAssignedAt: "asc" }, { publicId: "asc" }],
@@ -694,181 +249,9 @@ export class IntakeService {
     );
   }
 
-  /** RM work queue: the RM's own v2 cases in flow order. Operations sees every RM's cases. */
-  async rmQueue(actor: Actor, query: RmQueueQueryDto) {
-    const supervisor = isSupervisor(actor);
-    if (!supervisor && !actor.roles.includes("SPOC_RM"))
-      throw new ForbiddenException("RM queue is for responsible RMs");
-    const base: Prisma.VerificationCaseWhereInput = {
-      ...caseAccessScope(actor),
-      workflowVersion: 2,
-      ...(supervisor
-        ? { assignedOpsUserId: { not: null } }
-        : { assignedOpsUserId: actor.userId }),
-    };
-    const bucket =
-      query.bucket && query.bucket !== "all"
-        ? RM_BUCKETS[query.bucket]
-        : undefined;
-    const where: Prisma.VerificationCaseWhereInput = {
-      ...base,
-      ...(bucket
-        ? {}
-        : {
-            status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
-          }),
-      AND: [
-        ...(bucket ? [bucket] : []),
-        ...(query.search ? [searchWhere(query.search)] : []),
-        ...(query.clientId ? [{ client: { publicId: query.clientId } }] : []),
-        ...(query.flag === "escalated"
-          ? [{ escalatedAt: { not: null }, status: { notIn: CLOSED_STATUSES } }]
-          : query.flag === "overdue"
-            ? [
-                {
-                  dueAt: { lt: new Date() },
-                  status: { notIn: CLOSED_STATUSES },
-                },
-              ]
-            : []),
-      ],
-    };
-    const counts = Object.fromEntries(
-      Object.entries(RM_BUCKETS).map(([key, value]) => [
-        key,
-        { ...base, ...value },
-      ]),
-    );
-    const [result, summary] = await Promise.all([
-      this.page(
-        where,
-        query,
-        query.sort === "newest"
-          ? [{ createdAt: "desc" }, { publicId: "asc" }]
-          : [{ dueAt: "asc" }, { updatedAt: "asc" }, { publicId: "asc" }],
-        counts,
-      ),
-      this.rmSummary(base),
-    ]);
-    return { ...result, summary };
-  }
-
-  /**
-   * Headline numbers for the RM overview: active work, what is due today or overdue,
-   * what finished this week, and a per-company pulse. Same scope as the queue.
-   */
-  private async rmSummary(base: Prisma.VerificationCaseWhereInput) {
-    const now = new Date();
-    // End of today in India time (UTC+05:30).
-    const ist = new Date(now.getTime() + 330 * 60_000);
-    const endOfDay = new Date(
-      Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate() + 1) -
-        330 * 60_000,
-    );
-    const active: Prisma.VerificationCaseWhereInput = {
-      ...base,
-      status: { notIn: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"] },
-    };
-    const overdueWhere = { ...active, dueAt: { lt: now } };
-    const [
-      activeCount,
-      overdue,
-      dueToday,
-      completedThisWeek,
-      byClient,
-      overdueByClient,
-      escalated,
-    ] = await Promise.all([
-      this.prisma.verificationCase.count({ where: active }),
-      this.prisma.verificationCase.count({ where: overdueWhere }),
-      this.prisma.verificationCase.count({
-        where: { ...active, dueAt: { gte: now, lt: endOfDay } },
-      }),
-      this.prisma.verificationCase.count({
-        where: {
-          ...base,
-          status: { in: ["COMPLETED", "CLOSED"] },
-          updatedAt: { gte: new Date(now.getTime() - 7 * 86_400_000) },
-        },
-      }),
-      this.prisma.verificationCase.groupBy({
-        by: ["clientId"],
-        where: active,
-        _count: { _all: true },
-      }),
-      this.prisma.verificationCase.groupBy({
-        by: ["clientId"],
-        where: overdueWhere,
-        _count: { _all: true },
-      }),
-      this.prisma.verificationCase.count({
-        where: { ...active, escalatedAt: { not: null } },
-      }),
-    ]);
-    const top = [...byClient]
-      .sort((a, b) => b._count._all - a._count._all)
-      .slice(0, 6);
-    const names = top.length
-      ? await this.prisma.client.findMany({
-          where: { id: { in: top.map((row) => row.clientId) } },
-          select: { id: true, publicId: true, displayName: true },
-        })
-      : [];
-    return {
-      active: activeCount,
-      overdue,
-      dueToday,
-      completedThisWeek,
-      escalated,
-      clients: top.flatMap((row) => {
-        const client = names.find((item) => item.id === row.clientId);
-        if (!client) return [];
-        return [
-          {
-            id: client.publicId,
-            name: client.displayName,
-            active: row._count._all,
-            overdue:
-              overdueByClient.find((item) => item.clientId === row.clientId)
-                ?._count._all ?? 0,
-          },
-        ];
-      }),
-    };
-  }
-
-  private async page(
-    where: Prisma.VerificationCaseWhereInput,
-    query: { page?: number; pageSize?: number },
-    orderBy: Prisma.VerificationCaseOrderByWithRelationInput[],
-    countWheres: Record<string, Prisma.VerificationCaseWhereInput>,
-  ) {
-    const page = query.page ?? 1;
-    const pageSize = query.pageSize ?? 10;
-    const keys = Object.keys(countWheres);
-    const [rows, total, ...counts] = await Promise.all([
-      this.prisma.verificationCase.findMany({
-        where,
-        orderBy,
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-        select: queueCaseSelect,
-      }),
-      this.prisma.verificationCase.count({ where }),
-      ...keys.map((key) =>
-        this.prisma.verificationCase.count({ where: countWheres[key]! }),
-      ),
-    ]);
-    return {
-      items: rows.map(presentQueueCase),
-      total,
-      page,
-      pageSize,
-      counts: Object.fromEntries(
-        keys.map((key, index) => [key, counts[index]!]),
-      ),
-      generatedAt: new Date(),
-    };
+  /** RM work queue: v2 cases of mapped clients in flow order. */
+  rmQueue(actor: Actor, query: RmQueueQueryDto) {
+    return queryRmQueue(this.prisma, actor, query);
   }
 
   private assertDataEntryActor(
@@ -879,7 +262,7 @@ export class IntakeService {
     if (!actor.roles.includes("DATA_ENTRY"))
       throw new ForbiddenException("Only Data Entry can mark a case Ready");
     if (current.dataEntryUserId === actor.userId) return;
-    if (ledDepartmentIds(actor, "DATA_ENTRY").length) return; // scope already limits to the lead's team
+    if (ledDepartmentIds(actor, "DATA_ENTRY").length) return;
     throw new ForbiddenException(
       "This case is assigned to another Data Entry user",
     );
@@ -893,23 +276,4 @@ export class IntakeService {
     if (!row) throw new NotFoundException("Case not found");
     return row;
   }
-}
-
-export function searchWhere(search: string): Prisma.VerificationCaseWhereInput {
-  const term = search.trim().slice(0, 120);
-  return {
-    OR: [
-      { caseNumber: { contains: term } },
-      { externalRef: { contains: term } },
-      { subject: { fullName: { contains: term } } },
-      { client: { displayName: { contains: term } } },
-    ],
-  };
-}
-
-/** "aadhaar, employment proof" for messages. */
-function readable(types: readonly string[]) {
-  return types
-    .map((type) => type.replaceAll("_", " ").toLowerCase())
-    .join(", ");
 }

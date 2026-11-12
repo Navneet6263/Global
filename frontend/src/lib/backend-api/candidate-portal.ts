@@ -34,9 +34,23 @@ export interface CandidatePortalData {
     readyToComplete: boolean;
     clarifications: Array<{
       id: string;
+      level?: "L1" | "L2" | string | null;
       subject: string;
       status: string;
       dueAt?: string | null;
+      requestedDocumentType?: string | null;
+      submittedDocumentVersion?: number | null;
+      submittedDocument?: {
+        id: string;
+        type: string;
+        status: string;
+        currentVersion: number;
+      } | null;
+      rejectionCount?: number;
+      lastRejectedAt?: string | null;
+      lastRejectedReason?: string | null;
+      opsReviewedAt?: string | null;
+      reentryCompletedAt?: string | null;
       messages: Array<{ sender: string; body: string; createdAt: string }>;
     }>;
     consentStatus: string;

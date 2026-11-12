@@ -47,10 +47,15 @@ void test("RM overview numbers and client pulse use the RM's own cases only", as
       { id: "c-22", name: "Cedar Retail", active: 1, overdue: 0 },
     ],
   });
-  // Every count is limited to cases this RM owns.
-  for (const where of wheres)
+  // Every count is limited by the client-to-RM mapping scope.
+  for (const where of wheres) {
     assert.equal(
       (where as { assignedOpsUserId?: unknown }).assignedOpsUserId,
-      rm.userId,
+      undefined,
     );
+    const scopeText = JSON.stringify(where, (_, v) =>
+      typeof v === "bigint" ? `${v}n` : v,
+    );
+    assert.ok(scopeText.includes("21n"));
+  }
 });

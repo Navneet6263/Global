@@ -8,6 +8,7 @@ import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
+import { scopedVerifierCheckWhere } from "./task-query.helpers";
 import type {
   CreateVerificationMethodDto,
   RespondVerificationMethodDto,
@@ -47,11 +48,13 @@ export class VerificationMethodsService {
     const manager = actor.roles.some((role) =>
       ["OPS_MANAGER", "PLATFORM_ADMIN"].includes(role),
     );
+    const readScope = !write ? scopedVerifierCheckWhere(actor) : undefined;
     const check = await database.caseCheck.findFirst({
       where: {
         publicId: checkId,
         tenantId: actor.tenantId,
         case: caseAccessScope(actor),
+        ...(readScope ?? {}),
         ...(write && !manager
           ? {
               tasks: {

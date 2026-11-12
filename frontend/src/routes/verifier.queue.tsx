@@ -21,6 +21,7 @@ import {
   WorkspaceLoading,
 } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks } from "@/lib/api/tasks";
+import { isValidDepartmentId, useVerifierDepartment } from "@/lib/auth/verifier-department";
 
 const filters: readonly VerifierQueueFilter[] = [
   "ACTIVE",
@@ -32,11 +33,20 @@ const filters: readonly VerifierQueueFilter[] = [
 
 export const Route = createFileRoute("/verifier/queue")({
   head: () => ({ meta: [{ title: "Active Verification Queue — Sapling Global" }] }),
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): {
+    taskId?: string;
+    status?: VerifierQueueFilter;
+    department?: string;
+    q?: string;
+  } => ({
     taskId: typeof search["taskId"] === "string" ? search["taskId"] : undefined,
     status: filters.includes(search["status"] as VerifierQueueFilter)
       ? (search["status"] as VerifierQueueFilter)
       : undefined,
+    department: isValidDepartmentId(search["department"]) ? search["department"] : undefined,
+    q: typeof search["q"] === "string" ? search["q"].trim().slice(0, 120) || undefined : undefined,
   }),
   component: VerifierWorkbench,
 });
@@ -45,16 +55,25 @@ function VerifierWorkbench() {
   const deepLink = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
+  const { departmentId: activeDepartmentId } = useVerifierDepartment();
+  const departmentId = deepLink.department ?? activeDepartmentId;
   const [filter, setFilter] = useState<VerifierQueueFilter>(deepLink.status ?? "ACTIVE");
   const [selectedId, setSelectedId] = useState<string | undefined>(deepLink.taskId);
-  const [searchInput, setSearchInput] = useState("");
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState(deepLink.q ?? "");
+  const [search, setSearch] = useState(deepLink.q ?? "");
   const [cursor, setCursor] = useState<string>();
   const [cursorHistory, setCursorHistory] = useState<Array<string | undefined>>([]);
   useEffect(() => {
     setSelectedId(deepLink.taskId);
     if (deepLink.status) setFilter(deepLink.status);
   }, [deepLink.status, deepLink.taskId]);
+  useEffect(() => {
+    if (deepLink.q !== undefined) setSearchInput(deepLink.q);
+  }, [deepLink.q]);
+  useEffect(() => {
+    setCursor(undefined);
+    setCursorHistory([]);
+  }, [departmentId]);
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setSearch(searchInput.trim());
@@ -65,12 +84,21 @@ function VerifierWorkbench() {
   }, [searchInput]);
   const queryStatus = filter === "ACTIVE" ? undefined : filter;
   const tasks = useQuery({
-    queryKey: ["tasks", "mine", queryStatus, search, cursor, deepLink.taskId],
+    queryKey: [
+      "tasks",
+      "mine",
+      departmentId ?? "all",
+      queryStatus,
+      search,
+      cursor,
+      deepLink.taskId,
+    ],
     placeholderData: keepPreviousData,
     queryFn: () =>
       getMyTasks({
         search,
         limit: 25,
+        ...(departmentId ? { departmentId } : {}),
         ...(deepLink.taskId ? { taskId: deepLink.taskId } : {}),
         ...(queryStatus ? { status: queryStatus } : {}),
         ...(filter === "ACTIVE" ? { view: "ACTIVE" as const } : {}),
@@ -85,7 +113,15 @@ function VerifierWorkbench() {
   }, [changingView, selected, selectedId]);
   const summary = tasks.data?.summary ?? { active: 0, overdue: 0, blocked: 0, completedToday: 0 };
   const clearDeepLink = () =>
-    void navigate({ search: { taskId: undefined, status: undefined }, replace: true });
+    void navigate({
+      search: {
+        taskId: undefined,
+        status: undefined,
+        department: departmentId,
+        q: undefined,
+      },
+      replace: true,
+    });
   return (
     <div className="space-y-6">
       <WorkspaceIntro
@@ -104,6 +140,7 @@ function VerifierWorkbench() {
             loadRows={() =>
               loadAllTasks({
                 search,
+                ...(departmentId ? { departmentId } : {}),
                 ...(queryStatus ? { status: queryStatus } : {}),
                 ...(filter === "ACTIVE" ? { view: "ACTIVE" as const } : {}),
               })
@@ -193,11 +230,13 @@ function VerifierWorkbench() {
             <div inert={changingView} className={changingView ? "opacity-60" : undefined}>
               <VerifierTaskDesk
                 task={selected}
+                departmentId={departmentId}
                 onUpdated={async () => {
                   await Promise.all([
                     queryClient.invalidateQueries({ queryKey: ["tasks", "mine"] }),
                     queryClient.invalidateQueries({ queryKey: ["verifier", "insights"] }),
                     queryClient.invalidateQueries({ queryKey: ["tasks", selected.id, "context"] }),
+                    queryClient.invalidateQueries({ queryKey: ["workflow"] }),
                   ]);
                 }}
               />

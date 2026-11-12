@@ -8,9 +8,11 @@ import { formatDate, humanize } from "../utils";
 export function VerifierOverviewPanels({
   insights,
   focus,
+  departmentId,
 }: {
   insights: VerifierInsights;
   focus: VerificationTask[];
+  departmentId?: string;
 }) {
   const peak = Math.max(1, ...insights.daily.map((day) => day.completed));
   return (
@@ -31,7 +33,11 @@ export function VerifierOverviewPanels({
           </div>
           <Link
             to="/verifier/queue"
-            search={{ taskId: undefined, status: undefined }}
+            search={{
+              taskId: undefined,
+              status: undefined,
+              ...(departmentId ? { department: departmentId } : {}),
+            }}
             className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-4 py-2.5 text-[12.5px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-110"
           >
             Open workbench <ArrowUpRight className="size-3.5" />
@@ -107,6 +113,7 @@ export function VerifierOverviewPanels({
           </div>
           <Link
             to="/verifier/sla"
+            search={departmentId ? { department: departmentId } : undefined}
             className="text-[12.5px] font-semibold text-blue-700 hover:underline"
           >
             View SLA desk
@@ -114,7 +121,7 @@ export function VerifierOverviewPanels({
         </div>
         <div className="mt-4 space-y-2.5">
           {focus.slice(0, 5).map((task) => (
-            <FocusTask key={task.id} task={task} />
+            <FocusTask key={task.id} task={task} departmentId={departmentId} />
           ))}
           {!focus.length ? (
             <div className="grid min-h-52 place-items-center rounded-xl border border-dashed border-blue-200 bg-blue-50 text-center">
@@ -160,12 +167,16 @@ function PulseCard({
   );
 }
 
-function FocusTask({ task }: { task: VerificationTask }) {
+function FocusTask({ task, departmentId }: { task: VerificationTask; departmentId?: string }) {
   const overdue = Boolean(task.dueAt && new Date(task.dueAt).getTime() < Date.now());
   return (
     <Link
       to="/verifier/queue"
-      search={{ taskId: task.id, status: undefined }}
+      search={{
+        taskId: task.id,
+        status: undefined,
+        ...(departmentId ? { department: departmentId } : {}),
+      }}
       className="group flex items-center gap-3 rounded-xl border border-border/70 bg-slate-50 p-3.5 transition hover:border-blue-200 hover:bg-blue-50 hover:shadow-sm"
     >
       <span

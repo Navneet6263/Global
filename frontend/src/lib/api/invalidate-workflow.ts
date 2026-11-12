@@ -17,6 +17,8 @@ const workflowRoots = new Set([
   "notifications",
   "navigation-counts",
   "client-portal",
+  "workflow",
+  "clarifications",
 ]);
 
 /** Mark related inactive views stale, refetch only the related views on screen. */

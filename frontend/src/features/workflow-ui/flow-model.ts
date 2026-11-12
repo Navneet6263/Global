@@ -23,7 +23,9 @@ export function flowPosition(
   if (item.status === "CANCELLED") return { label: "Cancelled", holder: "—", tone: "bad" };
   if (item.status === "STOPPED")
     return { label: "Stopped", holder: "Client instruction", tone: "bad" };
-  switch (item.intakeStage) {
+  switch (item.intakeStage as string | null) {
+    case "CANDIDATE_UPLOAD":
+      return { label: "Candidate upload pending", holder: "Candidate", tone: "info" };
     case "CLIENT_REVIEW":
       return { label: "Client reviewing submission", holder: "Client", tone: "info" };
     case "CLIENT_RETURNED":

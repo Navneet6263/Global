@@ -1,15 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  Check,
-  CircleCheck,
-  CircleCheckBig,
-  FileUp,
-  FileWarning,
-  LockKeyhole,
-  ShieldCheck,
-  Upload,
-} from "lucide-react";
+import { Check, CircleCheck, CircleCheckBig, LockKeyhole, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,48 +11,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  completeCandidatePortal,
-  uploadCandidateDocument,
-  type CandidatePortalData,
-} from "@/lib/api/candidate-portal";
+import { completeCandidatePortal, type CandidatePortalData } from "@/lib/api/candidate-portal";
 import { CandidateConsentStep } from "./CandidateConsentStep";
 import { ClarificationCard } from "./CandidateChecks";
-import { formatDate } from "./candidate-utils";
-
-const DOCS: Record<string, { label: string; hint: string; expiry?: boolean }> = {
-  AADHAAR: { label: "Aadhaar card", hint: "Front and back in one PDF, or a clear photo." },
-  PAN: { label: "PAN card", hint: "A clear photo or scan of your PAN card." },
-  PASSPORT: { label: "Passport", hint: "First and last page.", expiry: true },
-  DRIVING_LICENCE: { label: "Driving licence", hint: "Front and back.", expiry: true },
-  ADDRESS_PROOF: {
-    label: "Address proof",
-    hint: "Utility bill, rent agreement or bank statement from the last 3 months.",
-  },
-  EDUCATION_CERTIFICATE: {
-    label: "Education certificate",
-    hint: "The certificate or final marksheet of each qualification asked for, in one PDF.",
-  },
-  EMPLOYMENT_PROOF: {
-    label: "Employment proof",
-    hint: "Relieving or experience letter of each employer asked for, in one PDF.",
-  },
-  BANK_PROOF: {
-    label: "Bank proof",
-    hint: "A cancelled cheque or a recent bank statement showing the account number and IFSC.",
-  },
-  OTHER: { label: "Other requested document", hint: "The document the team asked you for." },
-};
-const docMeta = (type: string) =>
-  DOCS[type] ?? { label: type.replaceAll("_", " ").toLowerCase(), hint: "" };
-
-function validateFile(file: File) {
-  if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type))
-    return "Only PDF, JPG or PNG files are accepted.";
-  if (file.size === 0) return "The selected file is empty.";
-  if (file.size > 10 * 1024 * 1024) return "The file is larger than 10 MB.";
-  return "";
-}
+import { CandidateDocumentRow } from "./CandidateDocumentRow";
+import { docMeta, formatDate } from "./candidate-utils";
 
 /** The candidate's one job: upload what was asked, then confirm they are done. */
 export function CandidateUploadPage({
@@ -82,7 +36,15 @@ export function CandidateUploadPage({
   ).length;
   const percent = items.length ? Math.round((done / items.length) * 100) : 100;
   const firstName = data.candidateName.split(" ")[0] ?? data.candidateName;
-  const openQuestions = data.clarifications.filter((item) => item.status === "OPEN");
+  const openQuestions = data.clarifications
+    .filter(
+      (item) =>
+        item.status === "OPEN" ||
+        (item.level === "L2" &&
+          ["CANDIDATE_SUBMITTED", "DATA_ENTRY_PENDING", "RESOLVED"].includes(item.status)),
+    )
+    .sort((a, b) => Number(b.status === "OPEN") - Number(a.status === "OPEN"));
+  const hasOpenL2 = openQuestions.some((item) => item.level === "L2" && item.status === "OPEN");
   const refresh = () =>
     queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
   // Open the uploads at once; the full page data refreshes in the background.
@@ -179,11 +141,23 @@ export function CandidateUploadPage({
       </section>
 
       {openQuestions.length ? (
-        <section className="cand-card p-4" aria-label="Questions from the team">
-          <h2 className="mb-3 text-[15px] font-semibold">Questions from the team</h2>
+        <section className="cand-card p-4" aria-label="Clarifications from the team">
+          <h2 className="mb-3 text-[15px] font-semibold">
+            {openQuestions.some((item) => item.level === "L2")
+              ? "Clarifications & re-uploads"
+              : "Questions from the team"}
+          </h2>
           <div className="space-y-3">
             {openQuestions.map((item) => (
-              <ClarificationCard key={item.id} accessId={accessId} token={token} item={item} />
+              <ClarificationCard
+                key={item.id}
+                accessId={accessId}
+                token={token}
+                item={item}
+                noticeVersion={portal.privacyNotice.version}
+                acknowledged={consentDone}
+                onSubmitted={refresh}
+              />
             ))}
           </div>
         </section>
@@ -199,7 +173,7 @@ export function CandidateUploadPage({
             {items.length ? (
               <ul className="cand-docs" aria-label="Documents to upload">
                 {items.map((item) => (
-                  <DocumentRow
+                  <CandidateDocumentRow
                     key={item.type}
                     accessId={accessId}
                     token={token}
@@ -228,11 +202,12 @@ export function CandidateUploadPage({
                   {done} of {items.length}
                 </strong>{" "}
                 documents uploaded
+                {hasOpenL2 ? " · Submit the open clarification above first" : ""}
               </p>
               <button
                 type="button"
                 className="cand-complete"
-                disabled={!data.readyToComplete || complete.isPending}
+                disabled={!data.readyToComplete || hasOpenL2 || complete.isPending}
                 onClick={() => setConfirming(true)}
               >
                 <CircleCheck aria-hidden /> Complete — I've uploaded all documents
@@ -292,109 +267,5 @@ export function CandidateUploadPage({
         </Dialog>
       ) : null}
     </div>
-  );
-}
-
-function DocumentRow({
-  accessId,
-  token,
-  item,
-  noticeVersion,
-  acknowledged,
-  onUploaded,
-}: {
-  accessId: string;
-  token: string;
-  item: CandidatePortalData["case"]["uploadItems"][number];
-  noticeVersion: string;
-  acknowledged: boolean;
-  onUploaded: () => Promise<unknown>;
-}) {
-  const meta = docMeta(item.type);
-  const input = useRef<HTMLInputElement>(null);
-  const [expiry, setExpiry] = useState("");
-  const [error, setError] = useState("");
-  const upload = useMutation({
-    mutationFn: (file: File) =>
-      uploadCandidateDocument(accessId, token, item.type, file, noticeVersion, expiry || undefined),
-    onSuccess: async () => {
-      setError("");
-      toast.success(`${meta.label} uploaded`);
-      await onUploaded();
-    },
-    onError: (failure: Error) => setError(failure.message),
-  });
-  const uploaded = item.state === "UPLOADED" || item.state === "VERIFIED";
-  const again = item.state === "REUPLOAD";
-  return (
-    <li className={`cand-doc ${uploaded ? "is-done" : again ? "is-again" : ""}`}>
-      <span className="cand-doc-icon" aria-hidden>
-        {uploaded ? <CircleCheck /> : again ? <FileWarning /> : <FileUp />}
-      </span>
-      <div className="min-w-0">
-        <strong>
-          {meta.label}
-          <span className={`cand-chip ${uploaded ? "is-done" : again ? "is-again" : "is-needed"}`}>
-            {item.state === "VERIFIED"
-              ? "Accepted"
-              : uploaded
-                ? "Uploaded"
-                : again
-                  ? "Upload again"
-                  : "Needed"}
-          </span>
-        </strong>
-        <small>{meta.hint}</small>
-        {item.forChecks?.length ? (
-          <small className="block">
-            For your{" "}
-            {item.forChecks.map((check) => check.replaceAll("_", " ").toLowerCase()).join(", ")}{" "}
-            check
-          </small>
-        ) : null}
-        {again && item.reviewNote ? <p className="cand-doc-reason">{item.reviewNote}</p> : null}
-        {error ? <p className="cand-doc-reason">{error}</p> : null}
-      </div>
-      {item.state === "VERIFIED" ? null : (
-        <div className="cand-doc-actions">
-          {meta.expiry && !uploaded ? (
-            <label className="text-[12px] text-slate-500">
-              Expiry{" "}
-              <input
-                type="date"
-                value={expiry}
-                onChange={(event) => setExpiry(event.target.value)}
-                aria-label={`${meta.label} expiry date`}
-              />
-            </label>
-          ) : null}
-          <input
-            ref={input}
-            type="file"
-            hidden
-            accept="application/pdf,image/jpeg,image/png"
-            aria-label={`Upload ${meta.label}`}
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              event.target.value = "";
-              if (!file) return;
-              const problem = validateFile(file);
-              if (problem) setError(problem);
-              else upload.mutate(file);
-            }}
-          />
-          <button
-            type="button"
-            className={`cand-upload ${uploaded ? "is-secondary" : ""}`}
-            disabled={!acknowledged || upload.isPending}
-            title={acknowledged ? undefined : "Tick the privacy notice first"}
-            onClick={() => input.current?.click()}
-          >
-            <Upload aria-hidden />
-            {upload.isPending ? "Uploading…" : uploaded ? "Replace" : "Upload"}
-          </button>
-        </div>
-      )}
-    </li>
   );
 }

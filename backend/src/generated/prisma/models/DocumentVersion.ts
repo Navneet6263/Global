@@ -32,6 +32,8 @@ export type DocumentVersionAvgAggregateOutputType = {
   version: number | null
   sizeBytes: number | null
   uploadedById: number | null
+  reviewedById: number | null
+  clarificationId: number | null
 }
 
 export type DocumentVersionSumAggregateOutputType = {
@@ -40,6 +42,8 @@ export type DocumentVersionSumAggregateOutputType = {
   version: number | null
   sizeBytes: bigint | null
   uploadedById: bigint | null
+  reviewedById: bigint | null
+  clarificationId: bigint | null
 }
 
 export type DocumentVersionMinAggregateOutputType = {
@@ -53,6 +57,11 @@ export type DocumentVersionMinAggregateOutputType = {
   sha256: string | null
   malwareState: string | null
   uploadedById: bigint | null
+  reviewStatus: string | null
+  reviewNote: string | null
+  reviewedById: bigint | null
+  reviewedAt: Date | null
+  clarificationId: bigint | null
   createdAt: Date | null
 }
 
@@ -67,6 +76,11 @@ export type DocumentVersionMaxAggregateOutputType = {
   sha256: string | null
   malwareState: string | null
   uploadedById: bigint | null
+  reviewStatus: string | null
+  reviewNote: string | null
+  reviewedById: bigint | null
+  reviewedAt: Date | null
+  clarificationId: bigint | null
   createdAt: Date | null
 }
 
@@ -81,6 +95,11 @@ export type DocumentVersionCountAggregateOutputType = {
   sha256: number
   malwareState: number
   uploadedById: number
+  reviewStatus: number
+  reviewNote: number
+  reviewedById: number
+  reviewedAt: number
+  clarificationId: number
   createdAt: number
   _all: number
 }
@@ -92,6 +111,8 @@ export type DocumentVersionAvgAggregateInputType = {
   version?: true
   sizeBytes?: true
   uploadedById?: true
+  reviewedById?: true
+  clarificationId?: true
 }
 
 export type DocumentVersionSumAggregateInputType = {
@@ -100,6 +121,8 @@ export type DocumentVersionSumAggregateInputType = {
   version?: true
   sizeBytes?: true
   uploadedById?: true
+  reviewedById?: true
+  clarificationId?: true
 }
 
 export type DocumentVersionMinAggregateInputType = {
@@ -113,6 +136,11 @@ export type DocumentVersionMinAggregateInputType = {
   sha256?: true
   malwareState?: true
   uploadedById?: true
+  reviewStatus?: true
+  reviewNote?: true
+  reviewedById?: true
+  reviewedAt?: true
+  clarificationId?: true
   createdAt?: true
 }
 
@@ -127,6 +155,11 @@ export type DocumentVersionMaxAggregateInputType = {
   sha256?: true
   malwareState?: true
   uploadedById?: true
+  reviewStatus?: true
+  reviewNote?: true
+  reviewedById?: true
+  reviewedAt?: true
+  clarificationId?: true
   createdAt?: true
 }
 
@@ -141,6 +174,11 @@ export type DocumentVersionCountAggregateInputType = {
   sha256?: true
   malwareState?: true
   uploadedById?: true
+  reviewStatus?: true
+  reviewNote?: true
+  reviewedById?: true
+  reviewedAt?: true
+  clarificationId?: true
   createdAt?: true
   _all?: true
 }
@@ -242,6 +280,11 @@ export type DocumentVersionGroupByOutputType = {
   sha256: string
   malwareState: string
   uploadedById: bigint | null
+  reviewStatus: string
+  reviewNote: string | null
+  reviewedById: bigint | null
+  reviewedAt: Date | null
+  clarificationId: bigint | null
   createdAt: Date
   _count: DocumentVersionCountAggregateOutputType | null
   _avg: DocumentVersionAvgAggregateOutputType | null
@@ -279,8 +322,14 @@ export type DocumentVersionWhereInput = {
   sha256?: Prisma.StringFilter<"DocumentVersion"> | string
   malwareState?: Prisma.StringFilter<"DocumentVersion"> | string
   uploadedById?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
+  reviewStatus?: Prisma.StringFilter<"DocumentVersion"> | string
+  reviewNote?: Prisma.StringNullableFilter<"DocumentVersion"> | string | null
+  reviewedById?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"DocumentVersion"> | Date | string | null
+  clarificationId?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
   createdAt?: Prisma.DateTimeFilter<"DocumentVersion"> | Date | string
   document?: Prisma.XOR<Prisma.DocumentScalarRelationFilter, Prisma.DocumentWhereInput>
+  clarification?: Prisma.XOR<Prisma.ClarificationNullableScalarRelationFilter, Prisma.ClarificationWhereInput> | null
 }
 
 export type DocumentVersionOrderByWithRelationInput = {
@@ -294,8 +343,14 @@ export type DocumentVersionOrderByWithRelationInput = {
   sha256?: Prisma.SortOrder
   malwareState?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  clarificationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   document?: Prisma.DocumentOrderByWithRelationInput
+  clarification?: Prisma.ClarificationOrderByWithRelationInput
 }
 
 export type DocumentVersionWhereUniqueInput = Prisma.AtLeast<{
@@ -313,8 +368,14 @@ export type DocumentVersionWhereUniqueInput = Prisma.AtLeast<{
   sha256?: Prisma.StringFilter<"DocumentVersion"> | string
   malwareState?: Prisma.StringFilter<"DocumentVersion"> | string
   uploadedById?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
+  reviewStatus?: Prisma.StringFilter<"DocumentVersion"> | string
+  reviewNote?: Prisma.StringNullableFilter<"DocumentVersion"> | string | null
+  reviewedById?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"DocumentVersion"> | Date | string | null
+  clarificationId?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
   createdAt?: Prisma.DateTimeFilter<"DocumentVersion"> | Date | string
   document?: Prisma.XOR<Prisma.DocumentScalarRelationFilter, Prisma.DocumentWhereInput>
+  clarification?: Prisma.XOR<Prisma.ClarificationNullableScalarRelationFilter, Prisma.ClarificationWhereInput> | null
 }, "id" | "documentId_version">
 
 export type DocumentVersionOrderByWithAggregationInput = {
@@ -328,6 +389,11 @@ export type DocumentVersionOrderByWithAggregationInput = {
   sha256?: Prisma.SortOrder
   malwareState?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  clarificationId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.DocumentVersionCountOrderByAggregateInput
   _avg?: Prisma.DocumentVersionAvgOrderByAggregateInput
@@ -350,6 +416,11 @@ export type DocumentVersionScalarWhereWithAggregatesInput = {
   sha256?: Prisma.StringWithAggregatesFilter<"DocumentVersion"> | string
   malwareState?: Prisma.StringWithAggregatesFilter<"DocumentVersion"> | string
   uploadedById?: Prisma.BigIntNullableWithAggregatesFilter<"DocumentVersion"> | bigint | number | null
+  reviewStatus?: Prisma.StringWithAggregatesFilter<"DocumentVersion"> | string
+  reviewNote?: Prisma.StringNullableWithAggregatesFilter<"DocumentVersion"> | string | null
+  reviewedById?: Prisma.BigIntNullableWithAggregatesFilter<"DocumentVersion"> | bigint | number | null
+  reviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DocumentVersion"> | Date | string | null
+  clarificationId?: Prisma.BigIntNullableWithAggregatesFilter<"DocumentVersion"> | bigint | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DocumentVersion"> | Date | string
 }
 
@@ -363,8 +434,13 @@ export type DocumentVersionCreateInput = {
   sha256: string
   malwareState?: string
   uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
   createdAt?: Date | string
   document: Prisma.DocumentCreateNestedOneWithoutVersionsInput
+  clarification?: Prisma.ClarificationCreateNestedOneWithoutSubmittedVersionsInput
 }
 
 export type DocumentVersionUncheckedCreateInput = {
@@ -378,6 +454,11 @@ export type DocumentVersionUncheckedCreateInput = {
   sha256: string
   malwareState?: string
   uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  clarificationId?: bigint | number | null
   createdAt?: Date | string
 }
 
@@ -391,8 +472,13 @@ export type DocumentVersionUpdateInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   document?: Prisma.DocumentUpdateOneRequiredWithoutVersionsNestedInput
+  clarification?: Prisma.ClarificationUpdateOneWithoutSubmittedVersionsNestedInput
 }
 
 export type DocumentVersionUncheckedUpdateInput = {
@@ -406,6 +492,11 @@ export type DocumentVersionUncheckedUpdateInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clarificationId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -419,6 +510,11 @@ export type DocumentVersionCreateManyInput = {
   sha256: string
   malwareState?: string
   uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  clarificationId?: bigint | number | null
   createdAt?: Date | string
 }
 
@@ -432,6 +528,10 @@ export type DocumentVersionUpdateManyMutationInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -446,6 +546,11 @@ export type DocumentVersionUncheckedUpdateManyInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clarificationId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -475,6 +580,11 @@ export type DocumentVersionCountOrderByAggregateInput = {
   sha256?: Prisma.SortOrder
   malwareState?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  clarificationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -484,6 +594,8 @@ export type DocumentVersionAvgOrderByAggregateInput = {
   version?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  clarificationId?: Prisma.SortOrder
 }
 
 export type DocumentVersionMaxOrderByAggregateInput = {
@@ -497,6 +609,11 @@ export type DocumentVersionMaxOrderByAggregateInput = {
   sha256?: Prisma.SortOrder
   malwareState?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  clarificationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -511,6 +628,11 @@ export type DocumentVersionMinOrderByAggregateInput = {
   sha256?: Prisma.SortOrder
   malwareState?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
+  reviewStatus?: Prisma.SortOrder
+  reviewNote?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  reviewedAt?: Prisma.SortOrder
+  clarificationId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -520,6 +642,8 @@ export type DocumentVersionSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
   sizeBytes?: Prisma.SortOrder
   uploadedById?: Prisma.SortOrder
+  reviewedById?: Prisma.SortOrder
+  clarificationId?: Prisma.SortOrder
 }
 
 export type DocumentVersionCreateNestedManyWithoutDocumentInput = {
@@ -564,6 +688,48 @@ export type DocumentVersionUncheckedUpdateManyWithoutDocumentNestedInput = {
   deleteMany?: Prisma.DocumentVersionScalarWhereInput | Prisma.DocumentVersionScalarWhereInput[]
 }
 
+export type DocumentVersionCreateNestedManyWithoutClarificationInput = {
+  create?: Prisma.XOR<Prisma.DocumentVersionCreateWithoutClarificationInput, Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput> | Prisma.DocumentVersionCreateWithoutClarificationInput[] | Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput[]
+  connectOrCreate?: Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput | Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput[]
+  createMany?: Prisma.DocumentVersionCreateManyClarificationInputEnvelope
+  connect?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+}
+
+export type DocumentVersionUncheckedCreateNestedManyWithoutClarificationInput = {
+  create?: Prisma.XOR<Prisma.DocumentVersionCreateWithoutClarificationInput, Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput> | Prisma.DocumentVersionCreateWithoutClarificationInput[] | Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput[]
+  connectOrCreate?: Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput | Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput[]
+  createMany?: Prisma.DocumentVersionCreateManyClarificationInputEnvelope
+  connect?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+}
+
+export type DocumentVersionUpdateManyWithoutClarificationNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentVersionCreateWithoutClarificationInput, Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput> | Prisma.DocumentVersionCreateWithoutClarificationInput[] | Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput[]
+  connectOrCreate?: Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput | Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput[]
+  upsert?: Prisma.DocumentVersionUpsertWithWhereUniqueWithoutClarificationInput | Prisma.DocumentVersionUpsertWithWhereUniqueWithoutClarificationInput[]
+  createMany?: Prisma.DocumentVersionCreateManyClarificationInputEnvelope
+  set?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  disconnect?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  delete?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  connect?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  update?: Prisma.DocumentVersionUpdateWithWhereUniqueWithoutClarificationInput | Prisma.DocumentVersionUpdateWithWhereUniqueWithoutClarificationInput[]
+  updateMany?: Prisma.DocumentVersionUpdateManyWithWhereWithoutClarificationInput | Prisma.DocumentVersionUpdateManyWithWhereWithoutClarificationInput[]
+  deleteMany?: Prisma.DocumentVersionScalarWhereInput | Prisma.DocumentVersionScalarWhereInput[]
+}
+
+export type DocumentVersionUncheckedUpdateManyWithoutClarificationNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentVersionCreateWithoutClarificationInput, Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput> | Prisma.DocumentVersionCreateWithoutClarificationInput[] | Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput[]
+  connectOrCreate?: Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput | Prisma.DocumentVersionCreateOrConnectWithoutClarificationInput[]
+  upsert?: Prisma.DocumentVersionUpsertWithWhereUniqueWithoutClarificationInput | Prisma.DocumentVersionUpsertWithWhereUniqueWithoutClarificationInput[]
+  createMany?: Prisma.DocumentVersionCreateManyClarificationInputEnvelope
+  set?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  disconnect?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  delete?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  connect?: Prisma.DocumentVersionWhereUniqueInput | Prisma.DocumentVersionWhereUniqueInput[]
+  update?: Prisma.DocumentVersionUpdateWithWhereUniqueWithoutClarificationInput | Prisma.DocumentVersionUpdateWithWhereUniqueWithoutClarificationInput[]
+  updateMany?: Prisma.DocumentVersionUpdateManyWithWhereWithoutClarificationInput | Prisma.DocumentVersionUpdateManyWithWhereWithoutClarificationInput[]
+  deleteMany?: Prisma.DocumentVersionScalarWhereInput | Prisma.DocumentVersionScalarWhereInput[]
+}
+
 export type DocumentVersionCreateWithoutDocumentInput = {
   id?: bigint | number
   version: number
@@ -574,7 +740,12 @@ export type DocumentVersionCreateWithoutDocumentInput = {
   sha256: string
   malwareState?: string
   uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
   createdAt?: Date | string
+  clarification?: Prisma.ClarificationCreateNestedOneWithoutSubmittedVersionsInput
 }
 
 export type DocumentVersionUncheckedCreateWithoutDocumentInput = {
@@ -587,6 +758,11 @@ export type DocumentVersionUncheckedCreateWithoutDocumentInput = {
   sha256: string
   malwareState?: string
   uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  clarificationId?: bigint | number | null
   createdAt?: Date | string
 }
 
@@ -629,7 +805,73 @@ export type DocumentVersionScalarWhereInput = {
   sha256?: Prisma.StringFilter<"DocumentVersion"> | string
   malwareState?: Prisma.StringFilter<"DocumentVersion"> | string
   uploadedById?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
+  reviewStatus?: Prisma.StringFilter<"DocumentVersion"> | string
+  reviewNote?: Prisma.StringNullableFilter<"DocumentVersion"> | string | null
+  reviewedById?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
+  reviewedAt?: Prisma.DateTimeNullableFilter<"DocumentVersion"> | Date | string | null
+  clarificationId?: Prisma.BigIntNullableFilter<"DocumentVersion"> | bigint | number | null
   createdAt?: Prisma.DateTimeFilter<"DocumentVersion"> | Date | string
+}
+
+export type DocumentVersionCreateWithoutClarificationInput = {
+  id?: bigint | number
+  version: number
+  objectKey: string
+  originalName: string
+  contentType: string
+  sizeBytes: bigint | number
+  sha256: string
+  malwareState?: string
+  uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  createdAt?: Date | string
+  document: Prisma.DocumentCreateNestedOneWithoutVersionsInput
+}
+
+export type DocumentVersionUncheckedCreateWithoutClarificationInput = {
+  id?: bigint | number
+  documentId: bigint | number
+  version: number
+  objectKey: string
+  originalName: string
+  contentType: string
+  sizeBytes: bigint | number
+  sha256: string
+  malwareState?: string
+  uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type DocumentVersionCreateOrConnectWithoutClarificationInput = {
+  where: Prisma.DocumentVersionWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentVersionCreateWithoutClarificationInput, Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput>
+}
+
+export type DocumentVersionCreateManyClarificationInputEnvelope = {
+  data: Prisma.DocumentVersionCreateManyClarificationInput | Prisma.DocumentVersionCreateManyClarificationInput[]
+}
+
+export type DocumentVersionUpsertWithWhereUniqueWithoutClarificationInput = {
+  where: Prisma.DocumentVersionWhereUniqueInput
+  update: Prisma.XOR<Prisma.DocumentVersionUpdateWithoutClarificationInput, Prisma.DocumentVersionUncheckedUpdateWithoutClarificationInput>
+  create: Prisma.XOR<Prisma.DocumentVersionCreateWithoutClarificationInput, Prisma.DocumentVersionUncheckedCreateWithoutClarificationInput>
+}
+
+export type DocumentVersionUpdateWithWhereUniqueWithoutClarificationInput = {
+  where: Prisma.DocumentVersionWhereUniqueInput
+  data: Prisma.XOR<Prisma.DocumentVersionUpdateWithoutClarificationInput, Prisma.DocumentVersionUncheckedUpdateWithoutClarificationInput>
+}
+
+export type DocumentVersionUpdateManyWithWhereWithoutClarificationInput = {
+  where: Prisma.DocumentVersionScalarWhereInput
+  data: Prisma.XOR<Prisma.DocumentVersionUpdateManyMutationInput, Prisma.DocumentVersionUncheckedUpdateManyWithoutClarificationInput>
 }
 
 export type DocumentVersionCreateManyDocumentInput = {
@@ -641,6 +883,11 @@ export type DocumentVersionCreateManyDocumentInput = {
   sha256: string
   malwareState?: string
   uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  clarificationId?: bigint | number | null
   createdAt?: Date | string
 }
 
@@ -654,7 +901,12 @@ export type DocumentVersionUpdateWithoutDocumentInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  clarification?: Prisma.ClarificationUpdateOneWithoutSubmittedVersionsNestedInput
 }
 
 export type DocumentVersionUncheckedUpdateWithoutDocumentInput = {
@@ -667,6 +919,11 @@ export type DocumentVersionUncheckedUpdateWithoutDocumentInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clarificationId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -680,6 +937,82 @@ export type DocumentVersionUncheckedUpdateManyWithoutDocumentInput = {
   sha256?: Prisma.StringFieldUpdateOperationsInput | string
   malwareState?: Prisma.StringFieldUpdateOperationsInput | string
   uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  clarificationId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentVersionCreateManyClarificationInput = {
+  documentId: bigint | number
+  version: number
+  objectKey: string
+  originalName: string
+  contentType: string
+  sizeBytes: bigint | number
+  sha256: string
+  malwareState?: string
+  uploadedById?: bigint | number | null
+  reviewStatus?: string
+  reviewNote?: string | null
+  reviewedById?: bigint | number | null
+  reviewedAt?: Date | string | null
+  createdAt?: Date | string
+}
+
+export type DocumentVersionUpdateWithoutClarificationInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  objectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  contentType?: Prisma.StringFieldUpdateOperationsInput | string
+  sizeBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  malwareState?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  document?: Prisma.DocumentUpdateOneRequiredWithoutVersionsNestedInput
+}
+
+export type DocumentVersionUncheckedUpdateWithoutClarificationInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  objectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  contentType?: Prisma.StringFieldUpdateOperationsInput | string
+  sizeBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  malwareState?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type DocumentVersionUncheckedUpdateManyWithoutClarificationInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  documentId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  objectKey?: Prisma.StringFieldUpdateOperationsInput | string
+  originalName?: Prisma.StringFieldUpdateOperationsInput | string
+  contentType?: Prisma.StringFieldUpdateOperationsInput | string
+  sizeBytes?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  sha256?: Prisma.StringFieldUpdateOperationsInput | string
+  malwareState?: Prisma.StringFieldUpdateOperationsInput | string
+  uploadedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewStatus?: Prisma.StringFieldUpdateOperationsInput | string
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -696,8 +1029,14 @@ export type DocumentVersionSelect<ExtArgs extends runtime.Types.Extensions.Inter
   sha256?: boolean
   malwareState?: boolean
   uploadedById?: boolean
+  reviewStatus?: boolean
+  reviewNote?: boolean
+  reviewedById?: boolean
+  reviewedAt?: boolean
+  clarificationId?: boolean
   createdAt?: boolean
   document?: boolean | Prisma.DocumentDefaultArgs<ExtArgs>
+  clarification?: boolean | Prisma.DocumentVersion$clarificationArgs<ExtArgs>
 }, ExtArgs["result"]["documentVersion"]>
 
 
@@ -713,18 +1052,25 @@ export type DocumentVersionSelectScalar = {
   sha256?: boolean
   malwareState?: boolean
   uploadedById?: boolean
+  reviewStatus?: boolean
+  reviewNote?: boolean
+  reviewedById?: boolean
+  reviewedAt?: boolean
+  clarificationId?: boolean
   createdAt?: boolean
 }
 
-export type DocumentVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "version" | "objectKey" | "originalName" | "contentType" | "sizeBytes" | "sha256" | "malwareState" | "uploadedById" | "createdAt", ExtArgs["result"]["documentVersion"]>
+export type DocumentVersionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "documentId" | "version" | "objectKey" | "originalName" | "contentType" | "sizeBytes" | "sha256" | "malwareState" | "uploadedById" | "reviewStatus" | "reviewNote" | "reviewedById" | "reviewedAt" | "clarificationId" | "createdAt", ExtArgs["result"]["documentVersion"]>
 export type DocumentVersionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   document?: boolean | Prisma.DocumentDefaultArgs<ExtArgs>
+  clarification?: boolean | Prisma.DocumentVersion$clarificationArgs<ExtArgs>
 }
 
 export type $DocumentVersionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "DocumentVersion"
   objects: {
     document: Prisma.$DocumentPayload<ExtArgs>
+    clarification: Prisma.$ClarificationPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -737,6 +1083,11 @@ export type $DocumentVersionPayload<ExtArgs extends runtime.Types.Extensions.Int
     sha256: string
     malwareState: string
     uploadedById: bigint | null
+    reviewStatus: string
+    reviewNote: string | null
+    reviewedById: bigint | null
+    reviewedAt: Date | null
+    clarificationId: bigint | null
     createdAt: Date
   }, ExtArgs["result"]["documentVersion"]>
   composites: {}
@@ -1079,6 +1430,7 @@ readonly fields: DocumentVersionFieldRefs;
 export interface Prisma__DocumentVersionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   document<T extends Prisma.DocumentDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DocumentDefaultArgs<ExtArgs>>): Prisma.Prisma__DocumentClient<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  clarification<T extends Prisma.DocumentVersion$clarificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.DocumentVersion$clarificationArgs<ExtArgs>>): Prisma.Prisma__ClarificationClient<runtime.Types.Result.GetResult<Prisma.$ClarificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1118,6 +1470,11 @@ export interface DocumentVersionFieldRefs {
   readonly sha256: Prisma.FieldRef<"DocumentVersion", 'String'>
   readonly malwareState: Prisma.FieldRef<"DocumentVersion", 'String'>
   readonly uploadedById: Prisma.FieldRef<"DocumentVersion", 'BigInt'>
+  readonly reviewStatus: Prisma.FieldRef<"DocumentVersion", 'String'>
+  readonly reviewNote: Prisma.FieldRef<"DocumentVersion", 'String'>
+  readonly reviewedById: Prisma.FieldRef<"DocumentVersion", 'BigInt'>
+  readonly reviewedAt: Prisma.FieldRef<"DocumentVersion", 'DateTime'>
+  readonly clarificationId: Prisma.FieldRef<"DocumentVersion", 'BigInt'>
   readonly createdAt: Prisma.FieldRef<"DocumentVersion", 'DateTime'>
 }
     
@@ -1463,6 +1820,25 @@ export type DocumentVersionDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many DocumentVersions to delete.
    */
   limit?: number
+}
+
+/**
+ * DocumentVersion.clarification
+ */
+export type DocumentVersion$clarificationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Clarification
+   */
+  select?: Prisma.ClarificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Clarification
+   */
+  omit?: Prisma.ClarificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClarificationInclude<ExtArgs> | null
+  where?: Prisma.ClarificationWhereInput
 }
 
 /**

@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
 import type { ConfigService } from "@nestjs/config";
 import type { FastifyRequest } from "fastify";
-import { readUploadedBinary, type UploadedBinary } from "./uploaded-binary";
+import {
+  readUploadedBinary,
+  readUploadedMultipart,
+  type UploadedBinary,
+  type UploadedMultipartPayload,
+} from "./uploaded-binary";
 
 /** Bounds the whole read/inspect/store transaction, not just multipart parsing. */
 export class UploadCapacity {
@@ -51,6 +56,26 @@ export function withUploadedBinary<T>(
         config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
       );
       return consume(file);
+    },
+  );
+}
+
+export function withUploadedMultipart<T>(
+  request: FastifyRequest,
+  config: ConfigService,
+  owner: string,
+  consume: (payload: UploadedMultipartPayload) => Promise<T>,
+): Promise<T> {
+  return capacity.run(
+    owner,
+    config.get<number>("UPLOAD_CONCURRENCY", 4),
+    config.get<number>("UPLOAD_PER_ACTOR_CONCURRENCY", 2),
+    async () => {
+      const payload = await readUploadedMultipart(
+        request,
+        config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
+      );
+      return consume(payload);
     },
   );
 }

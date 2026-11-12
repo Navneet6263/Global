@@ -87,7 +87,7 @@ export async function createVerificationCase(
         // Company-level RM: the client's RM owns every new case automatically.
         ...(companyRm ? { assignedOpsUserId: companyRm.id } : {}),
         ...(internalWorkflowV2Enabled()
-          ? { workflowVersion: 2, intakeStage: "INTAKE" }
+          ? { workflowVersion: 2, intakeStage: "CANDIDATE_UPLOAD" }
           : {}),
         statusHistory: {
           create: { toStatus: "CONSENT_PENDING", changedById: actor.userId },

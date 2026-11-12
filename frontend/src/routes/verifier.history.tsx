@@ -13,13 +13,21 @@ import {
 } from "@/features/delivery/verifier/task-export";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
+import {
+  useVerifierDepartment,
+  validateVerifierDepartmentSearch,
+} from "@/lib/auth/verifier-department";
 
 export const Route = createFileRoute("/verifier/history")({
   head: () => ({ meta: [{ title: "Completed Verification Checks — Sapling Global" }] }),
+  validateSearch: validateVerifierDepartmentSearch,
   component: VerifierHistoryPage,
 });
 
 function VerifierHistoryPage() {
+  const { department } = Route.useSearch();
+  const { departmentId: resolvedDepartmentId } = useVerifierDepartment();
+  const departmentId = department ?? resolvedDepartmentId;
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState<string>();
@@ -33,14 +41,20 @@ function VerifierHistoryPage() {
     return () => window.clearTimeout(timer);
   }, [input]);
   const insights = useQuery({
-    queryKey: ["verifier", "insights"],
-    queryFn: getVerifierInsights,
+    queryKey: ["verifier", "insights", departmentId ?? "all"],
+    queryFn: () => getVerifierInsights(departmentId),
     staleTime: 20_000,
   });
   const tasks = useQuery({
-    queryKey: ["tasks", "mine", "COMPLETED", search, cursor],
+    queryKey: ["tasks", "mine", "COMPLETED", departmentId ?? "all", search, cursor],
     queryFn: () =>
-      getMyTasks({ status: "COMPLETED", search, ...(cursor ? { cursor } : {}), limit: 25 }),
+      getMyTasks({
+        status: "COMPLETED",
+        search,
+        ...(departmentId ? { departmentId } : {}),
+        ...(cursor ? { cursor } : {}),
+        limit: 25,
+      }),
   });
   if (tasks.isLoading || insights.isLoading)
     return <WorkspaceLoading label="Loading completed verification history" />;
@@ -104,6 +118,7 @@ function VerifierHistoryPage() {
         />
       </label>
       <VerifierTaskTable
+        departmentId={departmentId}
         exporter={
           <ExportSheetButton
             source="verifier-history"
@@ -112,7 +127,13 @@ function VerifierHistoryPage() {
             columns={TASK_EXPORT_COLUMNS}
             defaults={TASK_EXPORT_DEFAULTS}
             scopeNote={search ? `Completed · search “${search}”` : "All completed checks"}
-            loadRows={() => loadAllTasks({ status: "COMPLETED", search })}
+            loadRows={() =>
+              loadAllTasks({
+                status: "COMPLETED",
+                search,
+                ...(departmentId ? { departmentId } : {}),
+              })
+            }
           />
         }
         title="Outcome history"

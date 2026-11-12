@@ -1,15 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Loader2, MessageSquarePlus, ShieldCheck } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-
 import { formatDateTime, humanize } from "@/features/cases/case-detail-formatting";
-import {
-  createClarification,
-  listClarifications,
-  resolveClarification,
-} from "@/lib/api/clarifications";
 import type { VerifierTaskContext } from "@/lib/api/tasks";
+import { VerifierL2Clarifications } from "./VerifierL2Clarifications";
 
 type Context = VerifierTaskContext;
 
@@ -46,138 +37,7 @@ export function CaseContextView({ context }: { context: Context }) {
 }
 
 export function ClarificationsView({ context }: { context: Context }) {
-  const caseId = context.check.case.publicId;
-  const queryClient = useQueryClient();
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const clarifications = useQuery({
-    queryKey: ["clarifications", caseId],
-    queryFn: () => listClarifications(caseId),
-  });
-  const create = useMutation({
-    mutationFn: () =>
-      createClarification(caseId, {
-        checkId: context.check.publicId,
-        subject: subject.trim(),
-        message: message.trim(),
-      }),
-    onSuccess: () => {
-      toast.success("Insufficiency (L2) raised", {
-        description: "The candidate and the client are told what to supply.",
-      });
-      setSubject("");
-      setMessage("");
-      void queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] });
-      void queryClient.invalidateQueries({ queryKey: ["tasks", context.publicId, "context"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-  // The candidate's reply is reviewed here; when nothing else is open, the case resumes.
-  const resolve = useMutation({
-    mutationFn: (clarificationId: string) => resolveClarification(caseId, clarificationId),
-    onSuccess: (result) => {
-      toast.success("Reply reviewed", {
-        description:
-          result.caseStatus === "IN_PROGRESS"
-            ? "The case has resumed. On the Verification tab press Start verification, then save."
-            : "Closed. Another insufficiency on this case is still open.",
-      });
-      void queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] });
-      void queryClient.invalidateQueries({ queryKey: ["tasks"] });
-    },
-    onError: (error: Error) => toast.error(error.message),
-  });
-  return (
-    <div className="space-y-4">
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (subject.trim().length >= 3 && message.trim().length >= 3) create.mutate();
-        }}
-        className="rounded-xl border border-warning/20 bg-warning-soft/45 p-4"
-      >
-        <div className="flex items-center gap-2 text-[12px] font-semibold">
-          <MessageSquarePlus className="size-4 text-warning-foreground" /> Raise insufficiency (L2):
-          ask for exactly what is missing
-        </div>
-        <div className="mt-3 grid gap-2">
-          <input
-            value={subject}
-            onChange={(event) => setSubject(event.target.value)}
-            maxLength={180}
-            placeholder="What information is missing?"
-            className="h-10 rounded-xl border border-border bg-white px-3 text-[12.5px] outline-none focus:border-warning/50"
-          />
-          <textarea
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            rows={3}
-            maxLength={1200}
-            placeholder="State exactly what must be corrected or supplied"
-            className="rounded-xl border border-border bg-white px-3 py-2.5 text-[12.5px] outline-none focus:border-warning/50"
-          />
-          <button
-            disabled={create.isPending || subject.trim().length < 3 || message.trim().length < 3}
-            aria-busy={create.isPending}
-            className="ml-auto inline-flex items-center gap-2 rounded-full bg-warning px-4 py-2 text-[12.5px] font-semibold text-warning-foreground disabled:opacity-45"
-          >
-            {create.isPending ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <MessageSquarePlus className="size-3.5" />
-            )}{" "}
-            Raise insufficiency
-          </button>
-        </div>
-      </form>
-      {clarifications.data?.items.map((item) => (
-        <article key={item.id} className="rounded-xl border border-border/70 bg-slate-50 p-3.5">
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[11.5px] font-semibold">{item.subject}</p>
-            <span className="rounded-full bg-blue-50 px-2 py-1 text-[11px] font-semibold text-blue-700">
-              {humanize(item.status)}
-            </span>
-          </div>
-          <p className="mt-1 text-[11px] text-muted-foreground">
-            Raised {formatDateTime(item.createdAt)} · {item.messages.length} messages
-          </p>
-          {item.messages.at(-1) ? (
-            <p className="mt-2 rounded-xl bg-white p-3 text-[12.5px] leading-relaxed text-muted-foreground">
-              {item.messages.at(-1)!.body}
-            </p>
-          ) : null}
-          {item.status === "RESPONDED" ? (
-            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
-              <span className="text-[12px] text-emerald-900">
-                The candidate has replied. Check the reply and the new documents, then resume.
-              </span>
-              <button
-                type="button"
-                onClick={() => resolve.mutate(item.id)}
-                disabled={resolve.isPending}
-                aria-busy={resolve.isPending && resolve.variables === item.id}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
-              >
-                {resolve.isPending && resolve.variables === item.id ? (
-                  <Loader2 className="size-3.5 animate-spin" />
-                ) : (
-                  <CheckCircle2 className="size-3.5" />
-                )}
-                Reviewed – resume verification
-              </button>
-            </div>
-          ) : null}
-        </article>
-      ))}
-      {!clarifications.isLoading && !clarifications.data?.items.length ? (
-        <EmptyContext
-          icon={CheckCircle2}
-          title="No open clarification history"
-          detail="Source questions and candidate responses will remain attached to this case."
-        />
-      ) : null}
-    </div>
-  );
+  return <VerifierL2Clarifications context={context} />;
 }
 
 export function ActivityView({ context }: { context: Context }) {
@@ -216,26 +76,6 @@ function TimelineRow({ label, detail, at }: { label: string; detail: string; at:
       <p className="mt-0.5 text-[11.5px] text-muted-foreground">
         {detail} · {formatDateTime(at)}
       </p>
-    </div>
-  );
-}
-
-function EmptyContext({
-  icon: Icon,
-  title,
-  detail,
-}: {
-  icon: typeof ShieldCheck;
-  title: string;
-  detail: string;
-}) {
-  return (
-    <div className="grid min-h-40 place-items-center rounded-xl border border-dashed border-border bg-slate-50 p-6 text-center">
-      <div>
-        <Icon className="mx-auto size-5 text-muted-foreground" />
-        <p className="mt-2 text-[11.5px] font-semibold">{title}</p>
-        <p className="mt-1 max-w-sm text-[11.5px] text-muted-foreground">{detail}</p>
-      </div>
     </div>
   );
 }

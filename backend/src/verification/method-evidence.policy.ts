@@ -15,6 +15,7 @@ export const methodEvidenceSelect = {
   currentVersion: true,
   expiresAt: true,
   versions: {
+    where: { reviewStatus: "VERIFIED" },
     orderBy: { version: "desc" },
     take: 1,
     select: { version: true, createdAt: true },

@@ -56,7 +56,17 @@ export class CaseWorkflowPolicy {
       if (
         from === "CLARIFICATION_PENDING" &&
         (await tx.clarification.count({
-          where: { caseId, status: { in: ["OPEN", "RESPONDED"] } },
+          where: {
+            caseId,
+            status: {
+              in: [
+                "OPEN",
+                "RESPONDED",
+                "CANDIDATE_SUBMITTED",
+                "DATA_ENTRY_PENDING",
+              ],
+            },
+          },
         }))
       ) {
         throw new BadRequestException(

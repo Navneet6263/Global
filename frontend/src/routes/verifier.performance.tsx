@@ -5,16 +5,24 @@ import { Activity, BadgeCheck, Gauge, TimerReset } from "lucide-react";
 import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getVerifierInsights } from "@/lib/api/tasks";
+import {
+  useVerifierDepartment,
+  validateVerifierDepartmentSearch,
+} from "@/lib/auth/verifier-department";
 
 export const Route = createFileRoute("/verifier/performance")({
   head: () => ({ meta: [{ title: "Verifier Performance — Sapling Global" }] }),
+  validateSearch: validateVerifierDepartmentSearch,
   component: VerifierPerformancePage,
 });
 
 function VerifierPerformancePage() {
+  const { department } = Route.useSearch();
+  const { departmentId: resolvedDepartmentId } = useVerifierDepartment();
+  const departmentId = department ?? resolvedDepartmentId;
   const query = useQuery({
-    queryKey: ["verifier", "insights"],
-    queryFn: getVerifierInsights,
+    queryKey: ["verifier", "insights", departmentId ?? "all"],
+    queryFn: () => getVerifierInsights(departmentId),
     staleTime: 20_000,
   });
   if (query.isLoading) return <WorkspaceLoading label="Calculating verifier performance" />;

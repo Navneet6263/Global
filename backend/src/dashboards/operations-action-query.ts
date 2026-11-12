@@ -52,7 +52,7 @@ export function operationsWorkItems(actor: Actor, now: Date) {
     OUTER APPLY (SELECT COUNT(*) quantity, MIN(v.[updatedAt]) activityAt FROM [dbo].[FieldVisit] v
       WHERE v.[caseId] = c.[id] AND v.[status] IN ('REVIEW_PENDING','EXCEPTION_REVIEW')) visits
     OUTER APPLY (SELECT COUNT(*) quantity, MIN(r.[updatedAt]) activityAt FROM [dbo].[Clarification] r
-      WHERE r.[caseId] = c.[id] AND r.[status] = 'RESPONDED') replies
+      WHERE r.[caseId] = c.[id] AND r.[status] IN ('RESPONDED', 'CANDIDATE_SUBMITTED')) replies
   ), WorkItems AS (
     SELECT f.*, w.[action], w.[quantity], w.[activityAt] FROM Facts f CROSS APPLY (VALUES
       ('documents', CASE WHEN f.[status] <> 'QA_REVIEW' THEN f.documentCount ELSE 0 END, f.documentAt),

@@ -2,6 +2,7 @@ import { ConflictException, ForbiddenException } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 
 export const INTAKE_STAGES = [
+  "CANDIDATE_UPLOAD",
   "INTAKE",
   "DATA_ENTRY",
   "CORRECTION",
@@ -10,7 +11,9 @@ export const INTAKE_STAGES = [
 ] as const;
 export type IntakeStage = (typeof INTAKE_STAGES)[number];
 
-export const OPEN_CLARIFICATION = ["OPEN", "RESPONDED"];
+import { ACTIVE_CLARIFICATION_STATUSES } from "../clarifications/clarification-status";
+
+export const OPEN_CLARIFICATION: string[] = [...ACTIVE_CLARIFICATION_STATUSES];
 export const ACTIVE_TASK = ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"];
 export const REASSIGNABLE_TASK = ["UNASSIGNED", "OPEN", "BLOCKED"];
 

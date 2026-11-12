@@ -75,7 +75,14 @@ const checks: readonly DomainCheck[] = [
   {
     table: "Clarification",
     column: "status",
-    allowed: ["OPEN", "RESPONDED", "RESOLVED", "EXPIRED"],
+    allowed: [
+      "OPEN",
+      "RESPONDED",
+      "CANDIDATE_SUBMITTED",
+      "DATA_ENTRY_PENDING",
+      "RESOLVED",
+      "EXPIRED",
+    ],
   },
   {
     table: "FieldVisit",

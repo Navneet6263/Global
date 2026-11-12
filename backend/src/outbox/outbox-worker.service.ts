@@ -5,16 +5,28 @@ import {
   OnModuleDestroy,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { createHmac } from "node:crypto";
-import type { Actor } from "../common/auth/actor";
 import { MailerService } from "../common/mail/mailer.service";
 import { SecretBoxService } from "../common/security/secret-box.service";
 import { PrismaService } from "../database/prisma.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
-import { ReportsService } from "../reports/reports.service";
-import { ReportRecoveryService } from "../reports/report-recovery.service";
 import { RuntimeHealthService } from "../health/runtime-health.service";
+import { ReportRecoveryService } from "../reports/report-recovery.service";
+import { ReportsService } from "../reports/reports.service";
 import { ObjectDeletionRecoveryService } from "./object-deletion-recovery.service";
+import {
+  OutboxClaimService,
+  type ClaimedOutboxEvent,
+} from "./outbox-claim.service";
+import {
+  deliverCandidateAccessMessage,
+  deliverConsentMessage,
+  deliverDirectEmail,
+  deliverExecutiveBrief,
+  deliverWebhookMessage,
+  isCurrentCandidateAccessDelivery,
+  isCurrentConsentOtpDelivery,
+  type WebhookState,
+} from "./outbox-delivery.helpers";
 import {
   NOOP_TOPICS,
   type CandidateAccessDelivery,
@@ -22,19 +34,23 @@ import {
   type EmailDelivery,
   type ExecutiveDelivery,
 } from "./outbox-worker.types";
-import {
-  OutboxClaimService,
-  type ClaimedOutboxEvent,
-} from "./outbox-claim.service";
+
+const SENSITIVE_TOPICS = new Set([
+  "notification.requested",
+  "consent.otp.requested",
+  "dashboard.executive.delivery",
+  "candidate.access.issued",
+  "email.requested",
+]);
 
 @Injectable()
 export class OutboxWorkerService
   implements OnApplicationBootstrap, OnModuleDestroy
 {
   private readonly logger = new Logger(OutboxWorkerService.name);
+  private readonly webhookState: WebhookState = { suppressedLogged: false };
   private timer?: NodeJS.Timeout;
   private running = false;
-  private notificationSuppressionLogged = false;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -64,8 +80,9 @@ export class OutboxWorkerService
     this.timer = setInterval(() => void this.poll(), interval);
     this.timer.unref();
     void this.claims.recoverAbandoned().then((count) => {
-      if (count)
+      if (count) {
         this.logger.warn(`Recovered ${count} abandoned outbox event(s)`);
+      }
       return this.poll();
     });
   }
@@ -96,352 +113,154 @@ export class OutboxWorkerService
 
   private async process(event: ClaimedOutboxEvent) {
     try {
-      const payload = JSON.parse(event.payloadJson) as Record<string, unknown>;
-      if (event.topic === "report.generate.requested") {
-        const caseId = this.requiredString(payload, "caseId");
-        const reportId =
-          this.optionalString(payload, "reportId") ?? event.aggregateId;
-        await this.reports.generateRequested(event.tenantId, caseId, reportId);
-      } else if (event.topic === "notification.requested") {
-        const secret = this.requiredString(payload, "secret");
-        await this.deliverWebhook(
-          this.secretBox.open<object>(secret),
-          `sapling-notification-${event.id.toString()}`,
-        );
-      } else if (event.topic === "consent.otp.requested") {
-        const secret = this.requiredString(payload, "secret");
-        const delivery = this.secretBox.open<ConsentDelivery>(secret);
-        if (await this.isCurrentConsentOtp(event, delivery)) {
-          await this.deliverConsent(delivery, event.id.toString());
-        }
-      } else if (event.topic === "email.requested") {
-        const secret = this.requiredString(payload, "secret");
-        await this.deliverEmail(this.secretBox.open<EmailDelivery>(secret));
-      } else if (event.topic === "object.delete.requested") {
-        await this.storage.delete(this.requiredString(payload, "objectKey"));
-      } else if (event.topic === "dashboard.executive.delivery") {
-        const secret = this.requiredString(payload, "secret");
-        await this.deliverExecutive(
-          this.secretBox.open<ExecutiveDelivery>(secret),
-          event.id.toString(),
-        );
-      } else if (event.topic === "candidate.access.issued") {
-        const secret = this.requiredString(payload, "secret");
-        const delivery = this.secretBox.open<CandidateAccessDelivery>(secret);
-        if (await this.isCurrentCandidateAccess(event, delivery)) {
-          await this.deliverCandidateAccess(delivery, event.id.toString());
-        }
-      } else if (!NOOP_TOPICS.has(event.topic)) {
-        throw new Error(`Unsupported outbox topic: ${event.topic}`);
-      }
-      const sensitive = [
-        "notification.requested",
-        "consent.otp.requested",
-        "dashboard.executive.delivery",
-        "candidate.access.issued",
-        "email.requested",
-      ].includes(event.topic);
+      await this.dispatch(event);
+      const sensitive = SENSITIVE_TOPICS.has(event.topic);
       if (!(await this.claims.complete(event, sensitive))) {
         this.logger.warn(
           `Outbox event ${event.id.toString()} completed after its processing lease expired`,
         );
       }
     } catch (error) {
-      const failed = event.attempts >= 10;
-      const delayMs = Math.min(
-        15 * 60_000,
-        5000 * 2 ** Math.min(event.attempts, 8),
+      await this.handleFailure(event, error);
+    }
+  }
+
+  private async dispatch(event: ClaimedOutboxEvent) {
+    const payload = JSON.parse(event.payloadJson) as Record<string, unknown>;
+    const sendWebhook = (body: object, key: string) =>
+      this.deliverWebhook(body, key);
+    if (event.topic === "report.generate.requested") {
+      const caseId = this.requiredString(payload, "caseId");
+      const reportId =
+        this.optionalString(payload, "reportId") ?? event.aggregateId;
+      await this.reports.generateRequested(event.tenantId, caseId, reportId);
+    } else if (event.topic === "notification.requested") {
+      await this.deliverWebhook(
+        this.secretBox.open<object>(this.requiredString(payload, "secret")),
+        `sapling-notification-${event.id.toString()}`,
       );
-      if (failed && event.topic === "report.generate.requested") {
-        await this.reportRecovery.markFailed(
-          event.tenantId,
-          event.aggregateId,
-          error,
+    } else if (event.topic === "consent.otp.requested") {
+      const delivery = this.secretBox.open<ConsentDelivery>(
+        this.requiredString(payload, "secret"),
+      );
+      if (await isCurrentConsentOtpDelivery(this.prisma, event, delivery)) {
+        await deliverConsentMessage(
+          this.mailer,
+          sendWebhook,
+          delivery,
+          event.id.toString(),
         );
       }
-      if (failed && event.topic === "object.delete.requested") {
-        const recorded = await this.deletionRecovery.failTerminal(event, error);
-        if (!recorded) {
-          this.logger.warn(
-            `Object deletion event ${event.id.toString()} lost its processing lease before terminal failure was recorded`,
-          );
-        }
-      } else {
-        await this.claims.fail(
-          event,
-          failed,
-          new Date(Date.now() + delayMs),
-          failed &&
-            [
-              "notification.requested",
-              "consent.otp.requested",
-              "dashboard.executive.delivery",
-              "candidate.access.issued",
-              "email.requested",
-            ].includes(event.topic),
+    } else if (event.topic === "email.requested") {
+      await deliverDirectEmail(
+        this.config,
+        this.mailer,
+        this.storage,
+        this.logger,
+        this.secretBox.open<EmailDelivery>(
+          this.requiredString(payload, "secret"),
+        ),
+      );
+    } else if (event.topic === "object.delete.requested") {
+      await this.deleteObjectSafely(event, payload);
+    } else if (event.topic === "dashboard.executive.delivery") {
+      await deliverExecutiveBrief(
+        sendWebhook,
+        this.secretBox.open<ExecutiveDelivery>(
+          this.requiredString(payload, "secret"),
+        ),
+        event.id.toString(),
+      );
+    } else if (event.topic === "candidate.access.issued") {
+      const delivery = this.secretBox.open<CandidateAccessDelivery>(
+        this.requiredString(payload, "secret"),
+      );
+      if (
+        await isCurrentCandidateAccessDelivery(this.prisma, event, delivery)
+      ) {
+        await deliverCandidateAccessMessage(
+          this.mailer,
+          sendWebhook,
+          delivery,
+          event.id.toString(),
         );
       }
-      this.logger.error(
-        `Outbox event ${event.id.toString()} (${event.topic}) failed: ${error instanceof Error ? error.message : "unknown error"}`,
-      );
+    } else if (!NOOP_TOPICS.has(event.topic)) {
+      throw new Error(`Unsupported outbox topic: ${event.topic}`);
     }
   }
 
-  private async deliverConsent(
-    delivery: ConsentDelivery,
-    idempotencyKey: string,
-  ) {
-    if (!delivery.destination)
-      throw new Error("Candidate email or phone is required for OTP delivery");
-    if (delivery.channel === "EMAIL" && this.mailer.configured()) {
-      await this.mailer.sendTemplate(delivery.destination, "consent-otp", {
-        otp: delivery.otp,
-        consentUrl: delivery.consentUrl,
-        expiresAt: delivery.expiresAt,
-      });
-      return;
-    }
-    await this.deliverWebhook(
-      {
-        channel: delivery.channel,
-        destination: delivery.destination,
-        template: "candidate-consent-otp",
-        variables: {
-          otp: delivery.otp,
-          ...(delivery.consentUrl ? { consentUrl: delivery.consentUrl } : {}),
-          expiresAt: delivery.expiresAt,
-        },
-      },
-      `sapling-outbox-${idempotencyKey}`,
-    );
-  }
-
-  private async deliverCandidateAccess(
-    delivery: CandidateAccessDelivery,
-    idempotencyKey: string,
-  ) {
-    if (delivery.channel === "EMAIL" && this.mailer.configured()) {
-      await this.mailer.sendTemplate(delivery.destination, "candidate-access", {
-        portalUrl: delivery.portalUrl,
-        expiresAt: delivery.expiresAt,
-        reason: delivery.reason,
-      });
-      return;
-    }
-    await this.deliverWebhook(
-      {
-        channel: delivery.channel,
-        destination: delivery.destination,
-        template: "candidate-document-upload-link",
-        variables: {
-          portalUrl: delivery.portalUrl,
-          expiresAt: delivery.expiresAt,
-          ...(delivery.reason ? { reason: delivery.reason } : {}),
-        },
-      },
-      `sapling-candidate-access-${idempotencyKey}`,
-    );
-  }
-
-  private async isCurrentCandidateAccess(
+  private async deleteObjectSafely(
     event: ClaimedOutboxEvent,
-    delivery: CandidateAccessDelivery,
+    payload: Record<string, unknown>,
   ) {
-    const access = await this.prisma.candidatePortalAccess.findFirst({
-      where: {
-        publicId: delivery.accessId,
-        tenantId: event.tenantId,
-        revokedAt: null,
-        expiresAt: { gt: new Date() },
-      },
-      select: { id: true },
-    });
-    if (access) return true;
-    await this.prisma.auditEvent.create({
-      data: {
-        tenantId: event.tenantId,
-        action: "candidate-portal.delivery-skipped",
-        resourceType: "candidate-portal-access",
-        resourcePublicId: delivery.accessId,
-        afterJson: JSON.stringify({ reason: "expired-or-revoked" }),
-      },
-    });
-    return false;
-  }
-
-  private async isCurrentConsentOtp(
-    event: ClaimedOutboxEvent,
-    delivery: ConsentDelivery,
-  ) {
-    const consent = await this.prisma.consent.findFirst({
-      where: {
-        publicId: event.aggregateId,
-        case: { tenantId: event.tenantId },
-      },
-      select: { status: true, otpLastIssuedAt: true, otpExpiresAt: true },
-    });
-    const issuedAt = new Date(delivery.issuedAt);
-    const current = Boolean(
-      consent &&
-      consent.status === "REQUESTED" &&
-      consent.otpLastIssuedAt?.getTime() === issuedAt.getTime() &&
-      consent.otpExpiresAt &&
-      consent.otpExpiresAt > new Date() &&
-      new Date(delivery.expiresAt) > new Date(),
-    );
-    if (!current) {
-      await this.prisma.auditEvent.create({
-        data: {
-          tenantId: event.tenantId,
-          action: "consent.otp-delivery-skipped",
-          resourceType: "consent",
-          resourcePublicId: event.aggregateId,
-          afterJson: JSON.stringify({ reason: "expired-or-superseded" }),
-        },
+    const objectKey = this.requiredString(payload, "objectKey");
+    if (
+      event.aggregateType === "document_upload_lease" &&
+      typeof this.prisma?.documentVersion?.findFirst === "function"
+    ) {
+      const referenced = await this.prisma.documentVersion.findFirst({
+        where: { objectKey },
+        select: { id: true },
       });
-    }
-    return current;
-  }
-
-  private async deliverExecutive(
-    delivery: ExecutiveDelivery,
-    idempotencyKey: string,
-  ) {
-    await this.deliverWebhook(
-      {
-        channel: "EMAIL",
-        destination: delivery.recipientEmail,
-        template: "executive-portfolio-brief",
-        variables: {
-          format: delivery.format,
-          dashboardUrl: delivery.dashboardUrl,
-          exportUrl: delivery.exportUrl,
-          scheduledFor: delivery.deliveryAt,
-        },
-      },
-      `sapling-executive-${idempotencyKey}`,
-    );
-  }
-
-  /** Direct email (sign-up OTP, onboarding): company SMTP, else a dev-only log line. */
-  private async deliverEmail(delivery: EmailDelivery) {
-    if (this.mailer.configured()) {
-      const attachments = await Promise.all(
-        (delivery.attachments ?? []).map(async (file) => ({
-          filename: file.filename,
-          contentType: file.contentType,
-          content: file.objectKey
-            ? await this.storage.get(file.objectKey)
-            : Buffer.from(file.base64 ?? "", "base64"),
-        })),
-      );
-      await this.mailer.sendTemplate(
-        delivery.to,
-        delivery.template,
-        delivery.variables,
-        { cc: delivery.cc, attachments },
-      );
-      return;
-    }
-    if (this.config.get<string>("NODE_ENV", "development") === "production")
-      throw new Error("SMTP_HOST is not configured");
-    this.logger.warn(
-      `SMTP is not configured; email "${delivery.template}" for ${delivery.to} not sent${
-        typeof delivery.variables.otp === "string"
-          ? ` (development code: ${delivery.variables.otp})`
-          : ""
-      }`,
-    );
-  }
-
-  private async deliverWebhook(payload: object, idempotencyKey: string) {
-    const webhook = this.config.get<string>("NOTIFICATION_WEBHOOK_URL");
-    if (!webhook) {
-      const environment = this.config.get<string>("NODE_ENV", "development");
-      if (environment === "production") {
-        throw new Error("NOTIFICATION_WEBHOOK_URL is not configured");
-      }
-      if (!this.notificationSuppressionLogged) {
+      if (referenced) {
         this.logger.warn(
-          "Notification delivery is disabled in this non-production environment; queued notification events will be safely acknowledged",
+          `Skipped object deletion lease ${event.id.toString()} because objectKey is referenced`,
         );
-        this.notificationSuppressionLogged = true;
+        return;
       }
-      return;
     }
-    const body = JSON.stringify(payload);
-    const timestamp = Date.now().toString();
-    const secret = this.config.get<string>("NOTIFICATION_WEBHOOK_SECRET");
-    const signature = secret
-      ? createHmac("sha256", secret)
-          .update(`${timestamp}.${body}`)
-          .digest("hex")
-      : undefined;
-    const response = await fetch(webhook, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "idempotency-key": idempotencyKey,
-        "x-sapling-timestamp": timestamp,
-        ...(signature ? { "x-sapling-signature": `sha256=${signature}` } : {}),
-      },
-      body,
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!response.ok)
-      throw new Error(`Notification provider returned HTTP ${response.status}`);
+    await this.storage.delete(objectKey);
   }
 
-  private async actor(
-    userPublicId: string,
-    tenantId: bigint,
-  ): Promise<Actor | null> {
-    const user = await this.prisma.user.findFirst({
-      where: { publicId: userPublicId, tenantId, status: "ACTIVE" },
-      include: {
-        tenant: true,
-        branch: true,
-        client: true,
-        userRoles: { include: { role: true } },
-      },
-    });
-    if (!user) return null;
-    const roles = user.userRoles.map(({ role }) => role.code);
-    const permissions = [
-      ...new Set(
-        user.userRoles.flatMap(({ role }) => {
-          try {
-            return JSON.parse(role.permissionsJson) as string[];
-          } catch {
-            return [];
-          }
-        }),
-      ),
-    ];
-    return {
-      userId: user.id,
-      userPublicId: user.publicId,
-      tenantId: user.tenantId,
-      tenantPublicId: user.tenant.publicId,
-      tenantName: user.tenant.name,
-      branchId: user.branchId ?? undefined,
-      branchPublicId: user.branch?.publicId,
-      branchName: user.branch?.name,
-      clientId: user.clientId ?? undefined,
-      clientPublicId: user.client?.publicId,
-      clientName: user.client?.displayName,
-      email: user.email,
-      displayName: user.displayName,
-      mustChangePassword: user.mustChangePassword,
-      roles,
-      permissions,
-    };
+  private async handleFailure(event: ClaimedOutboxEvent, error: unknown) {
+    const failed = event.attempts >= 10;
+    const delayMs = Math.min(
+      15 * 60_000,
+      5000 * 2 ** Math.min(event.attempts, 8),
+    );
+    if (failed && event.topic === "report.generate.requested") {
+      await this.reportRecovery.markFailed(
+        event.tenantId,
+        event.aggregateId,
+        error,
+      );
+    }
+    if (failed && event.topic === "object.delete.requested") {
+      const recorded = await this.deletionRecovery.failTerminal(event, error);
+      if (!recorded) {
+        this.logger.warn(
+          `Object deletion event ${event.id.toString()} lost its processing lease before terminal failure was recorded`,
+        );
+      }
+    } else {
+      await this.claims.fail(
+        event,
+        failed,
+        new Date(Date.now() + delayMs),
+        failed && SENSITIVE_TOPICS.has(event.topic),
+      );
+    }
+    this.logger.error(
+      `Outbox event ${event.id.toString()} (${event.topic}) failed: ${error instanceof Error ? error.message : "unknown error"}`,
+    );
+  }
+
+  private deliverWebhook(payload: object, idempotencyKey: string) {
+    return deliverWebhookMessage(
+      this.config,
+      this.logger,
+      this.webhookState,
+      payload,
+      idempotencyKey,
+    );
   }
 
   private requiredString(payload: Record<string, unknown>, key: string) {
     const value = payload[key];
-    if (typeof value !== "string" || !value)
+    if (typeof value !== "string" || !value) {
       throw new Error(`Outbox payload is missing ${key}`);
+    }
     return value;
   }
 

@@ -90,7 +90,7 @@ export const SPOC_NAV_ITEMS: readonly NavItem[] = [
     "Corrections & queries",
     "Waiting on the candidate or client",
     "correction",
-    "rmCorrections",
+    "rmClarifications",
     "warning",
   ),
   item(

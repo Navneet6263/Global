@@ -37,7 +37,11 @@ export const OPEN_REQUEST_LIMIT: Record<SupportRequesterType, number> = {
 };
 
 export const CORRECTION_DOCUMENT_STATUSES = ["REJECTED", "REUPLOAD_REQUIRED"];
-export const OPEN_CLARIFICATION_STATUSES = ["OPEN", "RESPONDED"];
+import { ACTIVE_CLARIFICATION_STATUSES } from "../../clarifications/clarification-status";
+
+export const OPEN_CLARIFICATION_STATUSES: string[] = [
+  ...ACTIVE_CLARIFICATION_STATUSES,
+];
 const COMPLETED_STATUSES = ["COMPLETED", "CLOSED"];
 
 /** Trimmed, length-checked free text; blank or too short is refused. */

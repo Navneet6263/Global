@@ -33,6 +33,12 @@ export type ClarificationAvgAggregateOutputType = {
   checkId: number | null
   checkCycle: number | null
   raisedById: number | null
+  submittedDocumentId: number | null
+  submittedDocumentVersion: number | null
+  opsReviewedById: number | null
+  dataEntryReviewedById: number | null
+  reentryCompletedById: number | null
+  rejectionCount: number | null
 }
 
 export type ClarificationSumAggregateOutputType = {
@@ -42,6 +48,12 @@ export type ClarificationSumAggregateOutputType = {
   checkId: bigint | null
   checkCycle: number | null
   raisedById: bigint | null
+  submittedDocumentId: bigint | null
+  submittedDocumentVersion: number | null
+  opsReviewedById: bigint | null
+  dataEntryReviewedById: bigint | null
+  reentryCompletedById: bigint | null
+  rejectionCount: number | null
 }
 
 export type ClarificationMinAggregateOutputType = {
@@ -60,6 +72,20 @@ export type ClarificationMinAggregateOutputType = {
   raisedById: bigint | null
   responseTokenHash: string | null
   responseTokenExpiresAt: Date | null
+  requestedDocumentType: string | null
+  submittedDocumentId: bigint | null
+  submittedDocumentVersion: number | null
+  opsReviewedById: bigint | null
+  opsReviewedAt: Date | null
+  opsReviewNote: string | null
+  dataEntryReviewedById: bigint | null
+  dataEntryReviewedAt: Date | null
+  dataEntryReviewNote: string | null
+  reentryCompletedById: bigint | null
+  reentryCompletedAt: Date | null
+  rejectionCount: number | null
+  lastRejectedAt: Date | null
+  lastRejectedReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -80,6 +106,20 @@ export type ClarificationMaxAggregateOutputType = {
   raisedById: bigint | null
   responseTokenHash: string | null
   responseTokenExpiresAt: Date | null
+  requestedDocumentType: string | null
+  submittedDocumentId: bigint | null
+  submittedDocumentVersion: number | null
+  opsReviewedById: bigint | null
+  opsReviewedAt: Date | null
+  opsReviewNote: string | null
+  dataEntryReviewedById: bigint | null
+  dataEntryReviewedAt: Date | null
+  dataEntryReviewNote: string | null
+  reentryCompletedById: bigint | null
+  reentryCompletedAt: Date | null
+  rejectionCount: number | null
+  lastRejectedAt: Date | null
+  lastRejectedReason: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -100,6 +140,20 @@ export type ClarificationCountAggregateOutputType = {
   raisedById: number
   responseTokenHash: number
   responseTokenExpiresAt: number
+  requestedDocumentType: number
+  submittedDocumentId: number
+  submittedDocumentVersion: number
+  opsReviewedById: number
+  opsReviewedAt: number
+  opsReviewNote: number
+  dataEntryReviewedById: number
+  dataEntryReviewedAt: number
+  dataEntryReviewNote: number
+  reentryCompletedById: number
+  reentryCompletedAt: number
+  rejectionCount: number
+  lastRejectedAt: number
+  lastRejectedReason: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -113,6 +167,12 @@ export type ClarificationAvgAggregateInputType = {
   checkId?: true
   checkCycle?: true
   raisedById?: true
+  submittedDocumentId?: true
+  submittedDocumentVersion?: true
+  opsReviewedById?: true
+  dataEntryReviewedById?: true
+  reentryCompletedById?: true
+  rejectionCount?: true
 }
 
 export type ClarificationSumAggregateInputType = {
@@ -122,6 +182,12 @@ export type ClarificationSumAggregateInputType = {
   checkId?: true
   checkCycle?: true
   raisedById?: true
+  submittedDocumentId?: true
+  submittedDocumentVersion?: true
+  opsReviewedById?: true
+  dataEntryReviewedById?: true
+  reentryCompletedById?: true
+  rejectionCount?: true
 }
 
 export type ClarificationMinAggregateInputType = {
@@ -140,6 +206,20 @@ export type ClarificationMinAggregateInputType = {
   raisedById?: true
   responseTokenHash?: true
   responseTokenExpiresAt?: true
+  requestedDocumentType?: true
+  submittedDocumentId?: true
+  submittedDocumentVersion?: true
+  opsReviewedById?: true
+  opsReviewedAt?: true
+  opsReviewNote?: true
+  dataEntryReviewedById?: true
+  dataEntryReviewedAt?: true
+  dataEntryReviewNote?: true
+  reentryCompletedById?: true
+  reentryCompletedAt?: true
+  rejectionCount?: true
+  lastRejectedAt?: true
+  lastRejectedReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -160,6 +240,20 @@ export type ClarificationMaxAggregateInputType = {
   raisedById?: true
   responseTokenHash?: true
   responseTokenExpiresAt?: true
+  requestedDocumentType?: true
+  submittedDocumentId?: true
+  submittedDocumentVersion?: true
+  opsReviewedById?: true
+  opsReviewedAt?: true
+  opsReviewNote?: true
+  dataEntryReviewedById?: true
+  dataEntryReviewedAt?: true
+  dataEntryReviewNote?: true
+  reentryCompletedById?: true
+  reentryCompletedAt?: true
+  rejectionCount?: true
+  lastRejectedAt?: true
+  lastRejectedReason?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -180,6 +274,20 @@ export type ClarificationCountAggregateInputType = {
   raisedById?: true
   responseTokenHash?: true
   responseTokenExpiresAt?: true
+  requestedDocumentType?: true
+  submittedDocumentId?: true
+  submittedDocumentVersion?: true
+  opsReviewedById?: true
+  opsReviewedAt?: true
+  opsReviewNote?: true
+  dataEntryReviewedById?: true
+  dataEntryReviewedAt?: true
+  dataEntryReviewNote?: true
+  reentryCompletedById?: true
+  reentryCompletedAt?: true
+  rejectionCount?: true
+  lastRejectedAt?: true
+  lastRejectedReason?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -287,6 +395,20 @@ export type ClarificationGroupByOutputType = {
   raisedById: bigint | null
   responseTokenHash: string | null
   responseTokenExpiresAt: Date | null
+  requestedDocumentType: string | null
+  submittedDocumentId: bigint | null
+  submittedDocumentVersion: number | null
+  opsReviewedById: bigint | null
+  opsReviewedAt: Date | null
+  opsReviewNote: string | null
+  dataEntryReviewedById: bigint | null
+  dataEntryReviewedAt: Date | null
+  dataEntryReviewNote: string | null
+  reentryCompletedById: bigint | null
+  reentryCompletedAt: Date | null
+  rejectionCount: number
+  lastRejectedAt: Date | null
+  lastRejectedReason: string | null
   createdAt: Date
   updatedAt: Date
   _count: ClarificationCountAggregateOutputType | null
@@ -330,10 +452,26 @@ export type ClarificationWhereInput = {
   raisedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
   responseTokenHash?: Prisma.StringNullableFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  requestedDocumentType?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  submittedDocumentId?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  submittedDocumentVersion?: Prisma.IntNullableFilter<"Clarification"> | number | null
+  opsReviewedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  opsReviewedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  opsReviewNote?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  dataEntryReviewedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  dataEntryReviewedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  dataEntryReviewNote?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  reentryCompletedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  reentryCompletedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  rejectionCount?: Prisma.IntFilter<"Clarification"> | number
+  lastRejectedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  lastRejectedReason?: Prisma.StringNullableFilter<"Clarification"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
+  submittedDocument?: Prisma.XOR<Prisma.DocumentNullableScalarRelationFilter, Prisma.DocumentWhereInput> | null
+  submittedVersions?: Prisma.DocumentVersionListRelationFilter
   messages?: Prisma.ClarificationMessageListRelationFilter
 }
 
@@ -353,10 +491,26 @@ export type ClarificationOrderByWithRelationInput = {
   raisedById?: Prisma.SortOrderInput | Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  requestedDocumentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  opsReviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  opsReviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reentryCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
+  lastRejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastRejectedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
   case?: Prisma.VerificationCaseOrderByWithRelationInput
+  submittedDocument?: Prisma.DocumentOrderByWithRelationInput
+  submittedVersions?: Prisma.DocumentVersionOrderByRelationAggregateInput
   messages?: Prisma.ClarificationMessageOrderByRelationAggregateInput
 }
 
@@ -379,10 +533,26 @@ export type ClarificationWhereUniqueInput = Prisma.AtLeast<{
   raisedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
   responseTokenHash?: Prisma.StringNullableFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  requestedDocumentType?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  submittedDocumentId?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  submittedDocumentVersion?: Prisma.IntNullableFilter<"Clarification"> | number | null
+  opsReviewedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  opsReviewedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  opsReviewNote?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  dataEntryReviewedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  dataEntryReviewedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  dataEntryReviewNote?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  reentryCompletedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  reentryCompletedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  rejectionCount?: Prisma.IntFilter<"Clarification"> | number
+  lastRejectedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  lastRejectedReason?: Prisma.StringNullableFilter<"Clarification"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
+  submittedDocument?: Prisma.XOR<Prisma.DocumentNullableScalarRelationFilter, Prisma.DocumentWhereInput> | null
+  submittedVersions?: Prisma.DocumentVersionListRelationFilter
   messages?: Prisma.ClarificationMessageListRelationFilter
 }, "id" | "publicId">
 
@@ -402,6 +572,20 @@ export type ClarificationOrderByWithAggregationInput = {
   raisedById?: Prisma.SortOrderInput | Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrderInput | Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  requestedDocumentType?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrderInput | Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrderInput | Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  opsReviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  opsReviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReviewedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  dataEntryReviewNote?: Prisma.SortOrderInput | Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrderInput | Prisma.SortOrder
+  reentryCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
+  lastRejectedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  lastRejectedReason?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.ClarificationCountOrderByAggregateInput
@@ -430,6 +614,20 @@ export type ClarificationScalarWhereWithAggregatesInput = {
   raisedById?: Prisma.BigIntNullableWithAggregatesFilter<"Clarification"> | bigint | number | null
   responseTokenHash?: Prisma.StringNullableWithAggregatesFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
+  requestedDocumentType?: Prisma.StringNullableWithAggregatesFilter<"Clarification"> | string | null
+  submittedDocumentId?: Prisma.BigIntNullableWithAggregatesFilter<"Clarification"> | bigint | number | null
+  submittedDocumentVersion?: Prisma.IntNullableWithAggregatesFilter<"Clarification"> | number | null
+  opsReviewedById?: Prisma.BigIntNullableWithAggregatesFilter<"Clarification"> | bigint | number | null
+  opsReviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
+  opsReviewNote?: Prisma.StringNullableWithAggregatesFilter<"Clarification"> | string | null
+  dataEntryReviewedById?: Prisma.BigIntNullableWithAggregatesFilter<"Clarification"> | bigint | number | null
+  dataEntryReviewedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
+  dataEntryReviewNote?: Prisma.StringNullableWithAggregatesFilter<"Clarification"> | string | null
+  reentryCompletedById?: Prisma.BigIntNullableWithAggregatesFilter<"Clarification"> | bigint | number | null
+  reentryCompletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
+  rejectionCount?: Prisma.IntWithAggregatesFilter<"Clarification"> | number
+  lastRejectedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Clarification"> | Date | string | null
+  lastRejectedReason?: Prisma.StringNullableWithAggregatesFilter<"Clarification"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Clarification"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Clarification"> | Date | string
 }
@@ -448,10 +646,25 @@ export type ClarificationCreateInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutClarificationsInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutClarificationsInput
+  submittedDocument?: Prisma.DocumentCreateNestedOneWithoutClarificationSubmissionsInput
+  submittedVersions?: Prisma.DocumentVersionCreateNestedManyWithoutClarificationInput
   messages?: Prisma.ClarificationMessageCreateNestedManyWithoutClarificationInput
 }
 
@@ -471,8 +684,23 @@ export type ClarificationUncheckedCreateInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutClarificationInput
   messages?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutClarificationInput
 }
 
@@ -490,10 +718,25 @@ export type ClarificationUpdateInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutClarificationsNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutClarificationsNestedInput
+  submittedDocument?: Prisma.DocumentUpdateOneWithoutClarificationSubmissionsNestedInput
+  submittedVersions?: Prisma.DocumentVersionUpdateManyWithoutClarificationNestedInput
   messages?: Prisma.ClarificationMessageUpdateManyWithoutClarificationNestedInput
 }
 
@@ -513,8 +756,23 @@ export type ClarificationUncheckedUpdateInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutClarificationNestedInput
   messages?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutClarificationNestedInput
 }
 
@@ -533,6 +791,20 @@ export type ClarificationCreateManyInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -551,6 +823,19 @@ export type ClarificationUpdateManyMutationInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -571,6 +856,20 @@ export type ClarificationUncheckedUpdateManyInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -583,6 +882,11 @@ export type ClarificationListRelationFilter = {
 
 export type ClarificationOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type ClarificationNullableScalarRelationFilter = {
+  is?: Prisma.ClarificationWhereInput | null
+  isNot?: Prisma.ClarificationWhereInput | null
 }
 
 export type ClarificationCountOrderByAggregateInput = {
@@ -601,6 +905,20 @@ export type ClarificationCountOrderByAggregateInput = {
   raisedById?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrder
+  requestedDocumentType?: Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrder
+  opsReviewedAt?: Prisma.SortOrder
+  opsReviewNote?: Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrder
+  dataEntryReviewedAt?: Prisma.SortOrder
+  dataEntryReviewNote?: Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrder
+  reentryCompletedAt?: Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
+  lastRejectedAt?: Prisma.SortOrder
+  lastRejectedReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -612,6 +930,12 @@ export type ClarificationAvgOrderByAggregateInput = {
   checkId?: Prisma.SortOrder
   checkCycle?: Prisma.SortOrder
   raisedById?: Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
 }
 
 export type ClarificationMaxOrderByAggregateInput = {
@@ -630,6 +954,20 @@ export type ClarificationMaxOrderByAggregateInput = {
   raisedById?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrder
+  requestedDocumentType?: Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrder
+  opsReviewedAt?: Prisma.SortOrder
+  opsReviewNote?: Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrder
+  dataEntryReviewedAt?: Prisma.SortOrder
+  dataEntryReviewNote?: Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrder
+  reentryCompletedAt?: Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
+  lastRejectedAt?: Prisma.SortOrder
+  lastRejectedReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -650,6 +988,20 @@ export type ClarificationMinOrderByAggregateInput = {
   raisedById?: Prisma.SortOrder
   responseTokenHash?: Prisma.SortOrder
   responseTokenExpiresAt?: Prisma.SortOrder
+  requestedDocumentType?: Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrder
+  opsReviewedAt?: Prisma.SortOrder
+  opsReviewNote?: Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrder
+  dataEntryReviewedAt?: Prisma.SortOrder
+  dataEntryReviewNote?: Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrder
+  reentryCompletedAt?: Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
+  lastRejectedAt?: Prisma.SortOrder
+  lastRejectedReason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -661,6 +1013,12 @@ export type ClarificationSumOrderByAggregateInput = {
   checkId?: Prisma.SortOrder
   checkCycle?: Prisma.SortOrder
   raisedById?: Prisma.SortOrder
+  submittedDocumentId?: Prisma.SortOrder
+  submittedDocumentVersion?: Prisma.SortOrder
+  opsReviewedById?: Prisma.SortOrder
+  dataEntryReviewedById?: Prisma.SortOrder
+  reentryCompletedById?: Prisma.SortOrder
+  rejectionCount?: Prisma.SortOrder
 }
 
 export type ClarificationScalarRelationFilter = {
@@ -752,6 +1110,64 @@ export type ClarificationUncheckedUpdateManyWithoutCaseNestedInput = {
   deleteMany?: Prisma.ClarificationScalarWhereInput | Prisma.ClarificationScalarWhereInput[]
 }
 
+export type ClarificationCreateNestedManyWithoutSubmittedDocumentInput = {
+  create?: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput> | Prisma.ClarificationCreateWithoutSubmittedDocumentInput[] | Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput[]
+  connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput | Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput[]
+  createMany?: Prisma.ClarificationCreateManySubmittedDocumentInputEnvelope
+  connect?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+}
+
+export type ClarificationUncheckedCreateNestedManyWithoutSubmittedDocumentInput = {
+  create?: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput> | Prisma.ClarificationCreateWithoutSubmittedDocumentInput[] | Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput[]
+  connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput | Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput[]
+  createMany?: Prisma.ClarificationCreateManySubmittedDocumentInputEnvelope
+  connect?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+}
+
+export type ClarificationUpdateManyWithoutSubmittedDocumentNestedInput = {
+  create?: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput> | Prisma.ClarificationCreateWithoutSubmittedDocumentInput[] | Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput[]
+  connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput | Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput[]
+  upsert?: Prisma.ClarificationUpsertWithWhereUniqueWithoutSubmittedDocumentInput | Prisma.ClarificationUpsertWithWhereUniqueWithoutSubmittedDocumentInput[]
+  createMany?: Prisma.ClarificationCreateManySubmittedDocumentInputEnvelope
+  set?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  disconnect?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  delete?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  connect?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  update?: Prisma.ClarificationUpdateWithWhereUniqueWithoutSubmittedDocumentInput | Prisma.ClarificationUpdateWithWhereUniqueWithoutSubmittedDocumentInput[]
+  updateMany?: Prisma.ClarificationUpdateManyWithWhereWithoutSubmittedDocumentInput | Prisma.ClarificationUpdateManyWithWhereWithoutSubmittedDocumentInput[]
+  deleteMany?: Prisma.ClarificationScalarWhereInput | Prisma.ClarificationScalarWhereInput[]
+}
+
+export type ClarificationUncheckedUpdateManyWithoutSubmittedDocumentNestedInput = {
+  create?: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput> | Prisma.ClarificationCreateWithoutSubmittedDocumentInput[] | Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput[]
+  connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput | Prisma.ClarificationCreateOrConnectWithoutSubmittedDocumentInput[]
+  upsert?: Prisma.ClarificationUpsertWithWhereUniqueWithoutSubmittedDocumentInput | Prisma.ClarificationUpsertWithWhereUniqueWithoutSubmittedDocumentInput[]
+  createMany?: Prisma.ClarificationCreateManySubmittedDocumentInputEnvelope
+  set?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  disconnect?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  delete?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  connect?: Prisma.ClarificationWhereUniqueInput | Prisma.ClarificationWhereUniqueInput[]
+  update?: Prisma.ClarificationUpdateWithWhereUniqueWithoutSubmittedDocumentInput | Prisma.ClarificationUpdateWithWhereUniqueWithoutSubmittedDocumentInput[]
+  updateMany?: Prisma.ClarificationUpdateManyWithWhereWithoutSubmittedDocumentInput | Prisma.ClarificationUpdateManyWithWhereWithoutSubmittedDocumentInput[]
+  deleteMany?: Prisma.ClarificationScalarWhereInput | Prisma.ClarificationScalarWhereInput[]
+}
+
+export type ClarificationCreateNestedOneWithoutSubmittedVersionsInput = {
+  create?: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedVersionsInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedVersionsInput>
+  connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutSubmittedVersionsInput
+  connect?: Prisma.ClarificationWhereUniqueInput
+}
+
+export type ClarificationUpdateOneWithoutSubmittedVersionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedVersionsInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedVersionsInput>
+  connectOrCreate?: Prisma.ClarificationCreateOrConnectWithoutSubmittedVersionsInput
+  upsert?: Prisma.ClarificationUpsertWithoutSubmittedVersionsInput
+  disconnect?: Prisma.ClarificationWhereInput | boolean
+  delete?: Prisma.ClarificationWhereInput | boolean
+  connect?: Prisma.ClarificationWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ClarificationUpdateToOneWithWhereWithoutSubmittedVersionsInput, Prisma.ClarificationUpdateWithoutSubmittedVersionsInput>, Prisma.ClarificationUncheckedUpdateWithoutSubmittedVersionsInput>
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -788,9 +1204,24 @@ export type ClarificationCreateWithoutTenantInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   case: Prisma.VerificationCaseCreateNestedOneWithoutClarificationsInput
+  submittedDocument?: Prisma.DocumentCreateNestedOneWithoutClarificationSubmissionsInput
+  submittedVersions?: Prisma.DocumentVersionCreateNestedManyWithoutClarificationInput
   messages?: Prisma.ClarificationMessageCreateNestedManyWithoutClarificationInput
 }
 
@@ -809,8 +1240,23 @@ export type ClarificationUncheckedCreateWithoutTenantInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutClarificationInput
   messages?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutClarificationInput
 }
 
@@ -858,6 +1304,20 @@ export type ClarificationScalarWhereInput = {
   raisedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
   responseTokenHash?: Prisma.StringNullableFilter<"Clarification"> | string | null
   responseTokenExpiresAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  requestedDocumentType?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  submittedDocumentId?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  submittedDocumentVersion?: Prisma.IntNullableFilter<"Clarification"> | number | null
+  opsReviewedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  opsReviewedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  opsReviewNote?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  dataEntryReviewedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  dataEntryReviewedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  dataEntryReviewNote?: Prisma.StringNullableFilter<"Clarification"> | string | null
+  reentryCompletedById?: Prisma.BigIntNullableFilter<"Clarification"> | bigint | number | null
+  reentryCompletedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  rejectionCount?: Prisma.IntFilter<"Clarification"> | number
+  lastRejectedAt?: Prisma.DateTimeNullableFilter<"Clarification"> | Date | string | null
+  lastRejectedReason?: Prisma.StringNullableFilter<"Clarification"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Clarification"> | Date | string
 }
@@ -876,9 +1336,24 @@ export type ClarificationCreateWithoutCaseInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutClarificationsInput
+  submittedDocument?: Prisma.DocumentCreateNestedOneWithoutClarificationSubmissionsInput
+  submittedVersions?: Prisma.DocumentVersionCreateNestedManyWithoutClarificationInput
   messages?: Prisma.ClarificationMessageCreateNestedManyWithoutClarificationInput
 }
 
@@ -897,8 +1372,23 @@ export type ClarificationUncheckedCreateWithoutCaseInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutClarificationInput
   messages?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutClarificationInput
 }
 
@@ -927,6 +1417,257 @@ export type ClarificationUpdateManyWithWhereWithoutCaseInput = {
   data: Prisma.XOR<Prisma.ClarificationUpdateManyMutationInput, Prisma.ClarificationUncheckedUpdateManyWithoutCaseInput>
 }
 
+export type ClarificationCreateWithoutSubmittedDocumentInput = {
+  id?: bigint | number
+  publicId?: string
+  checkId?: bigint | number | null
+  checkCycle?: number | null
+  status?: string
+  subject: string
+  dueAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
+  level?: string | null
+  raisedById?: bigint | number | null
+  responseTokenHash?: string | null
+  responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutClarificationsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutClarificationsInput
+  submittedVersions?: Prisma.DocumentVersionCreateNestedManyWithoutClarificationInput
+  messages?: Prisma.ClarificationMessageCreateNestedManyWithoutClarificationInput
+}
+
+export type ClarificationUncheckedCreateWithoutSubmittedDocumentInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  checkId?: bigint | number | null
+  checkCycle?: number | null
+  status?: string
+  subject: string
+  dueAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
+  level?: string | null
+  raisedById?: bigint | number | null
+  responseTokenHash?: string | null
+  responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutClarificationInput
+  messages?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutClarificationInput
+}
+
+export type ClarificationCreateOrConnectWithoutSubmittedDocumentInput = {
+  where: Prisma.ClarificationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput>
+}
+
+export type ClarificationCreateManySubmittedDocumentInputEnvelope = {
+  data: Prisma.ClarificationCreateManySubmittedDocumentInput | Prisma.ClarificationCreateManySubmittedDocumentInput[]
+}
+
+export type ClarificationUpsertWithWhereUniqueWithoutSubmittedDocumentInput = {
+  where: Prisma.ClarificationWhereUniqueInput
+  update: Prisma.XOR<Prisma.ClarificationUpdateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedUpdateWithoutSubmittedDocumentInput>
+  create: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedDocumentInput>
+}
+
+export type ClarificationUpdateWithWhereUniqueWithoutSubmittedDocumentInput = {
+  where: Prisma.ClarificationWhereUniqueInput
+  data: Prisma.XOR<Prisma.ClarificationUpdateWithoutSubmittedDocumentInput, Prisma.ClarificationUncheckedUpdateWithoutSubmittedDocumentInput>
+}
+
+export type ClarificationUpdateManyWithWhereWithoutSubmittedDocumentInput = {
+  where: Prisma.ClarificationScalarWhereInput
+  data: Prisma.XOR<Prisma.ClarificationUpdateManyMutationInput, Prisma.ClarificationUncheckedUpdateManyWithoutSubmittedDocumentInput>
+}
+
+export type ClarificationCreateWithoutSubmittedVersionsInput = {
+  id?: bigint | number
+  publicId?: string
+  checkId?: bigint | number | null
+  checkCycle?: number | null
+  status?: string
+  subject: string
+  dueAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
+  level?: string | null
+  raisedById?: bigint | number | null
+  responseTokenHash?: string | null
+  responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutClarificationsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutClarificationsInput
+  submittedDocument?: Prisma.DocumentCreateNestedOneWithoutClarificationSubmissionsInput
+  messages?: Prisma.ClarificationMessageCreateNestedManyWithoutClarificationInput
+}
+
+export type ClarificationUncheckedCreateWithoutSubmittedVersionsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  checkId?: bigint | number | null
+  checkCycle?: number | null
+  status?: string
+  subject: string
+  dueAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
+  level?: string | null
+  raisedById?: bigint | number | null
+  responseTokenHash?: string | null
+  responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  messages?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutClarificationInput
+}
+
+export type ClarificationCreateOrConnectWithoutSubmittedVersionsInput = {
+  where: Prisma.ClarificationWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedVersionsInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedVersionsInput>
+}
+
+export type ClarificationUpsertWithoutSubmittedVersionsInput = {
+  update: Prisma.XOR<Prisma.ClarificationUpdateWithoutSubmittedVersionsInput, Prisma.ClarificationUncheckedUpdateWithoutSubmittedVersionsInput>
+  create: Prisma.XOR<Prisma.ClarificationCreateWithoutSubmittedVersionsInput, Prisma.ClarificationUncheckedCreateWithoutSubmittedVersionsInput>
+  where?: Prisma.ClarificationWhereInput
+}
+
+export type ClarificationUpdateToOneWithWhereWithoutSubmittedVersionsInput = {
+  where?: Prisma.ClarificationWhereInput
+  data: Prisma.XOR<Prisma.ClarificationUpdateWithoutSubmittedVersionsInput, Prisma.ClarificationUncheckedUpdateWithoutSubmittedVersionsInput>
+}
+
+export type ClarificationUpdateWithoutSubmittedVersionsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutClarificationsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutClarificationsNestedInput
+  submittedDocument?: Prisma.DocumentUpdateOneWithoutClarificationSubmissionsNestedInput
+  messages?: Prisma.ClarificationMessageUpdateManyWithoutClarificationNestedInput
+}
+
+export type ClarificationUncheckedUpdateWithoutSubmittedVersionsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  messages?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutClarificationNestedInput
+}
+
 export type ClarificationCreateWithoutMessagesInput = {
   id?: bigint | number
   publicId?: string
@@ -941,10 +1682,25 @@ export type ClarificationCreateWithoutMessagesInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutClarificationsInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutClarificationsInput
+  submittedDocument?: Prisma.DocumentCreateNestedOneWithoutClarificationSubmissionsInput
+  submittedVersions?: Prisma.DocumentVersionCreateNestedManyWithoutClarificationInput
 }
 
 export type ClarificationUncheckedCreateWithoutMessagesInput = {
@@ -963,8 +1719,23 @@ export type ClarificationUncheckedCreateWithoutMessagesInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutClarificationInput
 }
 
 export type ClarificationCreateOrConnectWithoutMessagesInput = {
@@ -997,10 +1768,25 @@ export type ClarificationUpdateWithoutMessagesInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutClarificationsNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutClarificationsNestedInput
+  submittedDocument?: Prisma.DocumentUpdateOneWithoutClarificationSubmissionsNestedInput
+  submittedVersions?: Prisma.DocumentVersionUpdateManyWithoutClarificationNestedInput
 }
 
 export type ClarificationUncheckedUpdateWithoutMessagesInput = {
@@ -1019,8 +1805,23 @@ export type ClarificationUncheckedUpdateWithoutMessagesInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutClarificationNestedInput
 }
 
 export type ClarificationCreateManyTenantInput = {
@@ -1037,6 +1838,20 @@ export type ClarificationCreateManyTenantInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1055,9 +1870,24 @@ export type ClarificationUpdateWithoutTenantInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutClarificationsNestedInput
+  submittedDocument?: Prisma.DocumentUpdateOneWithoutClarificationSubmissionsNestedInput
+  submittedVersions?: Prisma.DocumentVersionUpdateManyWithoutClarificationNestedInput
   messages?: Prisma.ClarificationMessageUpdateManyWithoutClarificationNestedInput
 }
 
@@ -1076,8 +1906,23 @@ export type ClarificationUncheckedUpdateWithoutTenantInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutClarificationNestedInput
   messages?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutClarificationNestedInput
 }
 
@@ -1096,6 +1941,20 @@ export type ClarificationUncheckedUpdateManyWithoutTenantInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1114,6 +1973,20 @@ export type ClarificationCreateManyCaseInput = {
   raisedById?: bigint | number | null
   responseTokenHash?: string | null
   responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentId?: bigint | number | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1132,9 +2005,24 @@ export type ClarificationUpdateWithoutCaseInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutClarificationsNestedInput
+  submittedDocument?: Prisma.DocumentUpdateOneWithoutClarificationSubmissionsNestedInput
+  submittedVersions?: Prisma.DocumentVersionUpdateManyWithoutClarificationNestedInput
   messages?: Prisma.ClarificationMessageUpdateManyWithoutClarificationNestedInput
 }
 
@@ -1153,8 +2041,23 @@ export type ClarificationUncheckedUpdateWithoutCaseInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutClarificationNestedInput
   messages?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutClarificationNestedInput
 }
 
@@ -1173,6 +2076,155 @@ export type ClarificationUncheckedUpdateManyWithoutCaseInput = {
   raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ClarificationCreateManySubmittedDocumentInput = {
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  checkId?: bigint | number | null
+  checkCycle?: number | null
+  status?: string
+  subject: string
+  dueAt?: Date | string | null
+  resolvedAt?: Date | string | null
+  reverificationRequired?: boolean
+  level?: string | null
+  raisedById?: bigint | number | null
+  responseTokenHash?: string | null
+  responseTokenExpiresAt?: Date | string | null
+  requestedDocumentType?: string | null
+  submittedDocumentVersion?: number | null
+  opsReviewedById?: bigint | number | null
+  opsReviewedAt?: Date | string | null
+  opsReviewNote?: string | null
+  dataEntryReviewedById?: bigint | number | null
+  dataEntryReviewedAt?: Date | string | null
+  dataEntryReviewNote?: string | null
+  reentryCompletedById?: bigint | number | null
+  reentryCompletedAt?: Date | string | null
+  rejectionCount?: number
+  lastRejectedAt?: Date | string | null
+  lastRejectedReason?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type ClarificationUpdateWithoutSubmittedDocumentInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutClarificationsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutClarificationsNestedInput
+  submittedVersions?: Prisma.DocumentVersionUpdateManyWithoutClarificationNestedInput
+  messages?: Prisma.ClarificationMessageUpdateManyWithoutClarificationNestedInput
+}
+
+export type ClarificationUncheckedUpdateWithoutSubmittedDocumentInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  submittedVersions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutClarificationNestedInput
+  messages?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutClarificationNestedInput
+}
+
+export type ClarificationUncheckedUpdateManyWithoutSubmittedDocumentInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  checkId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  checkCycle?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  subject?: Prisma.StringFieldUpdateOperationsInput | string
+  dueAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  resolvedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reverificationRequired?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  level?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  raisedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  responseTokenHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  responseTokenExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  requestedDocumentType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  submittedDocumentVersion?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  opsReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  opsReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  opsReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  dataEntryReviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  dataEntryReviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  dataEntryReviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reentryCompletedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reentryCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastRejectedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastRejectedReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1183,10 +2235,12 @@ export type ClarificationUncheckedUpdateManyWithoutCaseInput = {
  */
 
 export type ClarificationCountOutputType = {
+  submittedVersions: number
   messages: number
 }
 
 export type ClarificationCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  submittedVersions?: boolean | ClarificationCountOutputTypeCountSubmittedVersionsArgs
   messages?: boolean | ClarificationCountOutputTypeCountMessagesArgs
 }
 
@@ -1198,6 +2252,13 @@ export type ClarificationCountOutputTypeDefaultArgs<ExtArgs extends runtime.Type
    * Select specific fields to fetch from the ClarificationCountOutputType
    */
   select?: Prisma.ClarificationCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * ClarificationCountOutputType without action
+ */
+export type ClarificationCountOutputTypeCountSubmittedVersionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DocumentVersionWhereInput
 }
 
 /**
@@ -1224,10 +2285,26 @@ export type ClarificationSelect<ExtArgs extends runtime.Types.Extensions.Interna
   raisedById?: boolean
   responseTokenHash?: boolean
   responseTokenExpiresAt?: boolean
+  requestedDocumentType?: boolean
+  submittedDocumentId?: boolean
+  submittedDocumentVersion?: boolean
+  opsReviewedById?: boolean
+  opsReviewedAt?: boolean
+  opsReviewNote?: boolean
+  dataEntryReviewedById?: boolean
+  dataEntryReviewedAt?: boolean
+  dataEntryReviewNote?: boolean
+  reentryCompletedById?: boolean
+  reentryCompletedAt?: boolean
+  rejectionCount?: boolean
+  lastRejectedAt?: boolean
+  lastRejectedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
+  submittedDocument?: boolean | Prisma.Clarification$submittedDocumentArgs<ExtArgs>
+  submittedVersions?: boolean | Prisma.Clarification$submittedVersionsArgs<ExtArgs>
   messages?: boolean | Prisma.Clarification$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.ClarificationCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["clarification"]>
@@ -1250,14 +2327,30 @@ export type ClarificationSelectScalar = {
   raisedById?: boolean
   responseTokenHash?: boolean
   responseTokenExpiresAt?: boolean
+  requestedDocumentType?: boolean
+  submittedDocumentId?: boolean
+  submittedDocumentVersion?: boolean
+  opsReviewedById?: boolean
+  opsReviewedAt?: boolean
+  opsReviewNote?: boolean
+  dataEntryReviewedById?: boolean
+  dataEntryReviewedAt?: boolean
+  dataEntryReviewNote?: boolean
+  reentryCompletedById?: boolean
+  reentryCompletedAt?: boolean
+  rejectionCount?: boolean
+  lastRejectedAt?: boolean
+  lastRejectedReason?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ClarificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "checkId" | "checkCycle" | "status" | "subject" | "dueAt" | "resolvedAt" | "reverificationRequired" | "level" | "raisedById" | "responseTokenHash" | "responseTokenExpiresAt" | "createdAt" | "updatedAt", ExtArgs["result"]["clarification"]>
+export type ClarificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "caseId" | "checkId" | "checkCycle" | "status" | "subject" | "dueAt" | "resolvedAt" | "reverificationRequired" | "level" | "raisedById" | "responseTokenHash" | "responseTokenExpiresAt" | "requestedDocumentType" | "submittedDocumentId" | "submittedDocumentVersion" | "opsReviewedById" | "opsReviewedAt" | "opsReviewNote" | "dataEntryReviewedById" | "dataEntryReviewedAt" | "dataEntryReviewNote" | "reentryCompletedById" | "reentryCompletedAt" | "rejectionCount" | "lastRejectedAt" | "lastRejectedReason" | "createdAt" | "updatedAt", ExtArgs["result"]["clarification"]>
 export type ClarificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
+  submittedDocument?: boolean | Prisma.Clarification$submittedDocumentArgs<ExtArgs>
+  submittedVersions?: boolean | Prisma.Clarification$submittedVersionsArgs<ExtArgs>
   messages?: boolean | Prisma.Clarification$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.ClarificationCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -1267,6 +2360,8 @@ export type $ClarificationPayload<ExtArgs extends runtime.Types.Extensions.Inter
   objects: {
     tenant: Prisma.$TenantPayload<ExtArgs>
     case: Prisma.$VerificationCasePayload<ExtArgs>
+    submittedDocument: Prisma.$DocumentPayload<ExtArgs> | null
+    submittedVersions: Prisma.$DocumentVersionPayload<ExtArgs>[]
     messages: Prisma.$ClarificationMessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1288,6 +2383,20 @@ export type $ClarificationPayload<ExtArgs extends runtime.Types.Extensions.Inter
     raisedById: bigint | null
     responseTokenHash: string | null
     responseTokenExpiresAt: Date | null
+    requestedDocumentType: string | null
+    submittedDocumentId: bigint | null
+    submittedDocumentVersion: number | null
+    opsReviewedById: bigint | null
+    opsReviewedAt: Date | null
+    opsReviewNote: string | null
+    dataEntryReviewedById: bigint | null
+    dataEntryReviewedAt: Date | null
+    dataEntryReviewNote: string | null
+    reentryCompletedById: bigint | null
+    reentryCompletedAt: Date | null
+    rejectionCount: number
+    lastRejectedAt: Date | null
+    lastRejectedReason: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["clarification"]>
@@ -1632,6 +2741,8 @@ export interface Prisma__ClarificationClient<T, Null = never, ExtArgs extends ru
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  submittedDocument<T extends Prisma.Clarification$submittedDocumentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Clarification$submittedDocumentArgs<ExtArgs>>): Prisma.Prisma__DocumentClient<runtime.Types.Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  submittedVersions<T extends Prisma.Clarification$submittedVersionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Clarification$submittedVersionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messages<T extends Prisma.Clarification$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Clarification$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClarificationMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1677,6 +2788,20 @@ export interface ClarificationFieldRefs {
   readonly raisedById: Prisma.FieldRef<"Clarification", 'BigInt'>
   readonly responseTokenHash: Prisma.FieldRef<"Clarification", 'String'>
   readonly responseTokenExpiresAt: Prisma.FieldRef<"Clarification", 'DateTime'>
+  readonly requestedDocumentType: Prisma.FieldRef<"Clarification", 'String'>
+  readonly submittedDocumentId: Prisma.FieldRef<"Clarification", 'BigInt'>
+  readonly submittedDocumentVersion: Prisma.FieldRef<"Clarification", 'Int'>
+  readonly opsReviewedById: Prisma.FieldRef<"Clarification", 'BigInt'>
+  readonly opsReviewedAt: Prisma.FieldRef<"Clarification", 'DateTime'>
+  readonly opsReviewNote: Prisma.FieldRef<"Clarification", 'String'>
+  readonly dataEntryReviewedById: Prisma.FieldRef<"Clarification", 'BigInt'>
+  readonly dataEntryReviewedAt: Prisma.FieldRef<"Clarification", 'DateTime'>
+  readonly dataEntryReviewNote: Prisma.FieldRef<"Clarification", 'String'>
+  readonly reentryCompletedById: Prisma.FieldRef<"Clarification", 'BigInt'>
+  readonly reentryCompletedAt: Prisma.FieldRef<"Clarification", 'DateTime'>
+  readonly rejectionCount: Prisma.FieldRef<"Clarification", 'Int'>
+  readonly lastRejectedAt: Prisma.FieldRef<"Clarification", 'DateTime'>
+  readonly lastRejectedReason: Prisma.FieldRef<"Clarification", 'String'>
   readonly createdAt: Prisma.FieldRef<"Clarification", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Clarification", 'DateTime'>
 }
@@ -2023,6 +3148,49 @@ export type ClarificationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many Clarifications to delete.
    */
   limit?: number
+}
+
+/**
+ * Clarification.submittedDocument
+ */
+export type Clarification$submittedDocumentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Document
+   */
+  select?: Prisma.DocumentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Document
+   */
+  omit?: Prisma.DocumentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentInclude<ExtArgs> | null
+  where?: Prisma.DocumentWhereInput
+}
+
+/**
+ * Clarification.submittedVersions
+ */
+export type Clarification$submittedVersionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DocumentVersion
+   */
+  select?: Prisma.DocumentVersionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DocumentVersion
+   */
+  omit?: Prisma.DocumentVersionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DocumentVersionInclude<ExtArgs> | null
+  where?: Prisma.DocumentVersionWhereInput
+  orderBy?: Prisma.DocumentVersionOrderByWithRelationInput | Prisma.DocumentVersionOrderByWithRelationInput[]
+  cursor?: Prisma.DocumentVersionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DocumentVersionScalarFieldEnum | Prisma.DocumentVersionScalarFieldEnum[]
 }
 
 /**

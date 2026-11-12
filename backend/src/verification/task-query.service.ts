@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import {
+  ACTIVE_TASK_STATUSES,
+  resolveTaskAccessScope,
   startOfDay,
-  taskAccessScope,
   taskSlaWhere,
   type TaskSlaFilter,
 } from "./task-query.helpers";
@@ -14,6 +15,7 @@ export type MineTaskQuery = {
   search?: string;
   cursor?: string;
   taskId?: string;
+  departmentId?: string;
   sla?: TaskSlaFilter;
   limit: number;
 };
@@ -24,7 +26,11 @@ export class TaskQueryService {
 
   async mine(actor: Actor, query: MineTaskQuery) {
     const search = query.search?.trim();
-    const access = taskAccessScope(actor);
+    const access = await resolveTaskAccessScope(
+      this.prisma,
+      actor,
+      query.departmentId,
+    );
     const slaConstraint = query.sla ? taskSlaWhere(query.sla) : undefined;
     const searchConstraint = search
       ? {
@@ -38,18 +44,20 @@ export class TaskQueryService {
           },
         }
       : undefined;
-    const constraints = [slaConstraint, searchConstraint].filter(
-      (item) => item !== undefined,
-    );
-    const where = {
-      ...access,
-      ...(query.taskId ? { publicId: query.taskId } : {}),
-      status:
-        query.view === "ACTIVE"
-          ? { in: ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"] }
-          : query.status,
-      ...(constraints.length ? { AND: constraints } : {}),
-    };
+    const statusConstraint =
+      query.view === "ACTIVE"
+        ? { status: { in: ACTIVE_TASK_STATUSES } }
+        : query.status
+          ? { status: query.status }
+          : undefined;
+    const andClauses = [
+      access,
+      query.taskId ? { publicId: query.taskId } : undefined,
+      statusConstraint,
+      slaConstraint,
+      searchConstraint,
+    ].filter((item) => item !== undefined);
+    const where = andClauses.length === 1 ? andClauses[0] : { AND: andClauses };
     const rows = await this.prisma.checkTask.findMany({
       where,
       select: {
@@ -62,12 +70,18 @@ export class TaskQueryService {
         blockerReason: true,
         blockedAt: true,
         version: true,
+        assignee: { select: { publicId: true, displayName: true } },
         check: {
           select: {
+            id: true,
             publicId: true,
             type: true,
             status: true,
-            department: { select: { name: true, teamType: true } },
+            initiationJson: true,
+            initiatedAt: true,
+            department: {
+              select: { publicId: true, name: true, teamType: true },
+            },
             result: true,
             riskLevel: true,
             sourceSummary: true,
@@ -89,6 +103,25 @@ export class TaskQueryService {
                 priority: true,
                 subject: { select: { publicId: true, fullName: true } },
                 client: { select: { publicId: true, displayName: true } },
+                clarifications: {
+                  where: { level: "L2" },
+                  select: {
+                    publicId: true,
+                    level: true,
+                    status: true,
+                    subject: true,
+                    checkId: true,
+                    requestedDocumentType: true,
+                    submittedDocumentVersion: true,
+                    opsReviewedAt: true,
+                    reentryCompletedAt: true,
+                    rejectionCount: true,
+                    lastRejectedReason: true,
+                    dueAt: true,
+                    createdAt: true,
+                  },
+                  orderBy: { createdAt: "desc" },
+                },
               },
             },
           },
@@ -105,29 +138,77 @@ export class TaskQueryService {
     const page = hasMore ? rows.slice(0, query.limit) : rows;
     const [active, overdue, blocked, completedToday] = await Promise.all([
       this.prisma.checkTask.count({
-        where: {
-          ...access,
-          status: { in: ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"] },
-        },
+        where: { AND: [access, { status: { in: ACTIVE_TASK_STATUSES } }] },
       }),
       this.prisma.checkTask.count({
         where: {
-          ...access,
-          status: { not: "COMPLETED" },
-          dueAt: { lt: new Date() },
+          AND: [
+            access,
+            { status: { in: ACTIVE_TASK_STATUSES } },
+            { dueAt: { lt: new Date() } },
+          ],
         },
       }),
-      this.prisma.checkTask.count({ where: { ...access, status: "BLOCKED" } }),
+      this.prisma.checkTask.count({
+        where: { AND: [access, { status: "BLOCKED" }] },
+      }),
       this.prisma.checkTask.count({
         where: {
-          ...access,
-          status: "COMPLETED",
-          completedAt: { gte: startOfDay() },
+          AND: [
+            access,
+            { status: "COMPLETED" },
+            { completedAt: { gte: startOfDay() } },
+          ],
         },
       }),
     ]);
     return {
-      items: page.map(({ publicId, ...row }) => ({ id: publicId, ...row })),
+      items: page.map(({ publicId, assignee, check, ...row }) => {
+        const {
+          id: checkInternalId,
+          department,
+          case: { clarifications = [], ...caseRest },
+          ...checkRest
+        } = check;
+        return {
+          id: publicId,
+          ...row,
+          assignee: assignee
+            ? { id: assignee.publicId, name: assignee.displayName }
+            : null,
+          check: {
+            ...checkRest,
+            department: department
+              ? {
+                  id: department.publicId,
+                  name: department.name,
+                  teamType: department.teamType,
+                }
+              : null,
+            clarifications: clarifications
+              .filter(
+                (item) =>
+                  checkInternalId !== undefined &&
+                  item.checkId === checkInternalId,
+              )
+              .map((item) => ({
+                id: item.publicId,
+                level: item.level,
+                status: item.status,
+                subject: item.subject,
+                requestedDocumentType: item.requestedDocumentType,
+                submittedDocumentVersion: item.submittedDocumentVersion,
+                opsReviewedAt: item.opsReviewedAt,
+                reentryCompletedAt: item.reentryCompletedAt,
+                rejectionCount: item.rejectionCount,
+                lastRejectedReason: item.lastRejectedReason,
+                dueAt: item.dueAt,
+                createdAt: item.createdAt,
+              })),
+            case: caseRest,
+          },
+        };
+      }),
       nextCursor: hasMore ? page.at(-1)?.publicId : null,
       summary: { active, overdue, blocked, completedToday },
     };

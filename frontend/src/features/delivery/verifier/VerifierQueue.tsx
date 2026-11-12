@@ -116,6 +116,19 @@ function QueueItem({
   const overdue = Boolean(
     task.dueAt && new Date(task.dueAt).getTime() < Date.now() && task.status !== "COMPLETED",
   );
+  const latestL2 = task.check.clarifications?.find((item) => item.level === "L2");
+  const l2Label =
+    latestL2 && task.status !== "COMPLETED"
+      ? latestL2.status === "RESOLVED" && latestL2.reentryCompletedAt
+        ? "All details re-entered by Data Entry"
+        : latestL2.status === "DATA_ENTRY_PENDING"
+          ? "L2: With Data Entry"
+          : latestL2.status === "CANDIDATE_SUBMITTED"
+            ? "L2: Awaiting Ops"
+            : latestL2.status === "OPEN"
+              ? "L2: Awaiting candidate"
+              : null
+      : null;
   return (
     <button
       type="button"
@@ -142,6 +155,18 @@ function QueueItem({
         <span className="block truncate font-mono text-[11.5px] text-slate-500">
           {task.check.case.caseNumber}
         </span>
+        {l2Label ? (
+          <span
+            className={cn(
+              "mt-1 inline-block rounded-full px-2 py-0.5 text-[10.5px] font-semibold",
+              latestL2?.status === "RESOLVED"
+                ? "bg-emerald-50 text-emerald-700"
+                : "bg-amber-50 text-amber-800",
+            )}
+          >
+            {l2Label}
+          </span>
+        ) : null}
         <span className="mt-1.5 flex items-center justify-between gap-2 text-[11.5px] text-slate-500">
           <span className="truncate">
             <span className="font-semibold text-blue-700">{humanize(task.check.type)}</span>
@@ -158,6 +183,11 @@ function QueueItem({
             {task.dueAt ? formatDate(task.dueAt) : "No due date"}
           </span>
         </span>
+        {task.assignee?.name ? (
+          <span className="mt-1 block truncate text-[11px] font-medium text-slate-600">
+            Claimed by {task.assignee.name}
+          </span>
+        ) : null}
       </span>
     </button>
   );

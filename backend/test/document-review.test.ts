@@ -15,11 +15,13 @@ const input = {
 function fixture(patch: Record<string, unknown> = {}) {
   const events: unknown[] = [];
   const updates: unknown[] = [];
+  const versionUpdates: unknown[] = [];
   const tx = {
     document: {
       findFirst: () =>
         Promise.resolve({
           id: 9n,
+          type: "PAN",
           currentVersion: 2,
           version: 4,
           status: "AVAILABLE",
@@ -30,6 +32,12 @@ function fixture(patch: Record<string, unknown> = {}) {
         }),
       updateMany: (args: unknown) => {
         updates.push(args);
+        return Promise.resolve({ count: 1 });
+      },
+    },
+    documentVersion: {
+      updateMany: (args: unknown) => {
+        versionUpdates.push(args);
         return Promise.resolve({ count: 1 });
       },
     },
@@ -45,7 +53,12 @@ function fixture(patch: Record<string, unknown> = {}) {
     $transaction: (run: (client: typeof tx) => unknown) =>
       Promise.resolve(run(tx)),
   } as unknown as PrismaService;
-  return { service: new DocumentReviewService(prisma), events, updates };
+  return {
+    service: new DocumentReviewService(prisma),
+    events,
+    updates,
+    versionUpdates,
+  };
 }
 
 void test("review rejects stale reviewer or uploaded version without altering document", async () => {
@@ -85,11 +98,20 @@ void test("review refuses expired or unsafe evidence", async () => {
 });
 
 void test("accepted review records actual actor and exact file version", async () => {
-  const { service, events, updates } = fixture();
+  const { service, events, updates, versionUpdates } = fixture();
   const result = await service.review(actor, "doc-id", input);
   assert.equal(result.version, 5);
   assert.equal(result.currentVersion, 2);
   assert.equal(updates.length, 1);
+  assert.equal(versionUpdates.length, 1);
+  const versionUpdate = versionUpdates[0] as {
+    where: { documentId: bigint; version: number };
+    data: { reviewStatus: string; reviewNote: string; reviewedById: bigint };
+  };
+  assert.deepEqual(versionUpdate.where, { documentId: 9n, version: 2 });
+  assert.equal(versionUpdate.data.reviewStatus, "VERIFIED");
+  assert.equal(versionUpdate.data.reviewNote, "Checked full original document");
+  assert.equal(versionUpdate.data.reviewedById, 2n);
   const event = events[0] as {
     data: {
       tenantId: bigint;

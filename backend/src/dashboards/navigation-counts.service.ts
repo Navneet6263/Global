@@ -1,8 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
+import { ACTIVE_CLARIFICATION_STATUSES } from "../clarifications/clarification-status";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
 import { RM_BUCKETS } from "../workflow/intake.service";
+import {
+  findConfirmedDeletedLinkIntakeIds,
+  rmEligibleWhereWithLegacyIds,
+} from "../workflow/intake-eligibility.helpers";
 
 @Injectable()
 export class NavigationCountsService {
@@ -35,43 +40,58 @@ export class NavigationCountsService {
         generatedAt: now,
       };
     }
-    // The RM sidebar counts its own cases by step, with the same rules as its queue.
+    // The RM sidebar counts all eligible cases & clarifications across mapped clients.
     let rmCounts: Record<string, number> = {};
     if (actor.roles.includes("SPOC_RM")) {
       const mine = {
         ...scope,
         workflowVersion: 2,
-        assignedOpsUserId: actor.userId,
       };
+      const confirmedLegacyIds = await findConfirmedDeletedLinkIntakeIds(
+        this.prisma,
+        actor.tenantId,
+      );
+      const rmEligible = (extra?: (typeof RM_BUCKETS)[string]) =>
+        rmEligibleWhereWithLegacyIds(confirmedLegacyIds, mine, extra);
       const [
         rmActive,
         rmNeedsDataEntry,
         rmReady,
         rmFinal,
         rmCorrections,
+        rmClarifications,
         rmOverdue,
         rmEscalated,
       ] = await Promise.all([
         this.prisma.verificationCase.count({
-          where: { ...mine, status: active.status },
+          where: rmEligible(),
         }),
         this.prisma.verificationCase.count({
-          where: { ...mine, ...RM_BUCKETS["needs_data_entry"] },
+          where: rmEligible(RM_BUCKETS["needs_data_entry"]),
         }),
         this.prisma.verificationCase.count({
-          where: { ...mine, ...RM_BUCKETS["ready"] },
+          where: rmEligible(RM_BUCKETS["ready"]),
         }),
         this.prisma.verificationCase.count({
-          where: { ...mine, ...RM_BUCKETS["final_approval"] },
+          where: rmEligible(RM_BUCKETS["final_approval"]),
         }),
         this.prisma.verificationCase.count({
-          where: { ...mine, ...RM_BUCKETS["correction"] },
+          where: rmEligible(RM_BUCKETS["correction"]),
+        }),
+        typeof this.prisma.clarification?.count === "function"
+          ? this.prisma.clarification.count({
+              where: {
+                tenantId: actor.tenantId,
+                case: scope,
+                status: { in: [...ACTIVE_CLARIFICATION_STATUSES] },
+              },
+            })
+          : Promise.resolve(0),
+        this.prisma.verificationCase.count({
+          where: rmEligible({ dueAt: { lt: now } }),
         }),
         this.prisma.verificationCase.count({
-          where: { ...mine, status: active.status, dueAt: { lt: now } },
-        }),
-        this.prisma.verificationCase.count({
-          where: { ...mine, status: active.status, escalatedAt: { not: null } },
+          where: rmEligible({ escalatedAt: { not: null } }),
         }),
       ]);
       rmCounts = {
@@ -81,6 +101,7 @@ export class NavigationCountsService {
         rmReady,
         rmFinal,
         rmCorrections,
+        rmClarifications,
         rmOverdue,
         rmEscalated,
       };
@@ -119,7 +140,14 @@ export class NavigationCountsService {
         where: {
           tenantId: actor.tenantId,
           case: scope,
-          status: { in: ["OPEN", "RESPONDED"] },
+          status: {
+            in: [
+              "OPEN",
+              "RESPONDED",
+              "CANDIDATE_SUBMITTED",
+              "DATA_ENTRY_PENDING",
+            ],
+          },
         },
       }),
       this.prisma.fieldVisit.count({

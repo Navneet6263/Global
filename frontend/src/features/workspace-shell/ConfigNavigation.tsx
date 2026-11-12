@@ -15,11 +15,13 @@ const matchesSearch = (item: NavItem, search: Record<string, unknown>) =>
 function NavLink({
   item,
   shadowed,
+  sharedSearch,
   onNavigate,
 }: {
   item: NavItem;
   /** A more specific item (same route, with a filter) is the current page. */
   shadowed: boolean;
+  sharedSearch?: Record<string, string>;
   onNavigate?: () => void;
 }) {
   const Icon = item.icon;
@@ -31,11 +33,13 @@ function NavLink({
   const home = WORKSPACE_PRESENTATION[item.workspace].home;
   const onRoute = item.route === home ? pathname === home : pathname.startsWith(item.route);
   const active = item.search ? onRoute && matchesSearch(item, search) : onRoute && !shadowed;
+  const linkSearch =
+    sharedSearch || item.search ? { ...(sharedSearch ?? {}), ...(item.search ?? {}) } : undefined;
   return (
     <NavigationHint title={item.label} description={item.description}>
       <Link
         to={item.route as "/admin"}
-        search={item.search as never}
+        search={linkSearch as never}
         onClick={onNavigate}
         className={`client-nav-row ${item.sub ? "is-sub" : ""} ${active ? "is-active" : ""}`}
         aria-current={active ? "page" : undefined}
@@ -64,12 +68,14 @@ export function ConfigNavigation({
   subtitle,
   extraItems = [],
   hiddenRoutes = [],
+  sharedSearch,
   onNavigate,
 }: {
   workspace: NavWorkspace;
   subtitle: string;
   extraItems?: readonly NavItem[];
   hiddenRoutes?: readonly string[];
+  sharedSearch?: Record<string, string>;
   onNavigate?: () => void;
 }) {
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
@@ -90,6 +96,7 @@ export function ConfigNavigation({
     <div className="client-nav-content">
       <Link
         to={home as "/admin"}
+        search={sharedSearch as never}
         className="client-brand"
         onClick={onNavigate}
         aria-label="Sapling Global"
@@ -119,6 +126,7 @@ export function ConfigNavigation({
                   key={`${item.route}:${item.label}`}
                   item={item}
                   shadowed={filteredActive}
+                  sharedSearch={sharedSearch}
                   onNavigate={onNavigate}
                 />
               ))}

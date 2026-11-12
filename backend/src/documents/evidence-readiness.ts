@@ -145,7 +145,12 @@ export async function caseEvidenceReadiness(
   if (options.includeWork !== false) {
     result.issues.push(...(await caseMethodIssues(tx, caseId)));
     const clarifications = await tx.clarification.count({
-      where: { caseId, status: { in: ["OPEN", "RESPONDED"] } },
+      where: {
+        caseId,
+        status: {
+          in: ["OPEN", "RESPONDED", "CANDIDATE_SUBMITTED", "DATA_ENTRY_PENDING"],
+        },
+      },
     });
     if (clarifications)
       result.issues.push(`${clarifications} unresolved clarification(s)`);

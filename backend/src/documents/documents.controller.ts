@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -7,6 +8,7 @@ import {
   Patch,
   ParseUUIDPipe,
   Post,
+  Query,
   Req,
   StreamableFile,
 } from "@nestjs/common";
@@ -101,8 +103,17 @@ export class DocumentsController {
   async download(
     @CurrentActor() actor: Actor,
     @Param("documentId", ParseUUIDPipe) documentId: string,
+    @Query("version") version?: string,
   ): Promise<StreamableFile> {
-    return (await this.documents.download(actor, documentId)).file;
+    const parsedVersion = parseOptionalDocumentVersion(version);
+    return (
+      await this.documents.download(
+        actor,
+        documentId,
+        "download",
+        parsedVersion !== undefined ? { version: parsedVersion } : undefined,
+      )
+    ).file;
   }
 
   @Get("documents/:documentId/preview")
@@ -121,7 +132,28 @@ export class DocumentsController {
   async preview(
     @CurrentActor() actor: Actor,
     @Param("documentId", ParseUUIDPipe) documentId: string,
+    @Query("version") version?: string,
   ): Promise<StreamableFile> {
-    return (await this.documents.download(actor, documentId, "preview")).file;
+    const parsedVersion = parseOptionalDocumentVersion(version);
+    return (
+      await this.documents.download(
+        actor,
+        documentId,
+        "preview",
+        parsedVersion !== undefined ? { version: parsedVersion } : undefined,
+      )
+    ).file;
   }
+}
+
+function parseOptionalDocumentVersion(raw?: string): number | undefined {
+  if (raw === undefined || raw === "") return undefined;
+  if (!/^\d+$/.test(raw)) {
+    throw new BadRequestException("Document version must be a positive integer");
+  }
+  const parsed = Number(raw);
+  if (!Number.isSafeInteger(parsed) || parsed < 1) {
+    throw new BadRequestException("Document version must be a positive integer");
+  }
+  return parsed;
 }

@@ -44,8 +44,24 @@ export class DataHousekeepingService
         this.prisma.candidatePortalAccess.deleteMany({
           where: {
             OR: [
-              { expiresAt: { lt: now } },
-              { revokedAt: { lt: terminalCutoff } },
+              // Uncompleted links can be pruned as soon as expired or stale-revoked.
+              {
+                completedAt: null,
+                OR: [
+                  { expiresAt: { lt: now } },
+                  { revokedAt: { lt: terminalCutoff } },
+                ],
+              },
+              // Keep completed submission proof while the case is still active in workflow.
+              {
+                completedAt: { not: null },
+                revokedAt: { lt: terminalCutoff },
+                case: {
+                  status: {
+                    in: ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"],
+                  },
+                },
+              },
             ],
           },
         }),

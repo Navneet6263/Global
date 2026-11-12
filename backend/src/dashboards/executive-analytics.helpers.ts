@@ -106,7 +106,12 @@ export function attentionQueue(rows: ExecutiveCaseRow[], now: Date) {
       if (row.priority === "URGENT") reasons.push("Urgent priority");
       if (
         row.clarifications.some((item) =>
-          ["OPEN", "RESPONDED"].includes(item.status),
+          [
+            "OPEN",
+            "RESPONDED",
+            "CANDIDATE_SUBMITTED",
+            "DATA_ENTRY_PENDING",
+          ].includes(item.status),
         )
       )
         reasons.push("Clarification open");

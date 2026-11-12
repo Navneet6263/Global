@@ -6,6 +6,7 @@ import type { CandidateCase } from "@/lib/api/candidate-portal";
 import { respondToCandidateClarification } from "@/lib/api/candidate-portal";
 import { CandidateStatus } from "./candidate-ui";
 import { formatDate, humanize } from "./candidate-utils";
+import { CandidateL2ClarificationCard } from "./CandidateL2ClarificationCard";
 
 export function CandidateChecks({
   accessId,
@@ -80,10 +81,16 @@ export function ClarificationCard({
   accessId,
   token,
   item,
+  noticeVersion,
+  acknowledged,
+  onSubmitted,
 }: {
   accessId: string;
   token: string;
   item: CandidateCase["clarifications"][number];
+  noticeVersion?: string;
+  acknowledged?: boolean;
+  onSubmitted?: () => Promise<unknown>;
 }) {
   const queryClient = useQueryClient();
   const [message, setMessage] = useState("");
@@ -94,6 +101,19 @@ export function ClarificationCard({
       void queryClient.invalidateQueries({ queryKey: ["candidate-portal", accessId, token] });
     },
   });
+
+  if (item.level === "L2") {
+    return (
+      <CandidateL2ClarificationCard
+        accessId={accessId}
+        token={token}
+        item={item}
+        noticeVersion={noticeVersion}
+        acknowledged={acknowledged}
+        onSubmitted={onSubmitted}
+      />
+    );
+  }
 
   return (
     <article className="rounded-[1.15rem] border border-warning/15 bg-warning-soft/60 p-3.5">

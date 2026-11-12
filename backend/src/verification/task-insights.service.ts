@@ -1,13 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
-import { startOfDay, taskAccessScope } from "./task-query.helpers";
+import {
+  ACTIVE_TASK_STATUSES,
+  resolveTaskAccessScope,
+  startOfDay,
+} from "./task-query.helpers";
 
 @Injectable()
 export class TaskInsightsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async mine(actor: Actor) {
+  async mine(actor: Actor, departmentId?: string) {
     const now = new Date();
     const today = startOfDay(now);
     const tomorrow = new Date(today);
@@ -15,8 +19,12 @@ export class TaskInsightsService {
     const dueSoon = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     const sevenDaysAgo = new Date(today);
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
-    const access = taskAccessScope(actor);
-    const activeStatuses = ["UNASSIGNED", "OPEN", "IN_PROGRESS", "BLOCKED"];
+    const access = await resolveTaskAccessScope(
+      this.prisma,
+      actor,
+      departmentId,
+    );
+    const activeStatuses = ACTIVE_TASK_STATUSES;
 
     const [
       active,
@@ -30,40 +38,54 @@ export class TaskInsightsService {
       rows,
     ] = await Promise.all([
       this.prisma.checkTask.count({
-        where: { ...access, status: { in: activeStatuses } },
+        where: { AND: [access, { status: { in: activeStatuses } }] },
       }),
       this.prisma.checkTask.count({
-        where: { ...access, status: { in: ["UNASSIGNED", "OPEN"] } },
+        where: { AND: [access, { status: "OPEN" }] },
       }),
       this.prisma.checkTask.count({
-        where: { ...access, status: "IN_PROGRESS" },
+        where: { AND: [access, { status: "IN_PROGRESS" }] },
       }),
-      this.prisma.checkTask.count({ where: { ...access, status: "BLOCKED" } }),
       this.prisma.checkTask.count({
-        where: { ...access, status: { not: "COMPLETED" }, dueAt: { lt: now } },
+        where: { AND: [access, { status: "BLOCKED" }] },
       }),
       this.prisma.checkTask.count({
         where: {
-          ...access,
-          status: { not: "COMPLETED" },
-          dueAt: { gte: today, lt: tomorrow },
+          AND: [
+            access,
+            { status: { in: activeStatuses } },
+            { dueAt: { lt: now } },
+          ],
         },
       }),
       this.prisma.checkTask.count({
         where: {
-          ...access,
-          status: { not: "COMPLETED" },
-          dueAt: { gte: now, lte: dueSoon },
+          AND: [
+            access,
+            { status: { in: activeStatuses } },
+            { dueAt: { gte: today, lt: tomorrow } },
+          ],
         },
       }),
       this.prisma.checkTask.count({
-        where: { ...access, status: "COMPLETED" },
+        where: {
+          AND: [
+            access,
+            { status: { in: activeStatuses } },
+            { dueAt: { gte: now, lte: dueSoon } },
+          ],
+        },
+      }),
+      this.prisma.checkTask.count({
+        where: { AND: [access, { status: "COMPLETED" }] },
       }),
       this.prisma.checkTask.findMany({
         where: {
-          ...access,
-          status: "COMPLETED",
-          completedAt: { gte: sevenDaysAgo },
+          AND: [
+            access,
+            { status: "COMPLETED" },
+            { completedAt: { gte: sevenDaysAgo } },
+          ],
         },
         select: {
           startedAt: true,

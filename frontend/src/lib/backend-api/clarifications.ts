@@ -1,4 +1,7 @@
 import { apiRequest } from "./client";
+import type { ClarificationUserSummary, SubmittedClarificationDocument } from "./clarifications-l2";
+
+export * from "./clarifications-l2";
 
 export interface Clarification {
   id: string;
@@ -6,6 +9,24 @@ export interface Clarification {
   subject: string;
   /** L1 = raised at Data Entry; L2 = raised during verification. Null for older requests. */
   level?: "L1" | "L2" | null;
+  checkId?: string | null;
+  checkType?: string | null;
+  checkStatus?: string | null;
+  requestedDocumentType?: string | null;
+  submittedDocumentVersion?: number | null;
+  submittedDocument?: SubmittedClarificationDocument | null;
+  raisedBy?: ClarificationUserSummary | null;
+  opsReviewedBy?: ClarificationUserSummary | null;
+  opsReviewedAt?: string | null;
+  opsReviewNote?: string | null;
+  dataEntryReviewedBy?: ClarificationUserSummary | null;
+  dataEntryReviewedAt?: string | null;
+  dataEntryReviewNote?: string | null;
+  reentryCompletedBy?: ClarificationUserSummary | null;
+  reentryCompletedAt?: string | null;
+  rejectionCount?: number;
+  lastRejectedAt?: string | null;
+  lastRejectedReason?: string | null;
   dueAt?: string | null;
   resolvedAt?: string | null;
   createdAt: string;
@@ -18,7 +39,13 @@ export function listClarifications(caseId: string) {
 
 export function createClarification(
   caseId: string,
-  input: { checkId?: string; subject: string; message: string; dueAt?: string },
+  input: {
+    checkId?: string;
+    subject: string;
+    message: string;
+    dueAt?: string;
+    requestedDocumentType?: string;
+  },
 ) {
   return apiRequest<{
     id: string;

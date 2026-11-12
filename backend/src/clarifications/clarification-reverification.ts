@@ -6,7 +6,12 @@ import { restartCheckMethods } from "../verification/restart-check-methods";
 export async function requestClarificationReverification(
   tx: Prisma.TransactionClient,
   actor: Actor,
-  target: { caseId: bigint; checkId: bigint | null; subject: string },
+  target: {
+    caseId: bigint;
+    checkId: bigint | null;
+    subject: string;
+    instructionsPrefix?: string;
+  },
 ) {
   const checks = await tx.caseCheck.findMany({
     where: {
@@ -32,6 +37,7 @@ export async function requestClarificationReverification(
       data: {
         status: assignee ? "ASSIGNED" : "PENDING",
         result: null,
+        disposition: null,
         riskLevel: null,
         sourceSummary: null,
         completedAt: null,
@@ -44,17 +50,16 @@ export async function requestClarificationReverification(
       ["OPEN", "UNASSIGNED", "IN_PROGRESS", "BLOCKED"].includes(
         previous.status,
       );
+    const prefix =
+      target.instructionsPrefix ??
+      "Re-verify corrected evidence after clarification";
     const taskData = {
       tenantId: actor.tenantId,
       checkId: check.id,
       assigneeId: assignee?.id,
       status: assignee ? "OPEN" : "UNASSIGNED",
       dueAt: check.dueAt,
-      instructions:
-        `Re-verify corrected evidence after clarification: ${target.subject}`.slice(
-          0,
-          1000,
-        ),
+      instructions: `${prefix}: ${target.subject}`.slice(0, 1000),
     };
     const task = activeTask
       ? await tx.checkTask.update({

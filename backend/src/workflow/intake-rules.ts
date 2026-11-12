@@ -68,13 +68,23 @@ export async function applyIntakeRules(
     await notifyClientAdmins(tx, item, true);
     return "client-review-again";
   }
-  if (item.intakeStage !== "INTAKE") return "none";
+  if (item.intakeStage !== "CANDIDATE_UPLOAD" && item.intakeStage !== "INTAKE")
+    return "none";
   if (item.client.clientReviewFirst) {
     await moveStage(tx, item, "CLIENT_REVIEW", "case.client-review-requested");
     await notifyClientAdmins(tx, item, false);
     return "client-review";
   }
-  return (await autoAssignDataEntry(tx, item)) ? "auto-data-entry" : "none";
+  if (await autoAssignDataEntry(tx, item)) return "auto-data-entry";
+  if (item.intakeStage === "CANDIDATE_UPLOAD") {
+    await moveStage(
+      tx,
+      item,
+      "INTAKE",
+      "case.documents-submitted-for-intake",
+    );
+  }
+  return "none";
 }
 
 /** After the client approves (Route A), the same auto-assignment rule applies. */
@@ -88,20 +98,21 @@ export async function applyAutoAssignment(tx: Tx, caseId: bigint) {
 
 async function autoAssignDataEntry(tx: Tx, item: RuleCase) {
   const user = item.client.defaultDataEntryUser;
+  const stage = item.intakeStage ?? "";
   if (
     !user ||
     user.status !== "ACTIVE" ||
     !user.userRoles.some((row) => effectiveRole(row.role) === "DATA_ENTRY") ||
     !item.assignedOpsUserId ||
     item.dataEntryUserId ||
-    item.intakeStage !== "INTAKE"
+    (stage !== "CANDIDATE_UPLOAD" && stage !== "INTAKE")
   )
     return false;
   const updated = await tx.verificationCase.updateMany({
     where: {
       id: item.id,
       version: item.version,
-      intakeStage: "INTAKE",
+      intakeStage: stage,
       dataEntryUserId: null,
     },
     data: {
@@ -119,7 +130,7 @@ async function autoAssignDataEntry(tx: Tx, item: RuleCase) {
       resourceType: "case",
       resourcePublicId: item.publicId,
       beforeJson: JSON.stringify({
-        intakeStage: "INTAKE",
+        intakeStage: stage,
         version: item.version,
       }),
       afterJson: JSON.stringify({

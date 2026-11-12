@@ -33,13 +33,19 @@ export async function uploadDocument(documentId: string, file: File) {
   );
 }
 
-export async function downloadDocument(documentId: string, filename: string) {
-  const blob = await apiDownload(`/documents/${documentId}/content`);
+function versionQuery(version?: number) {
+  return version !== undefined ? `?version=${version}` : "";
+}
+
+export async function downloadDocument(documentId: string, filename: string, version?: number) {
+  const blob = await apiDownload(`/documents/${documentId}/content${versionQuery(version)}`);
   saveBlob(blob, filename);
 }
 
-export function previewDocument(documentId: string) {
-  return openDocumentPreview(() => apiDownload(`/documents/${documentId}/preview`));
+export function previewDocument(documentId: string, version?: number) {
+  return openDocumentPreview(() =>
+    apiDownload(`/documents/${documentId}/preview${versionQuery(version)}`),
+  );
 }
 
 export function reviewDocument(

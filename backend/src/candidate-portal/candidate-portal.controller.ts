@@ -18,7 +18,11 @@ import {
 } from "../common/auth/auth.decorators";
 import type { Actor } from "../common/auth/actor";
 import { Permission } from "../common/auth/permissions";
-import { withUploadedBinary } from "../common/http/upload-capacity";
+import {
+  withUploadedBinary,
+  withUploadedMultipart,
+} from "../common/http/upload-capacity";
+import { ClarificationL2SubmissionService } from "../clarifications/clarification-l2-submission.service";
 import { RespondClarificationDto } from "../clarifications/dto/respond-clarification.dto";
 import { SUPPORT_ROUTES } from "../support/support.routes";
 import { RaiseSupportRequestDto } from "../support/support.validation";
@@ -35,6 +39,7 @@ export class CandidatePortalController {
     private readonly support: CandidateSupportService,
     private readonly config: ConfigService,
     private readonly consent: CandidateConsentService,
+    private readonly l2Submissions: ClarificationL2SubmissionService,
   ) {}
 
   @Post("cases/:caseId/candidate-access")
@@ -140,6 +145,40 @@ export class CandidatePortalController {
       token ?? "",
       clarificationId,
       input.message,
+    );
+  }
+
+  @Post(
+    "public/candidate-access/:accessId/clarifications/:clarificationId/submit",
+  )
+  @Public()
+  @Throttle({ default: { limit: 8, ttl: 60_000 } })
+  submitClarification(
+    @Param("accessId", ParseUUIDPipe) accessId: string,
+    @Param("clarificationId", ParseUUIDPipe) clarificationId: string,
+    @Headers("x-portal-token") token: string,
+    @Headers("x-document-type") headerDocType: string,
+    @Headers("x-document-expires-at") headerExpiry: string,
+    @Headers("x-privacy-notice-version") headerNoticeVersion: string,
+    @Req() request: FastifyRequest,
+  ) {
+    return withUploadedMultipart(
+      request,
+      this.config,
+      `public:${request.ip}`,
+      ({ file, fields }) =>
+        this.l2Submissions.submit(
+          accessId,
+          token ?? "",
+          clarificationId,
+          file,
+          {
+            message: fields.message ?? fields.explanation,
+            documentType: fields.documentType ?? headerDocType,
+            expiry: fields.expiry ?? headerExpiry,
+            noticeVersion: fields.noticeVersion ?? headerNoticeVersion,
+          },
+        ),
     );
   }
 

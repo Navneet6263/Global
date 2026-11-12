@@ -1,287 +1,34 @@
 import { caseDocumentRequirements } from "./check-requirements";
-import { canReadReleasedReport } from "../reports/report-payment-policy";
 import { tatWorkingDays } from "./working-days";
 import type { Actor } from "../common/auth/actor";
 import type { SubjectPiiService } from "../common/security/subject-pii.service";
+import {
+  type CaseRow,
+  clientClarification,
+  clientDocument,
+  clientEscalation,
+  clientProgress,
+  internalDocument,
+  objectRow,
+  presentBaseCase,
+  redactTask,
+  redactVisit,
+  releasedReport,
+  rowList,
+  safeSubject,
+  verifierChecks,
+  withoutDepartment,
+  workflowSummary,
+} from "./case-presenter.helpers";
 
-type CaseRow = Record<string, unknown>;
-
-function objectRow(value: unknown): CaseRow {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? (value as CaseRow)
-    : {};
-}
-
-function rowList(value: unknown): CaseRow[] {
-  return Array.isArray(value)
-    ? value.filter(
-        (item): item is CaseRow =>
-          Boolean(item) && typeof item === "object" && !Array.isArray(item),
-      )
-    : [];
-}
-
-function serviceScope(row: CaseRow, actor: Actor) {
-  const privileged = actor.roles.some((role) =>
-    ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role),
-  );
-  const fieldOnly = !privileged && actor.roles.includes("FIELD_EXECUTIVE");
-  const verifierOnly =
-    !privileged && !fieldOnly && actor.roles.includes("VERIFIER");
-  const visibleChecks = new Set(
-    verifierOnly
-      ? verifierChecks(row, actor).map((check) => check.publicId)
-      : [],
-  );
-  return rowList(row.services).map(
-    ({ requiredDocumentsJson, checks, ...service }) => ({
-      ...service,
-      checks: fieldOnly
-        ? []
-        : verifierOnly
-          ? rowList(checks).filter((check) => visibleChecks.has(check.publicId))
-          : checks,
-      requiredDocuments:
-        typeof requiredDocumentsJson === "string"
-          ? (JSON.parse(requiredDocumentsJson) as string[])
-          : [],
-    }),
-  );
-}
-
-/** Client identity only; the company RM stays internal (workflow.companyRm). */
-function publicClient(client: unknown) {
-  const row = objectRow(client);
-  return row.publicId
-    ? { publicId: row.publicId, code: row.code, displayName: row.displayName }
-    : client;
-}
-
-function base(row: CaseRow, subject: unknown, actor: Actor) {
-  return {
-    id: row.publicId,
-    caseNumber: row.caseNumber,
-    externalRef: row.externalRef,
-    status: row.status,
-    priority: row.priority,
-    dueAt: row.dueAt,
-    completedAt: row.completedAt,
-    riskLevel: row.riskLevel,
-    version: row.version,
-    createdAt: row.createdAt,
-    updatedAt: row.updatedAt,
-    subject,
-    client: publicClient(row.client),
-    servicePackage: row.servicePackage,
-    services: serviceScope(row, actor),
-    branch: row.branch,
-  };
-}
-
-function safeSubject(row: CaseRow, actor: Actor, pii?: SubjectPiiService) {
-  const stored = objectRow(row.subject);
-  const subject = pii ? pii.present(stored) : stored;
-  return actor.roles.some((role) =>
-    ["FIELD_EXECUTIVE", "VERIFIER"].includes(role),
-  )
-    ? { id: subject.publicId ?? subject.id, fullName: subject.fullName }
-    : subject;
-}
-
-function redactTask(task: CaseRow) {
-  const { assignee, ...rest } = task;
-  const assignedUser = objectRow(assignee);
-  return {
-    ...rest,
-    assignee: Object.keys(assignedUser).length
-      ? {
-          id: assignedUser.publicId,
-          displayName: assignedUser.displayName,
-        }
-      : null,
-  };
-}
-
-function verifierChecks(row: CaseRow, actor: Actor): CaseRow[] {
-  return rowList(row.checks).flatMap((check) => {
-    const tasks = rowList(check.tasks).filter(
-      (task) => objectRow(task.assignee).publicId === actor.userPublicId,
-    );
-    return tasks.length ? [{ ...check, tasks: tasks.map(redactTask) }] : [];
-  });
-}
-
-function redactVisit(visit: CaseRow) {
-  const { assignee, evidence, ...rest } = visit;
-  const assignedUser = objectRow(assignee);
-  const evidenceItems = rowList(evidence);
-  return {
-    ...rest,
-    assignee: Object.keys(assignedUser).length
-      ? {
-          id: assignedUser.publicId,
-          displayName: assignedUser.displayName,
-        }
-      : null,
-    ...(Array.isArray(evidence)
-      ? {
-          evidence: evidenceItems.map((item) => ({
-            id: item.publicId,
-            type: item.type,
-            capturedAt: item.capturedAt,
-          })),
-        }
-      : {}),
-  };
-}
-
-/**
- * Where the case stands for the client while it waits on documents, in the client's words:
- * the internal intake stage, Data Entry and RM never show. Null once verification runs.
- */
-export function clientProgress(row: CaseRow) {
-  const submitted = rowList(row.candidateAccess)[0]?.completedAt ?? null;
-  const stage = typeof row.intakeStage === "string" ? row.intakeStage : null;
-  const progress = (key: string, label: string, detail: string) => ({
-    stage: key,
-    label,
-    detail,
-    candidateSubmittedAt: submitted,
-  });
-  if (row.status !== "CONSENT_PENDING" && row.status !== "DOCUMENT_PENDING")
-    return { stage: null, label: null, detail: null, candidateSubmittedAt: submitted };
-  if (stage === "CLIENT_REVIEW")
-    return progress(
-      "YOUR_REVIEW",
-      "Waiting for your review",
-      "The candidate uploaded every document. Review them and approve to start verification.",
-    );
-  if (stage === "CLIENT_RETURNED" || stage === "CORRECTION")
-    return progress(
-      "CORRECTION",
-      "Correction requested",
-      "A document or detail needs correcting. Verification continues once it is in.",
-    );
-  if (submitted || ["DATA_ENTRY", "READY", "ROUTED"].includes(stage ?? ""))
-    return progress(
-      "DOCUMENTS_RECEIVED",
-      "Documents received",
-      "The candidate uploaded every document. Our team is checking them; verification starts next.",
-    );
-  return progress(
-    "WAITING_CANDIDATE",
-    row.status === "CONSENT_PENDING"
-      ? "Waiting for the candidate's consent"
-      : "Waiting for the candidate's documents",
-    "The candidate has a secure link to give consent and upload the documents.",
-  );
-}
-
-/** The client sees each document's latest clean file: name, size and when it came in. */
-function clientDocument(document: CaseRow) {
-  const safe = { ...document };
-  const latest = rowList(document.versions).find(
-    (version) => version.malwareState === "CLEAN",
-  );
-  return {
-    ...safe,
-    versions: latest
-      ? [
-          {
-            version: latest.version,
-            originalName: latest.originalName,
-            contentType: latest.contentType,
-            sizeBytes: Number(latest.sizeBytes),
-            createdAt: latest.createdAt,
-          },
-        ]
-      : [],
-  };
-}
-
-/** Internal v2 flow position. Never returned to Client Admin. */
-/**
- * The company's own escalation only (its reason, when). Internal escalations by the
- * Platform Admin or Operations are never shown to the client.
- */
-function clientEscalation(row: CaseRow) {
-  const note = typeof row.escalationNote === "string" ? row.escalationNote : "";
-  if (!row.escalatedAt || !note.startsWith("Client: ")) return null;
-  return { at: row.escalatedAt, reason: note.slice("Client: ".length) };
-}
-
-function workflow(row: CaseRow) {
-  const dataEntry = objectRow(row.dataEntryUser);
-  const escalatedBy = objectRow(row.escalatedBy);
-  const companyRm = objectRow(objectRow(row.client).primaryRm);
-  return {
-    version: row.workflowVersion ?? 1,
-    intakeStage: row.intakeStage ?? null,
-    dataEntryAssignedAt: row.dataEntryAssignedAt ?? null,
-    dataEntryReadyAt: row.dataEntryReadyAt ?? null,
-    stoppedFromStatus: row.stoppedFromStatus ?? null,
-    stoppedAt: row.stoppedAt ?? null,
-    stopReason: row.stopReason ?? null,
-    escalatedAt: row.escalatedAt ?? null,
-    escalationNote: row.escalationNote ?? null,
-    escalatedBy: escalatedBy.publicId
-      ? { publicId: escalatedBy.publicId, displayName: escalatedBy.displayName }
-      : null,
-    companyRm: companyRm.publicId
-      ? { publicId: companyRm.publicId, displayName: companyRm.displayName }
-      : null,
-    dataEntryUser: dataEntry.publicId
-      ? { publicId: dataEntry.publicId, displayName: dataEntry.displayName }
-      : null,
-  };
-}
-
-function withoutDepartment(check: CaseRow) {
-  const safe = { ...check };
-  delete safe.department;
-  delete safe.routedAt;
-  delete safe.initiationJson;
-  delete safe.initiatedAt;
-  return safe;
-}
-
-/**
- * The case's report the client can download now (released, access not expired), shown
- * where the case appears as completed. Null until then.
- */
-function releasedReport(row: CaseRow) {
-  const now = new Date();
-  const report = rowList(row.reports).find((item) =>
-    canReadReleasedReport(
-      {
-        status: String(item.status),
-        workflowVersion: Number(item.workflowVersion ?? 2),
-        releasedAt: (item.releasedAt as Date | null | undefined) ?? null,
-        downloadExpiresAt:
-          (item.downloadExpiresAt as Date | null | undefined) ?? null,
-      },
-      now,
-    ),
-  );
-  return report
-    ? {
-        id: report.publicId,
-        version: report.currentVersion,
-        releasedAt: report.releasedAt ?? report.publishedAt ?? null,
-        downloadExpiresAt: report.downloadExpiresAt ?? null,
-      }
-    : null;
-}
+export { clientProgress };
 
 export function presentCaseListItem(
   row: CaseRow,
   actor: Actor,
   pii?: SubjectPiiService,
 ) {
-  const common = base(row, safeSubject(row, actor, pii), actor);
-  // People who run the internal workflow (RM, Data Entry) need its stage even when they
-  // also hold a narrower role (e.g. RM + QA, Data Entry + Verifier): the most complete
-  // internal view wins, never the narrower one.
+  const common = presentBaseCase(row, safeSubject(row, actor, pii), actor);
   if (
     actor.roles.some((role) =>
       ["PLATFORM_ADMIN", "OPS_MANAGER", "SPOC_RM", "DATA_ENTRY"].includes(role),
@@ -290,7 +37,7 @@ export function presentCaseListItem(
     return {
       ...common,
       assignedOpsUser: row.assignedOpsUser,
-      workflow: workflow(row),
+      workflow: workflowSummary(row),
       report: releasedReport(row),
       checks: row.checks,
       fieldVisits: row.fieldVisits,
@@ -310,7 +57,6 @@ export function presentCaseListItem(
     return { ...common, checks: verifierChecks(row, actor) };
   }
   if (actor.roles.includes("CLIENT_ADMIN")) {
-    // Due dates stay internal: the client sees only the turnaround in working days.
     return {
       ...common,
       dueAt: null,
@@ -341,7 +87,7 @@ export function presentCaseListItem(
   return {
     ...common,
     assignedOpsUser: row.assignedOpsUser,
-    workflow: workflow(row),
+    workflow: workflowSummary(row),
     checks: row.checks,
     fieldVisits: row.fieldVisits,
   };
@@ -353,6 +99,7 @@ export function presentCaseDetail(
   pii?: SubjectPiiService,
 ) {
   const summary = presentCaseListItem(row, actor, pii);
+  const documents = rowList(row.documents).map(internalDocument);
   if (
     actor.roles.some((role) => ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(role))
   ) {
@@ -361,7 +108,7 @@ export function presentCaseDetail(
       qaReviewer: row.qaReviewer ?? null,
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
-      documents: row.documents ?? [],
+      documents,
       clarifications: row.clarifications ?? [],
       qaReviews: row.qaReviews ?? [],
       reports: row.reports ?? [],
@@ -381,13 +128,12 @@ export function presentCaseDetail(
   };
   if (actor.roles.includes("FIELD_EXECUTIVE")) return safe;
   if (actor.roles.includes("SPOC_RM")) {
-    // The responsible RM owns final review, so it sees the full internal record.
     return {
       ...safe,
       qaReviewer: row.qaReviewer ?? null,
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
-      documents: row.documents ?? [],
+      documents,
       clarifications: row.clarifications ?? [],
       qaReviews: row.qaReviews ?? [],
       reports: row.reports ?? [],
@@ -395,7 +141,6 @@ export function presentCaseDetail(
     };
   }
   if (actor.roles.includes("DATA_ENTRY")) {
-    // Intake review: documents, consent and correction requests; no findings or reports.
     return {
       ...safe,
       checks: rowList(safe.checks).map((check) => {
@@ -407,7 +152,7 @@ export function presentCaseDetail(
       fieldVisits: [],
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
-      documents: row.documents ?? [],
+      documents,
       clarifications: row.clarifications ?? [],
     };
   }
@@ -426,7 +171,7 @@ export function presentCaseDetail(
       statusHistory: row.statusHistory ?? [],
       consents: row.consents ?? [],
       documents: rowList(row.documents).map(clientDocument),
-      clarifications: row.clarifications ?? [],
+      clarifications: rowList(row.clarifications).map(clientClarification),
       reports: row.reports ?? [],
       clientEscalation: clientEscalation(row),
     };
@@ -436,7 +181,7 @@ export function presentCaseDetail(
       ...safe,
       statusHistory: row.statusHistory,
       consents: row.consents,
-      documents: row.documents,
+      documents: row.documents ? documents : row.documents,
       clarifications: row.clarifications,
       qaReviews: row.qaReviews,
       reports: row.reports,

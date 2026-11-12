@@ -414,7 +414,7 @@ export async function workflowFixture(page: Page, role: Role) {
           },
         ],
       });
-    if (path === "/workflow/data-entry/queue") {
+    if (path === "/workflow/data-entry/queue" || path === "/workflow/data-entry/unified-queue") {
       const items = ["DATA_ENTRY", "CORRECTION"].includes(state.intakeStage) ? [queueCase()] : [];
       return reply({
         items,
@@ -423,7 +423,12 @@ export async function workflowFixture(page: Page, role: Role) {
         pageSize: 10,
         counts: {
           mine: state.intakeStage === "DATA_ENTRY" ? 1 : 0,
+          mineL2: 0,
+          intakeToReview: state.intakeStage === "DATA_ENTRY" ? 1 : 0,
           correction: state.intakeStage === "CORRECTION" ? 1 : 0,
+          l2Reentry: 0,
+          allInView: items.length,
+          overdue: 0,
         },
         generatedAt: iso(0),
       });

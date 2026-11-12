@@ -312,6 +312,7 @@ export type DocumentWhereInput = {
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   versions?: Prisma.DocumentVersionListRelationFilter
   vendorAssignments?: Prisma.VendorAssignmentListRelationFilter
+  clarificationSubmissions?: Prisma.ClarificationListRelationFilter
 }
 
 export type DocumentOrderByWithRelationInput = {
@@ -333,6 +334,7 @@ export type DocumentOrderByWithRelationInput = {
   case?: Prisma.VerificationCaseOrderByWithRelationInput
   versions?: Prisma.DocumentVersionOrderByRelationAggregateInput
   vendorAssignments?: Prisma.VendorAssignmentOrderByRelationAggregateInput
+  clarificationSubmissions?: Prisma.ClarificationOrderByRelationAggregateInput
 }
 
 export type DocumentWhereUniqueInput = Prisma.AtLeast<{
@@ -357,6 +359,7 @@ export type DocumentWhereUniqueInput = Prisma.AtLeast<{
   case?: Prisma.XOR<Prisma.VerificationCaseScalarRelationFilter, Prisma.VerificationCaseWhereInput>
   versions?: Prisma.DocumentVersionListRelationFilter
   vendorAssignments?: Prisma.VendorAssignmentListRelationFilter
+  clarificationSubmissions?: Prisma.ClarificationListRelationFilter
 }, "id" | "publicId">
 
 export type DocumentOrderByWithAggregationInput = {
@@ -418,6 +421,7 @@ export type DocumentCreateInput = {
   case: Prisma.VerificationCaseCreateNestedOneWithoutDocumentsInput
   versions?: Prisma.DocumentVersionCreateNestedManyWithoutDocumentInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentUncheckedCreateInput = {
@@ -437,6 +441,7 @@ export type DocumentUncheckedCreateInput = {
   updatedAt?: Date | string
   versions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutDocumentInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentUpdateInput = {
@@ -456,6 +461,7 @@ export type DocumentUpdateInput = {
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutDocumentsNestedInput
   versions?: Prisma.DocumentVersionUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateInput = {
@@ -475,6 +481,7 @@ export type DocumentUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentCreateManyInput = {
@@ -609,6 +616,11 @@ export type DocumentScalarRelationFilter = {
   isNot?: Prisma.DocumentWhereInput
 }
 
+export type DocumentNullableScalarRelationFilter = {
+  is?: Prisma.DocumentWhereInput | null
+  isNot?: Prisma.DocumentWhereInput | null
+}
+
 export type DocumentCreateNestedManyWithoutTenantInput = {
   create?: Prisma.XOR<Prisma.DocumentCreateWithoutTenantInput, Prisma.DocumentUncheckedCreateWithoutTenantInput> | Prisma.DocumentCreateWithoutTenantInput[] | Prisma.DocumentUncheckedCreateWithoutTenantInput[]
   connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutTenantInput | Prisma.DocumentCreateOrConnectWithoutTenantInput[]
@@ -707,6 +719,22 @@ export type DocumentUpdateOneRequiredWithoutVersionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DocumentUpdateToOneWithWhereWithoutVersionsInput, Prisma.DocumentUpdateWithoutVersionsInput>, Prisma.DocumentUncheckedUpdateWithoutVersionsInput>
 }
 
+export type DocumentCreateNestedOneWithoutClarificationSubmissionsInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutClarificationSubmissionsInput, Prisma.DocumentUncheckedCreateWithoutClarificationSubmissionsInput>
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutClarificationSubmissionsInput
+  connect?: Prisma.DocumentWhereUniqueInput
+}
+
+export type DocumentUpdateOneWithoutClarificationSubmissionsNestedInput = {
+  create?: Prisma.XOR<Prisma.DocumentCreateWithoutClarificationSubmissionsInput, Prisma.DocumentUncheckedCreateWithoutClarificationSubmissionsInput>
+  connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutClarificationSubmissionsInput
+  upsert?: Prisma.DocumentUpsertWithoutClarificationSubmissionsInput
+  disconnect?: Prisma.DocumentWhereInput | boolean
+  delete?: Prisma.DocumentWhereInput | boolean
+  connect?: Prisma.DocumentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DocumentUpdateToOneWithWhereWithoutClarificationSubmissionsInput, Prisma.DocumentUpdateWithoutClarificationSubmissionsInput>, Prisma.DocumentUncheckedUpdateWithoutClarificationSubmissionsInput>
+}
+
 export type DocumentCreateNestedOneWithoutVendorAssignmentsInput = {
   create?: Prisma.XOR<Prisma.DocumentCreateWithoutVendorAssignmentsInput, Prisma.DocumentUncheckedCreateWithoutVendorAssignmentsInput>
   connectOrCreate?: Prisma.DocumentCreateOrConnectWithoutVendorAssignmentsInput
@@ -737,6 +765,7 @@ export type DocumentCreateWithoutTenantInput = {
   case: Prisma.VerificationCaseCreateNestedOneWithoutDocumentsInput
   versions?: Prisma.DocumentVersionCreateNestedManyWithoutDocumentInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentUncheckedCreateWithoutTenantInput = {
@@ -755,6 +784,7 @@ export type DocumentUncheckedCreateWithoutTenantInput = {
   updatedAt?: Date | string
   versions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutDocumentInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentCreateOrConnectWithoutTenantInput = {
@@ -818,6 +848,7 @@ export type DocumentCreateWithoutCaseInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutDocumentsInput
   versions?: Prisma.DocumentVersionCreateNestedManyWithoutDocumentInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentUncheckedCreateWithoutCaseInput = {
@@ -836,6 +867,7 @@ export type DocumentUncheckedCreateWithoutCaseInput = {
   updatedAt?: Date | string
   versions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutDocumentInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentCreateOrConnectWithoutCaseInput = {
@@ -879,6 +911,7 @@ export type DocumentCreateWithoutVersionsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutDocumentsInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutDocumentsInput
   vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentUncheckedCreateWithoutVersionsInput = {
@@ -897,6 +930,7 @@ export type DocumentUncheckedCreateWithoutVersionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentCreateOrConnectWithoutVersionsInput = {
@@ -931,6 +965,7 @@ export type DocumentUpdateWithoutVersionsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDocumentsNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutDocumentsNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateWithoutVersionsInput = {
@@ -948,6 +983,99 @@ export type DocumentUncheckedUpdateWithoutVersionsInput = {
   expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedUpdateManyWithoutSubmittedDocumentNestedInput
+}
+
+export type DocumentCreateWithoutClarificationSubmissionsInput = {
+  id?: bigint | number
+  publicId?: string
+  type: string
+  status?: string
+  currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
+  expiresAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutDocumentsInput
+  case: Prisma.VerificationCaseCreateNestedOneWithoutDocumentsInput
+  versions?: Prisma.DocumentVersionCreateNestedManyWithoutDocumentInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutDocumentInput
+}
+
+export type DocumentUncheckedCreateWithoutClarificationSubmissionsInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  caseId: bigint | number
+  type: string
+  status?: string
+  currentVersion?: number
+  version?: number
+  reviewNote?: string | null
+  reviewedAt?: Date | string | null
+  reviewedById?: bigint | number | null
+  expiresAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  versions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutDocumentInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDocumentInput
+}
+
+export type DocumentCreateOrConnectWithoutClarificationSubmissionsInput = {
+  where: Prisma.DocumentWhereUniqueInput
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutClarificationSubmissionsInput, Prisma.DocumentUncheckedCreateWithoutClarificationSubmissionsInput>
+}
+
+export type DocumentUpsertWithoutClarificationSubmissionsInput = {
+  update: Prisma.XOR<Prisma.DocumentUpdateWithoutClarificationSubmissionsInput, Prisma.DocumentUncheckedUpdateWithoutClarificationSubmissionsInput>
+  create: Prisma.XOR<Prisma.DocumentCreateWithoutClarificationSubmissionsInput, Prisma.DocumentUncheckedCreateWithoutClarificationSubmissionsInput>
+  where?: Prisma.DocumentWhereInput
+}
+
+export type DocumentUpdateToOneWithWhereWithoutClarificationSubmissionsInput = {
+  where?: Prisma.DocumentWhereInput
+  data: Prisma.XOR<Prisma.DocumentUpdateWithoutClarificationSubmissionsInput, Prisma.DocumentUncheckedUpdateWithoutClarificationSubmissionsInput>
+}
+
+export type DocumentUpdateWithoutClarificationSubmissionsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutDocumentsNestedInput
+  case?: Prisma.VerificationCaseUpdateOneRequiredWithoutDocumentsNestedInput
+  versions?: Prisma.DocumentVersionUpdateManyWithoutDocumentNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutDocumentNestedInput
+}
+
+export type DocumentUncheckedUpdateWithoutClarificationSubmissionsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  caseId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  currentVersion?: Prisma.IntFieldUpdateOperationsInput | number
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  reviewNote?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reviewedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  reviewedById?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  expiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  versions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDocumentNestedInput
 }
 
@@ -967,6 +1095,7 @@ export type DocumentCreateWithoutVendorAssignmentsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutDocumentsInput
   case: Prisma.VerificationCaseCreateNestedOneWithoutDocumentsInput
   versions?: Prisma.DocumentVersionCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentUncheckedCreateWithoutVendorAssignmentsInput = {
@@ -985,6 +1114,7 @@ export type DocumentUncheckedCreateWithoutVendorAssignmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   versions?: Prisma.DocumentVersionUncheckedCreateNestedManyWithoutDocumentInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedCreateNestedManyWithoutSubmittedDocumentInput
 }
 
 export type DocumentCreateOrConnectWithoutVendorAssignmentsInput = {
@@ -1019,6 +1149,7 @@ export type DocumentUpdateWithoutVendorAssignmentsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDocumentsNestedInput
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutDocumentsNestedInput
   versions?: Prisma.DocumentVersionUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateWithoutVendorAssignmentsInput = {
@@ -1037,6 +1168,7 @@ export type DocumentUncheckedUpdateWithoutVendorAssignmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentCreateManyTenantInput = {
@@ -1070,6 +1202,7 @@ export type DocumentUpdateWithoutTenantInput = {
   case?: Prisma.VerificationCaseUpdateOneRequiredWithoutDocumentsNestedInput
   versions?: Prisma.DocumentVersionUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateWithoutTenantInput = {
@@ -1088,6 +1221,7 @@ export type DocumentUncheckedUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateManyWithoutTenantInput = {
@@ -1137,6 +1271,7 @@ export type DocumentUpdateWithoutCaseInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDocumentsNestedInput
   versions?: Prisma.DocumentVersionUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateWithoutCaseInput = {
@@ -1155,6 +1290,7 @@ export type DocumentUncheckedUpdateWithoutCaseInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   versions?: Prisma.DocumentVersionUncheckedUpdateManyWithoutDocumentNestedInput
   vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDocumentNestedInput
+  clarificationSubmissions?: Prisma.ClarificationUncheckedUpdateManyWithoutSubmittedDocumentNestedInput
 }
 
 export type DocumentUncheckedUpdateManyWithoutCaseInput = {
@@ -1181,11 +1317,13 @@ export type DocumentUncheckedUpdateManyWithoutCaseInput = {
 export type DocumentCountOutputType = {
   versions: number
   vendorAssignments: number
+  clarificationSubmissions: number
 }
 
 export type DocumentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   versions?: boolean | DocumentCountOutputTypeCountVersionsArgs
   vendorAssignments?: boolean | DocumentCountOutputTypeCountVendorAssignmentsArgs
+  clarificationSubmissions?: boolean | DocumentCountOutputTypeCountClarificationSubmissionsArgs
 }
 
 /**
@@ -1212,6 +1350,13 @@ export type DocumentCountOutputTypeCountVendorAssignmentsArgs<ExtArgs extends ru
   where?: Prisma.VendorAssignmentWhereInput
 }
 
+/**
+ * DocumentCountOutputType without action
+ */
+export type DocumentCountOutputTypeCountClarificationSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClarificationWhereInput
+}
+
 
 export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1232,6 +1377,7 @@ export type DocumentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   versions?: boolean | Prisma.Document$versionsArgs<ExtArgs>
   vendorAssignments?: boolean | Prisma.Document$vendorAssignmentsArgs<ExtArgs>
+  clarificationSubmissions?: boolean | Prisma.Document$clarificationSubmissionsArgs<ExtArgs>
   _count?: boolean | Prisma.DocumentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["document"]>
 
@@ -1260,6 +1406,7 @@ export type DocumentInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   case?: boolean | Prisma.VerificationCaseDefaultArgs<ExtArgs>
   versions?: boolean | Prisma.Document$versionsArgs<ExtArgs>
   vendorAssignments?: boolean | Prisma.Document$vendorAssignmentsArgs<ExtArgs>
+  clarificationSubmissions?: boolean | Prisma.Document$clarificationSubmissionsArgs<ExtArgs>
   _count?: boolean | Prisma.DocumentCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -1270,6 +1417,7 @@ export type $DocumentPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     case: Prisma.$VerificationCasePayload<ExtArgs>
     versions: Prisma.$DocumentVersionPayload<ExtArgs>[]
     vendorAssignments: Prisma.$VendorAssignmentPayload<ExtArgs>[]
+    clarificationSubmissions: Prisma.$ClarificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: bigint
@@ -1630,6 +1778,7 @@ export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends runtime
   case<T extends Prisma.VerificationCaseDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationCaseDefaultArgs<ExtArgs>>): Prisma.Prisma__VerificationCaseClient<runtime.Types.Result.GetResult<Prisma.$VerificationCasePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   versions<T extends Prisma.Document$versionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$versionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DocumentVersionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorAssignments<T extends Prisma.Document$vendorAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$vendorAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  clarificationSubmissions<T extends Prisma.Document$clarificationSubmissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Document$clarificationSubmissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClarificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2065,6 +2214,30 @@ export type Document$vendorAssignmentsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.VendorAssignmentScalarFieldEnum | Prisma.VendorAssignmentScalarFieldEnum[]
+}
+
+/**
+ * Document.clarificationSubmissions
+ */
+export type Document$clarificationSubmissionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Clarification
+   */
+  select?: Prisma.ClarificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Clarification
+   */
+  omit?: Prisma.ClarificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClarificationInclude<ExtArgs> | null
+  where?: Prisma.ClarificationWhereInput
+  orderBy?: Prisma.ClarificationOrderByWithRelationInput | Prisma.ClarificationOrderByWithRelationInput[]
+  cursor?: Prisma.ClarificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ClarificationScalarFieldEnum | Prisma.ClarificationScalarFieldEnum[]
 }
 
 /**

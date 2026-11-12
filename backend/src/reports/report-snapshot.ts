@@ -1,6 +1,14 @@
 import type { Prisma } from "../generated/prisma/client";
 import type { ApprovedReportSnapshot, ReportData } from "./report-data";
 import type { SubjectPiiService } from "../common/security/subject-pii.service";
+import {
+  documentLabel,
+  entriesOf,
+  qaDocumentNotes,
+  safeServiceDetails,
+} from "./report-snapshot.helpers";
+
+export { entriesOf };
 
 export const reportApprovalSelect = {
   id: true,
@@ -68,12 +76,7 @@ export const reportApprovalSelect = {
         },
       },
       findings: {
-        select: {
-          severity: true,
-          title: true,
-          description: true,
-          source: true,
-        },
+        select: { severity: true, title: true, description: true, source: true },
       },
       tasks: {
         where: { status: "COMPLETED" },
@@ -86,10 +89,15 @@ export const reportApprovalSelect = {
     orderBy: { createdAt: "desc" },
     select: {
       type: true,
+      currentVersion: true,
       versions: {
         orderBy: { version: "desc" },
-        take: 1,
-        select: { originalName: true, sha256: true },
+        select: {
+          version: true,
+          reviewStatus: true,
+          originalName: true,
+          sha256: true,
+        },
       },
     },
   },
@@ -160,44 +168,51 @@ export function snapshotForApproval(
   };
 }
 
-/**
- * The client copy of a case's report from its current data: header, checks (stated vs
- * verified, colour) and proof metadata. The approval snapshot and the live preview are
- * both built from it, so the preview the RM checks is what the client receives.
- */
 export function reportBodyFor(
   row: ApprovalCase,
   pii?: Pick<SubjectPiiService, "open">,
 ): Omit<ApprovedReportSnapshot, "completedAt"> {
   const identityDetails: Array<[string, string]> = [];
-  if (row.subject.piiCiphertext && !pii)
+  if (row.subject.piiCiphertext && !pii) {
     throw new Error(
       "Authorized subject decryption is required for the approved report",
     );
+  }
   const employeeCode = pii
     ? pii.open(row.subject).employeeCode
     : row.subject.employeeCode;
   if (employeeCode) identityDetails.push(["Employee reference", employeeCode]);
-  if (row.subject.dateOfBirth)
+  if (row.subject.dateOfBirth) {
     identityDetails.push([
       "Date of birth",
       row.subject.dateOfBirth.toISOString().slice(0, 10),
     ]);
+  }
   for (const service of row.services) {
     identityDetails.push(...safeServiceDetails(service.configurationJson));
   }
   const qaNotes = qaDocumentNotes(row.qaReviews[0]);
   const evidence: NonNullable<ReportData["evidence"]> = row.documents.flatMap(
-    (document) =>
-      document.versions.map((version) => {
-        const qaComment = qaNotes.get(documentLabel(document.type))?.shift();
-        return {
+    (document) => {
+      const version =
+        document.versions.find(
+          (entry) =>
+            typeof document.currentVersion === "number" &&
+            entry.version === document.currentVersion,
+        ) ??
+        document.versions.find((entry) => entry.reviewStatus === "VERIFIED") ??
+        document.versions[0];
+      if (!version) return [];
+      const qaComment = qaNotes.get(documentLabel(document.type))?.shift();
+      return [
+        {
           type: document.type,
           name: version.originalName,
           sha256: version.sha256,
           ...(qaComment ? { qaComment } : {}),
-        };
-      }),
+        },
+      ];
+    },
   );
   for (const visit of row.fieldVisits) {
     for (const item of visit.evidence.filter(
@@ -250,83 +265,4 @@ export function reportBodyFor(
       findings: check.findings,
     })),
   };
-}
-
-function safeServiceDetails(json: string): Array<[string, string]> {
-  const labels: Record<string, string> = {
-    organisationName: "Organisation name",
-    conflictOfInterest: "Declared conflict of interest",
-    directorships: "Declared directorships",
-    declaration: "Submitted declaration",
-    referenceContacts: "Provided reference contacts",
-    legalName: "Business legal name",
-    companyName: "Company name",
-    registrationNumber: "Registration number",
-    gstin: "GSTIN",
-    cin: "CIN",
-    employerName: "Employer",
-    institutionName: "Institution",
-    declaredConflicts: "Declared conflicts",
-    businessInterests: "Business interests",
-    vendorCategory: "Vendor category",
-  };
-  try {
-    const data: unknown = JSON.parse(json);
-    if (!data || typeof data !== "object" || Array.isArray(data)) return [];
-    return Object.entries(data).flatMap(([key, value]) =>
-      labels[key] && typeof value === "string" && value.trim()
-        ? [[labels[key], value.trim().slice(0, 2000)] as [string, string]]
-        : [],
-    );
-  } catch {
-    return [];
-  }
-}
-
-/** Reads {"entries":[...]} stored on a check; anything else is treated as none. */
-const documentLabel = (type: string) => type.replaceAll("_", " ").toLowerCase();
-
-/**
- * QA's document comments from an approved QA review ("aadhaar: Clear copy; matches"),
- * grouped by document type in the order they were written.
- */
-function qaDocumentNotes(
-  review: { decision: string; checklistJson?: string | null } | undefined,
-) {
-  const notes = new Map<string, string[]>();
-  if (review?.decision !== "APPROVED" || !review.checklistJson) return notes;
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(review.checklistJson);
-  } catch {
-    return notes;
-  }
-  if (!Array.isArray(parsed)) return notes;
-  for (const line of parsed) {
-    if (typeof line !== "string") continue;
-    const at = line.indexOf(": ");
-    if (at < 1) continue;
-    const key = line.slice(0, at).trim().toLowerCase();
-    const comment = line.slice(at + 2).trim();
-    if (comment) notes.set(key, [...(notes.get(key) ?? []), comment]);
-  }
-  return notes;
-}
-
-export function entriesOf(
-  json: string | null | undefined,
-): Array<Record<string, string>> {
-  try {
-    const parsed = JSON.parse(json ?? "") as { entries?: unknown };
-    return Array.isArray(parsed.entries)
-      ? parsed.entries.filter(
-          (entry): entry is Record<string, string> =>
-            Boolean(entry) &&
-            typeof entry === "object" &&
-            !Array.isArray(entry),
-        )
-      : [];
-  } catch {
-    return [];
-  }
 }

@@ -13,6 +13,10 @@ import {
 } from "@/features/delivery/verifier/task-export";
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getMyTasks, getVerifierInsights } from "@/lib/api/tasks";
+import {
+  useVerifierDepartment,
+  validateVerifierDepartmentSearch,
+} from "@/lib/auth/verifier-department";
 import { cn } from "@/lib/utils";
 
 const views = [
@@ -25,23 +29,28 @@ type View = (typeof views)[number]["id"];
 
 export const Route = createFileRoute("/verifier/sla")({
   head: () => ({ meta: [{ title: "Verifier SLA & Priorities — Sapling Global" }] }),
+  validateSearch: validateVerifierDepartmentSearch,
   component: VerifierSlaPage,
 });
 
 function VerifierSlaPage() {
+  const { department } = Route.useSearch();
+  const { departmentId: resolvedDepartmentId } = useVerifierDepartment();
+  const departmentId = department ?? resolvedDepartmentId;
   const [view, setView] = useState<View>("ALL");
   const [cursor, setCursor] = useState<string>();
   const [history, setHistory] = useState<Array<string | undefined>>([]);
   const insights = useQuery({
-    queryKey: ["verifier", "insights"],
-    queryFn: getVerifierInsights,
+    queryKey: ["verifier", "insights", departmentId ?? "all"],
+    queryFn: () => getVerifierInsights(departmentId),
     staleTime: 20_000,
   });
   const tasks = useQuery({
-    queryKey: ["tasks", "mine", "sla", view, cursor],
+    queryKey: ["tasks", "mine", "sla", departmentId ?? "all", view, cursor],
     queryFn: () =>
       getMyTasks({
         view: "ACTIVE",
+        ...(departmentId ? { departmentId } : {}),
         ...(view !== "ALL" ? { sla: view } : {}),
         ...(cursor ? { cursor } : {}),
         limit: 25,
@@ -128,6 +137,7 @@ function VerifierSlaPage() {
         ))}
       </div>
       <VerifierTaskTable
+        departmentId={departmentId}
         exporter={
           <ExportSheetButton
             source="verifier-sla"
@@ -137,7 +147,11 @@ function VerifierSlaPage() {
             defaults={TASK_EXPORT_DEFAULTS}
             scopeNote={views.find((item) => item.id === view)!.label}
             loadRows={() =>
-              loadAllTasks({ view: "ACTIVE", ...(view !== "ALL" ? { sla: view } : {}) })
+              loadAllTasks({
+                view: "ACTIVE",
+                ...(departmentId ? { departmentId } : {}),
+                ...(view !== "ALL" ? { sla: view } : {}),
+              })
             }
           />
         }

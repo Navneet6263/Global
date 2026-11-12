@@ -15,6 +15,7 @@ import {
 import { ExportSheetButton, type SheetColumn } from "@/components/workspace/export-sheet";
 import { collectNumberedPages, humanizeCode, istText } from "@/components/workspace/format";
 import { getUtvBucket, type UtvItem } from "@/lib/backend-api/rework";
+import { useVerifierDepartment } from "@/lib/auth/verifier-department";
 import { ReworkDialog, type ReworkTarget } from "./ReworkDialog";
 
 const EXPORT_COLUMNS: readonly SheetColumn<UtvItem>[] = [
@@ -34,12 +35,13 @@ const EXPORT_DEFAULTS = ["caseNumber", "candidate", "company", "check", "reason"
  * and Team Leaders can re-open (same verifier) or re-initiate (back to allocation).
  */
 export function UtvBucket() {
+  const { departmentId } = useVerifierDepartment();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [target, setTarget] = useState<ReworkTarget | null>(null);
   const bucket = useQuery({
-    queryKey: ["workflow", "utv", page, search],
-    queryFn: () => getUtvBucket({ page, search: search.trim() || undefined }),
+    queryKey: ["workflow", "utv", departmentId ?? "all", page, search],
+    queryFn: () => getUtvBucket({ page, search: search.trim() || undefined, departmentId }),
     placeholderData: keepPreviousData,
   });
   const data = bucket.data;
@@ -91,7 +93,7 @@ export function UtvBucket() {
             scopeNote={search.trim() ? `search “${search.trim()}”` : "all UTV checks"}
             loadRows={() =>
               collectNumberedPages((n) =>
-                getUtvBucket({ page: n, search: search.trim() || undefined }),
+                getUtvBucket({ page: n, search: search.trim() || undefined, departmentId }),
               )
             }
           />

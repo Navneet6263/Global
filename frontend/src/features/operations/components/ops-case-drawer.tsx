@@ -14,6 +14,7 @@ import { OpsCaseAccessPanel } from "./ops-case-access-panel";
 import { OpsCaseDocuments } from "./ops-case-documents";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ErrorState } from "@/components/feedback/error-state";
 import { StatusBadge } from "@/components/feedback/status-badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -25,11 +26,24 @@ import { FieldEvidenceGallery } from "@/features/cases/field-evidence-gallery";
 interface OpsCaseDrawerProps {
   caseDetail: OpsCaseDetail | null | undefined;
   loading: boolean;
+  error?: boolean;
+  errorMessage?: string;
+  retrying?: boolean;
+  onRetry?: () => void;
   open: boolean;
   onClose: () => void;
 }
 
-export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDrawerProps) {
+export function OpsCaseDrawer({
+  caseDetail,
+  loading,
+  error,
+  errorMessage,
+  retrying,
+  onRetry,
+  open,
+  onClose,
+}: OpsCaseDrawerProps) {
   const action = useCaseAction();
 
   return (
@@ -43,6 +57,20 @@ export function OpsCaseDrawer({ caseDetail, loading, open, onClose }: OpsCaseDra
             <Skeleton className="h-6 w-52" />
             <Skeleton className="h-24 w-full" />
             <Skeleton className="h-40 w-full" />
+          </div>
+        ) : error ? (
+          <div className="space-y-3 p-6">
+            <ErrorState
+              title="Could not load case details"
+              description={
+                errorMessage || "The server could not load this case right now. Please try again."
+              }
+              onRetry={onRetry}
+              retrying={retrying}
+            />
+            <Button variant="outline" size="sm" onClick={onClose}>
+              Close
+            </Button>
           </div>
         ) : !caseDetail ? (
           <div className="space-y-3 p-6">

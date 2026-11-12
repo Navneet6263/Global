@@ -15,6 +15,12 @@ import { getSession } from "@/lib/api/auth";
 import { cachedIdentity } from "@/lib/auth/platform-session";
 import { listDepartments } from "@/lib/backend-api/workflow";
 import { ROLE_HOME, rememberRole } from "@/lib/auth/role-home";
+import {
+  clearVerifierDepartment,
+  rememberVerifierDepartment,
+  rememberedVerifierDepartment,
+  resolveActiveVerifierDepartment,
+} from "@/lib/auth/verifier-department";
 
 /** The role whose workspace the current page belongs to. */
 function activeRole(roles: readonly Role[], pathname: string): Role | null {
@@ -65,13 +71,18 @@ export function RoleSwitcher() {
   if (roles.length < 2 && teams.length < 2) return null;
   const current = activeRole(roles, pathname) ?? roles[0]!;
   const teamId = (search as { department?: string }).department;
-  const onTeamPage = pathname.replace(/\/$/, "") === "/verifier/team";
-  const activeTeam = pathname.startsWith("/verifier")
-    ? ((onTeamPage ? teams.find((team) => team.id === teamId) : undefined) ??
-      (!supervisor && led.length === 1 ? led[0] : undefined))
-    : undefined;
+  const { team: activeTeam } = pathname.startsWith("/verifier")
+    ? resolveActiveVerifierDepartment({
+        urlDepartment: teamId,
+        remembered: rememberedVerifierDepartment(),
+        supervisor,
+        led,
+        teams,
+      })
+    : {};
   const openTeam = (id: string) => {
     rememberRole("VERIFIER");
+    rememberVerifierDepartment(id);
     void navigate({ to: "/verifier/team", search: { department: id } });
   };
   return (
@@ -101,6 +112,7 @@ export function RoleSwitcher() {
             {role === "VERIFIER" && teams.length ? null : (
               <DropdownMenuItem
                 onSelect={() => {
+                  clearVerifierDepartment();
                   rememberRole(role);
                   void navigate({ to: ROLE_HOME[role]! as "/" });
                 }}

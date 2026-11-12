@@ -19,7 +19,9 @@ import {
   documentExpiry,
   lockMutableCaseEvidence,
 } from "./upload-document-policy";
+import { recordDocumentVersionReview } from "./document-version-writer";
 import { documentScope } from "../verification/check-documents";
+import { reopenDependentChecksForPromotedVersion } from "../verification/shared-document-dependencies";
 
 @Injectable()
 export class DocumentReviewService {
@@ -146,6 +148,28 @@ export class DocumentReviewService {
       });
       if (updated.count !== 1)
         throw new ConflictException("Document changed during review; refresh");
+      await recordDocumentVersionReview(tx, {
+        documentId: document.id,
+        version: input.documentVersion,
+        reviewStatus: input.decision,
+        reviewNote: input.note.trim(),
+        reviewedById: actor.userId,
+        reviewedAt,
+      });
+      if (
+        input.decision === "VERIFIED" &&
+        input.documentVersion > 1 &&
+        typeof tx.caseCheck?.findMany === "function"
+      ) {
+        await reopenDependentChecksForPromotedVersion(tx, actor, {
+          tenantId: actor.tenantId,
+          caseId: document.case.id,
+          documentPublicId: publicId,
+          documentType: document.type,
+          promotedVersion: input.documentVersion,
+          reason: input.note.trim(),
+        });
+      }
       await tx.auditEvent.create({
         data: {
           tenantId: actor.tenantId,

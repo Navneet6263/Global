@@ -1,65 +1,40 @@
 import { useEffect, useState } from "react";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Circle,
-  CircleAlert,
-  CircleCheck,
-  ClipboardCheck,
-  FileCheck2,
-  FileText,
-  Inbox,
-  ListChecks,
-  MessageSquareText,
-  MessageSquareWarning,
-  Search,
-  Send,
-  ShieldCheck,
-  TriangleAlert,
-  X,
-} from "lucide-react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { ChevronLeft, ChevronRight, CircleCheck, Search } from "lucide-react";
 import { ErrorState } from "@/components/feedback/error-state";
 import { ListSkeleton } from "@/components/feedback/skeletons";
-import { DocumentFileActions } from "@/features/cases/document-file-actions";
+import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/api/auth";
-import { getCase, type CaseDetail } from "@/lib/api/cases";
 import {
-  createClarification,
-  listClarifications,
-  resolveClarification,
-} from "@/lib/backend-api/clarifications";
-import { getEvidenceReadiness, reviewDocument } from "@/lib/backend-api/documents";
-import {
-  getDataEntryOverview,
-  getDataEntryQueue,
-  getInitiationForms,
-  markCaseReady,
-  type QueueCase,
-} from "@/lib/backend-api/workflow";
-import { CheckInitiation } from "./CheckInitiation";
-import { istDateTime } from "@/features/operations/workspace/ops-queue-model";
-import { dueLabel, readableCheck, sinceLabel } from "./flow-model";
+  getUnifiedDataEntryQueue,
+  type DataEntryQueueFilter,
+  type UnifiedQueueCase,
+} from "@/lib/backend-api/data-entry-queue";
+import { getDataEntryOverview } from "@/lib/backend-api/workflow";
+import { DataEntryIntakeReview } from "./DataEntryIntakeReview";
+import { DataEntryQueueRow } from "./DataEntryQueueRow";
+import { DataEntrySummaryCards } from "./DataEntrySummaryCards";
 import { AssignDataEntryDialog } from "./RmDialogs";
-import { StatCard as Stat } from "@/components/workspace/kit";
 
 export interface DataEntrySearch {
   view?: "mine" | "team";
+  filter?: DataEntryQueueFilter;
   q?: string;
   page?: number;
   caseId?: string;
+  clarificationId?: string;
 }
 
-const initials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("") || "?";
+const FILTER_OPTIONS: ReadonlyArray<{
+  value: DataEntryQueueFilter;
+  label: string;
+  countKey: string;
+}> = [
+  { value: "all", label: "All", countKey: "allInView" },
+  { value: "to_review", label: "To review", countKey: "intakeToReview" },
+  { value: "correction", label: "Waiting on correction", countKey: "correction" },
+  { value: "l2_reentry", label: "L2 Re-entry", countKey: "l2Reentry" },
+];
 
 export function DataEntryWorkspace({
   search,
@@ -69,18 +44,32 @@ export function DataEntryWorkspace({
   onChange: (patch: Partial<DataEntrySearch>, replace?: boolean) => void;
 }) {
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
+  const roles = session.data?.roles ?? [];
   const isLead = Boolean(
     session.data?.departments?.some((d) => d.kind === "DATA_ENTRY" && d.role === "LEAD"),
   );
-  const view = search.view === "team" && isLead ? "team" : "mine";
+  const isSupervisor = roles.some((r) => ["PLATFORM_ADMIN", "OPS_MANAGER"].includes(r));
+  const canSeeTeam = isLead || isSupervisor;
+  const defaultTeam = isSupervisor && !roles.includes("DATA_ENTRY");
+  const view: "mine" | "team" = canSeeTeam
+    ? search.view === "team"
+      ? "team"
+      : search.view === "mine"
+        ? "mine"
+        : defaultTeam
+          ? "team"
+          : "mine"
+    : "mine";
+  const filter: DataEntryQueueFilter = search.filter ?? "all";
   const page = search.page ?? 1;
   const [input, setInput] = useState(search.q ?? "");
-  const [reassign, setReassign] = useState<QueueCase>();
+  const [reassign, setReassign] = useState<UnifiedQueueCase>();
   useEffect(() => setInput(search.q ?? ""), [search.q]);
+
   const queue = useQuery({
-    queryKey: ["workflow", "data-entry", view, search.q ?? "", page],
+    queryKey: ["workflow", "data-entry", "unified", view, filter, search.q ?? "", page],
     queryFn: ({ signal }) =>
-      getDataEntryQueue({ view, search: search.q, page, pageSize: 10 }, signal),
+      getUnifiedDataEntryQueue({ view, filter, search: search.q, page, pageSize: 10 }, signal),
     placeholderData: keepPreviousData,
     refetchInterval: 60_000,
   });
@@ -90,40 +79,25 @@ export function DataEntryWorkspace({
     refetchInterval: 60_000,
     retry: false,
   });
+
   const pages = Math.max(1, Math.ceil((queue.data?.total ?? 0) / 10));
   const kpis = overview.data?.kpis;
+  const counts = queue.data?.counts ?? {};
+  const hasActiveFilter = Boolean(search.q || filter !== "all");
+  const openQueueItem = queue.data?.items.find(
+    (item) =>
+      item.id === search.caseId ||
+      (search.clarificationId &&
+        item.l2Reentries?.some((entry) => entry.id === search.clarificationId)),
+  );
+
   return (
     <div className="rmo dei">
-      <section className="grid grid-cols-2 gap-3 xl:grid-cols-4" aria-label="Intake summary">
-        <Stat
-          icon={Inbox}
-          tone="info"
-          label="To review"
-          value={queue.data?.counts["mine"] ?? "—"}
-          hint="Assigned to you"
-        />
-        <Stat
-          icon={MessageSquareWarning}
-          tone="action"
-          label="Waiting on correction"
-          value={queue.data?.counts["correction"] ?? "—"}
-          hint="Candidate or client to reply"
-        />
-        <Stat
-          icon={TriangleAlert}
-          tone={kpis?.overdue ? "bad" : "neutral"}
-          label="Past due"
-          value={kpis ? kpis.overdue : "—"}
-          hint="Over the due date"
-        />
-        <Stat
-          icon={ClipboardCheck}
-          tone="good"
-          label="Marked Ready today"
-          value={kpis ? kpis.readyToday : "—"}
-          hint="Sent to the verification teams"
-        />
-      </section>
+      <DataEntrySummaryCards
+        counts={counts}
+        overdueKpi={kpis?.overdue}
+        readyTodayKpi={kpis?.readyToday}
+      />
       <section className="rmo-card dei-queue" aria-label="Data Entry queue">
         <header className="dei-queue-head">
           <div>
@@ -131,14 +105,19 @@ export function DataEntryWorkspace({
               {view === "team" ? "Team cases" : "My cases"}
               <span className="dei-count">{queue.data?.total ?? 0}</span>
             </h2>
-            <p>Open a case, accept documents, fill each check, then complete the work.</p>
+            <p>
+              Open an intake case or L2 re-entry item to inspect documents, update details, and
+              route forward.
+            </p>
           </div>
-          {isLead ? (
+          {canSeeTeam ? (
             <div className="ops-segment" role="group" aria-label="Queue">
               <button
                 type="button"
                 aria-pressed={view === "mine"}
-                onClick={() => onChange({ view: undefined, page: undefined })}
+                onClick={() =>
+                  onChange({ view: defaultTeam ? "mine" : undefined, page: undefined })
+                }
               >
                 My work
               </button>
@@ -152,6 +131,35 @@ export function DataEntryWorkspace({
             </div>
           ) : null}
         </header>
+        <div className="mb-3 flex flex-wrap gap-1.5" role="group" aria-label="Stage filter">
+          {FILTER_OPTIONS.map((opt) => {
+            const active = filter === opt.value;
+            const count = counts[opt.countKey];
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                aria-pressed={active}
+                onClick={() =>
+                  onChange({
+                    filter: opt.value === "all" ? undefined : opt.value,
+                    page: undefined,
+                  })
+                }
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition ${
+                  active
+                    ? "bg-slate-900 text-white"
+                    : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                <span>{opt.label}</span>
+                {typeof count === "number" ? (
+                  <span className={active ? "text-slate-300" : "text-slate-500"}>{count}</span>
+                ) : null}
+              </button>
+            );
+          })}
+        </div>
         <form
           className="dei-search"
           onSubmit={(event) => {
@@ -187,71 +195,29 @@ export function DataEntryWorkspace({
           queue.data.items.length ? (
             <ul className="dei-list" aria-label="Intake cases">
               {queue.data.items.map((item) => {
-                const due = dueLabel(item.dueAt);
-                const focused = search.caseId === item.id;
-                const correction = item.intakeStage === "CORRECTION";
+                const focused =
+                  search.caseId === item.id ||
+                  Boolean(
+                    search.clarificationId &&
+                    item.l2Reentries?.some((c) => c.id === search.clarificationId),
+                  );
                 return (
-                  <li
+                  <DataEntryQueueRow
                     key={item.id}
-                    className={`dei-row ${focused ? "is-focused" : ""} ${correction ? "is-correction" : ""}`}
-                  >
-                    <button
-                      type="button"
-                      className="dei-row-main"
-                      aria-pressed={focused}
-                      onClick={() => onChange({ caseId: item.id }, true)}
-                      aria-label={`Review ${item.candidateName}`}
-                    >
-                      <span className="dei-avatar" aria-hidden>
-                        {initials(item.candidateName)}
-                      </span>
-                      <span className="min-w-0">
-                        <strong>{item.candidateName}</strong>
-                        <small>
-                          {item.client.name} · {item.caseNumber}
-                        </small>
-                      </span>
-                    </button>
-                    <span className="dei-row-tags">
-                      <span className={`rmo-pill ${correction ? "is-warn" : "is-info"}`}>
-                        {correction ? "Waiting on correction" : "To review"}
-                      </span>
-                      <span className="dei-tag">
-                        <FileText aria-hidden /> {item.documents.total} doc
-                        {item.documents.total === 1 ? "" : "s"}
-                      </span>
-                      <span className="dei-tag">
-                        <ListChecks aria-hidden /> {item.checks.total} check
-                        {item.checks.total === 1 ? "" : "s"}
-                      </span>
-                      {item.documents.rejected ? (
-                        <span className="rmo-pill is-bad">{item.documents.rejected} rejected</span>
-                      ) : null}
-                    </span>
-                    <span className="dei-row-who">
-                      <span>
-                        {view === "team"
-                          ? (item.dataEntry?.name ?? "—")
-                          : `RM ${item.rm?.name ?? "—"}`}
-                      </span>
-                      <small>since {sinceLabel(item.dataEntryAssignedAt) || "—"}</small>
-                    </span>
-                    <span className={`rmo-pill is-${due.tone} dei-due`}>{due.text}</span>
-                    <span className="dei-row-actions">
-                      <Button
-                        size="sm"
-                        variant={focused ? "default" : "outline"}
-                        onClick={() => onChange({ caseId: item.id }, true)}
-                      >
-                        Review
-                      </Button>
-                      {view === "team" ? (
-                        <Button size="sm" variant="outline" onClick={() => setReassign(item)}>
-                          Reassign
-                        </Button>
-                      ) : null}
-                    </span>
-                  </li>
+                    item={item}
+                    view={view}
+                    focused={focused}
+                    onOpen={(row) =>
+                      onChange(
+                        {
+                          caseId: row.id,
+                          clarificationId: row.l2Reentries?.[0]?.id,
+                        },
+                        true,
+                      )
+                    }
+                    onReassign={setReassign}
+                  />
                 );
               })}
             </ul>
@@ -260,8 +226,12 @@ export function DataEntryWorkspace({
               <span className="dei-empty-icon">
                 <CircleCheck aria-hidden />
               </span>
-              <strong>All caught up</strong>
-              <span>The RM assigns new cases here once the candidate has submitted.</span>
+              <strong>{hasActiveFilter ? "No matching cases" : "All caught up"}</strong>
+              <span>
+                {hasActiveFilter
+                  ? "Try clearing your search term or selecting All."
+                  : "The RM or Operations assigns intake and L2 re-entry work here."}
+              </span>
             </div>
           )
         ) : null}
@@ -294,668 +264,16 @@ export function DataEntryWorkspace({
           </div>
         </footer>
       </section>
-      <IntakeReview
+      <DataEntryIntakeReview
         caseId={search.caseId}
-        queueItem={queue.data?.items.find((item) => item.id === search.caseId)}
-        onClose={() => onChange({ caseId: undefined }, true)}
+        clarificationId={search.clarificationId}
+        queueItem={openQueueItem}
+        onSelectClarification={(id) => onChange({ clarificationId: id }, true)}
+        onClose={() => onChange({ caseId: undefined, clarificationId: undefined }, true)}
       />
       {reassign ? (
         <AssignDataEntryDialog item={reassign} onClose={() => setReassign(undefined)} />
       ) : null}
     </div>
-  );
-}
-
-/** The case opens in a wide slide-over: summary and Ready on the left, the work on the right. */
-function IntakeReview({
-  caseId,
-  queueItem,
-  onClose,
-}: {
-  caseId?: string;
-  queueItem?: QueueCase;
-  onClose: () => void;
-}) {
-  // Keep the last case on screen while the panel slides out.
-  const [shownId, setShownId] = useState(caseId);
-  useEffect(() => {
-    if (caseId) setShownId(caseId);
-  }, [caseId]);
-  const id = caseId ?? shownId;
-  const detail = useQuery({
-    queryKey: ["case", id],
-    queryFn: () => getCase(id!),
-    enabled: Boolean(id),
-  });
-  return (
-    <DialogPrimitive.Root
-      open={Boolean(caseId)}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-    >
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="dei-sheet-overlay" />
-        <DialogPrimitive.Content
-          className="dei-sheet"
-          aria-describedby={undefined}
-          onOpenAutoFocus={(event) => event.preventDefault()}
-        >
-          <DialogPrimitive.Title className="sr-only">
-            {detail.data ? `Review ${detail.data.subject.fullName}` : "Case review"}
-          </DialogPrimitive.Title>
-          <aside className="dei-review-wrap" aria-label="Intake review">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="dei-sheet-close"
-              aria-label="Close review"
-              onClick={onClose}
-            >
-              <X aria-hidden />
-            </Button>
-            {detail.isPending ? (
-              <div className="dei-panel-pad">
-                <ListSkeleton rows={8} />
-              </div>
-            ) : null}
-            {detail.isError ? (
-              <div className="dei-panel-pad">
-                <ErrorState
-                  description={detail.error.message}
-                  onRetry={() => void detail.refetch()}
-                  retrying={detail.isFetching}
-                />
-              </div>
-            ) : null}
-            {detail.data ? (
-              <ReviewBody item={detail.data} queueItem={queueItem} onClose={onClose} />
-            ) : null}
-          </aside>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </DialogPrimitive.Root>
-  );
-}
-
-function ReviewBody({
-  item,
-  queueItem,
-  onClose,
-}: {
-  item: CaseDetail;
-  queueItem?: QueueCase;
-  onClose: () => void;
-}) {
-  const queryClient = useQueryClient();
-  const readiness = useQuery({
-    queryKey: ["case", item.id, "readiness"],
-    queryFn: () => getEvidenceReadiness(item.id),
-  });
-  const requests = useQuery({
-    queryKey: ["case", item.id, "clarifications"],
-    queryFn: () => listClarifications(item.id),
-  });
-  const refresh = () =>
-    Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
-      queryClient.invalidateQueries({ queryKey: ["workflow"] }),
-    ]);
-  const stage = item.workflow?.intakeStage;
-  const open = (requests.data?.items ?? []).filter((request) =>
-    ["OPEN", "RESPONDED"].includes(request.status),
-  );
-  const rejected = item.documents.filter((document) =>
-    ["REJECTED", "REUPLOAD_REQUIRED"].includes(document.status),
-  );
-  const accepted = item.documents.filter((document) => document.status === "VERIFIED");
-  const toReview = item.documents.filter(
-    (document) =>
-      document.currentVersion > 0 &&
-      !["VERIFIED", "REJECTED", "REUPLOAD_REQUIRED"].includes(document.status),
-  );
-  // Check by check: ready to go, still to review, or waiting for the candidate.
-  const checkStates = readiness.data?.checks;
-  const openChecks = (checkStates ?? []).filter((row) => !row.sentToTeam);
-  const waitingChecks = openChecks.filter((row) => row.state === "WAITING_CANDIDATE");
-  const sentChecks = (checkStates ?? []).filter((row) => row.sentToTeam);
-  const [choosing, setChoosing] = useState(false);
-  const consentAccepted = item.consents.some((consent) => consent.status === "ACCEPTED");
-  const forms = useQuery({
-    queryKey: ["workflow", "initiation-forms"],
-    queryFn: getInitiationForms,
-    staleTime: Infinity,
-  });
-  const initiable = item.checks.filter((check) => forms.data?.forms[check.type.toUpperCase()]);
-  // Checks waiting for the candidate, or already with their team, are not filled now.
-  const notInitiated = initiable.filter((check) => {
-    const row = checkStates?.find((state) => state.id === check.publicId);
-    return !check.initiatedAt && row?.state !== "WAITING_CANDIDATE" && !row?.sentToTeam;
-  });
-  const blockers = [
-    ...(!consentAccepted ? ["Candidate consent is not accepted yet"] : []),
-    ...(open.length
-      ? [`${open.length} correction request${open.length > 1 ? "s" : ""} still open`]
-      : []),
-    ...(toReview.length
-      ? [
-          `Accept or reject: ${[...new Set(toReview.map((document) => readableCheck(document.type)))].join(", ")}`,
-        ]
-      : []),
-    ...(notInitiated.length
-      ? [
-          `Initiate ${notInitiated.length === 1 ? "this check" : "these checks"}: ${notInitiated
-            .map((check) => readableCheck(check.type))
-            .join(", ")}`,
-        ]
-      : []),
-    ...(checkStates && openChecks.length === waitingChecks.length && waitingChecks.length
-      ? ["Every remaining check waits for the candidate's documents"]
-      : []),
-  ];
-  const steps = [
-    { label: "Consent", done: consentAccepted, detail: consentAccepted ? "Accepted" : "Pending" },
-    {
-      label: "Documents",
-      done: !toReview.length && !rejected.length && item.documents.length > 0,
-      detail: `${accepted.length}/${item.documents.length} accepted${rejected.length ? ` · ${rejected.length} rejected` : ""}`,
-    },
-    {
-      label: "Checks",
-      done: !notInitiated.length,
-      detail: `${initiable.filter((check) => check.initiatedAt).length}/${initiable.length} initiated`,
-    },
-    {
-      label: "Corrections",
-      done: !open.length,
-      detail: open.length ? `${open.length} open` : "None open",
-    },
-  ];
-  const progress = Math.round((steps.filter((step) => step.done).length / steps.length) * 100);
-  const due = dueLabel(item.dueAt ?? queueItem?.dueAt ?? null);
-  const ready = useMutation({
-    mutationFn: (processNow: boolean) =>
-      markCaseReady(item.id, { version: item.version, ...(processNow ? { processNow } : {}) }),
-    onSuccess: async (result) => {
-      setChoosing(false);
-      if (result.waiting?.length) {
-        toast.success(`${result.sent ?? 0} check(s) sent to their teams`, {
-          description: `${result.waiting.map(readableCheck).join(", ")} wait for the candidate. The case stays with you until they upload again.`,
-        });
-        await refresh();
-        return;
-      }
-      if (result.routed) toast.success(`${item.caseNumber} sent to the verification teams`);
-      else
-        toast.success(`${item.caseNumber} is complete — with the RM to route`, {
-          description: result.routeNote,
-        });
-      await refresh();
-      onClose();
-    },
-    onError: (error: Error) => toast.error("Not completed", { description: error.message }),
-  });
-  return (
-    <div className="dei-review">
-      <div className="dei-review-side">
-        <header className="dei-panel-head">
-          <span className="dei-avatar is-lg" aria-hidden>
-            {initials(item.subject.fullName)}
-          </span>
-          <div className="min-w-0">
-            <h2>{item.subject.fullName}</h2>
-            <p>
-              <span className="dei-id">{item.caseNumber}</span>
-              <span>{item.client.displayName}</span>
-              {item.assignedOpsUser ? <span>RM {item.assignedOpsUser.displayName}</span> : null}
-            </p>
-          </div>
-        </header>
-        <div className="dei-panel-tags">
-          <span className={`rmo-pill ${stage === "CORRECTION" ? "is-warn" : "is-info"}`}>
-            {stage === "CORRECTION" ? "Waiting on correction" : "To review"}
-          </span>
-          <span className={`rmo-pill is-${due.tone}`}>{due.text}</span>
-          {item.checks.map((check) => (
-            <span key={check.publicId} className="dei-tag">
-              {readableCheck(check.type)}
-            </span>
-          ))}
-        </div>
-        <section className="dei-progress" aria-label="Readiness">
-          <div className="dei-progress-head">
-            <strong>Readiness</strong>
-            <span>{progress}%</span>
-          </div>
-          <div
-            className="dei-progress-bar"
-            role="progressbar"
-            aria-label="Readiness"
-            aria-valuenow={progress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <span style={{ width: `${progress}%` }} />
-          </div>
-          <ol className="dei-steps">
-            {steps.map((step) => (
-              <li key={step.label} className={step.done ? "is-done" : ""}>
-                {step.done ? <CircleCheck aria-hidden /> : <Circle aria-hidden />}
-                <span>
-                  <strong>{step.label}</strong>
-                  <small>{step.detail}</small>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </section>
-        <footer className="dei-panel-foot" aria-label="Ready check">
-          {blockers.length ? (
-            <div className="flow-callout is-bad">
-              <CircleAlert aria-hidden />
-              <ul>
-                {blockers.map((blocker) => (
-                  <li key={blocker}>{blocker}</li>
-                ))}
-              </ul>
-            </div>
-          ) : waitingChecks.length ? (
-            <div className="flow-callout is-warn">
-              <CircleAlert aria-hidden />
-              <span>
-                {waitingChecks.map((row) => readableCheck(row.type)).join(", ")}{" "}
-                {waitingChecks.length === 1 ? "waits" : "wait"} for the candidate. The other checks
-                are ready to send.
-              </span>
-            </div>
-          ) : (
-            <div className="flow-callout is-good">
-              <ShieldCheck aria-hidden />
-              <span>
-                Consent accepted, checks initiated, required documents accepted and no open
-                corrections.
-              </span>
-            </div>
-          )}
-          {choosing && waitingChecks.length ? (
-            <div
-              className="space-y-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-[12.5px] text-amber-950"
-              role="group"
-              aria-label="Rejected documents"
-            >
-              <p className="font-semibold">
-                You accepted {accepted.length} document{accepted.length === 1 ? "" : "s"} and
-                rejected {rejected.length}.
-              </p>
-              <p>
-                {waitingChecks.map((row) => readableCheck(row.type)).join(", ")}{" "}
-                {waitingChecks.length === 1 ? "waits" : "wait"} for the candidate. The candidate has
-                been emailed to upload the rejected documents again.
-              </p>
-              <p>Process the accepted checks now, or wait for the candidate?</p>
-              <div className="grid gap-2">
-                <Button size="sm" onClick={() => ready.mutate(true)} loading={ready.isPending}>
-                  Process accepted checks now
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setChoosing(false);
-                    toast.message("Waiting for the candidate", {
-                      description:
-                        "The case stays with you. Accept the new documents when they arrive, then complete the work.",
-                    });
-                  }}
-                >
-                  Wait for the candidate
-                </Button>
-              </div>
-            </div>
-          ) : null}
-          <Button
-            className="w-full"
-            size="lg"
-            onClick={() => (waitingChecks.length ? setChoosing(true) : ready.mutate(false))}
-            disabled={
-              Boolean(blockers.length) ||
-              stage !== "DATA_ENTRY" ||
-              Boolean(checkStates && !openChecks.length)
-            }
-            loading={ready.isPending && !choosing}
-          >
-            <Send aria-hidden />
-            Complete work
-          </Button>
-          {sentChecks.length ? (
-            <p className="dei-foot-note">
-              Already with their teams:{" "}
-              {sentChecks.map((row) => readableCheck(row.type)).join(", ")}
-            </p>
-          ) : null}
-          {queueItem?.dataEntryAssignedAt ? (
-            <p className="dei-foot-note">Assigned {istDateTime(queueItem.dataEntryAssignedAt)}</p>
-          ) : null}
-        </footer>
-      </div>
-      <div className="dei-panel-body">
-        <div className="dei-review-title">
-          <small>Case review</small>
-          <strong>Documents, check details and corrections</strong>
-        </div>
-        {stage === "CORRECTION" ? (
-          <div className="flow-callout is-warn">
-            <MessageSquareText aria-hidden />
-            <span>
-              Waiting on a correction. When every request is resolved the case returns to you for a
-              recheck.
-            </span>
-          </div>
-        ) : null}
-        <section className="dei-section" aria-label="Documents">
-          <h3>
-            <FileCheck2 aria-hidden /> Documents
-            <span className="dei-count">{item.documents.length}</span>
-          </h3>
-          {item.documents.length ? (
-            item.documents.map((document) => (
-              <DocumentRow
-                key={document.publicId}
-                caseItem={item}
-                document={document}
-                onDone={refresh}
-              />
-            ))
-          ) : (
-            <p className="ops-subtle">No documents uploaded yet.</p>
-          )}
-        </section>
-        <div className="dei-section is-plain">
-          <CheckInitiation
-            item={item}
-            editable={["DATA_ENTRY", "CORRECTION"].includes(stage ?? "") && readiness.isSuccess}
-            checkStates={checkStates}
-            onSaved={refresh}
-          />
-        </div>
-        <section className="dei-section" aria-label="Correction requests">
-          <h3>
-            <MessageSquareText aria-hidden /> Correction requests (L1)
-            <span className="dei-count">{requests.data?.items.length ?? 0}</span>
-          </h3>
-          {requests.isPending ? <p className="ops-subtle">Loading…</p> : null}
-          {(requests.data?.items ?? []).map((request) => (
-            <RequestRow key={request.id} caseId={item.id} request={request} onDone={refresh} />
-          ))}
-          {requests.data && !requests.data.items.length ? (
-            <p className="ops-subtle">No corrections requested.</p>
-          ) : null}
-          <RaiseCorrection
-            caseId={item.id}
-            disabled={!["DATA_ENTRY", "CORRECTION"].includes(stage ?? "")}
-            onDone={refresh}
-          />
-        </section>
-      </div>
-    </div>
-  );
-}
-
-function DocumentRow({
-  caseItem,
-  document,
-  onDone,
-}: {
-  caseItem: CaseDetail;
-  document: CaseDetail["documents"][number];
-  onDone: () => Promise<unknown>;
-}) {
-  const [rejecting, setRejecting] = useState(false);
-  const [note, setNote] = useState("");
-  const latest = document.versions.at(-1);
-  const review = useMutation({
-    mutationFn: (decision: "VERIFIED" | "REJECTED") =>
-      reviewDocument(document.publicId, {
-        version: document.version,
-        documentVersion: document.currentVersion,
-        decision,
-        note:
-          decision === "VERIFIED"
-            ? note.trim() || "Checked at Data Entry: complete and readable"
-            : note.trim(),
-      }),
-    onSuccess: async (_result, decision) => {
-      toast.success(
-        decision === "VERIFIED" ? "Document accepted" : "Document rejected — replacement requested",
-      );
-      setRejecting(false);
-      setNote("");
-      await onDone();
-    },
-    onError: (error: Error) => toast.error("Review not saved", { description: error.message }),
-  });
-  const status = document.status;
-  const tone = status === "VERIFIED" ? "is-good" : status === "REJECTED" ? "is-bad" : "is-warn";
-  const locked = !["DATA_ENTRY", "CORRECTION"].includes(caseItem.workflow?.intakeStage ?? "");
-  return (
-    <div className={`dei-doc ${tone}`}>
-      <span className="dei-doc-icon" aria-hidden>
-        <FileText />
-      </span>
-      <span className="dei-doc-text">
-        <strong>{readableCheck(document.type)}</strong>
-        <small>
-          {latest?.originalName ? `${latest.originalName} · ` : ""}v{document.currentVersion}
-          {document.reviewNote ? ` · ${document.reviewNote}` : ""}
-        </small>
-      </span>
-      <span className={`rmo-pill ${tone}`}>
-        {status === "VERIFIED" ? "Accepted" : readableCheck(status)}
-      </span>
-      <span className="dei-doc-actions">
-        {latest ? (
-          <DocumentFileActions
-            documentId={document.publicId}
-            filename={latest.originalName}
-            label={readableCheck(document.type)}
-          />
-        ) : null}
-        {!locked && latest && status !== "VERIFIED" ? (
-          <Button
-            size="sm"
-            onClick={() => review.mutate("VERIFIED")}
-            loading={review.isPending && review.variables === "VERIFIED"}
-            disabled={review.isPending}
-          >
-            Accept
-          </Button>
-        ) : null}
-        {!locked && latest && status !== "REJECTED" ? (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => setRejecting((value) => !value)}
-            disabled={review.isPending}
-          >
-            Reject
-          </Button>
-        ) : null}
-      </span>
-      {rejecting ? (
-        <form
-          className="dei-doc-reject"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (note.trim().length >= 5) review.mutate("REJECTED");
-          }}
-        >
-          <input
-            className="ops-text-input"
-            value={note}
-            maxLength={500}
-            onChange={(event) => setNote(event.target.value)}
-            placeholder="Why? e.g. image unreadable, name mismatch"
-            aria-label={`Reason to reject ${readableCheck(document.type)}`}
-          />
-          <Button
-            type="submit"
-            size="sm"
-            variant="destructive"
-            disabled={note.trim().length < 5}
-            loading={review.isPending && review.variables === "REJECTED"}
-          >
-            Reject
-          </Button>
-        </form>
-      ) : null}
-    </div>
-  );
-}
-
-function RequestRow({
-  caseId,
-  request,
-  onDone,
-}: {
-  caseId: string;
-  request: {
-    id: string;
-    status: string;
-    subject: string;
-    level?: string | null;
-    createdAt: string;
-    messages: Array<{ senderType: string; body: string }>;
-  };
-  onDone: () => Promise<unknown>;
-}) {
-  const resolve = useMutation({
-    mutationFn: () => resolveClarification(caseId, request.id),
-    onSuccess: async () => {
-      toast.success("Correction resolved");
-      await onDone();
-    },
-    onError: (error: Error) => toast.error("Not resolved", { description: error.message }),
-  });
-  const reply = [...request.messages].reverse().find((message) => message.senderType !== "TEAM");
-  const tone =
-    request.status === "RESOLVED"
-      ? "is-good"
-      : request.status === "RESPONDED"
-        ? "is-info"
-        : "is-warn";
-  return (
-    <div className="dei-request">
-      <span className="min-w-0">
-        <strong>{request.subject}</strong>
-        <small>
-          {request.level ?? "L1"} · raised {istDateTime(request.createdAt)}
-        </small>
-        {reply ? <q>{reply.body.slice(0, 160)}</q> : null}
-      </span>
-      <span className="dei-request-side">
-        <span className={`rmo-pill ${tone}`}>
-          {request.status === "RESPONDED" ? "Response received" : readableCheck(request.status)}
-        </span>
-        {request.status === "RESPONDED" ? (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => resolve.mutate()}
-            loading={resolve.isPending}
-          >
-            Mark resolved
-          </Button>
-        ) : null}
-      </span>
-    </div>
-  );
-}
-
-function RaiseCorrection({
-  caseId,
-  disabled,
-  onDone,
-}: {
-  caseId: string;
-  disabled: boolean;
-  onDone: () => Promise<unknown>;
-}) {
-  const [open, setOpen] = useState(false);
-  const [subject, setSubject] = useState("");
-  const [message, setMessage] = useState("");
-  const create = useMutation({
-    mutationFn: () =>
-      createClarification(caseId, { subject: subject.trim(), message: message.trim() }),
-    onSuccess: async () => {
-      toast.success("Insufficiency (L1) raised", {
-        description: "The candidate gets a fresh link and the client is told.",
-      });
-      setOpen(false);
-      setSubject("");
-      setMessage("");
-      await onDone();
-    },
-    onError: (error: Error) =>
-      toast.error("Insufficiency not raised", { description: error.message }),
-  });
-  if (!open)
-    return (
-      <Button
-        className="mt-2"
-        variant="outline"
-        size="sm"
-        onClick={() => setOpen(true)}
-        disabled={disabled}
-      >
-        <MessageSquareText aria-hidden />
-        Raise insufficiency (L1)
-      </Button>
-    );
-  return (
-    <form
-      className="dei-raise"
-      onSubmit={(event) => {
-        event.preventDefault();
-        create.mutate();
-      }}
-    >
-      <label className="ops-field">
-        <span>What is missing or wrong?</span>
-        <input
-          value={subject}
-          maxLength={180}
-          onChange={(e) => setSubject(e.target.value)}
-          placeholder="e.g. Employment relieving letter missing"
-        />
-      </label>
-      <label className="ops-field">
-        <span>Message to the candidate / client</span>
-        <textarea
-          rows={3}
-          maxLength={5000}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-      </label>
-      <div className="flex gap-2">
-        <Button
-          type="submit"
-          size="sm"
-          disabled={subject.trim().length < 3 || message.trim().length < 3}
-          loading={create.isPending}
-        >
-          Send to candidate &amp; client
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={() => setOpen(false)}
-          disabled={create.isPending}
-        >
-          Cancel
-        </Button>
-      </div>
-    </form>
   );
 }

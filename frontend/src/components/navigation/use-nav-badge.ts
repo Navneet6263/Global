@@ -2,12 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import type { NavItem } from "@/config/navigation";
 import { apiRequest } from "@/lib/backend-api/client";
 import { getVerifierInsights } from "@/lib/backend-api/tasks";
+import { useVerifierDepartment } from "@/lib/auth/verifier-department";
 import { crmOverviewQueryOptions } from "@/features/crm/hooks/use-crm";
 
 export function useNavBadge(item: NavItem): number | undefined {
   const key = item.badge?.key;
   const needsVerifier = key?.startsWith("verifier") ?? false;
   const needsCrm = item.workspace === "sales-crm";
+  const { departmentId } = useVerifierDepartment();
   const counts = useQuery({
     queryKey: ["navigation-counts", item.workspace],
     queryFn: ({ signal }) =>
@@ -17,8 +19,8 @@ export function useNavBadge(item: NavItem): number | undefined {
   });
   const crm = useQuery({ ...crmOverviewQueryOptions, enabled: Boolean(key) && needsCrm });
   const verifier = useQuery({
-    queryKey: ["verifier", "insights"],
-    queryFn: getVerifierInsights,
+    queryKey: ["verifier", "insights", departmentId ?? "all"],
+    queryFn: () => getVerifierInsights(departmentId),
     enabled: Boolean(key) && needsVerifier,
     staleTime: 30_000,
   });

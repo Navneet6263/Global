@@ -10,11 +10,13 @@ export function DocumentFileActions({
   documentId,
   filename,
   label,
+  version,
   compact = true,
 }: {
   documentId: string;
   filename: string;
   label: string;
+  version?: number;
   compact?: boolean;
 }) {
   const [pending, setPending] = useState<Action | null>(null);
@@ -26,8 +28,8 @@ export function DocumentFileActions({
     setPending(action);
     try {
       // Call preview synchronously inside the click to preserve popup permission.
-      if (action === "preview") await previewDocument(documentId);
-      else await downloadDocument(documentId, filename);
+      if (action === "preview") await previewDocument(documentId, version);
+      else await downloadDocument(documentId, filename, version);
     } catch (error) {
       toast.error(action === "preview" ? "Document preview unavailable" : "Download failed", {
         description: error instanceof Error ? error.message : "Please try again.",

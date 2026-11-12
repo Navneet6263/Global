@@ -85,10 +85,12 @@ export interface WorkspaceDestination {
 export function ClientWorkspaceSearch({
   destinations = clientDestinations,
   caseSearchTo = "/client-portal/verifications",
+  caseSearchParams,
   placeholder = "Search features or cases…",
 }: {
   destinations?: readonly WorkspaceDestination[];
   caseSearchTo?: string;
+  caseSearchParams?: Record<string, string>;
   placeholder?: string;
 } = {}) {
   const [term, setTerm] = useState("");
@@ -111,7 +113,10 @@ export function ClientWorkspaceSearch({
       label: item.label,
       detail: item.detail,
       to: item.to,
-      search: item.search ?? (item.view ? { view: item.view } : {}),
+      search: {
+        ...(caseSearchParams ?? {}),
+        ...(item.search ?? (item.view ? { view: item.view } : {})),
+      },
     })),
     ...(term.trim() && allowed("case:read")
       ? [
@@ -119,7 +124,7 @@ export function ClientWorkspaceSearch({
             label: `Search cases for “${term.trim()}”`,
             detail: "Search candidate name or case number",
             to: caseSearchTo,
-            search: { q: term.trim() },
+            search: { ...(caseSearchParams ?? {}), q: term.trim() },
           },
         ]
       : []),

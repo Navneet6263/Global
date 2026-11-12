@@ -18,6 +18,7 @@ import {
   type AnnexureItem,
   type AnnexurePeriod,
 } from "@/lib/backend-api/rework";
+import { useVerifierDepartment } from "@/lib/auth/verifier-department";
 import { ReworkDialog, type ReworkTarget } from "./ReworkDialog";
 import { COLOUR_CODES, hexFor } from "./colour-legend";
 
@@ -42,11 +43,12 @@ const EXPORT_DEFAULTS = EXPORT_COLUMNS.map((column) => column.key);
 
 /** Team Leader annexure: the team's closed checks this week / month / year, colour coded. */
 export function TeamAnnexure() {
+  const { departmentId } = useVerifierDepartment();
   const [period, setPeriod] = useState<AnnexurePeriod>("month");
   const [target, setTarget] = useState<ReworkTarget | null>(null);
   const annexure = useQuery({
-    queryKey: ["workflow", "team-annexure", period],
-    queryFn: () => getTeamAnnexure(period),
+    queryKey: ["workflow", "team-annexure", departmentId ?? "all", period],
+    queryFn: () => getTeamAnnexure(period, departmentId),
   });
   const data = annexure.data;
   const periodLabel = PERIODS.find((item) => item.id === period)!.label;
@@ -105,7 +107,7 @@ export function TeamAnnexure() {
               defaults={EXPORT_DEFAULTS}
               scopeNote={`${periodLabel.toLowerCase()} · all ${data?.total ?? 0} closed checks`}
               disabled={!data?.total}
-              download={(columns) => downloadTeamAnnexure(period, columns)}
+              download={(columns) => downloadTeamAnnexure(period, columns, departmentId)}
             />
           </>
         }

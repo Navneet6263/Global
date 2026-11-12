@@ -17,7 +17,9 @@ export class DashboardExceptionsService {
     };
     const clarificationWhere = {
       tenantId: actor.tenantId,
-      status: { in: ["OPEN", "RESPONDED"] },
+      status: {
+        in: ["OPEN", "RESPONDED", "CANDIDATE_SUBMITTED", "DATA_ENTRY_PENDING"],
+      },
       case: caseAccessScope(actor),
     };
     const fieldWhere = {
@@ -50,11 +52,27 @@ export class DashboardExceptionsService {
         where: clarificationWhere,
         select: {
           publicId: true,
+          level: true,
           status: true,
           subject: true,
+          requestedDocumentType: true,
+          submittedDocumentVersion: true,
+          rejectionCount: true,
+          lastRejectedAt: true,
+          lastRejectedReason: true,
+          opsReviewedAt: true,
+          reentryCompletedAt: true,
           dueAt: true,
           updatedAt: true,
           createdAt: true,
+          submittedDocument: {
+            select: {
+              publicId: true,
+              type: true,
+              status: true,
+              currentVersion: true,
+            },
+          },
           messages: {
             select: { senderType: true, body: true, createdAt: true },
             orderBy: { createdAt: "desc" },
@@ -157,11 +175,21 @@ export class DashboardExceptionsService {
         id: publicId,
         ...row,
       })),
-      clarifications: clarifications.map(({ publicId, messages, ...row }) => ({
-        id: publicId,
-        ...row,
-        latestMessage: messages[0] ?? null,
-      })),
+      clarifications: clarifications.map(
+        ({ publicId, messages, submittedDocument, ...row }) => ({
+          id: publicId,
+          ...row,
+          submittedDocument: submittedDocument
+            ? {
+                id: submittedDocument.publicId,
+                type: submittedDocument.type,
+                status: submittedDocument.status,
+                currentVersion: submittedDocument.currentVersion,
+              }
+            : null,
+          latestMessage: messages[0] ?? null,
+        }),
+      ),
       fieldVisits: presentFieldExceptions(actor, fieldVisits),
       rejectedDocuments: rejectedDocuments.map(({ publicId, ...row }) => ({
         id: publicId,

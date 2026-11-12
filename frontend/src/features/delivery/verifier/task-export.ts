@@ -8,6 +8,7 @@ export const TASK_EXPORT_COLUMNS: readonly SheetColumn<VerificationTask>[] = [
   { key: "candidate", label: "Candidate", value: (t) => t.check.case.subject.fullName },
   { key: "company", label: "Company", value: (t) => t.check.case.client.displayName },
   { key: "check", label: "Check", value: (t) => humanizeCode(t.check.type) },
+  { key: "assignee", label: "Claimed by", value: (t) => t.assignee?.name ?? "" },
   { key: "status", label: "Status", value: (t) => humanizeCode(t.status) },
   { key: "result", label: "Result", value: (t) => humanizeCode(t.check.result) },
   { key: "priority", label: "Priority", value: (t) => humanizeCode(t.check.case.priority) },

@@ -597,31 +597,40 @@ model Document {
   createdAt      DateTime  @default(now()) @db.DateTime2
   updatedAt      DateTime  @updatedAt @db.DateTime2
 
-  tenant            Tenant             @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  case              VerificationCase   @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  versions          DocumentVersion[]
-  vendorAssignments VendorAssignment[]
+  tenant                 Tenant             @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  case                   VerificationCase   @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  versions               DocumentVersion[]
+  vendorAssignments      VendorAssignment[]
+  clarificationSubmissions Clarification[]  @relation("ClarificationSubmittedDocument")
 
   @@index([tenantId, caseId, status])
 }
 
 model DocumentVersion {
-  id           BigInt   @id @default(autoincrement())
-  documentId   BigInt
-  version      Int
-  objectKey    String   @db.NVarChar(500)
-  originalName String   @db.NVarChar(255)
-  contentType  String   @db.VarChar(100)
-  sizeBytes    BigInt
-  sha256       String   @db.Char(64)
-  malwareState String   @default("PENDING") @db.VarChar(24)
-  uploadedById BigInt?
-  createdAt    DateTime @default(now()) @db.DateTime2
+  id              BigInt    @id @default(autoincrement())
+  documentId      BigInt
+  version         Int
+  objectKey       String    @db.NVarChar(500)
+  originalName    String    @db.NVarChar(255)
+  contentType     String    @db.VarChar(100)
+  sizeBytes       BigInt
+  sha256          String    @db.Char(64)
+  malwareState    String    @default("PENDING") @db.VarChar(24)
+  uploadedById    BigInt?
+  reviewStatus    String    @default("PENDING") @db.VarChar(24)
+  reviewNote      String?   @db.NVarChar(2000)
+  reviewedById    BigInt?
+  reviewedAt      DateTime? @db.DateTime2
+  clarificationId BigInt?
+  createdAt       DateTime  @default(now()) @db.DateTime2
 
-  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  document      Document       @relation(fields: [documentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  clarification Clarification? @relation("ClarificationVersions", fields: [clarificationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([documentId, version])
   @@index([sha256])
+  @@index([documentId, reviewStatus])
+  @@index([clarificationId])
 }
 
 model CheckTask {
@@ -668,30 +677,48 @@ model Finding {
 }
 
 model Clarification {
-  id                     BigInt    @id @default(autoincrement())
-  publicId               String    @unique @default(uuid()) @db.UniqueIdentifier
-  tenantId               BigInt
-  caseId                 BigInt
-  checkId                BigInt?
-  checkCycle             Int?
-  status                 String    @default("OPEN") @db.VarChar(24)
-  subject                String    @db.NVarChar(180)
-  dueAt                  DateTime? @db.DateTime2
-  resolvedAt             DateTime? @db.DateTime2
-  reverificationRequired Boolean   @default(true)
+  id                       BigInt    @id @default(autoincrement())
+  publicId                 String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId                 BigInt
+  caseId                   BigInt
+  checkId                  BigInt?
+  checkCycle               Int?
+  status                   String    @default("OPEN") @db.VarChar(24)
+  subject                  String    @db.NVarChar(180)
+  dueAt                    DateTime? @db.DateTime2
+  resolvedAt               DateTime? @db.DateTime2
+  reverificationRequired   Boolean   @default(true)
   /// L1 = raised at Data Entry (missing/incorrect intake); L2 = raised during verification.
-  level                  String?   @db.VarChar(8)
-  raisedById             BigInt?
-  responseTokenHash      String?   @db.Char(64)
-  responseTokenExpiresAt DateTime? @db.DateTime2
-  createdAt              DateTime  @default(now()) @db.DateTime2
-  updatedAt              DateTime  @updatedAt @db.DateTime2
+  level                    String?   @db.VarChar(8)
+  raisedById               BigInt?
+  responseTokenHash        String?   @db.Char(64)
+  responseTokenExpiresAt   DateTime? @db.DateTime2
+  requestedDocumentType    String?   @db.VarChar(48)
+  submittedDocumentId      BigInt?
+  submittedDocumentVersion Int?
+  opsReviewedById          BigInt?
+  opsReviewedAt            DateTime? @db.DateTime2
+  opsReviewNote            String?   @db.NVarChar(1000)
+  dataEntryReviewedById    BigInt?
+  dataEntryReviewedAt      DateTime? @db.DateTime2
+  dataEntryReviewNote      String?   @db.NVarChar(1000)
+  reentryCompletedById     BigInt?
+  reentryCompletedAt       DateTime? @db.DateTime2
+  rejectionCount           Int       @default(0)
+  lastRejectedAt           DateTime? @db.DateTime2
+  lastRejectedReason       String?   @db.NVarChar(1000)
+  createdAt                DateTime  @default(now()) @db.DateTime2
+  updatedAt                DateTime  @updatedAt @db.DateTime2
 
-  tenant   Tenant                 @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  case     VerificationCase       @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  messages ClarificationMessage[]
+  tenant            Tenant                 @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  case              VerificationCase       @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  submittedDocument Document?              @relation("ClarificationSubmittedDocument", fields: [submittedDocumentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  submittedVersions DocumentVersion[]      @relation("ClarificationVersions")
+  messages          ClarificationMessage[]
 
   @@index([tenantId, caseId, status])
+  @@index([tenantId, status, level])
+  @@index([submittedDocumentId])
 }
 
 model ClarificationMessage {

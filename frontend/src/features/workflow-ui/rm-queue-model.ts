@@ -17,8 +17,10 @@ export const RM_DEFAULT_COLUMNS: readonly RmColumn[] = ["stage", "working", "che
 export type RmActionKind =
   "data-entry" | "route" | "send-back" | "final" | "stop" | "insufficiency";
 
-/** Mirrors the API: insufficiency cannot be raised once the case is in final review or closed. */
+/** Mirrors the API: insufficiency cannot be raised before consent or once in final review / closed. */
 const NO_INSUFFICIENCY = [
+  "DRAFT",
+  "CONSENT_PENDING",
   "MANAGER_REVIEW",
   "REPORT_PENDING",
   "PAYMENT_PENDING",
@@ -29,10 +31,16 @@ const NO_INSUFFICIENCY = [
 ];
 export const canRaiseInsufficiency = (status: string) => !NO_INSUFFICIENCY.includes(status);
 
+export const MAX_BULK_DATA_ENTRY = 50;
+
+export const isBulkDataEntryEligible = (item: QueueCase) =>
+  item.status === "DOCUMENT_PENDING" && item.intakeStage === "INTAKE" && Boolean(item.rm);
+
 /** The one thing the RM should do next on this case, if anything. */
 export function nextAction(item: QueueCase): { label: string; kind: RmActionKind } | null {
   if (item.status === "MANAGER_REVIEW") return { label: "Review & decide", kind: "final" };
-  if (item.intakeStage === "READY") return { label: "Route checks", kind: "route" };
+  if (item.intakeStage === "READY" && item.status === "DOCUMENT_PENDING")
+    return { label: "Route checks", kind: "route" };
   if (item.intakeStage === "INTAKE" && item.status === "DOCUMENT_PENDING")
     return { label: "Assign Data Entry", kind: "data-entry" };
   return null;
@@ -47,6 +55,12 @@ export const ACTION_TABS: ReadonlyArray<{ value: RmBucket; label: string }> = [
 ];
 
 export const PAGE_SIZES = [10, 20, 50] as const;
+
+export type RmCorrectionTab = "cases" | "l2" | "l1";
+
+export function resolveCorrectionTab(value: unknown): RmCorrectionTab {
+  return value === "l2" || value === "l1" ? value : "cases";
+}
 
 export const initialsOf = (name: string) =>
   name

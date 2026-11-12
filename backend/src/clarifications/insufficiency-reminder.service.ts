@@ -76,6 +76,8 @@ export class InsufficiencyReminderService
           subject: true,
           level: true,
           createdAt: true,
+          lastRejectedAt: true,
+          lastRejectedReason: true,
           messages: {
             where: { senderType: "TEAM" },
             orderBy: { createdAt: "asc" },
@@ -95,7 +97,14 @@ export class InsufficiencyReminderService
             orderBy: { createdAt: "desc" },
             select: { createdAt: true },
           });
-          const last = previous[0]?.createdAt ?? item.createdAt;
+          const baseline =
+            item.lastRejectedAt && item.lastRejectedAt > item.createdAt
+              ? item.lastRejectedAt
+              : item.createdAt;
+          const last =
+            previous[0] && previous[0].createdAt > baseline
+              ? previous[0].createdAt
+              : baseline;
           if (
             previous.length >= MAX_REMINDERS ||
             now.getTime() - last.getTime() < REMINDER_EVERY_MS
@@ -109,7 +118,8 @@ export class InsufficiencyReminderService
               tenantId: item.tenantId,
               caseId: item.caseId,
               subject: item.subject,
-              message: item.messages[0]?.body ?? "",
+              message:
+                item.lastRejectedReason ?? item.messages[0]?.body ?? "",
               reminder,
               level: item.level === "L2" ? "L2" : "L1",
             },

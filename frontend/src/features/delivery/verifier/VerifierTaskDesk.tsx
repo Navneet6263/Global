@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   FileSearch,
@@ -8,14 +8,17 @@ import {
   MessageSquareText,
   Truck,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { WorkspaceError, WorkspaceLoading } from "@/features/delivery/WorkspaceStates";
 import { getVerifierTaskContext, type VerificationTask } from "@/lib/api/tasks";
+import { cachedIdentity } from "@/lib/auth/platform-session";
+import { useVerifierDepartment } from "@/lib/auth/verifier-department";
 import { cn } from "@/lib/utils";
 import { Avatar, Pill } from "@/components/workspace/kit";
 import type { Tone } from "@/components/workspace/tones";
 import { formatDate, humanize } from "../utils";
+import { PeerTaskBanner } from "./PeerTaskBanner";
 
 const STATUS_TONE: Record<string, Tone> = {
   COMPLETED: "good",
@@ -43,17 +46,38 @@ const tabs = [
 
 export function VerifierTaskDesk({
   task,
+  departmentId,
   onUpdated,
 }: {
   task: VerificationTask;
+  departmentId?: string;
   onUpdated: () => Promise<void>;
 }) {
   const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("verification");
+  const queryClient = useQueryClient();
+  const me = cachedIdentity()?.userId;
+  const { isLead, supervisor } = useVerifierDepartment();
+  const isPeerReadOnly = Boolean(task.assignee && me && task.assignee.id !== me);
+  const canManagePeerTask = isLead || supervisor;
   const context = useQuery({
-    queryKey: ["tasks", task.id, "context"],
-    queryFn: () => getVerifierTaskContext(task.id),
+    queryKey: ["tasks", task.id, "context", departmentId ?? "all"],
+    queryFn: () => getVerifierTaskContext(task.id, departmentId),
     staleTime: 20_000,
   });
+  const reentryStamp =
+    context.data?.check.case.clarifications.find(
+      (item) =>
+        item.level === "L2" &&
+        item.isForCurrentCheck !== false &&
+        item.status === "RESOLVED" &&
+        Boolean(item.reentryCompletedAt),
+    )?.reentryCompletedAt ?? null;
+  useEffect(() => {
+    if (!reentryStamp) return;
+    void queryClient.invalidateQueries({
+      queryKey: ["checks", task.check.publicId, "verified-details"],
+    });
+  }, [queryClient, reentryStamp, task.check.publicId]);
   // Vendor: only when the check is with a vendor, or the viewer may send it (TL / RM).
   const vendor = useQuery({
     queryKey: ["vendor-checks", "check", task.check.publicId],
@@ -89,6 +113,11 @@ export function VerifierTaskDesk({
           <div className="flex flex-wrap items-center gap-1.5">
             <Pill tone="info">{humanize(task.check.type)}</Pill>
             <Pill tone={STATUS_TONE[task.status] ?? "warn"}>{humanize(task.status)}</Pill>
+            {task.assignee?.name ? (
+              <Pill tone={isPeerReadOnly ? "neutral" : "info"}>
+                Claimed by {task.assignee.name}
+              </Pill>
+            ) : null}
             {task.check.status === "TL_REVIEW" ? (
               <Pill tone="violet">With Team Leader for review</Pill>
             ) : null}
@@ -125,6 +154,9 @@ export function VerifierTaskDesk({
           })}
         </nav>
       </div>
+      {isPeerReadOnly ? (
+        <PeerTaskBanner task={task} me={me} canManage={canManagePeerTask} onUpdated={onUpdated} />
+      ) : null}
       {context.data?.check.case.status === "CLARIFICATION_PENDING" ? (
         <div
           role="status"
@@ -132,9 +164,17 @@ export function VerifierTaskDesk({
         >
           <span>
             <strong>On hold for an insufficiency.</strong>{" "}
-            {context.data.check.case.clarifications.some((item) => item.status === "RESPONDED")
-              ? "The candidate has replied. Review the reply and resolve it to continue; until then your work cannot be saved."
-              : "Waiting for the candidate's reply. Your work can be saved once the reply is reviewed and resolved."}
+            {context.data.check.case.clarifications.some(
+              (item) => item.level === "L2" && item.status === "DATA_ENTRY_PENDING",
+            )
+              ? "Operations forwarded the corrected document to Data Entry for detail re-entry."
+              : context.data.check.case.clarifications.some(
+                    (item) => item.level === "L2" && item.status === "CANDIDATE_SUBMITTED",
+                  )
+                ? "The candidate submitted a corrected document. Waiting for Operations review and Data Entry handoff."
+                : context.data.check.case.clarifications.some((item) => item.status === "RESPONDED")
+                  ? "The candidate has replied. Review the reply and resolve it to continue; until then your work cannot be saved."
+                  : "Waiting for the candidate's corrected document and explanation."}
           </span>
           {tab !== "clarifications" ? (
             <button
@@ -147,10 +187,40 @@ export function VerifierTaskDesk({
           ) : null}
         </div>
       ) : null}
+      {context.data?.check.case.status !== "CLARIFICATION_PENDING" &&
+      task.status !== "COMPLETED" &&
+      context.data?.check.case.clarifications.some(
+        (item) =>
+          item.level === "L2" &&
+          item.isForCurrentCheck !== false &&
+          item.status === "RESOLVED" &&
+          Boolean(item.reentryCompletedAt),
+      ) ? (
+        <div
+          role="status"
+          className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-[12.5px] text-emerald-950"
+        >
+          <span>
+            <strong>All details re-entered by Data Entry.</strong> Review the updated candidate
+            details and promoted document version, then complete your independent final
+            verification.
+          </span>
+          {tab !== "clarifications" ? (
+            <button
+              type="button"
+              onClick={() => setTab("clarifications")}
+              className="shrink-0 rounded-lg bg-emerald-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-emerald-700"
+            >
+              View re-entry summary
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       {tab === "verification" ? (
         <VerifierTaskWorkspace
-          key={`${task.id}-${task.version}`}
+          key={`${task.id}-${task.version}-${isPeerReadOnly ? "ro" : "rw"}`}
           task={task}
+          readOnly={isPeerReadOnly}
           onUpdated={onUpdated}
           onOpenTab={(id) => setTab(id as (typeof tabs)[number]["id"])}
           quickTabs={visibleTabs
@@ -163,13 +233,16 @@ export function VerifierTaskDesk({
       ) : null}
       {tab === "vendor" && <CheckVendorPanel checkId={task.check.publicId} />}
       {tab === "email" && (
-        <SourceEmailPanel checkId={task.check.publicId} readOnly={task.status === "COMPLETED"} />
+        <SourceEmailPanel
+          checkId={task.check.publicId}
+          readOnly={task.status === "COMPLETED" || isPeerReadOnly}
+        />
       )}
       {tab === "methods" && (
         <VerificationMethodsPanel
           checkId={task.check.publicId}
           caseId={task.check.case.publicId}
-          readOnly={task.status === "COMPLETED"}
+          readOnly={task.status === "COMPLETED" || isPeerReadOnly}
         />
       )}
       {!["verification", "methods", "verified", "email", "vendor", "proof"].includes(tab) &&
