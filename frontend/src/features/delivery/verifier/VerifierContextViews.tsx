@@ -72,25 +72,16 @@ export function ClarificationsView({ context }: { context: Context }) {
     },
     onError: (error: Error) => toast.error(error.message),
   });
-  // The candidate's reply is reviewed here: one comment accepts the new documents and
-  // resolves the insufficiency; when nothing else is open, the case resumes.
-  const [comments, setComments] = useState<Record<string, string>>({});
+  // The candidate's reply is reviewed here; when nothing else is open, the case resumes.
   const resolve = useMutation({
-    mutationFn: (clarificationId: string) =>
-      resolveClarification(caseId, clarificationId, comments[clarificationId], true),
+    mutationFn: (clarificationId: string) => resolveClarification(caseId, clarificationId),
     onSuccess: (result) => {
-      const accepted = result.acceptedDocuments ?? 0;
-      toast.success(
-        accepted
-          ? `Reply reviewed · ${accepted} document${accepted === 1 ? "" : "s"} accepted`
-          : "Reply reviewed",
-        {
-          description:
-            result.caseStatus === "IN_PROGRESS"
-              ? "The case has resumed. On the Verification tab press Start verification, then save."
-              : "Closed. Another insufficiency on this case is still open.",
-        },
-      );
+      toast.success("Reply reviewed", {
+        description:
+          result.caseStatus === "IN_PROGRESS"
+            ? "The case has resumed. On the Verification tab press Start verification, then save."
+            : "Closed. Another insufficiency on this case is still open.",
+      });
       void queryClient.invalidateQueries({ queryKey: ["clarifications", caseId] });
       void queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
@@ -156,35 +147,23 @@ export function ClarificationsView({ context }: { context: Context }) {
             </p>
           ) : null}
           {item.status === "RESPONDED" ? (
-            <div className="mt-3 grid gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2">
               <span className="text-[12px] text-emerald-900">
-                The candidate has replied. Open the new document on the Documents tab, then write
-                your comment: it accepts the new documents and resumes the case.
+                The candidate has replied. Check the reply and the new documents, then resume.
               </span>
-              <textarea
-                value={comments[item.id] ?? ""}
-                onChange={(event) =>
-                  setComments((current) => ({ ...current, [item.id]: event.target.value }))
-                }
-                rows={2}
-                maxLength={1000}
-                aria-label={`Comment on the reply to ${item.subject}`}
-                placeholder="e.g. New Aadhaar copy is clear and matches the details"
-                className="rounded-lg border border-emerald-200 bg-white px-3 py-2 text-[12.5px] outline-none focus:border-emerald-400"
-              />
               <button
                 type="button"
                 onClick={() => resolve.mutate(item.id)}
-                disabled={resolve.isPending || (comments[item.id] ?? "").trim().length < 5}
+                disabled={resolve.isPending}
                 aria-busy={resolve.isPending && resolve.variables === item.id}
-                className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-[12px] font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
               >
                 {resolve.isPending && resolve.variables === item.id ? (
                   <Loader2 className="size-3.5 animate-spin" />
                 ) : (
                   <CheckCircle2 className="size-3.5" />
                 )}
-                Accept & mark resolved
+                Reviewed – resume verification
               </button>
             </div>
           ) : null}

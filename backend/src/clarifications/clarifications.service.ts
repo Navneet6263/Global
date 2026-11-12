@@ -10,7 +10,6 @@ import { SecretBoxService } from "../common/security/secret-box.service";
 import { SubjectPiiService } from "../common/security/subject-pii.service";
 import { sendInsufficiencyNotice } from "./insufficiency-notice";
 import { randomBytes } from "node:crypto";
-import type { Prisma } from "../generated/prisma/client";
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { activeOperationsRecipients } from "../common/persistence/operations-recipients";
@@ -23,87 +22,6 @@ import {
   ClarificationTokenService,
   digestClarificationToken,
 } from "./clarification-token.service";
-
-/**
- * Accepts the documents the candidate uploaded in reply to an insufficiency: a clean,
- * not yet reviewed version uploaded after it was raised, and not expired. Each one is
- * audited like a normal document review, with the Team Leader's comment as the note.
- */
-export async function acceptReplyDocuments(
-  tx: Prisma.TransactionClient,
-  actor: Actor,
-  input: { caseId: bigint; casePublicId: string; since: Date; note: string },
-) {
-  const today = new Date(new Date().toISOString().slice(0, 10));
-  const documents = await tx.document.findMany({
-    where: {
-      caseId: input.caseId,
-      status: "AVAILABLE",
-      currentVersion: { gt: 0 },
-    },
-    select: {
-      id: true,
-      publicId: true,
-      type: true,
-      status: true,
-      version: true,
-      currentVersion: true,
-      expiresAt: true,
-      versions: {
-        orderBy: { version: "desc" },
-        take: 1,
-        select: { version: true, malwareState: true, createdAt: true },
-      },
-    },
-  });
-  const accepted: string[] = [];
-  const reviewedAt = new Date();
-  for (const document of documents) {
-    const latest = document.versions[0];
-    if (
-      !latest ||
-      latest.version !== document.currentVersion ||
-      latest.malwareState !== "CLEAN" ||
-      latest.createdAt < input.since ||
-      (document.expiresAt && document.expiresAt < today)
-    )
-      continue;
-    const updated = await tx.document.updateMany({
-      where: { id: document.id, version: document.version },
-      data: {
-        status: "VERIFIED",
-        reviewNote: input.note.slice(0, 1000),
-        reviewedById: actor.userId,
-        reviewedAt,
-        version: { increment: 1 },
-      },
-    });
-    if (updated.count !== 1) continue;
-    accepted.push(document.type);
-    await tx.auditEvent.create({
-      data: {
-        tenantId: actor.tenantId,
-        actorUserId: actor.userId,
-        action: "document.verified",
-        resourceType: "document",
-        resourcePublicId: document.publicId,
-        beforeJson: JSON.stringify({
-          status: document.status,
-          version: document.version,
-        }),
-        afterJson: JSON.stringify({
-          caseId: input.casePublicId,
-          documentVersion: document.currentVersion,
-          status: "VERIFIED",
-          note: input.note,
-          reviewedAt,
-          source: "insufficiency-resolved",
-        }),
-      },
-    });
-  }
-  return accepted;
-}
 
 @Injectable()
 export class ClarificationsService {
@@ -416,12 +334,7 @@ export class ClarificationsService {
     casePublicId: string,
     clarificationPublicId: string,
     note?: string,
-    acceptDocuments = false,
   ) {
-    if (acceptDocuments && (note?.trim().length ?? 0) < 5)
-      throw new BadRequestException(
-        "Write a comment on the new documents before accepting them",
-      );
     const clarification = await this.prisma.clarification.findFirst({
       where: {
         tenantId: actor.tenantId,
@@ -429,7 +342,6 @@ export class ClarificationsService {
         case: { ...caseAccessScope(actor), publicId: casePublicId },
       },
       select: {
-        createdAt: true,
         id: true,
         status: true,
         subject: true,
@@ -480,14 +392,6 @@ export class ClarificationsService {
           "Clarification changed; refresh and try again",
         );
       }
-      const accepted = acceptDocuments
-        ? await acceptReplyDocuments(tx, actor, {
-            caseId: clarification.case.id,
-            casePublicId: clarification.case.publicId,
-            since: clarification.createdAt,
-            note: note!.trim(),
-          })
-        : [];
       if (note?.trim()) {
         await tx.clarificationMessage.create({
           data: {
@@ -580,19 +484,10 @@ export class ClarificationsService {
           resourceType: "clarification",
           resourcePublicId: clarificationPublicId,
           beforeJson: JSON.stringify({ status: clarification.status }),
-          afterJson: JSON.stringify({
-            status: "RESOLVED",
-            caseStatus,
-            acceptedDocuments: accepted,
-          }),
+          afterJson: JSON.stringify({ status: "RESOLVED", caseStatus }),
         },
       });
-      return {
-        id: clarificationPublicId,
-        status: "RESOLVED",
-        caseStatus,
-        acceptedDocuments: accepted.length,
-      };
+      return { id: clarificationPublicId, status: "RESOLVED", caseStatus };
     });
   }
 }

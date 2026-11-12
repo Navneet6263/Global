@@ -87,7 +87,6 @@ export class ClarificationsController {
       caseId,
       clarificationId,
       input.note,
-      input.acceptDocuments === true,
     );
   }
 
