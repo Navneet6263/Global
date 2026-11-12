@@ -1,7 +1,20 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { createTransport, type Transporter } from "nodemailer";
-import { renderEmail, type EmailTemplate } from "./email-templates";
+import { SAPLING_WORDMARK_PNG } from "../pdf/brand-logo";
+import {
+  EMAIL_LOGO_CID,
+  renderEmail,
+  type EmailTemplate,
+} from "./email-templates";
+
+/** The logo travels inside the email (inline), so it shows without loading images. */
+const LOGO = {
+  filename: "sapling-global.png",
+  content: Buffer.from(SAPLING_WORDMARK_PNG, "base64"),
+  contentType: "image/png",
+  cid: EMAIL_LOGO_CID,
+};
 
 /**
  * Which mailbox to send through. SMTP_* comes first; RESET_MAIL_* is the accepted alternative
@@ -54,12 +67,11 @@ export class MailerService {
   ): Promise<void> {
     const email = renderEmail(template, variables);
     await this.client().sendMail({
-      from: this.config.get<string>("SMTP_FROM") ?? smtpSettings(this.config).user,
+      from:
+        this.config.get<string>("SMTP_FROM") ?? smtpSettings(this.config).user,
       to,
       ...(extras.cc?.length ? { cc: extras.cc } : {}),
-      ...(extras.attachments?.length
-        ? { attachments: extras.attachments }
-        : {}),
+      attachments: [LOGO, ...(extras.attachments ?? [])],
       subject: email.subject,
       text: email.text,
       html: email.html,
