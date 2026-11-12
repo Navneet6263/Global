@@ -1,6 +1,8 @@
 import { RmPaymentsController } from "./rm-payments.controller";
 import { RmPaymentsService } from "./rm-payments.service";
 import { MonthlyBillingService } from "./monthly-billing.service";
+import { MonthlyBillController } from "./monthly-bill.controller";
+import { MonthlyBillService } from "./monthly-bill.service";
 import {
   ClientAnnexureController,
   FinanceAnnexureController,
@@ -25,6 +27,7 @@ import { CreditControlController } from "./credit-control.controller";
 @Module({
   controllers: [
     FinanceController,
+    MonthlyBillController,
     ClientFinanceController,
     MonthlyStatementController,
     CreditControlController,
@@ -33,6 +36,7 @@ import { CreditControlController } from "./credit-control.controller";
     RmPaymentsController,
   ],
   providers: [
+    MonthlyBillService,
     ClientFinanceService,
     MonthlyStatementService,
     FinanceService,

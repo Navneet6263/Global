@@ -121,7 +121,8 @@ export function InvoiceDetailDrawer({
               </table>
             </div>
           </section>
-          {invoice.status !== "DRAFT" && invoice.status !== "CANCELLED" ? (
+          {/* A monthly bill is validated by the company while it is still a draft. */}
+          {invoice.status !== "CANCELLED" ? (
             <BillingAnnexurePanel audience="finance" invoiceId={invoice.id} />
           ) : null}
           <section className="surface overflow-hidden rounded-2xl">

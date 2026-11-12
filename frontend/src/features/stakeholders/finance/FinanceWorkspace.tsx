@@ -11,6 +11,7 @@ import { financePages, type FinanceView } from "./finance-pages";
 import { CreditNoteForm } from "@/features/stakeholders/finance/CreditNoteForm";
 import { InvoiceDetailDrawer } from "@/features/stakeholders/finance/InvoiceDetailDrawer";
 import { InvoiceForm } from "@/features/stakeholders/finance/InvoiceForm";
+import { MonthlyBills } from "@/features/stakeholders/finance/MonthlyBills";
 import { BillingReadyReports } from "@/features/stakeholders/finance/BillingReadyReports";
 import { CreditControl } from "@/features/stakeholders/finance/CreditControl";
 import type { BillingReadyReport } from "@/lib/backend-api/billing-ready";
@@ -138,6 +139,7 @@ export function FinanceWorkspace({ view = "overview" }: { view?: FinanceView }) 
       ) : null}
       {view === "statements" ? <FinanceStatements /> : null}
       {view === "credit" ? <CreditControl canWrite={canWrite} expanded /> : null}
+      {view === "billing" ? <MonthlyBills canWrite={canWrite} /> : null}
       {view === "billing" ? (
         canWrite ? (
           <BillingReadyReports

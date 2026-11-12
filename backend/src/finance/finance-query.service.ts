@@ -21,7 +21,12 @@ export class FinanceQueryService {
 
   async overview(actor: Actor) {
     const now = new Date();
-    const baseWhere = { tenantId: actor.tenantId, ...clientScope(actor) };
+    // A draft bill is not billed yet: it is left out of every total.
+    const baseWhere = {
+      tenantId: actor.tenantId,
+      ...clientScope(actor),
+      NOT: { status: "DRAFT" },
+    };
     const openWhere = {
       ...baseWhere,
       status: { notIn: [...settledInvoiceStatuses] },

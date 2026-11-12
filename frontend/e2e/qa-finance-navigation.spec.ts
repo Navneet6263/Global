@@ -206,3 +206,22 @@ test("an invoice API error is not presented as an empty successful register", as
   await expect(page.getByLabel("Search invoices")).toBeVisible();
   await expect(page.getByText("No matching invoice", { exact: true })).toHaveCount(0);
 });
+
+test("Finance prepares the month's bills and issues a validated one as a tax invoice", async ({
+  page,
+}) => {
+  const fixture = await financeBrowserFixture(page);
+  await page.goto("/finance/billing");
+  const bills = page.getByRole("region", { name: "Monthly bills" });
+  await expect(bills.getByText("Validated · ready to invoice")).toBeVisible();
+  await expect(bills.getByText("With the company to validate")).toBeVisible();
+  // Only a bill the company validated can become a tax invoice.
+  await expect(bills.getByRole("button", { name: /Issue tax invoice/ })).toHaveCount(1);
+  await bills.getByRole("button", { name: "Prepare bills" }).click();
+  await expect(bills.getByText(/SG-OLD-1: No price on record/)).toBeVisible();
+  await bills.getByRole("button", { name: /Issue tax invoice/ }).click();
+  await expect(page.getByText("Tax invoice SG/26-27/0001 issued")).toBeVisible();
+  expect(fixture.issued).toEqual([{ version: 2 }]);
+  await expect(bills.getByText("Tax invoice issued")).toBeVisible();
+  expect(fixture.unexpected).toEqual([]);
+});

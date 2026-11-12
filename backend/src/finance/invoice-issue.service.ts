@@ -4,7 +4,6 @@ import {
   NotFoundException,
   StreamableFile,
 } from "@nestjs/common";
-import { randomBytes } from "node:crypto";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CreateInvoiceDto } from "./dto/create-invoice.dto";
@@ -15,6 +14,7 @@ import {
 } from "./finance.shared";
 import { InvoicePdfService } from "./invoice-pdf.service";
 import { allocateInvoiceReports } from "./invoice-report-allocation";
+import { nextInvoiceNumber } from "./gst";
 
 @Injectable()
 export class InvoiceIssueService {
@@ -79,9 +79,9 @@ export class InvoiceIssueService {
     const subtotal = subtotalCents / 100;
     const taxAmount = taxCents / 100;
     const totalAmount = (subtotalCents + taxCents) / 100;
-    const invoiceNumber = `SG-${dateToken()}-${randomToken()}`;
-
     return this.prisma.$transaction(async (tx) => {
+      // GST: one sequential series per financial year (SG/26-27/0001).
+      const invoiceNumber = await nextInvoiceNumber(tx, actor.tenantId);
       const reportIds = await allocateInvoiceReports(
         tx,
         actor.tenantId,
@@ -141,6 +141,7 @@ export class InvoiceIssueService {
       select: {
         invoiceNumber: true,
         status: true,
+        annexureStatus: true,
         currency: true,
         issuedAt: true,
         dueAt: true,
@@ -169,6 +170,7 @@ export class InvoiceIssueService {
             taxRate: true,
             lineTotal: true,
             case: { select: { caseNumber: true } },
+            report: { select: { releasedAt: true } },
           },
           orderBy: { id: "asc" },
         },
@@ -187,7 +189,11 @@ export class InvoiceIssueService {
         },
       },
     });
-    if (!invoice) throw new NotFoundException("Invoice not found");
+    if (
+      !invoice ||
+      (actor.clientId && invoice.status === "DRAFT" && !invoice.annexureStatus)
+    )
+      throw new NotFoundException("Invoice not found");
 
     const contents = await this.invoicePdf.render({
       ...invoice,
@@ -210,15 +216,7 @@ export class InvoiceIssueService {
     });
     return new StreamableFile(contents, {
       type: "application/pdf",
-      disposition: `attachment; filename="Sapling-Global-${invoice.invoiceNumber}.pdf"`,
+      disposition: `attachment; filename="Sapling-Global-${invoice.invoiceNumber.replaceAll("/", "-")}.pdf"`,
     });
   }
-}
-
-function dateToken() {
-  return new Date().toISOString().slice(0, 10).replaceAll("-", "");
-}
-
-function randomToken() {
-  return randomBytes(3).toString("hex").toUpperCase();
 }

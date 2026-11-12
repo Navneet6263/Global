@@ -37,5 +37,5 @@ export function listClientInvoices(
 }
 export async function downloadClientInvoice(invoice: ClientInvoice) {
   const blob = await apiDownload(`/client-finance/invoices/${invoice.id}/pdf`);
-  saveBlob(blob, `Sapling-${invoice.invoiceNumber}.pdf`);
+  saveBlob(blob, `Sapling-${invoice.invoiceNumber.replaceAll("/", "-")}.pdf`);
 }

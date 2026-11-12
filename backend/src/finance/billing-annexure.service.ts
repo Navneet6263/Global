@@ -94,7 +94,8 @@ export class BillingAnnexureService {
       select: annexureSelect,
     });
     if (!invoice) throw new NotFoundException("Invoice not found");
-    if (actor.clientId && invoice.status === "DRAFT")
+    // A company sees a draft only once it was sent to them to validate.
+    if (actor.clientId && invoice.status === "DRAFT" && !invoice.annexureStatus)
       throw new NotFoundException("Invoice not found");
     return invoice;
   }
@@ -204,10 +205,8 @@ export class BillingAnnexureService {
   /** Finance shares the annexure with the company for validation. */
   async send(actor: Actor, invoiceId: string, now = new Date()) {
     const invoice = await this.load(actor, invoiceId);
-    if (["DRAFT", "CANCELLED"].includes(invoice.status))
-      throw new ConflictException(
-        "Issue the invoice before sending its annexure",
-      );
+    if (invoice.status === "CANCELLED")
+      throw new ConflictException("A cancelled invoice cannot be sent");
     if (invoice.annexureStatus === "VALIDATED")
       throw new ConflictException("The company already validated this bill");
     await this.prisma.$transaction(async (tx) => {

@@ -33,7 +33,11 @@ export function ClientInvoiceRow({
       <tr>
         <td>
           <strong>{invoice.invoiceNumber}</strong>
-          <small>Issued {date(invoice.issuedAt)}</small>
+          <small>
+            {invoice.status === "DRAFT"
+              ? "Monthly bill: please validate it"
+              : `Issued ${date(invoice.issuedAt)}`}
+          </small>
         </td>
         <td>{date(invoice.dueAt)}</td>
         <td className="client-number">{money(invoice.totalAmount)}</td>
@@ -41,7 +45,11 @@ export function ClientInvoiceRow({
           <strong>{money(invoice.balance)}</strong>
         </td>
         <td>
-          <ClientPill tone={tone}>{invoice.status.replaceAll("_", " ")}</ClientPill>
+          <ClientPill tone={tone}>
+            {invoice.status === "DRAFT"
+              ? "Bill (not invoiced yet)"
+              : invoice.status.replaceAll("_", " ")}
+          </ClientPill>
           {invoice.annexureStatus === "PENDING" ? (
             <ClientPill tone="amber">Validate bill</ClientPill>
           ) : invoice.annexureStatus === "QUERIED" ? (

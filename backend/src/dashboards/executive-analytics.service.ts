@@ -126,6 +126,7 @@ export class ExecutiveAnalyticsService {
           : this.prisma.invoice.findMany({
               where: {
                 tenantId: actor.tenantId,
+                status: { not: "DRAFT" },
                 ...relationScope,
                 createdAt: { gte: range.from, lte: range.to },
                 ...(query.clientId

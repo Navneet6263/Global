@@ -64,6 +64,7 @@ void test("month close tells the company's RMs to collect and Finance to bill, o
         },
       ],
     },
+    auditEvent: { count: () => 0 },
     $transaction: (work: (client: typeof tx) => unknown) => work(tx),
   } as unknown as PrismaService;
   const service = new MonthlyBillingService(prisma, config);

@@ -94,7 +94,7 @@ export class CreditControlController {
           where: {
             tenantId: actor.tenantId,
             clientId: { in: clients.map((c) => c.id) },
-            status: { not: "CANCELLED" },
+            status: { notIn: ["CANCELLED", "DRAFT"] },
             currency: "INR",
           },
           _sum: { totalAmount: true, paidAmount: true, creditedAmount: true },

@@ -122,11 +122,15 @@ void test("finance sends the annexure and the company is asked to validate", asy
   assert.deepEqual(audits, ["finance.annexure-sent"]);
 });
 
-void test("a draft invoice cannot send its annexure", async () => {
-  const { service } = annexureFixture(invoice({ status: "DRAFT" }));
+void test("a draft bill is sent for validation before it is issued; a cancelled one is not", async () => {
+  // The company validates the month's bill first; Finance issues the tax invoice after.
+  const draft = annexureFixture(invoice({ status: "DRAFT" }));
+  await draft.service.send(finance, "inv-1", now);
+  assert.equal(draft.updates[0]!.annexureStatus, "PENDING");
+  const { service } = annexureFixture(invoice({ status: "CANCELLED" }));
   await assert.rejects(
     service.send(finance, "inv-1", now),
-    /Issue the invoice/,
+    /cancelled invoice/,
   );
 });
 

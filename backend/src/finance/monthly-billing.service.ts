@@ -7,6 +7,7 @@ import {
   Optional,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { MonthlyBillService } from "./monthly-bill.service";
 import { SecretBoxService } from "../common/security/secret-box.service";
 import { PrismaService } from "../database/prisma.service";
 import {
@@ -41,6 +42,7 @@ export class MonthlyBillingService
     private readonly prisma: PrismaService,
     private readonly config: ConfigService,
     @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly bills?: MonthlyBillService,
   ) {}
 
   onApplicationBootstrap() {
@@ -106,6 +108,18 @@ export class MonthlyBillingService
     let sent = 0;
     for (const client of clients) {
       const key = `${client.publicId}:${period}`;
+      const closed = await this.prisma.auditEvent.count({
+        where: {
+          tenantId: client.tenantId,
+          action: "billing.month-closed",
+          resourcePublicId: key,
+        },
+      });
+      // Once per company and month: the released reports become a bill for validation.
+      const bill =
+        closed || !this.bills
+          ? undefined
+          : await this.bills.prepare(client.tenantId, null, period, client.id);
       const done = await this.prisma.$transaction(async (tx) => {
         const already = await tx.auditEvent.count({
           where: {
@@ -135,7 +149,8 @@ export class MonthlyBillingService
           style: "currency",
           currency: "INR",
         });
-        const summary = `${client.displayName}, ${period}: ${unbilled} released ${unbilled === 1 ? "report" : "reports"} to bill, ${amount} outstanding.`;
+        const prepared = bill?.prepared.length ?? 0;
+        const summary = `${client.displayName}, ${period}: ${prepared ? "the month's bill was sent to the company to validate" : `${unbilled} released ${unbilled === 1 ? "report" : "reports"} to bill`}, ${amount} outstanding.`;
         const rms = await clientRmIds(tx, client.id);
         const finance = await tx.user.findMany({
           where: {
@@ -158,7 +173,9 @@ export class MonthlyBillingService
           {
             type: "BILLING_MONTH_CLOSED",
             title: `Month closed: bill ${client.displayName}`,
-            body: `${summary} Raise the monthly invoice and send its annexure.`,
+            body: prepared
+              ? `${summary} Issue the tax invoice once the company validates it.`
+              : `${summary} Raise the monthly invoice and send its annexure.`,
             href: "/finance/billing",
           },
         );
@@ -172,6 +189,7 @@ export class MonthlyBillingService
               clientId: client.publicId,
               period,
               unbilledReports: unbilled,
+              billsPrepared: prepared,
               outstanding,
               rms: rms.length,
               financeUsers: finance.length,

@@ -26,6 +26,7 @@ export class ClientFinanceService {
     const rows = await this.prisma.invoice.findMany({
       where: {
         ...scope,
+        NOT: { status: "DRAFT", annexureStatus: null },
         ...(query.search
           ? { invoiceNumber: { contains: query.search.trim() } }
           : {}),
@@ -118,7 +119,7 @@ export class ClientFinanceService {
     });
     return new StreamableFile(bytes, {
       type: "application/pdf",
-      disposition: `attachment; filename="Sapling-${invoice.invoiceNumber}.pdf"`,
+      disposition: `attachment; filename="Sapling-${invoice.invoiceNumber.replaceAll("/", "-")}.pdf"`,
     });
   }
 }

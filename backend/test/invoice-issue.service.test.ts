@@ -29,6 +29,8 @@ void test("invoice issue calculates subtotal and tax in integer paise", async ()
   const now = new Date("2026-08-27T10:00:00.000Z");
   const tx = {
     invoice: {
+      // The last number of the financial year's series.
+      findFirst: () => ({ invoiceNumber: "SG/26-27/0041" }),
       create: (args: any) => {
         invoiceWrite = args;
         return {
@@ -87,6 +89,11 @@ void test("invoice issue calculates subtotal and tax in integer paise", async ()
       lines: { create: Array<{ description: string; lineTotal: number }> };
     };
   };
+  // GST: the next number of the financial year's series.
+  assert.match(
+    (invoiceWrite as { data: { invoiceNumber: string } }).data.invoiceNumber,
+    /^SG\/\d{2}-\d{2}\/0042$/,
+  );
   assert.equal(write.data.subtotal, 299.97);
   assert.equal(write.data.taxAmount, 53.99);
   assert.equal(write.data.totalAmount, 353.96);

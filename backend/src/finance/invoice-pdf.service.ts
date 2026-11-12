@@ -1,345 +1,573 @@
 import { Injectable } from "@nestjs/common";
-import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
 import {
-  drawInvoiceRecipient,
-  type InvoiceRecipient,
-} from "./invoice-recipient";
+  PDFDocument,
+  rgb,
+  type PDFFont,
+  type PDFImage,
+  type PDFPage,
+} from "pdf-lib";
+import { INVOICE_SELLER } from "../common/company-details";
+import { SAPLING_WORDMARK_PNG } from "../common/pdf/brand-logo";
+import { embedUnicodeFonts } from "../common/pdf/unicode-fonts";
+import { wrapInvoiceRecipient } from "./invoice-recipient";
+import {
+  rupees,
+  taxInvoiceModel,
+  type TaxInvoice,
+  type TaxInvoiceRow,
+  type TaxInvoiceSource,
+} from "./tax-invoice-model";
 
-interface InvoicePdfData {
-  invoiceNumber: string;
-  status: string;
-  currency: string;
-  issuedAt: Date | null;
-  dueAt: Date | null;
-  subtotal: unknown;
-  taxAmount: unknown;
-  totalAmount: unknown;
-  paidAmount: unknown;
-  creditedAmount: unknown;
-  notes: string | null;
-  createdAt: Date;
-  client: InvoiceRecipient;
-  lines: Array<{
-    description: string;
-    quantity: number;
-    unitPrice: unknown;
-    taxRate: unknown;
-    lineTotal: unknown;
-    case: { caseNumber: string } | null;
-  }>;
-  payments: Array<{ amount: unknown; method: string; receivedAt: Date }>;
-  creditNotes: Array<{
-    noteNumber: string;
-    amount: unknown;
-    reason: string;
-    createdAt: Date;
-  }>;
-}
+/** What the renderer needs; the other invoice fields may be passed and are ignored. */
+export type InvoicePdfData = TaxInvoiceSource & {
+  currency?: string;
+  dueAt?: Date | null;
+  paidAmount?: unknown;
+  creditedAmount?: unknown;
+  notes?: string | null;
+  client: TaxInvoiceSource["client"] & {
+    code?: string;
+    billingTerms?: string | null;
+  };
+  lines: Array<
+    TaxInvoiceSource["lines"][number] & {
+      lineTotal?: unknown;
+      case?: { caseNumber: string } | null;
+    }
+  >;
+  payments?: unknown[];
+  creditNotes?: unknown[];
+};
 
+const INK = rgb(0, 0, 0);
+const MUTED = rgb(0.3, 0.3, 0.3);
+const LEFT = 40;
+const RIGHT = 555;
+const MID = 310;
+/** Columns of the particulars table: Particulars | HSN/SAC | Period | Quantity | Rate | Amount. */
+const COLS = [LEFT, 268, 318, 366, 420, 470, RIGHT];
+const TOP = 800;
+/** Lowest point of the items area on the page that carries the totals. */
+const ITEMS_FLOOR = 300;
+
+type Fonts = { regular: PDFFont; bold: PDFFont };
+const BOLD = new WeakSet<PDFFont>();
+
+/**
+ * Tax invoice in the company's format (Sample Invoice Format): seller and invoice details,
+ * buyer, particulars with HSN/SAC and period, CGST/SGST or IGST, round-off, amount in
+ * words, the tax summary, bank details and the authorised signatory.
+ */
 @Injectable()
 export class InvoicePdfService {
   async render(data: InvoicePdfData): Promise<Buffer> {
+    const model = taxInvoiceModel(data);
     const document = await PDFDocument.create();
-    const { regular, bold } = await embedUnicodeFonts(document);
-    let page = document.addPage([595, 842]);
-    let y = this.header(page, bold, data);
-
-    const recipientBottom = drawInvoiceRecipient(
-      page,
-      y,
-      data.client,
-      regular,
-      bold,
+    const fonts = await embedUnicodeFonts(document);
+    BOLD.add(fonts.bold);
+    const logo = await document.embedPng(
+      Buffer.from(SAPLING_WORDMARK_PNG, "base64"),
     );
 
-    const meta: Array<[string, string]> = [
-      ["Issued", this.date(data.issuedAt ?? data.createdAt)],
-      ["Due", this.date(data.dueAt)],
-      ["Status", data.status.replaceAll("_", " ")],
+    // Item rows and the tax lines under them, page by page.
+    const items: Array<{
+      height: number;
+      draw: (page: PDFPage, y: number) => void;
+    }> = [
+      ...model.rows.map((row) => this.itemRow(row, fonts)),
+      ...model.taxRows.map((row) => this.taxRow(row, fonts)),
+      ...(model.roundOff ? [this.roundOffRow(model.roundOff, fonts)] : []),
     ];
-    meta.forEach(([label, value], index) => {
-      const rowY = y - index * 18;
-      page.drawText(label, {
-        x: 390,
-        y: rowY,
-        size: 8,
-        font: bold,
-        color: rgb(0.39, 0.42, 0.46),
-      });
-      page.drawText(this.safe(value), {
-        x: 455,
-        y: rowY,
-        size: 8.5,
-        font: regular,
-        color: rgb(0.08, 0.09, 0.1),
-      });
-    });
-    y = Math.min(y - 82, recipientBottom - 24);
-
-    ({ page, y } = this.tableHeader(page, y, bold));
-    for (const [index, line] of data.lines.entries()) {
-      const description = [
-        line.description,
-        line.case?.caseNumber ? `Case: ${line.case.caseNumber}` : null,
-      ]
-        .filter(Boolean)
-        .join(" | ");
-      const wrapped = this.wrap(description, 54);
-      const rowHeight = Math.max(34, wrapped.length * 11 + 14);
-      if (y - rowHeight < 150) {
-        page = document.addPage([595, 842]);
-        y = this.continuedHeader(page, bold, data.invoiceNumber);
-        ({ page, y } = this.tableHeader(page, y, bold));
+    let page = this.frame(document, model, fonts, logo, true);
+    // Top of the items area: under the table header (first page 590, later pages 760).
+    let tableTop = 568;
+    let y = tableTop - 13;
+    for (const item of items) {
+      if (y - item.height < ITEMS_FLOOR) {
+        this.columns(page, tableTop, 62);
+        this.text(
+          page,
+          "Continued on the next page",
+          LEFT + 6,
+          66,
+          7,
+          fonts.regular,
+          MUTED,
+        );
+        page = this.frame(document, model, fonts, logo, false);
+        tableTop = 738;
+        y = tableTop - 13;
       }
-      if (index % 2 === 1) {
-        page.drawRectangle({
-          x: 35,
-          y: y - rowHeight + 8,
-          width: 525,
-          height: rowHeight,
-          color: rgb(0.97, 0.975, 0.98),
-        });
-      }
-      wrapped.forEach((text, textIndex) =>
-        page.drawText(this.safe(text), {
-          x: 42,
-          y: y - textIndex * 11,
-          size: 8.3,
-          font: regular,
-          color: rgb(0.12, 0.14, 0.16),
-        }),
-      );
-      this.cell(page, String(line.quantity), 347, y, regular);
-      this.cell(
-        page,
-        this.money(data.currency, line.unitPrice),
-        388,
-        y,
-        regular,
-      );
-      this.cell(page, `${Number(line.taxRate).toFixed(2)}%`, 465, y, regular);
-      this.cell(page, this.money(data.currency, line.lineTotal), 514, y, bold);
-      y -= rowHeight;
+      item.draw(page, y);
+      y -= item.height;
     }
+    this.totals(page, model, fonts, tableTop);
 
-    if (y < 235) {
-      page = document.addPage([595, 842]);
-      y = this.continuedHeader(page, bold, data.invoiceNumber);
-    }
-    const balance =
-      Number(data.totalAmount) -
-      Number(data.paidAmount) -
-      Number(data.creditedAmount);
-    const totals: Array<[string, string, boolean?]> = [
-      ["Subtotal", this.money(data.currency, data.subtotal)],
-      ["Tax", this.money(data.currency, data.taxAmount)],
-      ["Total", this.money(data.currency, data.totalAmount), true],
-      ["Paid", this.money(data.currency, data.paidAmount)],
-      ["Credits", this.money(data.currency, data.creditedAmount)],
-      ["Balance due", this.money(data.currency, balance), true],
-    ];
-    y -= 10;
-    totals.forEach(([label, value, strong]) => {
-      page.drawText(label, {
-        x: 390,
-        y,
-        size: strong ? 9.5 : 8.5,
-        font: strong ? bold : regular,
-        color: rgb(0.2, 0.23, 0.26),
-      });
-      page.drawText(this.safe(value), {
-        x: 495,
-        y,
-        size: strong ? 9.5 : 8.5,
-        font: strong ? bold : regular,
-        color: strong ? rgb(0.08, 0.09, 0.1) : rgb(0.3, 0.33, 0.36),
-      });
-      y -= strong ? 21 : 17;
-    });
-
-    if (data.notes) {
-      y -= 6;
-      page.drawText("NOTES", {
-        x: 40,
-        y,
-        size: 8,
-        font: bold,
-        color: rgb(0.39, 0.42, 0.46),
-      });
-      for (const line of this.wrap(data.notes, 78).slice(0, 6)) {
-        y -= 12;
-        page.drawText(this.safe(line), {
-          x: 40,
-          y,
-          size: 8.3,
-          font: regular,
-          color: rgb(0.28, 0.31, 0.34),
-        });
-      }
-    }
-
-    const pages = document.getPages();
-    pages.forEach((item, index) => {
-      item.drawLine({
-        start: { x: 40, y: 46 },
-        end: { x: 555, y: 46 },
-        thickness: 0.5,
-        color: rgb(0.8, 0.82, 0.84),
-      });
-      item.drawText("System-generated invoice | Sapling Global", {
-        x: 40,
-        y: 29,
-        size: 7,
-        font: regular,
-        color: rgb(0.42, 0.45, 0.48),
-      });
-      item.drawText(`Page ${index + 1} of ${pages.length}`, {
-        x: 500,
-        y: 29,
-        size: 7,
-        font: regular,
-        color: rgb(0.42, 0.45, 0.48),
-      });
-    });
-    document.setTitle(`Sapling Global invoice ${data.invoiceNumber}`);
+    document.setTitle(`Sapling Global invoice ${model.invoiceNumber}`);
     document.setCreationDate(new Date());
     return Buffer.from(await document.save());
   }
 
-  private header(page: PDFPage, bold: PDFFont, data: InvoicePdfData): number {
+  /** Title, outer box and, on the first page, the seller, invoice and buyer blocks. */
+  private frame(
+    document: PDFDocument,
+    model: TaxInvoice,
+    { regular, bold }: Fonts,
+    logo: PDFImage,
+    first: boolean,
+  ) {
+    const page = document.addPage([595, 842]);
+    this.center(page, model.title, 812, 12, bold);
+    if (model.note) this.center(page, model.note, 803, 7, regular, MUTED);
     page.drawRectangle({
-      x: 0,
-      y: 760,
-      width: 595,
-      height: 82,
-      color: rgb(0.07, 0.08, 0.09),
+      x: LEFT,
+      y: 62,
+      width: RIGHT - LEFT,
+      height: TOP - 62,
+      borderColor: INK,
+      borderWidth: 0.8,
     });
-    page.drawText("Sapling Global", {
-      x: 40,
-      y: 802,
-      size: 21,
-      font: bold,
-      color: rgb(1, 1, 1),
+    this.center(page, "This is a Computer Generated Invoice", 48, 8, regular);
+    if (!first) {
+      this.text(
+        page,
+        `${model.invoiceNumber} (continued)`,
+        LEFT + 6,
+        TOP - 16,
+        9,
+        bold,
+      );
+      this.tableHeader(page, 760, { regular, bold });
+      return page;
+    }
+
+    // Seller (left) and invoice details (right).
+    page.drawImage(logo, { x: LEFT + 5, y: TOP - 24, width: 66, height: 15.2 });
+    let y = TOP - 12;
+    const seller: Array<[string, PDFFont, number]> = [
+      [INVOICE_SELLER.name, bold, 8],
+      ...INVOICE_SELLER.address.map((line): [string, PDFFont, number] => [
+        line,
+        regular,
+        8,
+      ]),
+      [`GSTIN/UIN: ${INVOICE_SELLER.gstin}`, regular, 8],
+      [
+        `State Name : ${INVOICE_SELLER.stateName}, Code : ${INVOICE_SELLER.stateCode}`,
+        regular,
+        8,
+      ],
+      [`E-Mail : ${INVOICE_SELLER.email}`, regular, 8],
+    ];
+    for (const [value, font, size] of seller) {
+      this.text(page, value, 116, y, size, font);
+      y -= 10.5;
+    }
+    this.line(page, LEFT, 690, MID, 690);
+    this.line(page, MID, TOP, MID, 590);
+    const cells: Array<[string, string, string, string]> = [
+      ["Invoice No.", model.invoiceNumber, "Dated", model.dated],
+      ["Reference No. & Date.", "", "Other References", ""],
+      ["Buyer's Order No.", "", "Dated", ""],
+    ];
+    cells.forEach(([label, value, label2, value2], index) => {
+      const top = TOP - index * 36.7;
+      this.line(page, MID, top - 36.7, RIGHT, top - 36.7);
+      this.text(page, label, MID + 4, top - 10, 7.5, regular);
+      this.text(page, value, MID + 4, top - 22, 9, bold);
+      this.text(page, label2, 440 + 4, top - 10, 7.5, regular);
+      this.text(page, value2, 440 + 4, top - 22, 9, bold);
     });
-    page.drawText("VERIFICATION SERVICES", {
-      x: 41,
-      y: 785,
-      size: 7.5,
-      font: bold,
-      color: rgb(0.7, 0.95, 0.25),
-    });
-    page.drawText("INVOICE", {
-      x: 468,
-      y: 805,
-      size: 13,
-      font: bold,
-      color: rgb(1, 1, 1),
-    });
-    page.drawText(this.safe(data.invoiceNumber), {
-      x: 425,
-      y: 784,
-      size: 8.5,
-      font: bold,
-      color: rgb(0.75, 0.78, 0.8),
-    });
-    return 722;
+    this.line(page, 440, TOP, 440, TOP - 110);
+
+    // Buyer (Bill to).
+    y = 680;
+    this.text(page, "Buyer (Bill to)", LEFT + 4, y, 7.5, regular);
+    y -= 12;
+    this.text(page, model.buyer.name.toUpperCase(), LEFT + 4, y, 9, bold);
+    y -= 11;
+    for (const line of wrapInvoiceRecipient(
+      model.buyer.address,
+      regular,
+      8,
+      262,
+    ).slice(0, 3)) {
+      this.text(page, line, LEFT + 4, y, 8, regular);
+      y -= 10;
+    }
+    const facts: Array<[string, string]> = [
+      ["GSTIN/UIN", model.buyer.gstin],
+      [
+        "State Name",
+        `${model.buyer.stateName}, Code : ${model.buyer.stateCode}`,
+      ],
+      ["Place of Supply", model.buyer.stateName],
+    ];
+    for (const [label, value] of facts) {
+      this.text(page, label, LEFT + 4, y, 8, regular);
+      this.text(page, `: ${value}`, LEFT + 74, y, 8, regular);
+      y -= 10;
+    }
+    this.tableHeader(page, 590, { regular, bold });
+    return page;
   }
 
-  private continuedHeader(
-    page: PDFPage,
-    bold: PDFFont,
-    invoiceNumber: string,
-  ): number {
-    page.drawText("Sapling Global | Invoice continued", {
-      x: 40,
-      y: 803,
-      size: 10,
-      font: bold,
-      color: rgb(0.1, 0.12, 0.14),
+  private tableHeader(page: PDFPage, top: number, { regular }: Fonts) {
+    this.line(page, LEFT, top, RIGHT, top);
+    this.line(page, LEFT, top - 22, RIGHT, top - 22);
+    const heads = [
+      "Particulars",
+      "HSN/SAC",
+      "Period",
+      "Quantity /",
+      "Rate",
+      "Amount",
+    ];
+    heads.forEach((head, index) => {
+      const from = COLS[index]!;
+      const to = COLS[index + 1]!;
+      this.center(page, head, top - 10, 7.5, regular, INK, (from + to) / 2);
     });
-    page.drawText(this.safe(invoiceNumber), {
-      x: 455,
-      y: 803,
-      size: 8,
-      font: bold,
-      color: rgb(0.4, 0.43, 0.46),
-    });
-    return 770;
-  }
-
-  private tableHeader(
-    page: PDFPage,
-    y: number,
-    bold: PDFFont,
-  ): { page: PDFPage; y: number } {
-    page.drawRectangle({
-      x: 35,
-      y: y - 9,
-      width: 525,
-      height: 25,
-      color: rgb(0.9, 0.93, 0.95),
-    });
-    [
-      ["Description", 42],
-      ["Qty", 347],
-      ["Rate", 388],
-      ["Tax", 465],
-      ["Amount", 514],
-    ].forEach(([label, x]) =>
-      page.drawText(String(label), {
-        x: Number(x),
-        y,
-        size: 7.5,
-        font: bold,
-        color: rgb(0.25, 0.28, 0.31),
-      }),
+    this.center(
+      page,
+      "Cases",
+      top - 19,
+      7.5,
+      regular,
+      INK,
+      (COLS[3]! + COLS[4]!) / 2,
     );
-    return { page, y: y - 31 };
   }
 
-  private cell(
+  /** Vertical lines of the particulars table between two heights. */
+  private columns(page: PDFPage, top: number, bottom: number) {
+    for (const x of COLS.slice(1, -1)) this.line(page, x, top, x, bottom);
+  }
+
+  private itemRow(row: TaxInvoiceRow, { regular, bold }: Fonts) {
+    const lines = wrapInvoiceRecipient(row.particulars, bold, 8.5, 205);
+    const height = lines.length * 11 + 14;
+    return {
+      height,
+      draw: (page: PDFPage, y: number) => {
+        lines.forEach((text, index) =>
+          this.text(page, text, LEFT + 30, y - index * 11, 8.5, bold),
+        );
+        this.text(
+          page,
+          row.detail,
+          LEFT + 30,
+          y - lines.length * 11,
+          7.5,
+          regular,
+          MUTED,
+        );
+        this.text(page, row.sac, COLS[1]! + 4, y, 8, regular);
+        this.center(
+          page,
+          row.period,
+          y,
+          8,
+          bold,
+          INK,
+          (COLS[2]! + COLS[3]!) / 2,
+        );
+        this.center(
+          page,
+          String(row.quantity),
+          y,
+          8.5,
+          bold,
+          INK,
+          (COLS[3]! + COLS[4]!) / 2,
+        );
+        this.right(page, rupees(row.rate), COLS[5]! - 4, y, 8, regular);
+        this.right(page, rupees(row.amount), RIGHT - 4, y, 8.5, bold);
+      },
+    };
+  }
+
+  private taxRow(
+    row: { label: string; rate: string; amount: number },
+    { bold }: Fonts,
+  ) {
+    return {
+      height: 12,
+      draw: (page: PDFPage, y: number) => {
+        this.right(page, row.label, COLS[1]! - 4, y, 8.5, bold);
+        this.center(
+          page,
+          row.rate,
+          y,
+          8.5,
+          bold,
+          INK,
+          (COLS[4]! + COLS[5]!) / 2,
+        );
+        this.right(page, rupees(row.amount), RIGHT - 4, y, 8.5, bold);
+      },
+    };
+  }
+
+  private roundOffRow(paise: number, { regular, bold }: Fonts) {
+    return {
+      height: 12,
+      draw: (page: PDFPage, y: number) => {
+        this.text(
+          page,
+          paise < 0 ? "Less :" : "Add :",
+          LEFT + 4,
+          y,
+          7.5,
+          regular,
+        );
+        this.text(page, "SHORT & EXCESS", LEFT + 30, y, 8.5, bold);
+        const value = rupees(Math.abs(paise));
+        this.right(
+          page,
+          paise < 0 ? `(-)${value}` : value,
+          RIGHT - 4,
+          y,
+          8.5,
+          bold,
+        );
+      },
+    };
+  }
+
+  /** Total, amount in words, tax summary, bank details and the signatory. */
+  private totals(
+    page: PDFPage,
+    model: TaxInvoice,
+    fonts: Fonts,
+    tableTop: number,
+  ) {
+    const { regular, bold } = fonts;
+    const totalTop = 284;
+    this.columns(page, tableTop, totalTop - 16);
+    this.line(page, LEFT, totalTop, RIGHT, totalTop);
+    this.line(page, LEFT, totalTop - 16, RIGHT, totalTop - 16);
+    this.right(page, "Total", COLS[4]! - 4, totalTop - 11, 8.5, regular);
+    this.right(
+      page,
+      `₹ ${rupees(model.total)}`,
+      RIGHT - 4,
+      totalTop - 11,
+      10,
+      bold,
+    );
+
+    let y = totalTop - 26;
+    this.text(page, "Amount Chargeable (in words)", LEFT + 4, y, 7.5, regular);
+    this.right(page, "E. & O.E", RIGHT - 4, y, 7.5, regular);
+    y -= 12;
+    this.text(page, model.words, LEFT + 4, y, 9, bold);
+
+    // Tax summary: Taxable Value | CGST | SGST/UTGST | Total, or IGST between states.
+    y -= 8;
+    const head = y;
+    const intra = model.intraState;
+    const xs = intra
+      ? [LEFT, 300, 362, 386, 440, 464, 505, RIGHT]
+      : [LEFT, 340, 400, 430, 490, RIGHT];
+    this.line(page, LEFT, head, RIGHT, head);
+    const groups = intra
+      ? [
+          ["CGST", xs[2]!, xs[4]!],
+          ["SGST/UTGST", xs[4]!, xs[6]!],
+        ]
+      : [["IGST", xs[2]!, xs[4]!]];
+    this.center(
+      page,
+      "Taxable",
+      head - 9,
+      7.5,
+      regular,
+      INK,
+      (xs[1]! + xs[2]!) / 2,
+    );
+    this.center(
+      page,
+      "Value",
+      head - 19,
+      7.5,
+      regular,
+      INK,
+      (xs[1]! + xs[2]!) / 2,
+    );
+    for (const [label, from, to] of groups) {
+      this.center(
+        page,
+        String(label),
+        head - 9,
+        7.5,
+        regular,
+        INK,
+        (Number(from) + Number(to)) / 2,
+      );
+      this.line(page, Number(from), head - 12, Number(to), head - 12);
+    }
+    const subHeads = intra
+      ? ["Rate", "Amount", "Rate", "Amount"]
+      : ["Rate", "Amount"];
+    subHeads.forEach((label, index) =>
+      this.center(
+        page,
+        label,
+        head - 19,
+        7.5,
+        regular,
+        INK,
+        (xs[index + 2]! + xs[index + 3]!) / 2,
+      ),
+    );
+    const last = xs.length - 2;
+    this.center(
+      page,
+      "Total",
+      head - 9,
+      7.5,
+      regular,
+      INK,
+      (xs[last]! + xs[last + 1]!) / 2,
+    );
+    this.center(
+      page,
+      "Tax Amount",
+      head - 19,
+      7.5,
+      regular,
+      INK,
+      (xs[last]! + xs[last + 1]!) / 2,
+    );
+    y = head - 22;
+    this.line(page, LEFT, y, RIGHT, y);
+    const rows = [
+      ...model.summary.map((row) => ({ label: "", ...row })),
+      {
+        label: "Total:",
+        taxable: model.taxable,
+        rate: -1,
+        ...model.totals,
+      },
+    ];
+    for (const row of rows) {
+      y -= 10;
+      const strong = row.label ? bold : regular;
+      if (row.label) this.right(page, row.label, xs[1]! - 4, y, 8, bold);
+      this.right(page, rupees(row.taxable), xs[2]! - 3, y, 8, strong);
+      const rate = row.rate < 0 ? "" : `${intra ? row.rate / 2 : row.rate}%`;
+      const cells = intra
+        ? [
+            rate,
+            rupees(row.cgst),
+            rate,
+            rupees(row.sgst),
+            rupees(row.cgst + row.sgst),
+          ]
+        : [rate, rupees(row.igst), rupees(row.igst)];
+      cells.forEach((value, index) => {
+        const xRight = xs[index + 3]! - 3;
+        if (value.endsWith("%"))
+          this.center(
+            page,
+            value,
+            y,
+            8,
+            strong,
+            INK,
+            (xs[index + 2]! + xs[index + 3]!) / 2,
+          );
+        else this.right(page, value, xRight, y, 8, strong);
+      });
+      y -= 3;
+      this.line(page, LEFT, y, RIGHT, y);
+    }
+    // Rate | Amount dividers start under their group title (CGST, SGST/UTGST, IGST).
+    const inside = intra ? [xs[3], xs[5]] : [xs[3]];
+    for (const x of xs.slice(1, -1))
+      this.line(page, x, inside.includes(x) ? head - 12 : head, x, y);
+
+    y -= 13;
+    this.text(page, "Tax Amount (in words) :", LEFT + 4, y, 8, regular);
+    this.text(page, model.taxWords, LEFT + 100, y, 8.5, bold);
+    y -= 12;
+    this.text(page, "Company's Bank Details", LEFT + 4, y, 8, regular);
+    const bank: Array<[string, string]> = [
+      ["Bank Name", INVOICE_SELLER.bank.name],
+      ["A/c No.", INVOICE_SELLER.bank.account],
+      ["Branch & IFS Code", INVOICE_SELLER.bank.branchAndIfsc],
+    ];
+    for (const [label, value] of bank) {
+      y -= 10;
+      this.text(page, label, LEFT + 4, y, 8, regular);
+      this.text(page, `: ${value}`, LEFT + 82, y, 8, bold);
+    }
+    y -= 8;
+    this.line(page, LEFT, y, RIGHT, y);
+    this.right(page, `for ${INVOICE_SELLER.name}`, RIGHT - 4, y - 11, 8, bold);
+    this.right(page, "Authorised Signatory", RIGHT - 4, 68, 8, regular);
+  }
+
+  private text(
     page: PDFPage,
     value: string,
     x: number,
     y: number,
+    size: number,
     font: PDFFont,
-  ): void {
-    page.drawText(this.safe(value), {
-      x,
+    color = INK,
+  ) {
+    page.drawText(value, { x, y, size, font, color });
+    // The font has one weight; bold is drawn twice, a fraction of a point apart.
+    if (BOLD.has(font))
+      page.drawText(value, { x: x + 0.3, y, size, font, color });
+  }
+
+  private right(
+    page: PDFPage,
+    value: string,
+    x: number,
+    y: number,
+    size: number,
+    font: PDFFont,
+  ) {
+    this.text(
+      page,
+      value,
+      x - font.widthOfTextAtSize(value, size),
       y,
-      size: 7.7,
+      size,
       font,
-      color: rgb(0.14, 0.16, 0.18),
+    );
+  }
+
+  private center(
+    page: PDFPage,
+    value: string,
+    y: number,
+    size: number,
+    font: PDFFont,
+    color = INK,
+    middle = 297.5,
+  ) {
+    this.text(
+      page,
+      value,
+      middle - font.widthOfTextAtSize(value, size) / 2,
+      y,
+      size,
+      font,
+      color,
+    );
+  }
+
+  private line(page: PDFPage, x1: number, y1: number, x2: number, y2: number) {
+    page.drawLine({
+      start: { x: x1, y: y1 },
+      end: { x: x2, y: y2 },
+      thickness: 0.6,
+      color: INK,
     });
-  }
-
-  private money(currency: string, value: unknown): string {
-    return `${currency} ${Number(value).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-  }
-
-  private date(value: Date | null): string {
-    return value
-      ? new Intl.DateTimeFormat("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }).format(value)
-      : "Not set";
-  }
-
-  private wrap(value: string, width: number): string[] {
-    const lines: string[] = [];
-    for (const word of this.safe(value).split(/\s+/)) {
-      const current = lines.at(-1);
-      if (!current || current.length + word.length + 1 > width)
-        lines.push(word);
-      else lines[lines.length - 1] = `${current} ${word}`;
-    }
-    return lines;
-  }
-
-  private safe(value: string): string {
-    return value;
   }
 }

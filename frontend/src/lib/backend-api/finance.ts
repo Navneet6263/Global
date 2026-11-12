@@ -141,5 +141,5 @@ export async function exportFinanceLedger(input: { search?: string; status?: str
 
 export async function downloadInvoice(invoiceId: string, invoiceNumber: string) {
   const blob = await apiDownload(`/finance/invoices/${invoiceId}/pdf`);
-  saveBlob(blob, `Sapling-Global-${invoiceNumber}.pdf`);
+  saveBlob(blob, `Sapling-Global-${invoiceNumber.replaceAll("/", "-")}.pdf`);
 }
