@@ -43,14 +43,24 @@ export function raiseInsufficiencyAsRm(
   );
 }
 
-export function resolveClarification(caseId: string, clarificationId: string, note?: string) {
-  return apiRequest<{ id: string; status: "RESOLVED"; caseStatus: string }>(
-    `/cases/${caseId}/clarifications/${clarificationId}/resolve`,
-    {
-      method: "PATCH",
-      body: JSON.stringify({ ...(note?.trim() ? { note: note.trim() } : {}) }),
-    },
-  );
+export function resolveClarification(
+  caseId: string,
+  clarificationId: string,
+  note?: string,
+  acceptDocuments = false,
+) {
+  return apiRequest<{
+    id: string;
+    status: "RESOLVED";
+    caseStatus: string;
+    acceptedDocuments?: number;
+  }>(`/cases/${caseId}/clarifications/${clarificationId}/resolve`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      ...(note?.trim() ? { note: note.trim() } : {}),
+      ...(acceptDocuments ? { acceptDocuments: true } : {}),
+    }),
+  });
 }
 
 export function getPublicClarification(clarificationId: string, token: string) {
