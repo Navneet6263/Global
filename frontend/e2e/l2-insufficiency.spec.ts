@@ -69,7 +69,7 @@ test("full L2 workflow: Verifier -> Candidate -> Ops -> Data Entry reject/re-upl
   await page.getByLabel("Assign Data Entry for SG-2026-L201").selectOption("de-sara");
   await page.getByPlaceholder("Note for Data Entry (optional)").fill("Verify dates against v2");
   await page.getByRole("button", { name: "Done · Send to Data Entry" }).click();
-  await expect(page.getByText(/Handed off to Sara Khan/)).toBeVisible();
+  await expect(page.getByText(/Handed off by .* to Sara Khan/)).toBeVisible();
 
   // 4. Data Entry rejects v2 with mandatory 5-1000 char reason (preserving v1 baseline)
   sim.switchRole("DATA_ENTRY");
@@ -116,7 +116,7 @@ test("full L2 workflow: Verifier -> Candidate -> Ops -> Data Entry reject/re-upl
   await page.goto("/operations/clarifications");
   await expect(page.getByText("Re-upload #2")).toBeVisible();
   await page.getByRole("button", { name: "Done · Send to Data Entry" }).click();
-  await expect(page.getByText(/Handed off to Sara Khan/)).toBeVisible();
+  await expect(page.getByText(/Handed off by .* to Sara Khan/)).toBeVisible();
 
   sim.switchRole("DATA_ENTRY");
   await page.goto("/data-entry");
