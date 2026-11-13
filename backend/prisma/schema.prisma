@@ -51,6 +51,8 @@ model Tenant {
   vendorReports        VendorReport[]
   departments          Department[]
   signupRequests       SignupRequest[]
+  vendorProfiles       VendorProfile[]
+  vendorDocuments      VendorDocument[]
 }
 
 model Branch {
@@ -149,6 +151,10 @@ model User {
   defaultDataEntryFor   Client[]                @relation("ClientDefaultDataEntry")
   dataEntryCases        VerificationCase[]      @relation("CaseDataEntry")
   escalatedCases        VerificationCase[]      @relation("CaseEscalatedBy")
+  vendorProfile              VendorProfile?            @relation("VendorProfileUser")
+  reviewedVendorProfiles     VendorProfile[]           @relation("VendorProfileReviewer")
+  verifiedVendorDocs         VendorDocument[]          @relation("VendorDocVerifier")
+  decidedVendorDocRevisions  VendorDocumentRevision[]  @relation("VendorDocRevisionDecider")
 
   @@unique([tenantId, normalizedEmail])
   @@index([tenantId, status])
@@ -332,6 +338,8 @@ model SignupRequest {
   normalizedEmail String    @db.VarChar(254)
   fullName        String    @db.NVarChar(120)
   companyName     String    @db.NVarChar(180)
+  signupType      String    @default("COMPANY") @db.VarChar(24)
+  businessType    String?   @db.VarChar(48)
   phone           String?   @db.VarChar(24)
   passwordHash    String    @db.VarChar(255)
   otpHash         String    @db.Char(64)
@@ -1664,4 +1672,81 @@ model DepartmentMember {
 
   @@id([departmentId, userId])
   @@index([userId, role])
+}
+
+model VendorProfile {
+  id                  BigInt    @id @default(autoincrement())
+  publicId            String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId            BigInt
+  vendorUserId        BigInt    @unique
+  businessName        String    @db.NVarChar(180)
+  businessType        String    @db.VarChar(48)
+  registrationNumber  String?   @db.VarChar(64)
+  taxId               String?   @db.VarChar(32)
+  websiteUrl          String?   @db.VarChar(255)
+  operatingAddress    String?   @db.NVarChar(500)
+  verificationStatus  String    @default("PENDING_UPLOAD") @db.VarChar(24)
+  rejectionReason     String?   @db.NVarChar(1000)
+  reviewedAt          DateTime? @db.DateTime2
+  reviewedById        BigInt?
+  submittedAt         DateTime? @db.DateTime2
+
+  authorisedSignatory Boolean   @db.Bit
+  termsAcceptedAt     DateTime  @db.DateTime2
+  termsVersion        String    @db.VarChar(32)
+  privacyVersion      String    @db.VarChar(32)
+  termsAcceptedIp     String?   @db.VarChar(64)
+
+  createdAt           DateTime  @default(now()) @db.DateTime2
+  updatedAt           DateTime  @updatedAt @db.DateTime2
+
+  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorUser          User      @relation("VendorProfileUser", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviewedBy          User?     @relation("VendorProfileReviewer", fields: [reviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  documents           VendorDocument[]
+
+  @@index([tenantId, verificationStatus])
+}
+
+model VendorDocument {
+  id              BigInt    @id @default(autoincrement())
+  publicId        String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId        BigInt
+  vendorProfileId BigInt
+  documentType    String    @db.VarChar(48)
+  status          String    @default("PENDING") @db.VarChar(24)
+  rejectionReason String?   @db.NVarChar(1000)
+  verifiedAt      DateTime? @db.DateTime2
+  verifiedById    BigInt?
+  createdAt       DateTime  @default(now()) @db.DateTime2
+  updatedAt       DateTime  @updatedAt @db.DateTime2
+
+  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorProfile   VendorProfile @relation(fields: [vendorProfileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  verifiedBy      User?     @relation("VendorDocVerifier", fields: [verifiedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  revisions       VendorDocumentRevision[]
+
+  @@unique([vendorProfileId, documentType])
+  @@index([tenantId, status])
+}
+
+model VendorDocumentRevision {
+  id               BigInt    @id @default(autoincrement())
+  publicId         String    @unique @default(uuid()) @db.UniqueIdentifier
+  vendorDocumentId BigInt
+  revisionNumber   Int       @default(1)
+  storageKey       String    @db.NVarChar(500)
+  fileName         String    @db.NVarChar(255)
+  fileSize         Int
+  mimeType         String    @db.VarChar(100)
+  uploadedAt       DateTime  @default(now()) @db.DateTime2
+  status           String    @default("PENDING") @db.VarChar(24)
+  decisionReason   String?   @db.NVarChar(1000)
+  decidedAt        DateTime? @db.DateTime2
+  decidedById      BigInt?
+
+  vendorDocument   VendorDocument @relation(fields: [vendorDocumentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  decidedBy        User?     @relation("VendorDocRevisionDecider", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([vendorDocumentId, revisionNumber])
 }

@@ -28,6 +28,7 @@ type AuthActorRow = {
   displayName: string;
   mustChangePassword: boolean;
   vendorOwnerId: bigint | null;
+  vendorStatus: string | null;
   roleCode: string;
   branchScoping: boolean | null;
   baseRoleCode: string | null;
@@ -77,6 +78,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         u.[displayName] AS [displayName],
         u.[mustChangePassword] AS [mustChangePassword],
         u.[vendorOwnerId] AS [vendorOwnerId],
+        vp.[verificationStatus] AS [vendorStatus],
         role.[code] AS [roleCode],
         role.[baseRoleCode] AS [baseRoleCode],
         role.[permissionsJson] AS [permissionsJson],
@@ -87,6 +89,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       LEFT JOIN [dbo].[Branch] branch ON branch.[id] = u.[branchId]
       LEFT JOIN [dbo].[Client] client ON client.[id] = u.[clientId]
       LEFT JOIN [dbo].[User] vendorOwner ON vendorOwner.[id] = u.[vendorOwnerId]
+      LEFT JOIN [dbo].[VendorProfile] vp ON vp.[vendorUserId] = COALESCE(u.[vendorOwnerId], u.[id])
       INNER JOIN [dbo].[UserRole] userRole ON userRole.[userId] = u.[id]
       INNER JOIN [dbo].[Role] role ON role.[id] = userRole.[roleId]
       LEFT JOIN [dbo].[TenantAccessPolicy] accessPolicy ON accessPolicy.[tenantId] = u.[tenantId]
@@ -151,6 +154,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       mustChangePassword: user.mustChangePassword,
       roles,
       permissions,
+      ...(roles.includes("VENDOR")
+        ? { vendorStatus: user.vendorStatus ?? "UNVERIFIED" }
+        : {}),
       ...(user.vendorOwnerId ? { vendorOwnerId: user.vendorOwnerId } : {}),
       ...(roles.includes("SPOC_RM")
         ? { spocClients: await this.spocClients(user.userId, user.tenantId) }

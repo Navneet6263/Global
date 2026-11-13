@@ -345,3 +345,18 @@ export type Department = Prisma.DepartmentModel
  * Team Leader (LEAD) or team member (MEMBER) of a department.
  */
 export type DepartmentMember = Prisma.DepartmentMemberModel
+/**
+ * Model VendorProfile
+ * 
+ */
+export type VendorProfile = Prisma.VendorProfileModel
+/**
+ * Model VendorDocument
+ * 
+ */
+export type VendorDocument = Prisma.VendorDocumentModel
+/**
+ * Model VendorDocumentRevision
+ * 
+ */
+export type VendorDocumentRevision = Prisma.VendorDocumentRevisionModel

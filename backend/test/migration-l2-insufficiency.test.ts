@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
 
@@ -27,7 +27,12 @@ function extractModelBlock(schema: string, modelName: string): string {
 }
 
 void test("Prisma schema defines Phase 1 DocumentVersion and Clarification L2 fields cleanly", () => {
-  const schema = readFileSync(schemaSqlPath, "utf8");
+  const schema = existsSync(schemaSqlPath)
+    ? readFileSync(schemaSqlPath, "utf8")
+    : readdirSync(join(prismaDir, "schema"))
+        .filter((f) => f.endsWith(".prisma"))
+        .map((f) => readFileSync(join(prismaDir, "schema", f), "utf8"))
+        .join("\n");
   const documentBlock = extractModelBlock(schema, "Document");
   const versionBlock = extractModelBlock(schema, "DocumentVersion");
   const clarificationBlock = extractModelBlock(schema, "Clarification");

@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   StreamableFile,
+  UseGuards,
 } from "@nestjs/common";
+import { ApprovedVendorGuard } from "../vendor-onboarding/guards/approved-vendor.guard";
 import {
   CurrentActor,
   RequirePermissions,
@@ -34,6 +36,7 @@ import {
 @Controller(VENDOR_REQUEST_ROUTES.base)
 @RequireRoles(...VENDOR_ROLES)
 @RequirePermissions(Permission.VendorReview)
+@UseGuards(ApprovedVendorGuard)
 export class VendorRequestsController {
   constructor(
     private readonly inbox: VendorInboxService,

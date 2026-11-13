@@ -49,6 +49,8 @@ export type SignupRequestMinAggregateOutputType = {
   normalizedEmail: string | null
   fullName: string | null
   companyName: string | null
+  signupType: string | null
+  businessType: string | null
   phone: string | null
   passwordHash: string | null
   otpHash: string | null
@@ -71,6 +73,8 @@ export type SignupRequestMaxAggregateOutputType = {
   normalizedEmail: string | null
   fullName: string | null
   companyName: string | null
+  signupType: string | null
+  businessType: string | null
   phone: string | null
   passwordHash: string | null
   otpHash: string | null
@@ -93,6 +97,8 @@ export type SignupRequestCountAggregateOutputType = {
   normalizedEmail: number
   fullName: number
   companyName: number
+  signupType: number
+  businessType: number
   phone: number
   passwordHash: number
   otpHash: number
@@ -131,6 +137,8 @@ export type SignupRequestMinAggregateInputType = {
   normalizedEmail?: true
   fullName?: true
   companyName?: true
+  signupType?: true
+  businessType?: true
   phone?: true
   passwordHash?: true
   otpHash?: true
@@ -153,6 +161,8 @@ export type SignupRequestMaxAggregateInputType = {
   normalizedEmail?: true
   fullName?: true
   companyName?: true
+  signupType?: true
+  businessType?: true
   phone?: true
   passwordHash?: true
   otpHash?: true
@@ -175,6 +185,8 @@ export type SignupRequestCountAggregateInputType = {
   normalizedEmail?: true
   fullName?: true
   companyName?: true
+  signupType?: true
+  businessType?: true
   phone?: true
   passwordHash?: true
   otpHash?: true
@@ -284,6 +296,8 @@ export type SignupRequestGroupByOutputType = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType: string
+  businessType: string | null
   phone: string | null
   passwordHash: string
   otpHash: string
@@ -329,6 +343,8 @@ export type SignupRequestWhereInput = {
   normalizedEmail?: Prisma.StringFilter<"SignupRequest"> | string
   fullName?: Prisma.StringFilter<"SignupRequest"> | string
   companyName?: Prisma.StringFilter<"SignupRequest"> | string
+  signupType?: Prisma.StringFilter<"SignupRequest"> | string
+  businessType?: Prisma.StringNullableFilter<"SignupRequest"> | string | null
   phone?: Prisma.StringNullableFilter<"SignupRequest"> | string | null
   passwordHash?: Prisma.StringFilter<"SignupRequest"> | string
   otpHash?: Prisma.StringFilter<"SignupRequest"> | string
@@ -352,6 +368,8 @@ export type SignupRequestOrderByWithRelationInput = {
   normalizedEmail?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  signupType?: Prisma.SortOrder
+  businessType?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   otpHash?: Prisma.SortOrder
@@ -378,6 +396,8 @@ export type SignupRequestWhereUniqueInput = Prisma.AtLeast<{
   normalizedEmail?: Prisma.StringFilter<"SignupRequest"> | string
   fullName?: Prisma.StringFilter<"SignupRequest"> | string
   companyName?: Prisma.StringFilter<"SignupRequest"> | string
+  signupType?: Prisma.StringFilter<"SignupRequest"> | string
+  businessType?: Prisma.StringNullableFilter<"SignupRequest"> | string | null
   phone?: Prisma.StringNullableFilter<"SignupRequest"> | string | null
   passwordHash?: Prisma.StringFilter<"SignupRequest"> | string
   otpHash?: Prisma.StringFilter<"SignupRequest"> | string
@@ -401,6 +421,8 @@ export type SignupRequestOrderByWithAggregationInput = {
   normalizedEmail?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  signupType?: Prisma.SortOrder
+  businessType?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   otpHash?: Prisma.SortOrder
@@ -431,6 +453,8 @@ export type SignupRequestScalarWhereWithAggregatesInput = {
   normalizedEmail?: Prisma.StringWithAggregatesFilter<"SignupRequest"> | string
   fullName?: Prisma.StringWithAggregatesFilter<"SignupRequest"> | string
   companyName?: Prisma.StringWithAggregatesFilter<"SignupRequest"> | string
+  signupType?: Prisma.StringWithAggregatesFilter<"SignupRequest"> | string
+  businessType?: Prisma.StringNullableWithAggregatesFilter<"SignupRequest"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"SignupRequest"> | string | null
   passwordHash?: Prisma.StringWithAggregatesFilter<"SignupRequest"> | string
   otpHash?: Prisma.StringWithAggregatesFilter<"SignupRequest"> | string
@@ -452,6 +476,8 @@ export type SignupRequestCreateInput = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType?: string
+  businessType?: string | null
   phone?: string | null
   passwordHash: string
   otpHash: string
@@ -475,6 +501,8 @@ export type SignupRequestUncheckedCreateInput = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType?: string
+  businessType?: string | null
   phone?: string | null
   passwordHash: string
   otpHash: string
@@ -496,6 +524,8 @@ export type SignupRequestUpdateInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -519,6 +549,8 @@ export type SignupRequestUncheckedUpdateInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -540,6 +572,8 @@ export type SignupRequestCreateManyInput = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType?: string
+  businessType?: string | null
   phone?: string | null
   passwordHash: string
   otpHash: string
@@ -561,6 +595,8 @@ export type SignupRequestUpdateManyMutationInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -583,6 +619,8 @@ export type SignupRequestUncheckedUpdateManyInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -615,6 +653,8 @@ export type SignupRequestCountOrderByAggregateInput = {
   normalizedEmail?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  signupType?: Prisma.SortOrder
+  businessType?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   otpHash?: Prisma.SortOrder
@@ -644,6 +684,8 @@ export type SignupRequestMaxOrderByAggregateInput = {
   normalizedEmail?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  signupType?: Prisma.SortOrder
+  businessType?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   otpHash?: Prisma.SortOrder
@@ -666,6 +708,8 @@ export type SignupRequestMinOrderByAggregateInput = {
   normalizedEmail?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
   companyName?: Prisma.SortOrder
+  signupType?: Prisma.SortOrder
+  businessType?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   passwordHash?: Prisma.SortOrder
   otpHash?: Prisma.SortOrder
@@ -736,6 +780,8 @@ export type SignupRequestCreateWithoutTenantInput = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType?: string
+  businessType?: string | null
   phone?: string | null
   passwordHash: string
   otpHash: string
@@ -757,6 +803,8 @@ export type SignupRequestUncheckedCreateWithoutTenantInput = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType?: string
+  businessType?: string | null
   phone?: string | null
   passwordHash: string
   otpHash: string
@@ -807,6 +855,8 @@ export type SignupRequestScalarWhereInput = {
   normalizedEmail?: Prisma.StringFilter<"SignupRequest"> | string
   fullName?: Prisma.StringFilter<"SignupRequest"> | string
   companyName?: Prisma.StringFilter<"SignupRequest"> | string
+  signupType?: Prisma.StringFilter<"SignupRequest"> | string
+  businessType?: Prisma.StringNullableFilter<"SignupRequest"> | string | null
   phone?: Prisma.StringNullableFilter<"SignupRequest"> | string | null
   passwordHash?: Prisma.StringFilter<"SignupRequest"> | string
   otpHash?: Prisma.StringFilter<"SignupRequest"> | string
@@ -827,6 +877,8 @@ export type SignupRequestCreateManyTenantInput = {
   normalizedEmail: string
   fullName: string
   companyName: string
+  signupType?: string
+  businessType?: string | null
   phone?: string | null
   passwordHash: string
   otpHash: string
@@ -848,6 +900,8 @@ export type SignupRequestUpdateWithoutTenantInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -869,6 +923,8 @@ export type SignupRequestUncheckedUpdateWithoutTenantInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -890,6 +946,8 @@ export type SignupRequestUncheckedUpdateManyWithoutTenantInput = {
   normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   companyName?: Prisma.StringFieldUpdateOperationsInput | string
+  signupType?: Prisma.StringFieldUpdateOperationsInput | string
+  businessType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
   otpHash?: Prisma.StringFieldUpdateOperationsInput | string
@@ -914,6 +972,8 @@ export type SignupRequestSelect<ExtArgs extends runtime.Types.Extensions.Interna
   normalizedEmail?: boolean
   fullName?: boolean
   companyName?: boolean
+  signupType?: boolean
+  businessType?: boolean
   phone?: boolean
   passwordHash?: boolean
   otpHash?: boolean
@@ -939,6 +999,8 @@ export type SignupRequestSelectScalar = {
   normalizedEmail?: boolean
   fullName?: boolean
   companyName?: boolean
+  signupType?: boolean
+  businessType?: boolean
   phone?: boolean
   passwordHash?: boolean
   otpHash?: boolean
@@ -953,7 +1015,7 @@ export type SignupRequestSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SignupRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "email" | "normalizedEmail" | "fullName" | "companyName" | "phone" | "passwordHash" | "otpHash" | "otpExpiresAt" | "otpAttempts" | "sendCount" | "lastSentAt" | "status" | "ipAddress" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["signupRequest"]>
+export type SignupRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "publicId" | "tenantId" | "email" | "normalizedEmail" | "fullName" | "companyName" | "signupType" | "businessType" | "phone" | "passwordHash" | "otpHash" | "otpExpiresAt" | "otpAttempts" | "sendCount" | "lastSentAt" | "status" | "ipAddress" | "completedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["signupRequest"]>
 export type SignupRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }
@@ -971,6 +1033,8 @@ export type $SignupRequestPayload<ExtArgs extends runtime.Types.Extensions.Inter
     normalizedEmail: string
     fullName: string
     companyName: string
+    signupType: string
+    businessType: string | null
     phone: string | null
     passwordHash: string
     otpHash: string
@@ -1360,6 +1424,8 @@ export interface SignupRequestFieldRefs {
   readonly normalizedEmail: Prisma.FieldRef<"SignupRequest", 'String'>
   readonly fullName: Prisma.FieldRef<"SignupRequest", 'String'>
   readonly companyName: Prisma.FieldRef<"SignupRequest", 'String'>
+  readonly signupType: Prisma.FieldRef<"SignupRequest", 'String'>
+  readonly businessType: Prisma.FieldRef<"SignupRequest", 'String'>
   readonly phone: Prisma.FieldRef<"SignupRequest", 'String'>
   readonly passwordHash: Prisma.FieldRef<"SignupRequest", 'String'>
   readonly otpHash: Prisma.FieldRef<"SignupRequest", 'String'>

@@ -33,6 +33,13 @@ export function LoginCard() {
         </div>
         <ArrowRight aria-hidden />
       </Link>
+      <Link to="/vendor/signup" className="auth-alt mt-2">
+        <div>
+          <strong>Sign up as a Vendor</strong>
+          <span>Register your vendor business and get access to verification requests from our clients.</span>
+        </div>
+        <ArrowRight aria-hidden />
+      </Link>
 
       <p className="auth-footnote">
         Locked out or forgot your password? Contact your administrator or RM. Every sign-in is

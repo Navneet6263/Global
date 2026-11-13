@@ -8,7 +8,9 @@ import {
   Query,
   Req,
   StreamableFile,
+  UseGuards,
 } from "@nestjs/common";
+import { ApprovedVendorGuard } from "../vendor-onboarding/guards/approved-vendor.guard";
 import { ConfigService } from "@nestjs/config";
 import { Throttle } from "@nestjs/throttler";
 import type { FastifyRequest } from "fastify";
@@ -33,6 +35,7 @@ import { ReportModeQueryDto } from "./vendor-requests.validation";
 @Controller(VENDOR_REQUEST_ROUTES.base)
 @RequireRoles(...VENDOR_ROLES)
 @RequirePermissions(Permission.VendorReview)
+@UseGuards(ApprovedVendorGuard)
 export class VendorReportsController {
   constructor(
     private readonly uploads: UploadVendorReportService,

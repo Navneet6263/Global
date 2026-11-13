@@ -113,7 +113,10 @@ export const ModelName = {
   VendorTeamPolicy: 'VendorTeamPolicy',
   VendorReport: 'VendorReport',
   Department: 'Department',
-  DepartmentMember: 'DepartmentMember'
+  DepartmentMember: 'DepartmentMember',
+  VendorProfile: 'VendorProfile',
+  VendorDocument: 'VendorDocument',
+  VendorDocumentRevision: 'VendorDocumentRevision'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -321,6 +324,8 @@ export const SignupRequestScalarFieldEnum = {
   normalizedEmail: 'normalizedEmail',
   fullName: 'fullName',
   companyName: 'companyName',
+  signupType: 'signupType',
+  businessType: 'businessType',
   phone: 'phone',
   passwordHash: 'passwordHash',
   otpHash: 'otpHash',
@@ -1377,6 +1382,70 @@ export const DepartmentMemberScalarFieldEnum = {
 } as const
 
 export type DepartmentMemberScalarFieldEnum = (typeof DepartmentMemberScalarFieldEnum)[keyof typeof DepartmentMemberScalarFieldEnum]
+
+
+export const VendorProfileScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  vendorUserId: 'vendorUserId',
+  businessName: 'businessName',
+  businessType: 'businessType',
+  registrationNumber: 'registrationNumber',
+  taxId: 'taxId',
+  websiteUrl: 'websiteUrl',
+  operatingAddress: 'operatingAddress',
+  verificationStatus: 'verificationStatus',
+  rejectionReason: 'rejectionReason',
+  reviewedAt: 'reviewedAt',
+  reviewedById: 'reviewedById',
+  submittedAt: 'submittedAt',
+  authorisedSignatory: 'authorisedSignatory',
+  termsAcceptedAt: 'termsAcceptedAt',
+  termsVersion: 'termsVersion',
+  privacyVersion: 'privacyVersion',
+  termsAcceptedIp: 'termsAcceptedIp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorProfileScalarFieldEnum = (typeof VendorProfileScalarFieldEnum)[keyof typeof VendorProfileScalarFieldEnum]
+
+
+export const VendorDocumentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  vendorProfileId: 'vendorProfileId',
+  documentType: 'documentType',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  verifiedAt: 'verifiedAt',
+  verifiedById: 'verifiedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorDocumentScalarFieldEnum = (typeof VendorDocumentScalarFieldEnum)[keyof typeof VendorDocumentScalarFieldEnum]
+
+
+export const VendorDocumentRevisionScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  vendorDocumentId: 'vendorDocumentId',
+  revisionNumber: 'revisionNumber',
+  storageKey: 'storageKey',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  uploadedAt: 'uploadedAt',
+  status: 'status',
+  decisionReason: 'decisionReason',
+  decidedAt: 'decidedAt',
+  decidedById: 'decidedById'
+} as const
+
+export type VendorDocumentRevisionScalarFieldEnum = (typeof VendorDocumentRevisionScalarFieldEnum)[keyof typeof VendorDocumentRevisionScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -41,6 +41,7 @@ import { VendorRequestsModule } from "./vendor-requests/vendor-requests.module";
 import { VendorChecksModule } from "./vendor-checks/vendor-checks.module";
 import { SupportModule } from "./support/support.module";
 import { OnboardingModule } from "./onboarding/onboarding.module";
+import { VendorOnboardingModule } from "./vendor-onboarding/vendor-onboarding.module";
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { OnboardingModule } from "./onboarding/onboarding.module";
     VendorChecksModule,
     SupportModule,
     OnboardingModule,
+    VendorOnboardingModule,
     SettingsModule,
     PackagesModule,
     NotificationsModule,

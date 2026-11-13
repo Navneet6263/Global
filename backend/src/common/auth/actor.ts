@@ -12,6 +12,8 @@ export interface Actor {
   clientName?: string;
   /** Client users only: ONBOARDING while a self sign-up company is not yet approved. */
   clientStatus?: string;
+  /** Vendor users only: PENDING_UPLOAD, PENDING_REVIEW, REJECTED, APPROVED. */
+  vendorStatus?: string;
   email: string;
   displayName: string;
   sessionPublicId?: string;

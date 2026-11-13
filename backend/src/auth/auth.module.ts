@@ -27,6 +27,6 @@ import { SignupService } from "./signup.service";
     SignupService,
     ConfigService,
   ],
-  exports: [AuthService],
+  exports: [AuthService, AuthenticationService],
 })
 export class AuthModule {}

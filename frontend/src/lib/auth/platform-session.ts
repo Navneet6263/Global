@@ -26,6 +26,7 @@ export interface AuthenticatedIdentity {
   branchName?: string;
   clientName?: string;
   clientStatus?: string;
+  vendorStatus?: string;
   /** View-only Platform Admin: read everything, escalate cases, change nothing. */
   viewOnly: boolean;
   /** SPOC-RM only: names of its assigned client workspaces. */
@@ -35,7 +36,7 @@ export interface AuthenticatedIdentity {
   branchScoping: boolean;
 }
 
-const PUBLIC_PATHS = new Set(["/", "/auth", "/signup"]);
+const PUBLIC_PATHS = new Set(["/", "/auth", "/signup", "/vendor/signup"]);
 
 let currentIdentity: AuthenticatedIdentity | null = null;
 let identityLoad: Promise<AuthenticatedIdentity | null> | null = null;
@@ -60,6 +61,7 @@ function fromBackendSession(session: Session): AuthenticatedIdentity {
     branchName: session.branchName,
     clientName: session.clientName,
     clientStatus: session.clientStatus,
+    vendorStatus: session.vendorStatus,
     viewOnly: session.viewOnly === true,
     clientScope: session.clientScope?.map((client) => client.name),
     mustChangePassword: session.mustChangePassword,

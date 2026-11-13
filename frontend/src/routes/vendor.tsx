@@ -1,11 +1,17 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { AdminShell } from "@/components/shell/admin-shell";
 import { requireRoleWorkspace } from "@/lib/auth/route-guard";
 
 export const Route = createFileRoute("/vendor")({
   ssr: false,
   // External vendors only; data comes only from the vendor-scoped /vendor/requests API.
-  beforeLoad: () => requireRoleWorkspace(["VENDOR"]),
+  beforeLoad: async () => {
+    const identity = await requireRoleWorkspace(["VENDOR"]);
+    if (identity.vendorStatus && identity.vendorStatus !== "APPROVED") {
+      throw redirect({ to: "/vendor/onboarding" as any });
+    }
+    return identity;
+  },
   component: VendorLayout,
 });
 

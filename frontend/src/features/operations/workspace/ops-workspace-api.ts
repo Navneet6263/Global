@@ -13,6 +13,8 @@ export interface NavigationCounts {
   opsClientsWithoutRm?: number;
   /** Self sign-up companies waiting in onboarding. */
   opsSignups?: number;
+  /** Vendor businesses waiting for onboarding review. */
+  opsVendorSignups?: number;
   /** Live cases escalated by Platform Admin or Operations. */
   opsEscalated?: number;
 }

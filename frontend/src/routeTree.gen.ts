@@ -84,6 +84,7 @@ import { Route as OperationsReportsRouteImport } from './routes/operations.repor
 import { Route as OperationsSlaRouteImport } from './routes/operations.sla'
 import { Route as OperationsTeamRouteImport } from './routes/operations.team'
 import { Route as OperationsUtvRouteImport } from './routes/operations.utv'
+import { Route as OperationsVendorOnboardingRouteImport } from './routes/operations.vendor-onboarding'
 import { Route as OperationsVendorWorkRouteImport } from './routes/operations.vendor-work'
 import { Route as QaReviewCorrectionsRouteImport } from './routes/qa-review_.corrections'
 import { Route as QaReviewHistoryRouteImport } from './routes/qa-review_.history'
@@ -118,6 +119,8 @@ import { Route as VendorLogsRouteImport } from './routes/vendor.logs'
 import { Route as VendorPendingRouteImport } from './routes/vendor.pending'
 import { Route as VendorRejectedRouteImport } from './routes/vendor.rejected'
 import { Route as VendorTeamRouteImport } from './routes/vendor.team'
+import { Route as VendorOnboardingRouteImport } from './routes/vendor_.onboarding'
+import { Route as VendorSignupRouteImport } from './routes/vendor_.signup'
 import { Route as VerifierIndexRouteImport } from './routes/verifier.index'
 import { Route as VerifierAnnexureRouteImport } from './routes/verifier.annexure'
 import { Route as VerifierBlockersRouteImport } from './routes/verifier.blockers'
@@ -509,6 +512,12 @@ const OperationsUtvRoute = OperationsUtvRouteImport.update({
   path: '/utv',
   getParentRoute: () => OperationsRoute,
 } as any)
+const OperationsVendorOnboardingRoute =
+  OperationsVendorOnboardingRouteImport.update({
+    id: '/vendor-onboarding',
+    path: '/vendor-onboarding',
+    getParentRoute: () => OperationsRoute,
+  } as any)
 const OperationsVendorWorkRoute = OperationsVendorWorkRouteImport.update({
   id: '/vendor-work',
   path: '/vendor-work',
@@ -679,6 +688,16 @@ const VendorTeamRoute = VendorTeamRouteImport.update({
   path: '/team',
   getParentRoute: () => VendorRoute,
 } as any)
+const VendorOnboardingRoute = VendorOnboardingRouteImport.update({
+  id: '/vendor_/onboarding',
+  path: '/vendor/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VendorSignupRoute = VendorSignupRouteImport.update({
+  id: '/vendor_/signup',
+  path: '/vendor/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VerifierIndexRoute = VerifierIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -813,6 +832,7 @@ export interface FileRoutesByFullPath {
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
   '/operations/utv': typeof OperationsUtvRoute
+  '/operations/vendor-onboarding': typeof OperationsVendorOnboardingRoute
   '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review/history': typeof QaReviewHistoryRoute
@@ -843,6 +863,8 @@ export interface FileRoutesByFullPath {
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
+  '/vendor/onboarding': typeof VendorOnboardingRoute
+  '/vendor/signup': typeof VendorSignupRoute
   '/verifier/annexure': typeof VerifierAnnexureRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
@@ -927,6 +949,7 @@ export interface FileRoutesByTo {
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
   '/operations/utv': typeof OperationsUtvRoute
+  '/operations/vendor-onboarding': typeof OperationsVendorOnboardingRoute
   '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review/history': typeof QaReviewHistoryRoute
@@ -957,6 +980,8 @@ export interface FileRoutesByTo {
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
+  '/vendor/onboarding': typeof VendorOnboardingRoute
+  '/vendor/signup': typeof VendorSignupRoute
   '/verifier/annexure': typeof VerifierAnnexureRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
@@ -1051,6 +1076,7 @@ export interface FileRoutesById {
   '/operations/sla': typeof OperationsSlaRoute
   '/operations/team': typeof OperationsTeamRoute
   '/operations/utv': typeof OperationsUtvRoute
+  '/operations/vendor-onboarding': typeof OperationsVendorOnboardingRoute
   '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review_/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review_/history': typeof QaReviewHistoryRoute
@@ -1081,6 +1107,8 @@ export interface FileRoutesById {
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
+  '/vendor_/onboarding': typeof VendorOnboardingRoute
+  '/vendor_/signup': typeof VendorSignupRoute
   '/verifier/annexure': typeof VerifierAnnexureRoute
   '/verifier/blockers': typeof VerifierBlockersRoute
   '/verifier/history': typeof VerifierHistoryRoute
@@ -1176,6 +1204,7 @@ export interface FileRouteTypes {
     | '/operations/sla'
     | '/operations/team'
     | '/operations/utv'
+    | '/operations/vendor-onboarding'
     | '/operations/vendor-work'
     | '/qa-review/corrections'
     | '/qa-review/history'
@@ -1206,6 +1235,8 @@ export interface FileRouteTypes {
     | '/vendor/pending'
     | '/vendor/rejected'
     | '/vendor/team'
+    | '/vendor/onboarding'
+    | '/vendor/signup'
     | '/verifier/annexure'
     | '/verifier/blockers'
     | '/verifier/history'
@@ -1290,6 +1321,7 @@ export interface FileRouteTypes {
     | '/operations/sla'
     | '/operations/team'
     | '/operations/utv'
+    | '/operations/vendor-onboarding'
     | '/operations/vendor-work'
     | '/qa-review/corrections'
     | '/qa-review/history'
@@ -1320,6 +1352,8 @@ export interface FileRouteTypes {
     | '/vendor/pending'
     | '/vendor/rejected'
     | '/vendor/team'
+    | '/vendor/onboarding'
+    | '/vendor/signup'
     | '/verifier/annexure'
     | '/verifier/blockers'
     | '/verifier/history'
@@ -1413,6 +1447,7 @@ export interface FileRouteTypes {
     | '/operations/sla'
     | '/operations/team'
     | '/operations/utv'
+    | '/operations/vendor-onboarding'
     | '/operations/vendor-work'
     | '/qa-review_/corrections'
     | '/qa-review_/history'
@@ -1443,6 +1478,8 @@ export interface FileRouteTypes {
     | '/vendor/pending'
     | '/vendor/rejected'
     | '/vendor/team'
+    | '/vendor_/onboarding'
+    | '/vendor_/signup'
     | '/verifier/annexure'
     | '/verifier/blockers'
     | '/verifier/history'
@@ -1495,6 +1532,8 @@ export interface RootRouteChildren {
   QaReviewHistoryRoute: typeof QaReviewHistoryRoute
   QaReviewMineRoute: typeof QaReviewMineRoute
   QaReviewOverviewRoute: typeof QaReviewOverviewRoute
+  VendorOnboardingRoute: typeof VendorOnboardingRoute
+  VendorSignupRoute: typeof VendorSignupRoute
   ReportsVerifyAuthenticityCodeRoute: typeof ReportsVerifyAuthenticityCodeRoute
 }
 
@@ -2025,6 +2064,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsUtvRouteImport
       parentRoute: typeof OperationsRoute
     }
+    '/operations/vendor-onboarding': {
+      id: '/operations/vendor-onboarding'
+      path: '/vendor-onboarding'
+      fullPath: '/operations/vendor-onboarding'
+      preLoaderRoute: typeof OperationsVendorOnboardingRouteImport
+      parentRoute: typeof OperationsRoute
+    }
     '/operations/vendor-work': {
       id: '/operations/vendor-work'
       path: '/vendor-work'
@@ -2263,6 +2309,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendorTeamRouteImport
       parentRoute: typeof VendorRoute
     }
+    '/vendor_/onboarding': {
+      id: '/vendor_/onboarding'
+      path: '/vendor/onboarding'
+      fullPath: '/vendor/onboarding'
+      preLoaderRoute: typeof VendorOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vendor_/signup': {
+      id: '/vendor_/signup'
+      path: '/vendor/signup'
+      fullPath: '/vendor/signup'
+      preLoaderRoute: typeof VendorSignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/verifier/': {
       id: '/verifier/'
       path: '/'
@@ -2462,6 +2522,7 @@ interface OperationsRouteChildren {
   OperationsSlaRoute: typeof OperationsSlaRoute
   OperationsTeamRoute: typeof OperationsTeamRoute
   OperationsUtvRoute: typeof OperationsUtvRoute
+  OperationsVendorOnboardingRoute: typeof OperationsVendorOnboardingRoute
   OperationsVendorWorkRoute: typeof OperationsVendorWorkRoute
   OperationsIndexRoute: typeof OperationsIndexRoute
 }
@@ -2482,6 +2543,7 @@ const OperationsRouteChildren: OperationsRouteChildren = {
   OperationsSlaRoute: OperationsSlaRoute,
   OperationsTeamRoute: OperationsTeamRoute,
   OperationsUtvRoute: OperationsUtvRoute,
+  OperationsVendorOnboardingRoute: OperationsVendorOnboardingRoute,
   OperationsVendorWorkRoute: OperationsVendorWorkRoute,
   OperationsIndexRoute: OperationsIndexRoute,
 }
@@ -2647,6 +2709,8 @@ const rootRouteChildren: RootRouteChildren = {
   QaReviewHistoryRoute: QaReviewHistoryRoute,
   QaReviewMineRoute: QaReviewMineRoute,
   QaReviewOverviewRoute: QaReviewOverviewRoute,
+  VendorOnboardingRoute: VendorOnboardingRoute,
+  VendorSignupRoute: VendorSignupRoute,
   ReportsVerifyAuthenticityCodeRoute: ReportsVerifyAuthenticityCodeRoute,
 }
 export const routeTree = rootRouteImport

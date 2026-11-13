@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { NotFoundException } from "@nestjs/common";
 import { CaseReaderService } from "../src/cases/case-reader.service";
@@ -15,7 +15,12 @@ type ModelFields = Map<string, Map<string, string>>;
 function parseSchemaModels(schemaPath: string): ModelFields {
   const models: ModelFields = new Map();
   let current: Map<string, string> | null = null;
-  for (const rawLine of readFileSync(schemaPath, "utf8").split(/\r?\n/)) {
+  const content = existsSync(schemaPath) && statSync(schemaPath).isDirectory()
+    ? readdirSync(schemaPath).filter(f => f.endsWith(".prisma")).map(f => readFileSync(join(schemaPath, f), "utf8")).join("\n")
+    : existsSync(schemaPath)
+      ? readFileSync(schemaPath, "utf8")
+      : readdirSync(resolve(__dirname, "../prisma/schema")).filter(f => f.endsWith(".prisma")).map(f => readFileSync(join(__dirname, "../prisma/schema", f), "utf8")).join("\n");
+  for (const rawLine of content.split(/\r?\n/)) {
     const line = rawLine.trim();
     const start = /^model\s+(\w+)\s+\{$/.exec(line);
     if (start) {

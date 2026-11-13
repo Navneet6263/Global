@@ -6,7 +6,9 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  UseGuards,
 } from "@nestjs/common";
+import { ApprovedVendorGuard } from "../vendor-onboarding/guards/approved-vendor.guard";
 import { Throttle } from "@nestjs/throttler";
 import {
   CurrentActor,
@@ -34,6 +36,7 @@ import {
 @Controller(VENDOR_TEAM_ROUTES.base)
 @RequireRoles(...VENDOR_ROLES)
 @RequirePermissions(Permission.VendorReview)
+@UseGuards(ApprovedVendorGuard)
 export class VendorTeamController {
   constructor(
     private readonly team: VendorTeamService,

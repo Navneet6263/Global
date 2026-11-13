@@ -22,11 +22,10 @@ const SIGN_IN_INCLUDE = {
   branch: true,
   client: true,
   userRoles: { include: { role: true } },
-  vendorOwner: { select: { status: true } },
+  vendorProfile: { select: { verificationStatus: true } },
+  vendorOwner: { select: { status: true, vendorProfile: { select: { verificationStatus: true } } } },
   spocClientScopes: {
-    select: {
-      client: { select: { publicId: true, displayName: true } },
-    },
+    select: { client: { select: { publicId: true, displayName: true } } },
     orderBy: { client: { displayName: "asc" } },
   },
 } as const;
@@ -176,6 +175,10 @@ export class AuthenticationService {
         clientId: user.client?.publicId,
         clientName: user.client?.displayName,
         clientStatus: user.client?.status,
+        vendorStatus:
+          user.vendorProfile?.verificationStatus ??
+          user.vendorOwner?.vendorProfile?.verificationStatus ??
+          (roles.includes("VENDOR") ? "APPROVED" : undefined),
         ...(user.spocClientScopes.length
           ? {
               clientScope: user.spocClientScopes.map(({ client }) => ({
@@ -208,6 +211,7 @@ export class AuthenticationService {
       clientId: actor.clientPublicId,
       clientName: actor.clientName,
       clientStatus: actor.clientStatus,
+      vendorStatus: actor.vendorStatus,
       ...(actor.spocClients
         ? {
             clientScope: actor.spocClients.map((client) => ({
@@ -247,13 +251,7 @@ export class AuthenticationService {
   }
 
   private async recordFailedLogin(
-    user: {
-      id: bigint;
-      publicId: string;
-      tenantId: bigint;
-      failedLoginCount: number;
-      lockedUntil: Date | null;
-    },
+    user: { id: bigint; publicId: string; tenantId: bigint; failedLoginCount: number; lockedUntil: Date | null },
     meta: RequestMeta,
   ): Promise<void> {
     const failedLoginCount = user.failedLoginCount + 1;
@@ -263,9 +261,7 @@ export class AuthenticationService {
         data: {
           failedLoginCount,
           lockedUntil:
-            failedLoginCount >= MAX_FAILED_LOGINS
-              ? new Date(Date.now() + LOCKOUT_MS)
-              : user.lockedUntil,
+            failedLoginCount >= MAX_FAILED_LOGINS ? new Date(Date.now() + LOCKOUT_MS) : user.lockedUntil,
         },
       });
       await tx.auditEvent.create({
@@ -277,10 +273,7 @@ export class AuthenticationService {
           resourcePublicId: user.publicId,
           ipAddress: meta.ipAddress,
           locationLabel: meta.locationLabel,
-          afterJson: JSON.stringify({
-            failedLoginCount,
-            locked: failedLoginCount >= MAX_FAILED_LOGINS,
-          }),
+          afterJson: JSON.stringify({ failedLoginCount, locked: failedLoginCount >= MAX_FAILED_LOGINS }),
         },
       });
     });

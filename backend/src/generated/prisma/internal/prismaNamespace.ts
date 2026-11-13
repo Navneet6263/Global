@@ -459,7 +459,10 @@ export const ModelName = {
   VendorTeamPolicy: 'VendorTeamPolicy',
   VendorReport: 'VendorReport',
   Department: 'Department',
-  DepartmentMember: 'DepartmentMember'
+  DepartmentMember: 'DepartmentMember',
+  VendorProfile: 'VendorProfile',
+  VendorDocument: 'VendorDocument',
+  VendorDocumentRevision: 'VendorDocumentRevision'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -475,7 +478,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "signupRequest" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "vendorCheckAssignment" | "vendorCheckEvidence" | "checkEvidence" | "clientMisSchedule" | "sourceEmail" | "sourceOutreach" | "clientPackageRate" | "clientPackageDiscount" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest" | "vendorTeamPolicy" | "vendorReport" | "department" | "departmentMember"
+    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "signupRequest" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "vendorCheckAssignment" | "vendorCheckEvidence" | "checkEvidence" | "clientMisSchedule" | "sourceEmail" | "sourceOutreach" | "clientPackageRate" | "clientPackageDiscount" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest" | "vendorTeamPolicy" | "vendorReport" | "department" | "departmentMember" | "vendorProfile" | "vendorDocument" | "vendorDocumentRevision"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4637,6 +4640,204 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VendorProfile: {
+      payload: Prisma.$VendorProfilePayload<ExtArgs>
+      fields: Prisma.VendorProfileFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorProfileFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorProfileFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>
+        }
+        findFirst: {
+          args: Prisma.VendorProfileFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorProfileFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>
+        }
+        findMany: {
+          args: Prisma.VendorProfileFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>[]
+        }
+        create: {
+          args: Prisma.VendorProfileCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>
+        }
+        createMany: {
+          args: Prisma.VendorProfileCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VendorProfileDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>
+        }
+        update: {
+          args: Prisma.VendorProfileUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorProfileDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorProfileUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VendorProfileUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorProfilePayload>
+        }
+        aggregate: {
+          args: Prisma.VendorProfileAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorProfile>
+        }
+        groupBy: {
+          args: Prisma.VendorProfileGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorProfileGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorProfileCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorProfileCountAggregateOutputType> | number
+        }
+      }
+    }
+    VendorDocument: {
+      payload: Prisma.$VendorDocumentPayload<ExtArgs>
+      fields: Prisma.VendorDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.VendorDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.VendorDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.VendorDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VendorDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>
+        }
+        update: {
+          args: Prisma.VendorDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VendorDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorDocument>
+        }
+        groupBy: {
+          args: Prisma.VendorDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
+    VendorDocumentRevision: {
+      payload: Prisma.$VendorDocumentRevisionPayload<ExtArgs>
+      fields: Prisma.VendorDocumentRevisionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VendorDocumentRevisionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VendorDocumentRevisionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>
+        }
+        findFirst: {
+          args: Prisma.VendorDocumentRevisionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VendorDocumentRevisionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>
+        }
+        findMany: {
+          args: Prisma.VendorDocumentRevisionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>[]
+        }
+        create: {
+          args: Prisma.VendorDocumentRevisionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>
+        }
+        createMany: {
+          args: Prisma.VendorDocumentRevisionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.VendorDocumentRevisionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>
+        }
+        update: {
+          args: Prisma.VendorDocumentRevisionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>
+        }
+        deleteMany: {
+          args: Prisma.VendorDocumentRevisionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VendorDocumentRevisionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.VendorDocumentRevisionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VendorDocumentRevisionPayload>
+        }
+        aggregate: {
+          args: Prisma.VendorDocumentRevisionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVendorDocumentRevision>
+        }
+        groupBy: {
+          args: Prisma.VendorDocumentRevisionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorDocumentRevisionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VendorDocumentRevisionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VendorDocumentRevisionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -4865,6 +5066,8 @@ export const SignupRequestScalarFieldEnum = {
   normalizedEmail: 'normalizedEmail',
   fullName: 'fullName',
   companyName: 'companyName',
+  signupType: 'signupType',
+  businessType: 'businessType',
   phone: 'phone',
   passwordHash: 'passwordHash',
   otpHash: 'otpHash',
@@ -5923,6 +6126,70 @@ export const DepartmentMemberScalarFieldEnum = {
 export type DepartmentMemberScalarFieldEnum = (typeof DepartmentMemberScalarFieldEnum)[keyof typeof DepartmentMemberScalarFieldEnum]
 
 
+export const VendorProfileScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  vendorUserId: 'vendorUserId',
+  businessName: 'businessName',
+  businessType: 'businessType',
+  registrationNumber: 'registrationNumber',
+  taxId: 'taxId',
+  websiteUrl: 'websiteUrl',
+  operatingAddress: 'operatingAddress',
+  verificationStatus: 'verificationStatus',
+  rejectionReason: 'rejectionReason',
+  reviewedAt: 'reviewedAt',
+  reviewedById: 'reviewedById',
+  submittedAt: 'submittedAt',
+  authorisedSignatory: 'authorisedSignatory',
+  termsAcceptedAt: 'termsAcceptedAt',
+  termsVersion: 'termsVersion',
+  privacyVersion: 'privacyVersion',
+  termsAcceptedIp: 'termsAcceptedIp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorProfileScalarFieldEnum = (typeof VendorProfileScalarFieldEnum)[keyof typeof VendorProfileScalarFieldEnum]
+
+
+export const VendorDocumentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  vendorProfileId: 'vendorProfileId',
+  documentType: 'documentType',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  verifiedAt: 'verifiedAt',
+  verifiedById: 'verifiedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorDocumentScalarFieldEnum = (typeof VendorDocumentScalarFieldEnum)[keyof typeof VendorDocumentScalarFieldEnum]
+
+
+export const VendorDocumentRevisionScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  vendorDocumentId: 'vendorDocumentId',
+  revisionNumber: 'revisionNumber',
+  storageKey: 'storageKey',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  uploadedAt: 'uploadedAt',
+  status: 'status',
+  decisionReason: 'decisionReason',
+  decidedAt: 'decidedAt',
+  decidedById: 'decidedById'
+} as const
+
+export type VendorDocumentRevisionScalarFieldEnum = (typeof VendorDocumentRevisionScalarFieldEnum)[keyof typeof VendorDocumentRevisionScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -6207,6 +6474,9 @@ export type GlobalOmitConfig = {
   vendorReport?: Prisma.VendorReportOmit
   department?: Prisma.DepartmentOmit
   departmentMember?: Prisma.DepartmentMemberOmit
+  vendorProfile?: Prisma.VendorProfileOmit
+  vendorDocument?: Prisma.VendorDocumentOmit
+  vendorDocumentRevision?: Prisma.VendorDocumentRevisionOmit
 }
 
 /* Types for Logging */

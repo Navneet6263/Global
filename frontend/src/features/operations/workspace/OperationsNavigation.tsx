@@ -2,6 +2,7 @@ import { useId, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
+  Building2,
   ChartNoAxesCombined,
   ChevronDown,
   CircleAlert,
@@ -35,7 +36,8 @@ type OpsRoute =
   | "/operations/packages"
   | "/operations/utv"
   | "/operations/annexure"
-  | "/operations/vendor-work";
+  | "/operations/vendor-work"
+  | "/operations/vendor-onboarding";
 
 function Badge({ value, tone = "info" }: { value?: number; tone?: "info" | "warning" }) {
   if (value === undefined || value <= 0) return null;
@@ -168,6 +170,11 @@ export function OperationsNavigation({ onNavigate }: { onNavigate?: () => void }
           link("Company onboarding", "/operations/onboarding", {
             icon: Rocket,
             badge: <Badge value={c.opsSignups} tone="warning" />,
+          })}
+        {can("case:read") &&
+          link("Vendor onboarding", "/operations/vendor-onboarding", {
+            icon: Building2,
+            badge: <Badge value={c.opsVendorSignups} tone="warning" />,
           })}
         {can("case:read") && link("Packages & pricing", "/operations/packages", { icon: Package })}
         {can("case:read") && (

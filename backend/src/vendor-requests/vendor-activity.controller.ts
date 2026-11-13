@@ -1,4 +1,5 @@
-import { Controller, Get, Query } from "@nestjs/common";
+import { Controller, Get, Query, UseGuards } from "@nestjs/common";
+import { ApprovedVendorGuard } from "../vendor-onboarding/guards/approved-vendor.guard";
 import {
   CurrentActor,
   RequirePermissions,
@@ -15,6 +16,7 @@ import { VendorLogQueryDto } from "./vendor-requests.validation";
 @Controller(VENDOR_LOG_ROUTES.base)
 @RequireRoles(...VENDOR_ROLES)
 @RequirePermissions(Permission.VendorReview)
+@UseGuards(ApprovedVendorGuard)
 export class VendorActivityController {
   constructor(private readonly activity: VendorActivityService) {}
 

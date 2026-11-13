@@ -10,6 +10,8 @@ export type Session = {
   clientName?: string;
   /** Client users: ONBOARDING until Operations approves a self sign-up company. */
   clientStatus?: string;
+  /** Vendor users: PENDING_UPLOAD, PENDING_REVIEW, REJECTED, APPROVED. */
+  vendorStatus?: string;
   /** Platform Admin oversight: may view and escalate, never change data. */
   viewOnly?: boolean;
   /** SPOC-RM only: its assigned client workspaces. */

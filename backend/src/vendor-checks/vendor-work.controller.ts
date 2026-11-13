@@ -10,6 +10,7 @@ import {
   Put,
   Query,
   Req,
+  UseGuards,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Throttle } from "@nestjs/throttler";
@@ -36,6 +37,7 @@ import { Permission } from "../common/auth/permissions";
 import { withUploadedBinary } from "../common/http/upload-capacity";
 import { VendorBoardQueryDto } from "./vendor-checks.controller";
 import { VendorWorkService } from "./vendor-work.service";
+import { ApprovedVendorGuard } from "../vendor-onboarding/guards/approved-vendor.guard";
 
 export class VendorVersionDto {
   @IsInt() @Min(1) version!: number;
@@ -62,6 +64,7 @@ export class VendorDelegateDto extends VendorVersionDto {
 @Controller("vendor/checks")
 @RequireRoles("VENDOR")
 @RequirePermissions(Permission.VendorReview)
+@UseGuards(ApprovedVendorGuard)
 export class VendorWorkController {
   constructor(
     private readonly work: VendorWorkService,

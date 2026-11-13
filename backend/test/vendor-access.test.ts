@@ -15,6 +15,7 @@ import { VendorRequestsController } from "../src/vendor-requests/vendor-requests
 import { VendorActivityController } from "../src/vendor-requests/vendor-activity.controller";
 import { VendorReportsController } from "../src/vendor-requests/vendor-reports.controller";
 import { VendorTeamController } from "../src/vendor-requests/vendor-team.controller";
+import { VendorOnboardingController } from "../src/vendor-onboarding/vendor-onboarding.controller";
 import { allControllerHandlers, passesGuard } from "./helpers/guard-check";
 import { testActor } from "./helpers/test-actor";
 import {
@@ -77,6 +78,7 @@ void test("VENDOR is allowed only on the /vendor requests, reports, team, logs a
     VendorActivityController,
     // Check-level vendor work (/vendor/checks): own jobs only, enforced in the service.
     VendorWorkController,
+    VendorOnboardingController,
   ];
   let checked = 0;
   for (const { file, controller, handler } of await allControllerHandlers()) {
