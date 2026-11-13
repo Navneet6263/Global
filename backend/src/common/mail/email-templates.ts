@@ -16,6 +16,8 @@ export type EmailTemplate =
   | "report-released"
   | "source-verification"
   | "client-mis"
+  | "invoice-issued"
+  | "billing-update"
   | "password-reset";
 
 export type RenderedEmail = { subject: string; text: string; html: string };
@@ -307,6 +309,43 @@ Open: ${v("url")}`,
           ],
           { label: "Download the report", url: v("url") },
           "Report ready",
+        ),
+      };
+    }
+    case "invoice-issued": {
+      const title = `Tax invoice ${v("invoiceNumber")} from Sapling Global`;
+      const due = v("dueDate");
+      return {
+        subject: title,
+        text: `${title}
+Amount: ${v("amount")}${due ? `\nDue by: ${due}` : ""}
+The invoice PDF is attached. You can also download it from Billing in your portal.
+Open: ${v("url")}`,
+        html: layout(
+          "Tax invoice issued",
+          [
+            `Here is your tax invoice for <strong>${escape(v("companyName"))}</strong>.`,
+            callout(
+              `Invoice <strong>${escape(v("invoiceNumber"))}</strong> · Amount <strong>${escape(v("amount"))}</strong>${due ? ` · Due by <strong>${escape(due)}</strong>` : ""}`,
+              "info",
+            ),
+            "The invoice PDF is attached to this email. You can also download it any time from Invoices &amp; payments in your portal.",
+          ],
+          { label: "Download the invoice", url: v("url") },
+          "Invoice",
+        ),
+      };
+    }
+    case "billing-update": {
+      const title = v("title") || "Billing update from Sapling Global";
+      return {
+        subject: title,
+        text: `${v("message")}\n\nOpen: ${v("url")}`,
+        html: layout(
+          title,
+          [escape(v("message"))],
+          v("url") ? { label: "Open billing", url: v("url") } : undefined,
+          "Billing",
         ),
       };
     }

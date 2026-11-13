@@ -225,3 +225,28 @@ test("Finance prepares the month's bills and issues a validated one as a tax inv
   await expect(bills.getByText("Tax invoice issued")).toBeVisible();
   expect(fixture.unexpected).toEqual([]);
 });
+
+test("the invoice form shows what the company owes and adds its released reports in one click", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const fixture = await financeBrowserFixture(page);
+  await page.goto("/finance/billing");
+  await page.getByRole("button", { name: "Issue invoice", exact: true }).click();
+  const form = page.getByRole("dialog");
+  await form.getByRole("combobox").first().selectOption({ label: "Live Skills" });
+  const details = form.getByRole("complementary", { name: "Company billing details" });
+  await expect(details.getByText("Live Skills Private Limited")).toBeVisible();
+  await expect(details.getByText(/CGST \+ SGST/)).toBeVisible();
+  await expect(details.getByText("BILL-2026-10-LIVE")).toBeVisible();
+  await details.getByRole("button", { name: "Add all 2" }).click();
+  await expect(details.getByText("Added")).toHaveCount(2);
+  await expect(form.locator('input[value="Background Verification - Standard"]')).toBeVisible();
+  await expect(form.locator('input[value="Background Verification - Basic"]')).toBeVisible();
+  // 3,500 before GST, 18% GST, 4,130 in all.
+  await expect(form.getByText("₹3,500.00", { exact: true }).first()).toBeVisible();
+  await expect(form.getByText("₹630.00", { exact: true })).toBeVisible();
+  await expect(form.getByText("₹4,130.00", { exact: true }).first()).toBeVisible();
+  await page.screenshot({ path: "test-results/finance-invoice-form.png" });
+  expect(fixture.unexpected).toEqual([]);
+});

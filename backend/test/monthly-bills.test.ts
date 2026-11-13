@@ -14,6 +14,9 @@ import {
   istMonth,
 } from "../src/finance/monthly-bill.service";
 import { taxInvoiceModel } from "../src/finance/tax-invoice-model";
+import { renderEmail } from "../src/common/mail/email-templates";
+import { queueInvoiceIssuedEmails } from "../src/finance/invoice-issued-email";
+import type { Prisma } from "../src/generated/prisma/client";
 
 const finance = {
   tenantId: 1n,
@@ -186,5 +189,81 @@ void test("an issued bill cannot be issued again", async () => {
   await assert.rejects(
     service.issue(finance, "inv-1", { version: 2 }),
     /already issued/,
+  );
+});
+
+void test("the tax invoice email names the invoice, amount and due date", () => {
+  const mail = renderEmail("invoice-issued", {
+    companyName: "Live Skills",
+    invoiceNumber: "SG/26-27/0001",
+    amount: "₹2,360.00",
+    dueDate: "30 Nov 2026",
+    url: "https://portal.example/client-portal/billing",
+  });
+  assert.equal(mail.subject, "Tax invoice SG/26-27/0001 from Sapling Global");
+  assert.match(mail.html, /₹2,360\.00/);
+  assert.match(mail.html, /attached/);
+  assert.match(mail.text, /Due by: 30 Nov 2026/);
+});
+
+void test("issuing an invoice emails each Client Admin with the PDF attached", async () => {
+  const queued: Array<Record<string, unknown>> = [];
+  const tx = {
+    invoice: {
+      findUnique: () => ({
+        publicId: "inv-1",
+        clientId: 3n,
+        invoiceNumber: "SG/26-27/0001",
+        totalAmount: 2360,
+        dueAt: new Date("2026-11-30T00:00:00Z"),
+        client: { displayName: "Live Skills" },
+      }),
+    },
+    user: {
+      findMany: () => [
+        { email: "a@live.example" },
+        { email: "b@live.example" },
+      ],
+    },
+    outboxEvent: {
+      create: (args: { data: { payloadJson: string } }) => {
+        queued.push(
+          JSON.parse(args.data.payloadJson) as Record<string, unknown>,
+        );
+        return {};
+      },
+    },
+  };
+  const sent = await queueInvoiceIssuedEmails(
+    tx as unknown as Prisma.TransactionClient,
+    {
+      secretBox: { seal: (value: unknown) => value } as never,
+      pdf: {
+        render: () => Promise.resolve(Buffer.from("%PDF-1.7 test")),
+      } as never,
+      webOrigin: "https://portal.example",
+    },
+    { tenantId: 1n, invoiceId: 9n },
+  );
+  assert.equal(sent, 2);
+  const first = queued[0]!["secret"] as {
+    to: string;
+    template: string;
+    attachments: Array<{
+      filename: string;
+      contentType: string;
+      base64: string;
+    }>;
+  };
+  assert.equal(first.to, "a@live.example");
+  assert.equal(first.template, "invoice-issued");
+  assert.equal(
+    first.attachments[0]!.filename,
+    "Sapling-Global-SG-26-27-0001.pdf",
+  );
+  assert.equal(first.attachments[0]!.contentType, "application/pdf");
+  assert.equal(
+    Buffer.from(first.attachments[0]!.base64, "base64").toString(),
+    "%PDF-1.7 test",
   );
 });

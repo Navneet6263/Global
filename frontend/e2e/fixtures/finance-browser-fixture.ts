@@ -117,6 +117,73 @@ export async function financeBrowserFixture(page: Page, canWrite = true) {
       return reply({ id: "bill-1", invoiceNumber: "SG/26-27/0001", status: "ISSUED", version: 3 });
     }
     if (path === "/finance/credit-control") return reply({ items: [], total: 0 });
+    if (path === "/clients")
+      return reply({
+        items: [
+          {
+            publicId: "11111111-1111-4111-8111-111111111111",
+            code: "LIVE",
+            displayName: "Live Skills",
+            status: "ACTIVE",
+          },
+        ],
+        nextCursor: null,
+      });
+    if (path === "/cases") return reply({ items: [], nextCursor: null });
+    if (path === "/finance/clients/11111111-1111-4111-8111-111111111111/billing-context")
+      return reply({
+        client: {
+          id: "11111111-1111-4111-8111-111111111111",
+          name: "Live Skills",
+          legalName: "Live Skills Private Limited",
+          gstin: "09AAICV2393Q1ZE",
+          state: "Uttar Pradesh",
+          tax: "CGST_SGST",
+          creditLimit: 50000,
+          creditHold: false,
+        },
+        account: {
+          invoices: 2,
+          billed: 4720,
+          paid: 2360,
+          outstanding: 2360,
+          overdue: 0,
+          overdueInvoices: 0,
+          last: {
+            invoiceNumber: "SG/26-27/0001",
+            issuedAt: "2026-11-13",
+            dueAt: "2026-11-30",
+            total: 2360,
+            status: "ISSUED",
+          },
+        },
+        monthlyBills: [
+          { invoiceNumber: "BILL-2026-10-LIVE", validation: "PENDING", total: 5900, lines: 2 },
+        ],
+        unbilled: [
+          {
+            reportId: "report-a",
+            caseId: "case-a",
+            caseNumber: "SG-20261113-42DA00",
+            candidateName: "Asha Verma",
+            releasedAt: "2026-11-13T04:43:10Z",
+            lines: [
+              { description: "Background Verification - Standard", unitPrice: 2000, taxRate: 18 },
+            ],
+          },
+          {
+            reportId: "report-b",
+            caseId: "case-b",
+            caseNumber: "SG-20261112-FB9D2A",
+            candidateName: "Rohan Das",
+            releasedAt: "2026-11-12T09:14:45Z",
+            lines: [
+              { description: "Background Verification - Basic", unitPrice: 1500, taxRate: 18 },
+            ],
+          },
+        ],
+        unbilledTaxable: 3500,
+      });
     if (path === "/finance/invoices/invoice-test/annexure")
       return reply({
         invoice: {

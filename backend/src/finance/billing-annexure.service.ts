@@ -339,8 +339,9 @@ export class BillingAnnexureService {
           aggregateType: "invoice",
           aggregateId: invoice.publicId,
           to: admin.email,
-          template: "onboarding-update",
+          template: "billing-update",
           variables: {
+            title,
             message: `${title}. Open Billing in your portal to see the annexure, then validate it or raise a query.`,
             url: `${webOrigin}/client-portal/billing`,
           },

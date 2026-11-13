@@ -2,8 +2,11 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Optional,
   StreamableFile,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { SecretBoxService } from "../common/security/secret-box.service";
 import type { Actor } from "../common/auth/actor";
 import { PrismaService } from "../database/prisma.service";
 import type { CreateInvoiceDto } from "./dto/create-invoice.dto";
@@ -15,13 +18,28 @@ import {
 import { InvoicePdfService } from "./invoice-pdf.service";
 import { allocateInvoiceReports } from "./invoice-report-allocation";
 import { nextInvoiceNumber } from "./gst";
+import {
+  invoicePdfSelect,
+  queueInvoiceIssuedEmails,
+  type InvoiceMailDeps,
+} from "./invoice-issued-email";
 
 @Injectable()
 export class InvoiceIssueService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly invoicePdf: InvoicePdfService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly config?: ConfigService,
   ) {}
+
+  /** Email setup for the "tax invoice issued" mail; absent in unit tests. */
+  private invoiceMail(): InvoiceMailDeps | undefined {
+    const webOrigin = this.config?.get<string>("WEB_ORIGIN");
+    return this.secretBox && webOrigin
+      ? { secretBox: this.secretBox, pdf: this.invoicePdf, webOrigin }
+      : undefined;
+  }
 
   async create(actor: Actor, input: CreateInvoiceDto) {
     if (!input.lines.length) {
@@ -112,7 +130,7 @@ export class InvoiceIssueService {
             })),
           },
         },
-        select: invoiceSelect,
+        select: { ...invoiceSelect, id: true },
       });
       await tx.auditEvent.create({
         data: {
@@ -127,7 +145,15 @@ export class InvoiceIssueService {
           }),
         },
       });
-      return presentInvoice(row, new Date());
+      // The company gets the tax invoice by email, PDF attached.
+      const { id: invoiceId, ...issued } = row;
+      const mail = this.invoiceMail();
+      if (mail)
+        await queueInvoiceIssuedEmails(tx, mail, {
+          tenantId: actor.tenantId,
+          invoiceId,
+        });
+      return presentInvoice(issued, new Date());
     });
   }
 
@@ -138,56 +164,7 @@ export class InvoiceIssueService {
         publicId,
         ...(actor.clientId ? { clientId: actor.clientId } : {}),
       },
-      select: {
-        invoiceNumber: true,
-        status: true,
-        annexureStatus: true,
-        currency: true,
-        issuedAt: true,
-        dueAt: true,
-        subtotal: true,
-        taxAmount: true,
-        totalAmount: true,
-        paidAmount: true,
-        creditedAmount: true,
-        notes: true,
-        createdAt: true,
-        client: {
-          select: {
-            legalName: true,
-            displayName: true,
-            code: true,
-            billingTerms: true,
-            billingAddress: true,
-            gstin: true,
-          },
-        },
-        lines: {
-          select: {
-            description: true,
-            quantity: true,
-            unitPrice: true,
-            taxRate: true,
-            lineTotal: true,
-            case: { select: { caseNumber: true } },
-            report: { select: { releasedAt: true } },
-          },
-          orderBy: { id: "asc" },
-        },
-        payments: {
-          select: { amount: true, method: true, receivedAt: true },
-          orderBy: { receivedAt: "asc" },
-        },
-        creditNotes: {
-          select: {
-            noteNumber: true,
-            amount: true,
-            reason: true,
-            createdAt: true,
-          },
-          orderBy: { createdAt: "asc" },
-        },
-      },
+      select: invoicePdfSelect,
     });
     if (
       !invoice ||

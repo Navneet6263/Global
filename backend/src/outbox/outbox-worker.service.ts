@@ -214,7 +214,10 @@ export class OutboxWorkerService
   }
 
   private async handleFailure(event: ClaimedOutboxEvent, error: unknown) {
-    const failed = event.attempts >= 10;
+    // An email that fails twice is stopped (marked FAILED) instead of retrying for hours;
+    // other jobs keep ten attempts.
+    const failed =
+      event.attempts >= (event.topic === "email.requested" ? 2 : 10);
     const delayMs = Math.min(
       15 * 60_000,
       5000 * 2 ** Math.min(event.attempts, 8),

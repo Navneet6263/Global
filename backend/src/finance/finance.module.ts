@@ -1,3 +1,5 @@
+import { BillingContextController } from "./billing-context.controller";
+import { BillingContextService } from "./billing-context.service";
 import { RmPaymentsController } from "./rm-payments.controller";
 import { RmPaymentsService } from "./rm-payments.service";
 import { MonthlyBillingService } from "./monthly-billing.service";
@@ -28,6 +30,7 @@ import { CreditControlController } from "./credit-control.controller";
   controllers: [
     FinanceController,
     MonthlyBillController,
+    BillingContextController,
     ClientFinanceController,
     MonthlyStatementController,
     CreditControlController,
@@ -37,6 +40,7 @@ import { CreditControlController } from "./credit-control.controller";
   ],
   providers: [
     MonthlyBillService,
+    BillingContextService,
     ClientFinanceService,
     MonthlyStatementService,
     FinanceService,

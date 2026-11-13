@@ -182,7 +182,7 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
                       key={invoice.id}
                       invoice={invoice}
                       stale={invoices.isPlaceholderData}
-                      allowDownload={reportMode}
+                      allowDownload
                     />
                   ))}
                 </tbody>
@@ -203,7 +203,7 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
           detail={
             reportMode
               ? "Download invoices or your monthly statement here."
-              : "PDFs, statements and customised exports are available in Reports."
+              : "Download any invoice as PDF here. Statements and exports are in Reports."
           }
           onPrevious={() => {
             const previous = [...history];

@@ -3,14 +3,22 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import type { Actor } from "../common/auth/actor";
+import { SecretBoxService } from "../common/security/secret-box.service";
 import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
 import { BillingAnnexureService } from "./billing-annexure.service";
 import { toPaise } from "./finance.shared";
 import { nextInvoiceNumber } from "./gst";
 import { allocateInvoiceReports } from "./invoice-report-allocation";
+import {
+  queueInvoiceIssuedEmails,
+  type InvoiceMailDeps,
+} from "./invoice-issued-email";
+import { InvoicePdfService } from "./invoice-pdf.service";
 import { unbilledReportWhere } from "./payment-follow-up";
 
 /** "2026-10" to its Indian calendar month: [from, to) in UTC. */
@@ -48,7 +56,18 @@ export class MonthlyBillService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly annexure: BillingAnnexureService,
+    @Optional() private readonly pdf?: InvoicePdfService,
+    @Optional() private readonly secretBox?: SecretBoxService,
+    @Optional() private readonly config?: ConfigService,
   ) {}
+
+  /** Email setup for the "tax invoice issued" mail; absent in unit tests. */
+  private invoiceMail(): InvoiceMailDeps | undefined {
+    const webOrigin = this.config?.get<string>("WEB_ORIGIN");
+    return this.secretBox && this.pdf && webOrigin
+      ? { secretBox: this.secretBox, pdf: this.pdf, webOrigin }
+      : undefined;
+  }
 
   /** Draft bills for the month; a company whose reports are all billed is left alone. */
   async prepare(
@@ -402,6 +421,13 @@ export class MonthlyBillService {
                 body: `The bill you validated (${bill.invoiceNumber}) is now tax invoice ${invoiceNumber}.`,
                 href: "/client-portal/billing",
               })),
+            });
+          // The company gets the tax invoice by email, PDF attached.
+          const mail = this.invoiceMail();
+          if (mail)
+            await queueInvoiceIssuedEmails(tx, mail, {
+              tenantId: actor.tenantId,
+              invoiceId: bill.id,
             });
           return {
             id: invoiceId,
