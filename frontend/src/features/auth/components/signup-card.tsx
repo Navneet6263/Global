@@ -209,7 +209,7 @@ export function SignupCard({ onStep }: { onStep: (step: number) => void }) {
       ) : (
         <>
           <header className="auth-card-head">
-            <h1 id="signup-title">Create your company account</h1>
+            <h1 id="signup-title">Sign up your company</h1>
             <p>You become the company admin. Explore right away; cases open after approval.</p>
           </header>
           <form className="auth-form" onSubmit={(event) => void submitDetails(event)}>

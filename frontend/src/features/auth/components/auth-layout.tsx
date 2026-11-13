@@ -15,7 +15,8 @@ const YEAR = new Date().getFullYear();
 export function AuthLayout({ children, step }: { children: ReactNode; step?: number }) {
   const signup = step !== undefined;
   return (
-    <div className="auth-split">
+    // Sign-in fits one screen (no scroll); sign-up keeps its longer form scrollable.
+    <div className={signup ? "auth-split" : "auth-split is-fit"}>
       <div className="auth-split-form">
         <header className="auth-split-top">
           <Link to="/" aria-label="Sapling Global home">
@@ -31,7 +32,7 @@ export function AuthLayout({ children, step }: { children: ReactNode; step?: num
           <nav aria-label="Footer">
             <a href="/#security">Security</a>
             <a href="/#faq">Help</a>
-            {signup ? <Link to="/auth">Sign in</Link> : <Link to="/signup">Create account</Link>}
+            {signup ? <Link to="/auth">Sign in</Link> : <Link to="/signup">Sign up</Link>}
           </nav>
         </footer>
       </div>

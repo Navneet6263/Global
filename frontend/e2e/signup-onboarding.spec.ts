@@ -39,7 +39,7 @@ test("sign-in page shows the Sapling wordmark and a way to create a company acco
   );
   await expect(page.locator('img[src*="sapling-global-mark"]')).toHaveCount(0);
   await page.screenshot({ path: "test-results/auth-signin.png", fullPage: true });
-  await page.getByRole("link", { name: /Create a company account/ }).click();
+  await page.getByRole("link", { name: /Sign up your company/ }).click();
   await expect(page).toHaveURL(/\/signup$/);
 });
 
@@ -47,7 +47,7 @@ test("a company signs up, confirms the email code and lands on onboarding", asyn
   await page.setViewportSize({ width: 1440, height: 960 });
   const fixture = await onboardingFixture(page, "ANON");
   await page.goto("/signup");
-  await expect(page.getByRole("heading", { name: "Create your company account" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Sign up your company" })).toBeVisible();
   await page.getByLabel("Company name").fill("Acme Technologies Pvt Ltd");
   await page.getByLabel("Your full name").fill("Riya Mehta");
   await page.getByLabel("Work email").fill("riya@acmetech.in");

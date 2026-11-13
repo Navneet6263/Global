@@ -79,7 +79,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           <h4>Get started</h4>
           <ul>
             <li>
-              <Link to="/signup">Create a company account</Link>
+              <Link to="/signup">Sign up your company</Link>
             </li>
             <li>
               <Link to="/auth">Sign in</Link>

@@ -223,3 +223,39 @@
     display: none;
   }
 }
+
+/* Sign-in fits one screen on desktop: no page scroll, the illustration crops instead. */
+@media (min-width: 1100px) and (min-height: 560px) {
+  .auth-split.is-fit {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .auth-split.is-fit .auth-split-form {
+    min-height: 0;
+    height: 100dvh;
+    padding-block: 1.25rem;
+    overflow-y: auto;
+  }
+  .auth-split.is-fit .auth-split-main {
+    padding: 0.75rem 0;
+  }
+  .auth-split.is-fit .auth-card-head h1 {
+    font-size: 1.85rem;
+  }
+  .auth-split.is-fit .auth-showcase {
+    height: calc(100dvh - 1.5rem);
+    padding-top: 2.25rem;
+    padding-bottom: 1.5rem;
+  }
+  .auth-split.is-fit .auth-showcase .auth-headline {
+    font-size: 2.1rem;
+  }
+  .auth-split.is-fit .auth-showcase-shot {
+    margin-top: 1.25rem;
+    overflow: hidden;
+    align-items: flex-start;
+  }
+  .auth-split.is-fit .auth-showcase .auth-trust {
+    margin-top: 1rem;
+  }
+}

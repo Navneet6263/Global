@@ -28,8 +28,8 @@ export function LoginCard() {
       <div className="auth-divider">New here?</div>
       <Link to="/signup" className="auth-alt">
         <div>
-          <strong>Create a company account</strong>
-          <span>Register your company and start onboarding today.</span>
+          <strong>Sign up your company</strong>
+          <span>Register your company and start getting employee verifications today.</span>
         </div>
         <ArrowRight aria-hidden />
       </Link>

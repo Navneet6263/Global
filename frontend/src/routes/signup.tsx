@@ -6,7 +6,7 @@ import { SignupCard } from "@/features/auth/components/signup-card";
 export const Route = createFileRoute("/signup")({
   head: () => ({
     meta: [
-      { title: "Create a company account — Sapling Global" },
+      { title: "Sign up your company — Sapling Global" },
       {
         name: "description",
         content: "Register your company for Sapling Global background verification.",
