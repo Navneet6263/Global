@@ -2,7 +2,6 @@ import { useId, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  Building2,
   ChartNoAxesCombined,
   ChevronDown,
   FileCheck2,
@@ -150,25 +149,6 @@ export function ClientPortalNavigation({ onNavigate }: { onNavigate?: () => void
   };
   return (
     <div className="client-nav-content">
-      <Link
-        to="/client-portal"
-        className="client-brand"
-        onClick={onNavigate}
-        aria-label="Sapling Global client portal"
-      >
-        <img src="/brand/sapling-wordmark.png" width="160" height="37" alt="Sapling Global" />
-      </Link>
-      <div className="client-organisation">
-        <span className="client-organisation-icon">
-          <Building2 aria-hidden />
-        </span>
-        <div>
-          <strong title={session.data?.clientName}>
-            {session.data?.clientName ?? "Your organisation"}
-          </strong>
-          <span>Client workspace</span>
-        </div>
-      </div>
       <nav className="client-nav" aria-label="client-admin navigation">
         <p className="client-nav-label">Workspace</p>
         {onboarding ? item("Get started", "/client-portal/onboarding", undefined, Rocket) : null}

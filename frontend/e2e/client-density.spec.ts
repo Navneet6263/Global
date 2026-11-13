@@ -22,10 +22,13 @@ for (const width of [390, 1024, 1440]) {
     if (width >= 1280) {
       const sidebar = await page.locator(".client-sidebar").boundingBox();
       expect(sidebar!.width).toBeCloseTo(248 * 0.9, 0);
-      expect(sidebar!.height).toBeCloseTo(900, 0);
+      // Task-style frame: a full-width header, the sidebar starts under it.
       const header = await page.locator(".client-topbar").boundingBox();
-      expect(Math.abs(header!.x - sidebar!.width)).toBeLessThan(1);
+      expect(header!.height).toBeCloseTo(60 * 0.9, 0);
+      expect(Math.abs(header!.x)).toBeLessThan(1);
       expect(header!.x + header!.width).toBeCloseTo(width, 0);
+      expect(sidebar!.y).toBeCloseTo(header!.height, 0);
+      expect(sidebar!.height).toBeCloseTo(900 - header!.height, 0);
     }
     await page.getByRole("button", { name: "Open case for Candidate 1", exact: true }).click();
     const caseDialog = page.getByRole("dialog", { name: "Case detail" });

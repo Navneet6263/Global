@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { RoleSwitcher } from "@/components/shell/role-switcher";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,11 +12,17 @@ export function ClientHeaderActions({
   onRefresh,
   workspace = "client-admin",
   roleLabel,
+  securityTo,
+  extra,
 }: {
   refreshing: boolean;
   onRefresh: () => void;
   workspace?: NavWorkspace;
   roleLabel?: string;
+  /** Where "Account security" opens; every workspace but Admin uses /change-password. */
+  securityTo?: string;
+  /** Workspace-only tools (e.g. support or quick create), shown before help. */
+  extra?: ReactNode;
 }) {
   return (
     <div className="client-header-actions" aria-label="Workspace tools">
@@ -31,9 +38,10 @@ export function ClientHeaderActions({
           <RefreshCw className={refreshing ? "animate-spin" : ""} aria-hidden />
         </Button>
       </div>
+      {extra}
       <HelpMenu />
       <RoleSwitcher />
-      <ClientAccountMenu roleLabel={roleLabel} />
+      <ClientAccountMenu roleLabel={roleLabel} securityTo={securityTo} />
     </div>
   );
 }

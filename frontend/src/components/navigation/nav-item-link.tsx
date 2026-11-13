@@ -25,7 +25,7 @@ export function NavItemLink({ item, onNavigate }: NavItemLinkProps) {
     <>
       <DisplayIcon
         className={cn(
-          "size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-sidebar-accent-foreground group-data-[status=active]:text-primary",
+          "size-[18px] shrink-0 text-slate-500 transition-colors group-hover:text-slate-900 group-data-[status=active]:text-blue-700",
           pending && "motion-safe:animate-spin",
         )}
         aria-hidden
@@ -51,7 +51,7 @@ export function NavItemLink({ item, onNavigate }: NavItemLinkProps) {
         onClick={onNavigate}
         aria-busy={pending || undefined}
         activeOptions={{ exact: item.route === WORKSPACE_PRESENTATION[item.workspace].home }}
-        className="group flex min-h-10 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent/70 hover:text-sidebar-accent-foreground data-[status=active]:bg-sidebar-accent data-[status=active]:text-sidebar-accent-foreground"
+        className="group flex min-h-[38px] items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-[14px] font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 data-[status=active]:bg-blue-50 data-[status=active]:font-semibold data-[status=active]:text-blue-700"
       >
         {content}
       </Link>

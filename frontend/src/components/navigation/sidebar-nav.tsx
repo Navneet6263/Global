@@ -21,7 +21,7 @@ export function SidebarNav({ onNavigate, workspace = "platform-admin" }: Sidebar
   const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   return (
-    <nav aria-label={`${workspace} navigation`} className="space-y-5 px-3 py-4">
+    <nav aria-label={`${workspace} navigation`} className="space-y-3 px-3 py-3">
       {groups.map((group) => {
         const items = navItems.filter(
           (item) => item.group === group.id && isVisible(session, item),
@@ -38,7 +38,7 @@ export function SidebarNav({ onNavigate, workspace = "platform-admin" }: Sidebar
               type="button"
               onClick={() => setCollapsed((current) => ({ ...current, [key]: isOpen }))}
               aria-expanded={isOpen}
-              className="flex w-full items-center justify-between rounded-lg px-2.5 py-1 text-[11px] font-semibold tracking-[0.09em] text-muted-foreground uppercase transition-colors hover:text-foreground"
+              className="flex w-full items-center justify-between rounded-md px-2.5 pt-1.5 pb-1 text-[11px] font-semibold tracking-[0.08em] text-slate-400 uppercase transition-colors hover:text-slate-700"
             >
               {group.label}
               <ChevronDown
@@ -47,7 +47,7 @@ export function SidebarNav({ onNavigate, workspace = "platform-admin" }: Sidebar
               />
             </button>
             {isOpen ? (
-              <div className="space-y-0.5">
+              <div className="space-y-px">
                 {items.map((item) => (
                   <NavItemLink key={item.route} item={item} onNavigate={onNavigate} />
                 ))}

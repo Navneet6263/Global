@@ -9,54 +9,21 @@
   }
 }
 
-.client-page {
-  margin-left: 248px;
-  min-width: 0;
-}
-.client-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 24px;
-  border-bottom: 1px solid #e2e8f0;
-  background: white;
-}
-.client-breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 12px;
-  white-space: nowrap;
-}
-.client-breadcrumb a,
-.client-breadcrumb > span {
-  color: #64748b;
-}
-.client-breadcrumb strong {
-  font-weight: 500;
-}
-.client-global-search {
-  margin-left: auto;
-  flex: 1;
-  min-width: 140px;
-  max-width: 440px;
-}
+/* The header, sidebar and page frame are laid out by WorkspaceFrame (Tailwind).
+   These rules only style the search box inside the header. */
 .client-global-search form {
   max-width: none;
 }
 .client-global-search input {
-  height: 40px;
-  border-radius: 8px;
-  background: #f5f9fc;
-  font-size: 13px;
+  height: 38px;
+  border-radius: 10px;
+  border-color: #e2e8f0;
+  background: #f6f8fb;
+  font-size: 13.5px;
   box-shadow: none;
 }
-.client-menu-toggle {
-  display: none;
+.client-global-search input:focus {
+  background: #fff;
 }
 .client-main {
   padding: 24px;
@@ -121,35 +88,9 @@
   outline: 2px solid #1d4ed8;
   outline-offset: 3px;
 }
-@media (max-width: 1279px) {
-  .client-sidebar {
-    display: none;
-  }
-  .client-page {
-    margin-left: 0;
-  }
-  .client-menu-toggle {
-    display: inline-flex;
-  }
-  .client-topbar {
-    gap: 12px;
-  }
-}
 @media (max-width: 767px) {
   .client-main {
     padding: 16px;
-  }
-  .client-topbar {
-    padding: 12px 16px;
-    flex-wrap: wrap;
-  }
-  .client-breadcrumb {
-    flex: 1;
-    gap: 8px;
-  }
-  .client-global-search {
-    order: 5;
-    width: 100%;
   }
   .client-heading {
     align-items: flex-start;
@@ -167,4 +108,3 @@
     min-height: 44px;
   }
 }
-

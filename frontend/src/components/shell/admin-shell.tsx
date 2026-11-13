@@ -1,16 +1,22 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import { SidebarNav } from "@/components/navigation/sidebar-nav";
-import { BrandMark } from "./brand-mark";
-import { AccountFooter } from "./account-footer";
-import { TopToolbar } from "./top-toolbar";
 import { ViewOnlyBanner } from "./view-only-banner";
+import { GlobalSearch } from "./global-search";
+import { QuickCreateMenu } from "./quick-create-menu";
+import { WorkspaceFrame } from "./workspace-frame";
 import type { NavWorkspace } from "@/config/navigation";
 import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
+import { getSession } from "@/lib/api/auth";
+import { sessionForNav } from "@/lib/auth/session";
+import { notifySuccess } from "@/lib/feedback/notify";
 import { WorkspaceHelp } from "@/features/help/workspace-help";
 import { LearningIntro } from "@/features/help/help-launcher";
+import { ClientHeaderActions } from "@/features/stakeholders/client/ClientHeaderActions";
+import { ClientSupportLauncher } from "@/features/support/components/ClientSupportLauncher";
 
 interface AdminShellProps {
   children: ReactNode;
@@ -18,55 +24,64 @@ interface AdminShellProps {
 }
 
 export function AdminShell({ children, workspace = "platform-admin" }: AdminShellProps) {
-  const [navOpen, setNavOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
   const presentation = WORKSPACE_PRESENTATION[workspace];
+  const navSession = sessionForNav(workspace);
+  const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
+
+  const refresh = async () => {
+    setRefreshing(true);
+    try {
+      await queryClient.refetchQueries({ type: "active" }, { throwOnError: true });
+      notifySuccess("Workspace refreshed", "Visible operational panels are up to date.");
+    } catch {
+      toast.error("Some panels could not refresh", {
+        description: "Your existing data is kept. Retry the affected panel.",
+      });
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <WorkspaceHelp workspace={workspace}>
-      <div className="min-h-screen">
-        <a
-          href="#workspace-main"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-card focus:px-3 focus:py-2 focus:text-sm focus:shadow-md"
-        >
-          Skip to main content
-        </a>
-
-        <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] flex-col border-r border-sidebar-border bg-sidebar lg:flex">
-          <div className="flex h-16 shrink-0 items-center border-b border-sidebar-border px-4">
-            <BrandMark workspace={workspace} />
+      <WorkspaceFrame
+        mainClassName="min-w-0 px-4 py-5 lg:p-6"
+        home={presentation.home}
+        homeLabel={`Sapling Global — ${presentation.label} home`}
+        area={presentation.label}
+        place={session.data?.tenantName ?? navSession.scopeLabel}
+        navTitle={`${presentation.label} navigation`}
+        navigation={(onNavigate) => (
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <SidebarNav workspace={workspace} onNavigate={onNavigate} />
           </div>
-          <div className="relative min-h-0 flex-1 overflow-y-auto">
-            <SidebarNav workspace={workspace} />
-          </div>
-          <div className="relative">
-            <AccountFooter workspace={workspace} />
-          </div>
-        </aside>
-
-        <Sheet open={navOpen} onOpenChange={setNavOpen}>
-          <SheetContent side="left" className="w-[288px] gap-0 bg-sidebar p-0">
-            <SheetHeader className="h-16 shrink-0 justify-center border-b border-sidebar-border px-4">
-              <SheetTitle className="sr-only">{presentation.label} navigation</SheetTitle>
-              <BrandMark workspace={workspace} />
-            </SheetHeader>
-            <div className="min-h-0 flex-1 overflow-y-auto">
-              <SidebarNav workspace={workspace} onNavigate={() => setNavOpen(false)} />
-            </div>
-            <AccountFooter workspace={workspace} />
-          </SheetContent>
-        </Sheet>
-
-        <div className="flex min-h-screen min-w-0 flex-col lg:pl-[248px]">
-          <TopToolbar workspace={workspace} onOpenNav={() => setNavOpen(true)} />
-          <main id="workspace-main" className="min-w-0 flex-1 px-4 py-5 lg:p-6">
-            <div className="mx-auto w-full max-w-[1560px] space-y-4">
-              <LearningIntro />
-              <ViewOnlyBanner />
-              {children}
-            </div>
-          </main>
+        )}
+        search={presentation.search ? <GlobalSearch workspace={workspace} /> : undefined}
+        actions={
+          <ClientHeaderActions
+            workspace={workspace}
+            // Only the role of the workspace switched into, not every role the user holds.
+            roleLabel={presentation.label}
+            securityTo={presentation.security}
+            refreshing={refreshing}
+            onRefresh={() => void refresh()}
+            extra={
+              <>
+                {workspace === "client-admin" ? <ClientSupportLauncher /> : null}
+                {presentation.quickCreate ? <QuickCreateMenu /> : null}
+              </>
+            }
+          />
+        }
+      >
+        <div className="mx-auto w-full max-w-[1560px] space-y-4">
+          <LearningIntro />
+          <ViewOnlyBanner />
+          {children}
         </div>
-      </div>
+      </WorkspaceFrame>
     </WorkspaceHelp>
   );
 }

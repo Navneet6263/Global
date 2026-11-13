@@ -1,11 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
-import { Building2 } from "lucide-react";
 import { navFor, type NavItem, type NavWorkspace } from "@/config/navigation";
 import { WORKSPACE_PRESENTATION } from "@/config/workspace-presentation";
 import { useNavBadge } from "@/components/navigation/use-nav-badge";
 import { NavigationHint } from "@/features/help/navigation-hint";
-import { getSession } from "@/lib/api/auth";
 import { sessionForNav } from "@/lib/auth/session";
 import { isVisible } from "@/lib/permissions";
 
@@ -65,20 +62,19 @@ function NavLink({
  */
 export function ConfigNavigation({
   workspace,
-  subtitle,
   extraItems = [],
   hiddenRoutes = [],
   sharedSearch,
   onNavigate,
 }: {
   workspace: NavWorkspace;
-  subtitle: string;
+  /** Kept for callers; the workspace name now shows in the header. */
+  subtitle?: string;
   extraItems?: readonly NavItem[];
   hiddenRoutes?: readonly string[];
   sharedSearch?: Record<string, string>;
   onNavigate?: () => void;
 }) {
-  const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const navSession = sessionForNav(workspace);
   const { groups, items } = navFor(workspace);
   const all = [...extraItems, ...items].filter(
@@ -94,26 +90,6 @@ export function ConfigNavigation({
   );
   return (
     <div className="client-nav-content">
-      <Link
-        to={home as "/admin"}
-        search={sharedSearch as never}
-        className="client-brand"
-        onClick={onNavigate}
-        aria-label="Sapling Global"
-      >
-        <img src="/brand/sapling-wordmark.png" width="160" height="37" alt="Sapling Global" />
-      </Link>
-      <div className="client-organisation">
-        <span className="client-organisation-icon">
-          <Building2 aria-hidden />
-        </span>
-        <div>
-          <strong title={session.data?.tenantName}>
-            {session.data?.tenantName ?? "Sapling Global"}
-          </strong>
-          <span>{subtitle}</span>
-        </div>
-      </div>
       <nav className="client-nav" aria-label={`${workspace} navigation`}>
         {groups.map((group) => {
           const groupItems = all.filter((item) => item.group === group.id);

@@ -2,7 +2,6 @@ import { useId, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  Building2,
   ChartNoAxesCombined,
   ChevronDown,
   CircleAlert,
@@ -157,25 +156,6 @@ export function OperationsNavigation({ onNavigate }: { onNavigate?: () => void }
 
   return (
     <div className="client-nav-content">
-      <Link
-        to="/operations"
-        className="client-brand"
-        onClick={onNavigate}
-        aria-label="Sapling Global operations"
-      >
-        <img src="/brand/sapling-wordmark.png" width="160" height="37" alt="Sapling Global" />
-      </Link>
-      <div className="client-organisation">
-        <span className="client-organisation-icon">
-          <Building2 aria-hidden />
-        </span>
-        <div>
-          <strong title={session.data?.tenantName}>
-            {session.data?.tenantName ?? "Sapling Global"}
-          </strong>
-          <span>Operations</span>
-        </div>
-      </div>
       <nav className="client-nav" aria-label="operations navigation">
         <p className="client-nav-label">Workspace</p>
         {can("dashboard:read") && link("Overview", "/operations", { icon: LayoutDashboard })}

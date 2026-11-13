@@ -1,173 +1,121 @@
-.client-portal-shell {
-  min-height: 100vh;
-  background: #f8fafc;
-  color: #0f172a;
-}
-.client-sidebar {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: 248px;
-  z-index: 40;
-  background: white;
-  border-right: 1px solid #e2e8f0;
-}
+/* Sidebar menu (Task-app style): plain icons, 14px rows, a soft blue active row. */
 .client-nav-content {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  padding: 0 12px 12px;
-}
-.client-brand {
-  display: flex;
-  align-items: center;
-  height: 64px;
-  flex-shrink: 0;
-  margin: 0 -12px 12px;
-  padding: 0 24px;
-  border-bottom: 1px solid #eef2f6;
-}
-.client-brand img {
-  width: 160px;
-  height: 37px;
-  object-fit: contain;
-}
-.client-organisation {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
-  border: 1px solid #e8edf5;
-  background: #f8fafc;
-  border-radius: 9px;
-  margin: 0 2px 10px;
-}
-.client-organisation-icon {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
-  border: 1px solid #e2e8f0;
-  border-radius: 7px;
-  background: white;
-  color: #64748b;
-}
-.client-organisation-icon svg {
-  width: 16px;
-  height: 16px;
-}
-.client-organisation > div {
-  min-width: 0;
-}
-.client-organisation strong {
-  display: block;
-  font-size: 12px;
-  line-height: 18px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.client-organisation div > span {
-  display: block;
-  font-size: 11px;
-  line-height: 16px;
-  color: #64748b;
+  padding: 12px 12px 16px;
 }
 .client-nav {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  padding: 0 2px 4px;
+  padding: 0 0 4px;
 }
 .client-nav-label {
-  padding: 6px 12px 8px;
-  font-size: 10px;
+  padding: 14px 10px 6px;
+  font-size: 11px;
   line-height: 14px;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   font-weight: 600;
-  color: #64748b;
+  color: #94a3b8;
   text-transform: uppercase;
+}
+.client-nav > .client-nav-label:first-child,
+.client-nav > div:first-child > .client-nav-label {
+  padding-top: 4px;
 }
 .client-nav-row {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  min-height: 40px;
-  margin-bottom: 4px;
-  padding: 6px 10px;
+  min-height: 38px;
+  margin-bottom: 2px;
+  padding: 7px 10px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 20px;
-  font-weight: 600;
+  font-weight: 500;
   text-align: left;
   cursor: pointer;
   color: #475569;
+  transition:
+    background-color 120ms,
+    color 120ms;
 }
 .client-nav-icon {
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
-  border-radius: 7px;
-  background: #f5f7fa;
   color: #64748b;
 }
 .client-nav-icon svg {
-  height: 17px;
-  width: 17px;
-  stroke-width: 1.7;
+  height: 18px;
+  width: 18px;
+  stroke-width: 1.75;
 }
 .client-nav-row > span:not(.client-nav-icon) {
   flex: 1;
 }
 .client-nav-row > svg:last-child:not(:first-child) {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   color: #94a3b8;
   transition: transform 150ms;
 }
-.client-nav-row:hover,
-.client-subnav a:hover {
-  background: #f5f9fc;
-  color: #1d4ed8;
+.client-nav-row:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.client-nav-row:hover .client-nav-icon {
+  color: #0f172a;
 }
 .client-nav-row.is-active {
   color: #1d4ed8;
   font-weight: 600;
   background: #eff6ff;
-  box-shadow: inset 3px 0 #1d4ed8;
 }
 .client-nav-row.is-active .client-nav-icon {
-  background: #dbeafe;
   color: #1d4ed8;
 }
 .client-nav-row.is-current-group {
-  color: #1d4ed8;
+  color: #0f172a;
   font-weight: 600;
 }
 .client-nav-row.is-current-group .client-nav-icon {
-  background: #eff6ff;
   color: #1d4ed8;
 }
 .client-subnav {
-  margin: 0 0 8px 23px;
-  padding: 2px 0 2px 14px;
+  margin: 2px 0 6px 19px;
+  padding: 0 0 0 12px;
   border-left: 1px solid #e2e8f0;
 }
 .client-subnav a {
   display: flex;
   align-items: center;
-  min-height: 32px;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 12px;
+  gap: 8px;
+  min-height: 34px;
+  margin-bottom: 1px;
+  border-radius: 7px;
+  padding: 6px 10px;
+  font-size: 13.5px;
   font-weight: 500;
   line-height: 20px;
   color: #64748b;
+  transition:
+    background-color 120ms,
+    color 120ms;
+}
+.client-subnav a > span:first-child {
+  flex: 1;
+}
+.client-subnav a:hover {
+  background: #f8fafc;
+  color: #0f172a;
 }
 .client-subnav a.is-active {
   background: #eff6ff;
@@ -182,31 +130,28 @@
   white-space: normal;
 }
 .client-support-nav > svg {
-  width: 28px;
-  height: 28px;
-  padding: 5px;
-  background: #f5f7fa;
-  border-radius: 7px;
+  width: 20px;
+  height: 20px;
   color: #64748b;
 }
 @media (max-width: 1279px) {
   .client-nav-row {
-    min-height: 44px;
+    min-height: 42px;
   }
   .client-subnav a {
-    min-height: 40px;
+    min-height: 38px;
   }
 }
 
 /* Sub-items: a filtered view of the item above (e.g. My work → Final reviews) */
 .client-nav-row.is-sub {
-  min-height: 32px;
-  margin: 0 0 2px 24px;
-  width: calc(100% - 24px);
-  padding: 4px 10px 4px 14px;
+  min-height: 34px;
+  margin: 0 0 1px 19px;
+  width: calc(100% - 19px);
+  padding: 6px 10px 6px 14px;
   border-left: 1px solid #e2e8f0;
-  border-radius: 0 8px 8px 0;
-  font-size: 12.5px;
+  border-radius: 0 7px 7px 0;
+  font-size: 13.5px;
   font-weight: 500;
 }
 .client-nav-row.is-sub .client-nav-icon {

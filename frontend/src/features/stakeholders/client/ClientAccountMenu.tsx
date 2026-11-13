@@ -15,7 +15,13 @@ import { getSession } from "@/lib/api/auth";
 import { endAuthenticatedSession } from "@/lib/auth/end-session";
 import { initialsOf } from "@/lib/formatting";
 
-export function ClientAccountMenu({ roleLabel = "Client Admin" }: { roleLabel?: string }) {
+export function ClientAccountMenu({
+  roleLabel = "Client Admin",
+  securityTo = "/change-password",
+}: {
+  roleLabel?: string;
+  securityTo?: string;
+}) {
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -67,7 +73,7 @@ export function ClientAccountMenu({ roleLabel = "Client Admin" }: { roleLabel?: 
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="min-h-10 rounded-md">
-          <Link to="/change-password">
+          <Link to={securityTo as "/change-password"}>
             <ShieldCheck aria-hidden />
             Account security
           </Link>
