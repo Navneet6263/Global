@@ -7,7 +7,10 @@ import type { Prisma } from "../generated/prisma/client";
 import { notifyNewVersionForVendorChain } from "../vendor-requests/services/vendor-notify";
 import { promoteIntakeAfterTeamUpload } from "../workflow/intake-eligibility.helpers";
 import { CANDIDATE_PRIVACY_NOTICE } from "./candidate-privacy-notice";
-import { cancelUploadLease, withUploadStorageLease } from "./document-storage-lease";
+import {
+  cancelUploadLease,
+  withUploadStorageLease,
+} from "./document-storage-lease";
 import {
   computeNextDocumentVersion,
   persistDocumentVersion,
@@ -55,7 +58,12 @@ export async function executeTeamDocumentUpload(
 ) {
   const { prisma, storage, logger } = deps;
   const sha256 = createHash("sha256").update(file.buffer).digest("hex");
-  await assertNotDuplicateDocument(prisma, actor.tenantId, document.case.id, sha256);
+  await assertNotDuplicateDocument(
+    prisma,
+    actor.tenantId,
+    document.case.id,
+    sha256,
+  );
   const versionHint = await computeNextDocumentVersion(
     prisma,
     document.id,
@@ -76,14 +84,21 @@ export async function executeTeamDocumentUpload(
     (leaseId) =>
       prisma.$transaction(async (tx) => {
         await lockMutableCaseEvidence(tx, document.case.id);
-        await assertNotDuplicateDocument(tx, actor.tenantId, document.case.id, sha256);
+        await assertNotDuplicateDocument(
+          tx,
+          actor.tenantId,
+          document.case.id,
+          sha256,
+        );
         const { created, version, keepVerifiedBaseline } =
           await persistDocumentVersion(tx, {
             documentId: document.id,
             expectedCurrentVersion: document.currentVersion,
             expectedLockVersion: document.version,
             currentStatus: document.status,
-            preserveVerifiedBaseline: Boolean(options?.preserveVerifiedBaseline),
+            preserveVerifiedBaseline: Boolean(
+              options?.preserveVerifiedBaseline,
+            ),
             objectKey,
             originalName: file.originalName,
             contentType: file.mimetype,
@@ -100,7 +115,11 @@ export async function executeTeamDocumentUpload(
             action: "document.uploaded",
             resourceType: "document",
             resourcePublicId: document.publicId,
-            afterJson: JSON.stringify({ version, sha256, sizeBytes: file.size }),
+            afterJson: JSON.stringify({
+              version,
+              sha256,
+              sizeBytes: file.size,
+            }),
           },
         });
         if (!keepVerifiedBaseline) {
@@ -110,7 +129,12 @@ export async function executeTeamDocumentUpload(
             version,
           });
         }
-        await notifyIntakeResubmission(tx, actor.tenantId, document.id, version);
+        await notifyIntakeResubmission(
+          tx,
+          actor.tenantId,
+          document.id,
+          version,
+        );
         await promoteIntakeAfterTeamUpload(
           tx,
           actor,
@@ -137,19 +161,39 @@ export async function executeCandidateDocumentUpload(
 ) {
   const { prisma, storage, logger } = deps;
   const sha256 = createHash("sha256").update(file.buffer).digest("hex");
-  await assertNotDuplicateDocument(prisma, access.tenantId, access.caseId, sha256);
-  const existing = await prisma.document.findFirst({
-    where: { tenantId: access.tenantId, caseId: access.caseId, type },
-    orderBy: { createdAt: "desc" },
-    select: { id: true, publicId: true, status: true, currentVersion: true, version: true },
-  });
+  // Independent reads run together: every database round trip costs time on a remote DB.
+  const [, existing] = await Promise.all([
+    assertNotDuplicateDocument(prisma, access.tenantId, access.caseId, sha256),
+    prisma.document.findFirst({
+      where: { tenantId: access.tenantId, caseId: access.caseId, type },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        publicId: true,
+        status: true,
+        currentVersion: true,
+        version: true,
+      },
+    }),
+  ]);
   const target =
     existing ??
     (await prisma.$transaction(async (tx) => {
       await lockMutableCaseEvidence(tx, access.caseId);
       return tx.document.create({
-        data: { tenantId: access.tenantId, caseId: access.caseId, type, expiresAt },
-        select: { id: true, publicId: true, status: true, currentVersion: true, version: true },
+        data: {
+          tenantId: access.tenantId,
+          caseId: access.caseId,
+          type,
+          expiresAt,
+        },
+        select: {
+          id: true,
+          publicId: true,
+          status: true,
+          currentVersion: true,
+          version: true,
+        },
       });
     }));
   const versionHint = await computeNextDocumentVersion(
@@ -173,7 +217,12 @@ export async function executeCandidateDocumentUpload(
     (leaseId) =>
       prisma.$transaction(async (tx) => {
         await lockMutableCaseEvidence(tx, access.caseId);
-        await assertNotDuplicateDocument(tx, access.tenantId, access.caseId, sha256);
+        await assertNotDuplicateDocument(
+          tx,
+          access.tenantId,
+          access.caseId,
+          sha256,
+        );
         const outcome = await persistDocumentVersion(tx, {
           documentId: target.id,
           expectedCurrentVersion: target.currentVersion,

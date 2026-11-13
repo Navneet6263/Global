@@ -58,7 +58,13 @@ export function reviewDocument(
     expiresAt?: string;
   },
 ) {
-  return apiRequest(`/documents/${documentId}/review`, {
+  return apiRequest<{
+    id: string;
+    status: "VERIFIED" | "REJECTED" | "REUPLOAD_REQUIRED";
+    version: number;
+    currentVersion: number;
+    reviewNote: string;
+  }>(`/documents/${documentId}/review`, {
     method: "PATCH",
     body: JSON.stringify(input),
   });

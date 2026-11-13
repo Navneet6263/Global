@@ -20,7 +20,7 @@ import type { VerifierResult } from "./verifier-draft";
 
 /** Guided 4-step verification workbench for an assigned verifier task. */
 export function VerifierTaskWorkspace({
-  task,
+  task: loaded,
   readOnly = false,
   onUpdated,
   onOpenTab,
@@ -35,6 +35,13 @@ export function VerifierTaskWorkspace({
   quickTabs?: Array<{ id: string; label: string }>;
   vendorApproved?: boolean;
 }) {
+  // Started (or resumed) on the server: open the steps at once instead of waiting for
+  // the whole task to reload; the reloaded task takes over when it is newer.
+  const [started, setStarted] = useState<number | null>(null);
+  const task: VerificationTask =
+    started !== null && started > loaded.version
+      ? { ...loaded, status: "IN_PROGRESS", version: started }
+      : loaded;
   const inProgress = !readOnly && task.status === "IN_PROGRESS";
   const draft = useVerifierTaskDraft({
     taskId: task.id,
@@ -48,6 +55,7 @@ export function VerifierTaskWorkspace({
   const mutation = useMutation({
     mutationFn: (input: Parameters<typeof updateTask>[1]) => updateTask(task.id, input),
     onSuccess: (saved, input) => {
+      if (input.status === "IN_PROGRESS") setStarted(saved.version);
       if (input.status === "COMPLETED") draft.clearDraft();
       if (input.status === "COMPLETED" && saved.canForward) {
         // The Team Leader's own check: ask before it goes on to QA (refresh afterwards).

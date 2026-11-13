@@ -73,13 +73,22 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
   const rhsKeys = new Set(data.rhs.form.fields.map((field) => field.key));
   const save = useMutation({
     mutationFn: () => saveVerifiedDetails(data.checkId, entries),
-    onSuccess: async () => {
+    onSuccess: (saved) => {
       toast.success("Verified details saved", {
         description: "They appear in the report next to what was provided.",
       });
-      await queryClient.invalidateQueries({
-        queryKey: ["checks", data.checkId, "verified-details"],
-      });
+      // Use what the server saved straight away (the steps update at once); a fresh copy
+      // loads in the background instead of keeping the button busy.
+      const key = ["checks", data.checkId, "verified-details"];
+      queryClient.setQueryData<VerifiedDetails>(key, (current) =>
+        current
+          ? {
+              ...current,
+              rhs: { ...current.rhs, entries: saved.entries, verifiedAt: saved.verifiedAt },
+            }
+          : current,
+      );
+      void queryClient.invalidateQueries({ queryKey: key });
     },
     onError: (error: Error) => toast.error("Not saved", { description: error.message }),
   });

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { checkEvidenceApi } from "@/lib/backend-api/check-evidence";
 import { getVerifiedDetails } from "@/lib/backend-api/verified-details";
+import { fieldShown } from "@/lib/backend-api/workflow";
 
 /** Same minimum as the backend (check-readiness.ts). */
 export const MIN_SUMMARY = 20;
@@ -38,8 +39,12 @@ export function useCheckReadiness(checkId: string, vendorApproved: boolean, enab
   });
   const required = details.data?.rhs?.form?.fields?.filter((field) => field.required) ?? [];
   const entries = details.data?.rhs?.entries ?? [];
+  // A field hidden by its showWhen rule (e.g. the online link when the method is Email)
+  // is not required, the same as in the details form and the backend.
   const missingFields = entries.flatMap((entry) =>
-    required.filter((field) => !entry[field.key]?.trim()).map((field) => field.label),
+    required
+      .filter((field) => fieldShown(field, entry) && !entry[field.key]?.trim())
+      .map((field) => field.label),
   );
   return {
     loading: details.isPending || proof.isPending,

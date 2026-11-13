@@ -21,6 +21,7 @@ test("resolveInitialStep selects the first incomplete step once on load", () => 
     "@tanstack/react-query": { useQuery: () => ({}) },
     "@/lib/backend-api/check-evidence": { checkEvidenceApi: { list: () => Promise.resolve({}) } },
     "@/lib/backend-api/verified-details": { getVerifiedDetails: () => Promise.resolve({}) },
+    "@/lib/backend-api/workflow": { fieldShown: () => true },
   });
 
   assert.equal(readiness.MIN_SUMMARY, 20);
@@ -55,4 +56,47 @@ test("VerifierTaskWorkspace latches initial step instead of falling through on s
   assert.match(workspaceSource, /setChosenStep\(\s*resolveInitialStep\(/);
   assert.match(workspaceSource, /const step: StepId = chosenStep \?\? "details";/);
   assert.doesNotMatch(workspaceSource, /!outcomeDone\s*\?\s*"outcome"\s*:\s*"review"/);
+});
+
+test("step 1 ignores a required field hidden by its showWhen rule (Education by email)", () => {
+  const fieldShown = (field, entry) => {
+    const rule = field.showWhen;
+    if (!rule) return true;
+    const value = entry[rule.key] ?? "";
+    if (rule.in) return rule.in.includes(value);
+    if (rule.notIn) return !rule.notIn.includes(value);
+    return true;
+  };
+  const fields = [
+    { key: "method", label: "Method of verification", required: true },
+    {
+      key: "onlineSource",
+      label: "Online source (link)",
+      required: true,
+      showWhen: { key: "method", in: ["Online portal", "Online database"] },
+    },
+    { key: "institute", label: "Institute", required: true },
+  ];
+  const readinessFor = (entry) => {
+    let call = 0;
+    const readiness = transpile("../src/features/delivery/verifier/verification-readiness.ts", {
+      "@tanstack/react-query": {
+        // First query: verified details; second: proof files.
+        useQuery: () =>
+          call++ === 0
+            ? { isPending: false, data: { rhs: { form: { fields }, entries: [entry] } } }
+            : { isPending: false, data: { items: [] } },
+      },
+      "@/lib/backend-api/check-evidence": { checkEvidenceApi: { list: () => null } },
+      "@/lib/backend-api/verified-details": { getVerifiedDetails: () => null },
+      "@/lib/backend-api/workflow": { fieldShown },
+    });
+    return readiness.useCheckReadiness("chk-1", false);
+  };
+  const byEmail = readinessFor({ method: "Email", institute: "IIT Delhi" });
+  assert.equal(byEmail.detailsDone, true);
+  assert.equal(byEmail.detailsHint, "1 entry saved");
+  const online = readinessFor({ method: "Online portal", institute: "IIT Delhi" });
+  assert.equal(online.detailsDone, false);
+  assert.equal(online.detailsHint, "Missing: Online source (link)");
 });

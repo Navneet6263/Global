@@ -24,18 +24,22 @@ export function CandidateDocumentRow({
   const input = useRef<HTMLInputElement>(null);
   const [expiry, setExpiry] = useState("");
   const [error, setError] = useState("");
+  // Marked uploaded as soon as the file is saved; the page refreshes in the background.
+  const [savedFrom, setSavedFrom] = useState<string | null>(null);
   const upload = useMutation({
     mutationFn: (file: File) =>
       uploadCandidateDocument(accessId, token, item.type, file, noticeVersion, expiry || undefined),
-    onSuccess: async () => {
+    onSuccess: () => {
       setError("");
+      setSavedFrom(item.state);
       toast.success(`${meta.label} uploaded`);
-      await onUploaded();
+      void onUploaded();
     },
     onError: (failure: Error) => setError(failure.message),
   });
-  const uploaded = item.state === "UPLOADED" || item.state === "VERIFIED";
-  const again = item.state === "REUPLOAD";
+  const justSaved = savedFrom !== null && savedFrom === item.state;
+  const uploaded = justSaved || item.state === "UPLOADED" || item.state === "VERIFIED";
+  const again = !justSaved && item.state === "REUPLOAD";
   return (
     <li className={`cand-doc ${uploaded ? "is-done" : again ? "is-again" : ""}`}>
       <span className="cand-doc-icon" aria-hidden>

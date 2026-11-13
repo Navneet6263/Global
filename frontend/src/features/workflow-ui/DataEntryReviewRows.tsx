@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { FileText, MessageSquareText } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ export function DataEntryDocumentRow({
   const [rejecting, setRejecting] = useState(false);
   const [note, setNote] = useState("");
   const latest = document.versions.at(-1);
+  const queryClient = useQueryClient();
   const review = useMutation({
     mutationFn: (decision: "VERIFIED" | "REJECTED") =>
       reviewDocument(document.publicId, {
@@ -33,13 +34,32 @@ export function DataEntryDocumentRow({
             ? note.trim() || "Checked at Data Entry: complete and readable"
             : note.trim(),
       }),
-    onSuccess: async (_result, decision) => {
+    onSuccess: (result, decision) => {
       toast.success(
         decision === "VERIFIED" ? "Document accepted" : "Document rejected — replacement requested",
       );
+      // Show the decision at once; the rest of the case refreshes in the background
+      // instead of keeping the button busy until every panel has reloaded.
+      queryClient.setQueryData<CaseDetail>(["case", caseItem.id], (current) =>
+        current
+          ? {
+              ...current,
+              documents: current.documents.map((row) =>
+                row.publicId === document.publicId
+                  ? {
+                      ...row,
+                      status: result.status,
+                      version: result.version,
+                      reviewNote: result.reviewNote,
+                    }
+                  : row,
+              ),
+            }
+          : current,
+      );
       setRejecting(false);
       setNote("");
-      await onDone();
+      void onDone();
     },
     onError: (error: Error) => toast.error("Review not saved", { description: error.message }),
   });

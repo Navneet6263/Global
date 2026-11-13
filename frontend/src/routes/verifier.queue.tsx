@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Ban, CheckCircle2, ClipboardCheck, Clock3 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { WorkspaceIntro, WorkspaceMetricGrid } from "@/features/delivery/shared/WorkspaceIntro";
+import { WorkspaceIntro } from "@/features/delivery/shared/WorkspaceIntro";
 import {
   VerifierQueue,
   type VerifierQueueFilter,
@@ -148,40 +148,59 @@ function VerifierWorkbench() {
           />
         }
       />
-      <WorkspaceMetricGrid
-        items={[
+      <section
+        aria-label="Queue summary"
+        className="grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 shadow-[0_1px_2px_rgb(15_23_42/0.04)] lg:grid-cols-4"
+      >
+        {[
           {
             label: "Active workload",
             value: summary.active,
             detail: "Open, assigned and in progress",
             icon: ClipboardCheck,
-            tone: "mint",
+            tone: "bg-blue-50 text-blue-700",
           },
           {
             label: "SLA overdue",
             value: summary.overdue,
-            detail: "Past committed task due time",
+            detail: "Past the task due time",
             icon: Clock3,
-            tone: summary.overdue ? "red" : "mint",
-            share: ratio(summary.overdue, summary.active),
+            tone: summary.overdue ? "bg-red-50 text-red-600" : "bg-slate-100 text-slate-500",
+            alert: summary.overdue > 0,
           },
           {
             label: "Blocked",
             value: summary.blocked,
-            detail: "Waiting on source or dependency",
+            detail: "Waiting on a source",
             icon: Ban,
-            tone: summary.blocked ? "amber" : "mint",
-            share: ratio(summary.blocked, summary.active),
+            tone: summary.blocked ? "bg-amber-50 text-amber-700" : "bg-slate-100 text-slate-500",
           },
           {
             label: "Completed today",
             value: summary.completedToday,
-            detail: "Sent forward with an audit trail",
+            detail: "Sent forward",
             icon: CheckCircle2,
-            tone: "blue",
+            tone: "bg-emerald-50 text-emerald-700",
           },
-        ]}
-      />
+        ].map(({ label, value, detail, icon: Icon, tone, alert }) => (
+          <div key={label} className="flex items-center gap-3 bg-white px-4 py-3.5">
+            <span className={`grid size-10 shrink-0 place-items-center rounded-xl ${tone}`}>
+              <Icon className="size-[18px]" aria-hidden />
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-[12.5px] font-medium text-slate-500">{label}</p>
+              <p
+                className={`num text-[22px] leading-7 font-semibold ${alert ? "text-red-600" : "text-slate-900"}`}
+              >
+                {value}
+              </p>
+            </div>
+            <p className="ml-auto hidden max-w-[9rem] text-right text-[11.5px] leading-4 text-slate-400 2xl:block">
+              {detail}
+            </p>
+          </div>
+        ))}
+      </section>
       {deepLink.taskId ? (
         <button
           type="button"
@@ -191,7 +210,7 @@ function VerifierWorkbench() {
           ← Return to full queue
         </button>
       ) : null}
-      <div className="grid gap-5 xl:grid-cols-[minmax(20rem,0.72fr)_minmax(0,1.28fr)]">
+      <div className="grid gap-5 xl:grid-cols-[minmax(22rem,0.7fr)_minmax(0,1.3fr)]">
         <VerifierQueue
           items={items}
           pending={changingView}
@@ -236,7 +255,10 @@ function VerifierWorkbench() {
                     queryClient.invalidateQueries({ queryKey: ["tasks", "mine"] }),
                     queryClient.invalidateQueries({ queryKey: ["verifier", "insights"] }),
                     queryClient.invalidateQueries({ queryKey: ["tasks", selected.id, "context"] }),
-                    queryClient.invalidateQueries({ queryKey: ["workflow"] }),
+                    queryClient.invalidateQueries({
+                      queryKey: ["workflow"],
+                      predicate: (query) => query.queryKey[1] !== "initiation-forms",
+                    }),
                   ]);
                 }}
               />
@@ -253,8 +275,4 @@ function VerifierWorkbench() {
       </div>
     </div>
   );
-}
-
-function ratio(value: number, total: number) {
-  return total ? Math.round((value / total) * 100) : 0;
 }

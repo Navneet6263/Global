@@ -34,7 +34,11 @@ export function DataEntryReviewBody({
   const refresh = () =>
     Promise.all([
       queryClient.invalidateQueries({ queryKey: ["case", item.id] }),
-      queryClient.invalidateQueries({ queryKey: ["workflow"] }),
+      // The form catalogue never changes with a review; only the queues need a reload.
+      queryClient.invalidateQueries({
+        queryKey: ["workflow"],
+        predicate: (query) => query.queryKey[1] !== "initiation-forms",
+      }),
     ]);
 
   const stage = item.workflow?.intakeStage;

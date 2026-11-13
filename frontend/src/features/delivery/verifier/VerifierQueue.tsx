@@ -3,7 +3,8 @@ import { AlertCircle, ChevronLeft, ChevronRight, Clock3, Loader2, Search } from 
 import type { VerificationTask } from "@/lib/api/tasks";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/workspace/kit";
-import { formatDate, humanize } from "../utils";
+import { humanize } from "../utils";
+import { dueLabel, l2QueueLabel } from "./queue-labels";
 
 export type VerifierQueueFilter = "ACTIVE" | "OPEN" | "IN_PROGRESS" | "BLOCKED" | "COMPLETED";
 
@@ -27,14 +28,14 @@ export function VerifierQueue(props: VerifierQueueProps) {
   return (
     <section
       aria-label="Assigned checks"
-      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm xl:sticky xl:top-5 xl:self-start"
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_1px_2px_rgb(15_23_42/0.04)] xl:sticky xl:top-[76px] xl:self-start"
     >
-      <header className="grid gap-3 px-4 pb-3 pt-4">
+      <header className="grid gap-3 border-b border-slate-100 px-4 pt-4 pb-3">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-[16px] font-bold text-slate-900">My checks</h2>
+          <h2 className="text-[15px] font-semibold text-slate-900">My checks</h2>
           <span
             role="status"
-            className="flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11.5px] font-semibold text-slate-600"
+            className="flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-[12px] font-medium text-slate-600"
           >
             {props.pending ? (
               <>
@@ -46,18 +47,18 @@ export function VerifierQueue(props: VerifierQueueProps) {
             )}
           </span>
         </div>
-        <label className="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 focus-within:border-blue-300 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-100">
+        <label className="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 transition focus-within:border-blue-400 focus-within:ring-4 focus-within:ring-blue-100">
           <Search className="size-4 shrink-0 text-slate-400" aria-hidden />
           <input
             value={props.search}
             onChange={(event) => props.onSearch(event.target.value)}
             placeholder="Search candidate, Sapling ID or company"
             aria-label="Search assigned checks"
-            className="min-w-0 flex-1 bg-transparent text-[13px] outline-none placeholder:text-slate-400"
+            className="min-w-0 flex-1 bg-transparent text-[13.5px] outline-none placeholder:text-slate-400"
           />
         </label>
         <div
-          className="flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1"
+          className="flex gap-0.5 rounded-lg bg-slate-100 p-0.5"
           aria-label="Task status"
           role="group"
         >
@@ -68,10 +69,10 @@ export function VerifierQueue(props: VerifierQueueProps) {
               onClick={() => props.onFilter(filter)}
               aria-pressed={props.activeFilter === filter}
               className={cn(
-                "min-w-0 flex-auto rounded-lg px-2.5 py-1.5 text-[12.5px] font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
+                "min-w-0 flex-auto truncate rounded-md px-2 py-1.5 text-[12.5px] font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
                 props.activeFilter === filter
-                  ? "bg-white text-blue-700 shadow-sm ring-1 ring-slate-200"
-                  : "text-slate-600 hover:bg-white/70 hover:text-slate-900",
+                  ? "bg-white font-semibold text-slate-900 shadow-[0_1px_2px_rgb(15_23_42/0.08)]"
+                  : "text-slate-500 hover:text-slate-900",
               )}
             >
               {humanize(filter)}
@@ -84,7 +85,7 @@ export function VerifierQueue(props: VerifierQueueProps) {
         aria-busy={props.pending}
         inert={props.pending}
         className={cn(
-          "max-h-[640px] min-h-40 divide-y divide-slate-100 overflow-y-auto border-t border-slate-100",
+          "max-h-[640px] min-h-40 divide-y divide-slate-100 overflow-y-auto",
           props.pending && "opacity-60",
         )}
       >
@@ -116,30 +117,30 @@ function QueueItem({
   const overdue = Boolean(
     task.dueAt && new Date(task.dueAt).getTime() < Date.now() && task.status !== "COMPLETED",
   );
-  const latestL2 = task.check.clarifications?.find((item) => item.level === "L2");
-  const l2Label =
-    latestL2 && task.status !== "COMPLETED"
-      ? latestL2.status === "RESOLVED" && latestL2.reentryCompletedAt
-        ? "All details re-entered by Data Entry"
-        : latestL2.status === "DATA_ENTRY_PENDING"
-          ? "L2: With Data Entry"
-          : latestL2.status === "CANDIDATE_SUBMITTED"
-            ? "L2: Awaiting Ops"
-            : latestL2.status === "OPEN"
-              ? "L2: Awaiting candidate"
-              : null
-      : null;
+  const l2 = l2QueueLabel(task);
   return (
     <button
       type="button"
       onClick={onSelect}
       aria-pressed={active}
       className={cn(
-        "relative flex w-full items-start gap-3 px-4 py-3 text-left transition",
-        active ? "bg-blue-50" : "hover:bg-slate-50",
+        "relative flex w-full items-start gap-3 px-4 py-3.5 text-left transition",
+        active ? "bg-blue-50/70" : "hover:bg-slate-50",
       )}
     >
-      {active ? <span className="absolute inset-y-0 left-0 w-[3px] bg-blue-600" /> : null}
+      <span
+        aria-hidden
+        className={cn(
+          "absolute inset-y-0 left-0 w-[3px]",
+          active
+            ? "bg-blue-600"
+            : overdue
+              ? "bg-red-400"
+              : task.status === "BLOCKED"
+                ? "bg-amber-400"
+                : "",
+        )}
+      />
       <Avatar
         name={task.check.case.subject.fullName}
         size="sm"
@@ -147,45 +148,47 @@ function QueueItem({
       />
       <span className="min-w-0 flex-1">
         <span className="flex items-start justify-between gap-2">
-          <strong className="truncate text-[13.5px] font-semibold text-slate-900">
+          <strong className="truncate text-[14px] leading-5 font-semibold text-slate-900">
             {task.check.case.subject.fullName}
           </strong>
           <Status status={task.status} />
         </span>
-        <span className="block truncate font-mono text-[11.5px] text-slate-500">
-          {task.check.case.caseNumber}
+        <span className="mt-0.5 block truncate text-[12px] text-slate-500">
+          <span className="font-mono">{task.check.case.caseNumber}</span>
+          {" · "}
+          {task.check.case.client.displayName}
         </span>
-        {l2Label ? (
-          <span
-            className={cn(
-              "mt-1 inline-block rounded-full px-2 py-0.5 text-[10.5px] font-semibold",
-              latestL2?.status === "RESOLVED"
-                ? "bg-emerald-50 text-emerald-700"
-                : "bg-amber-50 text-amber-800",
-            )}
-          >
-            {l2Label}
-          </span>
-        ) : null}
-        <span className="mt-1.5 flex items-center justify-between gap-2 text-[11.5px] text-slate-500">
-          <span className="truncate">
-            <span className="font-semibold text-blue-700">{humanize(task.check.type)}</span>
-            {" · "}
-            {task.check.case.client.displayName}
+        <span className="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+          <span className="flex min-w-0 flex-wrap items-center gap-1.5">
+            <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[11.5px] font-semibold text-slate-700">
+              {humanize(task.check.type)}
+            </span>
+            {l2 ? (
+              <span
+                className={cn(
+                  "rounded-md px-1.5 py-0.5 text-[11px] font-semibold",
+                  l2.resolved ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800",
+                )}
+              >
+                {l2.label}
+              </span>
+            ) : null}
           </span>
           <span
             className={cn(
-              "flex shrink-0 items-center gap-1",
-              overdue && "font-semibold text-red-600",
+              "flex shrink-0 items-center gap-1 text-[12px]",
+              overdue ? "font-semibold text-red-600" : "text-slate-500",
             )}
           >
-            {overdue ? <AlertCircle className="size-3" /> : <Clock3 className="size-3" />}
-            {task.dueAt ? formatDate(task.dueAt) : "No due date"}
+            {overdue ? <AlertCircle className="size-3.5" /> : <Clock3 className="size-3.5" />}
+            {task.dueAt
+              ? `${overdue ? "Overdue · " : "Due "}${dueLabel(task.dueAt)}`
+              : "No due date"}
           </span>
         </span>
         {task.assignee?.name ? (
-          <span className="mt-1 block truncate text-[11px] font-medium text-slate-600">
-            Claimed by {task.assignee.name}
+          <span className="mt-1 block truncate text-[11.5px] text-slate-500">
+            Claimed by <span className="font-medium text-slate-700">{task.assignee.name}</span>
           </span>
         ) : null}
       </span>
