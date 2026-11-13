@@ -94,7 +94,12 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
   });
   const set = (index: number, key: string, value: string) =>
     setEntries((current) =>
-      current.map((entry, i) => (i === index ? { ...entry, [key]: value } : entry)),
+      current.map((entry, i) => {
+        if (i !== index) return entry;
+        const next = { ...entry, [key]: value };
+        if (key === "geoTagged" && value !== "Yes") delete next["latLong"];
+        return next;
+      }),
     );
   const copyProvided = (index: number) =>
     setEntries((current) =>
@@ -107,9 +112,13 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
         return { ...Object.fromEntries(provided), ...Object.fromEntries(typed) };
       }),
     );
+  const isFieldVisible = (field: InitiationField, entry: DetailEntry) =>
+    field.key === "latLong" && !field.showWhen
+      ? entry["geoTagged"] === "Yes"
+      : fieldShown(field, entry);
   const missing = entries.some((entry) =>
     data.rhs.form.fields.some(
-      (field) => field.required && fieldShown(field, entry) && !entry[field.key]?.trim(),
+      (field) => field.required && isFieldVisible(field, entry) && !entry[field.key]?.trim(),
     ),
   );
   const label = readable(data.type);
@@ -202,7 +211,7 @@ function DetailsForm({ data, readOnly }: { data: VerifiedDetails; readOnly: bool
                 ) : null}
                 {groupFields(
                   // Only the fields that apply, e.g. no referee for an online check.
-                  data.rhs.form.fields.filter((field) => fieldShown(field, entry)),
+                  data.rhs.form.fields.filter((field) => isFieldVisible(field, entry)),
                 ).map((group) => (
                   <div key={group.title ?? "details"} className="grid gap-2">
                     {group.title ? (

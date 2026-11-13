@@ -415,6 +415,7 @@ export const VERIFIED_FORMS: Readonly<Record<string, VerifiedForm>> = {
         key: "latLong",
         label: "Latitude, longitude",
         group: "Closure",
+        showWhen: { key: "geoTagged", in: ["Yes"] },
       },
       {
         key: "remarks",
@@ -510,7 +511,7 @@ export const VERIFIED_FORMS: Readonly<Record<string, VerifiedForm>> = {
         label: "Method of verification",
         required: true,
         kind: "select",
-        options: ["Law firm", "Police station visit", "PCC", "Vendor"],
+        options: ["PCC"],
         group: "Method",
       },
       {

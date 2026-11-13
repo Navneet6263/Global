@@ -103,3 +103,23 @@ void test("an online education check records the source link, not a referee", ()
   assert.equal(email!.verifierName, "Typed by mistake");
   assert.equal("onlineSource" in email!, false);
 });
+
+void test("an address check records latitude/longitude only when geo-tagged is Yes", () => {
+  const base = {
+    addressConfirmed: "Yes",
+    respondentName: "Suresh Kumar",
+    verificationDate: "2026-11-13",
+    method: "Physical visit",
+    latLong: "12.9716, 77.5946",
+  };
+  const [tagged] = cleanVerified("ADDRESS", [{ ...base, geoTagged: "Yes" }]);
+  assert.equal(tagged!.geoTagged, "Yes");
+  assert.equal(tagged!.latLong, "12.9716, 77.5946");
+
+  const [notTagged] = cleanVerified("ADDRESS", [{ ...base, geoTagged: "No" }]);
+  assert.equal(notTagged!.geoTagged, "No");
+  assert.equal("latLong" in notTagged!, false);
+
+  const [unselected] = cleanVerified("ADDRESS", [base]);
+  assert.equal("latLong" in unselected!, false);
+});

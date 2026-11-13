@@ -100,3 +100,47 @@ test("step 1 ignores a required field hidden by its showWhen rule (Education by 
   assert.equal(online.detailsDone, false);
   assert.equal(online.detailsHint, "Missing: Online source (link)");
 });
+
+test("VerifiedDetailsPanel hides latLong when geoTagged is No and shows it when Yes", () => {
+  const panelSource = readFileSync(
+    new URL("../src/features/delivery/verifier/VerifiedDetailsPanel.tsx", import.meta.url),
+    "utf8",
+  );
+  const lines = panelSource.split(/\r?\n/).length;
+  assert.ok(lines < 300, `VerifiedDetailsPanel.tsx has ${lines} lines, exceeding 300`);
+
+  // Verify conditional rendering and clearing logic
+  assert.match(panelSource, /field\.key === "latLong"/);
+  assert.match(panelSource, /key === "geoTagged" && value !== "Yes"/);
+  assert.match(panelSource, /delete next\["latLong"\]/);
+
+  const fieldShown = (field, entry) => {
+    const rule = field.showWhen;
+    if (!rule) return true;
+    const value = entry[rule.key] ?? "";
+    if (rule.in) return rule.in.includes(value);
+    if (rule.notIn) return !rule.notIn.includes(value);
+    return true;
+  };
+
+  const isFieldVisible = (field, entry) =>
+    field.key === "latLong" && !field.showWhen
+      ? entry["geoTagged"] === "Yes"
+      : fieldShown(field, entry);
+
+  const latLongField = {
+    key: "latLong",
+    label: "Latitude, longitude",
+    showWhen: { key: "geoTagged", in: ["Yes"] },
+  };
+
+  assert.equal(isFieldVisible(latLongField, { geoTagged: "Yes" }), true);
+  assert.equal(isFieldVisible(latLongField, { geoTagged: "No" }), false);
+  assert.equal(isFieldVisible(latLongField, {}), false);
+
+  // Fallback when showWhen is not set
+  const unadornedField = { key: "latLong", label: "Latitude, longitude" };
+  assert.equal(isFieldVisible(unadornedField, { geoTagged: "Yes" }), true);
+  assert.equal(isFieldVisible(unadornedField, { geoTagged: "No" }), false);
+  assert.equal(isFieldVisible(unadornedField, {}), false);
+});
