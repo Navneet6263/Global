@@ -71,8 +71,10 @@ function VendorOnboardingPage() {
       await submitVendorOnboarding();
       toast.success("Onboarding profile submitted for Operations review");
       await queryClient.invalidateQueries({ queryKey: ["vendor-onboarding-me"] });
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to submit onboarding");
+    } catch (err) {
+      toast.error(
+        err instanceof Error && err.message ? err.message : "Failed to submit onboarding",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -82,9 +84,9 @@ function VendorOnboardingPage() {
     try {
       await logout();
       clearIdentity();
-      void navigate({ to: "/auth" as any, replace: true });
+      void navigate({ to: "/auth", replace: true });
     } catch {
-      void navigate({ to: "/auth" as any, replace: true });
+      void navigate({ to: "/auth", replace: true });
     }
   };
 
@@ -198,7 +200,8 @@ function VendorOnboardingPage() {
                   Submit application
                 </h2>
                 <p className="mb-4 text-xs text-muted-foreground">
-                  Once submitted, our Operations team will inspect your documents and unlock your vendor workspace.
+                  Once submitted, our Operations team will inspect your documents and unlock your
+                  vendor workspace.
                 </p>
                 <Button
                   className="w-full"

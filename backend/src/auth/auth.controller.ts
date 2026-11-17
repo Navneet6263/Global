@@ -33,8 +33,12 @@ import {
   SignupVerifyDto,
 } from "./dto/signup.dto";
 import { SignupService } from "./signup.service";
-import { ttlSeconds } from "../config/ttl";
-import { randomUUID } from "node:crypto";
+import {
+  clearSessionHint,
+  ensureDeviceKey,
+  requestMeta,
+  setSessionCookies,
+} from "./session-cookies";
 
 /** A view-only Platform Admin still manages its own sign-in, password and sessions. */
 @Controller("auth")
@@ -202,65 +206,18 @@ export class AuthController {
       refreshExpiresAt: Date;
     },
   ): void {
-    const secure = this.config.get<boolean>("COOKIE_SECURE", false);
-    response.setCookie("sg_access", tokens.accessToken, {
-      httpOnly: true,
-      secure,
-      sameSite: "strict",
-      path: "/",
-      maxAge: ttlSeconds(this.config.get<string>("JWT_ACCESS_TTL", "15m")),
-    });
-    response.setCookie("sg_refresh", tokens.refreshToken, {
-      httpOnly: true,
-      secure,
-      sameSite: "strict",
-      path: "/api/v1/auth",
-      expires: tokens.refreshExpiresAt,
-    });
-    // Readable "signed in" marker (no secret): lets the web app skip the session
-    // check when nobody is signed in, instead of logging 401s on every visit.
-    response.setCookie("sg_session", "1", {
-      httpOnly: false,
-      secure,
-      sameSite: "strict",
-      path: "/",
-      expires: tokens.refreshExpiresAt,
-    });
+    setSessionCookies(this.config, response, tokens);
   }
 
   private clearSessionHint(response: FastifyReply): void {
-    response.clearCookie("sg_session", { path: "/" });
+    clearSessionHint(response);
   }
 
   private meta(request: FastifyRequest, deviceKey?: string) {
-    const header = (name: string) => {
-      const value = request.headers[name];
-      return Array.isArray(value) ? value[0] : value;
-    };
-    const city = header("cf-ipcity") ?? header("x-vercel-ip-city");
-    const region = header("cf-region") ?? header("x-vercel-ip-country-region");
-    const country = header("cf-ipcountry") ?? header("x-vercel-ip-country");
-    return {
-      ipAddress: request.ip,
-      userAgent: request.headers["user-agent"],
-      deviceKey,
-      locationLabel:
-        [city, region, country].filter(Boolean).join(", ") || undefined,
-    };
+    return requestMeta(request, deviceKey);
   }
 
   private deviceKey(request: FastifyRequest, response: FastifyReply): string {
-    const existing = (request.cookies as Record<string, string> | undefined)
-      ?.sg_device;
-    const deviceKey =
-      existing && /^[0-9a-f-]{36}$/i.test(existing) ? existing : randomUUID();
-    response.setCookie("sg_device", deviceKey, {
-      httpOnly: true,
-      secure: this.config.get<boolean>("COOKIE_SECURE", false),
-      sameSite: "strict",
-      path: "/",
-      maxAge: 365 * 24 * 60 * 60,
-    });
-    return deviceKey;
+    return ensureDeviceKey(this.config, request, response);
   }
 }

@@ -13,16 +13,9 @@ export function VendorOnboardingHero({
   uploadedCount: number;
 }) {
   const status = profile.verificationStatus;
-  const stepIndex =
-    status === "APPROVED" ? 3 : status === "PENDING_REVIEW" ? 2 : 1;
+  const stepIndex = status === "APPROVED" ? 3 : status === "PENDING_REVIEW" ? 2 : 1;
   const progressPercent =
-    status === "APPROVED"
-      ? 100
-      : status === "PENDING_REVIEW"
-        ? 75
-        : uploadedCount > 0
-          ? 50
-          : 25;
+    status === "APPROVED" ? 100 : status === "PENDING_REVIEW" ? 75 : uploadedCount > 0 ? 50 : 25;
 
   return (
     <>
@@ -74,7 +67,10 @@ export function VendorOnboardingHero({
             ))}
           </ol>
         </div>
-        <ProgressRing percent={progressPercent} label={status === "APPROVED" ? "approved" : "ready"} />
+        <ProgressRing
+          percent={progressPercent}
+          label={status === "APPROVED" ? "approved" : "ready"}
+        />
       </section>
 
       {status === "APPROVED" ? (
@@ -82,7 +78,9 @@ export function VendorOnboardingHero({
           <PartyPopper aria-hidden />
           <div>
             <strong>Your vendor workspace is active.</strong>
-            <span>Verification cases and field requests can now be handled directly from your dashboard.</span>
+            <span>
+              Verification cases and field requests can now be handled directly from your dashboard.
+            </span>
             <div className="mt-2">
               <Button size="sm" onClick={() => window.location.assign("/vendor")}>
                 Open Vendor Dashboard
@@ -108,7 +106,13 @@ export function VendorOnboardingHero({
           <Clock aria-hidden />
           <div>
             <strong>Verification under review</strong>
-            <span>Submitted on {profile.submittedAt ? new Date(profile.submittedAt).toLocaleDateString() : "recently"}. Operations is verifying your compliance records.</span>
+            <span>
+              Submitted on{" "}
+              {profile.submittedAt
+                ? new Date(profile.submittedAt).toLocaleDateString()
+                : "recently"}
+              . Operations is verifying your compliance records.
+            </span>
           </div>
         </div>
       ) : (
@@ -116,7 +120,10 @@ export function VendorOnboardingHero({
           <Info aria-hidden />
           <div>
             <strong>Single document requirement</strong>
-            <span>Upload any ONE legal document (Company PAN, GST Certificate, or Business Registration). All three are not mandatory.</span>
+            <span>
+              Upload any ONE legal document (Company PAN, GST Certificate, or Business
+              Registration). All three are not mandatory.
+            </span>
           </div>
         </div>
       )}

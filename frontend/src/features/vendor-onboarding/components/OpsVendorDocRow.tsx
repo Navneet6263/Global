@@ -7,6 +7,7 @@ import { fileSize } from "@/features/onboarding/onboarding-format";
 import {
   downloadOpsVendorDocument,
   previewOpsVendorDocument,
+  type OpsVendorDocument,
 } from "../api/vendor-onboarding-api";
 
 const DOC_NAMES: Record<string, string> = {
@@ -21,7 +22,7 @@ export function OpsVendorDocRow({
   disabled,
   onReview,
 }: {
-  doc: any;
+  doc: OpsVendorDocument;
   vendorProfileId: string;
   disabled: boolean;
   onReview: (docId: string, decision: "ACCEPT" | "REJECT", reason?: string) => Promise<void>;
@@ -33,18 +34,14 @@ export function OpsVendorDocRow({
   const latest = doc.revisions?.[0];
   const title = DOC_NAMES[doc.documentType] || doc.documentType;
   const chipState =
-    doc.status === "VERIFIED"
-      ? "APPROVED"
-      : doc.status === "REJECTED"
-        ? "REJECTED"
-        : "PENDING";
+    doc.status === "VERIFIED" ? "APPROVED" : doc.status === "REJECTED" ? "REJECTED" : "PENDING";
 
   const handlePreview = async () => {
     setActionLoading("PREVIEW");
     try {
       await previewOpsVendorDocument(vendorProfileId, doc.publicId);
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to preview document");
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : "Failed to preview document");
     } finally {
       setActionLoading(null);
     }
@@ -57,8 +54,10 @@ export function OpsVendorDocRow({
         doc.publicId,
         latest?.fileName ?? "document.pdf",
       );
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to download document");
+    } catch (err) {
+      toast.error(
+        err instanceof Error && err.message ? err.message : "Failed to download document",
+      );
     }
   };
 

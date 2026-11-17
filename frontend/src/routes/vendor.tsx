@@ -8,7 +8,7 @@ export const Route = createFileRoute("/vendor")({
   beforeLoad: async () => {
     const identity = await requireRoleWorkspace(["VENDOR"]);
     if (identity.vendorStatus && identity.vendorStatus !== "APPROVED") {
-      throw redirect({ to: "/vendor/onboarding" as any });
+      throw redirect({ to: "/vendor/onboarding" });
     }
     return identity;
   },

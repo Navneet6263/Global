@@ -155,7 +155,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       roles,
       permissions,
       ...(roles.includes("VENDOR")
-        ? { vendorStatus: user.vendorStatus ?? "UNVERIFIED" }
+        ? // No profile: an Ops-created vendor (only self sign-up starts unapproved),
+          // the same rule as at sign-in.
+          { vendorStatus: user.vendorStatus ?? "APPROVED" }
         : {}),
       ...(user.vendorOwnerId ? { vendorOwnerId: user.vendorOwnerId } : {}),
       ...(roles.includes("SPOC_RM")

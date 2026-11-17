@@ -343,6 +343,8 @@ export class SignupService {
     const row = await this.prisma.signupRequest.findFirst({
       where: {
         publicId: signupId,
+        // A vendor sign-up can never be finished here (and become a client company).
+        signupType: "COMPANY",
         status: "PENDING",
         createdAt: { gt: new Date(Date.now() - SIGNUP_WINDOW_MS) },
       },

@@ -88,12 +88,7 @@ export function VendorSignupOtpStep({
           <ArrowLeft className="mr-1 inline size-3.5" aria-hidden />
           Change details
         </button>
-        <button
-          type="button"
-          className="auth-link-button"
-          onClick={onResend}
-          disabled={wait > 0}
-        >
+        <button type="button" className="auth-link-button" onClick={onResend} disabled={wait > 0}>
           {wait > 0 ? `Resend in ${wait}s` : "Resend code"}
         </button>
       </div>

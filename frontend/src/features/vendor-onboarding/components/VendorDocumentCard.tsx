@@ -4,18 +4,12 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { openDocumentPreview } from "@/lib/backend-api/document-preview";
 import { apiDownload } from "@/lib/backend-api/client";
-import {
-  downloadVendorDocument,
-  type VendorDocumentItem,
-} from "../api/vendor-onboarding-api";
+import { downloadVendorDocument, type VendorDocumentItem } from "../api/vendor-onboarding-api";
 import { DocChip, DocIcon } from "@/features/onboarding/onboarding-ui";
 import { docRowClass, fileSize, shortDate } from "@/features/onboarding/onboarding-format";
 import type { OnboardingDocumentState } from "@/lib/backend-api/onboarding";
 
-const DOC_CONFIG: Record<
-  string,
-  { title: string; subtitle: string; hint: string }
-> = {
+const DOC_CONFIG: Record<string, { title: string; subtitle: string; hint: string }> = {
   COMPANY_PAN: {
     title: "Company PAN Card",
     subtitle: "Permanent Account Number card registered in your business name",
@@ -77,8 +71,8 @@ export function VendorDocumentCard({
     try {
       await onUpload(file);
       toast.success(`${config.title} uploaded successfully`);
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to upload document");
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : "Failed to upload document");
     } finally {
       setUploading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -91,8 +85,10 @@ export function VendorDocumentCard({
       apiDownload(
         `/vendor/onboarding/me/document/${encodeURIComponent(document.publicId)}/download`,
       ),
-    ).catch((err: any) => {
-      toast.error("Preview failed", { description: err?.message || "Could not open document" });
+    ).catch((err: unknown) => {
+      toast.error("Preview failed", {
+        description: err instanceof Error && err.message ? err.message : "Could not open document",
+      });
     });
   };
 
@@ -104,7 +100,9 @@ export function VendorDocumentCard({
           <span>{config.title}</span>
           <DocChip state={docState} />
         </div>
-        <p className="onb-doc-hint">{config.subtitle} · {config.hint}</p>
+        <p className="onb-doc-hint">
+          {config.subtitle} · {config.hint}
+        </p>
 
         {latest && document ? (
           <div className="onb-doc-file">
@@ -118,7 +116,8 @@ export function VendorDocumentCard({
               {latest.fileName}
             </button>
             <span>
-              {fileSize(latest.fileSize)} · r{latest.revisionNumber} · uploaded {shortDate(latest.uploadedAt)}
+              {fileSize(latest.fileSize)} · r{latest.revisionNumber} · uploaded{" "}
+              {shortDate(latest.uploadedAt)}
             </span>
           </div>
         ) : null}

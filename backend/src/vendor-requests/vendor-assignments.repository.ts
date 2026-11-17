@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
+import { workReadyVendor } from "../vendor-onboarding/vendor-approval";
 
 export type VendorTx = Prisma.TransactionClient;
 
@@ -58,6 +59,7 @@ export class VendorAssignmentsRepository {
         status: "ACTIVE",
         vendorOwnerId: null,
         userRoles: { some: { role: { code: "VENDOR" } } },
+        ...workReadyVendor,
       },
       select: { id: true, publicId: true, displayName: true },
     });

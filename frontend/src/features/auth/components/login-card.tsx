@@ -36,7 +36,9 @@ export function LoginCard() {
       <Link to="/vendor/signup" className="auth-alt mt-2">
         <div>
           <strong>Sign up as a Vendor</strong>
-          <span>Register your vendor business and get access to verification requests from our clients.</span>
+          <span>
+            Register your vendor business and get access to verification requests from our clients.
+          </span>
         </div>
         <ArrowRight aria-hidden />
       </Link>

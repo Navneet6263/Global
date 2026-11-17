@@ -185,14 +185,13 @@ export class NavigationCountsService {
       this.prisma.verificationCase.count({
         where: { ...active, escalatedAt: { not: null } },
       }),
-      this.prisma.vendorProfile
-        ? this.prisma.vendorProfile.count({
-            where: {
-              tenantId: actor.tenantId,
-              verificationStatus: { in: ["PENDING_REVIEW", "PENDING_UPLOAD"] },
-            },
-          })
-        : Promise.resolve(0),
+      // Vendor applications waiting for Operations (not ones still uploading).
+      this.prisma.vendorProfile.count({
+        where: {
+          tenantId: actor.tenantId,
+          verificationStatus: "PENDING_REVIEW",
+        },
+      }),
     ]);
     return {
       counts: {

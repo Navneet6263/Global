@@ -15,6 +15,8 @@ void test("sidebar counts preserve branch scope and never load complete records"
     verificationCase: { count },
     clarification: { count },
     fieldVisit: { count },
+    // Vendor applications waiting for Operations (tenant-wide).
+    vendorProfile: { count: () => Promise.resolve(3) },
     // Clients are tenant-wide (no branch); counted separately below.
     client: {
       count: ({ where }: { where: Record<string, unknown> }) => {
@@ -35,6 +37,7 @@ void test("sidebar counts preserve branch scope and never load complete records"
     { tenantId: 1n, status: "ONBOARDING" },
   ]);
   assert.equal(result.counts.opsSignups, 1);
+  assert.equal(result.counts.opsVendorSignups, 3);
   assert.equal(result.counts.criticalExceptions, 4);
   for (const filter of filters) {
     const scoped = (filter.case ?? filter) as Record<string, unknown>;

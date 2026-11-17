@@ -152,7 +152,9 @@ export class VendorSignupService {
         },
       });
       if (!changed.count) {
-        throw new ConflictException("A new code was just sent; check your inbox");
+        throw new ConflictException(
+          "A new code was just sent; check your inbox",
+        );
       }
 
       await queueEmail(tx, this.secretBox, {
@@ -176,12 +178,17 @@ export class VendorSignupService {
   async verify(signupId: string, otp: string, meta: RequestMeta) {
     const row = await this.pending(signupId);
     if (row.otpExpiresAt <= new Date()) {
-      throw new BadRequestException("This code has expired. Request a new code.");
+      throw new BadRequestException(
+        "This code has expired. Request a new code.",
+      );
     }
 
     const expected = Buffer.from(row.otpHash, "hex");
     const actual = Buffer.from(otpHash(row.publicId, otp), "hex");
-    if (expected.length !== actual.length || !timingSafeEqual(expected, actual)) {
+    if (
+      expected.length !== actual.length ||
+      !timingSafeEqual(expected, actual)
+    ) {
       const attempts = row.otpAttempts + 1;
       await this.prisma.signupRequest.update({
         where: { id: row.id },
@@ -208,14 +215,20 @@ export class VendorSignupService {
         where: { id: row.id, status: "PENDING" },
         data: { status: "COMPLETED", completedAt: new Date() },
       });
-      if (!claimed.count) throw new ConflictException("This sign-up was already completed");
+      if (!claimed.count)
+        throw new ConflictException("This sign-up was already completed");
 
       if (
         await tx.user.count({
-          where: { tenantId: row.tenantId, normalizedEmail: row.normalizedEmail },
+          where: {
+            tenantId: row.tenantId,
+            normalizedEmail: row.normalizedEmail,
+          },
         })
       ) {
-        throw new ConflictException("An account with this email already exists. Sign in instead.");
+        throw new ConflictException(
+          "An account with this email already exists. Sign in instead.",
+        );
       }
 
       return createVendorAccountTx(tx, row, role.id, meta);
@@ -237,18 +250,25 @@ export class VendorSignupService {
     const row = await this.prisma.signupRequest.findFirst({
       where: {
         publicId: signupId,
+        // A company sign-up can never be finished here (and become a vendor).
+        signupType: "VENDOR",
         status: "PENDING",
         createdAt: { gt: new Date(Date.now() - SIGNUP_WINDOW_MS) },
       },
     });
     if (!row) {
-      throw new NotFoundException("This sign-up has expired. Start again from the sign-up page.");
+      throw new NotFoundException(
+        "This sign-up has expired. Start again from the sign-up page.",
+      );
     }
     return row;
   }
 
   private async tenant() {
-    const code = this.config.get<string>("SELF_SIGNUP_TENANT_CODE", "SAPLING").trim().toUpperCase();
+    const code = this.config
+      .get<string>("SELF_SIGNUP_TENANT_CODE", "SAPLING")
+      .trim()
+      .toUpperCase();
     const row = await this.prisma.tenant.findUnique({
       where: { code },
       select: { id: true, publicId: true, name: true, status: true },
@@ -260,9 +280,13 @@ export class VendorSignupService {
   }
 
   private async assertEmailFree(tenantId: bigint, normalizedEmail: string) {
-    const count = await this.prisma.user.count({ where: { tenantId, normalizedEmail } });
+    const count = await this.prisma.user.count({
+      where: { tenantId, normalizedEmail },
+    });
     if (count > 0) {
-      throw new ConflictException("An account with this email already exists. Sign in instead.");
+      throw new ConflictException(
+        "An account with this email already exists. Sign in instead.",
+      );
     }
   }
 }

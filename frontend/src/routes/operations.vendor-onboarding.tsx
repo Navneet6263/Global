@@ -40,7 +40,12 @@ export function OpsVendorOnboardingPage() {
   const counts = data?.counts;
 
   const tiles = [
-    { id: "PENDING_REVIEW", label: "Ready for review", count: counts?.pendingReview, tone: "is-info" },
+    {
+      id: "PENDING_REVIEW",
+      label: "Ready for review",
+      count: counts?.pendingReview,
+      tone: "is-info",
+    },
     { id: "PENDING_UPLOAD", label: "Still filling in", count: counts?.pendingUpload, tone: "" },
     { id: "APPROVED", label: "Approved vendors", count: counts?.approved, tone: "" },
     { id: "REJECTED", label: "Rejected", count: counts?.rejected, tone: "is-warn" },
@@ -52,7 +57,8 @@ export function OpsVendorOnboardingPage() {
         <div>
           <h1>Vendor onboarding</h1>
           <p>
-            Review self-registered vendor businesses, verify compliance documents, and approve access to the vendor workspace.
+            Review self-registered vendor businesses, verify compliance documents, and approve
+            access to the vendor workspace.
           </p>
         </div>
       </header>
@@ -76,10 +82,22 @@ export function OpsVendorOnboardingPage() {
         <header className="client-queue-heading">
           <div className="ops-segment" role="group" aria-label="Status">
             {[
-              { id: "PENDING_REVIEW", label: `Pending Review${counts?.pendingReview ? ` (${counts.pendingReview})` : ""}` },
-              { id: "PENDING_UPLOAD", label: `Draft${counts?.pendingUpload ? ` (${counts.pendingUpload})` : ""}` },
-              { id: "APPROVED", label: `Approved${counts?.approved ? ` (${counts.approved})` : ""}` },
-              { id: "REJECTED", label: `Rejected${counts?.rejected ? ` (${counts.rejected})` : ""}` },
+              {
+                id: "PENDING_REVIEW",
+                label: `Pending Review${counts?.pendingReview ? ` (${counts.pendingReview})` : ""}`,
+              },
+              {
+                id: "PENDING_UPLOAD",
+                label: `Draft${counts?.pendingUpload ? ` (${counts.pendingUpload})` : ""}`,
+              },
+              {
+                id: "APPROVED",
+                label: `Approved${counts?.approved ? ` (${counts.approved})` : ""}`,
+              },
+              {
+                id: "REJECTED",
+                label: `Rejected${counts?.rejected ? ` (${counts.rejected})` : ""}`,
+              },
               { id: "ALL", label: `All${counts?.all ? ` (${counts.all})` : ""}` },
             ].map((tab) => (
               <button
@@ -176,13 +194,20 @@ export function OpsVendorOnboardingPage() {
                     </span>
 
                     <span className="onb-row-cell">
-                      {vendor.businessType ? vendor.businessType.replace(/_/g, " ") : "Private Limited"}
+                      {vendor.businessType
+                        ? vendor.businessType.replace(/_/g, " ")
+                        : "Private Limited"}
                       <small>Business structure</small>
                     </span>
 
                     <span className="onb-row-cell">
-                      {vendor.verifiedDocumentsCount} of {Math.max(vendor.documentsCount, 1)} verified
-                      <small>{vendor.documentsCount > 0 ? `${vendor.documentsCount} uploaded` : "0 uploaded"}</small>
+                      {vendor.verifiedDocumentsCount} of {Math.max(vendor.documentsCount, 1)}{" "}
+                      verified
+                      <small>
+                        {vendor.documentsCount > 0
+                          ? `${vendor.documentsCount} uploaded`
+                          : "0 uploaded"}
+                      </small>
                     </span>
 
                     <span className="onb-row-cell">

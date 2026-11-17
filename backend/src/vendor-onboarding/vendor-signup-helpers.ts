@@ -1,5 +1,6 @@
 import { createHash, randomInt } from "node:crypto";
 import type { RequestMeta } from "../auth/auth.types";
+import type { Prisma, SignupRequest } from "../generated/prisma/client";
 
 export const ACTIVE_VENDOR_TERMS_VERSION = "2026.1";
 export const ACTIVE_VENDOR_PRIVACY_VERSION = "2026.1";
@@ -17,8 +18,18 @@ export const otpHash = (signupId: string, otp: string) =>
 export const newOtp = () => String(randomInt(0, 1_000_000)).padStart(6, "0");
 
 export async function createVendorAccountTx(
-  tx: any,
-  row: any,
+  tx: Prisma.TransactionClient,
+  row: Pick<
+    SignupRequest,
+    | "tenantId"
+    | "email"
+    | "normalizedEmail"
+    | "fullName"
+    | "phone"
+    | "passwordHash"
+    | "companyName"
+    | "businessType"
+  >,
   roleId: bigint,
   meta: RequestMeta,
 ) {
@@ -76,7 +87,11 @@ export async function createVendorAccountTx(
         resourceType: "user",
         resourcePublicId: user.publicId,
         ipAddress: meta.ipAddress,
-        afterJson: JSON.stringify({ role: "VENDOR", isMainVendor: true, emailVerified: true }),
+        afterJson: JSON.stringify({
+          role: "VENDOR",
+          isMainVendor: true,
+          emailVerified: true,
+        }),
       },
     ],
   });

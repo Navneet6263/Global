@@ -3,6 +3,7 @@ import { PrismaService } from "../database/prisma.service";
 import type { Prisma } from "../generated/prisma/client";
 import { paging } from "../spoc/spoc-scope";
 import { latestReportSelect } from "./vendor-reports.repository";
+import { workReadyVendor } from "../vendor-onboarding/vendor-approval";
 
 const name = { select: { displayName: true } } as const;
 
@@ -192,6 +193,7 @@ export class SpocVendorsRepository {
         // SPOC-RM assigns only to Main Vendors; their team users work by delegation.
         vendorOwnerId: null,
         userRoles: { some: { role: { code: "VENDOR" } } },
+        ...workReadyVendor,
       },
       select: {
         publicId: true,

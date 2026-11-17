@@ -14,7 +14,7 @@ import {
   verifyVendorOtp,
   type VendorChallenge,
 } from "../api/vendor-onboarding-api";
-import { clearIdentity } from "@/lib/auth/platform-session";
+import { cacheIdentityFromSession } from "@/lib/auth/platform-session";
 import { VendorSignupOtpStep } from "./VendorSignupOtpStep";
 
 const RULES = [
@@ -98,11 +98,11 @@ export function VendorSignupCard({ onStep }: { onStep: (step: number) => void })
     if (!challenge || code.length !== 6) return;
     setBusy(true);
     try {
-      await verifyVendorOtp(challenge.signupId, code);
-      clearIdentity();
+      const result = await verifyVendorOtp(challenge.signupId, code);
+      await cacheIdentityFromSession(result.session);
       onStep(2);
       toast.success("Vendor account created! Proceeding to document verification.");
-      void navigate({ to: "/vendor/onboarding" as any, replace: true });
+      void navigate({ to: "/vendor/onboarding", replace: true });
     } catch (error) {
       setOtp("");
       toast.error(messageOf(error, "Could not verify code"));
@@ -265,7 +265,8 @@ export function VendorSignupCard({ onStep }: { onStep: (step: number) => void })
                 className="mt-0.5"
               />
               <span>
-                I am authorised to register this company and accept the service terms and privacy notice.
+                I am authorised to register this company and accept the service terms and privacy
+                notice.
               </span>
             </label>
             <Button

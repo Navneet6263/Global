@@ -7,8 +7,8 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Length,
   MaxLength,
-  MinLength,
 } from "class-validator";
 
 export const VENDOR_BUSINESS_TYPES = [
@@ -33,7 +33,7 @@ export class VendorSignupStartDto {
   email!: string;
 
   @IsString()
-  @MinLength(8, { message: "Password must be at least 8 characters" })
+  @Length(7, 128, { message: "Password must be 7 to 128 characters" })
   password!: string;
 
   @IsString()
@@ -48,7 +48,8 @@ export class VendorSignupStartDto {
 
   @IsOptional()
   @IsEnum(VENDOR_BUSINESS_TYPES, {
-    message: "Select a valid business type (Private Limited, LLP, Partnership, Proprietorship)",
+    message:
+      "Select a valid business type (Private Limited, LLP, Partnership, Proprietorship)",
   })
   businessType?: VendorBusinessType = "PRIVATE_LIMITED";
 
@@ -58,11 +59,16 @@ export class VendorSignupStartDto {
   phone?: string;
 
   @IsBoolean()
-  @Equals(true, { message: "You must confirm you are an authorized signatory for this business" })
+  @Equals(true, {
+    message:
+      "You must confirm you are an authorized signatory for this business",
+  })
   isAuthorisedSignatory!: boolean;
 
   @IsBoolean()
-  @Equals(true, { message: "You must accept the terms of service and privacy policy" })
+  @Equals(true, {
+    message: "You must accept the terms of service and privacy policy",
+  })
   acceptTerms!: boolean;
 }
 
@@ -83,7 +89,8 @@ export class VendorSignupResendDto {
 
 export class VendorDocumentUploadQueryDto {
   @IsEnum(VENDOR_DOCUMENT_TYPES, {
-    message: "Document type must be COMPANY_PAN, GST_CERTIFICATE, or BUSINESS_REGISTRATION",
+    message:
+      "Document type must be COMPANY_PAN, GST_CERTIFICATE, or BUSINESS_REGISTRATION",
   })
   documentType!: VendorDocumentType;
 }
@@ -111,7 +118,9 @@ export class VendorProfileUpdateDto {
 }
 
 export class VendorDocumentReviewDto {
-  @IsEnum(["ACCEPT", "REJECT"], { message: "Decision must be ACCEPT or REJECT" })
+  @IsEnum(["ACCEPT", "REJECT"], {
+    message: "Decision must be ACCEPT or REJECT",
+  })
   decision!: "ACCEPT" | "REJECT";
 
   @IsOptional()

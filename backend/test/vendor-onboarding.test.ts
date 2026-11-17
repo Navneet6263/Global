@@ -1,20 +1,43 @@
 import "reflect-metadata";
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { ForbiddenException, BadRequestException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  type ExecutionContext,
+} from "@nestjs/common";
+import type { ConfigService } from "@nestjs/config";
+import type { Actor } from "../src/common/auth/actor";
+import type { PrismaService } from "../src/database/prisma.service";
+import type { SecretBoxService } from "../src/common/security/secret-box.service";
+import type { AuthenticationService } from "../src/auth/authentication.service";
 import { ApprovedVendorGuard } from "../src/vendor-onboarding/guards/approved-vendor.guard";
 import {
   assertMainVendor,
   isMainVendor,
 } from "../src/vendor-requests/services/vendor-scope";
-import { VendorOnboardingService } from "../src/vendor-onboarding/vendor-onboarding.service";
+import {
+  VendorOnboardingService,
+  safeFileName,
+} from "../src/vendor-onboarding/vendor-onboarding.service";
 import { VendorOnboardingOpsService } from "../src/vendor-onboarding/vendor-onboarding-ops.service";
-import type { Actor } from "../src/common/auth/actor";
+import { VendorSignupService } from "../src/vendor-onboarding/vendor-signup.service";
+import { workReadyVendor } from "../src/vendor-onboarding/vendor-approval";
 
-function mockActor(roles: string[], vendorStatus?: string, vendorOwnerId?: bigint): Actor {
+function mockActor(
+  roles: string[],
+  vendorStatus?: string,
+  vendorOwnerId?: bigint,
+): Actor {
   return {
     userId: 101n,
+    userPublicId: "user-101",
     tenantId: 1n,
+    tenantPublicId: "tenant-1",
+    tenantName: "Sapling",
+    displayName: "Vendor Owner",
+    mustChangePassword: false,
     roles,
     permissions: [],
     email: "vendor@test.com",
@@ -23,144 +46,238 @@ function mockActor(roles: string[], vendorStatus?: string, vendorOwnerId?: bigin
   };
 }
 
-void test("ApprovedVendorGuard allows APPROVED vendor and blocks unapproved vendor", () => {
-  const guard = new ApprovedVendorGuard();
-  const makeCtx = (actor: Actor) =>
-    ({
-      switchToHttp: () => ({
-        getRequest: () => ({ user: actor }),
-      }),
-    }) as any;
+const asPrisma = (mock: unknown) => mock as PrismaService;
 
-  assert.equal(guard.canActivate(makeCtx(mockActor(["VENDOR"], "APPROVED"))), true);
-  assert.throws(
-    () => guard.canActivate(makeCtx(mockActor(["VENDOR"], "PENDING_DOCUMENTS"))),
-    ForbiddenException,
-  );
-  assert.throws(
-    () => guard.canActivate(makeCtx(mockActor(["VENDOR"], "SUBMITTED"))),
-    ForbiddenException,
-  );
-  assert.throws(
-    () => guard.canActivate(makeCtx(mockActor(["VENDOR"], "REJECTED"))),
-    ForbiddenException,
-  );
-  // Non-vendor roles bypass the guard
-  assert.equal(guard.canActivate(makeCtx(mockActor(["PLATFORM_ADMIN"]))), true);
+/** A fake transaction that records the audit rows and notifications it is asked for. */
+function recorder() {
+  const audits: string[] = [];
+  const notifications: string[] = [];
+  const tx = {
+    auditEvent: {
+      create: (args: { data: { action: string } }) => {
+        audits.push(args.data.action);
+        return Promise.resolve({});
+      },
+    },
+    notification: {
+      create: (args: { data: { type: string } }) => {
+        notifications.push(args.data.type);
+        return Promise.resolve({});
+      },
+    },
+  };
+  return { audits, notifications, tx };
+}
+
+void test("ApprovedVendorGuard lets only approved vendors in", () => {
+  const guard = new ApprovedVendorGuard();
+  const ctx = (actor: Actor) =>
+    ({
+      switchToHttp: () => ({ getRequest: () => ({ user: actor }) }),
+    }) as unknown as ExecutionContext;
+
+  assert.equal(guard.canActivate(ctx(mockActor(["VENDOR"], "APPROVED"))), true);
+  for (const status of ["PENDING_UPLOAD", "PENDING_REVIEW", "REJECTED"])
+    assert.throws(
+      () => guard.canActivate(ctx(mockActor(["VENDOR"], status))),
+      ForbiddenException,
+    );
+  assert.equal(guard.canActivate(ctx(mockActor(["PLATFORM_ADMIN"]))), true);
 });
 
-void test("assertMainVendor permits Main Vendor and blocks Team Member", () => {
+void test("assertMainVendor permits the main vendor and blocks a team member", () => {
   const mainVendor = mockActor(["VENDOR"]);
-  const teamMember = mockActor(["VENDOR"], "PENDING_DOCUMENTS", 999n);
-
+  const teamMember = mockActor(["VENDOR"], "APPROVED", 999n);
   assert.equal(isMainVendor(mainVendor), true);
   assert.equal(isMainVendor(teamMember), false);
   assert.doesNotThrow(() => assertMainVendor(mainVendor));
   assert.throws(() => assertMainVendor(teamMember), ForbiddenException);
 });
 
-void test("VendorOnboardingService enforces single-document minimum on submission", async () => {
-  const prismaMock: any = {
+function onboarding(status: string, documents: number) {
+  const { audits, tx } = recorder();
+  const updates: Array<{
+    where: Record<string, unknown>;
+    data: Record<string, unknown>;
+  }> = [];
+  const prisma = {
     vendorProfile: {
-      findUnique: async () => ({
-        id: 10n,
-        vendorUserId: 101n,
-        verificationStatus: "PENDING_DOCUMENTS",
+      findUnique: () =>
+        Promise.resolve({
+          id: 10n,
+          publicId: "vp-1",
+          vendorUserId: 101n,
+          verificationStatus: status,
+        }),
+    },
+    vendorDocument: { count: () => Promise.resolve(documents) },
+    $transaction: (work: (client: unknown) => Promise<unknown>) =>
+      work({
+        ...tx,
+        vendorProfile: {
+          updateMany: (args: {
+            where: Record<string, unknown>;
+            data: Record<string, unknown>;
+          }) => {
+            updates.push(args);
+            return Promise.resolve({ count: 1 });
+          },
+        },
       }),
-    },
-    vendorDocument: {
-      count: async () => 0,
-    },
   };
+  const service = new VendorOnboardingService(
+    asPrisma(prisma),
+    null as never,
+    null as never,
+  );
+  return { service, audits, updates };
+}
 
-  const service = new VendorOnboardingService(prismaMock, null as any, null as any);
+void test("a vendor cannot submit without at least one business document", async () => {
+  const { service } = onboarding("PENDING_UPLOAD", 0);
   await assert.rejects(
     () => service.submit(mockActor(["VENDOR"])),
-    (err: any) => {
-      assert.equal(err instanceof BadRequestException, true);
-      assert.match(err.message, /at least one legal business document/);
-      return true;
-    },
+    (error: unknown) =>
+      error instanceof BadRequestException &&
+      /at least one legal business document/.test(error.message),
   );
 });
 
-void test("VendorOnboardingService allows submission when any ONE document exists", async () => {
-  let updatedStatus = "";
-  const prismaMock: any = {
-    vendorProfile: {
-      findUnique: async () => ({
-        id: 10n,
-        vendorUserId: 101n,
-        verificationStatus: "PENDING_DOCUMENTS",
-      }),
-      update: async (args: any) => {
-        updatedStatus = args.data.verificationStatus;
-        return { id: 10n, ...args.data };
-      },
-    },
-    vendorDocument: {
-      count: async () => 1,
-    },
-  };
-
-  const service = new VendorOnboardingService(prismaMock, null as any, null as any);
+void test("submitting sends the application for review, conditionally and audited", async () => {
+  const { service, audits, updates } = onboarding("PENDING_UPLOAD", 1);
   const result = await service.submit(mockActor(["VENDOR"]));
   assert.equal(result.success, true);
-  assert.equal(updatedStatus, "PENDING_REVIEW");
+  assert.equal(updates[0]!.data["verificationStatus"], "PENDING_REVIEW");
+  // Only a not-yet-sent or rejected application can move to review.
+  assert.deepEqual(updates[0]!.where["verificationStatus"], {
+    in: ["PENDING_UPLOAD", "REJECTED"],
+  });
+  assert.deepEqual(audits, ["vendor.application-submitted"]);
 });
 
-void test("Ops review requires >= 1 verified document and 0 rejected documents to approve", async () => {
-  const prismaMock: any = {
+void test("an approved vendor submitting again is not sent back to review", async () => {
+  for (const status of ["APPROVED", "PENDING_REVIEW"]) {
+    const { service, updates } = onboarding(status, 1);
+    await assert.rejects(
+      () => service.submit(mockActor(["VENDOR"])),
+      ConflictException,
+    );
+    assert.equal(updates.length, 0);
+  }
+});
+
+function ops(status: string, documents: Array<{ status: string }>) {
+  const { audits, notifications, tx } = recorder();
+  const updates: Array<Record<string, unknown>> = [];
+  const prisma = {
     vendorProfile: {
-      findFirst: async () => ({
-        id: 10n,
-        publicId: "vp-123",
-        tenantId: 1n,
-        documents: [
-          { id: 1n, status: "REJECTED" },
-          { id: 2n, status: "VERIFIED" },
-        ],
+      findFirst: () =>
+        Promise.resolve({
+          id: 10n,
+          publicId: "vp-1",
+          vendorUserId: 101n,
+          verificationStatus: status,
+          documents: documents.map((doc, index) => ({
+            documentType: ["COMPANY_PAN", "GST_CERTIFICATE"][index] ?? "OTHER",
+            ...doc,
+          })),
+        }),
+    },
+    $transaction: (work: (client: unknown) => Promise<unknown>) =>
+      work({
+        ...tx,
+        vendorProfile: {
+          updateMany: (args: { data: Record<string, unknown> }) => {
+            updates.push(args.data);
+            return Promise.resolve({ count: 1 });
+          },
+        },
       }),
-    },
   };
+  const service = new VendorOnboardingOpsService(
+    asPrisma(prisma),
+    null as never,
+  );
+  return { service, audits, notifications, updates };
+}
 
-  const opsService = new VendorOnboardingOpsService(prismaMock, null as any);
-  const opsActor = mockActor(["OPERATIONS_ADMIN"]);
+void test("one verified document is enough even when another was rejected", async () => {
+  const { service, audits, notifications, updates } = ops("PENDING_REVIEW", [
+    { status: "REJECTED" },
+    { status: "VERIFIED" },
+  ]);
+  const result = await service.approveVendor(
+    mockActor(["OPS_MANAGER"]),
+    "vp-1",
+  );
+  assert.equal(result.verificationStatus, "APPROVED");
+  assert.equal(updates[0]!["verificationStatus"], "APPROVED");
+  assert.deepEqual(audits, ["vendor.approved"]);
+  assert.deepEqual(notifications, ["VENDOR_APPROVED"]);
+});
 
-  // Fails because one document is REJECTED
+void test("approval needs a verified document and is not repeated", async () => {
+  const none = ops("PENDING_REVIEW", [{ status: "PENDING" }]);
   await assert.rejects(
-    () => opsService.approveVendor(opsActor, "vp-123"),
-    (err: any) => {
-      assert.equal(err instanceof BadRequestException, true);
-      assert.match(err.message, /marked REJECTED/);
-      return true;
-    },
+    () => none.service.approveVendor(mockActor(["OPS_MANAGER"]), "vp-1"),
+    BadRequestException,
+  );
+  const again = ops("APPROVED", [{ status: "VERIFIED" }]);
+  await assert.rejects(
+    () => again.service.approveVendor(mockActor(["OPS_MANAGER"]), "vp-1"),
+    ConflictException,
   );
 });
 
-void test("Ops review successfully approves when single document is VERIFIED", async () => {
-  let profileApproved = false;
-  const prismaMock: any = {
-    vendorProfile: {
-      findFirst: async () => ({
-        id: 10n,
-        publicId: "vp-123",
-        tenantId: 1n,
-        documents: [
-          { id: 1n, status: "VERIFIED" },
-        ],
+void test("rejecting a document or a vendor needs a reason", async () => {
+  const { service } = ops("PENDING_REVIEW", [{ status: "PENDING" }]);
+  await assert.rejects(
+    () =>
+      service.reviewDocument(mockActor(["OPS_MANAGER"]), "vp-1", "doc-1", {
+        decision: "REJECT",
       }),
-      update: async (args: any) => {
-        if (args.data.verificationStatus === "APPROVED") profileApproved = true;
-        return { id: 10n, ...args.data };
+    BadRequestException,
+  );
+  await assert.rejects(
+    () =>
+      service.rejectVendor(mockActor(["OPS_MANAGER"]), "vp-1", {
+        rejectionReason: "  ",
+      }),
+    BadRequestException,
+  );
+});
+
+void test("download file names are safe for the browser header", () => {
+  assert.equal(safeFileName('GST "copy".pdf'), "GST__copy_.pdf");
+  assert.equal(safeFileName("GST प्रमाण.pdf"), "GST_______.pdf");
+  assert.equal(safeFileName(""), "document");
+});
+
+void test("a company sign-up can never be finished as a vendor", async () => {
+  let lookedFor: Record<string, unknown> | undefined;
+  const prisma = {
+    signupRequest: {
+      findFirst: (args: { where: Record<string, unknown> }) => {
+        lookedFor = args.where;
+        return Promise.resolve(null);
       },
     },
   };
+  const service = new VendorSignupService(
+    asPrisma(prisma),
+    {} as ConfigService,
+    {} as SecretBoxService,
+    {} as AuthenticationService,
+  );
+  await assert.rejects(() => service.resend("signup-1"), /expired/);
+  assert.equal(lookedFor?.["signupType"], "VENDOR");
+});
 
-  const opsService = new VendorOnboardingOpsService(prismaMock, null as any);
-  const opsActor = mockActor(["OPERATIONS_ADMIN"]);
-
-  const res = await opsService.approveVendor(opsActor, "vp-123");
-  assert.equal(res.verificationStatus, "APPROVED");
-  assert.equal(profileApproved, true);
+void test("only Ops-created or approved vendors can be given work", () => {
+  assert.deepEqual(workReadyVendor, {
+    OR: [
+      { vendorProfile: { is: null } },
+      { vendorProfile: { is: { verificationStatus: "APPROVED" } } },
+    ],
+  });
 });

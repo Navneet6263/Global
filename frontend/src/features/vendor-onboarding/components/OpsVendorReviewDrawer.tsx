@@ -49,11 +49,7 @@ export function OpsVendorReviewDrawer({
 
   const profile = query.data;
 
-  const handleDocReview = async (
-    docId: string,
-    decision: "ACCEPT" | "REJECT",
-    reason?: string,
-  ) => {
+  const handleDocReview = async (docId: string, decision: "ACCEPT" | "REJECT", reason?: string) => {
     setActing(true);
     try {
       await reviewOpsVendorDocument(vendorProfileId, docId, {
@@ -63,8 +59,10 @@ export function OpsVendorReviewDrawer({
       toast.success(decision === "ACCEPT" ? "Document accepted" : "Document marked rejected");
       await query.refetch();
       onUpdated();
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to update document status");
+    } catch (err) {
+      toast.error(
+        err instanceof Error && err.message ? err.message : "Failed to update document status",
+      );
     } finally {
       setActing(false);
     }
@@ -77,8 +75,8 @@ export function OpsVendorReviewDrawer({
       toast.success("Vendor approved successfully!");
       await query.refetch();
       onUpdated();
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to approve vendor");
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : "Failed to approve vendor");
     } finally {
       setActing(false);
     }
@@ -94,18 +92,18 @@ export function OpsVendorReviewDrawer({
       setRejectDialogOpen(false);
       await query.refetch();
       onUpdated();
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to reject vendor");
+    } catch (err) {
+      toast.error(err instanceof Error && err.message ? err.message : "Failed to reject vendor");
     } finally {
       setActing(false);
     }
   };
 
-  const documents = (profile?.documents ?? []) as any[];
+  const documents = profile?.documents ?? [];
   const hasVerifiedDoc = documents.some((d) => d.status === "VERIFIED");
-  const hasRejectedDoc = documents.some((d) => d.status === "REJECTED");
   const isApproved = profile?.verificationStatus === "APPROVED";
-  const canApprove = hasVerifiedDoc && !hasRejectedDoc && !isApproved;
+  // Any ONE verified document is enough; a rejected one beside it does not block it.
+  const canApprove = hasVerifiedDoc && !isApproved;
 
   return (
     <Sheet open onOpenChange={(open) => (!open ? onClose() : undefined)}>
@@ -182,9 +180,7 @@ export function OpsVendorReviewDrawer({
                   <dt>Privacy Version</dt>
                   <dd>{profile.privacyVersion ?? "v1.0"}</dd>
                   <dt>Accepted On</dt>
-                  <dd>
-                    {profile.termsAcceptedAt ? shortDate(profile.termsAcceptedAt) : "—"}
-                  </dd>
+                  <dd>{profile.termsAcceptedAt ? shortDate(profile.termsAcceptedAt) : "—"}</dd>
                   <dt>Submitted Date</dt>
                   <dd>
                     {profile.submittedAt ? shortDate(profile.submittedAt) : "Not yet submitted"}
@@ -198,7 +194,8 @@ export function OpsVendorReviewDrawer({
                 <header className="border-b border-slate-200 pb-4">
                   <h2 className="text-base font-bold text-slate-900">Compliance Documents</h2>
                   <p className="ops-subtle text-xs">
-                    Accept at least one legal business registration document (PAN, GSTIN, or Business Registration) to approve.
+                    Accept at least one legal business registration document (PAN, GSTIN, or
+                    Business Registration) to approve.
                   </p>
                 </header>
 
@@ -236,11 +233,7 @@ export function OpsVendorReviewDrawer({
                       * Must accept ≥1 document to approve
                     </span>
                   )}
-                  <Button
-                    disabled={!canApprove || acting}
-                    loading={acting}
-                    onClick={handleApprove}
-                  >
+                  <Button disabled={!canApprove || acting} loading={acting} onClick={handleApprove}>
                     {isApproved ? "Approved" : "Approve Vendor"}
                   </Button>
                 </div>
@@ -256,7 +249,8 @@ export function OpsVendorReviewDrawer({
             <DialogHeader>
               <DialogTitle>Reject Vendor Application</DialogTitle>
               <DialogDescription>
-                Provide detailed notes explaining what is missing or incorrect. The vendor will see these instructions upon sign-in.
+                Provide detailed notes explaining what is missing or incorrect. The vendor will see
+                these instructions upon sign-in.
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
@@ -270,11 +264,7 @@ export function OpsVendorReviewDrawer({
               />
             </div>
             <DialogFooter>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => setRejectDialogOpen(false)}
-              >
+              <Button type="button" variant="ghost" onClick={() => setRejectDialogOpen(false)}>
                 Cancel
               </Button>
               <Button

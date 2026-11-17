@@ -26,10 +26,7 @@ export class OpsVendorOnboardingController {
   constructor(private readonly opsService: VendorOnboardingOpsService) {}
 
   @Get()
-  list(
-    @CurrentActor() actor: Actor,
-    @Query() query: VendorOnboardingQueryDto,
-  ) {
+  list(@CurrentActor() actor: Actor, @Query() query: VendorOnboardingQueryDto) {
     return this.opsService.listForOperations(actor, query);
   }
 
@@ -48,7 +45,11 @@ export class OpsVendorOnboardingController {
     @Param("vendorProfileId", ParseUUIDPipe) vendorProfileId: string,
     @Param("docId", ParseUUIDPipe) docId: string,
   ) {
-    return this.opsService.downloadDocForOperations(actor, vendorProfileId, docId);
+    return this.opsService.downloadDocForOperations(
+      actor,
+      vendorProfileId,
+      docId,
+    );
   }
 
   @Post(":vendorProfileId/documents/:docId/review")

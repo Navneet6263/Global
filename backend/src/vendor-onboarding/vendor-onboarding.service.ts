@@ -12,7 +12,11 @@ import type { UploadedBinary } from "../common/http/uploaded-binary";
 import { PrismaService } from "../database/prisma.service";
 import { ContentInspectionService } from "../documents/content-inspection.service";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
-import { assertMainVendor, isMainVendor } from "../vendor-requests/services/vendor-scope";
+import type { Prisma } from "../generated/prisma/client";
+import {
+  assertMainVendor,
+  isMainVendor,
+} from "../vendor-requests/services/vendor-scope";
 import type {
   VendorDocumentType,
   VendorProfileUpdateDto,
@@ -23,6 +27,33 @@ const ALLOWED_DOC_TYPES: VendorDocumentType[] = [
   "GST_CERTIFICATE",
   "BUSINESS_REGISTRATION",
 ];
+
+/** Statuses from which the vendor may (re)submit its application. */
+const SUBMITTABLE = ["PENDING_UPLOAD", "REJECTED"];
+
+/** A file name safe for a Content-Disposition header (no quotes or non-ASCII). */
+export const safeFileName = (name: string) =>
+  name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 120) || "document";
+
+/** One audit row per onboarding change (rule: every access change is audited). */
+export function vendorAudit(
+  tx: Prisma.TransactionClient,
+  actor: Actor,
+  profilePublicId: string,
+  action: string,
+  after: Record<string, unknown>,
+) {
+  return tx.auditEvent.create({
+    data: {
+      tenantId: actor.tenantId,
+      actorUserId: actor.userId,
+      action,
+      resourceType: "vendor_profile",
+      resourcePublicId: profilePublicId,
+      afterJson: JSON.stringify(after),
+    },
+  });
+}
 
 @Injectable()
 export class VendorOnboardingService {
@@ -80,20 +111,32 @@ export class VendorOnboardingService {
       })),
       canSubmit:
         isMain &&
-        ["PENDING_UPLOAD", "REJECTED"].includes(profile.verificationStatus) &&
+        SUBMITTABLE.includes(profile.verificationStatus) &&
         documents.some((d) => d.revisions.length > 0),
     };
   }
 
-  async uploadDocument(actor: Actor, documentType: VendorDocumentType, file: UploadedBinary) {
+  /**
+   * Upload or replace a business document. Allowed until the vendor is approved, so a
+   * document Ops rejects during review can be replaced without rejecting the vendor.
+   */
+  async uploadDocument(
+    actor: Actor,
+    documentType: VendorDocumentType,
+    file: UploadedBinary,
+  ) {
     assertMainVendor(actor);
     if (!ALLOWED_DOC_TYPES.includes(documentType)) {
-      throw new BadRequestException("Invalid document type. Must be Company PAN, GSTIN, or Business Registration.");
+      throw new BadRequestException(
+        "Invalid document type. Must be Company PAN, GSTIN, or Business Registration.",
+      );
     }
 
     const profile = await this.getActorProfile(actor);
-    if (!["PENDING_UPLOAD", "REJECTED"].includes(profile.verificationStatus)) {
-      throw new ConflictException("Documents cannot be uploaded while under review or already approved.");
+    if (profile.verificationStatus === "APPROVED") {
+      throw new ConflictException(
+        "Your business is already approved; no new document is needed.",
+      );
     }
 
     await this.inspection.inspect(file, 10_485_760, { documentType: "OTHER" });
@@ -123,7 +166,12 @@ export class VendorOnboardingService {
       } else {
         await tx.vendorDocument.update({
           where: { id: doc.id },
-          data: { status: "PENDING", rejectionReason: null },
+          data: {
+            status: "PENDING",
+            rejectionReason: null,
+            verifiedAt: null,
+            verifiedById: null,
+          },
         });
       }
 
@@ -151,6 +199,18 @@ export class VendorOnboardingService {
         },
       });
 
+      await vendorAudit(
+        tx,
+        actor,
+        profile.publicId,
+        "vendor.document-uploaded",
+        {
+          documentType,
+          revisionNumber,
+          sizeBytes: file.size,
+        },
+      );
+
       return {
         documentPublicId: doc.publicId,
         revisionNumber: createdRev.revisionNumber,
@@ -161,7 +221,9 @@ export class VendorOnboardingService {
 
   async downloadOwnDocument(actor: Actor, docId: string) {
     if (!isMainVendor(actor)) {
-      throw new ForbiddenException("Only the primary vendor business owner can download sensitive business documents");
+      throw new ForbiddenException(
+        "Only the primary vendor business owner can download sensitive business documents",
+      );
     }
 
     const profile = await this.getActorProfile(actor);
@@ -180,13 +242,21 @@ export class VendorOnboardingService {
     const stored = await this.storage.get(rev.storageKey);
     return new StreamableFile(stored, {
       type: rev.mimeType,
-      disposition: `inline; filename="${rev.fileName}"`,
+      disposition: `inline; filename="${safeFileName(rev.fileName)}"`,
     });
   }
 
+  /** Send the application to Operations; only from "not yet sent" or "rejected". */
   async submit(actor: Actor) {
     assertMainVendor(actor);
     const profile = await this.getActorProfile(actor);
+    if (!SUBMITTABLE.includes(profile.verificationStatus)) {
+      throw new ConflictException(
+        profile.verificationStatus === "APPROVED"
+          ? "Your business is already approved."
+          : "Your application is already with Operations for review.",
+      );
+    }
 
     const uploadedDocsCount = await this.prisma.vendorDocument.count({
       where: {
@@ -201,30 +271,56 @@ export class VendorOnboardingService {
       );
     }
 
-    await this.prisma.vendorProfile.update({
-      where: { id: profile.id },
-      data: {
-        verificationStatus: "PENDING_REVIEW",
-        submittedAt: new Date(),
-        rejectionReason: null,
-      },
+    await this.prisma.$transaction(async (tx) => {
+      // Conditional: an approved vendor (or a second click) is never sent back to review.
+      const changed = await tx.vendorProfile.updateMany({
+        where: { id: profile.id, verificationStatus: { in: SUBMITTABLE } },
+        data: {
+          verificationStatus: "PENDING_REVIEW",
+          submittedAt: new Date(),
+          rejectionReason: null,
+        },
+      });
+      if (changed.count !== 1)
+        throw new ConflictException(
+          "Your application changed meanwhile; refresh the page.",
+        );
+      await vendorAudit(
+        tx,
+        actor,
+        profile.publicId,
+        "vendor.application-submitted",
+        {
+          from: profile.verificationStatus,
+          documents: uploadedDocsCount,
+        },
+      );
     });
 
-    return { success: true, message: "Onboarding application submitted for review" };
+    return {
+      success: true,
+      message: "Onboarding application submitted for review",
+    };
   }
 
   async updateProfile(actor: Actor, input: VendorProfileUpdateDto) {
     assertMainVendor(actor);
     const profile = await this.getActorProfile(actor);
-    return this.prisma.vendorProfile.update({
-      where: { id: profile.id },
-      data: {
-        registrationNumber: input.registrationNumber?.trim() || null,
-        taxId: input.taxId?.trim() || null,
-        websiteUrl: input.websiteUrl?.trim() || null,
-        operatingAddress: input.operatingAddress?.trim() || null,
-      },
+    const data = {
+      registrationNumber: input.registrationNumber?.trim() || null,
+      taxId: input.taxId?.trim() || null,
+      websiteUrl: input.websiteUrl?.trim() || null,
+      operatingAddress: input.operatingAddress?.trim() || null,
+    };
+    await this.prisma.$transaction(async (tx) => {
+      await tx.vendorProfile.update({ where: { id: profile.id }, data });
+      await vendorAudit(tx, actor, profile.publicId, "vendor.profile-updated", {
+        fields: Object.entries(data)
+          .filter(([, value]) => value)
+          .map(([key]) => key),
+      });
     });
+    return { publicId: profile.publicId, ...data };
   }
 
   private async getActorProfile(actor: Actor) {

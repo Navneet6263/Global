@@ -1,4 +1,5 @@
-import { apiDownload, apiRequest, saveBlob } from "@/lib/backend-api/client";
+import { apiDownload, apiRequest, resetApiSession, saveBlob } from "@/lib/backend-api/client";
+import type { Session } from "@/lib/backend-api/auth";
 import { openDocumentPreview } from "@/lib/backend-api/document-preview";
 import { fileSha256 } from "@/lib/backend-api/file-digest";
 
@@ -107,12 +108,18 @@ export function resendVendorOtp(signupId: string) {
   });
 }
 
+/** The code signs the new vendor in (session cookies), like company sign-up. */
 export function verifyVendorOtp(signupId: string, otp: string) {
-  return apiRequest<{ authenticated: true }>("/auth/vendor/signup/verify", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ signupId, otp }),
-  });
+  resetApiSession();
+  return apiRequest<{ authenticated: true; session: Session }>(
+    "/auth/vendor/signup/verify",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ signupId, otp }),
+    },
+    false,
+  );
 }
 
 export function getVendorOnboardingMine() {
@@ -134,7 +141,9 @@ export async function uploadVendorDocument(documentType: string, file: File) {
 }
 
 export async function downloadVendorDocument(docId: string, filename = "document.pdf") {
-  const blob = await apiDownload(`/vendor/onboarding/me/document/${encodeURIComponent(docId)}/download`);
+  const blob = await apiDownload(
+    `/vendor/onboarding/me/document/${encodeURIComponent(docId)}/download`,
+  );
   saveBlob(blob, filename);
 }
 
@@ -183,8 +192,53 @@ export function getOpsVendorList(status?: string, search?: string) {
   return apiRequest<OpsVendorListResponse>(`/operations/vendor-onboarding?${params.toString()}`);
 }
 
+/** One business document as the Ops review screen sees it (latest revision first). */
+export interface OpsVendorDocument {
+  publicId: string;
+  documentType: string;
+  status: string;
+  rejectionReason: string | null;
+  verifiedAt: string | null;
+  verifiedBy: { displayName: string } | null;
+  revisions: Array<{
+    publicId: string;
+    revisionNumber: number;
+    fileName: string;
+    fileSize: number;
+    mimeType: string;
+    uploadedAt: string;
+    status: string;
+    decisionReason: string | null;
+    decidedAt: string | null;
+  }>;
+}
+
+export interface OpsVendorDetail {
+  publicId: string;
+  businessName: string;
+  businessType: string;
+  registrationNumber: string | null;
+  taxId: string | null;
+  websiteUrl: string | null;
+  operatingAddress: string | null;
+  verificationStatus: string;
+  rejectionReason: string | null;
+  reviewedAt: string | null;
+  submittedAt: string | null;
+  authorisedSignatory: boolean;
+  termsAcceptedAt: string;
+  termsVersion: string;
+  privacyVersion: string;
+  createdAt: string;
+  vendorUser: { displayName: string; email: string; phone: string | null; createdAt: string };
+  reviewedBy: { displayName: string; email: string } | null;
+  documents: OpsVendorDocument[];
+}
+
+type VendorDecision = { publicId: string; verificationStatus: string; reviewedAt: string };
+
 export function getOpsVendorDetail(vendorProfileId: string) {
-  return apiRequest<any>(`/operations/vendor-onboarding/${vendorProfileId}`);
+  return apiRequest<OpsVendorDetail>(`/operations/vendor-onboarding/${vendorProfileId}`);
 }
 
 export function reviewOpsVendorDocument(
@@ -192,7 +246,9 @@ export function reviewOpsVendorDocument(
   docId: string,
   input: { decision: "ACCEPT" | "REJECT"; rejectionReason?: string },
 ) {
-  return apiRequest<any>(`/operations/vendor-onboarding/${vendorProfileId}/documents/${docId}/review`, {
+  return apiRequest<
+    Pick<OpsVendorDocument, "publicId" | "documentType" | "status" | "rejectionReason">
+  >(`/operations/vendor-onboarding/${vendorProfileId}/documents/${docId}/review`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
@@ -200,13 +256,13 @@ export function reviewOpsVendorDocument(
 }
 
 export function approveOpsVendor(vendorProfileId: string) {
-  return apiRequest<any>(`/operations/vendor-onboarding/${vendorProfileId}/approve`, {
+  return apiRequest<VendorDecision>(`/operations/vendor-onboarding/${vendorProfileId}/approve`, {
     method: "POST",
   });
 }
 
 export function rejectOpsVendor(vendorProfileId: string, rejectionReason: string) {
-  return apiRequest<any>(`/operations/vendor-onboarding/${vendorProfileId}/reject`, {
+  return apiRequest<VendorDecision>(`/operations/vendor-onboarding/${vendorProfileId}/reject`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ rejectionReason }),
