@@ -97,4 +97,8 @@ export const RM_ALLOWED_HANDLERS = new Set([
   "VendorChecksController.board",
   "VendorChecksController.export",
   "VendorChecksController.evidence",
+  // The RM decides a vendor's extra cost on its own case's check (audited) and reads the
+  // open-queue payment per check type (read-only).
+  "VendorChecksController.decideExtraCost",
+  "VendorRatesController.list",
 ]);

@@ -22,7 +22,9 @@ import {
 import { Field } from "@/features/workflow-ui/CheckInitiation";
 import { vendorWorkApi, type Entry, type VendorJobDetail } from "@/lib/backend-api/vendor-checks";
 import { formatDateTime } from "@/lib/formatting";
-import { STATUS_COPY, fileSize, readable } from "./vendor-job-format";
+import { STATUS_COPY, fileSize, readable, rupees } from "./vendor-job-format";
+import { VendorExtraCosts } from "./VendorExtraCosts";
+import { VendorQueueActions } from "./VendorQueueActions";
 
 const WORKING = ["IN_PROGRESS", "RETURNED"];
 
@@ -91,7 +93,7 @@ function JobBody({ job }: { job: VendorJobDetail }) {
           accept: "Check accepted",
           decline: "Check declined",
           save: "Saved",
-          submit: "Submitted for review",
+          submit: job.canDelegate ? "Submitted for review" : "Sent to your Team Leader",
           delegate: handler ? "Handed to your team member" : "Back with you",
         }[kind],
       );
@@ -139,6 +141,14 @@ function JobBody({ job }: { job: VendorJobDetail }) {
         </DialogDescription>
       </DialogHeader>
 
+      {job.fromQueue ? (
+        <p className="vjd-note">
+          From the open queue
+          {job.price !== null ? ` · payment ${rupees(job.price)}` : ""}
+          {job.city ? ` · ${job.city}` : ""}
+          {job.pincode ? ` ${job.pincode}` : ""}
+        </p>
+      ) : null}
       {job.note ? <p className="vjd-note">{job.note}</p> : null}
       {job.status === "RETURNED" && job.reviewNote ? (
         <p className="vjd-alert" role="status">
@@ -398,6 +408,16 @@ function JobBody({ job }: { job: VendorJobDetail }) {
         </section>
       </div>
 
+      {job.canAddCost || job.extraCosts.length || job.price !== null ? (
+        <VendorExtraCosts
+          jobId={job.id}
+          costs={job.extraCosts}
+          price={job.price}
+          mode={job.canAddCost ? "vendor" : "view"}
+        />
+      ) : null}
+      <VendorQueueActions job={job} />
+
       {working ? (
         <div className="vd-actions">
           <Button
@@ -414,13 +434,16 @@ function JobBody({ job }: { job: VendorJobDetail }) {
             loading={act.isPending && act.variables === "submit"}
             onClick={() => act.mutate("submit")}
           >
-            <Send aria-hidden /> Submit for review
+            <Send aria-hidden />{" "}
+            {job.canDelegate ? "Submit for review" : "Send to your Team Leader"}
           </Button>
         </div>
       ) : job.status === "SUBMITTED" ? (
         <p className="vjd-note">
           Submitted {formatDateTime(job.submittedAt!)}. Waiting for review.
         </p>
+      ) : job.status === "TEAM_REVIEW" && !job.canTeamReview ? (
+        <p className="vjd-note">With your Team Leader for review.</p>
       ) : null}
     </>
   );

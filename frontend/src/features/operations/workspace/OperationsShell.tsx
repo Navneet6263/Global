@@ -113,6 +113,13 @@ const destinations: readonly WorkspaceDestination[] = [
     permission: "case:read",
   },
   {
+    label: "Vendor rates",
+    detail: "What vendors are paid per check type in the open queue",
+    to: "/operations/vendor-rates",
+    terms: "vendor rate price payment open queue pick",
+    permission: "case:read",
+  },
+  {
     label: "Team annexure",
     detail: "Weekly, monthly and yearly closed checks with colour codes",
     to: "/operations/annexure",

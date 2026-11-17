@@ -53,6 +53,14 @@ function job(status: string, extra: Record<string, unknown> = {}) {
     declineReason: null,
     reviewNote: null,
     evidenceCount: 0,
+    price: null,
+    city: null,
+    pincode: null,
+    pickedAt: null,
+    releaseCount: 0,
+    fromQueue: false,
+    teamReview: null,
+    extraCosts: [],
     version: 1,
     ageDays: 4,
     ageing: "3-5",
@@ -106,6 +114,9 @@ async function vendorFixture(page: Page) {
       return reply({
         ...state,
         canDelegate: true,
+        canRelease: false,
+        canTeamReview: false,
+        canAddCost: ["IN_PROGRESS", "RETURNED"].includes(state.status),
         team: [{ id: "88888888-8888-4888-8888-888888888888", name: "Ravi (field)" }],
         lhs: {
           form: {
@@ -172,7 +183,7 @@ test("a vendor accepts a check, records what it verified, attaches proof and sub
   await page.goto("/vendor/checks");
   await expect(page.getByRole("heading", { name: "My checks", level: 1 })).toBeVisible();
   await expect(page.getByText("SG-VEND-1")).toBeVisible();
-  await page.getByRole("button", { name: "Open" }).click();
+  await page.getByRole("button", { name: "Open", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByText("Visit between 10 and 6")).toBeVisible();
   await expect(dialog.getByText("12 MG Road")).toBeVisible();
@@ -249,6 +260,8 @@ test("Operations sees vendor work with chosen columns, exports them and approves
         vendors: [],
         documents: [],
         rhsForm: addressForm,
+        queueRate: null,
+        queueLocation: { city: null, pincode: null },
         attempts: [
           {
             ...job(status, {
@@ -260,6 +273,7 @@ test("Operations sees vendor work with chosen columns, exports them and approves
             canApprove: false,
             canReview: status === "SUBMITTED",
             canCancel: status === "SUBMITTED",
+            canDecideCosts: status === "SUBMITTED",
             submission: [{ respondentName: "Neighbour, Mr Joshi", addressConfirmed: "Yes" }],
             evidence: [
               {
@@ -290,7 +304,7 @@ test("Operations sees vendor work with chosen columns, exports them and approves
   await expect
     .poll(() => calls.find((call) => call.path.startsWith("/vendor-checks/export"))?.path)
     .toContain("columns=caseNumber%2Ccandidate%2Cclient%2Ccheck");
-  await page.getByRole("button", { name: "Open" }).click();
+  await page.getByRole("button", { name: "Open", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog.getByText("Neighbour, Mr Joshi")).toBeVisible();
   await dialog.getByRole("button", { name: "Accept result" }).click();
@@ -337,12 +351,15 @@ test("the RM approves a Team Leader's vendor request from Vendor work", async ({
         vendors: [],
         documents: [],
         rhsForm: addressForm,
+        queueRate: null,
+        queueLocation: { city: null, pincode: null },
         attempts: [
           {
             ...pending,
             canApprove: status === "PENDING_APPROVAL",
             canReview: false,
             canCancel: true,
+            canDecideCosts: false,
             submission: [],
             evidence: [],
           },
@@ -361,7 +378,7 @@ test("the RM approves a Team Leader's vendor request from Vendor work", async ({
     "aria-pressed",
     "true",
   );
-  await page.getByRole("button", { name: "Open" }).click();
+  await page.getByRole("button", { name: "Open", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(
     dialog.getByText("Remote address; the source has not replied in 3 days"),

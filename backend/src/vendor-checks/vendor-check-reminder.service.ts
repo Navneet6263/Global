@@ -50,7 +50,11 @@ export class VendorCheckReminderService
     try {
       const due = await this.prisma.vendorCheckAssignment.findMany({
         where: {
-          status: { in: ["ASSIGNED", "IN_PROGRESS", "RETURNED"] },
+          // Only work a vendor holds (a queued check has no vendor yet).
+          status: {
+            in: ["ASSIGNED", "IN_PROGRESS", "RETURNED", "TEAM_REVIEW"],
+          },
+          vendorUserId: { not: null },
           dueAt: { lt: now },
           OR: [
             { lastRemindedAt: null },
@@ -88,7 +92,8 @@ export class VendorCheckReminderService
             data: [
               {
                 tenantId: job.tenantId,
-                userId: job.handlerUserId ?? job.vendorUserId,
+                // Held by a vendor (vendorUserId is set for these statuses).
+                userId: (job.handlerUserId ?? job.vendorUserId)!,
                 type: "VENDOR_CHECK_OVERDUE",
                 title: `Overdue: ${job.case.caseNumber}`,
                 body: `The ${check} check was due ${job.dueAt!.toISOString().slice(0, 10)}. Submit it or tell us why it is late.`,
@@ -99,7 +104,7 @@ export class VendorCheckReminderService
                 userId: job.assignedById,
                 type: "VENDOR_CHECK_OVERDUE",
                 title: `Vendor late: ${job.case.caseNumber}`,
-                body: `${job.vendor.displayName} has not finished the ${check} check (due ${job.dueAt!.toISOString().slice(0, 10)}).`,
+                body: `${job.vendor?.displayName ?? "The vendor"} has not finished the ${check} check (due ${job.dueAt!.toISOString().slice(0, 10)}).`,
                 href: "/operations/vendor-work",
               },
             ],

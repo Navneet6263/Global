@@ -5,8 +5,12 @@ export const VENDOR_CHECK_STATUSES = [
   "PENDING_APPROVAL",
   /** The RM turned the Team Leader's request down. */
   "REJECTED",
+  /** In the open queue: every approved vendor sees it until one picks it. */
+  "OPEN",
   "ASSIGNED",
   "IN_PROGRESS",
+  /** A vendor member's work, waiting for the vendor's Team Leader before the RM. */
+  "TEAM_REVIEW",
   "SUBMITTED",
   "RETURNED",
   "APPROVED",
@@ -20,13 +24,23 @@ export const OPEN_VENDOR_STATUSES: readonly VendorCheckStatus[] = [
   "ASSIGNED",
   "IN_PROGRESS",
   "RETURNED",
+  "TEAM_REVIEW",
 ];
-/** A check has at most one live vendor attempt. */
+/** A check has at most one live vendor attempt (a queued one counts). */
 export const LIVE_VENDOR_STATUSES: readonly VendorCheckStatus[] = [
   "PENDING_APPROVAL",
+  "OPEN",
   ...OPEN_VENDOR_STATUSES,
   "SUBMITTED",
 ];
+
+/** A queued check may be returned to the queue until proof is attached. */
+export const RELEASABLE_STATUSES: readonly VendorCheckStatus[] = [
+  "IN_PROGRESS",
+];
+
+/** The largest extra cost one line may claim (rupees). */
+export const EXTRA_COST_MAX = 100_000;
 
 export const VENDOR_RESULTS = [
   "CLEAR",

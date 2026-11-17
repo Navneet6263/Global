@@ -256,6 +256,8 @@ export type VerificationMethodRun = Prisma.VerificationMethodRunModel
  * (BGV process: employment 7 follow-ups, education 3; stops when the source responds).
  * Vendor / field work on a whole check: assigned -> in progress -> submitted -> approved
  * (or returned / declined / cancelled). Approval copies the result into the check's RHS.
+ * Open queue: OPEN (no vendor yet, every approved vendor sees it) -> picked (IN_PROGRESS);
+ * a member's work goes to the vendor Team Leader (TEAM_REVIEW) before the case RM.
  */
 export type VendorCheckAssignment = Prisma.VendorCheckAssignmentModel
 /**
@@ -382,3 +384,14 @@ export type VendorDocument = Prisma.VendorDocumentModel
  * 
  */
 export type VendorDocumentRevision = Prisma.VendorDocumentRevisionModel
+/**
+ * Model VendorExtraCost
+ * A vendor's extra cost on one check (travel, fees...), explained by the vendor and
+ * approved or rejected by the case RM.
+ */
+export type VendorExtraCost = Prisma.VendorExtraCostModel
+/**
+ * Model VendorRate
+ * The payment for each check type when it goes to the open vendor queue (set by Operations).
+ */
+export type VendorRate = Prisma.VendorRateModel

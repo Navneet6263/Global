@@ -37,6 +37,7 @@ type OpsRoute =
   | "/operations/utv"
   | "/operations/annexure"
   | "/operations/vendor-work"
+  | "/operations/vendor-rates"
   | "/operations/vendor-onboarding";
 
 function Badge({ value, tone = "info" }: { value?: number; tone?: "info" | "warning" }) {
@@ -101,6 +102,7 @@ const groupOf: Record<string, string> = {
   "/operations/utv": "sla",
   "/operations/annexure": "workload",
   "/operations/vendor-work": "workload",
+  "/operations/vendor-rates": "workload",
 };
 
 export function OperationsNavigation({ onNavigate }: { onNavigate?: () => void }) {
@@ -218,6 +220,7 @@ export function OperationsNavigation({ onNavigate }: { onNavigate?: () => void }
             {can("task:write") && link("Override allocation", "/operations/assignments")}
             {can("case:read") && link("Team annexure", "/operations/annexure")}
             {can("case:read") && link("Vendor work", "/operations/vendor-work")}
+            {can("case:read") && link("Vendor rates", "/operations/vendor-rates")}
           </NavGroup>
         )}
         {can("dashboard:read") && (

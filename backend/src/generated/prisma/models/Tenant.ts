@@ -274,6 +274,8 @@ export type TenantWhereInput = {
   departments?: Prisma.DepartmentListRelationFilter
   signupRequests?: Prisma.SignupRequestListRelationFilter
   vendorProfiles?: Prisma.VendorProfileListRelationFilter
+  vendorExtraCosts?: Prisma.VendorExtraCostListRelationFilter
+  vendorRates?: Prisma.VendorRateListRelationFilter
   vendorDocuments?: Prisma.VendorDocumentListRelationFilter
 }
 
@@ -320,6 +322,8 @@ export type TenantOrderByWithRelationInput = {
   departments?: Prisma.DepartmentOrderByRelationAggregateInput
   signupRequests?: Prisma.SignupRequestOrderByRelationAggregateInput
   vendorProfiles?: Prisma.VendorProfileOrderByRelationAggregateInput
+  vendorExtraCosts?: Prisma.VendorExtraCostOrderByRelationAggregateInput
+  vendorRates?: Prisma.VendorRateOrderByRelationAggregateInput
   vendorDocuments?: Prisma.VendorDocumentOrderByRelationAggregateInput
 }
 
@@ -369,6 +373,8 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   departments?: Prisma.DepartmentListRelationFilter
   signupRequests?: Prisma.SignupRequestListRelationFilter
   vendorProfiles?: Prisma.VendorProfileListRelationFilter
+  vendorExtraCosts?: Prisma.VendorExtraCostListRelationFilter
+  vendorRates?: Prisma.VendorRateListRelationFilter
   vendorDocuments?: Prisma.VendorDocumentListRelationFilter
 }, "id" | "publicId" | "code">
 
@@ -445,6 +451,8 @@ export type TenantCreateInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -491,6 +499,8 @@ export type TenantUncheckedCreateInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -537,6 +547,8 @@ export type TenantUpdateInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -583,6 +595,8 @@ export type TenantUncheckedUpdateInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1170,6 +1184,34 @@ export type TenantUpdateOneRequiredWithoutVendorDocumentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutVendorDocumentsInput, Prisma.TenantUpdateWithoutVendorDocumentsInput>, Prisma.TenantUncheckedUpdateWithoutVendorDocumentsInput>
 }
 
+export type TenantCreateNestedOneWithoutVendorExtraCostsInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVendorExtraCostsInput, Prisma.TenantUncheckedCreateWithoutVendorExtraCostsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVendorExtraCostsInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutVendorExtraCostsNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVendorExtraCostsInput, Prisma.TenantUncheckedCreateWithoutVendorExtraCostsInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVendorExtraCostsInput
+  upsert?: Prisma.TenantUpsertWithoutVendorExtraCostsInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutVendorExtraCostsInput, Prisma.TenantUpdateWithoutVendorExtraCostsInput>, Prisma.TenantUncheckedUpdateWithoutVendorExtraCostsInput>
+}
+
+export type TenantCreateNestedOneWithoutVendorRatesInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVendorRatesInput, Prisma.TenantUncheckedCreateWithoutVendorRatesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVendorRatesInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutVendorRatesNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutVendorRatesInput, Prisma.TenantUncheckedCreateWithoutVendorRatesInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutVendorRatesInput
+  upsert?: Prisma.TenantUpsertWithoutVendorRatesInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutVendorRatesInput, Prisma.TenantUpdateWithoutVendorRatesInput>, Prisma.TenantUncheckedUpdateWithoutVendorRatesInput>
+}
+
 export type TenantCreateWithoutBranchesInput = {
   id?: bigint | number
   publicId?: string
@@ -1212,6 +1254,8 @@ export type TenantCreateWithoutBranchesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -1257,6 +1301,8 @@ export type TenantUncheckedCreateWithoutBranchesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -1318,6 +1364,8 @@ export type TenantUpdateWithoutBranchesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -1363,6 +1411,8 @@ export type TenantUncheckedUpdateWithoutBranchesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1408,6 +1458,8 @@ export type TenantCreateWithoutUsersInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -1453,6 +1505,8 @@ export type TenantUncheckedCreateWithoutUsersInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -1514,6 +1568,8 @@ export type TenantUpdateWithoutUsersInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -1559,6 +1615,8 @@ export type TenantUncheckedUpdateWithoutUsersInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1604,6 +1662,8 @@ export type TenantCreateWithoutVendorSharingRecordsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -1649,6 +1709,8 @@ export type TenantUncheckedCreateWithoutVendorSharingRecordsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -1710,6 +1772,8 @@ export type TenantUpdateWithoutVendorSharingRecordsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -1755,6 +1819,8 @@ export type TenantUncheckedUpdateWithoutVendorSharingRecordsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1800,6 +1866,8 @@ export type TenantCreateWithoutPrivacyRecordsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -1845,6 +1913,8 @@ export type TenantUncheckedCreateWithoutPrivacyRecordsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -1906,6 +1976,8 @@ export type TenantUpdateWithoutPrivacyRecordsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -1951,6 +2023,8 @@ export type TenantUncheckedUpdateWithoutPrivacyRecordsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -1996,6 +2070,8 @@ export type TenantCreateWithoutRolesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -2041,6 +2117,8 @@ export type TenantUncheckedCreateWithoutRolesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2102,6 +2180,8 @@ export type TenantUpdateWithoutRolesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -2147,6 +2227,8 @@ export type TenantUncheckedUpdateWithoutRolesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2192,6 +2274,8 @@ export type TenantCreateWithoutClientsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -2237,6 +2321,8 @@ export type TenantUncheckedCreateWithoutClientsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2298,6 +2384,8 @@ export type TenantUpdateWithoutClientsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -2343,6 +2431,8 @@ export type TenantUncheckedUpdateWithoutClientsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2388,6 +2478,8 @@ export type TenantCreateWithoutSignupRequestsInput = {
   vendorReports?: Prisma.VendorReportCreateNestedManyWithoutTenantInput
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -2433,6 +2525,8 @@ export type TenantUncheckedCreateWithoutSignupRequestsInput = {
   vendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutTenantInput
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2494,6 +2588,8 @@ export type TenantUpdateWithoutSignupRequestsInput = {
   vendorReports?: Prisma.VendorReportUpdateManyWithoutTenantNestedInput
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -2539,6 +2635,8 @@ export type TenantUncheckedUpdateWithoutSignupRequestsInput = {
   vendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutTenantNestedInput
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2584,6 +2682,8 @@ export type TenantCreateWithoutServicePackagesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -2629,6 +2729,8 @@ export type TenantUncheckedCreateWithoutServicePackagesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2690,6 +2792,8 @@ export type TenantUpdateWithoutServicePackagesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -2735,6 +2839,8 @@ export type TenantUncheckedUpdateWithoutServicePackagesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2780,6 +2886,8 @@ export type TenantCreateWithoutSubjectsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -2825,6 +2933,8 @@ export type TenantUncheckedCreateWithoutSubjectsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -2886,6 +2996,8 @@ export type TenantUpdateWithoutSubjectsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -2931,6 +3043,8 @@ export type TenantUncheckedUpdateWithoutSubjectsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -2976,6 +3090,8 @@ export type TenantCreateWithoutCasesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -3021,6 +3137,8 @@ export type TenantUncheckedCreateWithoutCasesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3082,6 +3200,8 @@ export type TenantUpdateWithoutCasesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -3127,6 +3247,8 @@ export type TenantUncheckedUpdateWithoutCasesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3172,6 +3294,8 @@ export type TenantCreateWithoutChecksInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -3217,6 +3341,8 @@ export type TenantUncheckedCreateWithoutChecksInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3278,6 +3404,8 @@ export type TenantUpdateWithoutChecksInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -3323,6 +3451,8 @@ export type TenantUncheckedUpdateWithoutChecksInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3368,6 +3498,8 @@ export type TenantCreateWithoutDocumentsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -3413,6 +3545,8 @@ export type TenantUncheckedCreateWithoutDocumentsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3474,6 +3608,8 @@ export type TenantUpdateWithoutDocumentsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -3519,6 +3655,8 @@ export type TenantUncheckedUpdateWithoutDocumentsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3564,6 +3702,8 @@ export type TenantCreateWithoutTasksInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -3609,6 +3749,8 @@ export type TenantUncheckedCreateWithoutTasksInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3670,6 +3812,8 @@ export type TenantUpdateWithoutTasksInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -3715,6 +3859,8 @@ export type TenantUncheckedUpdateWithoutTasksInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3760,6 +3906,8 @@ export type TenantCreateWithoutClarificationsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -3805,6 +3953,8 @@ export type TenantUncheckedCreateWithoutClarificationsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -3866,6 +4016,8 @@ export type TenantUpdateWithoutClarificationsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -3911,6 +4063,8 @@ export type TenantUncheckedUpdateWithoutClarificationsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -3956,6 +4110,8 @@ export type TenantCreateWithoutReportsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -4001,6 +4157,8 @@ export type TenantUncheckedCreateWithoutReportsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4062,6 +4220,8 @@ export type TenantUpdateWithoutReportsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -4107,6 +4267,8 @@ export type TenantUncheckedUpdateWithoutReportsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4152,6 +4314,8 @@ export type TenantCreateWithoutFieldVisitsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -4197,6 +4361,8 @@ export type TenantUncheckedCreateWithoutFieldVisitsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4258,6 +4424,8 @@ export type TenantUpdateWithoutFieldVisitsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -4303,6 +4471,8 @@ export type TenantUncheckedUpdateWithoutFieldVisitsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4348,6 +4518,8 @@ export type TenantCreateWithoutAuditEventsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -4393,6 +4565,8 @@ export type TenantUncheckedCreateWithoutAuditEventsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4454,6 +4628,8 @@ export type TenantUpdateWithoutAuditEventsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -4499,6 +4675,8 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4544,6 +4722,8 @@ export type TenantCreateWithoutOutboxEventsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -4589,6 +4769,8 @@ export type TenantUncheckedCreateWithoutOutboxEventsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4650,6 +4832,8 @@ export type TenantUpdateWithoutOutboxEventsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -4695,6 +4879,8 @@ export type TenantUncheckedUpdateWithoutOutboxEventsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4740,6 +4926,8 @@ export type TenantCreateWithoutIdempotencyKeysInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -4785,6 +4973,8 @@ export type TenantUncheckedCreateWithoutIdempotencyKeysInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -4846,6 +5036,8 @@ export type TenantUpdateWithoutIdempotencyKeysInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -4891,6 +5083,8 @@ export type TenantUncheckedUpdateWithoutIdempotencyKeysInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -4936,6 +5130,8 @@ export type TenantCreateWithoutFieldPolicyInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -4981,6 +5177,8 @@ export type TenantUncheckedCreateWithoutFieldPolicyInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5042,6 +5240,8 @@ export type TenantUpdateWithoutFieldPolicyInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -5087,6 +5287,8 @@ export type TenantUncheckedUpdateWithoutFieldPolicyInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5132,6 +5334,8 @@ export type TenantCreateWithoutCrmSettingsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -5177,6 +5381,8 @@ export type TenantUncheckedCreateWithoutCrmSettingsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5238,6 +5444,8 @@ export type TenantUpdateWithoutCrmSettingsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -5283,6 +5491,8 @@ export type TenantUncheckedUpdateWithoutCrmSettingsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5328,6 +5538,8 @@ export type TenantCreateWithoutAccessPolicyInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -5373,6 +5585,8 @@ export type TenantUncheckedCreateWithoutAccessPolicyInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5434,6 +5648,8 @@ export type TenantUpdateWithoutAccessPolicyInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -5479,6 +5695,8 @@ export type TenantUncheckedUpdateWithoutAccessPolicyInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5524,6 +5742,8 @@ export type TenantCreateWithoutOpportunitiesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -5569,6 +5789,8 @@ export type TenantUncheckedCreateWithoutOpportunitiesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5630,6 +5852,8 @@ export type TenantUpdateWithoutOpportunitiesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -5675,6 +5899,8 @@ export type TenantUncheckedUpdateWithoutOpportunitiesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5720,6 +5946,8 @@ export type TenantCreateWithoutSalesActivitiesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -5765,6 +5993,8 @@ export type TenantUncheckedCreateWithoutSalesActivitiesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -5826,6 +6056,8 @@ export type TenantUpdateWithoutSalesActivitiesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -5871,6 +6103,8 @@ export type TenantUncheckedUpdateWithoutSalesActivitiesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -5916,6 +6150,8 @@ export type TenantCreateWithoutInvoicesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -5961,6 +6197,8 @@ export type TenantUncheckedCreateWithoutInvoicesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6022,6 +6260,8 @@ export type TenantUpdateWithoutInvoicesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -6067,6 +6307,8 @@ export type TenantUncheckedUpdateWithoutInvoicesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6112,6 +6354,8 @@ export type TenantCreateWithoutCreditNotesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -6157,6 +6401,8 @@ export type TenantUncheckedCreateWithoutCreditNotesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6218,6 +6464,8 @@ export type TenantUpdateWithoutCreditNotesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -6263,6 +6511,8 @@ export type TenantUncheckedUpdateWithoutCreditNotesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6308,6 +6558,8 @@ export type TenantCreateWithoutNotificationsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -6353,6 +6605,8 @@ export type TenantUncheckedCreateWithoutNotificationsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6414,6 +6668,8 @@ export type TenantUpdateWithoutNotificationsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -6459,6 +6715,8 @@ export type TenantUncheckedUpdateWithoutNotificationsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6504,6 +6762,8 @@ export type TenantCreateWithoutCandidateAccessInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -6549,6 +6809,8 @@ export type TenantUncheckedCreateWithoutCandidateAccessInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6610,6 +6872,8 @@ export type TenantUpdateWithoutCandidateAccessInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -6655,6 +6919,8 @@ export type TenantUncheckedUpdateWithoutCandidateAccessInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6700,6 +6966,8 @@ export type TenantCreateWithoutVendorAssignmentsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -6745,6 +7013,8 @@ export type TenantUncheckedCreateWithoutVendorAssignmentsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -6806,6 +7076,8 @@ export type TenantUpdateWithoutVendorAssignmentsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -6851,6 +7123,8 @@ export type TenantUncheckedUpdateWithoutVendorAssignmentsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -6896,6 +7170,8 @@ export type TenantCreateWithoutSupportRequestsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -6941,6 +7217,8 @@ export type TenantUncheckedCreateWithoutSupportRequestsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7002,6 +7280,8 @@ export type TenantUpdateWithoutSupportRequestsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -7047,6 +7327,8 @@ export type TenantUncheckedUpdateWithoutSupportRequestsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7092,6 +7374,8 @@ export type TenantCreateWithoutVendorTeamPoliciesInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -7137,6 +7421,8 @@ export type TenantUncheckedCreateWithoutVendorTeamPoliciesInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7198,6 +7484,8 @@ export type TenantUpdateWithoutVendorTeamPoliciesInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -7243,6 +7531,8 @@ export type TenantUncheckedUpdateWithoutVendorTeamPoliciesInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7288,6 +7578,8 @@ export type TenantCreateWithoutVendorReportsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -7333,6 +7625,8 @@ export type TenantUncheckedCreateWithoutVendorReportsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7394,6 +7688,8 @@ export type TenantUpdateWithoutVendorReportsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -7439,6 +7735,8 @@ export type TenantUncheckedUpdateWithoutVendorReportsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7484,6 +7782,8 @@ export type TenantCreateWithoutDepartmentsInput = {
   vendorReports?: Prisma.VendorReportCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -7529,6 +7829,8 @@ export type TenantUncheckedCreateWithoutDepartmentsInput = {
   vendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7590,6 +7892,8 @@ export type TenantUpdateWithoutDepartmentsInput = {
   vendorReports?: Prisma.VendorReportUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -7635,6 +7939,8 @@ export type TenantUncheckedUpdateWithoutDepartmentsInput = {
   vendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7680,6 +7986,8 @@ export type TenantCreateWithoutVendorProfilesInput = {
   vendorReports?: Prisma.VendorReportCreateNestedManyWithoutTenantInput
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
 }
 
@@ -7725,6 +8033,8 @@ export type TenantUncheckedCreateWithoutVendorProfilesInput = {
   vendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutTenantInput
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
 }
 
@@ -7786,6 +8096,8 @@ export type TenantUpdateWithoutVendorProfilesInput = {
   vendorReports?: Prisma.VendorReportUpdateManyWithoutTenantNestedInput
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
 }
 
@@ -7831,6 +8143,8 @@ export type TenantUncheckedUpdateWithoutVendorProfilesInput = {
   vendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutTenantNestedInput
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
   vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
@@ -7877,6 +8191,8 @@ export type TenantCreateWithoutVendorDocumentsInput = {
   departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
 }
 
 export type TenantUncheckedCreateWithoutVendorDocumentsInput = {
@@ -7922,6 +8238,8 @@ export type TenantUncheckedCreateWithoutVendorDocumentsInput = {
   departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
   signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
   vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
 }
 
 export type TenantCreateOrConnectWithoutVendorDocumentsInput = {
@@ -7983,6 +8301,8 @@ export type TenantUpdateWithoutVendorDocumentsInput = {
   departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
 }
 
 export type TenantUncheckedUpdateWithoutVendorDocumentsInput = {
@@ -8028,6 +8348,416 @@ export type TenantUncheckedUpdateWithoutVendorDocumentsInput = {
   departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
   signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
   vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutVendorExtraCostsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutTenantInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutTenantInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyCreateNestedManyWithoutTenantInput
+  vendorReports?: Prisma.VendorReportCreateNestedManyWithoutTenantInput
+  departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
+  signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
+  vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateCreateNestedManyWithoutTenantInput
+  vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutVendorExtraCostsInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectUncheckedCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutTenantInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutTenantInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyUncheckedCreateNestedManyWithoutTenantInput
+  vendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutTenantInput
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
+  signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
+  vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorRates?: Prisma.VendorRateUncheckedCreateNestedManyWithoutTenantInput
+  vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutVendorExtraCostsInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVendorExtraCostsInput, Prisma.TenantUncheckedCreateWithoutVendorExtraCostsInput>
+}
+
+export type TenantUpsertWithoutVendorExtraCostsInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutVendorExtraCostsInput, Prisma.TenantUncheckedUpdateWithoutVendorExtraCostsInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVendorExtraCostsInput, Prisma.TenantUncheckedCreateWithoutVendorExtraCostsInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutVendorExtraCostsInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutVendorExtraCostsInput, Prisma.TenantUncheckedUpdateWithoutVendorExtraCostsInput>
+}
+
+export type TenantUpdateWithoutVendorExtraCostsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutTenantNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutTenantNestedInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyUpdateManyWithoutTenantNestedInput
+  vendorReports?: Prisma.VendorReportUpdateManyWithoutTenantNestedInput
+  departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
+  signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
+  vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUpdateManyWithoutTenantNestedInput
+  vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutVendorExtraCostsInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUncheckedUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutTenantNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutTenantNestedInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyUncheckedUpdateManyWithoutTenantNestedInput
+  vendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutTenantNestedInput
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
+  signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
+  vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorRates?: Prisma.VendorRateUncheckedUpdateManyWithoutTenantNestedInput
+  vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutVendorRatesInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordCreateNestedManyWithoutTenantInput
+  vendorAssignments?: Prisma.VendorAssignmentCreateNestedManyWithoutTenantInput
+  supportRequests?: Prisma.SupportRequestCreateNestedManyWithoutTenantInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyCreateNestedManyWithoutTenantInput
+  vendorReports?: Prisma.VendorReportCreateNestedManyWithoutTenantInput
+  departments?: Prisma.DepartmentCreateNestedManyWithoutTenantInput
+  signupRequests?: Prisma.SignupRequestCreateNestedManyWithoutTenantInput
+  vendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostCreateNestedManyWithoutTenantInput
+  vendorDocuments?: Prisma.VendorDocumentCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutVendorRatesInput = {
+  id?: bigint | number
+  publicId?: string
+  code: string
+  name: string
+  status?: string
+  timezone?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  branches?: Prisma.BranchUncheckedCreateNestedManyWithoutTenantInput
+  users?: Prisma.UserUncheckedCreateNestedManyWithoutTenantInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutTenantInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutTenantInput
+  subjects?: Prisma.SubjectUncheckedCreateNestedManyWithoutTenantInput
+  cases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutTenantInput
+  checks?: Prisma.CaseCheckUncheckedCreateNestedManyWithoutTenantInput
+  documents?: Prisma.DocumentUncheckedCreateNestedManyWithoutTenantInput
+  tasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutTenantInput
+  clarifications?: Prisma.ClarificationUncheckedCreateNestedManyWithoutTenantInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutTenantInput
+  fieldVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  outboxEvents?: Prisma.OutboxEventUncheckedCreateNestedManyWithoutTenantInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedCreateNestedManyWithoutTenantInput
+  servicePackages?: Prisma.ServicePackageUncheckedCreateNestedManyWithoutTenantInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedCreateNestedOneWithoutTenantInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedCreateNestedOneWithoutTenantInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedCreateNestedOneWithoutTenantInput
+  opportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutTenantInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutTenantInput
+  invoices?: Prisma.InvoiceUncheckedCreateNestedManyWithoutTenantInput
+  creditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutTenantInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutTenantInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedCreateNestedManyWithoutTenantInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutTenantInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutTenantInput
+  supportRequests?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutTenantInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyUncheckedCreateNestedManyWithoutTenantInput
+  vendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutTenantInput
+  departments?: Prisma.DepartmentUncheckedCreateNestedManyWithoutTenantInput
+  signupRequests?: Prisma.SignupRequestUncheckedCreateNestedManyWithoutTenantInput
+  vendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutTenantInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutTenantInput
+  vendorDocuments?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutVendorRatesInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVendorRatesInput, Prisma.TenantUncheckedCreateWithoutVendorRatesInput>
+}
+
+export type TenantUpsertWithoutVendorRatesInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutVendorRatesInput, Prisma.TenantUncheckedUpdateWithoutVendorRatesInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutVendorRatesInput, Prisma.TenantUncheckedCreateWithoutVendorRatesInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutVendorRatesInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutVendorRatesInput, Prisma.TenantUncheckedUpdateWithoutVendorRatesInput>
+}
+
+export type TenantUpdateWithoutVendorRatesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUpdateManyWithoutTenantNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUpdateManyWithoutTenantNestedInput
+  supportRequests?: Prisma.SupportRequestUpdateManyWithoutTenantNestedInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyUpdateManyWithoutTenantNestedInput
+  vendorReports?: Prisma.VendorReportUpdateManyWithoutTenantNestedInput
+  departments?: Prisma.DepartmentUpdateManyWithoutTenantNestedInput
+  signupRequests?: Prisma.SignupRequestUpdateManyWithoutTenantNestedInput
+  vendorProfiles?: Prisma.VendorProfileUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUpdateManyWithoutTenantNestedInput
+  vendorDocuments?: Prisma.VendorDocumentUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutVendorRatesInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  code?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  branches?: Prisma.BranchUncheckedUpdateManyWithoutTenantNestedInput
+  users?: Prisma.UserUncheckedUpdateManyWithoutTenantNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutTenantNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutTenantNestedInput
+  subjects?: Prisma.SubjectUncheckedUpdateManyWithoutTenantNestedInput
+  cases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutTenantNestedInput
+  checks?: Prisma.CaseCheckUncheckedUpdateManyWithoutTenantNestedInput
+  documents?: Prisma.DocumentUncheckedUpdateManyWithoutTenantNestedInput
+  tasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutTenantNestedInput
+  clarifications?: Prisma.ClarificationUncheckedUpdateManyWithoutTenantNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutTenantNestedInput
+  fieldVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  outboxEvents?: Prisma.OutboxEventUncheckedUpdateManyWithoutTenantNestedInput
+  idempotencyKeys?: Prisma.IdempotencyKeyUncheckedUpdateManyWithoutTenantNestedInput
+  servicePackages?: Prisma.ServicePackageUncheckedUpdateManyWithoutTenantNestedInput
+  fieldPolicy?: Prisma.TenantFieldPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  crmSettings?: Prisma.TenantCrmSettingsUncheckedUpdateOneWithoutTenantNestedInput
+  accessPolicy?: Prisma.TenantAccessPolicyUncheckedUpdateOneWithoutTenantNestedInput
+  opportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutTenantNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutTenantNestedInput
+  invoices?: Prisma.InvoiceUncheckedUpdateManyWithoutTenantNestedInput
+  creditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutTenantNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutTenantNestedInput
+  candidateAccess?: Prisma.CandidatePortalAccessUncheckedUpdateManyWithoutTenantNestedInput
+  privacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorSharingRecords?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutTenantNestedInput
+  vendorAssignments?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutTenantNestedInput
+  supportRequests?: Prisma.SupportRequestUncheckedUpdateManyWithoutTenantNestedInput
+  vendorTeamPolicies?: Prisma.VendorTeamPolicyUncheckedUpdateManyWithoutTenantNestedInput
+  vendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutTenantNestedInput
+  departments?: Prisma.DepartmentUncheckedUpdateManyWithoutTenantNestedInput
+  signupRequests?: Prisma.SignupRequestUncheckedUpdateManyWithoutTenantNestedInput
+  vendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutTenantNestedInput
+  vendorExtraCosts?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutTenantNestedInput
+  vendorDocuments?: Prisma.VendorDocumentUncheckedUpdateManyWithoutTenantNestedInput
 }
 
 
@@ -8067,6 +8797,8 @@ export type TenantCountOutputType = {
   departments: number
   signupRequests: number
   vendorProfiles: number
+  vendorExtraCosts: number
+  vendorRates: number
   vendorDocuments: number
 }
 
@@ -8102,6 +8834,8 @@ export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions
   departments?: boolean | TenantCountOutputTypeCountDepartmentsArgs
   signupRequests?: boolean | TenantCountOutputTypeCountSignupRequestsArgs
   vendorProfiles?: boolean | TenantCountOutputTypeCountVendorProfilesArgs
+  vendorExtraCosts?: boolean | TenantCountOutputTypeCountVendorExtraCostsArgs
+  vendorRates?: boolean | TenantCountOutputTypeCountVendorRatesArgs
   vendorDocuments?: boolean | TenantCountOutputTypeCountVendorDocumentsArgs
 }
 
@@ -8335,6 +9069,20 @@ export type TenantCountOutputTypeCountVendorProfilesArgs<ExtArgs extends runtime
 /**
  * TenantCountOutputType without action
  */
+export type TenantCountOutputTypeCountVendorExtraCostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorExtraCostWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountVendorRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorRateWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
 export type TenantCountOutputTypeCountVendorDocumentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VendorDocumentWhereInput
 }
@@ -8383,6 +9131,8 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   departments?: boolean | Prisma.Tenant$departmentsArgs<ExtArgs>
   signupRequests?: boolean | Prisma.Tenant$signupRequestsArgs<ExtArgs>
   vendorProfiles?: boolean | Prisma.Tenant$vendorProfilesArgs<ExtArgs>
+  vendorExtraCosts?: boolean | Prisma.Tenant$vendorExtraCostsArgs<ExtArgs>
+  vendorRates?: boolean | Prisma.Tenant$vendorRatesArgs<ExtArgs>
   vendorDocuments?: boolean | Prisma.Tenant$vendorDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["tenant"]>
@@ -8436,6 +9186,8 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   departments?: boolean | Prisma.Tenant$departmentsArgs<ExtArgs>
   signupRequests?: boolean | Prisma.Tenant$signupRequestsArgs<ExtArgs>
   vendorProfiles?: boolean | Prisma.Tenant$vendorProfilesArgs<ExtArgs>
+  vendorExtraCosts?: boolean | Prisma.Tenant$vendorExtraCostsArgs<ExtArgs>
+  vendorRates?: boolean | Prisma.Tenant$vendorRatesArgs<ExtArgs>
   vendorDocuments?: boolean | Prisma.Tenant$vendorDocumentsArgs<ExtArgs>
   _count?: boolean | Prisma.TenantCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -8477,6 +9229,8 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     departments: Prisma.$DepartmentPayload<ExtArgs>[]
     signupRequests: Prisma.$SignupRequestPayload<ExtArgs>[]
     vendorProfiles: Prisma.$VendorProfilePayload<ExtArgs>[]
+    vendorExtraCosts: Prisma.$VendorExtraCostPayload<ExtArgs>[]
+    vendorRates: Prisma.$VendorRatePayload<ExtArgs>[]
     vendorDocuments: Prisma.$VendorDocumentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -8862,6 +9616,8 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   departments<T extends Prisma.Tenant$departmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$departmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   signupRequests<T extends Prisma.Tenant$signupRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$signupRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SignupRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorProfiles<T extends Prisma.Tenant$vendorProfilesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vendorProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorExtraCosts<T extends Prisma.Tenant$vendorExtraCostsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vendorExtraCostsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorExtraCostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorRates<T extends Prisma.Tenant$vendorRatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vendorRatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorDocuments<T extends Prisma.Tenant$vendorDocumentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$vendorDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorDocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10045,6 +10801,54 @@ export type Tenant$vendorProfilesArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.VendorProfileScalarFieldEnum | Prisma.VendorProfileScalarFieldEnum[]
+}
+
+/**
+ * Tenant.vendorExtraCosts
+ */
+export type Tenant$vendorExtraCostsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorExtraCost
+   */
+  select?: Prisma.VendorExtraCostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorExtraCost
+   */
+  omit?: Prisma.VendorExtraCostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorExtraCostInclude<ExtArgs> | null
+  where?: Prisma.VendorExtraCostWhereInput
+  orderBy?: Prisma.VendorExtraCostOrderByWithRelationInput | Prisma.VendorExtraCostOrderByWithRelationInput[]
+  cursor?: Prisma.VendorExtraCostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorExtraCostScalarFieldEnum | Prisma.VendorExtraCostScalarFieldEnum[]
+}
+
+/**
+ * Tenant.vendorRates
+ */
+export type Tenant$vendorRatesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorRate
+   */
+  select?: Prisma.VendorRateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorRate
+   */
+  omit?: Prisma.VendorRateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorRateInclude<ExtArgs> | null
+  where?: Prisma.VendorRateWhereInput
+  orderBy?: Prisma.VendorRateOrderByWithRelationInput | Prisma.VendorRateOrderByWithRelationInput[]
+  cursor?: Prisma.VendorRateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorRateScalarFieldEnum | Prisma.VendorRateScalarFieldEnum[]
 }
 
 /**

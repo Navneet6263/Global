@@ -52,6 +52,8 @@ model Tenant {
   departments          Department[]
   signupRequests       SignupRequest[]
   vendorProfiles       VendorProfile[]
+  vendorExtraCosts     VendorExtraCost[]
+  vendorRates          VendorRate[]
   vendorDocuments      VendorDocument[]
 }
 
@@ -97,64 +99,68 @@ model User {
   createdAt          DateTime  @default(now()) @db.DateTime2
   updatedAt          DateTime  @updatedAt @db.DateTime2
 
-  tenant                Tenant                  @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  branch                Branch?                 @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  client                Client?                 @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userRoles             UserRole[]
-  sessions              RefreshSession[]
-  assignedCases         VerificationCase[]      @relation("CaseOpsAssignee")
-  assignedTasks         CheckTask[]             @relation("TaskAssignee")
-  completedTasks        CheckTask[]             @relation("TaskCompletedBy")
-  clarificationSender   ClarificationMessage[]
-  qaReviews             QaReview[]
-  managerReviews        ManagerReview[]
-  generatedReports      ReportVersion[]
-  assignedVisits        FieldVisit[]            @relation("VisitAssignee")
-  completedVisits       FieldVisit[]            @relation("VisitCompletedBy")
-  uploadedEvidence      EvidenceItem[]
-  auditEvents           AuditEvent[]
-  ownedOpportunities    SalesOpportunity[]      @relation("OpportunityOwner")
-  salesActivities       SalesActivity[]
-  sourceOutreach        SourceOutreach[]
-  authoredProposals     CrmProposal[]           @relation("ProposalAuthor")
-  approvedProposals     CrmProposal[]           @relation("ProposalApprover")
-  uploadedAgreements    ClientAgreementFile[]   @relation("AgreementUploader")
-  reviewedAgreements    ClientAgreementFile[]   @relation("AgreementReviewer")
-  proposedSharing       VendorSharingRecord[]   @relation("SharingAuthor")
-  decidedSharing        VendorSharingRecord[]   @relation("SharingReviewer")
-  recordedPayments      Payment[]
-  createdCreditNotes    CreditNote[]
-  notifications         Notification[]
-  qaClaimedCases        VerificationCase[]      @relation("CaseQaReviewer")
-  createdPrivacyRecords PrivacyRecord[]         @relation("PrivacyRecordCreator")
-  updatedPrivacyRecords PrivacyRecord[]         @relation("PrivacyRecordUpdater")
-  vendorRequests        VendorAssignment[]      @relation("VendorAssignee")
-  vendorAssignmentsMade VendorAssignment[]      @relation("VendorAssigner")
-  vendorDecisions       VendorAssignment[]      @relation("VendorDecider")
-  spocClientScopes      SpocClientScope[]
-  supportRequestsRaised SupportRequest[]        @relation("SupportRequester")
-  supportRequestsTaken  SupportRequest[]        @relation("SupportAssignee")
-  vendorOwner           User?                   @relation("VendorTeam", fields: [vendorOwnerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  vendorTeam            User[]                  @relation("VendorTeam")
-  vendorTeamPolicy      VendorTeamPolicy?
-  handledVendorRequests VendorAssignment[]      @relation("VendorHandler")
-  uploadedVendorReports VendorReport[]          @relation("VendorReportUploader")
-  vendorCheckWork       VendorCheckAssignment[] @relation("VendorCheckVendor")
-  vendorCheckHandled    VendorCheckAssignment[] @relation("VendorCheckHandler")
-  vendorChecksAssigned  VendorCheckAssignment[] @relation("VendorCheckAssigner")
-  vendorChecksReviewed  VendorCheckAssignment[] @relation("VendorCheckReviewer")
-  vendorChecksApproved  VendorCheckAssignment[] @relation("VendorCheckApprover")
-  checkEvidenceUploaded CheckEvidence[]         @relation("CheckEvidenceUploader")
-  vendorCheckEvidence   VendorCheckEvidence[]   @relation("VendorCheckEvidenceUploader")
-  departmentMemberships DepartmentMember[]
-  primaryRmClients      Client[]                @relation("ClientPrimaryRm")
-  defaultDataEntryFor   Client[]                @relation("ClientDefaultDataEntry")
-  dataEntryCases        VerificationCase[]      @relation("CaseDataEntry")
-  escalatedCases        VerificationCase[]      @relation("CaseEscalatedBy")
-  vendorProfile              VendorProfile?            @relation("VendorProfileUser")
-  reviewedVendorProfiles     VendorProfile[]           @relation("VendorProfileReviewer")
-  verifiedVendorDocs         VendorDocument[]          @relation("VendorDocVerifier")
-  decidedVendorDocRevisions  VendorDocumentRevision[]  @relation("VendorDocRevisionDecider")
+  tenant                    Tenant                   @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  branch                    Branch?                  @relation(fields: [branchId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  client                    Client?                  @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userRoles                 UserRole[]
+  sessions                  RefreshSession[]
+  assignedCases             VerificationCase[]       @relation("CaseOpsAssignee")
+  assignedTasks             CheckTask[]              @relation("TaskAssignee")
+  completedTasks            CheckTask[]              @relation("TaskCompletedBy")
+  clarificationSender       ClarificationMessage[]
+  qaReviews                 QaReview[]
+  managerReviews            ManagerReview[]
+  generatedReports          ReportVersion[]
+  assignedVisits            FieldVisit[]             @relation("VisitAssignee")
+  completedVisits           FieldVisit[]             @relation("VisitCompletedBy")
+  uploadedEvidence          EvidenceItem[]
+  auditEvents               AuditEvent[]
+  ownedOpportunities        SalesOpportunity[]       @relation("OpportunityOwner")
+  salesActivities           SalesActivity[]
+  sourceOutreach            SourceOutreach[]
+  authoredProposals         CrmProposal[]            @relation("ProposalAuthor")
+  approvedProposals         CrmProposal[]            @relation("ProposalApprover")
+  uploadedAgreements        ClientAgreementFile[]    @relation("AgreementUploader")
+  reviewedAgreements        ClientAgreementFile[]    @relation("AgreementReviewer")
+  proposedSharing           VendorSharingRecord[]    @relation("SharingAuthor")
+  decidedSharing            VendorSharingRecord[]    @relation("SharingReviewer")
+  recordedPayments          Payment[]
+  createdCreditNotes        CreditNote[]
+  notifications             Notification[]
+  qaClaimedCases            VerificationCase[]       @relation("CaseQaReviewer")
+  createdPrivacyRecords     PrivacyRecord[]          @relation("PrivacyRecordCreator")
+  updatedPrivacyRecords     PrivacyRecord[]          @relation("PrivacyRecordUpdater")
+  vendorRequests            VendorAssignment[]       @relation("VendorAssignee")
+  vendorAssignmentsMade     VendorAssignment[]       @relation("VendorAssigner")
+  vendorDecisions           VendorAssignment[]       @relation("VendorDecider")
+  spocClientScopes          SpocClientScope[]
+  supportRequestsRaised     SupportRequest[]         @relation("SupportRequester")
+  supportRequestsTaken      SupportRequest[]         @relation("SupportAssignee")
+  vendorOwner               User?                    @relation("VendorTeam", fields: [vendorOwnerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorTeam                User[]                   @relation("VendorTeam")
+  vendorTeamPolicy          VendorTeamPolicy?
+  handledVendorRequests     VendorAssignment[]       @relation("VendorHandler")
+  uploadedVendorReports     VendorReport[]           @relation("VendorReportUploader")
+  vendorCheckWork           VendorCheckAssignment[]  @relation("VendorCheckVendor")
+  vendorCheckHandled        VendorCheckAssignment[]  @relation("VendorCheckHandler")
+  vendorChecksAssigned      VendorCheckAssignment[]  @relation("VendorCheckAssigner")
+  vendorChecksReviewed      VendorCheckAssignment[]  @relation("VendorCheckReviewer")
+  vendorChecksApproved      VendorCheckAssignment[]  @relation("VendorCheckApprover")
+  vendorChecksTeamReviewed  VendorCheckAssignment[]  @relation("VendorCheckTeamReviewer")
+  vendorExtraCostsAdded     VendorExtraCost[]        @relation("VendorExtraCostCreator")
+  vendorExtraCostsDecided   VendorExtraCost[]        @relation("VendorExtraCostDecider")
+  vendorRatesUpdated        VendorRate[]             @relation("VendorRateUpdater")
+  checkEvidenceUploaded     CheckEvidence[]          @relation("CheckEvidenceUploader")
+  vendorCheckEvidence       VendorCheckEvidence[]    @relation("VendorCheckEvidenceUploader")
+  departmentMemberships     DepartmentMember[]
+  primaryRmClients          Client[]                 @relation("ClientPrimaryRm")
+  defaultDataEntryFor       Client[]                 @relation("ClientDefaultDataEntry")
+  dataEntryCases            VerificationCase[]       @relation("CaseDataEntry")
+  escalatedCases            VerificationCase[]       @relation("CaseEscalatedBy")
+  vendorProfile             VendorProfile?           @relation("VendorProfileUser")
+  reviewedVendorProfiles    VendorProfile[]          @relation("VendorProfileReviewer")
+  verifiedVendorDocs        VendorDocument[]         @relation("VendorDocVerifier")
+  decidedVendorDocRevisions VendorDocumentRevision[] @relation("VendorDocRevisionDecider")
 
   @@unique([tenantId, normalizedEmail])
   @@index([tenantId, status])
@@ -605,11 +611,11 @@ model Document {
   createdAt      DateTime  @default(now()) @db.DateTime2
   updatedAt      DateTime  @updatedAt @db.DateTime2
 
-  tenant                 Tenant             @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  case                   VerificationCase   @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  versions               DocumentVersion[]
-  vendorAssignments      VendorAssignment[]
-  clarificationSubmissions Clarification[]  @relation("ClarificationSubmittedDocument")
+  tenant                   Tenant             @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  case                     VerificationCase   @relation(fields: [caseId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  versions                 DocumentVersion[]
+  vendorAssignments        VendorAssignment[]
+  clarificationSubmissions Clarification[]    @relation("ClarificationSubmittedDocument")
 
   @@index([tenantId, caseId, status])
 }
@@ -1186,6 +1192,8 @@ model VerificationMethodRun {
 /// (BGV process: employment 7 follow-ups, education 3; stops when the source responds).
 /// Vendor / field work on a whole check: assigned -> in progress -> submitted -> approved
 /// (or returned / declined / cancelled). Approval copies the result into the check's RHS.
+/// Open queue: OPEN (no vendor yet, every approved vendor sees it) -> picked (IN_PROGRESS);
+/// a member's work goes to the vendor Team Leader (TEAM_REVIEW) before the case RM.
 model VendorCheckAssignment {
   id                  BigInt    @id @default(autoincrement())
   publicId            String    @unique @default(uuid()) @db.UniqueIdentifier
@@ -1193,7 +1201,8 @@ model VendorCheckAssignment {
   clientId            BigInt
   caseId              BigInt
   checkId             BigInt
-  vendorUserId        BigInt
+  /// Null while the check waits in the open queue.
+  vendorUserId        BigInt?
   handlerUserId       BigInt?
   assignedById        BigInt
   reviewedById        BigInt?
@@ -1218,19 +1227,30 @@ model VendorCheckAssignment {
   submittedAt         DateTime? @db.DateTime2
   reviewedAt          DateTime? @db.DateTime2
   lastRemindedAt      DateTime? @db.DateTime2
+  /// Payment the vendor gets for the check (shown before picking).
+  price               Decimal?  @db.Decimal(12, 2)
+  city                String?   @db.NVarChar(120)
+  pincode             String?   @db.VarChar(12)
+  pickedAt            DateTime? @db.DateTime2
+  /// How many times a vendor returned it to the open queue.
+  releaseCount        Int       @default(0)
+  teamReviewedAt      DateTime? @db.DateTime2
+  teamReviewedById    BigInt?
   version             Int       @default(1)
   createdAt           DateTime  @default(now()) @db.DateTime2
   updatedAt           DateTime  @updatedAt @db.DateTime2
 
-  client     Client                @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  case       VerificationCase      @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  check      CaseCheck             @relation(fields: [checkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  vendor     User                  @relation("VendorCheckVendor", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  handler    User?                 @relation("VendorCheckHandler", fields: [handlerUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  assignedBy User                  @relation("VendorCheckAssigner", fields: [assignedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  reviewedBy User?                 @relation("VendorCheckReviewer", fields: [reviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  approvedBy User?                 @relation("VendorCheckApprover", fields: [approvedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  evidence   VendorCheckEvidence[]
+  client         Client                @relation(fields: [clientId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  case           VerificationCase      @relation(fields: [caseId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  check          CaseCheck             @relation(fields: [checkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendor         User?                 @relation("VendorCheckVendor", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  teamReviewedBy User?                 @relation("VendorCheckTeamReviewer", fields: [teamReviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  extraCosts     VendorExtraCost[]
+  handler        User?                 @relation("VendorCheckHandler", fields: [handlerUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assignedBy     User                  @relation("VendorCheckAssigner", fields: [assignedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviewedBy     User?                 @relation("VendorCheckReviewer", fields: [reviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  approvedBy     User?                 @relation("VendorCheckApprover", fields: [approvedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  evidence       VendorCheckEvidence[]
 
   @@unique([checkId, attempt])
   @@index([tenantId, vendorUserId, status])
@@ -1675,35 +1695,35 @@ model DepartmentMember {
 }
 
 model VendorProfile {
-  id                  BigInt    @id @default(autoincrement())
-  publicId            String    @unique @default(uuid()) @db.UniqueIdentifier
-  tenantId            BigInt
-  vendorUserId        BigInt    @unique
-  businessName        String    @db.NVarChar(180)
-  businessType        String    @db.VarChar(48)
-  registrationNumber  String?   @db.VarChar(64)
-  taxId               String?   @db.VarChar(32)
-  websiteUrl          String?   @db.VarChar(255)
-  operatingAddress    String?   @db.NVarChar(500)
-  verificationStatus  String    @default("PENDING_UPLOAD") @db.VarChar(24)
-  rejectionReason     String?   @db.NVarChar(1000)
-  reviewedAt          DateTime? @db.DateTime2
-  reviewedById        BigInt?
-  submittedAt         DateTime? @db.DateTime2
+  id                 BigInt    @id @default(autoincrement())
+  publicId           String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId           BigInt
+  vendorUserId       BigInt    @unique
+  businessName       String    @db.NVarChar(180)
+  businessType       String    @db.VarChar(48)
+  registrationNumber String?   @db.VarChar(64)
+  taxId              String?   @db.VarChar(32)
+  websiteUrl         String?   @db.VarChar(255)
+  operatingAddress   String?   @db.NVarChar(500)
+  verificationStatus String    @default("PENDING_UPLOAD") @db.VarChar(24)
+  rejectionReason    String?   @db.NVarChar(1000)
+  reviewedAt         DateTime? @db.DateTime2
+  reviewedById       BigInt?
+  submittedAt        DateTime? @db.DateTime2
 
-  authorisedSignatory Boolean   @db.Bit
-  termsAcceptedAt     DateTime  @db.DateTime2
-  termsVersion        String    @db.VarChar(32)
-  privacyVersion      String    @db.VarChar(32)
-  termsAcceptedIp     String?   @db.VarChar(64)
+  authorisedSignatory Boolean  @db.Bit
+  termsAcceptedAt     DateTime @db.DateTime2
+  termsVersion        String   @db.VarChar(32)
+  privacyVersion      String   @db.VarChar(32)
+  termsAcceptedIp     String?  @db.VarChar(64)
 
-  createdAt           DateTime  @default(now()) @db.DateTime2
-  updatedAt           DateTime  @updatedAt @db.DateTime2
+  createdAt DateTime @default(now()) @db.DateTime2
+  updatedAt DateTime @updatedAt @db.DateTime2
 
-  tenant              Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  vendorUser          User      @relation("VendorProfileUser", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  reviewedBy          User?     @relation("VendorProfileReviewer", fields: [reviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  documents           VendorDocument[]
+  tenant     Tenant           @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorUser User             @relation("VendorProfileUser", fields: [vendorUserId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  reviewedBy User?            @relation("VendorProfileReviewer", fields: [reviewedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  documents  VendorDocument[]
 
   @@index([tenantId, verificationStatus])
 }
@@ -1721,10 +1741,10 @@ model VendorDocument {
   createdAt       DateTime  @default(now()) @db.DateTime2
   updatedAt       DateTime  @updatedAt @db.DateTime2
 
-  tenant          Tenant    @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  vendorProfile   VendorProfile @relation(fields: [vendorProfileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  verifiedBy      User?     @relation("VendorDocVerifier", fields: [verifiedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  revisions       VendorDocumentRevision[]
+  tenant        Tenant                   @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorProfile VendorProfile            @relation(fields: [vendorProfileId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  verifiedBy    User?                    @relation("VendorDocVerifier", fields: [verifiedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  revisions     VendorDocumentRevision[]
 
   @@unique([vendorProfileId, documentType])
   @@index([tenantId, status])
@@ -1745,8 +1765,51 @@ model VendorDocumentRevision {
   decidedAt        DateTime? @db.DateTime2
   decidedById      BigInt?
 
-  vendorDocument   VendorDocument @relation(fields: [vendorDocumentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  decidedBy        User?     @relation("VendorDocRevisionDecider", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  vendorDocument VendorDocument @relation(fields: [vendorDocumentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  decidedBy      User?          @relation("VendorDocRevisionDecider", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([vendorDocumentId, revisionNumber])
+}
+
+/// A vendor's extra cost on one check (travel, fees...), explained by the vendor and
+/// approved or rejected by the case RM.
+model VendorExtraCost {
+  id           BigInt    @id @default(autoincrement())
+  publicId     String    @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId     BigInt
+  assignmentId BigInt
+  amount       Decimal   @db.Decimal(12, 2)
+  reason       String    @db.NVarChar(1000)
+  /// PENDING, APPROVED or REJECTED.
+  status       String    @default("PENDING") @db.VarChar(16)
+  createdById  BigInt
+  decidedById  BigInt?
+  decidedAt    DateTime? @db.DateTime2
+  decisionNote String?   @db.NVarChar(1000)
+  createdAt    DateTime  @default(now()) @db.DateTime2
+
+  tenant     Tenant                @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  assignment VendorCheckAssignment @relation(fields: [assignmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdBy  User                  @relation("VendorExtraCostCreator", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  decidedBy  User?                 @relation("VendorExtraCostDecider", fields: [decidedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([assignmentId])
+}
+
+/// The payment for each check type when it goes to the open vendor queue (set by Operations).
+model VendorRate {
+  id          BigInt   @id @default(autoincrement())
+  publicId    String   @unique @default(uuid()) @db.UniqueIdentifier
+  tenantId    BigInt
+  checkType   String   @db.VarChar(40)
+  price       Decimal  @db.Decimal(12, 2)
+  updatedById BigInt?
+  version     Int      @default(1)
+  createdAt   DateTime @default(now()) @db.DateTime2
+  updatedAt   DateTime @updatedAt @db.DateTime2
+
+  tenant    Tenant @relation(fields: [tenantId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  updatedBy User?  @relation("VendorRateUpdater", fields: [updatedById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([tenantId, checkType])
 }

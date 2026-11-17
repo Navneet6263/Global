@@ -116,7 +116,9 @@ export const ModelName = {
   DepartmentMember: 'DepartmentMember',
   VendorProfile: 'VendorProfile',
   VendorDocument: 'VendorDocument',
-  VendorDocumentRevision: 'VendorDocumentRevision'
+  VendorDocumentRevision: 'VendorDocumentRevision',
+  VendorExtraCost: 'VendorExtraCost',
+  VendorRate: 'VendorRate'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1033,6 +1035,13 @@ export const VendorCheckAssignmentScalarFieldEnum = {
   submittedAt: 'submittedAt',
   reviewedAt: 'reviewedAt',
   lastRemindedAt: 'lastRemindedAt',
+  price: 'price',
+  city: 'city',
+  pincode: 'pincode',
+  pickedAt: 'pickedAt',
+  releaseCount: 'releaseCount',
+  teamReviewedAt: 'teamReviewedAt',
+  teamReviewedById: 'teamReviewedById',
   version: 'version',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1446,6 +1455,39 @@ export const VendorDocumentRevisionScalarFieldEnum = {
 } as const
 
 export type VendorDocumentRevisionScalarFieldEnum = (typeof VendorDocumentRevisionScalarFieldEnum)[keyof typeof VendorDocumentRevisionScalarFieldEnum]
+
+
+export const VendorExtraCostScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  assignmentId: 'assignmentId',
+  amount: 'amount',
+  reason: 'reason',
+  status: 'status',
+  createdById: 'createdById',
+  decidedById: 'decidedById',
+  decidedAt: 'decidedAt',
+  decisionNote: 'decisionNote',
+  createdAt: 'createdAt'
+} as const
+
+export type VendorExtraCostScalarFieldEnum = (typeof VendorExtraCostScalarFieldEnum)[keyof typeof VendorExtraCostScalarFieldEnum]
+
+
+export const VendorRateScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  checkType: 'checkType',
+  price: 'price',
+  updatedById: 'updatedById',
+  version: 'version',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VendorRateScalarFieldEnum = (typeof VendorRateScalarFieldEnum)[keyof typeof VendorRateScalarFieldEnum]
 
 
 export const SortOrder = {

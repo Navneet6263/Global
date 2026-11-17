@@ -16,9 +16,11 @@ import {
   IsDateString,
   IsIn,
   IsInt,
+  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
+  Max,
   MaxLength,
   Min,
 } from "class-validator";
@@ -27,7 +29,15 @@ import type { Actor } from "../common/auth/actor";
 import { VendorChecksService } from "./vendor-checks.service";
 
 export class AssignVendorCheckDto {
-  @IsUUID() vendorId!: string;
+  /** One vendor; leave out with toQueue to post it to the open queue. */
+  @IsOptional() @IsUUID() vendorId?: string;
+  @IsOptional() @IsBoolean() toQueue?: boolean;
+  /** Payment shown to vendors in the open queue (rupees). */
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(1)
+  @Max(1_000_000)
+  price?: number;
   @IsOptional() @IsDateString() dueAt?: string;
   @IsOptional() @IsString() @MaxLength(1000) note?: string;
   /** Team Leader only: why this check needs a vendor (shown to the RM). */
@@ -48,6 +58,11 @@ export class DecideVendorRequestDto {
   @IsIn(["APPROVE", "REJECT"]) decision!: "APPROVE" | "REJECT";
   @IsOptional() @IsString() @MaxLength(1000) note?: string;
   @IsInt() @Min(1) version!: number;
+}
+
+export class DecideExtraCostDto {
+  @IsIn(["APPROVE", "REJECT"]) decision!: "APPROVE" | "REJECT";
+  @IsOptional() @IsString() @MaxLength(1000) note?: string;
 }
 
 export class CancelVendorCheckDto {
@@ -119,6 +134,22 @@ export class VendorChecksController {
     @Body() input: CancelVendorCheckDto,
   ) {
     return this.vendorChecks.cancel(actor, assignmentId, input.reason);
+  }
+
+  /** The case RM approves or rejects one extra cost of a submitted vendor result. */
+  @Post("vendor-checks/:assignmentId/extra-costs/:costId/decision")
+  decideExtraCost(
+    @CurrentActor() actor: Actor,
+    @Param("assignmentId", ParseUUIDPipe) assignmentId: string,
+    @Param("costId", ParseUUIDPipe) costId: string,
+    @Body() input: DecideExtraCostDto,
+  ) {
+    return this.vendorChecks.decideExtraCost(
+      actor,
+      assignmentId,
+      costId,
+      input,
+    );
   }
 
   @Get("vendor-checks")

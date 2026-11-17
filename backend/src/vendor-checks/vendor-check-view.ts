@@ -25,6 +25,12 @@ export const vendorRowSelect = {
   acceptedAt: true,
   submittedAt: true,
   reviewedAt: true,
+  price: true,
+  city: true,
+  pincode: true,
+  pickedAt: true,
+  releaseCount: true,
+  teamReviewedAt: true,
   version: true,
   createdAt: true,
   check: { select: { publicId: true, type: true } },
@@ -41,8 +47,26 @@ export const vendorRowSelect = {
   assignedBy: { select: { displayName: true } },
   reviewedBy: { select: { displayName: true } },
   approvedBy: { select: { displayName: true } },
+  teamReviewedBy: { select: { displayName: true } },
+  extraCosts: {
+    orderBy: { createdAt: "asc" },
+    select: {
+      publicId: true,
+      amount: true,
+      reason: true,
+      status: true,
+      decisionNote: true,
+      decidedAt: true,
+      createdAt: true,
+      createdBy: { select: { displayName: true } },
+      decidedBy: { select: { displayName: true } },
+    },
+  },
   _count: { select: { evidence: true } },
 } satisfies Prisma.VendorCheckAssignmentSelect;
+
+const rupees = (value: Prisma.Decimal | number | null | undefined) =>
+  value === null || value === undefined ? null : Number(value);
 
 export type VendorRow = Prisma.VendorCheckAssignmentGetPayload<{
   select: typeof vendorRowSelect;
@@ -61,7 +85,10 @@ export function toVendorRow(row: VendorRow, now = new Date()) {
     caseNumber: row.case.caseNumber,
     candidateName: row.case.subject.fullName,
     clientName: row.client.displayName,
-    vendor: { id: row.vendor.publicId, name: row.vendor.displayName },
+    /** Null while the check waits in the open queue. */
+    vendor: row.vendor
+      ? { id: row.vendor.publicId, name: row.vendor.displayName }
+      : null,
     handler: row.handler
       ? { id: row.handler.publicId, name: row.handler.displayName }
       : null,
@@ -87,6 +114,27 @@ export function toVendorRow(row: VendorRow, now = new Date()) {
         }
       : null,
     evidenceCount: row._count.evidence,
+    price: rupees(row.price),
+    city: row.city,
+    pincode: row.pincode,
+    pickedAt: row.pickedAt,
+    releaseCount: row.releaseCount,
+    /** Picked from the open queue (returnable) rather than sent to one vendor. */
+    fromQueue: row.status === "OPEN" || row.pickedAt !== null,
+    teamReview: row.teamReviewedAt
+      ? { by: row.teamReviewedBy?.displayName ?? null, at: row.teamReviewedAt }
+      : null,
+    extraCosts: row.extraCosts.map((cost) => ({
+      id: cost.publicId,
+      amount: Number(cost.amount),
+      reason: cost.reason,
+      status: cost.status,
+      addedBy: cost.createdBy.displayName,
+      addedAt: cost.createdAt,
+      decidedBy: cost.decidedBy?.displayName ?? null,
+      decidedAt: cost.decidedAt,
+      note: cost.decisionNote,
+    })),
     version: row.version,
     ageDays: days,
     ageing: open ? ageingBucket(days) : null,
@@ -125,8 +173,8 @@ export function vendorCsv(
     candidate: (row) => row.candidateName,
     client: (row) => row.clientName,
     check: (row) => readable(row.checkType),
-    vendor: (row) => row.vendor.name,
-    handler: (row) => row.handler?.name ?? row.vendor.name,
+    vendor: (row) => row.vendor?.name ?? "Open queue",
+    handler: (row) => row.handler?.name ?? row.vendor?.name ?? "",
     status: (row) => readable(row.status),
     assignedAt: (row) => day(row.assignedAt),
     dueAt: (row) => day(row.dueAt),

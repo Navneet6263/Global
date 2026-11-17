@@ -24,7 +24,7 @@ import {
   type VendorJobStatus,
 } from "@/lib/backend-api/vendor-checks";
 import { formatDateTime } from "@/lib/formatting";
-import { STATUS_COPY, readable } from "./vendor-job-format";
+import { STATUS_COPY, readable, vendorName } from "./vendor-job-format";
 
 type Column = (typeof EXPORT_COLUMNS)[number]["key"];
 const TABLE_DEFAULTS: Column[] = ["check", "vendor", "status", "dueAt", "ageDays", "result"];
@@ -37,8 +37,12 @@ const TABS: Array<{ label: string; filter: BoardFilter; internal?: boolean }> = 
   { label: "All", filter: {} },
   // A Team Leader's request waiting for the case RM (internal users only).
   { label: "Waiting for approval", filter: { status: "PENDING_APPROVAL" }, internal: true },
+  // Waiting in the open queue for any approved vendor to pick (internal users only).
+  { label: "Open queue", filter: { status: "OPEN" }, internal: true },
   { label: "New", filter: { status: "ASSIGNED" } },
   { label: "In progress", filter: { status: "IN_PROGRESS" } },
+  // A vendor member's work waiting for the vendor's Team Leader.
+  { label: "Team Leader review", filter: { status: "TEAM_REVIEW" } },
   { label: "Returned", filter: { status: "RETURNED" } },
   { label: "To review", filter: { status: "SUBMITTED" } },
   { label: "Approved", filter: { status: "APPROVED" } },
@@ -261,8 +265,10 @@ export function VendorJobsBoard({
                     </td>
                     {show("check") ? <td>{readable(job.checkType)}</td> : null}
                     {show("client") ? <td>{job.clientName}</td> : null}
-                    {show("vendor") ? <td>{job.vendor.name}</td> : null}
-                    {show("handler") ? <td>{job.handler?.name ?? job.vendor.name}</td> : null}
+                    {show("vendor") ? <td>{vendorName(job.vendor)}</td> : null}
+                    {show("handler") ? (
+                      <td>{job.handler?.name ?? job.vendor?.name ?? "—"}</td>
+                    ) : null}
                     {show("status") ? (
                       <td>
                         <span className={`rmo-pill ${STATUS_COPY[job.status].tone}`}>

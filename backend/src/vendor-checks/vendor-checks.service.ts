@@ -9,6 +9,7 @@ import {
 import type { Actor } from "../common/auth/actor";
 import { caseAccessScope } from "../common/auth/access-scope";
 import { PrismaService } from "../database/prisma.service";
+import { workReadyVendor } from "../vendor-onboarding/vendor-approval";
 import { LocalObjectStorageService } from "../documents/local-object-storage.service";
 import type { Prisma } from "../generated/prisma/client";
 import { verifiedFormFor } from "../verification/verified-fields";
@@ -30,6 +31,7 @@ import {
   vendorCsv,
   vendorRowSelect,
 } from "./vendor-check-view";
+import { notifyQueueVendors, queueLocation } from "./vendor-queue";
 
 const OPEN_CASE = ["IN_PROGRESS", "CLARIFICATION_PENDING"];
 const MANAGERS = ["PLATFORM_ADMIN", "OPS_MANAGER"];
@@ -104,9 +106,11 @@ export type BoardQuery = {
 
 /**
  * Internal side of vendor check work: Operations, the case RM or the department's Team
- * Leader sends a check to a vendor with the documents it may see (a Team Leader's
- * request waits for the RM's approval); whoever sent it reviews the vendor's result (approve copies it into the check's RHS; return
- * sends it back), and watches every vendor job on a board. Every step is audited.
+ * Leader sends a check to one vendor, or to the open queue every approved vendor sees,
+ * with the documents it may see and (for the queue) the payment. A Team Leader's request
+ * waits for the RM's approval. Whoever sent it reviews the vendor's result (a queued
+ * check: the case RM, who also decides every extra cost); approve copies it into the
+ * check's RHS, return sends it back. Every step is audited.
  */
 @Injectable()
 export class VendorChecksService {
@@ -158,13 +162,14 @@ export class VendorChecksService {
   /** Everything the "Vendor" tab of a check needs. */
   async forCheck(actor: Actor, checkPublicId: string) {
     const check = await this.findCheck(actor, checkPublicId);
-    const [vendors, documents, attempts] = await Promise.all([
+    const [vendors, documents, attempts, rate] = await Promise.all([
       this.prisma.user.findMany({
         where: {
           tenantId: actor.tenantId,
           status: "ACTIVE",
           vendorOwnerId: null,
           userRoles: { some: { role: { code: "VENDOR" } } },
+          ...workReadyVendor,
         },
         orderBy: { displayName: "asc" },
         take: 200,
@@ -206,6 +211,15 @@ export class VendorChecksService {
           },
         },
       }),
+      this.prisma.vendorRate.findUnique({
+        where: {
+          tenantId_checkType: {
+            tenantId: actor.tenantId,
+            checkType: check.type.toUpperCase(),
+          },
+        },
+        select: { price: true },
+      }),
     ]);
     const defaults = defaultSharedTypes(check.type);
     const live = attempts.find((attempt) =>
@@ -240,11 +254,17 @@ export class VendorChecksService {
         })),
       ),
       rhsForm: verifiedFormFor(check.type),
+      /** Payment Operations set for this check type in the open queue (editable). */
+      queueRate: rate ? Number(rate.price) : null,
+      queueLocation: queueLocation(check.initiationJson),
       attempts: attempts.map((attempt) => ({
         ...toVendorRow(attempt),
         canApprove:
           attempt.status === "PENDING_APPROVAL" && canApprove(actor, check),
         canReview:
+          attempt.status === "SUBMITTED" && canReview(actor, check, attempt),
+        /** The reviewer approves or rejects each extra cost before approving the result. */
+        canDecideCosts:
           attempt.status === "SUBMITTED" && canReview(actor, check, attempt),
         canCancel:
           LIVE_VENDOR_STATUSES.includes(attempt.status as VendorCheckStatus) &&
@@ -265,7 +285,11 @@ export class VendorChecksService {
     actor: Actor,
     checkPublicId: string,
     input: {
-      vendorId: string;
+      /** One vendor; omit with toQueue for the open queue. */
+      vendorId?: string;
+      toQueue?: boolean;
+      /** Payment for a queued check (defaults to Operations' rate for the check type). */
+      price?: number;
       dueAt?: string;
       note?: string;
       reason?: string;
@@ -273,6 +297,9 @@ export class VendorChecksService {
     },
     now = new Date(),
   ) {
+    const toQueue = Boolean(input.toQueue);
+    if (!toQueue && !input.vendorId)
+      throw new BadRequestException("Choose a vendor or the open queue");
     const note = input.note?.trim() || null;
     const dueAt = input.dueAt ? new Date(input.dueAt) : null;
     if (
@@ -312,17 +339,45 @@ export class VendorChecksService {
           throw new ConflictException(
             "This check is already with a vendor; cancel that first",
           );
-        const vendor = await tx.user.findFirst({
-          where: {
-            tenantId: actor.tenantId,
-            publicId: input.vendorId,
-            status: "ACTIVE",
-            vendorOwnerId: null,
-            userRoles: { some: { role: { code: "VENDOR" } } },
-          },
-          select: { id: true, publicId: true, displayName: true },
-        });
-        if (!vendor) throw new NotFoundException("Active vendor not found");
+        const vendor = toQueue
+          ? null
+          : await tx.user.findFirst({
+              where: {
+                tenantId: actor.tenantId,
+                publicId: input.vendorId,
+                status: "ACTIVE",
+                vendorOwnerId: null,
+                userRoles: { some: { role: { code: "VENDOR" } } },
+                ...workReadyVendor,
+              },
+              select: { id: true, publicId: true, displayName: true },
+            });
+        if (!toQueue && !vendor)
+          throw new NotFoundException("Active vendor not found");
+        // The queue shows the payment before anyone picks it: Operations' rate unless
+        // the sender sets one.
+        const rate = toQueue
+          ? await tx.vendorRate.findUnique({
+              where: {
+                tenantId_checkType: {
+                  tenantId: actor.tenantId,
+                  checkType: check.type.toUpperCase(),
+                },
+              },
+              select: { price: true },
+            })
+          : null;
+        const price = toQueue
+          ? (input.price ?? (rate ? Number(rate.price) : undefined))
+          : undefined;
+        if (
+          toQueue &&
+          (price === undefined || !(price > 0) || price > 1_000_000)
+        )
+          throw new BadRequestException(
+            "Set the payment for this check (Operations can set a default in Vendor rates)",
+          );
+        const location = toQueue ? queueLocation(check.initiationJson) : null;
         const documentIds = [...new Set(input.documentIds)];
         const documents = documentIds.length
           ? await tx.document.findMany({
@@ -342,21 +397,30 @@ export class VendorChecksService {
           );
         const attempt =
           attempts.reduce((max, row) => Math.max(max, row.attempt), 0) + 1;
+        const status = pending
+          ? "PENDING_APPROVAL"
+          : toQueue
+            ? "OPEN"
+            : "ASSIGNED";
         const created = await tx.vendorCheckAssignment.create({
           data: {
             tenantId: actor.tenantId,
             clientId: check.case.clientId,
             caseId: check.case.id,
             checkId: check.id,
-            vendorUserId: vendor.id,
+            vendorUserId: vendor?.id ?? null,
             assignedById: actor.userId,
-            assignedAs: as,
+            // A queued check comes back to the case RM, who also decides extra costs.
+            assignedAs: toQueue && as === "TEAM_LEADER" ? "RM" : as,
             requestReason: reason,
-            status: pending ? "PENDING_APPROVAL" : "ASSIGNED",
+            status,
             attempt,
             dueAt,
             note,
             sharedDocumentsJson: JSON.stringify(documentIds),
+            ...(toQueue
+              ? { price, city: location?.city, pincode: location?.pincode }
+              : {}),
           },
           select: { publicId: true },
         });
@@ -368,11 +432,11 @@ export class VendorChecksService {
                 userId: check.case.assignedOpsUserId,
                 type: "VENDOR_CHECK_APPROVAL",
                 title: `Approve vendor: ${check.case.caseNumber}`,
-                body: `Team Leader asks to send the ${check.type.replaceAll("_", " ").toLowerCase()} check to ${vendor.displayName}: ${reason}`,
+                body: `Team Leader asks to send the ${check.type.replaceAll("_", " ").toLowerCase()} check to ${vendor ? vendor.displayName : "the open vendor queue"}: ${reason}`,
                 href: "/spoc-rm/vendor-work?status=PENDING_APPROVAL",
               },
             });
-        } else
+        } else if (vendor)
           await tx.notification.create({
             data: {
               tenantId: actor.tenantId,
@@ -383,13 +447,21 @@ export class VendorChecksService {
               href: "/vendor/checks",
             },
           });
+        else
+          await notifyQueueVendors(tx, actor.tenantId, {
+            checkType: check.type,
+            city: location?.city ?? null,
+            price: price ?? null,
+          });
         await tx.auditEvent.create({
           data: {
             tenantId: actor.tenantId,
             actorUserId: actor.userId,
             action: pending
               ? "vendor_check.approval-requested"
-              : "vendor_check.assigned",
+              : toQueue
+                ? "vendor_check.queued"
+                : "vendor_check.assigned",
             resourceType: "case",
             resourcePublicId: check.case.publicId,
             afterJson: JSON.stringify({
@@ -397,8 +469,11 @@ export class VendorChecksService {
               checkId: check.publicId,
               checkType: check.type,
               attempt,
-              vendorId: vendor.publicId,
-              vendorName: vendor.displayName,
+              vendorId: vendor?.publicId ?? null,
+              vendorName: vendor?.displayName ?? null,
+              ...(toQueue
+                ? { openQueue: true, price, city: location?.city ?? null }
+                : {}),
               dueAt,
               sharedDocuments: documents.map((document) => document.type),
               assignedAs: as,
@@ -406,11 +481,7 @@ export class VendorChecksService {
             }),
           },
         });
-        return {
-          id: created.publicId,
-          attempt,
-          status: pending ? "PENDING_APPROVAL" : "ASSIGNED",
-        };
+        return { id: created.publicId, attempt, status };
       },
       { isolationLevel: "Serializable" },
     );
@@ -440,8 +511,11 @@ export class VendorChecksService {
         assignedAs: true,
         assignedById: true,
         dueAt: true,
+        price: true,
+        city: true,
         vendor: { select: { displayName: true } },
         check: { select: { publicId: true } },
+        extraCosts: { where: { status: "PENDING" }, select: { id: true } },
       },
     });
     if (!row) throw new NotFoundException("Vendor job not found");
@@ -472,6 +546,10 @@ export class VendorChecksService {
         throw new ConflictException("Only a submitted result can be reviewed");
       if (row.version !== input.version)
         throw new ConflictException("Changed meanwhile; refresh and try again");
+      if (input.decision === "APPROVE" && row.extraCosts.length)
+        throw new ConflictException(
+          "Approve or reject the vendor's extra cost first",
+        );
       const note =
         input.decision === "RETURN"
           ? vendorText(input.note, "Return reason", 10)
@@ -514,22 +592,24 @@ export class VendorChecksService {
             })),
           });
       }
-      await tx.notification.create({
-        data: {
-          tenantId: actor.tenantId,
-          userId: row.handlerUserId ?? row.vendorUserId,
-          type:
-            input.decision === "APPROVE"
-              ? "VENDOR_CHECK_APPROVED"
-              : "VENDOR_CHECK_RETURNED",
-          title:
-            input.decision === "APPROVE"
-              ? `Approved: ${check.case.caseNumber}`
-              : `Returned for rework: ${check.case.caseNumber}`,
-          body: note ?? "Your result was accepted.",
-          href: "/vendor/checks",
-        },
-      });
+      const holder = row.handlerUserId ?? row.vendorUserId;
+      if (holder)
+        await tx.notification.create({
+          data: {
+            tenantId: actor.tenantId,
+            userId: holder,
+            type:
+              input.decision === "APPROVE"
+                ? "VENDOR_CHECK_APPROVED"
+                : "VENDOR_CHECK_RETURNED",
+            title:
+              input.decision === "APPROVE"
+                ? `Approved: ${check.case.caseNumber}`
+                : `Returned for rework: ${check.case.caseNumber}`,
+            body: note ?? "Your result was accepted.",
+            href: "/vendor/checks",
+          },
+        });
       await tx.auditEvent.create({
         data: {
           tenantId: actor.tenantId,
@@ -579,11 +659,12 @@ export class VendorChecksService {
           version: { increment: 1 },
         },
       });
-      if (row.status !== "PENDING_APPROVAL")
+      const holder = row.handlerUserId ?? row.vendorUserId;
+      if (row.status !== "PENDING_APPROVAL" && holder)
         await tx.notification.create({
           data: {
             tenantId: actor.tenantId,
-            userId: row.handlerUserId ?? row.vendorUserId,
+            userId: holder,
             type: "VENDOR_CHECK_CANCELLED",
             title: `Withdrawn: ${check.case.caseNumber}`,
             body: note,
@@ -630,13 +711,15 @@ export class VendorChecksService {
       if (row.version !== input.version)
         throw new ConflictException("Changed meanwhile; refresh and try again");
       const approve = input.decision === "APPROVE";
+      const queued = row.vendorUserId === null;
+      const next = approve ? (queued ? "OPEN" : "ASSIGNED") : "REJECTED";
       const note = approve
         ? input.note?.trim() || null
         : vendorText(input.note, "Reason for turning it down", 10);
       const changed = await tx.vendorCheckAssignment.updateMany({
         where: { id: row.id, status: "PENDING_APPROVAL", version: row.version },
         data: {
-          status: approve ? "ASSIGNED" : "REJECTED",
+          status: next,
           approvedById: actor.userId,
           approvedAt: now,
           approvalNote: note,
@@ -645,7 +728,7 @@ export class VendorChecksService {
       });
       if (changed.count !== 1)
         throw new ConflictException("Changed meanwhile; refresh and try again");
-      if (approve)
+      if (approve && row.vendorUserId)
         await tx.notification.create({
           data: {
             tenantId: actor.tenantId,
@@ -656,6 +739,12 @@ export class VendorChecksService {
             href: "/vendor/checks",
           },
         });
+      else if (approve)
+        await notifyQueueVendors(tx, actor.tenantId, {
+          checkType: check.type,
+          city: row.city,
+          price: row.price === null ? null : Number(row.price),
+        });
       if (row.assignedById !== actor.userId)
         await tx.notification.create({
           data: {
@@ -663,7 +752,7 @@ export class VendorChecksService {
             userId: row.assignedById,
             type: approve ? "VENDOR_CHECK_ASSIGNED" : "VENDOR_CHECK_CANCELLED",
             title: approve
-              ? `RM approved: ${check.case.caseNumber} is with ${row.vendor.displayName}`
+              ? `RM approved: ${check.case.caseNumber} is ${row.vendor ? `with ${row.vendor.displayName}` : "in the open vendor queue"}`
               : `RM turned down the vendor request: ${check.case.caseNumber}`,
             body: note ?? "You review the vendor's result when it comes back.",
             href: "/verifier/team",
@@ -685,7 +774,7 @@ export class VendorChecksService {
           }),
         },
       });
-      return { id: row.publicId, status: approve ? "ASSIGNED" : "REJECTED" };
+      return { id: row.publicId, status: next };
     });
   }
 
@@ -714,7 +803,9 @@ export class VendorChecksService {
         : {}),
       ...(query.overdue
         ? {
-            status: { in: ["ASSIGNED", "IN_PROGRESS", "RETURNED"] },
+            status: {
+              in: ["ASSIGNED", "IN_PROGRESS", "RETURNED", "TEAM_REVIEW"],
+            },
             dueAt: { lt: now },
           }
         : {}),
@@ -775,6 +866,82 @@ export class VendorChecksService {
         disposition: `attachment; filename="Sapling-Global-vendor-work.csv"`,
       },
     );
+  }
+
+  /**
+   * The reviewer (for a queued check, the case RM) approves or rejects one extra cost the
+   * vendor claimed. Every pending cost must be decided before the result is approved.
+   */
+  async decideExtraCost(
+    actor: Actor,
+    assignmentPublicId: string,
+    costPublicId: string,
+    input: { decision: "APPROVE" | "REJECT"; note?: string },
+    now = new Date(),
+  ) {
+    return this.prisma.$transaction(async (tx) => {
+      const { row, check } = await this.loadAssignment(
+        actor,
+        assignmentPublicId,
+        tx,
+      );
+      if (!canReview(actor, check, row))
+        throw new ForbiddenException(
+          "The case RM decides the vendor's extra cost",
+        );
+      if (row.status !== "SUBMITTED")
+        throw new ConflictException(
+          "Extra cost is decided with the submitted result",
+        );
+      const approve = input.decision === "APPROVE";
+      const note = approve
+        ? input.note?.trim() || null
+        : vendorText(input.note, "Reason for rejecting the extra cost", 5);
+      const cost = await tx.vendorExtraCost.findFirst({
+        where: { publicId: costPublicId, assignmentId: row.id },
+        select: { id: true, amount: true, reason: true, createdById: true },
+      });
+      if (!cost) throw new NotFoundException("Extra cost not found");
+      const changed = await tx.vendorExtraCost.updateMany({
+        where: { id: cost.id, status: "PENDING" },
+        data: {
+          status: approve ? "APPROVED" : "REJECTED",
+          decidedById: actor.userId,
+          decidedAt: now,
+          decisionNote: note,
+        },
+      });
+      if (changed.count !== 1)
+        throw new ConflictException("This extra cost was already decided");
+      await tx.notification.create({
+        data: {
+          tenantId: actor.tenantId,
+          userId: row.vendorUserId ?? cost.createdById,
+          type: approve ? "VENDOR_COST_APPROVED" : "VENDOR_COST_REJECTED",
+          title: `Extra cost ${approve ? "approved" : "rejected"}: ${check.case.caseNumber}`,
+          body: `₹${Number(cost.amount).toLocaleString("en-IN")} · ${cost.reason}${note ? ` — ${note}` : ""}`,
+          href: "/vendor/checks",
+        },
+      });
+      await tx.auditEvent.create({
+        data: {
+          tenantId: actor.tenantId,
+          actorUserId: actor.userId,
+          action: approve
+            ? "vendor_check.extra-cost-approved"
+            : "vendor_check.extra-cost-rejected",
+          resourceType: "case",
+          resourcePublicId: check.case.publicId,
+          afterJson: JSON.stringify({
+            assignmentId: row.publicId,
+            costId: costPublicId,
+            amount: Number(cost.amount),
+            note,
+          }),
+        },
+      });
+      return { id: costPublicId, status: approve ? "APPROVED" : "REJECTED" };
+    });
   }
 
   /** Internal users open a vendor's proof file. */

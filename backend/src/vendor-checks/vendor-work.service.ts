@@ -214,9 +214,18 @@ export class VendorWorkService {
           })
         : [],
     ]);
+    const view = toVendorRow(row);
     return {
-      ...toVendorRow(row),
+      ...view,
       canDelegate: isMain(actor),
+      /** Picked from the open queue and no proof yet: may go back to the queue. */
+      canRelease:
+        view.fromQueue &&
+        row.status === "IN_PROGRESS" &&
+        row.evidence.length === 0,
+      /** The vendor's Team Leader reviews a member's finished work. */
+      canTeamReview: isMain(actor) && row.status === "TEAM_REVIEW",
+      canAddCost: WORKING.includes(row.status),
       team: team.map((user) => ({ id: user.publicId, name: user.displayName })),
       lhs: vendorLhs(row.check.type, row.check.initiationJson),
       rhsForm: verifiedFormFor(row.check.type),
@@ -271,7 +280,7 @@ export class VendorWorkService {
             userId: row.assignedById,
             type: "VENDOR_CHECK_UPDATE",
             title: `${notifyTitle}: ${row.case.caseNumber}`,
-            body: `${row.vendor.displayName} · ${row.check.type.replaceAll("_", " ").toLowerCase()}`,
+            body: `${row.vendor?.displayName ?? "Vendor"} · ${row.check.type.replaceAll("_", " ").toLowerCase()}`,
             href: "/operations/vendor-work",
           },
         });
@@ -365,6 +374,34 @@ export class VendorWorkService {
     vendorText(row.remarks ?? undefined, "Remarks", 10, 2000);
     if (row.result !== "UNABLE_TO_VERIFY" && !row.evidence.length)
       throw new BadRequestException("Attach at least one proof file");
+    // A team member's work goes to the vendor's Team Leader first; the Team Leader's
+    // own work goes straight to whoever sent the check (the case RM for the queue).
+    if (!isMain(actor)) {
+      const result = await this.move(
+        actor,
+        jobId,
+        WORKING,
+        version,
+        {
+          status: "TEAM_REVIEW",
+          submissionJson: JSON.stringify({ entries }),
+        },
+        "vendor_check.sent-to-team-leader",
+        { result: row.result, evidence: row.evidence.length },
+      );
+      if (row.vendorUserId)
+        await this.prisma.notification.create({
+          data: {
+            tenantId: actor.tenantId,
+            userId: row.vendorUserId,
+            type: "VENDOR_CHECK_UPDATE",
+            title: `Team work to review: ${row.case.caseNumber}`,
+            body: `${actor.displayName} finished the ${row.check.type.replaceAll("_", " ").toLowerCase()} check`,
+            href: "/vendor/checks?status=TEAM_REVIEW",
+          },
+        });
+      return result;
+    }
     return this.move(
       actor,
       jobId,

@@ -6,8 +6,12 @@ import type { InitiationForm } from "./workflow";
 export type VendorJobStatus =
   | "PENDING_APPROVAL"
   | "REJECTED"
+  /** In the open queue: every approved vendor sees it until one picks it. */
+  | "OPEN"
   | "ASSIGNED"
   | "IN_PROGRESS"
+  /** A vendor member's work, waiting for the vendor's Team Leader. */
+  | "TEAM_REVIEW"
   | "SUBMITTED"
   | "RETURNED"
   | "APPROVED"
@@ -27,7 +31,8 @@ export interface VendorJob {
   caseNumber: string;
   candidateName: string;
   clientName: string;
-  vendor: { id: string; name: string };
+  /** Null while the check waits in the open queue. */
+  vendor: { id: string; name: string } | null;
   handler: { id: string; name: string } | null;
   assignedBy: string;
   reviewedBy: string | null;
@@ -47,10 +52,32 @@ export interface VendorJob {
   requestReason: string | null;
   approval: { by: string | null; at: string; note: string | null } | null;
   evidenceCount: number;
+  /** Payment for a queued check (rupees). */
+  price: number | null;
+  city: string | null;
+  pincode: string | null;
+  pickedAt: string | null;
+  releaseCount: number;
+  /** Picked from the open queue (it can go back) rather than sent to one vendor. */
+  fromQueue: boolean;
+  teamReview: { by: string | null; at: string } | null;
+  extraCosts: VendorExtraCost[];
   version: number;
   ageDays: number;
   ageing: "0-2" | "3-5" | "6-10" | "10+" | null;
   overdue: boolean;
+}
+
+export interface VendorExtraCost {
+  id: string;
+  amount: number;
+  reason: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  addedBy: string;
+  addedAt: string;
+  decidedBy: string | null;
+  decidedAt: string | null;
+  note: string | null;
 }
 
 export interface VendorFile {
@@ -118,6 +145,9 @@ export interface CheckVendorState {
   vendors: Array<{ id: string; name: string }>;
   documents: Array<{ id: string; type: string; name: string; suggested: boolean }>;
   rhsForm: InitiationForm;
+  /** Operations' payment for this check type in the open queue (editable per check). */
+  queueRate: number | null;
+  queueLocation: { city: string | null; pincode: string | null };
   attempts: Array<
     VendorJob & {
       submission: Entry[];
@@ -125,6 +155,8 @@ export interface CheckVendorState {
       canApprove: boolean;
       canReview: boolean;
       canCancel: boolean;
+      /** The reviewer approves or rejects each extra cost before approving the result. */
+      canDecideCosts: boolean;
     }
   >;
 }
@@ -134,7 +166,11 @@ export const internalVendorApi = {
   assign: (
     checkId: string,
     input: {
-      vendorId: string;
+      /** One vendor; leave out with toQueue for the open queue. */
+      vendorId?: string;
+      toQueue?: boolean;
+      /** Payment shown to vendors in the open queue. */
+      price?: number;
       dueAt?: string;
       note?: string;
       /** Team Leader: why (shown to the RM, never to the vendor). */
@@ -160,6 +196,16 @@ export const internalVendorApi = {
       method: "POST",
       body: JSON.stringify(input),
     }),
+  /** The case RM approves or rejects one extra cost of a submitted result. */
+  decideCost: (
+    id: string,
+    costId: string,
+    input: { decision: "APPROVE" | "REJECT"; note?: string },
+  ) =>
+    apiRequest<{ id: string; status: VendorExtraCost["status"] }>(
+      `/vendor-checks/${id}/extra-costs/${costId}/decision`,
+      { method: "POST", body: JSON.stringify(input) },
+    ),
   cancel: (id: string, reason: string) =>
     apiRequest<{ id: string }>(`/vendor-checks/${id}/cancel`, {
       method: "POST",
@@ -179,6 +225,11 @@ export const internalVendorApi = {
 
 export interface VendorJobDetail extends VendorJob {
   canDelegate: boolean;
+  /** Picked from the open queue and no proof yet: may go back to the queue. */
+  canRelease: boolean;
+  /** The vendor's Team Leader reviews a member's finished work. */
+  canTeamReview: boolean;
+  canAddCost: boolean;
   team: Array<{ id: string; name: string }>;
   lhs: { form: InitiationForm | null; entries: Entry[] };
   rhsForm: InitiationForm;
@@ -241,4 +292,78 @@ export const vendorWorkApi = {
     openDocumentPreview(() => apiDownload(`${job(id)}/evidence/${fileId}`)),
   openDocument: (id: string, documentId: string) =>
     openDocumentPreview(() => apiDownload(`${job(id)}/documents/${documentId}`)),
+  /** Back to the open queue for every vendor (reason needed). */
+  release: (id: string, version: number, reason: string) =>
+    apiRequest<{ version: number }>(`${job(id)}/release`, {
+      method: "POST",
+      body: JSON.stringify({ version, reason }),
+    }),
+  teamReview: (
+    id: string,
+    input: { version: number; decision: "APPROVE" | "RETURN"; note?: string },
+  ) =>
+    apiRequest<{ version: number }>(`${job(id)}/team-review`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  addCost: (id: string, input: { amount: number; reason: string }) =>
+    apiRequest<VendorExtraCost>(`${job(id)}/extra-costs`, {
+      method: "POST",
+      body: JSON.stringify(input),
+    }),
+  removeCost: (id: string, costId: string) =>
+    apiRequest<{ removed: true }>(`${job(id)}/extra-costs/${costId}`, { method: "DELETE" }),
+};
+
+/* ---------- Open vendor queue ---------- */
+
+export interface QueueItem {
+  id: string;
+  version: number;
+  checkType: string;
+  price: number | null;
+  city: string | null;
+  pincode: string | null;
+  dueAt: string | null;
+  postedAt: string;
+  instructions: string | null;
+  returnedTimes: number;
+  /** Document types shared with whoever picks it. */
+  documents: string[];
+}
+
+export const vendorQueueApi = {
+  list: (filter: { checkType?: string; city?: string } = {}) => {
+    const query = new URLSearchParams();
+    if (filter.checkType) query.set("checkType", filter.checkType);
+    if (filter.city) query.set("city", filter.city);
+    const text = query.toString();
+    return apiRequest<{ items: QueueItem[]; summary: { count: number; value: number } }>(
+      `/vendor/queue${text ? `?${text}` : ""}`,
+    );
+  },
+  pick: (id: string, version: number) =>
+    apiRequest<{ id: string; version: number }>(`/vendor/queue/${encodeURIComponent(id)}/pick`, {
+      method: "POST",
+      body: JSON.stringify({ version }),
+    }),
+};
+
+/* ---------- Vendor rates (Operations) ---------- */
+
+export interface VendorRateRow {
+  checkType: string;
+  price: number | null;
+  version: number;
+  updatedAt: string | null;
+  updatedBy: string | null;
+}
+
+export const vendorRatesApi = {
+  list: () => apiRequest<{ items: VendorRateRow[] }>("/vendor-rates"),
+  set: (checkType: string, input: { price: number; version: number }) =>
+    apiRequest<VendorRateRow>(`/vendor-rates/${encodeURIComponent(checkType)}`, {
+      method: "PUT",
+      body: JSON.stringify(input),
+    }),
 };

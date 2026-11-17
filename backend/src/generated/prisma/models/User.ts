@@ -407,6 +407,10 @@ export type UserWhereInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentListRelationFilter
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentListRelationFilter
   vendorChecksApproved?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostListRelationFilter
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostListRelationFilter
+  vendorRatesUpdated?: Prisma.VendorRateListRelationFilter
   checkEvidenceUploaded?: Prisma.CheckEvidenceListRelationFilter
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceListRelationFilter
   departmentMemberships?: Prisma.DepartmentMemberListRelationFilter
@@ -488,6 +492,10 @@ export type UserOrderByWithRelationInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentOrderByRelationAggregateInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostOrderByRelationAggregateInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostOrderByRelationAggregateInput
+  vendorRatesUpdated?: Prisma.VendorRateOrderByRelationAggregateInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceOrderByRelationAggregateInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceOrderByRelationAggregateInput
   departmentMemberships?: Prisma.DepartmentMemberOrderByRelationAggregateInput
@@ -573,6 +581,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentListRelationFilter
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentListRelationFilter
   vendorChecksApproved?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentListRelationFilter
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostListRelationFilter
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostListRelationFilter
+  vendorRatesUpdated?: Prisma.VendorRateListRelationFilter
   checkEvidenceUploaded?: Prisma.CheckEvidenceListRelationFilter
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceListRelationFilter
   departmentMemberships?: Prisma.DepartmentMemberListRelationFilter
@@ -704,6 +716,10 @@ export type UserCreateInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -781,6 +797,10 @@ export type UserUncheckedCreateInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -858,6 +878,10 @@ export type UserUpdateInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -935,6 +959,10 @@ export type UserUncheckedUpdateInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1732,6 +1760,12 @@ export type UserCreateNestedOneWithoutVendorCheckWorkInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
+export type UserCreateNestedOneWithoutVendorChecksTeamReviewedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksTeamReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksTeamReviewedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksTeamReviewedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
 export type UserCreateNestedOneWithoutVendorCheckHandledInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckHandledInput, Prisma.UserUncheckedCreateWithoutVendorCheckHandledInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckHandledInput
@@ -1756,12 +1790,24 @@ export type UserCreateNestedOneWithoutVendorChecksApprovedInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutVendorCheckWorkNestedInput = {
+export type UserUpdateOneWithoutVendorCheckWorkNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckWorkInput, Prisma.UserUncheckedCreateWithoutVendorCheckWorkInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorCheckWorkInput
   upsert?: Prisma.UserUpsertWithoutVendorCheckWorkInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorCheckWorkInput, Prisma.UserUpdateWithoutVendorCheckWorkInput>, Prisma.UserUncheckedUpdateWithoutVendorCheckWorkInput>
+}
+
+export type UserUpdateOneWithoutVendorChecksTeamReviewedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksTeamReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksTeamReviewedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorChecksTeamReviewedInput
+  upsert?: Prisma.UserUpsertWithoutVendorChecksTeamReviewedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorChecksTeamReviewedInput, Prisma.UserUpdateWithoutVendorChecksTeamReviewedInput>, Prisma.UserUncheckedUpdateWithoutVendorChecksTeamReviewedInput>
 }
 
 export type UserUpdateOneWithoutVendorCheckHandledNestedInput = {
@@ -2126,6 +2172,52 @@ export type UserUpdateOneWithoutDecidedVendorDocRevisionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutDecidedVendorDocRevisionsInput, Prisma.UserUpdateWithoutDecidedVendorDocRevisionsInput>, Prisma.UserUncheckedUpdateWithoutDecidedVendorDocRevisionsInput>
 }
 
+export type UserCreateNestedOneWithoutVendorExtraCostsAddedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsAddedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsAddedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorExtraCostsAddedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutVendorExtraCostsDecidedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsDecidedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsDecidedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorExtraCostsDecidedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutVendorExtraCostsAddedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsAddedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsAddedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorExtraCostsAddedInput
+  upsert?: Prisma.UserUpsertWithoutVendorExtraCostsAddedInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorExtraCostsAddedInput, Prisma.UserUpdateWithoutVendorExtraCostsAddedInput>, Prisma.UserUncheckedUpdateWithoutVendorExtraCostsAddedInput>
+}
+
+export type UserUpdateOneWithoutVendorExtraCostsDecidedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsDecidedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsDecidedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorExtraCostsDecidedInput
+  upsert?: Prisma.UserUpsertWithoutVendorExtraCostsDecidedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorExtraCostsDecidedInput, Prisma.UserUpdateWithoutVendorExtraCostsDecidedInput>, Prisma.UserUncheckedUpdateWithoutVendorExtraCostsDecidedInput>
+}
+
+export type UserCreateNestedOneWithoutVendorRatesUpdatedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorRatesUpdatedInput, Prisma.UserUncheckedCreateWithoutVendorRatesUpdatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorRatesUpdatedInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutVendorRatesUpdatedNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutVendorRatesUpdatedInput, Prisma.UserUncheckedCreateWithoutVendorRatesUpdatedInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutVendorRatesUpdatedInput
+  upsert?: Prisma.UserUpsertWithoutVendorRatesUpdatedInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVendorRatesUpdatedInput, Prisma.UserUpdateWithoutVendorRatesUpdatedInput>, Prisma.UserUncheckedUpdateWithoutVendorRatesUpdatedInput>
+}
+
 export type UserCreateWithoutTenantInput = {
   id?: bigint | number
   publicId?: string
@@ -2189,6 +2281,10 @@ export type UserCreateWithoutTenantInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -2265,6 +2361,10 @@ export type UserUncheckedCreateWithoutTenantInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2392,6 +2492,10 @@ export type UserCreateWithoutBranchInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -2468,6 +2572,10 @@ export type UserUncheckedCreateWithoutBranchInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2569,6 +2677,10 @@ export type UserCreateWithoutVendorTeamInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -2645,6 +2757,10 @@ export type UserUncheckedCreateWithoutVendorTeamInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2726,6 +2842,10 @@ export type UserCreateWithoutVendorOwnerInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -2802,6 +2922,10 @@ export type UserUncheckedCreateWithoutVendorOwnerInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2898,6 +3022,10 @@ export type UserUpdateWithoutVendorTeamInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -2974,6 +3102,10 @@ export type UserUncheckedUpdateWithoutVendorTeamInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3066,6 +3198,10 @@ export type UserCreateWithoutProposedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -3142,6 +3278,10 @@ export type UserUncheckedCreateWithoutProposedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3223,6 +3363,10 @@ export type UserCreateWithoutDecidedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -3299,6 +3443,10 @@ export type UserUncheckedCreateWithoutDecidedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3391,6 +3539,10 @@ export type UserUpdateWithoutProposedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -3467,6 +3619,10 @@ export type UserUncheckedUpdateWithoutProposedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3554,6 +3710,10 @@ export type UserUpdateWithoutDecidedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -3630,6 +3790,10 @@ export type UserUncheckedUpdateWithoutDecidedSharingInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -3706,6 +3870,10 @@ export type UserCreateWithoutCreatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -3782,6 +3950,10 @@ export type UserUncheckedCreateWithoutCreatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -3863,6 +4035,10 @@ export type UserCreateWithoutUpdatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -3939,6 +4115,10 @@ export type UserUncheckedCreateWithoutUpdatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4031,6 +4211,10 @@ export type UserUpdateWithoutCreatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -4107,6 +4291,10 @@ export type UserUncheckedUpdateWithoutCreatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4194,6 +4382,10 @@ export type UserUpdateWithoutUpdatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -4270,6 +4462,10 @@ export type UserUncheckedUpdateWithoutUpdatedPrivacyRecordsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4346,6 +4542,10 @@ export type UserCreateWithoutUserRolesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -4422,6 +4622,10 @@ export type UserUncheckedCreateWithoutUserRolesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4514,6 +4718,10 @@ export type UserUpdateWithoutUserRolesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -4590,6 +4798,10 @@ export type UserUncheckedUpdateWithoutUserRolesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4666,6 +4878,10 @@ export type UserCreateWithoutSessionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -4742,6 +4958,10 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -4834,6 +5054,10 @@ export type UserUpdateWithoutSessionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -4910,6 +5134,10 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -4986,6 +5214,10 @@ export type UserCreateWithoutClientInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -5062,6 +5294,10 @@ export type UserUncheckedCreateWithoutClientInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5148,6 +5384,10 @@ export type UserCreateWithoutPrimaryRmClientsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -5224,6 +5464,10 @@ export type UserUncheckedCreateWithoutPrimaryRmClientsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5305,6 +5549,10 @@ export type UserCreateWithoutDefaultDataEntryForInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -5381,6 +5629,10 @@ export type UserUncheckedCreateWithoutDefaultDataEntryForInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5489,6 +5741,10 @@ export type UserUpdateWithoutPrimaryRmClientsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -5565,6 +5821,10 @@ export type UserUncheckedUpdateWithoutPrimaryRmClientsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5652,6 +5912,10 @@ export type UserUpdateWithoutDefaultDataEntryForInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -5728,6 +5992,10 @@ export type UserUncheckedUpdateWithoutDefaultDataEntryForInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -5804,6 +6072,10 @@ export type UserCreateWithoutDataEntryCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -5880,6 +6152,10 @@ export type UserUncheckedCreateWithoutDataEntryCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -5961,6 +6237,10 @@ export type UserCreateWithoutEscalatedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -6037,6 +6317,10 @@ export type UserUncheckedCreateWithoutEscalatedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -6117,6 +6401,10 @@ export type UserCreateWithoutAssignedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -6193,6 +6481,10 @@ export type UserUncheckedCreateWithoutAssignedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -6274,6 +6566,10 @@ export type UserCreateWithoutQaClaimedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -6350,6 +6646,10 @@ export type UserUncheckedCreateWithoutQaClaimedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -6443,6 +6743,10 @@ export type UserUpdateWithoutDataEntryCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -6519,6 +6823,10 @@ export type UserUncheckedUpdateWithoutDataEntryCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6606,6 +6914,10 @@ export type UserUpdateWithoutEscalatedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -6682,6 +6994,10 @@ export type UserUncheckedUpdateWithoutEscalatedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6768,6 +7084,10 @@ export type UserUpdateWithoutAssignedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -6844,6 +7164,10 @@ export type UserUncheckedUpdateWithoutAssignedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -6931,6 +7255,10 @@ export type UserUpdateWithoutQaClaimedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -7007,6 +7335,10 @@ export type UserUncheckedUpdateWithoutQaClaimedCasesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -7083,6 +7415,10 @@ export type UserCreateWithoutAssignedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -7159,6 +7495,10 @@ export type UserUncheckedCreateWithoutAssignedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -7240,6 +7580,10 @@ export type UserCreateWithoutCompletedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -7316,6 +7660,10 @@ export type UserUncheckedCreateWithoutCompletedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -7408,6 +7756,10 @@ export type UserUpdateWithoutAssignedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -7484,6 +7836,10 @@ export type UserUncheckedUpdateWithoutAssignedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -7571,6 +7927,10 @@ export type UserUpdateWithoutCompletedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -7647,6 +8007,10 @@ export type UserUncheckedUpdateWithoutCompletedTasksInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -7723,6 +8087,10 @@ export type UserCreateWithoutClarificationSenderInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -7799,6 +8167,10 @@ export type UserUncheckedCreateWithoutClarificationSenderInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -7891,6 +8263,10 @@ export type UserUpdateWithoutClarificationSenderInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -7967,6 +8343,10 @@ export type UserUncheckedUpdateWithoutClarificationSenderInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -8043,6 +8423,10 @@ export type UserCreateWithoutQaReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -8119,6 +8503,10 @@ export type UserUncheckedCreateWithoutQaReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -8211,6 +8599,10 @@ export type UserUpdateWithoutQaReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -8287,6 +8679,10 @@ export type UserUncheckedUpdateWithoutQaReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -8363,6 +8759,10 @@ export type UserCreateWithoutGeneratedReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -8439,6 +8839,10 @@ export type UserUncheckedCreateWithoutGeneratedReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -8531,6 +8935,10 @@ export type UserUpdateWithoutGeneratedReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -8607,6 +9015,10 @@ export type UserUncheckedUpdateWithoutGeneratedReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -8683,6 +9095,10 @@ export type UserCreateWithoutAssignedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -8759,6 +9175,10 @@ export type UserUncheckedCreateWithoutAssignedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -8840,6 +9260,10 @@ export type UserCreateWithoutCompletedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -8916,6 +9340,10 @@ export type UserUncheckedCreateWithoutCompletedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -9008,6 +9436,10 @@ export type UserUpdateWithoutAssignedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -9084,6 +9516,10 @@ export type UserUncheckedUpdateWithoutAssignedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -9171,6 +9607,10 @@ export type UserUpdateWithoutCompletedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -9247,6 +9687,10 @@ export type UserUncheckedUpdateWithoutCompletedVisitsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -9323,6 +9767,10 @@ export type UserCreateWithoutUploadedEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -9399,6 +9847,10 @@ export type UserUncheckedCreateWithoutUploadedEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -9491,6 +9943,10 @@ export type UserUpdateWithoutUploadedEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -9567,6 +10023,10 @@ export type UserUncheckedUpdateWithoutUploadedEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -9643,6 +10103,10 @@ export type UserCreateWithoutAuditEventsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -9719,6 +10183,10 @@ export type UserUncheckedCreateWithoutAuditEventsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -9811,6 +10279,10 @@ export type UserUpdateWithoutAuditEventsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -9887,6 +10359,10 @@ export type UserUncheckedUpdateWithoutAuditEventsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -9963,6 +10439,10 @@ export type UserCreateWithoutOwnedOpportunitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -10039,6 +10519,10 @@ export type UserUncheckedCreateWithoutOwnedOpportunitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -10131,6 +10615,10 @@ export type UserUpdateWithoutOwnedOpportunitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -10207,6 +10695,10 @@ export type UserUncheckedUpdateWithoutOwnedOpportunitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -10283,6 +10775,10 @@ export type UserCreateWithoutAuthoredProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -10359,6 +10855,10 @@ export type UserUncheckedCreateWithoutAuthoredProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -10440,6 +10940,10 @@ export type UserCreateWithoutApprovedProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -10516,6 +11020,10 @@ export type UserUncheckedCreateWithoutApprovedProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -10608,6 +11116,10 @@ export type UserUpdateWithoutAuthoredProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -10684,6 +11196,10 @@ export type UserUncheckedUpdateWithoutAuthoredProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -10771,6 +11287,10 @@ export type UserUpdateWithoutApprovedProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -10847,6 +11367,10 @@ export type UserUncheckedUpdateWithoutApprovedProposalsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -10923,6 +11447,10 @@ export type UserCreateWithoutSalesActivitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -10999,6 +11527,10 @@ export type UserUncheckedCreateWithoutSalesActivitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -11091,6 +11623,10 @@ export type UserUpdateWithoutSalesActivitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -11167,6 +11703,10 @@ export type UserUncheckedUpdateWithoutSalesActivitiesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -11243,6 +11783,10 @@ export type UserCreateWithoutManagerReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -11319,6 +11863,10 @@ export type UserUncheckedCreateWithoutManagerReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -11411,6 +11959,10 @@ export type UserUpdateWithoutManagerReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -11487,6 +12039,10 @@ export type UserUncheckedUpdateWithoutManagerReviewsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -11563,6 +12119,10 @@ export type UserCreateWithoutVendorCheckWorkInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -11639,6 +12199,10 @@ export type UserUncheckedCreateWithoutVendorCheckWorkInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -11655,6 +12219,171 @@ export type UserUncheckedCreateWithoutVendorCheckWorkInput = {
 export type UserCreateOrConnectWithoutVendorCheckWorkInput = {
   where: Prisma.UserWhereUniqueInput
   create: Prisma.XOR<Prisma.UserCreateWithoutVendorCheckWorkInput, Prisma.UserUncheckedCreateWithoutVendorCheckWorkInput>
+}
+
+export type UserCreateWithoutVendorChecksTeamReviewedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorChecksTeamReviewedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileUncheckedCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorChecksTeamReviewedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksTeamReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksTeamReviewedInput>
 }
 
 export type UserCreateWithoutVendorCheckHandledInput = {
@@ -11720,6 +12449,10 @@ export type UserCreateWithoutVendorCheckHandledInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -11796,6 +12529,10 @@ export type UserUncheckedCreateWithoutVendorCheckHandledInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -11877,6 +12614,10 @@ export type UserCreateWithoutVendorChecksAssignedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -11953,6 +12694,10 @@ export type UserUncheckedCreateWithoutVendorChecksAssignedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -12034,6 +12779,10 @@ export type UserCreateWithoutVendorChecksReviewedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -12110,6 +12859,10 @@ export type UserUncheckedCreateWithoutVendorChecksReviewedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -12191,6 +12944,10 @@ export type UserCreateWithoutVendorChecksApprovedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -12267,6 +13024,10 @@ export type UserUncheckedCreateWithoutVendorChecksApprovedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -12359,6 +13120,10 @@ export type UserUpdateWithoutVendorCheckWorkInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -12435,6 +13200,181 @@ export type UserUncheckedUpdateWithoutVendorCheckWorkInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUncheckedUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserUpsertWithoutVendorChecksTeamReviewedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksTeamReviewedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksTeamReviewedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorChecksTeamReviewedInput, Prisma.UserUncheckedCreateWithoutVendorChecksTeamReviewedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorChecksTeamReviewedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorChecksTeamReviewedInput, Prisma.UserUncheckedUpdateWithoutVendorChecksTeamReviewedInput>
+}
+
+export type UserUpdateWithoutVendorChecksTeamReviewedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorChecksTeamReviewedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -12522,6 +13462,10 @@ export type UserUpdateWithoutVendorCheckHandledInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -12598,6 +13542,10 @@ export type UserUncheckedUpdateWithoutVendorCheckHandledInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -12685,6 +13633,10 @@ export type UserUpdateWithoutVendorChecksAssignedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -12761,6 +13713,10 @@ export type UserUncheckedUpdateWithoutVendorChecksAssignedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -12848,6 +13804,10 @@ export type UserUpdateWithoutVendorChecksReviewedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -12924,6 +13884,10 @@ export type UserUncheckedUpdateWithoutVendorChecksReviewedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -13011,6 +13975,10 @@ export type UserUpdateWithoutVendorChecksApprovedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -13087,6 +14055,10 @@ export type UserUncheckedUpdateWithoutVendorChecksApprovedInput = {
   vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -13164,6 +14136,10 @@ export type UserCreateWithoutVendorCheckEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
   primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
@@ -13240,6 +14216,10 @@ export type UserUncheckedCreateWithoutVendorCheckEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
   primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
@@ -13332,6 +14312,10 @@ export type UserUpdateWithoutVendorCheckEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
   primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
@@ -13408,6 +14392,10 @@ export type UserUncheckedUpdateWithoutVendorCheckEvidenceInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
   primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
@@ -13484,6 +14472,10 @@ export type UserCreateWithoutCheckEvidenceUploadedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
   primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
@@ -13560,6 +14552,10 @@ export type UserUncheckedCreateWithoutCheckEvidenceUploadedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
   primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
@@ -13652,6 +14648,10 @@ export type UserUpdateWithoutCheckEvidenceUploadedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
   primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
@@ -13728,6 +14728,10 @@ export type UserUncheckedUpdateWithoutCheckEvidenceUploadedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
   primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
@@ -13803,6 +14807,10 @@ export type UserCreateWithoutSourceOutreachInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -13879,6 +14887,10 @@ export type UserUncheckedCreateWithoutSourceOutreachInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -13971,6 +14983,10 @@ export type UserUpdateWithoutSourceOutreachInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -14047,6 +15063,10 @@ export type UserUncheckedUpdateWithoutSourceOutreachInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -14123,6 +15143,10 @@ export type UserCreateWithoutUploadedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -14199,6 +15223,10 @@ export type UserUncheckedCreateWithoutUploadedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -14280,6 +15308,10 @@ export type UserCreateWithoutReviewedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -14356,6 +15388,10 @@ export type UserUncheckedCreateWithoutReviewedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -14448,6 +15484,10 @@ export type UserUpdateWithoutUploadedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -14524,6 +15564,10 @@ export type UserUncheckedUpdateWithoutUploadedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -14611,6 +15655,10 @@ export type UserUpdateWithoutReviewedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -14687,6 +15735,10 @@ export type UserUncheckedUpdateWithoutReviewedAgreementsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -14763,6 +15815,10 @@ export type UserCreateWithoutRecordedPaymentsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -14839,6 +15895,10 @@ export type UserUncheckedCreateWithoutRecordedPaymentsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -14931,6 +15991,10 @@ export type UserUpdateWithoutRecordedPaymentsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -15007,6 +16071,10 @@ export type UserUncheckedUpdateWithoutRecordedPaymentsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -15083,6 +16151,10 @@ export type UserCreateWithoutCreatedCreditNotesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -15159,6 +16231,10 @@ export type UserUncheckedCreateWithoutCreatedCreditNotesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -15251,6 +16327,10 @@ export type UserUpdateWithoutCreatedCreditNotesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -15327,6 +16407,10 @@ export type UserUncheckedUpdateWithoutCreatedCreditNotesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -15403,6 +16487,10 @@ export type UserCreateWithoutNotificationsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -15479,6 +16567,10 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -15571,6 +16663,10 @@ export type UserUpdateWithoutNotificationsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -15647,6 +16743,10 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -15723,6 +16823,10 @@ export type UserCreateWithoutVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -15799,6 +16903,10 @@ export type UserUncheckedCreateWithoutVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -15880,6 +16988,10 @@ export type UserCreateWithoutVendorAssignmentsMadeInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -15956,6 +17068,10 @@ export type UserUncheckedCreateWithoutVendorAssignmentsMadeInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -16037,6 +17153,10 @@ export type UserCreateWithoutVendorDecisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -16113,6 +17233,10 @@ export type UserUncheckedCreateWithoutVendorDecisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -16194,6 +17318,10 @@ export type UserCreateWithoutHandledVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -16270,6 +17398,10 @@ export type UserUncheckedCreateWithoutHandledVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -16362,6 +17494,10 @@ export type UserUpdateWithoutVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -16438,6 +17574,10 @@ export type UserUncheckedUpdateWithoutVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -16525,6 +17665,10 @@ export type UserUpdateWithoutVendorAssignmentsMadeInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -16601,6 +17745,10 @@ export type UserUncheckedUpdateWithoutVendorAssignmentsMadeInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -16688,6 +17836,10 @@ export type UserUpdateWithoutVendorDecisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -16764,6 +17916,10 @@ export type UserUncheckedUpdateWithoutVendorDecisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -16851,6 +18007,10 @@ export type UserUpdateWithoutHandledVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -16927,6 +18087,10 @@ export type UserUncheckedUpdateWithoutHandledVendorRequestsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -17003,6 +18167,10 @@ export type UserCreateWithoutSpocClientScopesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -17079,6 +18247,10 @@ export type UserUncheckedCreateWithoutSpocClientScopesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -17171,6 +18343,10 @@ export type UserUpdateWithoutSpocClientScopesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -17247,6 +18423,10 @@ export type UserUncheckedUpdateWithoutSpocClientScopesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -17323,6 +18503,10 @@ export type UserCreateWithoutSupportRequestsRaisedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -17399,6 +18583,10 @@ export type UserUncheckedCreateWithoutSupportRequestsRaisedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -17480,6 +18668,10 @@ export type UserCreateWithoutSupportRequestsTakenInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -17556,6 +18748,10 @@ export type UserUncheckedCreateWithoutSupportRequestsTakenInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -17648,6 +18844,10 @@ export type UserUpdateWithoutSupportRequestsRaisedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -17724,6 +18924,10 @@ export type UserUncheckedUpdateWithoutSupportRequestsRaisedInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -17811,6 +19015,10 @@ export type UserUpdateWithoutSupportRequestsTakenInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -17887,6 +19095,10 @@ export type UserUncheckedUpdateWithoutSupportRequestsTakenInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -17963,6 +19175,10 @@ export type UserCreateWithoutVendorTeamPolicyInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -18039,6 +19255,10 @@ export type UserUncheckedCreateWithoutVendorTeamPolicyInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -18131,6 +19351,10 @@ export type UserUpdateWithoutVendorTeamPolicyInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -18207,6 +19431,10 @@ export type UserUncheckedUpdateWithoutVendorTeamPolicyInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -18283,6 +19511,10 @@ export type UserCreateWithoutUploadedVendorReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -18359,6 +19591,10 @@ export type UserUncheckedCreateWithoutUploadedVendorReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -18451,6 +19687,10 @@ export type UserUpdateWithoutUploadedVendorReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -18527,6 +19767,10 @@ export type UserUncheckedUpdateWithoutUploadedVendorReportsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -18604,6 +19848,10 @@ export type UserCreateWithoutDepartmentMembershipsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
@@ -18680,6 +19928,10 @@ export type UserUncheckedCreateWithoutDepartmentMembershipsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
@@ -18772,6 +20024,10 @@ export type UserUpdateWithoutDepartmentMembershipsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
@@ -18848,6 +20104,10 @@ export type UserUncheckedUpdateWithoutDepartmentMembershipsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
@@ -18924,6 +20184,10 @@ export type UserCreateWithoutVendorProfileInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -19000,6 +20264,10 @@ export type UserUncheckedCreateWithoutVendorProfileInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -19081,6 +20349,10 @@ export type UserCreateWithoutReviewedVendorProfilesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -19157,6 +20429,10 @@ export type UserUncheckedCreateWithoutReviewedVendorProfilesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -19249,6 +20525,10 @@ export type UserUpdateWithoutVendorProfileInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -19325,6 +20605,10 @@ export type UserUncheckedUpdateWithoutVendorProfileInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -19412,6 +20696,10 @@ export type UserUpdateWithoutReviewedVendorProfilesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -19488,6 +20776,10 @@ export type UserUncheckedUpdateWithoutReviewedVendorProfilesInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -19564,6 +20856,10 @@ export type UserCreateWithoutVerifiedVendorDocsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -19640,6 +20936,10 @@ export type UserUncheckedCreateWithoutVerifiedVendorDocsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -19732,6 +21032,10 @@ export type UserUpdateWithoutVerifiedVendorDocsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -19808,6 +21112,10 @@ export type UserUncheckedUpdateWithoutVerifiedVendorDocsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -19884,6 +21192,10 @@ export type UserCreateWithoutDecidedVendorDocRevisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
@@ -19960,6 +21272,10 @@ export type UserUncheckedCreateWithoutDecidedVendorDocRevisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
@@ -20052,6 +21368,10 @@ export type UserUpdateWithoutDecidedVendorDocRevisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -20128,6 +21448,10 @@ export type UserUncheckedUpdateWithoutDecidedVendorDocRevisionsInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -20138,6 +21462,1014 @@ export type UserUncheckedUpdateWithoutDecidedVendorDocRevisionsInput = {
   vendorProfile?: Prisma.VendorProfileUncheckedUpdateOneWithoutVendorUserNestedInput
   reviewedVendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutReviewedByNestedInput
   verifiedVendorDocs?: Prisma.VendorDocumentUncheckedUpdateManyWithoutVerifiedByNestedInput
+}
+
+export type UserCreateWithoutVendorExtraCostsAddedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorExtraCostsAddedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileUncheckedCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorExtraCostsAddedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsAddedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsAddedInput>
+}
+
+export type UserCreateWithoutVendorExtraCostsDecidedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorRatesUpdated?: Prisma.VendorRateCreateNestedManyWithoutUpdatedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorExtraCostsDecidedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedCreateNestedManyWithoutUpdatedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileUncheckedCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorExtraCostsDecidedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsDecidedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsDecidedInput>
+}
+
+export type UserUpsertWithoutVendorExtraCostsAddedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorExtraCostsAddedInput, Prisma.UserUncheckedUpdateWithoutVendorExtraCostsAddedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsAddedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsAddedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorExtraCostsAddedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorExtraCostsAddedInput, Prisma.UserUncheckedUpdateWithoutVendorExtraCostsAddedInput>
+}
+
+export type UserUpdateWithoutVendorExtraCostsAddedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorExtraCostsAddedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUncheckedUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserUpsertWithoutVendorExtraCostsDecidedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorExtraCostsDecidedInput, Prisma.UserUncheckedUpdateWithoutVendorExtraCostsDecidedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorExtraCostsDecidedInput, Prisma.UserUncheckedCreateWithoutVendorExtraCostsDecidedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorExtraCostsDecidedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorExtraCostsDecidedInput, Prisma.UserUncheckedUpdateWithoutVendorExtraCostsDecidedInput>
+}
+
+export type UserUpdateWithoutVendorExtraCostsDecidedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorExtraCostsDecidedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUncheckedUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserCreateWithoutVendorRatesUpdatedInput = {
+  id?: bigint | number
+  publicId?: string
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutUsersInput
+  branch?: Prisma.BranchCreateNestedOneWithoutUsersInput
+  client?: Prisma.ClientCreateNestedOneWithoutUsersInput
+  userRoles?: Prisma.UserRoleCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestCreateNestedManyWithoutAssignedToInput
+  vendorOwner?: Prisma.UserCreateNestedOneWithoutVendorTeamInput
+  vendorTeam?: Prisma.UserCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostCreateNestedManyWithoutDecidedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserUncheckedCreateWithoutVendorRatesUpdatedInput = {
+  id?: bigint | number
+  publicId?: string
+  tenantId: bigint | number
+  branchId?: bigint | number | null
+  clientId?: bigint | number | null
+  email: string
+  normalizedEmail: string
+  displayName: string
+  phone?: string | null
+  passwordHash: string
+  mustChangePassword?: boolean
+  status?: string
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  passwordChangedAt?: Date | string
+  vendorOwnerId?: bigint | number | null
+  version?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userRoles?: Prisma.UserRoleUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.RefreshSessionUncheckedCreateNestedManyWithoutUserInput
+  assignedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutAssignedOpsUserInput
+  assignedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutAssigneeInput
+  completedTasks?: Prisma.CheckTaskUncheckedCreateNestedManyWithoutCompletedByInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedCreateNestedManyWithoutSenderUserInput
+  qaReviews?: Prisma.QaReviewUncheckedCreateNestedManyWithoutReviewerInput
+  managerReviews?: Prisma.ManagerReviewUncheckedCreateNestedManyWithoutReviewerInput
+  generatedReports?: Prisma.ReportVersionUncheckedCreateNestedManyWithoutGeneratedByInput
+  assignedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutAssigneeInput
+  completedVisits?: Prisma.FieldVisitUncheckedCreateNestedManyWithoutCompletedByInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedCreateNestedManyWithoutUploadedByInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutActorInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedCreateNestedManyWithoutOwnerInput
+  salesActivities?: Prisma.SalesActivityUncheckedCreateNestedManyWithoutActorInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedCreateNestedManyWithoutActorInput
+  authoredProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutCreatedByInput
+  approvedProposals?: Prisma.CrmProposalUncheckedCreateNestedManyWithoutApprovedByInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutUploadedByInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedCreateNestedManyWithoutReviewedByInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedCreateNestedManyWithoutDecidedByInput
+  recordedPayments?: Prisma.PaymentUncheckedCreateNestedManyWithoutRecordedByInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedCreateNestedManyWithoutCreatedByInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutQaReviewerInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutCreatedByInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedCreateNestedManyWithoutUpdatedByInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutDecidedByInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedCreateNestedManyWithoutUserInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutRequesterInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedCreateNestedManyWithoutAssignedToInput
+  vendorTeam?: Prisma.UserUncheckedCreateNestedManyWithoutVendorOwnerInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedCreateNestedOneWithoutVendorInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutVendorInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutHandlerInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutAssignedByInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutReviewedByInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutApprovedByInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedCreateNestedManyWithoutTeamReviewedByInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutCreatedByInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedCreateNestedManyWithoutDecidedByInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedCreateNestedManyWithoutUploadedByInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedCreateNestedManyWithoutUserInput
+  primaryRmClients?: Prisma.ClientUncheckedCreateNestedManyWithoutPrimaryRmInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedCreateNestedManyWithoutDefaultDataEntryUserInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutDataEntryUserInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedCreateNestedManyWithoutEscalatedByInput
+  vendorProfile?: Prisma.VendorProfileUncheckedCreateNestedOneWithoutVendorUserInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedCreateNestedManyWithoutReviewedByInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedCreateNestedManyWithoutVerifiedByInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedCreateNestedManyWithoutDecidedByInput
+}
+
+export type UserCreateOrConnectWithoutVendorRatesUpdatedInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorRatesUpdatedInput, Prisma.UserUncheckedCreateWithoutVendorRatesUpdatedInput>
+}
+
+export type UserUpsertWithoutVendorRatesUpdatedInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutVendorRatesUpdatedInput, Prisma.UserUncheckedUpdateWithoutVendorRatesUpdatedInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutVendorRatesUpdatedInput, Prisma.UserUncheckedCreateWithoutVendorRatesUpdatedInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutVendorRatesUpdatedInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutVendorRatesUpdatedInput, Prisma.UserUncheckedUpdateWithoutVendorRatesUpdatedInput>
+}
+
+export type UserUpdateWithoutVendorRatesUpdatedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutUsersNestedInput
+  branch?: Prisma.BranchUpdateOneWithoutUsersNestedInput
+  client?: Prisma.ClientUpdateOneWithoutUsersNestedInput
+  userRoles?: Prisma.UserRoleUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUpdateManyWithoutAssignedToNestedInput
+  vendorOwner?: Prisma.UserUpdateOneWithoutVendorTeamNestedInput
+  vendorTeam?: Prisma.UserUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUpdateManyWithoutDecidedByNestedInput
+}
+
+export type UserUncheckedUpdateWithoutVendorRatesUpdatedInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  publicId?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  branchId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  clientId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  normalizedEmail?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  mustChangePassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  passwordChangedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendorOwnerId?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userRoles?: Prisma.UserRoleUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.RefreshSessionUncheckedUpdateManyWithoutUserNestedInput
+  assignedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutAssignedOpsUserNestedInput
+  assignedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedTasks?: Prisma.CheckTaskUncheckedUpdateManyWithoutCompletedByNestedInput
+  clarificationSender?: Prisma.ClarificationMessageUncheckedUpdateManyWithoutSenderUserNestedInput
+  qaReviews?: Prisma.QaReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  managerReviews?: Prisma.ManagerReviewUncheckedUpdateManyWithoutReviewerNestedInput
+  generatedReports?: Prisma.ReportVersionUncheckedUpdateManyWithoutGeneratedByNestedInput
+  assignedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutAssigneeNestedInput
+  completedVisits?: Prisma.FieldVisitUncheckedUpdateManyWithoutCompletedByNestedInput
+  uploadedEvidence?: Prisma.EvidenceItemUncheckedUpdateManyWithoutUploadedByNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutActorNestedInput
+  ownedOpportunities?: Prisma.SalesOpportunityUncheckedUpdateManyWithoutOwnerNestedInput
+  salesActivities?: Prisma.SalesActivityUncheckedUpdateManyWithoutActorNestedInput
+  sourceOutreach?: Prisma.SourceOutreachUncheckedUpdateManyWithoutActorNestedInput
+  authoredProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutCreatedByNestedInput
+  approvedProposals?: Prisma.CrmProposalUncheckedUpdateManyWithoutApprovedByNestedInput
+  uploadedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutUploadedByNestedInput
+  reviewedAgreements?: Prisma.ClientAgreementFileUncheckedUpdateManyWithoutReviewedByNestedInput
+  proposedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  decidedSharing?: Prisma.VendorSharingRecordUncheckedUpdateManyWithoutDecidedByNestedInput
+  recordedPayments?: Prisma.PaymentUncheckedUpdateManyWithoutRecordedByNestedInput
+  createdCreditNotes?: Prisma.CreditNoteUncheckedUpdateManyWithoutCreatedByNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  qaClaimedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutQaReviewerNestedInput
+  createdPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutCreatedByNestedInput
+  updatedPrivacyRecords?: Prisma.PrivacyRecordUncheckedUpdateManyWithoutUpdatedByNestedInput
+  vendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorAssignmentsMade?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorDecisions?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutDecidedByNestedInput
+  spocClientScopes?: Prisma.SpocClientScopeUncheckedUpdateManyWithoutUserNestedInput
+  supportRequestsRaised?: Prisma.SupportRequestUncheckedUpdateManyWithoutRequesterNestedInput
+  supportRequestsTaken?: Prisma.SupportRequestUncheckedUpdateManyWithoutAssignedToNestedInput
+  vendorTeam?: Prisma.UserUncheckedUpdateManyWithoutVendorOwnerNestedInput
+  vendorTeamPolicy?: Prisma.VendorTeamPolicyUncheckedUpdateOneWithoutVendorNestedInput
+  handledVendorRequests?: Prisma.VendorAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  uploadedVendorReports?: Prisma.VendorReportUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckWork?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutVendorNestedInput
+  vendorCheckHandled?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutHandlerNestedInput
+  vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
+  vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
+  vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
+  departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
+  primaryRmClients?: Prisma.ClientUncheckedUpdateManyWithoutPrimaryRmNestedInput
+  defaultDataEntryFor?: Prisma.ClientUncheckedUpdateManyWithoutDefaultDataEntryUserNestedInput
+  dataEntryCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutDataEntryUserNestedInput
+  escalatedCases?: Prisma.VerificationCaseUncheckedUpdateManyWithoutEscalatedByNestedInput
+  vendorProfile?: Prisma.VendorProfileUncheckedUpdateOneWithoutVendorUserNestedInput
+  reviewedVendorProfiles?: Prisma.VendorProfileUncheckedUpdateManyWithoutReviewedByNestedInput
+  verifiedVendorDocs?: Prisma.VendorDocumentUncheckedUpdateManyWithoutVerifiedByNestedInput
+  decidedVendorDocRevisions?: Prisma.VendorDocumentRevisionUncheckedUpdateManyWithoutDecidedByNestedInput
 }
 
 export type UserCreateManyTenantInput = {
@@ -20224,6 +22556,10 @@ export type UserUpdateWithoutTenantInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -20300,6 +22636,10 @@ export type UserUncheckedUpdateWithoutTenantInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -20419,6 +22759,10 @@ export type UserUpdateWithoutBranchInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -20495,6 +22839,10 @@ export type UserUncheckedUpdateWithoutBranchInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -20614,6 +22962,10 @@ export type UserUpdateWithoutVendorOwnerInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -20690,6 +23042,10 @@ export type UserUncheckedUpdateWithoutVendorOwnerInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -20809,6 +23165,10 @@ export type UserUpdateWithoutClientInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUpdateManyWithoutUserNestedInput
@@ -20885,6 +23245,10 @@ export type UserUncheckedUpdateWithoutClientInput = {
   vendorChecksAssigned?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutAssignedByNestedInput
   vendorChecksReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutReviewedByNestedInput
   vendorChecksApproved?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutApprovedByNestedInput
+  vendorChecksTeamReviewed?: Prisma.VendorCheckAssignmentUncheckedUpdateManyWithoutTeamReviewedByNestedInput
+  vendorExtraCostsAdded?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutCreatedByNestedInput
+  vendorExtraCostsDecided?: Prisma.VendorExtraCostUncheckedUpdateManyWithoutDecidedByNestedInput
+  vendorRatesUpdated?: Prisma.VendorRateUncheckedUpdateManyWithoutUpdatedByNestedInput
   checkEvidenceUploaded?: Prisma.CheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   vendorCheckEvidence?: Prisma.VendorCheckEvidenceUncheckedUpdateManyWithoutUploadedByNestedInput
   departmentMemberships?: Prisma.DepartmentMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -20968,6 +23332,10 @@ export type UserCountOutputType = {
   vendorChecksAssigned: number
   vendorChecksReviewed: number
   vendorChecksApproved: number
+  vendorChecksTeamReviewed: number
+  vendorExtraCostsAdded: number
+  vendorExtraCostsDecided: number
+  vendorRatesUpdated: number
   checkEvidenceUploaded: number
   vendorCheckEvidence: number
   departmentMemberships: number
@@ -21023,6 +23391,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   vendorChecksAssigned?: boolean | UserCountOutputTypeCountVendorChecksAssignedArgs
   vendorChecksReviewed?: boolean | UserCountOutputTypeCountVendorChecksReviewedArgs
   vendorChecksApproved?: boolean | UserCountOutputTypeCountVendorChecksApprovedArgs
+  vendorChecksTeamReviewed?: boolean | UserCountOutputTypeCountVendorChecksTeamReviewedArgs
+  vendorExtraCostsAdded?: boolean | UserCountOutputTypeCountVendorExtraCostsAddedArgs
+  vendorExtraCostsDecided?: boolean | UserCountOutputTypeCountVendorExtraCostsDecidedArgs
+  vendorRatesUpdated?: boolean | UserCountOutputTypeCountVendorRatesUpdatedArgs
   checkEvidenceUploaded?: boolean | UserCountOutputTypeCountCheckEvidenceUploadedArgs
   vendorCheckEvidence?: boolean | UserCountOutputTypeCountVendorCheckEvidenceArgs
   departmentMemberships?: boolean | UserCountOutputTypeCountDepartmentMembershipsArgs
@@ -21342,6 +23714,34 @@ export type UserCountOutputTypeCountVendorChecksApprovedArgs<ExtArgs extends run
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountVendorChecksTeamReviewedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorCheckAssignmentWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorExtraCostsAddedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorExtraCostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorExtraCostsDecidedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorExtraCostWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountVendorRatesUpdatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendorRateWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountCheckEvidenceUploadedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.CheckEvidenceWhereInput
 }
@@ -21478,6 +23878,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   vendorChecksAssigned?: boolean | Prisma.User$vendorChecksAssignedArgs<ExtArgs>
   vendorChecksReviewed?: boolean | Prisma.User$vendorChecksReviewedArgs<ExtArgs>
   vendorChecksApproved?: boolean | Prisma.User$vendorChecksApprovedArgs<ExtArgs>
+  vendorChecksTeamReviewed?: boolean | Prisma.User$vendorChecksTeamReviewedArgs<ExtArgs>
+  vendorExtraCostsAdded?: boolean | Prisma.User$vendorExtraCostsAddedArgs<ExtArgs>
+  vendorExtraCostsDecided?: boolean | Prisma.User$vendorExtraCostsDecidedArgs<ExtArgs>
+  vendorRatesUpdated?: boolean | Prisma.User$vendorRatesUpdatedArgs<ExtArgs>
   checkEvidenceUploaded?: boolean | Prisma.User$checkEvidenceUploadedArgs<ExtArgs>
   vendorCheckEvidence?: boolean | Prisma.User$vendorCheckEvidenceArgs<ExtArgs>
   departmentMemberships?: boolean | Prisma.User$departmentMembershipsArgs<ExtArgs>
@@ -21566,6 +23970,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   vendorChecksAssigned?: boolean | Prisma.User$vendorChecksAssignedArgs<ExtArgs>
   vendorChecksReviewed?: boolean | Prisma.User$vendorChecksReviewedArgs<ExtArgs>
   vendorChecksApproved?: boolean | Prisma.User$vendorChecksApprovedArgs<ExtArgs>
+  vendorChecksTeamReviewed?: boolean | Prisma.User$vendorChecksTeamReviewedArgs<ExtArgs>
+  vendorExtraCostsAdded?: boolean | Prisma.User$vendorExtraCostsAddedArgs<ExtArgs>
+  vendorExtraCostsDecided?: boolean | Prisma.User$vendorExtraCostsDecidedArgs<ExtArgs>
+  vendorRatesUpdated?: boolean | Prisma.User$vendorRatesUpdatedArgs<ExtArgs>
   checkEvidenceUploaded?: boolean | Prisma.User$checkEvidenceUploadedArgs<ExtArgs>
   vendorCheckEvidence?: boolean | Prisma.User$vendorCheckEvidenceArgs<ExtArgs>
   departmentMemberships?: boolean | Prisma.User$departmentMembershipsArgs<ExtArgs>
@@ -21630,6 +24038,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     vendorChecksAssigned: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
     vendorChecksReviewed: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
     vendorChecksApproved: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorChecksTeamReviewed: Prisma.$VendorCheckAssignmentPayload<ExtArgs>[]
+    vendorExtraCostsAdded: Prisma.$VendorExtraCostPayload<ExtArgs>[]
+    vendorExtraCostsDecided: Prisma.$VendorExtraCostPayload<ExtArgs>[]
+    vendorRatesUpdated: Prisma.$VendorRatePayload<ExtArgs>[]
     checkEvidenceUploaded: Prisma.$CheckEvidencePayload<ExtArgs>[]
     vendorCheckEvidence: Prisma.$VendorCheckEvidencePayload<ExtArgs>[]
     departmentMemberships: Prisma.$DepartmentMemberPayload<ExtArgs>[]
@@ -22053,6 +24465,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   vendorChecksAssigned<T extends Prisma.User$vendorChecksAssignedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksAssignedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorChecksReviewed<T extends Prisma.User$vendorChecksReviewedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksReviewedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorChecksApproved<T extends Prisma.User$vendorChecksApprovedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorChecksTeamReviewed<T extends Prisma.User$vendorChecksTeamReviewedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorChecksTeamReviewedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorExtraCostsAdded<T extends Prisma.User$vendorExtraCostsAddedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorExtraCostsAddedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorExtraCostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorExtraCostsDecided<T extends Prisma.User$vendorExtraCostsDecidedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorExtraCostsDecidedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorExtraCostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendorRatesUpdated<T extends Prisma.User$vendorRatesUpdatedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorRatesUpdatedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorRatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   checkEvidenceUploaded<T extends Prisma.User$checkEvidenceUploadedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$checkEvidenceUploadedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CheckEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendorCheckEvidence<T extends Prisma.User$vendorCheckEvidenceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vendorCheckEvidenceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendorCheckEvidencePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   departmentMemberships<T extends Prisma.User$departmentMembershipsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$departmentMembershipsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DepartmentMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -23541,6 +25957,102 @@ export type User$vendorChecksApprovedArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorChecksTeamReviewed
+ */
+export type User$vendorChecksTeamReviewedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorCheckAssignment
+   */
+  select?: Prisma.VendorCheckAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorCheckAssignment
+   */
+  omit?: Prisma.VendorCheckAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorCheckAssignmentInclude<ExtArgs> | null
+  where?: Prisma.VendorCheckAssignmentWhereInput
+  orderBy?: Prisma.VendorCheckAssignmentOrderByWithRelationInput | Prisma.VendorCheckAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.VendorCheckAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorCheckAssignmentScalarFieldEnum | Prisma.VendorCheckAssignmentScalarFieldEnum[]
+}
+
+/**
+ * User.vendorExtraCostsAdded
+ */
+export type User$vendorExtraCostsAddedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorExtraCost
+   */
+  select?: Prisma.VendorExtraCostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorExtraCost
+   */
+  omit?: Prisma.VendorExtraCostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorExtraCostInclude<ExtArgs> | null
+  where?: Prisma.VendorExtraCostWhereInput
+  orderBy?: Prisma.VendorExtraCostOrderByWithRelationInput | Prisma.VendorExtraCostOrderByWithRelationInput[]
+  cursor?: Prisma.VendorExtraCostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorExtraCostScalarFieldEnum | Prisma.VendorExtraCostScalarFieldEnum[]
+}
+
+/**
+ * User.vendorExtraCostsDecided
+ */
+export type User$vendorExtraCostsDecidedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorExtraCost
+   */
+  select?: Prisma.VendorExtraCostSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorExtraCost
+   */
+  omit?: Prisma.VendorExtraCostOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorExtraCostInclude<ExtArgs> | null
+  where?: Prisma.VendorExtraCostWhereInput
+  orderBy?: Prisma.VendorExtraCostOrderByWithRelationInput | Prisma.VendorExtraCostOrderByWithRelationInput[]
+  cursor?: Prisma.VendorExtraCostWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorExtraCostScalarFieldEnum | Prisma.VendorExtraCostScalarFieldEnum[]
+}
+
+/**
+ * User.vendorRatesUpdated
+ */
+export type User$vendorRatesUpdatedArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendorRate
+   */
+  select?: Prisma.VendorRateSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendorRate
+   */
+  omit?: Prisma.VendorRateOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendorRateInclude<ExtArgs> | null
+  where?: Prisma.VendorRateWhereInput
+  orderBy?: Prisma.VendorRateOrderByWithRelationInput | Prisma.VendorRateOrderByWithRelationInput[]
+  cursor?: Prisma.VendorRateWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendorRateScalarFieldEnum | Prisma.VendorRateScalarFieldEnum[]
 }
 
 /**

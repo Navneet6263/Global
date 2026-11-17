@@ -55,6 +55,7 @@ function assignFixture(
     check?: Record<string, unknown>;
     attempts?: Array<{ attempt: number; status: string }>;
     documents?: Array<{ publicId: string; type: string }>;
+    rate?: number;
   } = {},
 ) {
   const created: Array<Record<string, unknown>> = [];
@@ -75,12 +76,21 @@ function assignFixture(
         publicId: "vendor-1",
         displayName: "Field Co",
       }),
+      // Approved vendors told about a queued check.
+      findMany: () => [{ id: 50n }, { id: 60n }],
+    },
+    vendorRate: {
+      findUnique: () =>
+        options.rate === undefined ? null : { price: options.rate },
     },
     document: {
       findMany: () =>
         options.documents ?? [{ publicId: "doc-1", type: "ADDRESS_PROOF" }],
     },
-    notification: { create: (args: unknown) => notices.push(args) },
+    notification: {
+      create: (args: unknown) => notices.push(args),
+      createMany: (args: { data: unknown[] }) => notices.push(...args.data),
+    },
     auditEvent: {
       create: (args: { data: { action: string; afterJson: string } }) =>
         audits.push(args.data),
@@ -192,7 +202,10 @@ void test("assigning needs a routed open case, a document of the case and the ri
   );
 });
 
-function reviewFixture(status = "SUBMITTED") {
+function reviewFixture(
+  status = "SUBMITTED",
+  pendingCosts: Array<{ id: bigint }> = [],
+) {
   const checkUpdates: Array<Record<string, unknown>> = [];
   const jobUpdates: Array<Record<string, unknown>> = [];
   const audits: string[] = [];
@@ -212,6 +225,8 @@ function reviewFixture(status = "SUBMITTED") {
           entries: [{ respondentName: "Neighbour" }],
         }),
         check: { publicId: "check-1" },
+        // Extra costs still waiting for the RM's decision.
+        extraCosts: pendingCosts,
       }),
       updateMany: (args: { data: Record<string, unknown> }) => {
         jobUpdates.push(args.data);
@@ -644,4 +659,81 @@ void test("whoever sent the job reviews the vendor's result", () => {
   assert.equal(canReview(ops, check, { assignedAs: "TEAM_LEADER" }), true);
   assert.equal(canReview(verifier, check, { assignedAs: "RM" }), false);
   assert.equal(assignAs(verifier, check), null);
+});
+
+void test("a check goes to the open queue with Operations' payment, city and pincode", async () => {
+  const address = JSON.stringify({
+    entries: [{ address: "12 MG Road", city: "Lucknow", pincode: "226010" }],
+  });
+  const { service, created, audits, notices } = assignFixture({
+    rate: 450,
+    check: { initiationJson: address },
+  });
+  const result = await service.assign(
+    ops,
+    "check-1",
+    { toQueue: true, documentIds: ["doc-1"] },
+    now,
+  );
+  assert.equal(result.status, "OPEN");
+  assert.equal(created[0]!.vendorUserId, null);
+  assert.equal(created[0]!.price, 450);
+  assert.equal(created[0]!.city, "Lucknow");
+  assert.equal(created[0]!.pincode, "226010");
+  assert.equal(audits[0]!.action, "vendor_check.queued");
+  assert.equal(notices.length, 2, "every approved vendor is told");
+});
+
+void test("the open queue needs a payment; the sender may set it", async () => {
+  await assert.rejects(
+    assignFixture().service.assign(
+      ops,
+      "check-1",
+      { toQueue: true, documentIds: [] },
+      now,
+    ),
+    /Set the payment/,
+  );
+  const { service, created } = assignFixture({ rate: 450 });
+  await service.assign(
+    ops,
+    "check-1",
+    { toQueue: true, price: 600, documentIds: [] },
+    now,
+  );
+  assert.equal(created[0]!.price, 600);
+  await assert.rejects(
+    assignFixture().service.assign(ops, "check-1", { documentIds: [] }, now),
+    /vendor or the open queue/,
+  );
+});
+
+void test("a Team Leader's queued check comes back to the case RM", async () => {
+  const lead = {
+    tenantId: 1n,
+    userId: 30n,
+    roles: ["VERIFIER"],
+    departments: [{ id: 4n, role: "LEAD" }],
+  } as unknown as Actor;
+  const { service, created } = assignFixture({ rate: 450 });
+  const result = await service.assign(
+    lead,
+    "check-1",
+    {
+      toQueue: true,
+      documentIds: [],
+      reason: "Field visit needed in another city",
+    },
+    now,
+  );
+  assert.equal(result.status, "PENDING_APPROVAL", "the RM approves it first");
+  assert.equal(created[0]!.assignedAs, "RM");
+});
+
+void test("the RM decides each extra cost before approving the vendor's result", async () => {
+  const { service } = reviewFixture("SUBMITTED", [{ id: 1n }]);
+  await assert.rejects(
+    service.review(ops, "job-1", { decision: "APPROVE", version: 3 }, now),
+    /extra cost first/,
+  );
 });

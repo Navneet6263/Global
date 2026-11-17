@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { VendorWorkController } from "../src/vendor-checks/vendor-work.controller";
+import { VendorQueueController } from "../src/vendor-checks/vendor-queue.controller";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -78,6 +79,8 @@ void test("VENDOR is allowed only on the /vendor requests, reports, team, logs a
     VendorActivityController,
     // Check-level vendor work (/vendor/checks): own jobs only, enforced in the service.
     VendorWorkController,
+    // Open queue (/vendor/queue) and the vendor's own review chain; approved vendors only.
+    VendorQueueController,
     VendorOnboardingController,
   ];
   let checked = 0;

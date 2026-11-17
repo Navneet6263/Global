@@ -5,6 +5,7 @@ import {
   Inbox,
   KeyRound,
   Layers,
+  ListTodo,
   ScrollText,
   Users,
   XCircle,
@@ -43,6 +44,12 @@ function item(
 /** Requests for every vendor login; Team is managed by the Main Vendor (team users read it). */
 export const VENDOR_NAV_ITEMS: readonly NavItem[] = [
   item("Vendor Requests", "Overview of the documents assigned to you", Inbox, "/vendor"),
+  item(
+    "Open queue",
+    "Checks any vendor can pick: city, payment and due date",
+    ListTodo,
+    "/vendor/queue",
+  ),
   item(
     "My checks",
     "Checks to verify: accept, submit results and proof",

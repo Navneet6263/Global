@@ -25,13 +25,19 @@ import {
 } from "@/lib/backend-api/vendor-checks";
 import { formatDateTime } from "@/lib/formatting";
 import { cn } from "@/lib/utils";
-import { STATUS_COPY, fileSize, readable } from "./vendor-job-format";
+import { STATUS_COPY, fileSize, readable, rupees, vendorName } from "./vendor-job-format";
+import { VendorExtraCosts } from "./VendorExtraCosts";
+
+/** The vendor select's choice for "every approved vendor may pick it". */
+const QUEUE = "__open_queue__";
 
 const TONE: Record<VendorJobStatus, Tone> = {
   PENDING_APPROVAL: "warn",
   REJECTED: "neutral",
+  OPEN: "warn",
   ASSIGNED: "info",
   IN_PROGRESS: "info",
+  TEAM_REVIEW: "info",
   SUBMITTED: "action",
   RETURNED: "bad",
   APPROVED: "good",
@@ -79,7 +85,7 @@ export function CheckVendorPanel({ checkId }: { checkId: string }) {
             {data.needsApproval
               ? "As Team Leader you can request a vendor; the case RM approves it before the vendor sees it."
               : data.canManage
-                ? "Send this check to a vendor with only the documents it needs. Its result comes back here for review."
+                ? "Send this check to one vendor, or to the open queue where every approved vendor can pick it. Share only the documents it needs; the result comes back here for review."
                 : "Vendor work on this check is managed by the case RM or the Team Leader. You can follow it here."}
           </p>
         </div>
@@ -104,6 +110,9 @@ export function CheckVendorPanel({ checkId }: { checkId: string }) {
 function AssignForm({ data }: { data: CheckVendorState }) {
   const queryClient = useQueryClient();
   const [vendorId, setVendorId] = useState("");
+  const [price, setPrice] = useState(data.queueRate !== null ? String(data.queueRate) : "");
+  const toQueue = vendorId === QUEUE;
+  const priceOk = !toQueue || (Number(price) >= 1 && Number(price) <= 1_000_000);
   const [dueAt, setDueAt] = useState("");
   const [note, setNote] = useState("");
   const [reason, setReason] = useState("");
@@ -113,18 +122,27 @@ function AssignForm({ data }: { data: CheckVendorState }) {
   const assign = useMutation({
     mutationFn: () =>
       internalVendorApi.assign(data.checkId, {
-        vendorId,
+        ...(toQueue ? { toQueue: true, price: Number(price) } : { vendorId }),
         dueAt: dueAt ? new Date(`${dueAt}T18:00:00+05:30`).toISOString() : undefined,
         note: note.trim() || undefined,
         ...(data.needsApproval ? { reason: reason.trim() } : {}),
         documentIds,
       }),
     onSuccess: async () => {
-      toast.success(data.needsApproval ? "Sent to the RM for approval" : "Sent to the vendor", {
-        description: data.needsApproval
-          ? "The vendor gets it once the case RM approves."
-          : "They are notified in their portal.",
-      });
+      toast.success(
+        data.needsApproval
+          ? "Sent to the RM for approval"
+          : toQueue
+            ? "Posted to the open vendor queue"
+            : "Sent to the vendor",
+        {
+          description: data.needsApproval
+            ? "Vendors get it once the case RM approves."
+            : toQueue
+              ? "Every approved vendor is notified; the first to pick it gets it."
+              : "They are notified in their portal.",
+        },
+      );
       await queryClient.invalidateQueries({ queryKey: ["vendor-checks"] });
     },
     onError: (error: Error) => toast.error("Not sent", { description: error.message }),
@@ -139,7 +157,7 @@ function AssignForm({ data }: { data: CheckVendorState }) {
       className="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/60 p-4"
       onSubmit={(event) => {
         event.preventDefault();
-        if (vendorId && reasonOk) assign.mutate();
+        if (vendorId && reasonOk && priceOk) assign.mutate();
       }}
     >
       <fieldset disabled={assign.isPending} className="grid gap-4">
@@ -152,6 +170,7 @@ function AssignForm({ data }: { data: CheckVendorState }) {
               aria-label="Vendor"
             >
               <option value="">Choose a vendor…</option>
+              <option value={QUEUE}>Open queue (all approved vendors)</option>
               {data.vendors.map((vendor) => (
                 <option key={vendor.id} value={vendor.id}>
                   {vendor.name}
@@ -170,6 +189,34 @@ function AssignForm({ data }: { data: CheckVendorState }) {
             />
           </label>
         </div>
+        {toQueue ? (
+          <div className="grid gap-3 rounded-xl border border-amber-200 bg-amber-50/60 p-3 sm:grid-cols-[12rem_minmax(0,1fr)] sm:items-end">
+            <label className={field}>
+              <span className="font-medium text-slate-700">Payment to the vendor (₹) *</span>
+              <input
+                type="number"
+                min={1}
+                step="0.01"
+                value={price}
+                onChange={(event) => setPrice(event.target.value)}
+                aria-label="Payment to the vendor"
+              />
+            </label>
+            <p className="text-[12.5px] text-slate-600">
+              Vendors see the check type, payment, due date, documents and{" "}
+              <strong>
+                {[data.queueLocation.city, data.queueLocation.pincode]
+                  .filter(Boolean)
+                  .join(" · ") || "no city on the address"}
+              </strong>{" "}
+              before picking. The candidate&apos;s name and address stay hidden until a vendor picks
+              it.
+              {data.queueRate === null
+                ? " No default payment is set for this check type yet (Vendor rates)."
+                : ""}
+            </p>
+          </div>
+        ) : null}
         {data.needsApproval ? (
           <label className={field}>
             <span className="font-medium text-slate-700">
@@ -231,10 +278,18 @@ function AssignForm({ data }: { data: CheckVendorState }) {
           )}
         </div>
         <div className="flex justify-end">
-          <Button type="submit" disabled={!vendorId || !reasonOk} loading={assign.isPending}>
+          <Button
+            type="submit"
+            disabled={!vendorId || !reasonOk || !priceOk}
+            loading={assign.isPending}
+          >
             {data.needsApproval ? (
               <>
                 <Send aria-hidden /> Send to RM for approval
+              </>
+            ) : toQueue ? (
+              <>
+                <Truck aria-hidden /> Post to the open queue
               </>
             ) : (
               <>
@@ -281,7 +336,7 @@ function Attempt({
           approve: "Result accepted — copied into Verified details",
           return: "Returned to the vendor",
           cancel: "Vendor job cancelled",
-          allow: "Approved — sent to the vendor",
+          allow: "Approved — sent on to the vendor side",
           reject: "Request turned down",
         }[kind],
       );
@@ -306,7 +361,7 @@ function Attempt({
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <strong className="block text-[13.5px] text-slate-900">
-            Attempt {attempt.attempt} · {attempt.vendor.name}
+            Attempt {attempt.attempt} · {vendorName(attempt.vendor)}
             {attempt.handler ? ` (${attempt.handler.name})` : ""}
           </strong>
           <small className="text-[12px] text-slate-500">
@@ -334,6 +389,26 @@ function Attempt({
             {attempt.approval.by ?? "the RM"} on {formatDateTime(attempt.approval.at)}
             {attempt.approval.note ? ` · “${attempt.approval.note}”` : ""}
           </span>
+        </p>
+      ) : null}
+      {attempt.fromQueue ? (
+        <p className="text-[12.5px] text-slate-600">
+          Open queue
+          {attempt.price !== null ? ` · payment ${rupees(attempt.price)}` : ""}
+          {attempt.city ? ` · ${attempt.city}` : ""}
+          {attempt.pincode ? ` ${attempt.pincode}` : ""}
+          {attempt.pickedAt ? ` · picked ${formatDateTime(attempt.pickedAt)}` : ""}
+          {attempt.releaseCount
+            ? ` · returned to the queue ${attempt.releaseCount} time${attempt.releaseCount === 1 ? "" : "s"}`
+            : ""}
+        </p>
+      ) : null}
+      {attempt.teamReview ? (
+        <p className="flex items-start gap-2 text-[12.5px] text-slate-600">
+          <ShieldCheck className="mt-0.5 size-4 text-emerald-600" aria-hidden />
+          Checked by the vendor&apos;s Team Leader
+          {attempt.teamReview.by ? ` (${attempt.teamReview.by})` : ""} on{" "}
+          {formatDateTime(attempt.teamReview.at)}
         </p>
       ) : null}
       {attempt.overdue ? (
@@ -385,6 +460,14 @@ function Attempt({
             </div>
           ) : null}
         </div>
+      ) : null}
+      {attempt.extraCosts.length || (attempt.fromQueue && attempt.price !== null) ? (
+        <VendorExtraCosts
+          jobId={attempt.id}
+          costs={attempt.extraCosts}
+          price={attempt.price}
+          mode={attempt.canDecideCosts ? "rm" : "view"}
+        />
       ) : null}
       {mode ? (
         <label className={field}>
@@ -471,9 +554,13 @@ function Attempt({
               <span className="text-[12.5px] text-slate-500">
                 Result is reviewed by {reviewer || "whoever sent it"}
               </span>
-            ) : ["ASSIGNED", "IN_PROGRESS", "RETURNED"].includes(attempt.status) ? (
+            ) : ["ASSIGNED", "IN_PROGRESS", "RETURNED", "TEAM_REVIEW"].includes(attempt.status) ? (
               <span className="flex items-center gap-1.5 text-[12.5px] text-slate-500">
                 <Send className="size-3.5" aria-hidden /> With the vendor
+              </span>
+            ) : attempt.status === "OPEN" ? (
+              <span className="flex items-center gap-1.5 text-[12.5px] text-amber-700">
+                <Hourglass className="size-3.5" aria-hidden /> Waiting for a vendor to pick it
               </span>
             ) : null}
           </>

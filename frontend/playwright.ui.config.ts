@@ -46,6 +46,7 @@ export default defineConfig({
     "qa-review-sections.spec.ts",
     "qa-finance-navigation.spec.ts",
     "l2-insufficiency.spec.ts",
+    "vendor-queue.spec.ts",
   ],
   timeout: 90_000,
   fullyParallel: false,

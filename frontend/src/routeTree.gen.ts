@@ -85,6 +85,7 @@ import { Route as OperationsSlaRouteImport } from './routes/operations.sla'
 import { Route as OperationsTeamRouteImport } from './routes/operations.team'
 import { Route as OperationsUtvRouteImport } from './routes/operations.utv'
 import { Route as OperationsVendorOnboardingRouteImport } from './routes/operations.vendor-onboarding'
+import { Route as OperationsVendorRatesRouteImport } from './routes/operations.vendor-rates'
 import { Route as OperationsVendorWorkRouteImport } from './routes/operations.vendor-work'
 import { Route as QaReviewCorrectionsRouteImport } from './routes/qa-review_.corrections'
 import { Route as QaReviewHistoryRouteImport } from './routes/qa-review_.history'
@@ -117,6 +118,7 @@ import { Route as VendorApprovedRouteImport } from './routes/vendor.approved'
 import { Route as VendorChecksRouteImport } from './routes/vendor.checks'
 import { Route as VendorLogsRouteImport } from './routes/vendor.logs'
 import { Route as VendorPendingRouteImport } from './routes/vendor.pending'
+import { Route as VendorQueueRouteImport } from './routes/vendor.queue'
 import { Route as VendorRejectedRouteImport } from './routes/vendor.rejected'
 import { Route as VendorTeamRouteImport } from './routes/vendor.team'
 import { Route as VendorOnboardingRouteImport } from './routes/vendor_.onboarding'
@@ -518,6 +520,11 @@ const OperationsVendorOnboardingRoute =
     path: '/vendor-onboarding',
     getParentRoute: () => OperationsRoute,
   } as any)
+const OperationsVendorRatesRoute = OperationsVendorRatesRouteImport.update({
+  id: '/vendor-rates',
+  path: '/vendor-rates',
+  getParentRoute: () => OperationsRoute,
+} as any)
 const OperationsVendorWorkRoute = OperationsVendorWorkRouteImport.update({
   id: '/vendor-work',
   path: '/vendor-work',
@@ -678,6 +685,11 @@ const VendorPendingRoute = VendorPendingRouteImport.update({
   path: '/pending',
   getParentRoute: () => VendorRoute,
 } as any)
+const VendorQueueRoute = VendorQueueRouteImport.update({
+  id: '/queue',
+  path: '/queue',
+  getParentRoute: () => VendorRoute,
+} as any)
 const VendorRejectedRoute = VendorRejectedRouteImport.update({
   id: '/rejected',
   path: '/rejected',
@@ -833,6 +845,7 @@ export interface FileRoutesByFullPath {
   '/operations/team': typeof OperationsTeamRoute
   '/operations/utv': typeof OperationsUtvRoute
   '/operations/vendor-onboarding': typeof OperationsVendorOnboardingRoute
+  '/operations/vendor-rates': typeof OperationsVendorRatesRoute
   '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review/history': typeof QaReviewHistoryRoute
@@ -861,6 +874,7 @@ export interface FileRoutesByFullPath {
   '/vendor/checks': typeof VendorChecksRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
+  '/vendor/queue': typeof VendorQueueRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
   '/vendor/onboarding': typeof VendorOnboardingRoute
@@ -950,6 +964,7 @@ export interface FileRoutesByTo {
   '/operations/team': typeof OperationsTeamRoute
   '/operations/utv': typeof OperationsUtvRoute
   '/operations/vendor-onboarding': typeof OperationsVendorOnboardingRoute
+  '/operations/vendor-rates': typeof OperationsVendorRatesRoute
   '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review/history': typeof QaReviewHistoryRoute
@@ -978,6 +993,7 @@ export interface FileRoutesByTo {
   '/vendor/checks': typeof VendorChecksRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
+  '/vendor/queue': typeof VendorQueueRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
   '/vendor/onboarding': typeof VendorOnboardingRoute
@@ -1077,6 +1093,7 @@ export interface FileRoutesById {
   '/operations/team': typeof OperationsTeamRoute
   '/operations/utv': typeof OperationsUtvRoute
   '/operations/vendor-onboarding': typeof OperationsVendorOnboardingRoute
+  '/operations/vendor-rates': typeof OperationsVendorRatesRoute
   '/operations/vendor-work': typeof OperationsVendorWorkRoute
   '/qa-review_/corrections': typeof QaReviewCorrectionsRoute
   '/qa-review_/history': typeof QaReviewHistoryRoute
@@ -1105,6 +1122,7 @@ export interface FileRoutesById {
   '/vendor/checks': typeof VendorChecksRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
+  '/vendor/queue': typeof VendorQueueRoute
   '/vendor/rejected': typeof VendorRejectedRoute
   '/vendor/team': typeof VendorTeamRoute
   '/vendor_/onboarding': typeof VendorOnboardingRoute
@@ -1205,6 +1223,7 @@ export interface FileRouteTypes {
     | '/operations/team'
     | '/operations/utv'
     | '/operations/vendor-onboarding'
+    | '/operations/vendor-rates'
     | '/operations/vendor-work'
     | '/qa-review/corrections'
     | '/qa-review/history'
@@ -1233,6 +1252,7 @@ export interface FileRouteTypes {
     | '/vendor/checks'
     | '/vendor/logs'
     | '/vendor/pending'
+    | '/vendor/queue'
     | '/vendor/rejected'
     | '/vendor/team'
     | '/vendor/onboarding'
@@ -1322,6 +1342,7 @@ export interface FileRouteTypes {
     | '/operations/team'
     | '/operations/utv'
     | '/operations/vendor-onboarding'
+    | '/operations/vendor-rates'
     | '/operations/vendor-work'
     | '/qa-review/corrections'
     | '/qa-review/history'
@@ -1350,6 +1371,7 @@ export interface FileRouteTypes {
     | '/vendor/checks'
     | '/vendor/logs'
     | '/vendor/pending'
+    | '/vendor/queue'
     | '/vendor/rejected'
     | '/vendor/team'
     | '/vendor/onboarding'
@@ -1448,6 +1470,7 @@ export interface FileRouteTypes {
     | '/operations/team'
     | '/operations/utv'
     | '/operations/vendor-onboarding'
+    | '/operations/vendor-rates'
     | '/operations/vendor-work'
     | '/qa-review_/corrections'
     | '/qa-review_/history'
@@ -1476,6 +1499,7 @@ export interface FileRouteTypes {
     | '/vendor/checks'
     | '/vendor/logs'
     | '/vendor/pending'
+    | '/vendor/queue'
     | '/vendor/rejected'
     | '/vendor/team'
     | '/vendor_/onboarding'
@@ -2071,6 +2095,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsVendorOnboardingRouteImport
       parentRoute: typeof OperationsRoute
     }
+    '/operations/vendor-rates': {
+      id: '/operations/vendor-rates'
+      path: '/vendor-rates'
+      fullPath: '/operations/vendor-rates'
+      preLoaderRoute: typeof OperationsVendorRatesRouteImport
+      parentRoute: typeof OperationsRoute
+    }
     '/operations/vendor-work': {
       id: '/operations/vendor-work'
       path: '/vendor-work'
@@ -2293,6 +2324,13 @@ declare module '@tanstack/react-router' {
       path: '/pending'
       fullPath: '/vendor/pending'
       preLoaderRoute: typeof VendorPendingRouteImport
+      parentRoute: typeof VendorRoute
+    }
+    '/vendor/queue': {
+      id: '/vendor/queue'
+      path: '/queue'
+      fullPath: '/vendor/queue'
+      preLoaderRoute: typeof VendorQueueRouteImport
       parentRoute: typeof VendorRoute
     }
     '/vendor/rejected': {
@@ -2523,6 +2561,7 @@ interface OperationsRouteChildren {
   OperationsTeamRoute: typeof OperationsTeamRoute
   OperationsUtvRoute: typeof OperationsUtvRoute
   OperationsVendorOnboardingRoute: typeof OperationsVendorOnboardingRoute
+  OperationsVendorRatesRoute: typeof OperationsVendorRatesRoute
   OperationsVendorWorkRoute: typeof OperationsVendorWorkRoute
   OperationsIndexRoute: typeof OperationsIndexRoute
 }
@@ -2544,6 +2583,7 @@ const OperationsRouteChildren: OperationsRouteChildren = {
   OperationsTeamRoute: OperationsTeamRoute,
   OperationsUtvRoute: OperationsUtvRoute,
   OperationsVendorOnboardingRoute: OperationsVendorOnboardingRoute,
+  OperationsVendorRatesRoute: OperationsVendorRatesRoute,
   OperationsVendorWorkRoute: OperationsVendorWorkRoute,
   OperationsIndexRoute: OperationsIndexRoute,
 }
@@ -2630,6 +2670,7 @@ interface VendorRouteChildren {
   VendorChecksRoute: typeof VendorChecksRoute
   VendorLogsRoute: typeof VendorLogsRoute
   VendorPendingRoute: typeof VendorPendingRoute
+  VendorQueueRoute: typeof VendorQueueRoute
   VendorRejectedRoute: typeof VendorRejectedRoute
   VendorTeamRoute: typeof VendorTeamRoute
   VendorIndexRoute: typeof VendorIndexRoute
@@ -2641,6 +2682,7 @@ const VendorRouteChildren: VendorRouteChildren = {
   VendorChecksRoute: VendorChecksRoute,
   VendorLogsRoute: VendorLogsRoute,
   VendorPendingRoute: VendorPendingRoute,
+  VendorQueueRoute: VendorQueueRoute,
   VendorRejectedRoute: VendorRejectedRoute,
   VendorTeamRoute: VendorTeamRoute,
   VendorIndexRoute: VendorIndexRoute,
