@@ -249,3 +249,16 @@ test("the company's RM approves the sign-up itself: list prices and a discount w
   const msa = sheet.getByRole("listitem").filter({ hasText: "Service agreement" });
   await expect(msa.getByRole("button", { name: "Approve" })).toBeVisible();
 });
+
+test("Get started asks whether to register a company or a vendor", async ({ page }) => {
+  await page.route("**/api/v1/auth/me", (route) =>
+    route.fulfill({ status: 401, json: { title: "Unauthorized" } }),
+  );
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await page.getByRole("button", { name: /Get started/ }).click();
+  const dialog = page.getByRole("dialog", { name: "How would you like to join?" });
+  await expect(dialog.getByRole("link", { name: /Register a company/ })).toBeVisible();
+  await dialog.getByRole("link", { name: /Register as a vendor/ }).click();
+  await expect(page).toHaveURL(/\/vendor\/signup$/);
+});

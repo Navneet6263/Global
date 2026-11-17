@@ -3,12 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Menu } from "lucide-react";
 import { SaplingLogo } from "@/components/brand/sapling-logo";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { JoinChooser } from "./JoinChooser";
 
 const SECTIONS = [
   { href: "/#tour", label: "Product" },
   { href: "/#services", label: "Services" },
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#platform", label: "Platform" },
+  { href: "/#vendors", label: "Vendors" },
   { href: "/#security", label: "Security" },
   { href: "/#faq", label: "FAQ" },
 ];
@@ -45,9 +47,10 @@ export function SiteHeader({ page = "home" }: { page?: "home" | "signin" | "sign
             </Link>
           ) : null}
           {page !== "signup" ? (
-            <Link to="/signup" className="site-btn is-primary">
+            // Asks first: register a company or a vendor.
+            <JoinChooser className="site-btn is-primary">
               Get started <ArrowRight aria-hidden />
-            </Link>
+            </JoinChooser>
           ) : (
             <Link to="/auth" className="site-btn is-outline">
               Sign in

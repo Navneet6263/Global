@@ -30,6 +30,7 @@ import { ProductPreview } from "./ProductPreview";
 import { ProductTour } from "./ProductTour";
 import { SiteFooter } from "./SiteFooter";
 import { SiteHeader } from "./SiteHeader";
+import { VendorSection } from "./VendorSection";
 
 const SERVICES = [
   {
@@ -141,6 +142,10 @@ const FAQ = [
   {
     q: "What does a report contain?",
     a: "Every check with its result, the overall case outcome and the verification trail. Reports are released as a PDF that can be authenticity-checked.",
+  },
+  {
+    q: "We are a verification vendor. How do we work with you?",
+    a: "Sign up as a vendor and upload one business document; our Operations team approves you. You then see open checks with the city, payment and due date, pick the ones you want, and submit your result with proof. Extra cost is claimed with a reason and approved by our team.",
   },
   {
     q: "Who can see our data?",
@@ -375,7 +380,9 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="security" className="site-section is-tint" aria-labelledby="security-title">
+        <VendorSection />
+
+        <section id="security" className="site-section" aria-labelledby="security-title">
           <div className="site-wrap site-split">
             <div className="site-illustration">
               <img src="/landing/verify-illustration.svg" alt="" />
@@ -441,7 +448,7 @@ export function LandingPage() {
           </div>
         </section>
 
-        <section id="faq" className="site-section" aria-labelledby="faq-title">
+        <section id="faq" className="site-section is-tint" aria-labelledby="faq-title">
           <div className="site-wrap">
             <div className="site-section-head">
               <span className="site-kicker">FAQ</span>

@@ -3,8 +3,10 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, Check, LockKeyhole, ShieldCheck } from "lucide-react";
 import { SaplingLogo } from "@/components/brand/sapling-logo";
 import { GlassDashboard } from "@/features/public-site/GlassDashboard";
+import { QueuePreview } from "@/features/public-site/VendorSection";
 
 const SIGNUP_STEPS = ["Your account", "Verify email", "Onboarding", "Go live"];
+const VENDOR_STEPS = ["Your account", "Verify email", "Business document", "Pick work"];
 
 const YEAR = new Date().getFullYear();
 
@@ -12,8 +14,19 @@ const YEAR = new Date().getFullYear();
  * Split-screen sign-in / sign-up: a clean form column and a product showcase with a glass
  * illustration of the portal. The showcase is hidden on small screens.
  */
-export function AuthLayout({ children, step }: { children: ReactNode; step?: number }) {
+export function AuthLayout({
+  children,
+  step,
+  audience = "company",
+}: {
+  children: ReactNode;
+  step?: number;
+  /** Vendor sign-up shows the vendor journey instead of the company one. */
+  audience?: "company" | "vendor";
+}) {
   const signup = step !== undefined;
+  const vendor = audience === "vendor";
+  const steps = vendor ? VENDOR_STEPS : SIGNUP_STEPS;
   return (
     // Sign-in fits one screen (no scroll); sign-up keeps its longer form scrollable.
     <div className={signup ? "auth-split" : "auth-split is-fit"}>
@@ -42,10 +55,18 @@ export function AuthLayout({ children, step }: { children: ReactNode; step?: num
         <div className="auth-showcase-copy">
           <span className="auth-eyebrow">
             <i aria-hidden />
-            {signup ? "Company sign-up" : "Background verification platform"}
+            {signup
+              ? vendor
+                ? "Vendor sign-up"
+                : "Company sign-up"
+              : "Background verification platform"}
           </span>
           <h2 className="auth-headline">
-            {signup ? (
+            {signup && vendor ? (
+              <>
+                Verification work near you, <em>paid per check</em>.
+              </>
+            ) : signup ? (
               <>
                 Start verifying <em>in days</em>, not weeks.
               </>
@@ -57,7 +78,7 @@ export function AuthLayout({ children, step }: { children: ReactNode; step?: num
           </h2>
           {signup ? (
             <ol className="auth-step-row" aria-label="Sign-up steps">
-              {SIGNUP_STEPS.map((label, index) => (
+              {steps.map((label, index) => (
                 <li
                   key={label}
                   className={index < step ? "is-done" : index === step ? "is-current" : ""}
@@ -76,15 +97,19 @@ export function AuthLayout({ children, step }: { children: ReactNode; step?: num
           )}
         </div>
         <div className="auth-showcase-shot">
-          <GlassDashboard
-            variant={signup ? "onboarding" : "operations"}
-            label={
-              signup
-                ? "Guided onboarding checklist (illustration)"
-                : "Operations dashboard (illustration)"
-            }
-            className="mx-6 mb-4"
-          />
+          {vendor ? (
+            <QueuePreview className="mb-4 w-[min(30rem,calc(100%-3rem))] text-left" />
+          ) : (
+            <GlassDashboard
+              variant={signup ? "onboarding" : "operations"}
+              label={
+                signup
+                  ? "Guided onboarding checklist (illustration)"
+                  : "Operations dashboard (illustration)"
+              }
+              className="mx-6 mb-4"
+            />
+          )}
         </div>
         <div className="auth-trust">
           <span>

@@ -224,6 +224,33 @@
   }
 }
 
+/*
+ * Desktop: the page never scrolls. The illustration stays still and only the form column
+ * scrolls (long sign-up forms), without a visible scrollbar.
+ */
+@media (min-width: 1100px) and (min-height: 560px) {
+  .auth-split {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  .auth-split-form {
+    min-height: 0;
+    height: 100dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .auth-split-form::-webkit-scrollbar {
+    display: none;
+  }
+  .auth-showcase {
+    height: calc(100dvh - 1.5rem);
+  }
+  .auth-showcase-shot {
+    overflow: hidden;
+  }
+}
+
 /* Sign-in fits one screen on desktop: no page scroll, the illustration crops instead. */
 @media (min-width: 1100px) and (min-height: 560px) {
   .auth-split.is-fit {
@@ -279,8 +306,5 @@
   }
   .auth-split.is-fit .auth-submit {
     height: 46px;
-  }
-  .auth-split.is-fit .auth-alt {
-    padding-block: 0.6rem;
   }
 }

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/vendor_/signup")({
 function VendorSignupPage() {
   const [step, setStep] = useState(0);
   return (
-    <AuthLayout step={step}>
+    <AuthLayout step={step} audience="vendor">
       <VendorSignupCard onStep={setStep} />
     </AuthLayout>
   );

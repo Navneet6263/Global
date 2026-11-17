@@ -153,7 +153,10 @@ export function VendorSignupCard({ onStep }: { onStep: (step: number) => void })
         <>
           <header className="auth-card-head">
             <h1 id="vendor-signup-title">Vendor Sign up</h1>
-            <p>You become the company admin. Explore right away; cases open after approval.</p>
+            <p>
+              You become your vendor team&apos;s admin. Upload one business document and start
+              picking work once Operations approves you.
+            </p>
           </header>
           <form className="auth-form" onSubmit={(event) => void submitDetails(event)}>
             <div className="auth-field">
