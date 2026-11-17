@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Check, Eye, EyeOff, MailCheck, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, Eye, EyeOff, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -275,8 +275,8 @@ export function VendorSignupCard({ onStep }: { onStep: (step: number) => void })
               disabled={busy || !accept || !strongEnough}
               loading={busy}
             >
-              <MailCheck className="size-4" aria-hidden />
-              Continue — email me a code
+              Continue
+              <ArrowRight className="size-4" aria-hidden />
             </Button>
           </form>
           <p className="auth-footnote">

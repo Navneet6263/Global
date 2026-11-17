@@ -52,7 +52,7 @@ test("a company signs up, confirms the email code and lands on onboarding", asyn
   await page.getByLabel("Your full name").fill("Riya Mehta");
   await page.getByLabel("Work email").fill("riya@acmetech.in");
   await page.getByLabel("Password", { exact: true }).fill("weak");
-  const submit = page.getByRole("button", { name: /email me a code/ });
+  const submit = page.getByRole("button", { name: "Continue", exact: true });
   await expect(submit).toBeDisabled();
   await page.getByLabel("Password", { exact: true }).fill("Strong#Pass1");
   await page.getByRole("checkbox", { name: "I accept the terms" }).click();
