@@ -1,5 +1,4 @@
-import { BadRequestException, ConflictException } from "@nestjs/common";
-import { createHash } from "node:crypto";
+import { BadRequestException } from "@nestjs/common";
 import type { FastifyRequest } from "fastify";
 import type { UploadedBinary } from "../common/http/uploaded-binary";
 import {
@@ -48,17 +47,27 @@ export interface ParsedTeamMemberPayload {
 }
 
 export function validateDocTypeAndSize(file: UploadedBinary) {
-  const ext = file.originalName.slice(file.originalName.lastIndexOf(".")).toLowerCase();
-  if (!ALLOWED_DOC_EXTENSIONS.includes(ext as (typeof ALLOWED_DOC_EXTENSIONS)[number])) {
+  const ext = file.originalName
+    .slice(file.originalName.lastIndexOf("."))
+    .toLowerCase();
+  if (
+    !ALLOWED_DOC_EXTENSIONS.includes(
+      ext as (typeof ALLOWED_DOC_EXTENSIONS)[number],
+    )
+  ) {
     throw new BadRequestException(
       `File "${file.originalName}" has unsupported format. Allowed: PNG, JPG, JPEG, PDF, DOC, DOCX`,
     );
   }
   if (!ALLOWED_DOC_MIMES.has(file.mimetype)) {
-    throw new BadRequestException(`File "${file.originalName}" has unsupported MIME type`);
+    throw new BadRequestException(
+      `File "${file.originalName}" has unsupported MIME type`,
+    );
   }
   if (file.size > MAX_DOC_BYTES) {
-    throw new BadRequestException(`File "${file.originalName}" exceeds the 10 MB limit`);
+    throw new BadRequestException(
+      `File "${file.originalName}" exceeds the 10 MB limit`,
+    );
   }
 }
 
@@ -76,7 +85,9 @@ export async function parseTeamMemberMultipart(
       if (part.type === "file") {
         const buffer = await part.toBuffer();
         if (part.file.truncated || buffer.length > MAX_DOC_BYTES) {
-          throw new BadRequestException(`File "${part.filename}" exceeds the 10 MB limit`);
+          throw new BadRequestException(
+            `File "${part.filename}" exceeds the 10 MB limit`,
+          );
         }
         const binary: UploadedBinary = {
           buffer,
@@ -88,24 +99,35 @@ export async function parseTeamMemberMultipart(
 
         if (part.fieldname.startsWith("identity")) {
           if (identityFiles.length >= 2) {
-            throw new BadRequestException("Maximum 2 identity documents allowed");
+            throw new BadRequestException(
+              "Maximum 2 identity documents allowed",
+            );
           }
           identityFiles.push(binary);
         } else if (part.fieldname.startsWith("agreement")) {
           if (agreementFile) {
-            throw new BadRequestException("Maximum 1 agreement document allowed");
+            throw new BadRequestException(
+              "Maximum 1 agreement document allowed",
+            );
           }
           agreementFile = binary;
         } else {
-          throw new BadRequestException(`Unexpected file field: ${part.fieldname}`);
+          throw new BadRequestException(
+            `Unexpected file field: ${part.fieldname}`,
+          );
         }
       } else if (typeof part.value === "string") {
         fields[part.fieldname] = part.value;
       }
     }
   } catch (error) {
-    if (error instanceof Error && error.message.toLowerCase().includes("large")) {
-      throw new BadRequestException("One of the uploaded files exceeds the 10 MB limit");
+    if (
+      error instanceof Error &&
+      error.message.toLowerCase().includes("large")
+    ) {
+      throw new BadRequestException(
+        "One of the uploaded files exceeds the 10 MB limit",
+      );
     }
     throw error;
   }
@@ -121,7 +143,9 @@ export async function parseTeamMemberMultipart(
   // Fields validation
   const displayName = fields.displayName?.trim();
   if (!displayName || displayName.length < 2 || displayName.length > 120) {
-    throw new BadRequestException("displayName must be between 2 and 120 characters");
+    throw new BadRequestException(
+      "displayName must be between 2 and 120 characters",
+    );
   }
 
   const email = fields.email?.trim();
@@ -140,13 +164,15 @@ export async function parseTeamMemberMultipart(
     temporaryPassword.length < MIN_USER_PASSWORD_LENGTH ||
     !USER_PASSWORD_PATTERN.test(temporaryPassword)
   ) {
-    throw new BadRequestException(`temporaryPassword ${USER_PASSWORD_REQUIREMENTS}`);
+    throw new BadRequestException(
+      `temporaryPassword ${USER_PASSWORD_REQUIREMENTS}`,
+    );
   }
 
   let phone: string | undefined;
   if (fields.phone?.trim()) {
     const rawNormalized = normalizeIndianMobile(fields.phone.trim());
-    const normalized = typeof rawNormalized === "string" ? rawNormalized : String(rawNormalized ?? "");
+    const normalized = typeof rawNormalized === "string" ? rawNormalized : "";
     if (!INDIAN_MOBILE_PATTERN.test(normalized)) {
       throw new BadRequestException(`phone ${INDIAN_MOBILE_MESSAGE}`);
     }
@@ -157,7 +183,10 @@ export async function parseTeamMemberMultipart(
   if (fields.permissions) {
     try {
       const parsed = JSON.parse(fields.permissions) as unknown;
-      if (Array.isArray(parsed) && parsed.every((p): p is string => typeof p === "string")) {
+      if (
+        Array.isArray(parsed) &&
+        parsed.every((p): p is string => typeof p === "string")
+      ) {
         permissions = parsed;
       }
     } catch {

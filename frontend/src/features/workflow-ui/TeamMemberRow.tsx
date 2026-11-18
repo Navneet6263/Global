@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import {
-  FileText,
-  KeyRound,
-  MoreHorizontal,
-  PauseCircle,
-  PlayCircle,
-} from "lucide-react";
+import { FileText, KeyRound, MoreHorizontal, PauseCircle, PlayCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +14,11 @@ import {
 import { Avatar, Pill } from "@/components/workspace/kit";
 import { humanizeCode, istText } from "@/components/workspace/format";
 import { temporaryPassword } from "@/lib/auth/temporary-password";
-import { resetTeamMemberPassword, setTeamMemberStatus, type TeamMember } from "@/lib/backend-api/team-members";
+import {
+  resetTeamMemberPassword,
+  setTeamMemberStatus,
+  type TeamMember,
+} from "@/lib/backend-api/team-members";
 import type { TemporaryPasswordReceipt } from "@/features/users/components/temporary-password-dialog";
 import { TeamMemberDocumentsDialog } from "./TeamMemberDocumentsDialog";
 import { cn } from "@/lib/utils";

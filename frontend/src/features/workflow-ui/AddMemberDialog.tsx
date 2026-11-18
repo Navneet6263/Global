@@ -1,13 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  KeyRound,
-  RefreshCw,
-  UserPlus,
-} from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, KeyRound, RefreshCw, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -61,8 +54,7 @@ export function AddMemberDialog({
   const accessOk = Boolean(team) && (fullAccess || ticked.length > 0);
   const docsOk = identityFiles.length >= 1 && Boolean(agreementFile);
 
-  const canNext =
-    step === 0 ? detailsOk : step === 1 ? accessOk : step === 2 ? true : docsOk;
+  const canNext = step === 0 ? detailsOk : step === 1 ? accessOk : step === 2 ? true : docsOk;
 
   const create = useMutation({
     mutationFn: async () => {
@@ -101,7 +93,8 @@ export function AddMemberDialog({
             <UserPlus className="size-5 text-blue-600" aria-hidden /> Add team member
           </DialogTitle>
           <DialogDescription>
-            They get a {role?.name ?? "team"} login in your team and change the password at first sign-in.
+            They get a {role?.name ?? "team"} login in your team and change the password at first
+            sign-in.
           </DialogDescription>
           <ol className="mt-3 flex items-center gap-2" aria-label="Steps">
             {STEPS.map((label, index) => (
@@ -145,7 +138,10 @@ export function AddMemberDialog({
                   placeholder="e.g. Asha Verma"
                 />
               </Field>
-              <Field label="Work email" error={email && !emailOk ? "Enter a valid email." : undefined}>
+              <Field
+                label="Work email"
+                error={email && !emailOk ? "Enter a valid email." : undefined}
+              >
                 <input
                   type="email"
                   value={email}
@@ -154,7 +150,10 @@ export function AddMemberDialog({
                   placeholder="asha@company.com"
                 />
               </Field>
-              <Field label="Mobile (optional)" error={!phoneOk ? "Enter a 10-digit Indian mobile." : undefined}>
+              <Field
+                label="Mobile (optional)"
+                error={!phoneOk ? "Enter a 10-digit Indian mobile." : undefined}
+              >
                 <input
                   value={phone}
                   maxLength={16}
@@ -197,7 +196,8 @@ export function AddMemberDialog({
               <div className="flex flex-wrap items-center gap-3 rounded-xl border border-amber-100 bg-amber-50/60 p-4">
                 <KeyRound className="size-4 text-amber-600" aria-hidden />
                 <div className="min-w-0 flex-1 text-[12.5px] text-amber-900">
-                  A temporary password is ready. You will see it once after creating, to share privately.
+                  A temporary password is ready. You will see it once after creating, to share
+                  privately.
                 </div>
                 <Button
                   type="button"

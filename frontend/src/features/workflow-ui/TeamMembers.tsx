@@ -1,12 +1,6 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ListChecks,
-  PauseCircle,
-  ShieldCheck,
-  UserPlus,
-  UsersRound,
-} from "lucide-react";
+import { ListChecks, PauseCircle, ShieldCheck, UserPlus, UsersRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   EmptyState,
@@ -23,10 +17,7 @@ import {
   TemporaryPasswordDialog,
   type TemporaryPasswordReceipt,
 } from "@/features/users/components/temporary-password-dialog";
-import {
-  getTeamMembers,
-  type TeamMember,
-} from "@/lib/backend-api/team-members";
+import { getTeamMembers, type TeamMember } from "@/lib/backend-api/team-members";
 import { useVerifierDepartment } from "@/lib/auth/verifier-department";
 import { visibleTeamsFor } from "./team-members-scope";
 import { TeamMemberRow } from "./TeamMemberRow";

@@ -90,7 +90,9 @@ export function AddMemberAccessStep({
                   key={permission}
                   className={cn(
                     "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-[12.5px]",
-                    on ? "border-blue-200 bg-blue-50 text-slate-800" : "border-slate-200 text-slate-500",
+                    on
+                      ? "border-blue-200 bg-blue-50 text-slate-800"
+                      : "border-slate-200 text-slate-500",
                   )}
                 >
                   <input
@@ -109,7 +111,9 @@ export function AddMemberAccessStep({
               );
             })}
             {!ticked.length ? (
-              <p className="text-[12px] text-red-600 sm:col-span-2">Keep at least one permission.</p>
+              <p className="text-[12px] text-red-600 sm:col-span-2">
+                Keep at least one permission.
+              </p>
             ) : null}
           </div>
         )}

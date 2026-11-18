@@ -46,13 +46,12 @@ test("team member documents step enforces identity and agreement rules", () => {
     "utf8",
   );
   assert.ok(
-    docsStepContent.includes('const ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".pdf", ".doc", ".docx"];'),
+    docsStepContent.includes(
+      'const ALLOWED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".pdf", ".doc", ".docx"];',
+    ),
     "Supported file types must be PNG, JPG, JPEG, PDF, DOC, DOCX",
   );
-  assert.ok(
-    docsStepContent.includes("10 * 1024 * 1024"),
-    "Max file size must be 10 MB",
-  );
+  assert.ok(docsStepContent.includes("10 * 1024 * 1024"), "Max file size must be 10 MB");
   assert.ok(
     docsStepContent.includes("Maximum 2 identity documents reached"),
     "Must cap identity documents at 2",

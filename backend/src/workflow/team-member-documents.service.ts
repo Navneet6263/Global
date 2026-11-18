@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -36,7 +35,8 @@ export class TeamMemberDocumentsService {
     const ids = (actor.departments ?? [])
       .filter((d) => d.role === "LEAD" && MEMBER_ROLE[d.kind])
       .map((d) => d.id);
-    if (!ids.length) throw new ForbiddenException("This page is for Team Leaders");
+    if (!ids.length)
+      throw new ForbiddenException("This page is for Team Leaders");
     return this.prisma.department.findMany({
       where: { tenantId: actor.tenantId, id: { in: ids }, status: "ACTIVE" },
       select: { id: true, publicId: true, name: true, kind: true },
@@ -49,7 +49,9 @@ export class TeamMemberDocumentsService {
       (t) => t.publicId.toLowerCase() === payload.departmentId.toLowerCase(),
     );
     if (!team) {
-      throw new ForbiddenException("You can add people only to a team you lead");
+      throw new ForbiddenException(
+        "You can add people only to a team you lead",
+      );
     }
     const roleCode = MEMBER_ROLE[team.kind]!;
     const passwordHash = await hashPassword(payload.temporaryPassword);
@@ -175,9 +177,14 @@ export class TeamMemberDocumentsService {
     } catch (err) {
       if (writtenKeys.length > 0) {
         try {
-          await Promise.allSettled(writtenKeys.map((k) => this.storage.delete(k)));
+          await Promise.allSettled(
+            writtenKeys.map((k) => this.storage.delete(k)),
+          );
         } catch (cleanupErr) {
-          this.logger.error("Failed to clean up stored files after failure", cleanupErr);
+          this.logger.error(
+            "Failed to clean up stored files after failure",
+            cleanupErr,
+          );
         }
       }
       throw err;

@@ -25,7 +25,9 @@ export function AddMemberDocumentsStep({
   const validateFile = (file: File): boolean => {
     const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
-      toast.error(`"${file.name}" has an unsupported format. Allowed: PNG, JPG, JPEG, PDF, DOC, DOCX`);
+      toast.error(
+        `"${file.name}" has an unsupported format. Allowed: PNG, JPG, JPEG, PDF, DOC, DOCX`,
+      );
       return false;
     }
     if (file.size > 10 * 1024 * 1024) {
@@ -41,7 +43,9 @@ export function AddMemberDocumentsStep({
 
     const availableSlots = 2 - identityFiles.length;
     if (selected.length > availableSlots) {
-      toast.error(`You can only upload up to 2 identity documents (${availableSlots} slot remaining)`);
+      toast.error(
+        `You can only upload up to 2 identity documents (${availableSlots} slot remaining)`,
+      );
     }
 
     const validNew = selected.slice(0, availableSlots).filter(validateFile);
@@ -138,9 +142,7 @@ export function AddMemberDocumentsStep({
                     variant="ghost"
                     size="sm"
                     className="h-8 px-2 text-red-600 hover:bg-red-50 hover:text-red-700"
-                    onClick={() =>
-                      onIdentityChange(identityFiles.filter((_, i) => i !== idx))
-                    }
+                    onClick={() => onIdentityChange(identityFiles.filter((_, i) => i !== idx))}
                     title="Remove file"
                   >
                     <Trash2 className="size-3.5" aria-hidden />

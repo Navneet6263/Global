@@ -57,10 +57,9 @@ export const createTeamMember = (input: {
   });
 
 export const createTeamMemberWithDocuments = async (formData: FormData) => {
-  const files = [
-    ...formData.getAll("identity"),
-    ...formData.getAll("agreement"),
-  ].filter((entry): entry is File => entry instanceof File);
+  const files = [...formData.getAll("identity"), ...formData.getAll("agreement")].filter(
+    (entry): entry is File => entry instanceof File,
+  );
   const digest = await filesSha256(files);
   return apiRequest<{ id: string; displayName: string; email: string; customAccess: boolean }>(
     `${base}/with-documents`,
@@ -77,7 +76,9 @@ export const getTeamMemberDocuments = (userId: string) =>
 
 export const previewTeamMemberDocument = (userId: string, docId: string) =>
   openDocumentPreview(() =>
-    apiDownload(`${base}/${encodeURIComponent(userId)}/documents/${encodeURIComponent(docId)}/preview`),
+    apiDownload(
+      `${base}/${encodeURIComponent(userId)}/documents/${encodeURIComponent(docId)}/preview`,
+    ),
   );
 
 export const downloadTeamMemberDocument = async (

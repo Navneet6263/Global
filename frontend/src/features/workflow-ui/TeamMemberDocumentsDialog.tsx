@@ -30,7 +30,11 @@ export function TeamMemberDocumentsDialog({
 }) {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
-  const { data: docs = [], isLoading, error } = useQuery({
+  const {
+    data: docs = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["team-member-documents", member.id],
     queryFn: () => getTeamMemberDocuments(member.id),
   });
@@ -82,7 +86,8 @@ export function TeamMemberDocumentsDialog({
         <div className="max-h-[60vh] overflow-y-auto px-6 py-4">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 py-10 text-[13px] text-slate-500">
-              <Loader2 className="size-4 animate-spin text-blue-600" aria-hidden /> Loading documents...
+              <Loader2 className="size-4 animate-spin text-blue-600" aria-hidden /> Loading
+              documents...
             </div>
           ) : error ? (
             <div className="py-6 text-center text-[13px] text-red-600">

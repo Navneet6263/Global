@@ -7,17 +7,20 @@ import {
   validateDocTypeAndSize,
 } from "../src/workflow/team-member-documents";
 
-test("team member document validation enforces supported formats and limits", async (t) => {
-  await t.test("allows supported extensions: PNG, JPG, JPEG, PDF, DOC, DOCX", () => {
-    assert.deepEqual(ALLOWED_DOC_EXTENSIONS, [
-      ".png",
-      ".jpg",
-      ".jpeg",
-      ".pdf",
-      ".doc",
-      ".docx",
-    ]);
-  });
+void test("team member document validation enforces supported formats and limits", async (t) => {
+  await t.test(
+    "allows supported extensions: PNG, JPG, JPEG, PDF, DOC, DOCX",
+    () => {
+      assert.deepEqual(ALLOWED_DOC_EXTENSIONS, [
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".pdf",
+        ".doc",
+        ".docx",
+      ]);
+    },
+  );
 
   await t.test("allows valid MIME types for documents and images", () => {
     assert.equal(ALLOWED_DOC_MIMES.has("image/png"), true);
