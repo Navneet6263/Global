@@ -1,4 +1,6 @@
-import { apiRequest } from "./client";
+import { apiDownload, apiRequest, saveBlob } from "./client";
+import { openDocumentPreview } from "./document-preview";
+import { filesSha256 } from "./file-digest";
 
 export interface TeamMember {
   id: string;
@@ -26,6 +28,16 @@ export interface TeamMembersOverview {
   generatedAt: string;
 }
 
+export interface TeamMemberDocumentItem {
+  id: string;
+  category: "IDENTITY" | "AGREEMENT";
+  slot: number;
+  fileName: string;
+  fileSize: number;
+  mimeType: string;
+  createdAt: string;
+}
+
 const base = "/workflow/team/members";
 
 export const getTeamMembers = (signal?: AbortSignal) =>
@@ -43,6 +55,41 @@ export const createTeamMember = (input: {
     method: "POST",
     body: JSON.stringify(input),
   });
+
+export const createTeamMemberWithDocuments = async (formData: FormData) => {
+  const files = [
+    ...formData.getAll("identity"),
+    ...formData.getAll("agreement"),
+  ].filter((entry): entry is File => entry instanceof File);
+  const digest = await filesSha256(files);
+  return apiRequest<{ id: string; displayName: string; email: string; customAccess: boolean }>(
+    `${base}/with-documents`,
+    {
+      method: "POST",
+      headers: { "x-content-sha256": digest },
+      body: formData,
+    },
+  );
+};
+
+export const getTeamMemberDocuments = (userId: string) =>
+  apiRequest<TeamMemberDocumentItem[]>(`${base}/${encodeURIComponent(userId)}/documents`);
+
+export const previewTeamMemberDocument = (userId: string, docId: string) =>
+  openDocumentPreview(() =>
+    apiDownload(`${base}/${encodeURIComponent(userId)}/documents/${encodeURIComponent(docId)}/preview`),
+  );
+
+export const downloadTeamMemberDocument = async (
+  userId: string,
+  docId: string,
+  filename: string,
+) => {
+  const blob = await apiDownload(
+    `${base}/${encodeURIComponent(userId)}/documents/${encodeURIComponent(docId)}/download`,
+  );
+  saveBlob(blob, filename);
+};
 
 export const setTeamMemberStatus = (
   id: string,

@@ -373,3 +373,8 @@ export type VendorExtraCost = Prisma.VendorExtraCostModel
  * The payment for each check type when it goes to the open vendor queue (set by Operations).
  */
 export type VendorRate = Prisma.VendorRateModel
+/**
+ * Model TeamMemberDocument
+ * 
+ */
+export type TeamMemberDocument = Prisma.TeamMemberDocumentModel

@@ -1,5 +1,6 @@
 import { TeamMembersController } from "./team-members.controller";
 import { TeamMembersService } from "./team-members.service";
+import { TeamMemberDocumentsService } from "./team-member-documents.service";
 import { DataEntryInsightsController } from "./data-entry-insights.controller";
 import { DataEntryInsightsService } from "./data-entry-insights.service";
 import { DataEntryUnifiedQueueService } from "./data-entry-unified-queue.service";
@@ -8,6 +9,7 @@ import { CheckReworkService } from "./check-rework.service";
 import { Module } from "@nestjs/common";
 import { ClarificationsModule } from "../clarifications/clarifications.module";
 import { ReportsModule } from "../reports/reports.module";
+import { DocumentsModule } from "../documents/documents.module";
 import { CaseWorkflowPolicy } from "../cases/case-workflow.policy";
 import { DepartmentsService } from "./departments.service";
 import { ClientRmService } from "./client-rm.service";
@@ -21,7 +23,7 @@ import { WorkflowClarificationsController } from "./workflow-clarifications.cont
 import { WorkflowController } from "./workflow.controller";
 
 @Module({
-  imports: [ReportsModule, ClarificationsModule],
+  imports: [ReportsModule, ClarificationsModule, DocumentsModule],
   controllers: [
     WorkflowController,
     WorkflowBulkController,
@@ -43,6 +45,7 @@ import { WorkflowController } from "./workflow.controller";
     DataEntryInsightsService,
     DataEntryUnifiedQueueService,
     TeamMembersService,
+    TeamMemberDocumentsService,
   ],
 })
 export class WorkflowModule {}

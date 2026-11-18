@@ -118,7 +118,8 @@ export const ModelName = {
   VendorDocument: 'VendorDocument',
   VendorDocumentRevision: 'VendorDocumentRevision',
   VendorExtraCost: 'VendorExtraCost',
-  VendorRate: 'VendorRate'
+  VendorRate: 'VendorRate',
+  TeamMemberDocument: 'TeamMemberDocument'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1488,6 +1489,25 @@ export const VendorRateScalarFieldEnum = {
 } as const
 
 export type VendorRateScalarFieldEnum = (typeof VendorRateScalarFieldEnum)[keyof typeof VendorRateScalarFieldEnum]
+
+
+export const TeamMemberDocumentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  category: 'category',
+  slot: 'slot',
+  storageKey: 'storageKey',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  sha256: 'sha256',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type TeamMemberDocumentScalarFieldEnum = (typeof TeamMemberDocumentScalarFieldEnum)[keyof typeof TeamMemberDocumentScalarFieldEnum]
 
 
 export const SortOrder = {

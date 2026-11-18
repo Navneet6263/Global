@@ -464,7 +464,8 @@ export const ModelName = {
   VendorDocument: 'VendorDocument',
   VendorDocumentRevision: 'VendorDocumentRevision',
   VendorExtraCost: 'VendorExtraCost',
-  VendorRate: 'VendorRate'
+  VendorRate: 'VendorRate',
+  TeamMemberDocument: 'TeamMemberDocument'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -480,7 +481,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "signupRequest" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "vendorCheckAssignment" | "vendorCheckEvidence" | "checkEvidence" | "clientMisSchedule" | "sourceEmail" | "sourceOutreach" | "clientPackageRate" | "clientPackageDiscount" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest" | "vendorTeamPolicy" | "vendorReport" | "department" | "departmentMember" | "vendorProfile" | "vendorDocument" | "vendorDocumentRevision" | "vendorExtraCost" | "vendorRate"
+    modelProps: "tenant" | "branch" | "user" | "vendorSharingRecord" | "privacyRecord" | "role" | "userRole" | "refreshSession" | "client" | "signupRequest" | "servicePackage" | "subject" | "verificationCase" | "caseCheck" | "caseStatusHistory" | "consent" | "consentEvent" | "document" | "documentVersion" | "checkTask" | "finding" | "clarification" | "clarificationMessage" | "qaReview" | "report" | "reportVersion" | "fieldVisit" | "evidenceItem" | "auditEvent" | "outboxEvent" | "idempotencyKey" | "tenantFieldPolicy" | "tenantCrmSettings" | "tenantAccessPolicy" | "salesOpportunity" | "crmProposal" | "salesActivity" | "invoice" | "invoiceLine" | "managerReview" | "caseService" | "verificationMethodRun" | "vendorCheckAssignment" | "vendorCheckEvidence" | "checkEvidence" | "clientMisSchedule" | "sourceEmail" | "sourceOutreach" | "clientPackageRate" | "clientPackageDiscount" | "clientAgreement" | "clientAgreementFile" | "payment" | "creditNote" | "notification" | "candidatePortalAccess" | "vendorAssignment" | "spocClientScope" | "supportRequest" | "vendorTeamPolicy" | "vendorReport" | "department" | "departmentMember" | "vendorProfile" | "vendorDocument" | "vendorDocumentRevision" | "vendorExtraCost" | "vendorRate" | "teamMemberDocument"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -4972,6 +4973,72 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TeamMemberDocument: {
+      payload: Prisma.$TeamMemberDocumentPayload<ExtArgs>
+      fields: Prisma.TeamMemberDocumentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TeamMemberDocumentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TeamMemberDocumentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>
+        }
+        findFirst: {
+          args: Prisma.TeamMemberDocumentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TeamMemberDocumentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>
+        }
+        findMany: {
+          args: Prisma.TeamMemberDocumentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>[]
+        }
+        create: {
+          args: Prisma.TeamMemberDocumentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>
+        }
+        createMany: {
+          args: Prisma.TeamMemberDocumentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.TeamMemberDocumentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>
+        }
+        update: {
+          args: Prisma.TeamMemberDocumentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>
+        }
+        deleteMany: {
+          args: Prisma.TeamMemberDocumentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TeamMemberDocumentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.TeamMemberDocumentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TeamMemberDocumentPayload>
+        }
+        aggregate: {
+          args: Prisma.TeamMemberDocumentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTeamMemberDocument>
+        }
+        groupBy: {
+          args: Prisma.TeamMemberDocumentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamMemberDocumentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TeamMemberDocumentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TeamMemberDocumentCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -6364,6 +6431,25 @@ export const VendorRateScalarFieldEnum = {
 export type VendorRateScalarFieldEnum = (typeof VendorRateScalarFieldEnum)[keyof typeof VendorRateScalarFieldEnum]
 
 
+export const TeamMemberDocumentScalarFieldEnum = {
+  id: 'id',
+  publicId: 'publicId',
+  tenantId: 'tenantId',
+  userId: 'userId',
+  category: 'category',
+  slot: 'slot',
+  storageKey: 'storageKey',
+  fileName: 'fileName',
+  fileSize: 'fileSize',
+  mimeType: 'mimeType',
+  sha256: 'sha256',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt'
+} as const
+
+export type TeamMemberDocumentScalarFieldEnum = (typeof TeamMemberDocumentScalarFieldEnum)[keyof typeof TeamMemberDocumentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -6653,6 +6739,7 @@ export type GlobalOmitConfig = {
   vendorDocumentRevision?: Prisma.VendorDocumentRevisionOmit
   vendorExtraCost?: Prisma.VendorExtraCostOmit
   vendorRate?: Prisma.VendorRateOmit
+  teamMemberDocument?: Prisma.TeamMemberDocumentOmit
 }
 
 /* Types for Logging */

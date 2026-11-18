@@ -76,10 +76,10 @@ async function bootstrap(): Promise<void> {
   await app.register(fastifyMultipart, {
     attachFieldsToBody: false,
     limits: {
-      files: 1,
+      files: 10,
       fileSize: config.get<number>("UPLOAD_MAX_BYTES", 10_485_760),
-      fields: 8,
-      parts: 9,
+      fields: 20,
+      parts: 30,
     },
   });
   const webOrigin = new URL(config.getOrThrow<string>("WEB_ORIGIN")).origin;
