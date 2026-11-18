@@ -36,6 +36,12 @@ import {
   vendorRowSelect,
 } from "./vendor-check-view";
 import { vendorLhs } from "./vendor-checks.service";
+import {
+  earningsFor,
+  inReviewValue,
+  istMonth,
+  istMonthRange,
+} from "./vendor-earnings";
 
 const WORKING = ["IN_PROGRESS", "RETURNED"];
 
@@ -115,6 +121,51 @@ export class VendorWorkService {
     return {
       summary: boardSummary(all.map((row) => toVendorRow(row, now))),
       items: rows.map((row) => toVendorRow(row, now)),
+    };
+  }
+
+  /**
+   * Earnings for one month (IST): checks the RM accepted in that month, at their payment
+   * plus approved extra costs, and what is still in review. Same scope as the list: a
+   * Main Vendor sees its whole team, a team user only its own checks.
+   */
+  async earnings(actor: Actor, month?: string, now = new Date()) {
+    const chosen = month ?? istMonth(now);
+    const range = istMonthRange(chosen);
+    if (!range) throw new BadRequestException("Month must look like 2026-11");
+    const own = ownVendorJobs(actor);
+    const [accepted, inReview] = await Promise.all([
+      this.prisma.vendorCheckAssignment.findMany({
+        where: {
+          ...own,
+          status: "APPROVED",
+          reviewedAt: { gte: range.from, lt: range.to },
+        },
+        orderBy: [{ reviewedAt: "desc" }],
+        take: 2000,
+        select: vendorRowSelect,
+      }),
+      this.prisma.vendorCheckAssignment.findMany({
+        where: { ...own, status: { in: ["SUBMITTED", "TEAM_REVIEW"] } },
+        take: 2000,
+        select: {
+          price: true,
+          extraCosts: { select: { amount: true, status: true } },
+        },
+      }),
+    ]);
+    return {
+      month: chosen,
+      ...earningsFor(accepted.map((row) => toVendorRow(row, now))),
+      inReview: inReviewValue(
+        inReview.map((row) => ({
+          price: row.price === null ? null : Number(row.price),
+          extraCosts: row.extraCosts.map((cost) => ({
+            amount: Number(cost.amount),
+            status: cost.status,
+          })),
+        })),
+      ),
     };
   }
 

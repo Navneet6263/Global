@@ -181,9 +181,15 @@ test("a vendor sees the open queue with payment and city, and picks a check", as
   await expect(page.getByText("Aarav Sharma")).toHaveCount(0);
   await page.screenshot({ path: "test-results/vendor-open-queue.png" });
   await card.getByRole("button", { name: /Pick address check in Lucknow/i }).click();
-  await expect(page).toHaveURL(/\/vendor\/checks$/);
+  // The picked check opens straight away with its full details.
+  await expect(page).toHaveURL(new RegExp(`/vendor/checks\\?job=${JOB}$`));
   expect(calls.find((call) => call.path.endsWith("/pick"))?.body).toEqual({ version: 1 });
-  await expect(page.getByText("SG-QUEUE-1")).toBeVisible();
+  await expect(
+    page
+      .getByRole("dialog")
+      .getByText(/SG-QUEUE-1/)
+      .first(),
+  ).toBeVisible();
 });
 
 test("a picked check takes an extra cost and can go back to the queue", async ({ page }) => {

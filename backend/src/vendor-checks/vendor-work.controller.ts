@@ -22,6 +22,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  Matches,
   MaxLength,
   Min,
   ValidateIf,
@@ -38,6 +39,14 @@ import { withUploadedBinary } from "../common/http/upload-capacity";
 import { VendorBoardQueryDto } from "./vendor-checks.controller";
 import { VendorWorkService } from "./vendor-work.service";
 import { ApprovedVendorGuard } from "../vendor-onboarding/guards/approved-vendor.guard";
+
+export class VendorEarningsQueryDto {
+  @IsOptional()
+  @Matches(/^\d{4}-(0[1-9]|1[0-2])$/, {
+    message: "Month must look like 2026-11",
+  })
+  month?: string;
+}
 
 export class VendorVersionDto {
   @IsInt() @Min(1) version!: number;
@@ -79,6 +88,15 @@ export class VendorWorkController {
   @Get("export")
   export(@CurrentActor() actor: Actor, @Query() query: VendorBoardQueryDto) {
     return this.work.export(actor, query);
+  }
+
+  /** What this vendor earned in a month (IST): accepted checks, payment + extra cost. */
+  @Get("earnings")
+  earnings(
+    @CurrentActor() actor: Actor,
+    @Query() query: VendorEarningsQueryDto,
+  ) {
+    return this.work.earnings(actor, query.month);
   }
 
   @Get(":jobId")

@@ -241,8 +241,37 @@ export interface VendorJobDetail extends VendorJob {
 
 const job = (id: string) => `/vendor/checks/${encodeURIComponent(id)}`;
 
+/** One accepted check in a month's earnings. */
+export interface VendorEarningLine {
+  id: string;
+  caseNumber: string;
+  checkType: string;
+  city: string | null;
+  pincode: string | null;
+  handledBy: string | null;
+  acceptedAt: string | null;
+  fromQueue: boolean;
+  /** Sent straight to the vendor with no payment saved: Finance confirms the rate. */
+  rateToConfirm: boolean;
+  payment: number;
+  extra: number;
+  total: number;
+}
+
+export interface VendorEarnings {
+  month: string;
+  items: VendorEarningLine[];
+  totals: { checks: number; payment: number; extra: number; total: number; rateToConfirm: number };
+  /** Submitted, not yet accepted by the RM. */
+  inReview: { checks: number; value: number };
+}
+
 export const vendorWorkApi = {
   list: (filter: BoardFilter) => apiRequest<VendorBoard>(`/vendor/checks${filterQuery(filter)}`),
+  earnings: (month?: string) =>
+    apiRequest<VendorEarnings>(
+      `/vendor/checks/earnings${month ? `?month=${encodeURIComponent(month)}` : ""}`,
+    ),
   export: async (filter: BoardFilter, columns: readonly string[]) =>
     saveBlob(
       await apiDownload(`/vendor/checks/export${filterQuery(filter, columns)}`),

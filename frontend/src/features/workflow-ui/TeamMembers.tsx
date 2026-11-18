@@ -58,6 +58,8 @@ import {
   type TeamMember,
   type TeamMembersOverview,
 } from "@/lib/backend-api/team-members";
+import { useVerifierDepartment } from "@/lib/auth/verifier-department";
+import { visibleTeamsFor } from "./team-members-scope";
 import { cn } from "@/lib/utils";
 
 type StatusView = "all" | "ACTIVE" | "SUSPENDED";
@@ -82,8 +84,9 @@ const EXPORT_COLUMNS: readonly SheetColumn<TeamMember>[] = [
 const EXPORT_DEFAULTS = ["name", "email", "team", "status", "openWork", "doneThisWeek"];
 
 /** Team Leader: the people in its teams; add a login, suspend, reset a password. */
-export function TeamMembers() {
+export function TeamMembers({ workspace }: { workspace: "verifier" | "data-entry" }) {
   const queryClient = useQueryClient();
+  const { departmentId } = useVerifierDepartment();
   const overview = useQuery({
     queryKey: ["workflow", "team-members"],
     queryFn: ({ signal }) => getTeamMembers(signal),
@@ -93,7 +96,13 @@ export function TeamMembers() {
   const [search, setSearch] = useState("");
   const [adding, setAdding] = useState(false);
   const [receipt, setReceipt] = useState<TemporaryPasswordReceipt | null>(null);
-  const data = overview.data;
+  const data = useMemo(() => {
+    const raw = overview.data;
+    if (!raw) return undefined;
+    const teams = visibleTeamsFor(raw.teams, workspace, departmentId);
+    const ids = new Set(teams.map((team) => team.id));
+    return { ...raw, teams, members: raw.members.filter((member) => ids.has(member.team.id)) };
+  }, [overview.data, workspace, departmentId]);
   const members = useMemo(() => {
     const term = search.trim().toLowerCase();
     return (data?.members ?? []).filter(
@@ -115,7 +124,11 @@ export function TeamMembers() {
           tone="info"
           label="People"
           value={data ? all.length : "—"}
-          hint={`${data?.teams.length ?? 0} team${data?.teams.length === 1 ? "" : "s"} you lead`}
+          hint={
+            data?.teams.length === 1
+              ? `${data.teams[0]!.name} team`
+              : `${data?.teams.length ?? 0} teams you lead`
+          }
         />
         <StatCard
           icon={ShieldCheck}

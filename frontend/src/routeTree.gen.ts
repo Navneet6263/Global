@@ -116,6 +116,7 @@ import { Route as VendorIndexRouteImport } from './routes/vendor.index'
 import { Route as VendorAllRouteImport } from './routes/vendor.all'
 import { Route as VendorApprovedRouteImport } from './routes/vendor.approved'
 import { Route as VendorChecksRouteImport } from './routes/vendor.checks'
+import { Route as VendorEarningsRouteImport } from './routes/vendor.earnings'
 import { Route as VendorLogsRouteImport } from './routes/vendor.logs'
 import { Route as VendorPendingRouteImport } from './routes/vendor.pending'
 import { Route as VendorQueueRouteImport } from './routes/vendor.queue'
@@ -675,6 +676,11 @@ const VendorChecksRoute = VendorChecksRouteImport.update({
   path: '/checks',
   getParentRoute: () => VendorRoute,
 } as any)
+const VendorEarningsRoute = VendorEarningsRouteImport.update({
+  id: '/earnings',
+  path: '/earnings',
+  getParentRoute: () => VendorRoute,
+} as any)
 const VendorLogsRoute = VendorLogsRouteImport.update({
   id: '/logs',
   path: '/logs',
@@ -872,6 +878,7 @@ export interface FileRoutesByFullPath {
   '/vendor/all': typeof VendorAllRoute
   '/vendor/approved': typeof VendorApprovedRoute
   '/vendor/checks': typeof VendorChecksRoute
+  '/vendor/earnings': typeof VendorEarningsRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/queue': typeof VendorQueueRoute
@@ -991,6 +998,7 @@ export interface FileRoutesByTo {
   '/vendor/all': typeof VendorAllRoute
   '/vendor/approved': typeof VendorApprovedRoute
   '/vendor/checks': typeof VendorChecksRoute
+  '/vendor/earnings': typeof VendorEarningsRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/queue': typeof VendorQueueRoute
@@ -1120,6 +1128,7 @@ export interface FileRoutesById {
   '/vendor/all': typeof VendorAllRoute
   '/vendor/approved': typeof VendorApprovedRoute
   '/vendor/checks': typeof VendorChecksRoute
+  '/vendor/earnings': typeof VendorEarningsRoute
   '/vendor/logs': typeof VendorLogsRoute
   '/vendor/pending': typeof VendorPendingRoute
   '/vendor/queue': typeof VendorQueueRoute
@@ -1250,6 +1259,7 @@ export interface FileRouteTypes {
     | '/vendor/all'
     | '/vendor/approved'
     | '/vendor/checks'
+    | '/vendor/earnings'
     | '/vendor/logs'
     | '/vendor/pending'
     | '/vendor/queue'
@@ -1369,6 +1379,7 @@ export interface FileRouteTypes {
     | '/vendor/all'
     | '/vendor/approved'
     | '/vendor/checks'
+    | '/vendor/earnings'
     | '/vendor/logs'
     | '/vendor/pending'
     | '/vendor/queue'
@@ -1497,6 +1508,7 @@ export interface FileRouteTypes {
     | '/vendor/all'
     | '/vendor/approved'
     | '/vendor/checks'
+    | '/vendor/earnings'
     | '/vendor/logs'
     | '/vendor/pending'
     | '/vendor/queue'
@@ -2312,6 +2324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendorChecksRouteImport
       parentRoute: typeof VendorRoute
     }
+    '/vendor/earnings': {
+      id: '/vendor/earnings'
+      path: '/earnings'
+      fullPath: '/vendor/earnings'
+      preLoaderRoute: typeof VendorEarningsRouteImport
+      parentRoute: typeof VendorRoute
+    }
     '/vendor/logs': {
       id: '/vendor/logs'
       path: '/logs'
@@ -2668,6 +2687,7 @@ interface VendorRouteChildren {
   VendorAllRoute: typeof VendorAllRoute
   VendorApprovedRoute: typeof VendorApprovedRoute
   VendorChecksRoute: typeof VendorChecksRoute
+  VendorEarningsRoute: typeof VendorEarningsRoute
   VendorLogsRoute: typeof VendorLogsRoute
   VendorPendingRoute: typeof VendorPendingRoute
   VendorQueueRoute: typeof VendorQueueRoute
@@ -2680,6 +2700,7 @@ const VendorRouteChildren: VendorRouteChildren = {
   VendorAllRoute: VendorAllRoute,
   VendorApprovedRoute: VendorApprovedRoute,
   VendorChecksRoute: VendorChecksRoute,
+  VendorEarningsRoute: VendorEarningsRoute,
   VendorLogsRoute: VendorLogsRoute,
   VendorPendingRoute: VendorPendingRoute,
   VendorQueueRoute: VendorQueueRoute,

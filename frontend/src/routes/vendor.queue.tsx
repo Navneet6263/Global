@@ -130,13 +130,13 @@ function QueueCard({ item }: { item: QueueItem }) {
   const navigate = useNavigate();
   const pick = useMutation({
     mutationFn: () => vendorQueueApi.pick(item.id, item.version),
-    onSuccess: async () => {
+    onSuccess: async (picked) => {
       toast.success("The check is yours", {
-        description: "It is now in My checks with the full details.",
+        description: "Its full details are open now. It also stays in My checks.",
       });
       await queryClient.invalidateQueries({ queryKey: ["vendor-queue"] });
       await queryClient.invalidateQueries({ queryKey: ["vendor-checks"] });
-      await navigate({ to: "/vendor/checks" });
+      await navigate({ to: "/vendor/checks", search: { job: picked.id } });
     },
     onError: async (error: Error) => {
       toast.error("Not picked", { description: error.message });

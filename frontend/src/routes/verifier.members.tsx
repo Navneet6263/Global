@@ -16,7 +16,7 @@ function Page() {
         title="Team members"
         description="Add logins for your team, reset passwords and suspend access."
       />
-      <TeamMembers />
+      <TeamMembers workspace="verifier" />
     </div>
   );
 }
