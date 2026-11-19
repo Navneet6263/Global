@@ -1,17 +1,67 @@
 import { Link } from "@tanstack/react-router";
 import {
+  ChevronRight,
   CircleAlert,
   CircleCheck,
   CircleHelp,
   FileText,
   UserRound,
-  UsersRound,
+  type LucideIcon,
 } from "lucide-react";
-import { ErrorState } from "@/components/feedback/error-state";
-import { ListSkeleton } from "@/components/feedback/skeletons";
+import { Card, CardHeader, ErrorText, Loading, Meter, SOFT, type Tone } from "@/kit";
 import type { ExceptionsDashboard, OperationsDashboard } from "@/lib/api/dashboards";
-import { rmInitials, useClientRm } from "./use-client-rm";
+import { cn } from "@/lib/utils";
 
+function ActionRow({
+  icon: Icon,
+  tone,
+  count,
+  text,
+  hint,
+  to,
+  search,
+}: {
+  icon: LucideIcon;
+  tone: Tone;
+  count: number | string;
+  text: string;
+  hint: string;
+  to: "/client-portal/actions" | "/client-portal/verifications";
+  search?: Record<string, string>;
+}) {
+  return (
+    <Link
+      to={to}
+      search={search as never}
+      className="flex items-center gap-3 rounded-md px-2 py-2 hover:bg-subtle"
+    >
+      <span className={cn("grid size-9 shrink-0 place-items-center rounded-md", SOFT[tone])}>
+        <Icon className="size-4" aria-hidden />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-ink">
+          <span className="font-mono">{count}</span> {text}
+        </span>
+        <span className="block text-xs text-dim">{hint}</span>
+      </span>
+      <ChevronRight className="size-4 shrink-0 text-dim" aria-hidden />
+    </Link>
+  );
+}
+
+const results: Array<{
+  label: string;
+  key: string;
+  tone: "good" | "warn" | "note";
+  icon: LucideIcon;
+}> = [
+  { label: "Clear", key: "CLEAR", tone: "good", icon: CircleCheck },
+  { label: "Discrepancy", key: "DISCREPANCY", tone: "warn", icon: CircleAlert },
+  { label: "Unable to verify", key: "UNABLE_TO_VERIFY", tone: "note", icon: CircleHelp },
+];
+const ICON = { good: "text-good", warn: "text-warn", note: "text-note" } as const;
+
+/** Right-hand column of the overview: what needs the client, and recorded check results. */
 export function ClientAttentionPanel({
   data,
   operations,
@@ -27,129 +77,89 @@ export function ClientAttentionPanel({
   retrying: boolean;
   onRetry: () => void;
 }) {
-  const results = [
-    { label: "Clear", key: "CLEAR", color: "#15803d", icon: CircleCheck },
-    { label: "Discrepancy", key: "DISCREPANCY", color: "#b45309", icon: CircleAlert },
-    { label: "Unable to verify", key: "UNABLE_TO_VERIFY", color: "#6d28d9", icon: CircleHelp },
-  ];
-  const rm = useClientRm();
-  const person = rm.data?.rm ?? null;
+  const docs = data ? (data.summary.rejectedDocuments ?? data.rejectedDocuments.length) : 0;
+  const open = data ? data.clarifications.filter((item) => item.status === "OPEN").length : 0;
   const total = results.reduce((sum, item) => sum + (operations?.outcomeMix[item.key] ?? 0), 0);
   return (
-    <aside className="client-context-panels" aria-label="Client actions and support">
-      <section className="client-panel">
-        <header className="client-panel-head">
-          <h2>
-            Your attention needed <small>{data ? `(${data.summary.clientActions})` : ""}</small>
-          </h2>
-        </header>
-        {loading ? (
-          <ListSkeleton rows={3} />
-        ) : error ? (
-          <ErrorState description={error} onRetry={onRetry} retrying={retrying} />
-        ) : data ? (
-          <div className="client-attention-list">
-            <Link to="/client-portal/actions">
-              <FileText aria-hidden />
-              <span>
-                {data.summary.rejectedDocuments ?? data.rejectedDocuments.length} document
-                replacements
-              </span>
-              <small>View requests →</small>
-            </Link>
-            <Link to="/client-portal/actions">
-              <CircleAlert aria-hidden />
-              <span>
-                {data.clarifications.filter((item) => item.status === "OPEN").length} open detail
-                requests
-              </span>
-              <small>Respond →</small>
-            </Link>
-            <Link to="/client-portal/verifications" search={{ status: "CONSENT_PENDING" }}>
-              <UserRound aria-hidden />
-              <span>
-                {operations ? (operations.statusMix["CONSENT_PENDING"] ?? 0) : "—"} pending consent
-              </span>
-              <small>View cases →</small>
-            </Link>
-          </div>
-        ) : null}
-      </section>
-      <section className="client-panel">
-        <h2>Your relationship manager</h2>
-        {person ? (
-          <>
-            <div className="client-contact-row">
-              <span className="client-contact-avatar" aria-hidden>
-                {rmInitials(person.name)}
-              </span>
-              <div className="min-w-0">
-                <strong>{person.name}</strong>
-                <p>
-                  <a href={`mailto:${person.email}`}>{person.email}</a>
-                  {person.phone ? (
-                    <>
-                      <br />
-                      <a href={`tel:${person.phone}`}>{person.phone}</a>
-                    </>
-                  ) : null}
-                </p>
+    <aside
+      aria-label="Client actions and support"
+      className="flex min-w-0 flex-col gap-3.5 lg:sticky lg:top-[76px]"
+    >
+      <Card>
+        <CardHeader title="Your attention needed" count={data?.summary.clientActions} />
+        <div className="flex flex-col gap-0.5 p-2">
+          {loading ? <Loading>Loading requests…</Loading> : null}
+          {error ? (
+            <ErrorText onRetry={onRetry} retrying={retrying}>
+              {error}
+            </ErrorText>
+          ) : null}
+          {data && !loading ? (
+            <>
+              <ActionRow
+                icon={FileText}
+                tone="warn"
+                count={docs}
+                text={docs === 1 ? "document replacement" : "document replacements"}
+                hint="View requests"
+                to="/client-portal/actions"
+              />
+              <ActionRow
+                icon={CircleAlert}
+                tone="brand"
+                count={open}
+                text={open === 1 ? "open detail request" : "open detail requests"}
+                hint="Respond"
+                to="/client-portal/actions"
+              />
+              <ActionRow
+                icon={UserRound}
+                tone="neutral"
+                count={operations ? (operations.statusMix["CONSENT_PENDING"] ?? 0) : "—"}
+                text="pending consent"
+                hint="View cases"
+                to="/client-portal/verifications"
+                search={{ status: "CONSENT_PENDING" }}
+              />
+            </>
+          ) : null}
+        </div>
+      </Card>
+      <Card>
+        <CardHeader
+          title="Check results"
+          count={operations ? total : undefined}
+          description="Recorded outcomes"
+        />
+        <div className="flex flex-col gap-3 px-4 py-3">
+          {results.map(({ label, key, tone, icon: Icon }) => {
+            const count = operations?.outcomeMix[key] ?? 0;
+            return (
+              <div key={key} className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="flex items-center gap-2 text-ink">
+                    <Icon className={cn("size-4", ICON[tone])} aria-hidden />
+                    {label}
+                  </span>
+                  <strong className="font-mono text-ink">{operations ? count : "—"}</strong>
+                </div>
+                <Meter value={count} max={total} tone={tone} label={`${label} share`} />
               </div>
-            </div>
-            <a href={`mailto:${person.email}`} className="client-outline-link">
-              Email your RM
-            </a>
-          </>
-        ) : (
-          <>
-            <div className="client-contact-row">
-              <span className="client-contact-avatar">
-                <UsersRound aria-hidden />
-              </span>
-              <div>
-                <strong>{rm.isLoading ? "Loading…" : "RM being assigned"}</strong>
-                <p>Sapling Global will assign your RM soon. Use support meanwhile.</p>
-              </div>
-            </div>
-            <Link to="/client-portal/support" className="client-outline-link">
-              Contact support
-            </Link>
-          </>
-        )}
-      </section>
-      <section className="client-panel">
-        <header className="client-panel-head">
-          <h2>
-            Check results <small>{operations ? `(${total})` : ""}</small>
-          </h2>
-          <p>Recorded outcomes</p>
-        </header>
-        {results.map(({ label, key, color, icon: Icon }) => {
-          const count = operations?.outcomeMix[key] ?? 0;
-          return (
-            <div className="client-result-row" key={key}>
-              <span>
-                <Icon style={{ color }} aria-hidden />
-                {label}
-              </span>
-              <span className="client-result-track">
-                <i
-                  style={{ background: color, width: total ? `${(count / total) * 100}%` : "0%" }}
-                />
-              </span>
-              <strong>{operations ? count : "—"}</strong>
-            </div>
-          );
-        })}
-        <p className="client-panel-note mt-4">
-          {operations
-            ? "Check outcomes are not a released final report."
-            : "Result totals are currently unavailable."}
-        </p>
-        <Link to="/client-portal/analytics" className="client-text-link">
-          Open detailed insights →
-        </Link>
-      </section>
+            );
+          })}
+          <p className="text-xs text-dim">
+            {operations
+              ? "Check outcomes are not a released final report."
+              : "Result totals are currently unavailable."}
+          </p>
+          <Link
+            to="/client-portal/analytics"
+            className="text-xs font-semibold text-brand hover:underline"
+          >
+            Open detailed insights →
+          </Link>
+        </div>
+      </Card>
     </aside>
   );
 }

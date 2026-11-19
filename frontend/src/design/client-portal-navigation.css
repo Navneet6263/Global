@@ -122,18 +122,6 @@
   color: #1d4ed8;
   font-weight: 600;
 }
-.client-support-nav {
-  justify-content: flex-start;
-  border: 0;
-  box-shadow: none;
-  background: transparent;
-  white-space: normal;
-}
-.client-support-nav > svg {
-  width: 20px;
-  height: 20px;
-  color: #64748b;
-}
 @media (max-width: 1279px) {
   .client-nav-row {
     min-height: 42px;

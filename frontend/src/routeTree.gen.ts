@@ -54,6 +54,7 @@ import { Route as ClientPortalActionsRouteImport } from './routes/client-portal.
 import { Route as ClientPortalAnalyticsRouteImport } from './routes/client-portal.analytics'
 import { Route as ClientPortalBillingRouteImport } from './routes/client-portal.billing'
 import { Route as ClientPortalOnboardingRouteImport } from './routes/client-portal.onboarding'
+import { Route as ClientPortalPipelineRouteImport } from './routes/client-portal.pipeline'
 import { Route as ClientPortalReportsRouteImport } from './routes/client-portal.reports'
 import { Route as ClientPortalReviewRouteImport } from './routes/client-portal.review'
 import { Route as ClientPortalSupportRouteImport } from './routes/client-portal.support'
@@ -361,6 +362,11 @@ const ClientPortalBillingRoute = ClientPortalBillingRouteImport.update({
 const ClientPortalOnboardingRoute = ClientPortalOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => ClientPortalRoute,
+} as any)
+const ClientPortalPipelineRoute = ClientPortalPipelineRouteImport.update({
+  id: '/pipeline',
+  path: '/pipeline',
   getParentRoute: () => ClientPortalRoute,
 } as any)
 const ClientPortalReportsRoute = ClientPortalReportsRouteImport.update({
@@ -822,6 +828,7 @@ export interface FileRoutesByFullPath {
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/onboarding': typeof ClientPortalOnboardingRoute
+  '/client-portal/pipeline': typeof ClientPortalPipelineRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
   '/client-portal/review': typeof ClientPortalReviewRoute
   '/client-portal/support': typeof ClientPortalSupportRoute
@@ -942,6 +949,7 @@ export interface FileRoutesByTo {
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/onboarding': typeof ClientPortalOnboardingRoute
+  '/client-portal/pipeline': typeof ClientPortalPipelineRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
   '/client-portal/review': typeof ClientPortalReviewRoute
   '/client-portal/support': typeof ClientPortalSupportRoute
@@ -1072,6 +1080,7 @@ export interface FileRoutesById {
   '/client-portal/analytics': typeof ClientPortalAnalyticsRoute
   '/client-portal/billing': typeof ClientPortalBillingRoute
   '/client-portal/onboarding': typeof ClientPortalOnboardingRoute
+  '/client-portal/pipeline': typeof ClientPortalPipelineRoute
   '/client-portal/reports': typeof ClientPortalReportsRoute
   '/client-portal/review': typeof ClientPortalReviewRoute
   '/client-portal/support': typeof ClientPortalSupportRoute
@@ -1203,6 +1212,7 @@ export interface FileRouteTypes {
     | '/client-portal/analytics'
     | '/client-portal/billing'
     | '/client-portal/onboarding'
+    | '/client-portal/pipeline'
     | '/client-portal/reports'
     | '/client-portal/review'
     | '/client-portal/support'
@@ -1323,6 +1333,7 @@ export interface FileRouteTypes {
     | '/client-portal/analytics'
     | '/client-portal/billing'
     | '/client-portal/onboarding'
+    | '/client-portal/pipeline'
     | '/client-portal/reports'
     | '/client-portal/review'
     | '/client-portal/support'
@@ -1452,6 +1463,7 @@ export interface FileRouteTypes {
     | '/client-portal/analytics'
     | '/client-portal/billing'
     | '/client-portal/onboarding'
+    | '/client-portal/pipeline'
     | '/client-portal/reports'
     | '/client-portal/review'
     | '/client-portal/support'
@@ -1888,6 +1900,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/client-portal/onboarding'
       preLoaderRoute: typeof ClientPortalOnboardingRouteImport
+      parentRoute: typeof ClientPortalRoute
+    }
+    '/client-portal/pipeline': {
+      id: '/client-portal/pipeline'
+      path: '/pipeline'
+      fullPath: '/client-portal/pipeline'
+      preLoaderRoute: typeof ClientPortalPipelineRouteImport
       parentRoute: typeof ClientPortalRoute
     }
     '/client-portal/reports': {
@@ -2522,6 +2541,7 @@ interface ClientPortalRouteChildren {
   ClientPortalAnalyticsRoute: typeof ClientPortalAnalyticsRoute
   ClientPortalBillingRoute: typeof ClientPortalBillingRoute
   ClientPortalOnboardingRoute: typeof ClientPortalOnboardingRoute
+  ClientPortalPipelineRoute: typeof ClientPortalPipelineRoute
   ClientPortalReportsRoute: typeof ClientPortalReportsRoute
   ClientPortalReviewRoute: typeof ClientPortalReviewRoute
   ClientPortalSupportRoute: typeof ClientPortalSupportRoute
@@ -2534,6 +2554,7 @@ const ClientPortalRouteChildren: ClientPortalRouteChildren = {
   ClientPortalAnalyticsRoute: ClientPortalAnalyticsRoute,
   ClientPortalBillingRoute: ClientPortalBillingRoute,
   ClientPortalOnboardingRoute: ClientPortalOnboardingRoute,
+  ClientPortalPipelineRoute: ClientPortalPipelineRoute,
   ClientPortalReportsRoute: ClientPortalReportsRoute,
   ClientPortalReviewRoute: ClientPortalReviewRoute,
   ClientPortalSupportRoute: ClientPortalSupportRoute,

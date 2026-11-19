@@ -1,9 +1,9 @@
 import { Search } from "lucide-react";
+import { Input, Select } from "@/kit";
 import { clientStages } from "./client-queue-model";
 import type { ExportFilters, ExportKind } from "./client-export-model";
 
-const control =
-  "h-10 w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 text-sm font-normal text-slate-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:opacity-60";
+const label = "flex min-w-0 flex-col gap-1 text-xs font-medium text-dim";
 export function ClientExportFilters({
   kind,
   value,
@@ -30,19 +30,19 @@ export function ClientExportFilters({
         ];
   return (
     <fieldset
-      className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-[1.5fr_1.1fr_1fr_1fr]"
+      className="m-0 grid min-w-0 grid-cols-1 gap-3 border-0 p-0 sm:grid-cols-2 xl:grid-cols-[1.5fr_1.1fr_1fr_1fr]"
       disabled={disabled}
     >
       <legend className="sr-only">Report filters</legend>
-      <label className="grid min-w-0 gap-2 text-xs font-semibold text-slate-600">
+      <label className={label}>
         Search
         <span className="relative min-w-0">
           <Search
             aria-hidden
-            className="pointer-events-none absolute top-3 left-3 size-4 text-slate-400"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-dim"
           />
-          <input
-            className={control + " pl-9"}
+          <Input
+            className="pl-9"
             type="search"
             maxLength={120}
             value={value.search}
@@ -51,10 +51,9 @@ export function ClientExportFilters({
           />
         </span>
       </label>
-      <label className="grid min-w-0 gap-2 text-xs font-semibold text-slate-600">
+      <label className={label}>
         Status
-        <select
-          className={control}
+        <Select
           value={value.status}
           onChange={(e) => onChange({ ...value, status: e.target.value })}
         >
@@ -64,22 +63,20 @@ export function ClientExportFilters({
               {status.replaceAll("_", " ")}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
-      <label className="grid min-w-0 gap-2 text-xs font-semibold text-slate-600">
+      <label className={label}>
         From date
-        <input
-          className={control}
+        <Input
           type="date"
           value={value.from}
           max={value.to || undefined}
           onChange={(e) => onChange({ ...value, from: e.target.value })}
         />
       </label>
-      <label className="grid min-w-0 gap-2 text-xs font-semibold text-slate-600">
+      <label className={label}>
         To date
-        <input
-          className={control}
+        <Input
           type="date"
           value={value.to}
           min={value.from || undefined}

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Clock3, Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Clock3, Search } from "lucide-react";
+import { Button, Card, CardHeader, Chip, Input, Select } from "@/kit";
 import type { CaseActivity } from "./client-case-activity";
 import { activityKinds, caseDate } from "./client-case-activity";
 
@@ -17,120 +17,106 @@ export function ClientCaseTimeline({ events }: { events: CaseActivity[] }) {
   const current = Math.min(page, pages);
   const visible = filtered.slice((current - 1) * 8, current * 8);
   return (
-    <section
-      className="overflow-hidden rounded-xl border border-slate-200 bg-white"
-      aria-label="Case activity log"
-    >
-      <header className="border-b border-slate-200 bg-slate-50/60 p-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h3 className="text-sm font-bold">Activity timeline</h3>
-            <p className="mt-1 text-xs text-slate-500">
-              Recorded updates, newest first · All times in IST
-            </p>
-          </div>
-          <span className="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-            {events.length} events
-          </span>
-        </div>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <label className="relative min-w-[150px] flex-1">
-            <Search className="absolute left-3 top-3 size-4 text-slate-400" aria-hidden />
-            <input
-              type="search"
-              aria-label="Search case activity"
-              placeholder="Search activity…"
-              value={search}
-              onChange={(event) => {
-                setSearch(event.target.value);
-                setPage(1);
-              }}
-              className="h-10 w-full rounded-lg border border-slate-200 bg-white pl-9 pr-3 text-xs outline-none focus:border-blue-400"
-            />
-          </label>
-          <select
-            aria-label="Filter activity type"
-            value={kind}
+    <Card label="Case activity log">
+      <CardHeader
+        title="Activity timeline"
+        description="Recorded updates, newest first · All times in IST"
+        aside={<Chip tone="brand">{events.length} events</Chip>}
+      />
+      <div className="flex flex-wrap gap-2 border-b border-line px-4 py-3">
+        <label className="relative min-w-[150px] flex-1">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-dim"
+            aria-hidden
+          />
+          <Input
+            type="search"
+            aria-label="Search case activity"
+            placeholder="Search activity…"
+            value={search}
             onChange={(event) => {
-              setKind(event.target.value);
+              setSearch(event.target.value);
               setPage(1);
             }}
-            className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-xs"
-          >
-            <option value="All">All activity</option>
-            {activityKinds.map((value) => (
-              <option key={value}>{value}</option>
-            ))}
-          </select>
-        </div>
-      </header>
-      <ol className="divide-y divide-slate-100 px-4">
+            className="pl-9"
+          />
+        </label>
+        <Select
+          aria-label="Filter activity type"
+          value={kind}
+          className="w-auto"
+          onChange={(event) => {
+            setKind(event.target.value);
+            setPage(1);
+          }}
+        >
+          <option value="All">All activity</option>
+          {activityKinds.map((value) => (
+            <option key={value}>{value}</option>
+          ))}
+        </Select>
+      </div>
+      <ol className="divide-y divide-line px-4">
         {visible.map((event) => (
-          <li key={event.id} className="flex gap-3 py-4">
-            <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg border border-blue-100 bg-blue-50 text-blue-600">
-              <Clock3 className="size-4" />
+          <li key={event.id} className="flex gap-3 py-3">
+            <span className="mt-0.5 grid size-8 shrink-0 place-items-center rounded-md bg-brand-soft text-brand">
+              <Clock3 className="size-4" aria-hidden />
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-bold text-slate-800">{event.title}</p>
-                <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-500">
-                  {event.kind}
-                </span>
+                <p className="text-sm font-semibold text-ink">{event.title}</p>
+                <Chip>{event.kind}</Chip>
               </div>
-              {event.detail && (
-                <p className="mt-1 break-words text-xs leading-5 text-slate-500">{event.detail}</p>
-              )}
-              <time dateTime={event.at} className="mt-1.5 block text-[11px] text-slate-500">
+              {event.detail ? (
+                <p className="mt-0.5 text-xs leading-5 break-words text-dim">{event.detail}</p>
+              ) : null}
+              <time dateTime={event.at} className="mt-1 block font-mono text-[11px] text-dim">
                 {caseDate(event.at)}
               </time>
             </div>
           </li>
         ))}
       </ol>
-      {!visible.length && (
+      {!visible.length ? (
         <div className="p-8 text-center">
-          <Clock3 className="mx-auto mb-3 size-6 text-blue-300" />
-          <p className="text-sm font-semibold">No matching activity</p>
-          <p className="mt-1 text-xs text-slate-500">
+          <Clock3 className="mx-auto mb-3 size-6 text-dim/60" aria-hidden />
+          <p className="text-sm font-semibold text-ink">No matching activity</p>
+          <p className="mt-1 text-xs text-dim">
             Try another filter. Events appear only when their timestamps are available.
           </p>
         </div>
-      )}
-      <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 p-3 text-xs text-slate-500">
+      ) : null}
+      <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-3 text-xs text-dim">
         <span>
           {filtered.length ? (current - 1) * 8 + 1 : 0}–{Math.min(current * 8, filtered.length)} of{" "}
           {filtered.length} events
         </span>
         <div className="flex items-center gap-2">
           <Button
-            size="icon"
-            variant="outline"
-            className="size-8 rounded-lg"
+            size="sm"
             aria-label="Previous activity page"
             disabled={current <= 1}
             onClick={() => setPage(current - 1)}
           >
-            <ChevronLeft className="size-4" />
+            Previous
           </Button>
           <span>
             {current} / {pages}
           </span>
           <Button
-            size="icon"
-            variant="outline"
-            className="size-8 rounded-lg"
+            size="sm"
             aria-label="Next activity page"
             disabled={current >= pages}
             onClick={() => setPage(current + 1)}
           >
-            <ChevronRight className="size-4" />
+            Next
           </Button>
         </div>
       </footer>
-      <p className="border-t border-slate-100 bg-slate-50/50 px-4 py-3 text-[11px] leading-5 text-slate-500">
+      <p className="border-t border-line bg-subtle/40 px-4 py-3 text-xs leading-5 text-dim">
         Client-visible records only, not the internal audit log. Staff names and document-view
         events are not included in this data. Restricted or unavailable history is not shown.
       </p>
-    </section>
+    </Card>
   );
 }

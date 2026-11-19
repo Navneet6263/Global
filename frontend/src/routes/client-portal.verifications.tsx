@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ClientCaseDialog } from "@/features/stakeholders/client/ClientCaseDialog";
 import { ClientCaseQueue } from "@/features/stakeholders/client/ClientCaseQueue";
+import { ClientExcelButton } from "@/features/stakeholders/client/ClientExcelButton";
 import { ClientWorkspaceHeader } from "@/features/stakeholders/client/ClientWorkspaceHeader";
 import {
   parseClientQueueSearch,
@@ -22,15 +23,17 @@ function ClientVerificationsPage() {
   return (
     <>
       <ClientWorkspaceHeader
-        title="Verifications"
-        description="Search every candidate, inspect the current stage and follow progress."
+        title="All candidates"
+        description="Search every candidate, see the current stage and download it all to Excel."
+        actions={<ClientExcelButton filters={{ q: search.q, status: search.status }} />}
         allowCreate
       />
       <ClientCaseQueue search={search} onChange={update} onOpen={(caseId) => update({ caseId })} />
       {search.caseId ? (
         <ClientCaseDialog
           caseId={search.caseId}
-          onClose={() => update({ caseId: undefined }, true)}
+          tab={search.tab}
+          onClose={() => update({ caseId: undefined, tab: undefined }, true)}
         />
       ) : null}
     </>

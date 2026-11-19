@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Siren } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, Textarea } from "@/kit";
 import {
   Dialog,
   DialogContent,
@@ -36,7 +36,7 @@ export function ClientEscalate({ item }: { item: CaseDetail }) {
   if (item.clientEscalation)
     return (
       <span
-        className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-700"
+        className="inline-flex items-center gap-1.5 rounded-full bg-bad-soft px-3 py-1 text-xs font-semibold text-bad"
         title={item.clientEscalation.reason}
       >
         <Siren className="size-3.5" aria-hidden /> Escalated · RM handling on priority
@@ -47,12 +47,11 @@ export function ClientEscalate({ item }: { item: CaseDetail }) {
   return (
     <>
       <Button
-        variant="outline"
         size="sm"
-        className="rounded-lg border-red-200 text-red-700 hover:bg-red-50"
+        className="border-bad/30 text-bad hover:bg-bad-soft"
         onClick={() => setOpen(true)}
       >
-        <Siren className="size-3.5" aria-hidden /> Escalate
+        <Siren aria-hidden /> Escalate
       </Button>
       {open ? (
         <Dialog
@@ -68,27 +67,23 @@ export function ClientEscalate({ item }: { item: CaseDetail }) {
               </DialogDescription>
             </DialogHeader>
             <label className="grid gap-1.5 text-sm">
-              <span className="font-medium">Why is this urgent?</span>
-              <textarea
+              <span className="font-medium text-ink">Why is this urgent?</span>
+              <Textarea
                 rows={3}
                 maxLength={500}
                 value={reason}
                 onChange={(event) => setReason(event.target.value)}
                 placeholder="e.g. The candidate joins on Monday and we need the report by Friday."
-                className="rounded-lg border border-slate-200 p-2.5 text-sm outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100"
               />
-              <small className="text-xs text-slate-500">At least 10 characters.</small>
+              <small className="text-xs text-dim">At least 10 characters.</small>
             </label>
             <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={escalate.isPending}
-              >
+              <Button onClick={() => setOpen(false)} disabled={escalate.isPending}>
                 Cancel
               </Button>
               <Button
-                className="bg-red-600 hover:bg-red-700"
+                variant="primary"
+                className="border-bad bg-bad"
                 disabled={!valid}
                 loading={escalate.isPending}
                 onClick={() => escalate.mutate()}

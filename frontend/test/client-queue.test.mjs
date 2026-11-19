@@ -29,7 +29,11 @@ test("URL filters reject unsupported statuses and malformed pages", () => {
     q: "Rani",
     caseId: undefined,
     pageSize: undefined,
+    tab: undefined,
   });
+  // Only known case tabs are accepted from the URL.
+  assert.equal(model.parseClientQueueSearch({ tab: "documents" }).tab, "documents");
+  assert.equal(model.parseClientQueueSearch({ tab: "admin" }).tab, undefined);
   assert.equal(
     model.parseClientQueueSearch({ status: "fake", q: " ", caseId: {} }).status,
     undefined,

@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router";
-import { AlertTriangle, CheckCircle2, Clock3, Files, UserRound } from "lucide-react";
+import { MetricCards } from "@/kit";
 import type { ExceptionsDashboard, OperationsDashboard } from "@/lib/api/dashboards";
 
+const CLOSED = ["COMPLETED", "CLOSED", "CANCELLED", "STOPPED"];
+
+/** Four headline numbers, as on the Task dashboard. */
 export function ClientOverview({
   operations,
   exceptions,
@@ -9,64 +11,50 @@ export function ClientOverview({
   operations: OperationsDashboard;
   exceptions?: ExceptionsDashboard;
 }) {
-  const cards = [
-    {
-      label: "All verifications",
-      value: operations.summary.total,
-      icon: Files,
-      tone: "#1d4ed8",
-      status: undefined,
-      to: "/client-portal/verifications" as const,
-    },
-    {
-      label: "Needs your action",
-      value: exceptions?.summary.clientActions ?? "—",
-      icon: UserRound,
-      tone: "#b45309",
-      status: undefined,
-      to: "/client-portal/actions" as const,
-    },
-    {
-      label: "Completed",
-      value: operations.statusMix["COMPLETED"] ?? 0,
-      icon: CheckCircle2,
-      tone: "#15803d",
-      status: "COMPLETED",
-      to: "/client-portal/verifications" as const,
-    },
-    {
-      label: "Awaiting documents",
-      value: operations.statusMix["DOCUMENT_PENDING"] ?? 0,
-      icon: Clock3,
-      tone: "#475569",
-      status: "DOCUMENT_PENDING",
-      to: "/client-portal/verifications" as const,
-    },
-  ];
+  const total = operations.summary.total;
+  const share = (value: number) => (total ? Math.round((value / total) * 100) : 0);
+  const completed = operations.statusMix["COMPLETED"] ?? 0;
+  const active = Object.entries(operations.statusMix)
+    .filter(([status]) => !CLOSED.includes(status))
+    .reduce((sum, [, count]) => sum + count, 0);
+  const actions = exceptions?.summary.clientActions;
+  const overdue = operations.summary.overdue;
   return (
-    <section className="client-panel client-metrics" aria-label="Portfolio summary">
-      {cards.map(({ label, value, icon: Icon, tone, status, to }) => (
-        <Link
-          key={label}
-          to={to}
-          search={{ status }}
-          className="client-metric"
-          style={{ color: tone }}
-        >
-          <Icon aria-hidden />
-          <div>
-            <small>{label}</small>
-            <strong className="num">{value}</strong>
-          </div>
-        </Link>
-      ))}
-      <div className="client-metric" style={{ color: "#b45309" }}>
-        <AlertTriangle aria-hidden />
-        <div>
-          <small>Overdue cases</small>
-          <strong className="num">{operations.summary.overdue}</strong>
-        </div>
-      </div>
-    </section>
+    <MetricCards
+      label="Portfolio summary"
+      metrics={[
+        {
+          label: "All verifications",
+          value: total,
+          note: `${active} active`,
+          to: "/client-portal/verifications",
+        },
+        {
+          label: "Needs your action",
+          value: actions ?? "—",
+          note: actions ? "Open the requests" : "Nothing waiting on you",
+          tone: "warn",
+          progress: actions !== undefined ? share(actions) : undefined,
+          to: "/client-portal/actions",
+        },
+        {
+          label: "Completed",
+          value: completed,
+          note: `${share(completed)}% of all verifications`,
+          tone: "good",
+          progress: share(completed),
+          to: "/client-portal/verifications",
+          search: { status: "COMPLETED" },
+        },
+        {
+          label: "Past turnaround",
+          value: overdue,
+          note: overdue ? "Your RM is following up" : "All on time",
+          tone: "bad",
+          progress: share(overdue),
+          alarm: overdue > 0,
+        },
+      ]}
+    />
   );
 }

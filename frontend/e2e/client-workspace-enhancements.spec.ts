@@ -7,7 +7,9 @@ test("verification columns are selectable, persisted and reset without changing 
 }) => {
   await clientPagesFixture(page);
   await page.goto("/client-portal");
-  await expect(page.locator(".client-case-table tbody tr")).toHaveCount(6);
+  await expect(
+    page.getByRole("region", { name: "Verification cases table" }).locator("tbody tr"),
+  ).toHaveCount(6);
   await page.getByRole("button", { name: /^Columns/ }).click();
   await page.getByRole("menuitemcheckbox", { name: "Checks", exact: true }).click();
   await page.getByRole("menuitemcheckbox", { name: "Package", exact: true }).click();
@@ -27,8 +29,15 @@ test("workspace search discovers features and routes candidate queries", async (
   await clientPagesFixture(page);
   await page.goto("/client-portal");
   const search = page.getByRole("combobox", { name: "Search features or cases" });
+  await search.click();
+  const results = page.getByRole("listbox", { name: "Search results" });
+  for (const name of ["All candidates", "Your to-do", "Pipeline", "Final reports", "Custom export"])
+    await expect(results.getByRole("option", { name: new RegExp(`^${name}`) })).toBeVisible();
+  await expect(
+    results.getByRole("option", { name: /Customise export|All verifications/ }),
+  ).toHaveCount(0);
   await search.fill("export");
-  await page.getByRole("option", { name: /Customise export/ }).click();
+  await page.getByRole("option", { name: /^Custom export/ }).click();
   await expect(page).toHaveURL(/reports\?view=custom/);
   await expect(page.getByRole("heading", { name: "Build your own report" })).toBeVisible();
   await search.fill("Candidate 1");

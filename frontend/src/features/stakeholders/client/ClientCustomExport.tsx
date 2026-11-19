@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FileSpreadsheet, Info, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, Card, Select } from "@/kit";
 
 import { ClientExportPreview } from "./ClientExportPreview";
 import { ClientExportFilters } from "./ClientExportFilters";
@@ -53,25 +53,23 @@ export function ClientCustomExport() {
   }
   return (
     <div className="grid min-w-0 gap-5" data-testid="custom-export-builder">
-      <section className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
-          <div className="flex items-center gap-3">
-            <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600">
+      <Card className="min-w-0 overflow-hidden">
+        <header className="flex flex-wrap items-center justify-between gap-4 border-b border-line px-4 py-3">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-soft text-brand">
               <FileSpreadsheet aria-hidden className="size-5" />
             </span>
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-slate-900">
-                Build your own report
-              </h2>
-              <p className="mt-1 text-xs leading-5 text-slate-500">
+              <h2 className="text-[15px] font-semibold text-ink">Build your own report</h2>
+              <p className="mt-0.5 text-xs text-dim">
                 Filter your data. Choose your columns. Export what matters.
               </p>
             </div>
           </div>
-          <label className="grid w-full gap-1.5 text-[11px] font-semibold tracking-wide text-slate-500 sm:w-56">
+          <label className="flex w-full flex-col gap-1 text-xs font-medium text-dim sm:w-56">
             Report type
-            <select
-              className="h-10 w-full rounded-lg border border-blue-100 bg-blue-50/50 px-3 text-sm font-semibold tracking-normal text-slate-800 outline-none focus:ring-2 focus:ring-blue-200"
+            <Select
+              className="font-medium"
               value={kind}
               disabled={busy}
               onChange={(e) => {
@@ -84,10 +82,10 @@ export function ClientCustomExport() {
               <option value="cases">Verification data</option>
               <option value="invoices">Invoice details</option>
               <option value="spend">Expense summary</option>
-            </select>
+            </Select>
           </label>
         </header>
-        <div className="grid gap-4 p-5">
+        <div className="grid gap-4 p-4">
           <ClientExportFilters
             kind={kind}
             value={filters}
@@ -95,21 +93,18 @@ export function ClientCustomExport() {
             disabled={busy}
           />
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="inline-flex items-center gap-2 text-xs text-slate-500">
-              <Info aria-hidden className="size-3.5 shrink-0 text-blue-500" />
+            <p className="inline-flex items-center gap-2 text-xs text-dim">
+              <Info aria-hidden className="size-3.5 shrink-0 text-brand" />
               {kind === "cases"
                 ? "Date range: case creation · IST"
                 : "Date range: invoice issue date · IST"}
             </p>
             <div className="flex flex-wrap gap-2">
               {busy ? (
-                <Button variant="outline" className="h-10 rounded-lg" onClick={cancel}>
-                  Cancel preparation
-                </Button>
+                <Button onClick={cancel}>Cancel preparation</Button>
               ) : (
                 <Button
                   variant="ghost"
-                  className="h-10 rounded-lg text-slate-500"
                   onClick={() => {
                     changeFilters(emptyFilters);
                     setSelected([...defaultColumns[kind]]);
@@ -119,7 +114,7 @@ export function ClientCustomExport() {
                 </Button>
               )}
               <Button
-                className="h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+                variant="primary"
                 loading={busy}
                 disabled={busy}
                 onClick={() => void prepare()}
@@ -130,15 +125,12 @@ export function ClientCustomExport() {
             </div>
           </div>
           {error && (
-            <p
-              role="alert"
-              className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700"
-            >
+            <p role="alert" className="rounded-md bg-bad-soft px-3.5 py-2.5 text-sm text-bad">
               {error}
             </p>
           )}
         </div>
-      </section>
+      </Card>
       <ClientExportPreview
         kind={kind}
         selected={selected}
@@ -146,7 +138,7 @@ export function ClientCustomExport() {
         result={result}
         busy={busy}
       />
-      <p className="px-1 text-xs leading-5 text-slate-500">
+      <p className="px-1 text-xs leading-5 text-dim">
         Excel-compatible CSV · Up to 10,000 source records; larger requests stop without a partial
         file.
         {kind === "cases"

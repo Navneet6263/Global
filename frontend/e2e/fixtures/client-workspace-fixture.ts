@@ -84,6 +84,21 @@ export async function clientWorkspaceFixture(
         },
       });
     if (path === "/dashboards/navigation") return reply({ counts: { clientActions: 1 } });
+    if (path === "/client-finance/overview")
+      return reply({
+        summary: {
+          invoiceCount: 2,
+          openInvoiceCount: 1,
+          billed: 9000,
+          collected: 4500,
+          credited: 0,
+          outstanding: 4500,
+          overdueAmount: 0,
+          overdueCount: 0,
+        },
+        ageing: [],
+        generatedAt: now,
+      });
     if (path === "/dashboards/operations")
       return reply({
         summary: { total: 23, overdue: 0, createdToday: 23, completedToday: 5 },

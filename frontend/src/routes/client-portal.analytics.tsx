@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { ErrorState } from "@/components/feedback/error-state";
-import { ListSkeleton } from "@/components/feedback/skeletons";
+import { ErrorText, Loading, MetricCards, Tabs } from "@/kit";
 import { ClientDeepAnalytics } from "@/features/stakeholders/client/ClientDeepAnalytics";
 import { ClientInsights } from "@/features/stakeholders/client/ClientInsights";
 import { ClientBranchComparison } from "@/features/stakeholders/client/ClientBranchComparison";
 import { ClientWorkspaceHeader } from "@/features/stakeholders/client/ClientWorkspaceHeader";
-import { ClientSummary } from "@/features/stakeholders/client/ClientPageParts";
 import { caseStatusLabel, relativeTime } from "@/features/stakeholders/client/client-portal-utils";
 import { getClientAnalyticsDashboard, getOperationsDashboard } from "@/lib/api/dashboards";
 
@@ -16,8 +14,16 @@ export const Route = createFileRoute("/client-portal/analytics")({
   component: ClientAnalyticsPage,
 });
 
+type InsightView = "flow" | "quality" | "branches";
+
+const VIEWS = [
+  ["flow", "Flow & outcomes"],
+  ["quality", "Quality & rework"],
+  ["branches", "Branch comparison"],
+] as const;
+
 function ClientAnalyticsPage() {
-  const [view, setView] = useState<"flow" | "quality" | "branches">("flow");
+  const [view, setView] = useState<InsightView>("flow");
   const operations = useQuery({
     queryKey: ["dashboard", "client"],
     queryFn: getOperationsDashboard,
@@ -28,89 +34,81 @@ function ClientAnalyticsPage() {
   });
   const data = analytics.data;
   return (
-    <>
+    <div className="flex min-w-0 flex-col gap-4">
       <ClientWorkspaceHeader
         title="Portfolio insights"
         description="Spot delays, understand quality and compare delivery branches."
       />
-      {analytics.isError && (
-        <ErrorState
-          description={analytics.error.message}
-          onRetry={() => void analytics.refetch()}
-          retrying={analytics.isFetching}
-        />
-      )}
-      {analytics.isPending && <ListSkeleton rows={4} />}
-      {data && (
+      {analytics.isError ? (
+        <ErrorText onRetry={() => void analytics.refetch()} retrying={analytics.isFetching}>
+          We couldn&apos;t load this data. {analytics.error.message}
+        </ErrorText>
+      ) : null}
+      {analytics.isPending ? <Loading>Loading insights…</Loading> : null}
+      {data ? (
         <>
-          <ClientSummary
-            items={[
+          <MetricCards
+            label="Page summary"
+            metrics={[
               {
                 label: "Non-clear outcomes",
                 value: `${data.summary.nonClearRate}%`,
-                tone: "amber",
-                detail: `${data.summary.nonClear} of ${data.summary.returnedOutcomes} returned checks`,
+                progress: Math.round(data.summary.nonClearRate),
+                tone: "warn",
+                note: `${data.summary.nonClear} of ${data.summary.returnedOutcomes} returned checks`,
               },
               {
                 label: "Rejected documents",
                 value: data.summary.rejectedDocuments,
-                tone: "red",
-                detail: "Current document records",
+                alarm: data.summary.rejectedDocuments > 0,
+                note: "Current document records",
               },
               {
                 label: "QA rework",
                 value: data.summary.qaRework,
-                tone: "violet",
-                detail: "Cases returned for correction",
+                note: "Cases returned for correction",
               },
               {
                 label: "Largest active stage",
                 value: data.bottleneck?.count ?? 0,
-                detail: data.bottleneck
-                  ? caseStatusLabel(data.bottleneck.status)
-                  : "No active stage",
+                note: data.bottleneck ? caseStatusLabel(data.bottleneck.status) : "No active stage",
               },
             ]}
           />
-          <div className="client-view-toolbar">
-            <div className="client-segments" role="group" aria-label="Insight view">
-              {(
-                [
-                  ["flow", "Flow & outcomes"],
-                  ["quality", "Quality & rework"],
-                  ["branches", "Branch comparison"],
-                ] as const
-              ).map(([value, label]) => (
-                <button key={value} aria-pressed={view === value} onClick={() => setView(value)}>
-                  {label}
-                </button>
-              ))}
-            </div>
-            <span className="client-muted">Snapshot updated {relativeTime(data.generatedAt)}</span>
-          </div>
-          <div className="client-insights-view">
+          <Tabs
+            label="Insight view"
+            value={view}
+            onChange={setView}
+            tabs={VIEWS}
+            aside={
+              <span className="text-xs text-dim">
+                Snapshot updated {relativeTime(data.generatedAt)}
+              </span>
+            }
+          />
+          <div className="flex min-w-0 flex-col gap-4">
             {view === "branches" ? (
               <ClientBranchComparison rows={data.branches ?? []} />
             ) : (
               <ClientDeepAnalytics data={data} view={view} />
             )}
-            {view === "flow" && (
+            {view === "flow" ? (
               <>
-                {operations.isPending && <ListSkeleton rows={3} />}
-                {operations.isError && (
-                  <ErrorState
-                    title="Movement data unavailable"
-                    description={operations.error.message}
+                {operations.isPending ? <Loading>Loading monthly movement…</Loading> : null}
+                {operations.isError ? (
+                  <ErrorText
                     onRetry={() => void operations.refetch()}
                     retrying={operations.isFetching}
-                  />
-                )}
-                {operations.data && <ClientInsights data={operations.data} />}
+                  >
+                    Movement data unavailable. {operations.error.message}
+                  </ErrorText>
+                ) : null}
+                {operations.data ? <ClientInsights data={operations.data} /> : null}
               </>
-            )}
+            ) : null}
           </div>
         </>
-      )}
-    </>
+      ) : null}
+    </div>
   );
 }

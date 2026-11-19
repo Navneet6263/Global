@@ -9,22 +9,6 @@
   }
 }
 
-/* The header, sidebar and page frame are laid out by WorkspaceFrame (Tailwind).
-   These rules only style the search box inside the header. */
-.client-global-search form {
-  max-width: none;
-}
-.client-global-search input {
-  height: 38px;
-  border-radius: 10px;
-  border-color: #e2e8f0;
-  background: #f6f8fb;
-  font-size: 13.5px;
-  box-shadow: none;
-}
-.client-global-search input:focus {
-  background: #fff;
-}
 .client-main {
   padding: 24px;
   max-width: 1850px;
@@ -65,24 +49,6 @@
   border-radius: 8px;
   font-size: 13px;
   box-shadow: none;
-}
-.client-import-control button {
-  border-radius: 8px;
-  height: 34px;
-  color: #1d4ed8;
-  background: #fff;
-  border-color: #e2e8f0;
-}
-.client-skip-link {
-  position: absolute;
-  left: -9999px;
-}
-.client-skip-link:focus {
-  left: 16px;
-  top: 16px;
-  z-index: 100;
-  background: white;
-  padding: 12px;
 }
 .client-portal-shell :is(button, a, input, select):focus-visible {
   outline: 2px solid #1d4ed8;

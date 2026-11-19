@@ -14,8 +14,17 @@ export const clientStages = [
   { value: "STOPPED", label: "Stopped", tone: "neutral" },
 ] as const;
 
+export const CASE_TABS = ["overview", "checks", "documents", "requests", "timeline"] as const;
+export type CaseTabName = (typeof CASE_TABS)[number];
+
+export function parseCaseTab(value: unknown): CaseTabName | undefined {
+  return CASE_TABS.find((tab) => tab === value);
+}
+
 export interface ClientQueueSearch {
   caseId?: string;
+  /** Which tab of the case opens first, e.g. "documents" from the to-do list. */
+  tab?: CaseTabName;
   q?: string;
   status?: string;
   page?: number;
@@ -35,6 +44,7 @@ export function parseClientQueueSearch(input: Record<string, unknown>): ClientQu
       typeof input["caseId"] === "string" && input["caseId"].length <= 64
         ? input["caseId"] || undefined
         : undefined,
+    tab: parseCaseTab(input["tab"]),
     q: q || undefined,
     status: clientStages.some((stage) => stage.value === input["status"])
       ? (input["status"] as string)

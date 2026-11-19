@@ -1,59 +1,31 @@
 import { useState } from "react";
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AlarmClock,
-  CircleHelp,
-  Download,
-  FileArchive,
-  GaugeCircle,
-  ListChecks,
-  TriangleAlert,
-  type LucideIcon,
-} from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AlarmClock, Download, FileArchive } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { COLOUR_CODES, hexFor } from "@/features/workflow-ui/colour-legend";
+import { Button, Card, CardHeader, Input, Select } from "@/kit";
+import { COLOUR_CODES } from "@/features/workflow-ui/colour-legend";
 import {
   createMisSchedule,
   deleteMisSchedule,
   downloadBulkReports,
-  downloadMis,
-  downloadRmMis,
-  getMis,
-  getRmMis,
   getMisSchedules,
   type MisFrequency,
   type MisPreset,
 } from "@/lib/backend-api/client-reports";
 import type { Disposition } from "@/lib/backend-api/rework";
 import { formatDateTime } from "@/lib/formatting";
+import { PresetReports } from "./ClientMisPresets";
+import {
+  FREQUENCIES,
+  PRESETS,
+  fieldLabel,
+  monthAgo,
+  presetLabel,
+  sectionLabel,
+  today,
+} from "./client-mis-model";
 
-const PRESETS: Array<{ value: MisPreset; label: string; hint: string; icon: LucideIcon }> = [
-  {
-    value: "CASE_STATUS",
-    label: "Case status",
-    hint: "Every case and where it is",
-    icon: ListChecks,
-  },
-  { value: "TAT", label: "TAT", hint: "Turnaround and cases past due", icon: GaugeCircle },
-  { value: "UTV", label: "UTV", hint: "Checks unable to verify", icon: CircleHelp },
-  {
-    value: "DISCREPANCY",
-    label: "Discrepancy",
-    hint: "Checks with a discrepancy",
-    icon: TriangleAlert,
-  },
-];
-const FREQUENCIES: Array<{ value: MisFrequency; label: string }> = [
-  { value: "DAILY", label: "Daily" },
-  { value: "WEEKLY", label: "Weekly (Monday)" },
-  { value: "MONTHLY", label: "Monthly (1st)" },
-];
-const presetLabel = (value: MisPreset) => PRESETS.find((item) => item.value === value)?.label;
-
-const isoDay = (date: Date) => date.toISOString().slice(0, 10);
-const today = isoDay(new Date());
-const monthAgo = isoDay(new Date(Date.now() - 30 * 86_400_000));
+export { PresetReports } from "./ClientMisPresets";
 
 /**
  * Company Admin MIS (BGV process): ready-made Case status / TAT / UTV / Discrepancy
@@ -64,7 +36,7 @@ export function ClientMisReports() {
   return (
     <div className="grid min-w-0 gap-5">
       <PresetReports />
-      <div className="mis-split">
+      <div className="grid min-w-0 items-start gap-5 xl:grid-cols-2">
         <BulkDownload />
         <Schedules />
       </div>
@@ -72,149 +44,11 @@ export function ClientMisReports() {
   );
 }
 
-/**
- * Ready-made MIS. For the Company Admin it is its own company; an RM passes `company`
- * (one of its assigned companies) and the same report is built for that company.
- */
-export function PresetReports({ company }: { company?: { id: string; name: string } }) {
-  const [preset, setPreset] = useState<MisPreset>("CASE_STATUS");
-  const [from, setFrom] = useState(monthAgo);
-  const [to, setTo] = useState(today);
-  const mis = useQuery({
-    queryKey: ["client-reports", "mis", company?.id ?? "own", preset, from, to],
-    queryFn: () => (company ? getRmMis(company.id, preset, from, to) : getMis(preset, from, to)),
-    placeholderData: keepPreviousData,
-  });
-  const download = useMutation({
-    mutationFn: () =>
-      company
-        ? downloadRmMis(company.id, company.name, preset, from, to)
-        : downloadMis(preset, from, to),
-    onError: (error: Error) => toast.error("Not downloaded", { description: error.message }),
-  });
-  const data = mis.data;
+function CardTitle({ icon: Icon, children }: { icon: typeof Download; children: string }) {
   return (
-    <section className="mis-card" aria-label="Ready-made reports">
-      <header className="mis-head">
-        <div>
-          <h2>Ready-made reports</h2>
-          <p>Pick a report, choose the dates, and download it with colour codes.</p>
-        </div>
-        <div className="mis-range">
-          <label>
-            From
-            <input
-              type="date"
-              value={from}
-              max={to}
-              onChange={(e) => setFrom(e.target.value)}
-              aria-label="Report from"
-            />
-          </label>
-          <label>
-            To
-            <input
-              type="date"
-              value={to}
-              min={from}
-              max={today}
-              onChange={(e) => setTo(e.target.value)}
-              aria-label="Report to"
-            />
-          </label>
-          <Button
-            size="sm"
-            disabled={!data?.total}
-            loading={download.isPending}
-            onClick={() => download.mutate()}
-          >
-            <Download aria-hidden /> Download CSV
-          </Button>
-        </div>
-      </header>
-      <div className="mis-presets" role="group" aria-label="Report preset">
-        {PRESETS.map((item) => (
-          <button
-            key={item.value}
-            type="button"
-            aria-pressed={preset === item.value}
-            onClick={() => setPreset(item.value)}
-          >
-            <item.icon aria-hidden />
-            <span>
-              <strong>{item.label}</strong>
-              <small>{item.hint}</small>
-            </span>
-          </button>
-        ))}
-      </div>
-      {data ? (
-        <div className="ann-colours mis-colours" aria-label="Colour code summary">
-          <span className="ann-total">
-            <strong>{data.total}</strong> rows
-          </span>
-          {COLOUR_CODES.filter((code) => data.colours[code.value]).map((code) => (
-            <span key={code.value} className="ann-chip">
-              <i style={{ background: code.hex }} aria-hidden />
-              {code.label}
-              <strong>{data.colours[code.value]}</strong>
-            </span>
-          ))}
-          {data.colours["NONE"] ? (
-            <span className="ann-chip">
-              <i style={{ background: hexFor(null) }} aria-hidden />
-              In progress
-              <strong>{data.colours["NONE"]}</strong>
-            </span>
-          ) : null}
-        </div>
-      ) : null}
-      {mis.isError ? (
-        <p className="mis-empty">{mis.error.message}</p>
-      ) : !data ? (
-        <p className="mis-empty">Preparing…</p>
-      ) : !data.rows.length ? (
-        <p className="mis-empty">Nothing in this date range.</p>
-      ) : (
-        <div className="rmo-table-scroll">
-          <table className="rmo-table" aria-label={`${data.title} preview`}>
-            <thead>
-              <tr>
-                {data.columns.map((column) => (
-                  <th key={column}>{column}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.rows.map((row, index) => (
-                <tr key={index}>
-                  {row.cells.map((cell, column) => (
-                    <td
-                      key={column}
-                      className={column === row.cells.length - 1 ? "whitespace-nowrap" : undefined}
-                    >
-                      {column === row.cells.length - 1 && (data.preset !== "TAT" || row.colour) ? (
-                        <span className="ann-status">
-                          <i style={{ background: hexFor(row.colour) }} aria-hidden />
-                          {cell}
-                        </span>
-                      ) : (
-                        cell
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-      {data && data.total > data.rows.length ? (
-        <p className="mis-foot">
-          Preview shows {data.rows.length} of {data.total} rows. The CSV has all of them.
-        </p>
-      ) : null}
-    </section>
+    <span className="inline-flex items-center gap-2">
+      <Icon aria-hidden className="size-4 text-brand" /> {children}
+    </span>
   );
 }
 
@@ -229,19 +63,15 @@ function BulkDownload() {
     onError: (error: Error) => toast.error("Nothing downloaded", { description: error.message }),
   });
   return (
-    <section className="mis-card" aria-label="Bulk report download">
-      <header className="mis-head">
-        <div>
-          <h2>
-            <FileArchive aria-hidden /> Bulk report download
-          </h2>
-          <p>Every released report in the dates you choose, as one ZIP (up to 50).</p>
-        </div>
-      </header>
-      <div className="mis-form">
-        <label className="ops-field">
+    <Card label="Bulk report download" className="min-w-0">
+      <CardHeader
+        title={<CardTitle icon={FileArchive}>Bulk report download</CardTitle>}
+        description="Every released report in the dates you choose, as one ZIP (up to 50)."
+      />
+      <div className="grid gap-3 p-4 sm:grid-cols-3">
+        <label className={fieldLabel}>
           <span>Released from</span>
-          <input
+          <Input
             type="date"
             value={from}
             max={to}
@@ -249,9 +79,9 @@ function BulkDownload() {
             aria-label="Bulk from"
           />
         </label>
-        <label className="ops-field">
+        <label className={fieldLabel}>
           <span>Released to</span>
-          <input
+          <Input
             type="date"
             value={to}
             min={from}
@@ -260,9 +90,9 @@ function BulkDownload() {
             aria-label="Bulk to"
           />
         </label>
-        <label className="ops-field">
+        <label className={fieldLabel}>
           <span>Colour code</span>
-          <select
+          <Select
             value={colour}
             onChange={(e) => setColour(e.target.value as Disposition | "")}
             aria-label="Bulk colour code"
@@ -273,15 +103,20 @@ function BulkDownload() {
                 {code.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
-      <div className="mis-actions">
-        <Button size="sm" loading={download.isPending} onClick={() => download.mutate()}>
+      <div className="flex justify-end border-t border-line px-4 py-3">
+        <Button
+          variant="primary"
+          size="sm"
+          loading={download.isPending}
+          onClick={() => download.mutate()}
+        >
           <Download aria-hidden /> Download ZIP
         </Button>
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -320,19 +155,15 @@ function Schedules() {
       current.includes(email) ? current.filter((value) => value !== email) : [...current, email],
     );
   return (
-    <section className="mis-card" aria-label="Scheduled MIS">
-      <header className="mis-head">
-        <div>
-          <h2>
-            <AlarmClock aria-hidden /> Scheduled MIS
-          </h2>
-          <p>Get a report by email at 08:00 IST, daily, weekly or monthly.</p>
-        </div>
-      </header>
-      <div className="mis-form">
-        <label className="ops-field">
+    <Card label="Scheduled MIS" className="min-w-0">
+      <CardHeader
+        title={<CardTitle icon={AlarmClock}>Scheduled MIS</CardTitle>}
+        description="Get a report by email at 08:00 IST, daily, weekly or monthly."
+      />
+      <div className="grid gap-3 p-4 sm:grid-cols-2">
+        <label className={fieldLabel}>
           <span>Report</span>
-          <select
+          <Select
             value={preset}
             onChange={(e) => setPreset(e.target.value as MisPreset)}
             aria-label="Scheduled report"
@@ -342,11 +173,11 @@ function Schedules() {
                 {item.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
-        <label className="ops-field">
+        <label className={fieldLabel}>
           <span>How often</span>
-          <select
+          <Select
             value={frequency}
             onChange={(e) => setFrequency(e.target.value as MisFrequency)}
             aria-label="Schedule frequency"
@@ -356,27 +187,35 @@ function Schedules() {
                 {item.label}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
       </div>
-      <fieldset className="mis-recipients">
-        <legend>Send to (people in your company, up to 5)</legend>
+      <fieldset className="m-0 grid min-w-0 gap-2 border-0 px-4 pb-4">
+        <legend className={`${sectionLabel} mb-2`}>
+          Send to (people in your company, up to 5)
+        </legend>
         {(schedules.data?.recipients ?? []).map((person) => (
-          <label key={person.email}>
+          <label
+            key={person.email}
+            className="flex min-w-0 cursor-pointer items-center gap-2.5 rounded-md border border-line px-3 py-2 text-sm text-ink transition hover:bg-subtle/60 has-checked:border-brand has-checked:bg-brand-soft has-disabled:cursor-not-allowed has-disabled:opacity-60"
+          >
             <input
               type="checkbox"
+              className="size-4 shrink-0 accent-brand"
               checked={recipients.includes(person.email)}
               disabled={!recipients.includes(person.email) && recipients.length >= 5}
               onChange={() => toggle(person.email)}
             />
-            <span>
-              {person.displayName} <small>{person.email}</small>
+            <span className="min-w-0 truncate">
+              <span className="font-medium">{person.displayName}</span>{" "}
+              <small className="text-xs text-dim">{person.email}</small>
             </span>
           </label>
         ))}
       </fieldset>
-      <div className="mis-actions">
+      <div className="flex justify-end border-t border-line px-4 py-3">
         <Button
+          variant="primary"
           size="sm"
           disabled={!recipients.length}
           loading={create.isPending}
@@ -386,20 +225,23 @@ function Schedules() {
         </Button>
       </div>
       {schedules.data?.items.length ? (
-        <ul className="mis-schedules" aria-label="Active schedules">
+        <ul className="border-t border-line" aria-label="Active schedules">
           {schedules.data.items.map((item) => (
-            <li key={item.id}>
-              <div>
-                <strong>
+            <li
+              key={item.id}
+              className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-4 py-3 last:border-b-0"
+            >
+              <div className="flex min-w-0 flex-col gap-0.5">
+                <strong className="text-sm font-semibold text-ink">
                   {presetLabel(item.preset)} · {item.frequency.toLowerCase()}
                 </strong>
-                <small>
+                <small className="text-xs break-words text-dim">
                   To {item.recipients.join(", ")} · next {formatDateTime(item.nextRunAt)}
                 </small>
               </div>
               <Button
                 size="sm"
-                variant="outline"
+                variant="secondary"
                 loading={remove.isPending && remove.variables === item.id}
                 onClick={() => remove.mutate(item.id)}
               >
@@ -409,6 +251,6 @@ function Schedules() {
           ))}
         </ul>
       ) : null}
-    </section>
+    </Card>
   );
 }

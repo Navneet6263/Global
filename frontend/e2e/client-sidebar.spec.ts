@@ -7,34 +7,68 @@ for (const size of [
   { width: 1366, height: 768 },
   { width: 1672, height: 1000 },
 ]) {
-  test(`client navigation fits without scrolling at ${size.width}x${size.height}`, async ({
+  // Short screens (1280x600) may scroll the menu itself; larger ones show it all at once.
+  const short = size.height < 700;
+  test(`client navigation ${short ? "stays usable" : "fits without scrolling"} at ${size.width}x${size.height}`, async ({
     page,
   }) => {
-    await clientWorkspaceFixture(page);
+    const fixture = await clientWorkspaceFixture(page);
     await page.setViewportSize(size);
     await page.goto("/client-portal");
     const sidebar = page.locator(".client-sidebar");
-    const nav = sidebar.getByRole("navigation");
-    await expect(nav.getByRole("link", { name: "All verifications", exact: true })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Queries & support", exact: true })).toBeVisible();
-    expect(await nav.evaluate((el) => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+    const nav = sidebar.getByRole("navigation", { name: "client-admin navigation" });
+    // Flat menu: labelled groups of links, no expandable group buttons.
+    await expect(nav.getByRole("button")).toHaveCount(0);
+    for (const group of ["Home", "Verifications", "Reports", "Billing", "Help"])
+      await expect(nav.getByText(group, { exact: true })).toBeVisible();
+    const rows = [
+      "Overview",
+      "All candidates",
+      "Pipeline",
+      "Final reports",
+      "MIS & Excel",
+      "Custom export",
+      "Insights",
+      "Queries & support",
+    ];
+    for (const name of rows)
+      await expect(nav.getByRole("link", { name, exact: true })).toHaveCount(1);
+    // Badged rows: the to-do count and the amount due.
+    await expect(nav.getByRole("link", { name: /^Your to-do\b/ })).toContainText("1");
+    await expect(nav.getByRole("link", { name: /^Payments\b/ })).toContainText("₹4.5K due");
+    // Review submissions appears only when something is waiting.
+    await expect(nav.getByRole("link", { name: /Review submissions/ })).toHaveCount(0);
+    for (const removed of [
+      "All verifications",
+      "In progress",
+      "Completed",
+      "Awaiting release",
+      "Invoices & statements",
+      "Published reports",
+      "Needs your action",
+    ])
+      await expect(nav.getByRole("link", { name: removed })).toHaveCount(0);
+    await expect(nav.getByRole("link", { name: "Overview", exact: true })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
     await expect(sidebar.getByRole("switch")).toHaveCount(0);
     await expect(sidebar.getByText("Client Tester", { exact: true })).toHaveCount(0);
     await expect(sidebar.getByRole("button", { name: "Help with this page" })).toHaveCount(0);
-    await expect(nav.getByRole("link", { name: "Insights", exact: true })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Invoices & payments", exact: true })).toBeVisible();
-    await nav.getByRole("button", { name: "Reports", exact: true }).click();
-    await expect(nav.getByRole("button", { name: "Verifications", exact: true })).toHaveAttribute(
-      "aria-expanded",
-      "false",
-    );
-    await expect(nav.getByRole("link", { name: "Published reports" })).toBeVisible();
-    expect(await nav.evaluate((el) => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
-    await nav.getByRole("button", { name: "Verifications", exact: true }).click();
-    await expect(nav.getByRole("button", { name: "Reports", exact: true })).toHaveAttribute(
-      "aria-expanded",
-      "false",
-    );
+    if (short) {
+      // The menu scrolls inside the sidebar; the last row can still be reached and used.
+      expect(await nav.evaluate((el) => getComputedStyle(el).overflowY)).toBe("auto");
+      const last = nav.getByRole("link", { name: "Queries & support", exact: true });
+      await last.scrollIntoViewIfNeeded();
+      await expect(last).toBeInViewport();
+      const box = await sidebar.boundingBox();
+      expect(box!.y + box!.height).toBeLessThanOrEqual(size.height + 1);
+    } else {
+      expect(await nav.evaluate((el) => el.scrollHeight <= el.clientHeight + 1)).toBe(true);
+      await expect(
+        nav.getByRole("link", { name: "Queries & support", exact: true }),
+      ).toBeInViewport();
+    }
     const header = page.locator(".client-topbar");
     await expect(header.getByRole("button", { name: "Help menu" })).toBeVisible();
     await expect(
@@ -45,13 +79,14 @@ for (const size of [
     );
     expect(
       await page
-        .locator(".client-table-scroll")
+        .getByRole("region", { name: "Verification cases table" })
         .evaluate((el) => el.scrollWidth <= el.clientWidth + 1),
     ).toBe(true);
     await page.screenshot({
       path: `test-results/client-sidebar-${size.width}.png`,
       fullPage: true,
     });
+    expect(fixture.unexpected).toEqual([]);
   });
 }
 
@@ -118,7 +153,9 @@ for (const width of [320, 390]) {
     });
     await page.setViewportSize({ width, height: 720 });
     await page.goto("/client-portal");
-    await expect(page.getByRole("heading", { name: "Verification overview" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: /^Good (morning|afternoon|evening), Navneet$/ }),
+    ).toBeVisible();
     const header = page.locator(".client-topbar");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
@@ -130,9 +167,16 @@ for (const width of [320, 390]) {
     await page.getByRole("button", { name: "Open navigation" }).click();
     const drawer = page.getByRole("dialog", { name: "Client portal navigation" });
     await expect(drawer.getByRole("switch")).toHaveCount(0);
-    await drawer.getByRole("link", { name: "In progress", exact: true }).click();
-    await expect(page).toHaveURL(/verifications.*status=IN_PROGRESS/);
+    await expect(
+      drawer.getByRole("navigation", { name: "client-admin navigation" }).getByRole("button"),
+    ).toHaveCount(0);
+    await drawer.getByRole("link", { name: "All candidates", exact: true }).click();
+    await expect(page).toHaveURL(/\/client-portal\/verifications$/);
     await expect(drawer).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "All candidates", level: 1 })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+      true,
+    );
     expect(fixture.unexpected).toEqual([]);
     await page.screenshot({
       path: `test-results/client-header-mobile-${width}.png`,
@@ -140,3 +184,24 @@ for (const width of [320, 390]) {
     });
   });
 }
+
+test("the sidebar collapses to icons, remembers it and expands again", async ({ page }) => {
+  const fixture = await clientWorkspaceFixture(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/client-portal");
+  const sidebar = page.locator(".client-sidebar");
+  const wide = (await sidebar.boundingBox())!.width;
+  await page.getByRole("button", { name: "Collapse sidebar" }).click();
+  await expect(page.getByRole("button", { name: "Expand sidebar" })).toBeVisible();
+  await expect.poll(async () => (await sidebar.boundingBox())!.width).toBeLessThan(wide / 2);
+  // Icons keep their names for screen readers and hover, and still navigate.
+  const nav = page.getByRole("navigation", { name: "client-admin navigation" });
+  await expect(nav.getByRole("link", { name: "Pipeline", exact: true })).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Expand sidebar" })).toBeVisible();
+  await nav.getByRole("link", { name: "All candidates", exact: true }).click();
+  await expect(page).toHaveURL(/\/client-portal\/verifications/);
+  await page.getByRole("button", { name: "Expand sidebar" }).click();
+  await expect.poll(async () => (await sidebar.boundingBox())!.width).toBeCloseTo(wide, 0);
+  expect(fixture.unexpected).toEqual([]);
+});

@@ -1,0 +1,128 @@
+/* The one colour file, like the Task app's tokens.css. Pages never write colours;
+   they use these names as Tailwind classes: bg-page, bg-surface, bg-subtle, text-ink,
+   text-dim, border-line, bg-brand, bg-brand-soft, text-good, bg-warn-soft, text-bad ...
+   Sapling's colour is sky blue, the way Task's is teal green. */
+@theme {
+  --color-page: #eef4f8;
+  --color-surface: #fcfdfe;
+  --color-subtle: #e9f1f7;
+  --color-ink: #0f1e2d;
+  --color-dim: #536272;
+  --color-line: #dae5ed;
+  --color-brand: #0272ad;
+  --color-brand-fg: #ffffff;
+  --color-brand-soft: #e0f2fe;
+  --color-brand-bright: #0ea5e9;
+  --color-good: #15803d;
+  --color-good-soft: #dcfce7;
+  --color-warn: #a15c00;
+  --color-warn-soft: #fdf0d5;
+  --color-bad: #b42318;
+  --color-bad-soft: #fde7e5;
+  --color-note: #4338ca;
+  --color-note-soft: #ebe9fd;
+  --shadow-soft: 0 1px 2px rgb(15 30 45 / 0.04), 0 6px 18px -10px rgb(15 30 45 / 0.1);
+  --shadow-lift: 0 1px 2px rgb(15 30 45 / 0.05), 0 12px 28px -12px rgb(2 114 173 / 0.22);
+}
+
+/* Workspaces moved to the sky theme set this class on <html>, so dialogs, menus and
+   pickers (which open outside the page) turn sky blue too. */
+html.theme-sky {
+  --canvas: #eef4f8;
+  --card: #fcfdfe;
+  --popover: #fcfdfe;
+  --background: #fcfdfe;
+  --primary: #0272ad;
+  --ring: #0284c7;
+  --accent: #e0f2fe;
+  --accent-foreground: #035a8c;
+  --info: #0272ad;
+  --info-foreground: #035a8c;
+  --info-soft: #e0f2fe;
+  --border: #d6e2ea;
+  --border-strong: #c2d3df;
+  --input: #c2d3df;
+  --sidebar-accent: #e0f2fe;
+  --sidebar-accent-foreground: #035a8c;
+  --chart-1: #0272ad;
+}
+
+/* `dark:` follows the class on <html>, not the device setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark mode: the same names, darker values (sky blue stays the accent). The older
+   names are set too, so dialogs and menus built on them turn dark as well. */
+html.theme-sky.dark {
+  color-scheme: dark;
+  --color-page: #0b1620;
+  --color-surface: #111e2a;
+  --color-subtle: #172838;
+  --color-ink: #e2ebf2;
+  --color-dim: #94a7b8;
+  --color-line: #233646;
+  --color-brand: #38bdf8;
+  --color-brand-fg: #03202e;
+  --color-brand-soft: #0c2d40;
+  --color-brand-bright: #38bdf8;
+  --color-good: #4ade80;
+  --color-good-soft: #0f2e1d;
+  --color-warn: #f5b453;
+  --color-warn-soft: #3a2a12;
+  --color-bad: #f38b83;
+  --color-bad-soft: #3d1a18;
+  --color-note: #a5b4fc;
+  --color-note-soft: #1f2148;
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.25);
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -12px rgb(56 189 248 / 0.25);
+
+  --background: #111e2a;
+  --canvas: #0b1620;
+  --foreground: #e2ebf2;
+  --card: #111e2a;
+  --card-foreground: #e2ebf2;
+  --popover: #111e2a;
+  --popover-foreground: #e2ebf2;
+  --primary: #38bdf8;
+  --primary-foreground: #03202e;
+  --secondary: #172838;
+  --secondary-foreground: #c3d1dc;
+  --muted: #172838;
+  --muted-foreground: #94a7b8;
+  --accent: #0c2d40;
+  --accent-foreground: #7dd3fc;
+  --border: #233646;
+  --border-strong: #2f4659;
+  --input: #2f4659;
+  --ring: #38bdf8;
+  --destructive: #f38b83;
+  --success: #4ade80;
+  --success-foreground: #86efac;
+  --success-soft: #0f2e1d;
+  --info: #38bdf8;
+  --info-foreground: #7dd3fc;
+  --info-soft: #0c2d40;
+  --warning: #f5b453;
+  --warning-foreground: #fcd38d;
+  --warning-soft: #3a2a12;
+  --critical: #f38b83;
+  --critical-foreground: #fca5a5;
+  --critical-soft: #3d1a18;
+  --review: #a5b4fc;
+  --review-foreground: #c7d2fe;
+  --review-soft: #1f2148;
+  --neutral: #94a7b8;
+  --neutral-foreground: #c3d1dc;
+  --neutral-soft: #172838;
+  --sidebar: #111e2a;
+  --sidebar-foreground: #c3d1dc;
+  --sidebar-accent: #0c2d40;
+  --sidebar-accent-foreground: #7dd3fc;
+  --sidebar-border: #233646;
+}
+
+/* Same desktop density as the Task app (body zoom 0.9). */
+@media (min-width: 1024px) {
+  html.theme-sky {
+    zoom: 0.9;
+  }
+}

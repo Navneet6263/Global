@@ -1,20 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
-import {
-  CheckCheck,
-  CheckCircle2,
-  FileText,
-  Clock3,
-  MessageSquare,
-  ShieldCheck,
-  LayoutDashboard,
-  RefreshCw,
-} from "lucide-react";
+import { Copy, LifeBuoy, MessageSquare, RefreshCw } from "lucide-react";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
+import { Avatar, Button, Chip, ErrorText, Loading, Tabs } from "@/kit";
 import { listClarifications } from "@/lib/api/clarifications";
 import { getCase } from "@/lib/api/cases";
 import { ClientEscalate } from "./ClientEscalate";
@@ -24,17 +14,39 @@ import { ClientCaseDocuments } from "./ClientCaseDocuments";
 import { ClientCaseTimeline } from "./ClientCaseTimeline";
 import { ClientCaseOverview } from "./ClientCaseOverview";
 import { ClientCaseChecks } from "./ClientCaseChecks";
+import { ClientCaseProgress } from "./ClientCaseProgress";
 import { caseDate, clientCaseActivity } from "./client-case-activity";
 import { ClientClarificationCard } from "./ClientClarificationCard";
 import { ClientReportReady } from "./ClientReportReady";
-import { clientStatus, humanize, relativeTime, statusTone, tatText } from "./client-portal-utils";
+import { clientStatus, humanize, relativeTime, tatText } from "./client-portal-utils";
+
+type CaseTab = "overview" | "checks" | "documents" | "requests" | "timeline";
+const OPEN_DONE = ["RESOLVED", "CLOSED", "CANCELLED"];
+
+const badge = (value?: number) =>
+  value === undefined ? undefined : (
+    <span className="rounded-full bg-subtle px-1.5 font-mono text-[11px] leading-[18px] text-dim">
+      {value}
+    </span>
+  );
+
+function Fact({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="min-w-0 px-4 py-2.5">
+      <dt className="text-[10.5px] font-semibold tracking-wider text-dim uppercase">{label}</dt>
+      <dd className="mt-0.5 truncate text-sm font-semibold text-ink">{children}</dd>
+    </div>
+  );
+}
 
 export function ClientCaseDrawer({
   caseId,
+  initialTab = "overview",
   canRespond,
   onClose,
 }: {
   caseId: string;
+  initialTab?: CaseTab;
   canRespond: boolean;
   onClose: () => void;
 }) {
@@ -46,12 +58,21 @@ export function ClientCaseDrawer({
     queryKey: ["clarifications", caseId],
     queryFn: () => listClarifications(caseId),
   });
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState<CaseTab>(initialTab);
   const item = detail.data;
   const events = useMemo(() => (item ? clientCaseActivity(item) : []), [item]);
-  const completed = item?.checks.filter((check) => check.status === "COMPLETED").length ?? 0;
-  const progress = item?.checks.length ? Math.round((completed / item.checks.length) * 100) : 0;
   const questions = clarifications.data?.items ?? [];
+  const openRequests = clarifications.isSuccess
+    ? questions.filter((question) => !OPEN_DONE.includes(question.status)).length
+    : undefined;
+  const shown = item ? clientStatus(item) : null;
+  const copyNumber = () => {
+    if (!item) return;
+    void navigator.clipboard
+      ?.writeText(item.caseNumber)
+      .then(() => toast.success("Case number copied"))
+      .catch(() => toast.error("Could not copy"));
+  };
   return (
     <Dialog
       open
@@ -66,44 +87,61 @@ export function ClientCaseDrawer({
           event.preventDefault();
           if (opener.current?.isConnected) opener.current.focus();
         }}
-        className="client-case-workspace flex h-[85%] max-h-[900px] w-[calc(100%-2rem)] max-w-[1160px] flex-col gap-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-0 text-slate-900 shadow-2xl"
+        className="flex h-[88%] max-h-[920px] w-[calc(100%-2rem)] max-w-[1180px] flex-col gap-0 overflow-hidden rounded-2xl border border-line bg-page p-0 text-ink shadow-2xl"
       >
-        <header className="flex shrink-0 items-center gap-3 border-b border-slate-200 px-5 py-4 pr-12 sm:px-6">
-          <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
-            <ShieldCheck className="size-5" />
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-blue-600">
-              Verification workspace
-            </p>
-            <DialogTitle className="truncate text-xl font-bold">
-              {item?.subject.fullName ?? (detail.isError ? "Case unavailable" : "Loading case")}
-            </DialogTitle>
-            <DialogDescription className="mt-1 text-xs text-slate-500">
-              {item
-                ? `${item.caseNumber} · ${item.client.displayName}`
-                : "Your case details, documents and activity"}
-            </DialogDescription>
+        <header className="shrink-0 border-b border-line bg-surface">
+          <div className="flex items-center gap-3.5 px-5 pt-5 pb-4 pr-12 sm:px-6">
+            <Avatar name={item?.subject.fullName ?? "?"} className="size-12 rounded-xl text-base" />
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] font-semibold tracking-wider text-brand uppercase">
+                Verification workspace
+              </p>
+              <DialogTitle className="truncate text-[22px] font-bold tracking-tight">
+                {item?.subject.fullName ?? (detail.isError ? "Case unavailable" : "Loading case")}
+              </DialogTitle>
+              <DialogDescription asChild>
+                <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-dim">
+                  {item ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={copyNumber}
+                        title="Copy case number"
+                        className="inline-flex items-center gap-1 rounded border border-line bg-subtle/60 px-1.5 py-0.5 font-mono text-[11px] text-ink hover:border-brand/40"
+                      >
+                        {item.caseNumber}
+                        <Copy className="size-3 text-dim" aria-hidden />
+                      </button>
+                      <span>{item.client.displayName}</span>
+                    </>
+                  ) : (
+                    <span>Your case details, documents and activity</span>
+                  )}
+                </div>
+              </DialogDescription>
+            </div>
+            {shown ? (
+              <Chip tone={shown.kind} dot className="hidden px-3 py-1 text-[13px] sm:inline-flex">
+                {shown.label}
+              </Chip>
+            ) : null}
           </div>
-          {item && (
-            <span
-              className={`hidden rounded-full px-3 py-1.5 text-xs font-semibold sm:block ${clientStatus(item).tone}`}
-            >
-              {clientStatus(item).label}
-            </span>
-          )}
+          {item ? (
+            <dl className="grid grid-cols-2 divide-line border-t border-line sm:grid-cols-3 sm:divide-x lg:grid-cols-6">
+              <Fact label="Turnaround">{tatText(item.tatWorkingDays)}</Fact>
+              <Fact label="Package">{casePackageName(item) || "Not available"}</Fact>
+              <Fact label="Priority">{humanize(item.priority)}</Fact>
+              <Fact label="Created">{caseDate(item.createdAt)}</Fact>
+              <Fact label="Last updated">{relativeTime(item.updatedAt)}</Fact>
+              <Fact label="Branch">{item.branch?.name ?? "Not assigned"}</Fact>
+            </dl>
+          ) : null}
         </header>
-        {detail.isPending && (
-          <div className="space-y-4 p-6" aria-label="Loading case detail">
-            <Skeleton className="h-24 rounded-xl" />
-            <Skeleton className="h-60 rounded-xl" />
-          </div>
-        )}
-        {detail.isError && (
-          <div className="m-6 rounded-xl border border-red-200 bg-red-50 p-4" role="alert">
-            <p className="text-sm">{detail.error.message}</p>
+        {detail.isPending ? <Loading>Loading case detail…</Loading> : null}
+        {detail.isError ? (
+          <div className="m-6 rounded-lg bg-bad-soft p-4" role="alert">
+            <p className="text-sm text-ink">{detail.error.message}</p>
             <Button
-              variant="outline"
               className="mt-3"
               loading={detail.isFetching}
               onClick={() => void detail.refetch()}
@@ -111,105 +149,38 @@ export function ClientCaseDrawer({
               Retry case
             </Button>
           </div>
-        )}
-        {item && !detail.isError && (
+        ) : null}
+        {item && shown && !detail.isError ? (
           <div className="min-h-0 flex-1 overflow-y-auto">
-            <div className="grid min-h-full lg:grid-cols-[minmax(0,1fr)_260px]">
-              <main className="min-w-0 p-4 sm:p-6">
-                <section
-                  className="mb-5 rounded-xl border border-blue-100 bg-gradient-to-r from-blue-50 to-white p-4"
-                  aria-label="Case progress"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">{clientStatus(item).label}</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {clientStatus(item).detail ??
-                          `${completed} of ${item.checks.length} checks completed`}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <strong className="text-2xl font-bold text-blue-600">{progress}%</strong>
-                      <span className="block text-[10px] text-slate-500">Checks complete</span>
-                    </div>
-                  </div>
-                  <div
-                    role="progressbar"
-                    aria-label="Checks completed"
-                    aria-valuenow={progress}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    className="mt-3 h-1.5 overflow-hidden rounded-full bg-blue-100"
-                  >
-                    <div
-                      className="h-full rounded-full bg-blue-600"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                  {item.clientProgress?.candidateSubmittedAt ? (
-                    <p
-                      className="mt-3 flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-800"
-                      role="status"
-                    >
-                      <CheckCircle2 className="size-4 shrink-0" aria-hidden />
-                      Candidate uploaded all documents on{" "}
-                      {caseDate(item.clientProgress.candidateSubmittedAt)}.
-                    </p>
-                  ) : null}
-                </section>
+            <div className="grid min-h-full lg:grid-cols-[minmax(0,1fr)_250px]">
+              <main className="flex min-w-0 flex-col gap-4 p-4 sm:p-6">
+                <ClientCaseProgress item={item} label={shown.label} detail={shown.detail} />
                 {item.report ? (
-                  <ClientReportReady
-                    report={item.report}
-                    caseNumber={item.caseNumber}
-                    className="mb-5"
-                  />
+                  <ClientReportReady report={item.report} caseNumber={item.caseNumber} />
                 ) : null}
-                <Tabs value={tab} onValueChange={setTab}>
-                  <TabsList className="mb-4 grid h-auto w-full grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:grid-cols-5">
-                    {[
-                      { value: "overview", label: "Overview", icon: LayoutDashboard },
-                      {
-                        value: "checks",
-                        label: `Checks (${item.checks.length})`,
-                        icon: CheckCheck,
-                      },
-                      {
-                        value: "documents",
-                        label: `Documents (${item.documents.length})`,
-                        icon: FileText,
-                      },
-                      { value: "requests", label: "Requests", icon: MessageSquare },
-                      { value: "timeline", label: "Timeline", icon: Clock3 },
-                    ].map(({ value, label, icon: Icon }) => (
-                      <TabsTrigger
-                        key={value}
-                        value={value}
-                        className="gap-1.5 rounded-lg py-2.5 text-xs font-semibold data-[state=active]:text-blue-700"
-                      >
-                        <Icon className="size-3.5" />
-                        {label}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-                  <TabsContent value="overview">
+                <Tabs<CaseTab>
+                  label="Case sections"
+                  value={tab}
+                  onChange={setTab}
+                  tabs={[
+                    ["overview", "Overview"],
+                    ["checks", "Checks", badge(item.checks.length)],
+                    ["documents", "Documents", badge(item.documents.length)],
+                    ["requests", "Requests", badge(openRequests)],
+                    ["timeline", "Timeline", badge(events.length)],
+                  ]}
+                />
+                <div role="tabpanel" aria-label={tab} className="flex flex-col gap-3">
+                  {tab === "overview" ? (
                     <ClientCaseOverview
                       item={item}
                       events={events}
-                      requestCount={
-                        clarifications.isSuccess
-                          ? questions.filter(
-                              (question) =>
-                                !["RESOLVED", "CLOSED", "CANCELLED"].includes(question.status),
-                            ).length
-                          : undefined
-                      }
-                      onSelect={setTab}
+                      requestCount={openRequests}
+                      onSelect={(value) => setTab(value as CaseTab)}
                     />
-                  </TabsContent>
-                  <TabsContent value="checks">
-                    <ClientCaseChecks checks={item.checks} />
-                  </TabsContent>
-                  <TabsContent value="documents">
+                  ) : null}
+                  {tab === "checks" ? <ClientCaseChecks checks={item.checks} /> : null}
+                  {tab === "documents" ? (
                     <ClientCaseDocuments
                       requirements={
                         (
@@ -222,100 +193,79 @@ export function ClientCaseDrawer({
                       caseStatus={item.status}
                       items={item.documents}
                     />
-                  </TabsContent>
-                  <TabsContent value="timeline">
-                    <ClientCaseTimeline events={events} />
-                  </TabsContent>
-                  <TabsContent value="requests" className="space-y-3">
-                    {clarifications.isPending && (
-                      <p role="status" className="p-4 text-sm text-slate-500">
-                        Loading requests…
-                      </p>
-                    )}
-                    {clarifications.isError && (
-                      <div role="alert" className="rounded-xl bg-red-50 p-4 text-sm">
-                        {clarifications.error.message}
-                        <Button
-                          variant="outline"
-                          className="mt-2"
-                          onClick={() => void clarifications.refetch()}
+                  ) : null}
+                  {tab === "timeline" ? <ClientCaseTimeline events={events} /> : null}
+                  {tab === "requests" ? (
+                    <>
+                      {clarifications.isPending ? <Loading>Loading requests…</Loading> : null}
+                      {clarifications.isError ? (
+                        <ErrorText
+                          onRetry={() => void clarifications.refetch()}
+                          retrying={clarifications.isFetching}
                         >
-                          Retry requests
-                        </Button>
-                      </div>
-                    )}
-                    {questions.map((question) => (
-                      <ClientClarificationCard
-                        key={question.id}
-                        caseId={caseId}
-                        item={question}
-                        canRespond={canRespond}
-                      />
-                    ))}
-                    {clarifications.isSuccess && !questions.length && (
-                      <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center">
-                        <MessageSquare className="mx-auto mb-3 size-6 text-blue-400" />
-                        <p className="text-sm font-semibold">No clarification is pending</p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          Questions from the verification team will appear here.
-                        </p>
-                      </div>
-                    )}
-                  </TabsContent>
-                </Tabs>
+                          {clarifications.error.message}
+                        </ErrorText>
+                      ) : null}
+                      {questions.map((question) => (
+                        <ClientClarificationCard
+                          key={question.id}
+                          caseId={caseId}
+                          item={question}
+                          canRespond={canRespond}
+                        />
+                      ))}
+                      {clarifications.isSuccess && !questions.length ? (
+                        <div className="rounded-xl border border-dashed border-line bg-surface p-8 text-center">
+                          <MessageSquare className="mx-auto mb-3 size-6 text-brand" aria-hidden />
+                          <p className="text-sm font-semibold text-ink">
+                            No clarification is pending
+                          </p>
+                          <p className="mt-1 text-xs text-dim">
+                            Questions from the verification team will appear here.
+                          </p>
+                        </div>
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
               </main>
               <aside
-                className="space-y-5 border-t border-slate-200 bg-slate-50/70 p-5 lg:border-l lg:border-t-0"
+                className="flex flex-col gap-3 border-t border-line bg-surface p-5 lg:border-t-0 lg:border-l"
                 aria-label="Case summary"
               >
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                <h3 className="text-[11px] font-semibold tracking-wider text-dim uppercase">
                   At a glance
                 </h3>
                 <Button
-                  variant="outline"
                   size="sm"
-                  className="w-full gap-2 rounded-lg bg-white"
+                  className="w-full"
                   loading={detail.isFetching || clarifications.isFetching}
                   onClick={() => {
                     void detail.refetch();
                     void clarifications.refetch();
                   }}
                 >
-                  <RefreshCw className="size-3.5" />
+                  <RefreshCw aria-hidden />
                   Refresh case
                 </Button>
-                <dl className="space-y-4">
-                  {[
-                    ["Turnaround", tatText(item.tatWorkingDays)],
-                    ["Created", caseDate(item.createdAt)],
-                    ["Priority", humanize(item.priority)],
-                    [
-                      "Last updated",
-                      `${relativeTime(item.updatedAt)} · ${caseDate(item.updatedAt)}`,
-                    ],
-                    ["Package", casePackageName(item) || "Not available"],
-                    ["Branch", item.branch?.name ?? "Not assigned"],
-                  ].map(([label, value]) => (
-                    <div key={label}>
-                      <dt className="text-[11px] text-slate-500">{label}</dt>
-                      <dd className="mt-1 break-words text-xs font-semibold leading-5">{value}</dd>
-                    </div>
-                  ))}
-                </dl>
-                <div className="rounded-xl border border-blue-100 bg-white p-3">
-                  <p className="text-xs font-bold">Need an update?</p>
-                  <p className="mb-3 mt-1 text-xs leading-5 text-slate-500">
+                <p className="text-xs text-dim">
+                  Updated {relativeTime(item.updatedAt)} · {caseDate(item.updatedAt)}
+                </p>
+                <div className="rounded-xl bg-brand-soft p-3.5">
+                  <LifeBuoy className="mb-2 size-5 text-brand" aria-hidden />
+                  <p className="text-sm font-semibold text-ink">Need an update?</p>
+                  <p className="mt-0.5 mb-2 text-xs leading-5 text-ink/75">
                     Contact support with this case number.
                   </p>
                   <Link
                     to="/client-portal/support"
                     onClick={onClose}
-                    className="text-xs font-semibold text-blue-700"
+                    className="text-xs font-semibold text-brand hover:underline"
                   >
                     Open support →
                   </Link>
                 </div>
-                <p className="text-[11px] leading-5 text-slate-500">
+                <p className="text-xs leading-5 text-dim">
                   {item.report
                     ? "The final report is ready: download it above or from the Reports section."
                     : "The final report appears here and in the Reports section once it is released."}
@@ -323,15 +273,15 @@ export function ClientCaseDrawer({
               </aside>
             </div>
           </div>
-        )}
-        <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-5 py-3">
-          <span className="hidden text-[11px] text-slate-500 sm:inline">
+        ) : null}
+        <footer className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-line bg-surface px-5 py-3">
+          <span className="hidden text-xs text-dim sm:inline">
             Private · Visible only within your authorised workspace
           </span>
           <span className="flex min-w-0 flex-wrap items-center justify-end gap-2">
             {item && !detail.isError ? <InterimReportButton item={item} /> : null}
             {item && !detail.isError ? <ClientEscalate item={item} /> : null}
-            <Button variant="outline" size="sm" className="rounded-lg" onClick={onClose}>
+            <Button size="sm" onClick={onClose}>
               Close case detail
             </Button>
           </span>

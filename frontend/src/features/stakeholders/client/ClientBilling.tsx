@@ -1,14 +1,27 @@
 import { useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { ErrorState } from "@/components/feedback/error-state";
-import { ListSkeleton } from "@/components/feedback/skeletons";
+import { Button, Card, CardHeader, ErrorText, Loading, Segmented, Select, Th } from "@/kit";
 import { getClientFinanceOverview, listClientInvoices } from "@/lib/backend-api/client-finance";
 import { ClientWorkspaceHeader } from "./ClientWorkspaceHeader";
 import { MonthlyStatement } from "../finance/MonthlyStatement";
 import { ClientEmpty, ClientPager, ClientSearch, ClientSummary } from "./ClientPageParts";
 import { ClientInvoiceRow } from "./ClientInvoiceRow";
 import { invoiceMoney } from "./client-billing-format";
+
+const QUICK_FILTERS = [
+  ["", "All invoices"],
+  ["OVERDUE", "Overdue"],
+  ["PAID", "Paid"],
+] as const;
+const STATUSES = [
+  "ISSUED",
+  "PARTIALLY_PAID",
+  "PAID",
+  "OVERDUE",
+  "CREDITED",
+  "SETTLED",
+  "CANCELLED",
+];
 
 export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) {
   const [input, setInput] = useState("");
@@ -42,14 +55,13 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
         actions={reportMode ? <MonthlyStatement ownClient /> : undefined}
       />
       {overview.isError && (
-        <ErrorState
-          title="Balance summary unavailable"
-          description={overview.error.message}
-          onRetry={() => void overview.refetch()}
-          retrying={overview.isFetching}
-        />
+        <Card label="Balance summary unavailable">
+          <ErrorText onRetry={() => void overview.refetch()} retrying={overview.isFetching}>
+            Balance summary unavailable: {overview.error.message}
+          </ErrorText>
+        </Card>
       )}
-      {overview.isPending && <ListSkeleton rows={1} />}
+      {overview.isPending && <Loading>Loading balances…</Loading>}
       {summary && (
         <ClientSummary
           items={[
@@ -79,29 +91,21 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
           ]}
         />
       )}
-      <section className="client-register" aria-label="Invoice register">
-        <div className="client-register-title">
-          <div>
-            <h2>Invoice register</h2>
-            <p>Open a row for its payment and credit breakdown.</p>
-          </div>
-          <div className="client-segments" role="group" aria-label="Quick invoice filters">
-            {[
-              ["", "All invoices"],
-              ["OVERDUE", "Overdue"],
-              ["PAID", "Paid"],
-            ].map(([value, label]) => (
-              <button
-                key={label}
-                aria-pressed={status === value}
-                onClick={() => changeStatus(value!)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="client-register-toolbar">
+      <Card label="Invoice register">
+        <CardHeader
+          title="Invoice register"
+          description="Open a row for its payment and credit breakdown."
+          aside={
+            <Segmented<string>
+              label="Quick invoice filters"
+              className="max-w-full overflow-x-auto"
+              value={status}
+              onChange={changeStatus}
+              options={QUICK_FILTERS}
+            />
+          }
+        />
+        <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
           <ClientSearch
             label="Search invoice number"
             value={input}
@@ -111,26 +115,19 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
               resetPage();
             }}
           />
-          <select
+          <Select
             aria-label="Invoice status"
+            className="w-auto min-w-[160px]"
             value={status}
             onChange={(e) => changeStatus(e.target.value)}
           >
             <option value="">All statuses</option>
-            {[
-              "ISSUED",
-              "PARTIALLY_PAID",
-              "PAID",
-              "OVERDUE",
-              "CREDITED",
-              "SETTLED",
-              "CANCELLED",
-            ].map((value) => (
+            {STATUSES.map((value) => (
               <option key={value} value={value}>
                 {value.replaceAll("_", " ")}
               </option>
             ))}
-          </select>
+          </Select>
           {(search || status) && (
             <Button
               variant="ghost"
@@ -143,7 +140,7 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
               Clear filters
             </Button>
           )}
-          <span role="status" className="client-register-meta">
+          <span role="status" className="ml-auto text-xs text-dim">
             {invoices.isFetching
               ? "Updating invoices…"
               : invoices.isError
@@ -152,28 +149,25 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
           </span>
         </div>
         {invoices.isError && (
-          <ErrorState
-            description={invoices.error.message}
-            onRetry={() => void invoices.refetch()}
-            retrying={invoices.isFetching}
-          />
+          <ErrorText onRetry={() => void invoices.refetch()} retrying={invoices.isFetching}>
+            {invoices.error.message}
+          </ErrorText>
         )}
         {invoices.isPending ? (
-          <ListSkeleton rows={4} />
+          <Loading>Loading invoices…</Loading>
         ) : invoices.data ? (
           <>
-            <div className="client-register-scroll" aria-busy={invoices.isFetching}>
-              <table>
+            <div className="overflow-x-auto" aria-busy={invoices.isFetching}>
+              <table className="w-full border-collapse text-sm">
                 <caption className="sr-only">Your organisation's invoices</caption>
                 <thead>
                   <tr>
-                    {["Invoice", "Due date", "Total", "Balance", "Status", "Actions"].map(
-                      (label) => (
-                        <th scope="col" key={label}>
-                          {label}
-                        </th>
-                      ),
-                    )}
+                    <Th>Invoice</Th>
+                    <Th>Due date</Th>
+                    <Th align="right">Total</Th>
+                    <Th align="right">Balance</Th>
+                    <Th>Status</Th>
+                    <Th align="right">Actions</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -216,22 +210,29 @@ export function ClientBilling({ reportMode = false }: { reportMode?: boolean }) 
             setCursor(invoices.data.nextCursor);
           }}
         />
-      </section>
+      </Card>
       {overview.data && (
-        <section className="client-panel client-ageing" aria-label="Outstanding ageing">
-          <div>
-            <h2>Outstanding by age</h2>
-            <p className="client-muted">Recorded ledger balances across ageing buckets.</p>
-          </div>
-          <dl>
+        <Card label="Outstanding ageing">
+          <CardHeader
+            title="Outstanding by age"
+            description="Recorded ledger balances across ageing buckets."
+          />
+          <dl className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3 lg:grid-cols-5">
             {overview.data.ageing.map((bucket) => (
-              <div key={bucket.label}>
-                <dt>{bucket.label}</dt>
-                <dd>{invoiceMoney(bucket.value)}</dd>
+              <div
+                key={bucket.label}
+                className="flex min-w-0 flex-col gap-1 rounded-md border border-line bg-subtle/50 px-3 py-2.5"
+              >
+                <dt className="truncate text-[11px] font-semibold tracking-wider text-dim uppercase">
+                  {bucket.label}
+                </dt>
+                <dd className="font-mono text-base font-semibold text-ink tabular-nums">
+                  {invoiceMoney(bucket.value)}
+                </dd>
               </div>
             ))}
           </dl>
-        </section>
+        </Card>
       )}
     </>
   );

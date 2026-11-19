@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CircleCheck, Eye, FileText, Undo2 } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, Card, CardHeader, ErrorText, Loading, Textarea } from "@/kit";
 import {
   Dialog,
   DialogContent,
@@ -11,8 +11,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ErrorState } from "@/components/feedback/error-state";
-import { ListSkeleton } from "@/components/feedback/skeletons";
 import {
   approveClientReview,
   listClientReviews,
@@ -56,41 +54,42 @@ export function ClientReviewPage() {
   const waiting = items.filter((item) => item.state === "WITH_CANDIDATE");
 
   return (
-    <div className="crv">
+    <div className="flex flex-col gap-4">
       {reviews.isError ? (
-        <ErrorState
-          description={reviews.error.message}
-          onRetry={() => void reviews.refetch()}
-          retrying={reviews.isFetching}
-        />
+        <ErrorText onRetry={() => void reviews.refetch()} retrying={reviews.isFetching}>
+          {reviews.error.message}
+        </ErrorText>
       ) : null}
-      {reviews.isPending ? <ListSkeleton rows={3} /> : null}
+      {reviews.isPending ? <Loading>Loading submissions…</Loading> : null}
       {reviews.data ? (
         <>
-          <section className="client-panel" aria-labelledby="crv-todo">
-            <header className="client-panel-head">
-              <h2 id="crv-todo">
-                Waiting for your review <small>({toReview.length})</small>
-              </h2>
-              <p>Open each document, then approve or send it back to the candidate.</p>
-            </header>
+          <Card label="Waiting for your review">
+            <CardHeader
+              title="Waiting for your review"
+              count={toReview.length}
+              description="Open each document, then approve or send it back to the candidate."
+            />
             {toReview.length ? (
-              <ul className="crv-list">
+              <ul className="divide-y divide-line">
                 {toReview.map((item) => (
-                  <li key={item.id}>
-                    <div className="crv-head">
+                  <li key={item.id} className="px-4 py-3.5">
+                    <div className="flex flex-wrap items-center justify-between gap-3">
                       <span className="min-w-0">
-                        <strong>{item.candidateName}</strong>
-                        <small>
-                          {item.caseNumber} · submitted {formatDateTime(item.since)}
+                        <strong className="block font-semibold text-ink">
+                          {item.candidateName}
+                        </strong>
+                        <small className="text-xs text-dim">
+                          <span className="font-mono">{item.caseNumber}</span> · submitted{" "}
+                          {formatDateTime(item.since)}
                         </small>
                       </span>
-                      <span className="crv-actions">
-                        <Button variant="outline" size="sm" onClick={() => setReturning(item)}>
+                      <span className="flex flex-wrap gap-2">
+                        <Button size="sm" onClick={() => setReturning(item)}>
                           <Undo2 aria-hidden /> Return to candidate
                         </Button>
                         <Button
                           size="sm"
+                          variant="primary"
                           loading={approve.isPending && approve.variables?.id === item.id}
                           onClick={() => approve.mutate(item)}
                         >
@@ -98,58 +97,61 @@ export function ClientReviewPage() {
                         </Button>
                       </span>
                     </div>
-                    <ul className="crv-docs" aria-label={`Documents from ${item.candidateName}`}>
+                    <ul
+                      className="mt-3 flex flex-wrap gap-2"
+                      aria-label={`Documents from ${item.candidateName}`}
+                    >
                       {item.documents.length ? (
                         item.documents.map((document) => (
-                          <li key={document.id}>
-                            <FileText aria-hidden />
+                          <li
+                            key={document.id}
+                            className="flex items-center gap-2 rounded-md border border-line bg-subtle/50 py-1 pr-1 pl-2.5 text-sm text-ink"
+                          >
+                            <FileText className="size-4 text-brand" aria-hidden />
                             <span>{docLabel(document.type)}</span>
                             <button
                               type="button"
+                              className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs font-semibold text-brand hover:bg-brand-soft"
                               onClick={() =>
                                 void previewDocument(document.id).catch((error: Error) =>
                                   toast.error("Could not open", { description: error.message }),
                                 )
                               }
                             >
-                              <Eye aria-hidden /> Open
+                              <Eye className="size-3.5" aria-hidden /> Open
                             </button>
                           </li>
                         ))
                       ) : (
-                        <li className="crv-empty">No documents uploaded.</li>
+                        <li className="text-sm text-dim">No documents uploaded.</li>
                       )}
                     </ul>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="crv-none">Nothing to review right now.</p>
+              <p className="px-4 py-8 text-center text-sm text-dim">Nothing to review right now.</p>
             )}
-          </section>
+          </Card>
           {waiting.length ? (
-            <section className="client-panel" aria-labelledby="crv-waiting">
-              <header className="client-panel-head">
-                <h2 id="crv-waiting">
-                  Returned to the candidate <small>({waiting.length})</small>
-                </h2>
-                <p>They have a new link. It comes back here when they finish.</p>
-              </header>
-              <ul className="crv-list is-compact">
+            <Card label="Returned to the candidate">
+              <CardHeader
+                title="Returned to the candidate"
+                count={waiting.length}
+                description="They have a new link. It comes back here when they finish."
+              />
+              <ul className="divide-y divide-line">
                 {waiting.map((item) => (
-                  <li key={item.id}>
-                    <div className="crv-head">
-                      <span>
-                        <strong>{item.candidateName}</strong>
-                        <small>
-                          {item.caseNumber} · returned {formatDateTime(item.since)}
-                        </small>
-                      </span>
-                    </div>
+                  <li key={item.id} className="px-4 py-3">
+                    <strong className="block font-semibold text-ink">{item.candidateName}</strong>
+                    <small className="text-xs text-dim">
+                      <span className="font-mono">{item.caseNumber}</span> · returned{" "}
+                      {formatDateTime(item.since)}
+                    </small>
                   </li>
                 ))}
               </ul>
-            </section>
+            </Card>
           ) : null}
         </>
       ) : null}
@@ -193,22 +195,22 @@ function ReturnDialog({
           </DialogDescription>
         </DialogHeader>
         <label className="grid gap-1.5 text-sm">
-          <span className="font-medium">What should they fix?</span>
-          <textarea
+          <span className="font-medium text-ink">What should they fix?</span>
+          <Textarea
             rows={3}
             maxLength={500}
             value={reason}
             onChange={(event) => setReason(event.target.value)}
             placeholder="e.g. The PAN card photo is cut off. Please upload a clear full copy."
-            className="rounded-lg border border-slate-200 p-2.5 text-sm outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100"
           />
-          <small className="text-xs text-slate-500">At least 10 characters.</small>
+          <small className="text-xs text-dim">At least 10 characters.</small>
         </label>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={send.isPending}>
+          <Button onClick={onClose} disabled={send.isPending}>
             Cancel
           </Button>
           <Button
+            variant="primary"
             disabled={reason.trim().length < 10}
             loading={send.isPending}
             onClick={() => send.mutate()}

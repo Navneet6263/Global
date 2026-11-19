@@ -10,7 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button, Field, Select, Td, Th } from "@/kit";
 import { CheckRequirementsPanel } from "@/features/cases/CheckRequirementsPanel";
 import { getSession } from "@/lib/api/auth";
 import { apiRequest, saveBlob } from "@/lib/backend-api/client";
@@ -61,15 +61,9 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
       }}
     >
       <DialogTrigger asChild>
-        {internal ? (
-          <Button variant="outline">
-            <Upload className="size-4" aria-hidden /> Bulk upload
-          </Button>
-        ) : (
-          <button className="inline-flex h-9 items-center gap-2 rounded-full border border-mint/30 bg-mint-soft/60 px-4 text-xs font-semibold text-mint-deep">
-            <Upload className="size-3.5" /> Import CSV
-          </button>
-        )}
+        <Button>
+          <Upload aria-hidden /> {internal ? "Bulk upload" : "Import CSV"}
+        </Button>
       </DialogTrigger>
       <DialogContent
         className="max-h-[90vh] overflow-y-auto sm:max-w-3xl"
@@ -88,36 +82,35 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-info/20 bg-info-soft/35 p-4">
-            <p className="max-w-md text-xs text-muted-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-brand-soft p-4">
+            <p className="max-w-md text-xs text-ink">
               Use CSV exported from Excel. Candidate name and email or Indian mobile are required.
               {internal
                 ? "Choose the company below; every row goes to that company."
                 : "Your client workspace is applied automatically."}
             </p>
-            <button
+            <Button
+              size="sm"
               onClick={() =>
                 saveBlob(
                   new Blob([`${intakeHeaders}\r\n`], { type: "text/csv" }),
                   "sapling-candidate-import.csv",
                 )
               }
-              className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-2 text-xs font-semibold"
             >
-              <Download className="size-3.5" /> Template
-            </button>
+              <Download aria-hidden /> Template
+            </Button>
           </div>
           {internal ? (
-            <label className="block space-y-1 text-xs font-medium">
-              Company
-              <select
+            <Field label="Company" htmlFor="bulk-company">
+              <Select
+                id="bulk-company"
                 value={clientId}
                 disabled={running || attempted}
                 onChange={(e) => {
                   setClientId(e.target.value);
                   setPackageId("");
                 }}
-                className="h-10 w-full rounded-xl border border-border bg-card px-3"
               >
                 <option value="">Choose a company</option>
                 {clients.data?.items.map((item) => (
@@ -125,16 +118,15 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
                     {item.name}
                   </option>
                 ))}
-              </select>
-            </label>
+              </Select>
+            </Field>
           ) : null}
-          <label className="block space-y-1 text-xs font-medium">
-            Verification package
-            <select
+          <Field label="Verification package" htmlFor="bulk-package">
+            <Select
+              id="bulk-package"
               value={packageId}
               disabled={running || attempted || (internal && !clientId)}
               onChange={(e) => setPackageId(e.target.value)}
-              className="h-10 w-full rounded-xl border border-border bg-card px-3"
             >
               <option value="">Choose an authorised package</option>
               {catalog.data?.items.map((item) => (
@@ -142,13 +134,13 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
                   {item.name} · {item.checks.length} checks
                 </option>
               ))}
-            </select>
-          </label>
+            </Select>
+          </Field>
           {chosen?.checkRequirements?.length ? (
             <CheckRequirementsPanel requirements={chosen.checkRequirements} />
           ) : null}
           {catalog.error ? (
-            <p role="alert" className="text-xs text-critical">
+            <p role="alert" className="text-xs text-bad">
               {catalog.error.message}
             </p>
           ) : null}
@@ -157,7 +149,7 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
             accept=".csv,text/csv"
             aria-label="Candidate CSV"
             disabled={running || attempted}
-            className="w-full rounded-xl border border-dashed border-mint/40 bg-mint-soft/20 p-4 text-xs"
+            className="w-full rounded-lg border border-dashed border-brand/40 bg-subtle/60 p-4 text-xs text-ink file:mr-3 file:rounded-md file:border file:border-line file:bg-surface file:px-3 file:py-1.5 file:text-xs file:font-medium"
             onChange={async (e) => {
               const file = e.target.files?.[0];
               if (!file) return;
@@ -172,53 +164,49 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
           />
           {rows.length ? (
             <>
-              <div className="flex justify-between text-xs">
+              <div className="flex justify-between text-xs text-ink">
                 <span>{rows.length} candidates ready for review</span>
-                <span className="font-semibold text-mint-deep">{created} created</span>
+                <span className="font-semibold text-good">{created} created</span>
               </div>
-              <div className="max-h-64 overflow-auto rounded-2xl border border-border">
-                <table className="w-full text-left text-xs">
-                  <thead className="sticky top-0 bg-muted">
+              <div className="max-h-64 overflow-auto rounded-lg border border-line">
+                <table className="w-full border-collapse text-left text-xs">
+                  <thead className="sticky top-0">
                     <tr>
-                      <th className="p-3">Candidate</th>
-                      <th className="p-3">Contact</th>
-                      <th className="p-3">Result</th>
+                      <Th>Candidate</Th>
+                      <Th>Contact</Th>
+                      <Th>Result</Th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-border">
+                  <tbody>
                     {rows.map((row) => (
-                      <tr key={row.key}>
-                        <td className="p-3 font-medium">{row.input.fullName}</td>
-                        <td className="p-3 text-muted-foreground">
-                          {row.input.email ?? row.input.phone}
-                        </td>
-                        <td
-                          className={`p-3 ${row.status === "failed" ? "text-critical" : "text-mint-deep"}`}
-                        >
+                      <tr key={row.key} className="last:[&>td]:border-b-0">
+                        <Td className="font-medium">{row.input.fullName}</Td>
+                        <Td className="text-dim">{row.input.email ?? row.input.phone}</Td>
+                        <Td className={row.status === "failed" ? "text-bad" : "text-good"}>
                           {row.caseNumber ?? row.error ?? row.status}
-                        </td>
+                        </Td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-dim">
                 Keep this window open during import. Successful rows are skipped when retrying.
                 Candidate upload links can be issued from each case workspace.
               </p>
               <div className="flex justify-end gap-2">
                 {attempted && !running ? (
-                  <button
+                  <Button
                     onClick={() => {
                       setCandidates([]);
                       setPackageId("");
                     }}
-                    className="rounded-full border border-border px-4 py-2 text-xs"
                   >
                     New import
-                  </button>
+                  </Button>
                 ) : null}
-                <button
+                <Button
+                  variant="primary"
                   disabled={running || !packageId || created === rows.length}
                   onClick={() =>
                     void start(
@@ -226,14 +214,13 @@ export function ClientBulkIntake({ internal = false }: { internal?: boolean }) {
                       internal ? { endpoint: "/bulk-intake/rows", clientId } : undefined,
                     )
                   }
-                  className="rounded-full bg-primary px-5 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-40"
                 >
                   {running
                     ? `Creating ${created} / ${rows.length}…`
                     : attempted
                       ? "Retry failed rows"
                       : `Create ${rows.length} cases`}
-                </button>
+                </Button>
               </div>
             </>
           ) : null}

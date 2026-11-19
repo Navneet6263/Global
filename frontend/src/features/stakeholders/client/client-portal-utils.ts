@@ -39,22 +39,29 @@ export function caseStatusLabel(value: string): string {
   return labels[value] ?? humanize(value);
 }
 
+/** Kit colour for a status: good, bad, warn, note (review) or brand (moving). */
+export type StatusKind = "good" | "bad" | "warn" | "note" | "brand";
+
+export function statusKind(value: string): StatusKind {
+  if (["COMPLETED", "CLOSED", "APPROVED", "RESOLVED"].includes(value)) return "good";
+  if (["CANCELLED", "REJECTED", "OVERDUE"].includes(value)) return "bad";
+  if (["CLARIFICATION_PENDING", "OPEN", "DOCUMENT_PENDING", "PAYMENT_PENDING"].includes(value))
+    return "warn";
+  if (["RESPONDED", "QA_PENDING", "QA_REVIEW", "MANAGER_REVIEW", "REVIEW_PENDING"].includes(value))
+    return "note";
+  return "brand";
+}
+
+const KIND_CLASS: Record<StatusKind, string> = {
+  good: "bg-good-soft text-good",
+  bad: "bg-bad-soft text-bad",
+  warn: "bg-warn-soft text-warn",
+  note: "bg-note-soft text-note",
+  brand: "bg-brand-soft text-brand",
+};
+
 export function statusTone(value: string): string {
-  if (["COMPLETED", "CLOSED", "APPROVED", "RESOLVED"].includes(value)) {
-    return "bg-success-soft text-success-foreground ring-success/20";
-  }
-  if (["CANCELLED", "REJECTED", "OVERDUE"].includes(value)) {
-    return "bg-critical-soft text-critical-foreground ring-critical/20";
-  }
-  if (["CLARIFICATION_PENDING", "OPEN", "DOCUMENT_PENDING", "PAYMENT_PENDING"].includes(value)) {
-    return "bg-warning-soft text-warning-foreground ring-warning/20";
-  }
-  if (
-    ["RESPONDED", "QA_PENDING", "QA_REVIEW", "MANAGER_REVIEW", "REVIEW_PENDING"].includes(value)
-  ) {
-    return "bg-review-soft text-review-foreground ring-review/20";
-  }
-  return "bg-info-soft text-info-foreground ring-info/20";
+  return KIND_CLASS[statusKind(value)];
 }
 
 export function relativeTime(value: string): string {
@@ -78,6 +85,7 @@ export function clientStatus(item: {
     label: progress?.label ?? caseStatusLabel(item.status),
     detail: progress?.detail ?? null,
     /** Colour: documents received is the team's turn, not an action for the client. */
+    kind: statusKind(progress?.stage === "DOCUMENTS_RECEIVED" ? "IN_PROGRESS" : item.status),
     tone: statusTone(progress?.stage === "DOCUMENTS_RECEIVED" ? "IN_PROGRESS" : item.status),
   };
 }

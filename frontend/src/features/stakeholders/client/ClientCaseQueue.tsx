@@ -1,12 +1,11 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ErrorState } from "@/components/feedback/error-state";
-import { ListSkeleton } from "@/components/feedback/skeletons";
+import { ArrowUpRight, Search } from "lucide-react";
+import { Button, CardHeader, ErrorText, Input, Loading, Segmented, Select, Th } from "@/kit";
 import { listCases } from "@/lib/api/cases";
 import type { OperationsDashboard } from "@/lib/api/dashboards";
+import { cn } from "@/lib/utils";
 import { ClientQueueRow } from "./ClientQueueRow";
 import { ClientQueueColumns } from "./ClientQueueColumns";
 import { queueColumns, useQueueColumns } from "./client-queue-columns";
@@ -17,6 +16,8 @@ import {
   queueRange,
   type ClientQueueSearch,
 } from "./client-queue-model";
+
+type QuickTab = "ALL" | "IN_PROGRESS" | "COMPLETED";
 
 export function ClientCaseQueue({
   search,
@@ -45,117 +46,133 @@ export function ClientCaseQueue({
   const total = cases.data?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / pageSize));
   const waiting = cases.isFetching;
-  const tabs = [
-    {
-      label: "All",
-      status: undefined,
-      count: counts ? Object.values(counts).reduce((sum, count) => sum + count, 0) : undefined,
-    },
-    { label: "In progress", status: "IN_PROGRESS", count: counts?.["IN_PROGRESS"] },
-    { label: "Completed", status: "COMPLETED", count: counts?.["COMPLETED"] },
-  ];
+  const count = (value?: number) => (value !== undefined ? ` (${value})` : "");
+  const all = counts ? Object.values(counts).reduce((sum, value) => sum + value, 0) : undefined;
+  const quick: QuickTab =
+    search.status === "IN_PROGRESS" || search.status === "COMPLETED" ? search.status : "ALL";
+  const shown = queueColumns.filter((column) => columns.includes(column.key));
+
   return (
-    <section className="client-panel client-queue" aria-label="Your verifications">
-      <header className="client-queue-heading">
-        <h2>Your verifications</h2>
-        <div className="flex items-center gap-2">
-          {tools}
-          <ClientQueueColumns columns={columns} onChange={updateColumns} />
-        </div>
-      </header>
-      <div className="client-queue-tabs" role="group" aria-label="Quick case filters">
-        {tabs.map((tab) => (
-          <button
-            key={tab.label}
-            type="button"
-            aria-pressed={search.status === tab.status}
-            onClick={() => onChange({ status: tab.status, page: undefined })}
-          >
-            {tab.label}
-            {tab.count !== undefined ? ` (${tab.count})` : ""}
-          </button>
-        ))}
-        <Link to="/client-portal/actions">Needs action ↗</Link>
-      </div>
-      <form
-        className="client-queue-filters"
-        onSubmit={(event) => {
-          event.preventDefault();
-          onChange({ q: input.trim() || undefined, page: undefined });
-        }}
-      >
-        <label className="client-queue-search">
-          <span className="sr-only">Search candidate or case number</span>
-          <input
-            value={input}
-            maxLength={120}
-            onChange={(event) => setInput(event.target.value)}
-            placeholder="Search candidate or case number"
-            type="search"
+    <section
+      aria-label="Your verifications"
+      className="min-w-0 rounded-lg border border-line bg-surface shadow-soft"
+    >
+      <CardHeader
+        title="Your verifications"
+        count={cases.data ? total : undefined}
+        aside={
+          <>
+            {tools}
+            <ClientQueueColumns columns={columns} onChange={updateColumns} />
+          </>
+        }
+      />
+      <div className="flex flex-col gap-3 border-b border-line px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <Segmented
+            label="Quick case filters"
+            value={search.status && quick === "ALL" ? ("" as QuickTab) : quick}
+            onChange={(value) =>
+              onChange({ status: value === "ALL" ? undefined : value, page: undefined })
+            }
+            options={[
+              ["ALL", `All${count(all)}`],
+              ["IN_PROGRESS", `In progress${count(counts?.["IN_PROGRESS"])}`],
+              ["COMPLETED", `Completed${count(counts?.["COMPLETED"])}`],
+            ]}
           />
-          <button type="submit" aria-label="Search">
-            <Search aria-hidden />
-          </button>
-        </label>
-        <select
-          aria-label="Filter case queue by stage"
-          value={search.status ?? ""}
-          onChange={(event) =>
-            onChange({ status: event.target.value || undefined, page: undefined })
-          }
-        >
-          <option value="">All statuses</option>
-          {clientStages.map((stage) => (
-            <option key={stage.value} value={stage.value}>
-              {stage.label}
-            </option>
-          ))}
-        </select>
-        <button
-          type="button"
-          aria-label="Clear filters"
-          className="client-filter-reset"
-          onClick={() => {
-            setInput("");
-            onChange({ q: undefined, status: undefined, page: undefined });
+          <Link
+            to="/client-portal/actions"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-brand hover:underline"
+          >
+            Needs action <ArrowUpRight className="size-3.5" aria-hidden />
+          </Link>
+        </div>
+        <form
+          className="flex flex-wrap items-center gap-2"
+          onSubmit={(event) => {
+            event.preventDefault();
+            onChange({ q: input.trim() || undefined, page: undefined });
           }}
         >
-          Reset
-        </button>
-      </form>
-      <div className="client-queue-feedback" role="status" aria-live="polite">
+          <label className="relative min-w-[220px] flex-1">
+            <span className="sr-only">Search candidate or case number</span>
+            <Search
+              className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-dim"
+              aria-hidden
+            />
+            <Input
+              value={input}
+              maxLength={120}
+              onChange={(event) => setInput(event.target.value)}
+              placeholder="Search candidate or case number"
+              type="search"
+              className="pr-20 pl-9"
+            />
+            <Button
+              type="submit"
+              size="sm"
+              variant="ghost"
+              aria-label="Search"
+              className="absolute top-1/2 right-1 h-7 -translate-y-1/2 text-brand"
+            >
+              Search
+            </Button>
+          </label>
+          <Select
+            aria-label="Filter case queue by stage"
+            value={search.status ?? ""}
+            className="w-auto min-w-[170px]"
+            onChange={(event) =>
+              onChange({ status: event.target.value || undefined, page: undefined })
+            }
+          >
+            <option value="">All statuses</option>
+            {clientStages.map((stage) => (
+              <option key={stage.value} value={stage.value}>
+                {stage.label}
+              </option>
+            ))}
+          </Select>
+          <Button
+            variant="ghost"
+            aria-label="Clear filters"
+            onClick={() => {
+              setInput("");
+              onChange({ q: undefined, status: undefined, page: undefined });
+            }}
+          >
+            Reset
+          </Button>
+        </form>
+      </div>
+      <p className="sr-only" role="status" aria-live="polite">
         {waiting ? "Updating case queue…" : cases.isError ? "Case queue unavailable" : ""}
         {cases.isPlaceholderData ? " Showing previous results" : ""}
-      </div>
+      </p>
       {cases.isError ? (
-        <ErrorState
-          description={cases.error.message}
-          onRetry={() => void cases.refetch()}
-          retrying={waiting}
-        />
+        <ErrorText onRetry={() => void cases.refetch()} retrying={waiting}>
+          {cases.error.message}
+        </ErrorText>
       ) : null}
-      {cases.isPending ? <ListSkeleton rows={6} /> : null}
+      {cases.isPending ? <Loading>Loading your verifications…</Loading> : null}
       {cases.data && !cases.isError ? (
-        <div aria-busy={waiting} className={cases.isPlaceholderData ? "opacity-60" : undefined}>
+        <div aria-busy={waiting} className={cn(cases.isPlaceholderData && "opacity-60")}>
           {cases.data.items.length ? (
             <div
-              className="client-table-scroll"
+              className="overflow-x-auto"
               role="region"
               aria-label="Verification cases table"
               tabIndex={0}
             >
-              <table className="client-case-table">
+              <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr>
-                    <th scope="col">Candidate / Case</th>
-                    {queueColumns
-                      .filter((column) => columns.includes(column.key))
-                      .map((column) => (
-                        <th key={column.key} scope="col">
-                          {column.label}
-                        </th>
-                      ))}
-                    <th scope="col">Action</th>
+                    <Th>Candidate / Case</Th>
+                    {shown.map((column) => (
+                      <Th key={column.key}>{column.label}</Th>
+                    ))}
+                    <Th align="right">Action</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -173,18 +190,14 @@ export function ClientCaseQueue({
             </div>
           ) : (
             <div className="px-5 py-10 text-center">
-              <p className="font-semibold">No cases found</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="font-semibold text-ink">No cases found</p>
+              <p className="mt-1 text-sm text-dim">
                 {page > pages
                   ? "This page is no longer available. Return to the first page."
                   : "Try another filter, or create a new verification."}
               </p>
               {page > 1 ? (
-                <Button
-                  variant="outline"
-                  className="mt-3"
-                  onClick={() => onChange({ page: undefined })}
-                >
+                <Button className="mt-3" onClick={() => onChange({ page: undefined })}>
                   First page
                 </Button>
               ) : null}
@@ -192,46 +205,45 @@ export function ClientCaseQueue({
           )}
         </div>
       ) : null}
-      <footer className="client-queue-footer">
-        <span>
+      <footer className="flex flex-wrap items-center justify-between gap-2 border-t border-line px-4 py-3 text-sm">
+        <span className="text-xs text-dim">
           {cases.data && !cases.isError && !cases.isPlaceholderData
             ? queueRange(page, cases.data.items.length, total, pageSize)
             : cases.isError
               ? "Results unavailable"
               : "Loading results…"}
         </span>
-        <div className="client-pagination">
+        <div className="flex flex-wrap items-center gap-2">
           <Button
-            variant="outline"
-            size="icon"
+            size="sm"
             aria-label="Previous"
             disabled={page <= 1 || waiting}
             onClick={() => onChange({ page: page - 1 })}
           >
-            <ChevronLeft aria-hidden />
+            Previous
           </Button>
-          <span>
+          <span className="text-dim">
             Page {page} / {pages}
           </span>
           <Button
-            variant="outline"
-            size="icon"
+            size="sm"
             aria-label="Next"
             disabled={page >= pages || waiting || cases.isError}
             onClick={() => onChange({ page: page + 1 })}
           >
-            <ChevronRight aria-hidden />
+            Next
           </Button>
-          <select
+          <Select
             aria-label="Rows per page"
             value={pageSize}
+            className="h-8 w-auto text-xs"
             onChange={(event) =>
               onChange({ pageSize: Number(event.target.value), page: undefined })
             }
           >
             <option value={6}>6 per page</option>
             <option value={12}>12 per page</option>
-          </select>
+          </Select>
         </div>
       </footer>
     </section>

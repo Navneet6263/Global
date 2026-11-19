@@ -74,7 +74,7 @@ for (const width of [390, 1440]) {
     );
     await dialog.locator("summary").click();
     await expect(dialog.getByText("Completed at", { exact: true })).toBeVisible();
-    await dialog.getByRole("tab", { name: "Timeline", exact: true }).click();
+    await dialog.getByRole("tab", { name: /^Timeline/ }).click();
     const log = dialog.getByRole("region", { name: "Case activity log" });
     await expect(log.locator("ol > li")).toHaveCount(8);
     await log.getByRole("button", { name: "Next activity page" }).click();

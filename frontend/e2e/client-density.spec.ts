@@ -8,13 +8,19 @@ for (const width of [390, 1024, 1440]) {
     await clientPagesFixture(page);
     await page.setViewportSize({ width, height: 900 });
     await page.goto("/client-portal");
-    await expect(page.getByRole("heading", { name: "Verification overview" })).toBeVisible();
+    await expect(
+      page
+        .getByRole("region", { name: "Welcome" })
+        .getByRole("heading", { level: 1, name: /^Good (morning|afternoon|evening), Client$/ }),
+    ).toBeVisible();
     const desktop = width >= 1024;
+    // The Client shell puts the sky theme on <html>; it carries the 0.9 desktop zoom.
+    await expect(page.locator("html")).toHaveClass(/(^|\s)theme-sky(\s|$)/);
     await expect(page.locator("html")).toHaveCSS("zoom", desktop ? "0.9" : "1");
+    // The frame root (the sidebar's parent) fills the zoomed-out viewport on desktop.
+    const frame = page.locator(".client-sidebar").locator("xpath=..");
     expect(
-      await page
-        .locator(".client-portal-shell")
-        .evaluate((element) => parseFloat(getComputedStyle(element).minHeight)),
+      await frame.evaluate((element) => parseFloat(getComputedStyle(element).minHeight)),
     ).toBeCloseTo(desktop ? 1000 : 900, 1);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,

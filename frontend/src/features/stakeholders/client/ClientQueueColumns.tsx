@@ -1,5 +1,5 @@
 import { Columns3 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/kit";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -22,21 +22,15 @@ export function ClientQueueColumns({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="gap-2 rounded-lg border-slate-200 bg-white text-xs shadow-none"
-        >
-          <Columns3 className="size-4" />
+        <Button size="sm">
+          <Columns3 aria-hidden />
           Columns{" "}
-          <span className="rounded bg-slate-100 px-1.5 text-slate-500">{columns.length + 2}</span>
+          <span className="rounded bg-subtle px-1.5 font-mono text-dim">{columns.length + 2}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60 rounded-xl p-2">
         <DropdownMenuLabel>Show in your table</DropdownMenuLabel>
-        <p className="px-2 pb-2 text-xs text-slate-500">
-          Candidate and action always stay visible.
-        </p>
+        <p className="px-2 pb-2 text-xs text-dim">Candidate and action always stay visible.</p>
         <DropdownMenuSeparator />
         {queueColumns.map((column) => (
           <DropdownMenuCheckboxItem

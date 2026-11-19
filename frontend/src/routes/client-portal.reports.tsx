@@ -2,8 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getSession } from "@/lib/api/auth";
-import { ListSkeleton } from "@/components/feedback/skeletons";
-import { ErrorState } from "@/components/feedback/error-state";
+import { EmptyState, Loading, Tabs } from "@/kit";
 
 import { ClientReportsLibrary } from "@/features/stakeholders/client/ClientReportsLibrary";
 import { ClientWorkspaceHeader } from "@/features/stakeholders/client/ClientWorkspaceHeader";
@@ -34,49 +33,62 @@ export const Route = createFileRoute("/client-portal/reports")({
   component: ClientReportsPage,
 });
 
+const HEADINGS = {
+  published: {
+    title: "Final reports",
+    description: "Released verification reports to download, share and verify.",
+  },
+  mis: {
+    title: "MIS & Excel",
+    description: "Ready-made MIS, bulk report downloads and scheduled emails.",
+  },
+  custom: {
+    title: "Custom export",
+    description: "Pick the filters and columns you need, preview, then download.",
+  },
+  invoices: {
+    title: "Invoices & statements",
+    description: "Invoice PDFs and monthly statements for your records.",
+  },
+} as const;
+
 function ClientReportsPage() {
   const { view } = Route.useSearch();
   const navigate = Route.useNavigate();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const can = (permission: string) =>
     !!session.data?.permissions.some((p) => p === "*" || p === permission);
+  const heading = HEADINGS[view ?? "published"];
   return (
     <>
-      <ClientWorkspaceHeader
-        title="Reports"
-        description="One place for signed reports, customised data exports, invoices and statements."
+      <ClientWorkspaceHeader title={heading.title} description={heading.description} />
+      <Tabs
+        label="Report views"
+        value={view ?? "published"}
+        onChange={(value) =>
+          void navigate({
+            search: { view: value === "published" ? undefined : (value as typeof view) },
+          })
+        }
+        tabs={(
+          [
+            ["published", "Final reports", can("report:read")],
+            ["mis", "MIS & Excel", can("case:read")],
+            ["custom", "Custom export", can("case:read")],
+            ["invoices", "Invoices & statements", can("case:read")],
+          ] as const
+        )
+          .filter(([, , allowed]) => allowed)
+          .map(([value, label]) => [value, label] as const)}
       />
-      <div
-        className="client-segments mb-4 w-fit max-w-full flex-wrap"
-        role="group"
-        aria-label="Report views"
-      >
-        {[
-          { value: undefined, label: "Published reports", allowed: can("report:read") },
-          { value: "mis" as const, label: "MIS & bulk download", allowed: can("case:read") },
-          { value: "custom" as const, label: "Customise export", allowed: can("case:read") },
-          { value: "invoices" as const, label: "Invoices & statements", allowed: can("case:read") },
-        ]
-          .filter((tab) => tab.allowed)
-          .map((tab) => (
-            <button
-              key={tab.label}
-              aria-pressed={view === tab.value}
-              onClick={() => void navigate({ search: { view: tab.value } })}
-            >
-              {tab.label}
-            </button>
-          ))}
-      </div>
       {session.isPending ? (
-        <ListSkeleton rows={3} />
+        <Loading />
       ) : !can(view ? "case:read" : "report:read") ? (
-        <ErrorState
-          title="Report access unavailable"
-          description="Your account does not have access to this report view."
-        />
+        <EmptyState title="Report access unavailable">
+          Your account does not have access to this report view.
+        </EmptyState>
       ) : (
-        <Suspense fallback={<ListSkeleton rows={4} />}>
+        <Suspense fallback={<Loading>Loading this view…</Loading>}>
           {view === "mis" ? (
             <ClientMisReports />
           ) : view === "custom" ? (

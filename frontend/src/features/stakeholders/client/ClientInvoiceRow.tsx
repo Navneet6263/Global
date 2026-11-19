@@ -1,8 +1,9 @@
 import { Fragment, useId, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { ChevronDown, Download } from "lucide-react";
+import { ChevronDown, Download, ReceiptText } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
+import { Button, Td } from "@/kit";
+import { cn } from "@/lib/utils";
 import { downloadClientInvoice, type ClientInvoice } from "@/lib/backend-api/client-finance";
 import { ClientPill } from "./ClientPageParts";
 import { invoiceMoney } from "./client-billing-format";
@@ -28,38 +29,61 @@ export function ClientInvoiceRow({
       toast.error("Invoice download failed", { description: error.message }),
   });
   const tone = invoice.status === "OVERDUE" ? "red" : invoice.balance === 0 ? "green" : "amber";
+  const breakdown: Array<[string, number | string]> = [
+    ["Invoice total", invoice.totalAmount],
+    ["Payments recorded", invoice.paidAmount],
+    ["Credit applied", invoice.creditedAmount],
+    ["Balance remaining", invoice.balance],
+  ];
   return (
     <Fragment>
-      <tr>
-        <td>
-          <strong>{invoice.invoiceNumber}</strong>
-          <small>
-            {invoice.status === "DRAFT"
-              ? "Monthly bill: please validate it"
-              : `Issued ${date(invoice.issuedAt)}`}
-          </small>
-        </td>
-        <td>{date(invoice.dueAt)}</td>
-        <td className="client-number">{money(invoice.totalAmount)}</td>
-        <td className="client-number">
-          <strong>{money(invoice.balance)}</strong>
-        </td>
-        <td>
-          <ClientPill tone={tone}>
-            {invoice.status === "DRAFT"
-              ? "Bill (not invoiced yet)"
-              : invoice.status.replaceAll("_", " ")}
-          </ClientPill>
-          {invoice.annexureStatus === "PENDING" ? (
-            <ClientPill tone="amber">Validate bill</ClientPill>
-          ) : invoice.annexureStatus === "QUERIED" ? (
-            <ClientPill tone="red">Query raised</ClientPill>
-          ) : invoice.annexureStatus === "VALIDATED" ? (
-            <ClientPill tone="green">Bill validated</ClientPill>
-          ) : null}
-        </td>
-        <td>
-          <div className="client-row-actions">
+      <tr className={cn("hover:bg-subtle/40", open ? "bg-subtle/40" : "last:[&>td]:border-b-0")}>
+        <Td>
+          <div className="flex min-w-[180px] items-center gap-2.5">
+            <span className="grid size-8 shrink-0 place-items-center rounded-md bg-brand-soft text-brand">
+              <ReceiptText className="size-4" aria-hidden />
+            </span>
+            <div className="min-w-0">
+              <strong className="block truncate font-mono font-semibold text-ink">
+                {invoice.invoiceNumber}
+              </strong>
+              <small className="block text-xs text-dim">
+                {invoice.status === "DRAFT"
+                  ? "Monthly bill: please validate it"
+                  : `Issued ${date(invoice.issuedAt)}`}
+              </small>
+            </div>
+          </div>
+        </Td>
+        <Td mono className="whitespace-nowrap text-ink">
+          {date(invoice.dueAt)}
+        </Td>
+        <Td align="right" mono className="whitespace-nowrap text-ink">
+          {money(invoice.totalAmount)}
+        </Td>
+        <Td align="right" mono className="whitespace-nowrap">
+          <strong className={cn("font-semibold", invoice.balance === 0 ? "text-ink" : "text-warn")}>
+            {money(invoice.balance)}
+          </strong>
+        </Td>
+        <Td>
+          <div className="flex flex-wrap gap-1">
+            <ClientPill tone={tone}>
+              {invoice.status === "DRAFT"
+                ? "Bill (not invoiced yet)"
+                : invoice.status.replaceAll("_", " ")}
+            </ClientPill>
+            {invoice.annexureStatus === "PENDING" ? (
+              <ClientPill tone="amber">Validate bill</ClientPill>
+            ) : invoice.annexureStatus === "QUERIED" ? (
+              <ClientPill tone="red">Query raised</ClientPill>
+            ) : invoice.annexureStatus === "VALIDATED" ? (
+              <ClientPill tone="green">Bill validated</ClientPill>
+            ) : null}
+          </div>
+        </Td>
+        <Td align="right">
+          <div className="inline-flex flex-nowrap items-center gap-1.5">
             <Button
               size="sm"
               variant="ghost"
@@ -68,12 +92,12 @@ export function ClientInvoiceRow({
               onClick={() => setOpen(!open)}
               aria-label={`Details for ${invoice.invoiceNumber}`}
             >
-              Details <ChevronDown aria-hidden className={open ? "rotate-180" : ""} />
+              Details <ChevronDown aria-hidden className={cn("transition", open && "rotate-180")} />
             </Button>
             {allowDownload && (
               <Button
                 size="sm"
-                variant="outline"
+                variant="primary"
                 loading={download.isPending}
                 disabled={stale || download.isPending}
                 onClick={() => download.mutate()}
@@ -83,35 +107,34 @@ export function ClientInvoiceRow({
               </Button>
             )}
           </div>
-        </td>
+        </Td>
       </tr>
       {open && (
-        <tr id={id}>
-          <td colSpan={6} className="client-invoice-detail">
-            <dl>
-              <div>
-                <dt>Invoice total</dt>
-                <dd>{money(invoice.totalAmount)}</dd>
-              </div>
-              <div>
-                <dt>Payments recorded</dt>
-                <dd>{money(invoice.paidAmount)}</dd>
-              </div>
-              <div>
-                <dt>Credit applied</dt>
-                <dd>{money(invoice.creditedAmount)}</dd>
-              </div>
-              <div>
-                <dt>Balance remaining</dt>
-                <dd>{money(invoice.balance)}</dd>
-              </div>
+        <tr id={id} className="bg-subtle/40">
+          <td colSpan={6} className="border-b border-line px-4 py-4">
+            <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              {breakdown.map(([label, value]) => (
+                <div
+                  key={label}
+                  className="flex min-w-0 flex-col gap-1 rounded-md border border-line bg-surface px-3 py-2.5"
+                >
+                  <dt className="truncate text-[11px] font-semibold tracking-wider text-dim uppercase">
+                    {label}
+                  </dt>
+                  <dd className="font-mono text-sm font-semibold text-ink tabular-nums">
+                    {money(value)}
+                  </dd>
+                </div>
+              ))}
             </dl>
-            <p>
+            <p className="mt-3 text-xs text-dim">
               Payments and credits are recorded by Finance. A zero balance does not bypass report
               approval.
             </p>
             {invoice.annexureStatus ? (
-              <BillingAnnexurePanel audience="client" invoiceId={invoice.id} />
+              <div className="mt-3">
+                <BillingAnnexurePanel audience="client" invoiceId={invoice.id} />
+              </div>
             ) : null}
           </td>
         </tr>

@@ -44,19 +44,26 @@ export function ClientAccountMenu({
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          className="client-account-trigger"
+          className="ml-0.5 flex min-h-10 items-center gap-2 border-l border-line pl-2.5 text-left disabled:cursor-wait disabled:opacity-60 lg:ml-1.5 lg:gap-2.5 lg:pl-3.5"
           aria-label={`Account menu for ${name}`}
           aria-busy={signingOut}
           disabled={signingOut}
         >
-          <span className="client-account-avatar" aria-hidden>
+          <span
+            className="grid size-[34px] shrink-0 place-items-center rounded-full border border-brand/20 bg-brand-soft text-xs font-bold text-brand"
+            aria-hidden
+          >
             {initialsOf(name)}
           </span>
-          <span className="client-account-identity">
-            <strong>{name}</strong>
-            <small>{signingOut ? "Signing out…" : roleLabel}</small>
+          <span className="hidden min-w-0 lg:block">
+            <strong className="block max-w-[100px] truncate text-[13px] leading-[18px] font-semibold text-ink 2xl:max-w-[118px]">
+              {name}
+            </strong>
+            <small className="block text-[11.5px] leading-[15px] text-dim">
+              {signingOut ? "Signing out…" : roleLabel}
+            </small>
           </span>
-          <ChevronDown className="client-account-chevron" aria-hidden />
+          <ChevronDown className="hidden size-3 text-dim lg:block" aria-hidden />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -66,10 +73,10 @@ export function ClientAccountMenu({
       >
         <DropdownMenuLabel className="px-2 py-2">
           <span className="block truncate">{name}</span>
-          <span className="mt-1 block truncate text-xs font-normal text-muted-foreground">
+          <span className="mt-1 block truncate text-xs font-normal text-dim">
             {session.data?.email}
           </span>
-          <span className="mt-1 block text-xs font-normal text-muted-foreground">{roleLabel}</span>
+          <span className="mt-1 block text-xs font-normal text-dim">{roleLabel}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild className="min-h-10 rounded-md">
@@ -80,7 +87,7 @@ export function ClientAccountMenu({
         </DropdownMenuItem>
         <DropdownMenuItem
           disabled={signingOut}
-          className="min-h-10 rounded-md text-destructive"
+          className="min-h-10 rounded-md text-bad"
           onSelect={(event) => {
             event.preventDefault();
             void signOut();

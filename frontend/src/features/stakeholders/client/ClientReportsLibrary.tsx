@@ -1,9 +1,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ErrorState } from "@/components/feedback/error-state";
-import { ListSkeleton } from "@/components/feedback/skeletons";
+import { Button, Card, CardHeader, ErrorText, Loading, Th } from "@/kit";
 import { listPublishedReports } from "@/lib/api/reports";
 import { ClientEmpty, ClientPager, ClientSearch } from "./ClientPageParts";
 import { ClientReportRow } from "./ClientReportRow";
@@ -24,21 +22,21 @@ export function ClientReportsLibrary() {
     setHistory([]);
   };
   return (
-    <section className="client-register" aria-label="Published report library">
-      <div className="client-register-title">
-        <div>
-          <h2>Published report library</h2>
-          <p>Released reports, version history and authenticity checks.</p>
-        </div>
-        <Link
-          to="/client-portal/verifications"
-          search={{ status: "PAYMENT_PENDING" }}
-          className="client-text-link"
-        >
-          Awaiting release →
-        </Link>
-      </div>
-      <div className="client-register-toolbar">
+    <Card label="Published report library">
+      <CardHeader
+        title="Published report library"
+        description="Released reports, version history and authenticity checks."
+        aside={
+          <Link
+            to="/client-portal/verifications"
+            search={{ status: "PAYMENT_PENDING" }}
+            className="text-xs font-semibold text-brand hover:underline"
+          >
+            Awaiting release →
+          </Link>
+        }
+      />
+      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
         <ClientSearch
           value={input}
           onChange={setInput}
@@ -46,7 +44,7 @@ export function ClientReportsLibrary() {
           label="Search reports"
           placeholder="Candidate or case number"
         />
-        {search && (
+        {search ? (
           <Button
             variant="ghost"
             onClick={() => {
@@ -56,8 +54,8 @@ export function ClientReportsLibrary() {
           >
             Clear search
           </Button>
-        )}
-        <span className="client-register-meta" role="status">
+        ) : null}
+        <span className="ml-auto text-xs text-dim" role="status">
           {reports.isFetching
             ? "Updating reports…"
             : reports.isError
@@ -65,41 +63,39 @@ export function ClientReportsLibrary() {
               : `${reports.data?.items.length ?? 0} reports on this page`}
         </span>
       </div>
-      {reports.isError && (
-        <ErrorState
-          description={reports.error.message}
-          onRetry={() => void reports.refetch()}
-          retrying={reports.isFetching}
-        />
-      )}
+      {reports.isError ? (
+        <ErrorText onRetry={() => void reports.refetch()} retrying={reports.isFetching}>
+          {reports.error.message}
+        </ErrorText>
+      ) : null}
       {reports.isPending ? (
-        <ListSkeleton rows={5} />
+        <Loading>Loading reports…</Loading>
       ) : reports.data ? (
         <>
-          <div className="client-register-scroll" aria-busy={reports.isFetching}>
-            <table>
-              <caption className="sr-only">Published reports for your organisation</caption>
-              <thead>
-                <tr>
-                  {["Candidate / case", "Published / version", "Access", "Actions"].map((label) => (
-                    <th key={label} scope="col">
-                      {label}
-                    </th>
+          {reports.data.items.length ? (
+            <div className="overflow-x-auto" aria-busy={reports.isFetching}>
+              <table className="w-full border-collapse text-sm">
+                <caption className="sr-only">Published reports for your organisation</caption>
+                <thead>
+                  <tr>
+                    <Th>Candidate / case</Th>
+                    <Th>Published / version</Th>
+                    <Th>Access</Th>
+                    <Th align="right">Actions</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reports.data.items.map((report) => (
+                    <ClientReportRow
+                      key={report.id}
+                      report={report}
+                      stale={reports.isPlaceholderData}
+                    />
                   ))}
-                </tr>
-              </thead>
-              <tbody>
-                {reports.data.items.map((report) => (
-                  <ClientReportRow
-                    key={report.id}
-                    report={report}
-                    stale={reports.isPlaceholderData}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {!reports.data.items.length && (
+                </tbody>
+              </table>
+            </div>
+          ) : (
             <ClientEmpty title="No published reports found">
               {search
                 ? "Try another candidate or clear your search."
@@ -125,6 +121,6 @@ export function ClientReportsLibrary() {
           setCursor(reports.data.nextCursor);
         }}
       />
-    </section>
+    </Card>
   );
 }

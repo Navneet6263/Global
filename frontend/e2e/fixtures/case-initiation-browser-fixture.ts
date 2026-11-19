@@ -51,6 +51,22 @@ export async function caseInitiationFixture(page: Page) {
       });
     if (path === "/dashboards/navigation")
       return reply({ counts: {}, generatedAt: new Date().toISOString() });
+    // Billing badge in the Client menu (nothing owed in this fixture).
+    if (path === "/client-finance/overview")
+      return reply({
+        summary: {
+          invoiceCount: 0,
+          openInvoiceCount: 0,
+          billed: 0,
+          collected: 0,
+          credited: 0,
+          outstanding: 0,
+          overdueAmount: 0,
+          overdueCount: 0,
+        },
+        ageing: [],
+        generatedAt: new Date().toISOString(),
+      });
     if (path === "/cases/catalog")
       return reply({
         items: [

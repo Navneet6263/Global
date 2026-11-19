@@ -43,13 +43,13 @@ export function HelpLauncher({
           <CircleHelp className="size-4" aria-hidden />
           <span className="hidden sm:inline">{label}</span>
           {help.enabled ? (
-            <span className="size-1.5 rounded-full bg-emerald-600" aria-label="Learning mode on" />
+            <span className="size-1.5 rounded-full bg-good" aria-label="Learning mode on" />
           ) : null}
         </Button>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-[450px]">
         <SheetHeader className="shrink-0 border-b px-5 pt-6 pb-4 text-left">
-          <span className="mb-1 flex items-center gap-2 text-xs font-medium text-emerald-800">
+          <span className="mb-1 flex items-center gap-2 text-xs font-medium text-good">
             <BookOpen className="size-4" aria-hidden /> Sapling page guide
           </span>
           <SheetTitle className="pr-7">{help.guide?.title ?? help.title}</SheetTitle>
@@ -79,11 +79,11 @@ export function LearningIntro() {
   return (
     <section
       aria-label="Page learning guide"
-      className="flex items-start gap-3 rounded-2xl border border-emerald-200/70 bg-emerald-50/70 px-4 py-3"
+      className="flex items-start gap-3 rounded-2xl border border-good/25 bg-good-soft px-4 py-3"
     >
-      <BookOpen className="mt-0.5 size-4 shrink-0 text-emerald-700" aria-hidden />
+      <BookOpen className="mt-0.5 size-4 shrink-0 text-good" aria-hidden />
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold text-emerald-900">Learning mode · {help.title}</p>
+        <p className="text-xs font-semibold text-ink">Learning mode · {help.title}</p>
         <p className="mt-1 text-xs leading-5 text-foreground/75">
           {help.guide?.purpose ?? help.purpose}
         </p>
@@ -115,20 +115,22 @@ export function HelpMenu() {
         <PopoverTrigger asChild>
           <button
             type="button"
-            className="help-menu-trigger"
+            className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-2.5 text-[13px] font-semibold text-ink hover:border-brand/40 hover:text-brand sm:px-3"
             aria-label="Help menu"
             disabled={!hydrated}
           >
-            <CircleHelp aria-hidden />
-            <span>Help</span>
-            {help.enabled ? <i className="help-menu-dot" aria-label="Learning mode on" /> : null}
-            <ChevronDown aria-hidden className="help-menu-chevron" />
+            <CircleHelp className="size-4" aria-hidden />
+            <span className="hidden sm:inline">Help</span>
+            {help.enabled ? (
+              <i className="size-[7px] rounded-full bg-good" aria-label="Learning mode on" />
+            ) : null}
+            <ChevronDown aria-hidden className="hidden size-3.5 text-dim sm:block" />
           </button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="help-menu w-72 rounded-xl p-1.5">
+        <PopoverContent align="end" className="w-72 rounded-xl p-1.5">
           <button
             type="button"
-            className="help-menu-item"
+            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left [&>svg]:size-[18px] [&>svg]:shrink-0 [&>svg]:text-brand hover:bg-subtle"
             aria-label="Help with this page"
             onClick={() => {
               setOpen(false);
@@ -136,33 +138,41 @@ export function HelpMenu() {
             }}
           >
             <CircleHelp aria-hidden />
-            <span>
-              <strong>Help with this page</strong>
-              <small>What this page is for and how to use it</small>
+            <span className="grid min-w-0 flex-1">
+              <strong className="text-[13px] text-ink">Help with this page</strong>
+              <small className="text-[11.5px] text-dim">
+                What this page is for and how to use it
+              </small>
             </span>
           </button>
-          <div className="help-menu-item">
+          <div className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left [&>svg]:size-[18px] [&>svg]:shrink-0 [&>svg]:text-brand">
             <BookOpen aria-hidden />
-            <span>
-              <strong>Learning mode</strong>
-              <small>Show a short guide at the top of every page</small>
+            <span className="grid min-w-0 flex-1">
+              <strong className="text-[13px] text-ink">Learning mode</strong>
+              <small className="text-[11.5px] text-dim">
+                Show a short guide at the top of every page
+              </small>
             </span>
             <button
               type="button"
               role="switch"
               aria-label="Learning mode"
               aria-checked={help.enabled}
-              className="client-learning-switch help-menu-switch"
+              className={`relative h-4 w-7 shrink-0 cursor-pointer rounded-full p-0.5 transition ${help.enabled ? "bg-brand" : "bg-line"}`}
               data-enabled={help.enabled}
               onClick={() => help.setEnabled(!help.enabled)}
-            />
+            >
+              <span
+                className={`block size-3 rounded-full bg-surface shadow transition-transform ${help.enabled ? "translate-x-3" : ""}`}
+              />
+            </button>
           </div>
         </PopoverContent>
       </Popover>
       <Sheet open={help.open} onOpenChange={help.setOpen}>
         <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-[450px]">
           <SheetHeader className="shrink-0 border-b px-5 pt-6 pb-4 text-left">
-            <span className="mb-1 flex items-center gap-2 text-xs font-medium text-emerald-800">
+            <span className="mb-1 flex items-center gap-2 text-xs font-medium text-good">
               <BookOpen className="size-4" aria-hidden /> Sapling page guide
             </span>
             <SheetTitle className="pr-7">{help.guide?.title ?? help.title}</SheetTitle>

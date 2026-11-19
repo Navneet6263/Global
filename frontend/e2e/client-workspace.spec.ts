@@ -7,13 +7,20 @@ test("client overview uses compact live queues, working filters, pagination and 
 }) => {
   const fixture = await clientWorkspaceFixture(page);
   await page.goto("/client-portal");
-  await expect(page.getByRole("heading", { name: "Verification overview" })).toBeVisible();
+  await expect(
+    page
+      .getByRole("region", { name: "Welcome" })
+      .getByRole("heading", { level: 1, name: /^Good (morning|afternoon|evening), Client$/ }),
+  ).toBeVisible();
   await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Next", exact: true }).click();
   await expect(page).toHaveURL(/page=2/);
   await expect(page.getByText("7–12 of 23 cases", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Document review 5", exact: true }).click();
-  await page.getByRole("button", { name: "Documents 5", exact: true }).click();
+  await page
+    .getByRole("region", { name: "Verification flow" })
+    .getByRole("button", { name: /^Document review\s*5$/ })
+    .click();
+  await page.getByRole("button", { name: /^Documents\s*5$/ }).click();
   await expect(page).toHaveURL(/status=DOCUMENT_PENDING/);
   await expect(page.getByText("1–5 of 5 cases", { exact: true })).toBeVisible();
   await expect(
@@ -24,7 +31,10 @@ test("client overview uses compact live queues, working filters, pagination and 
   await expect(page.getByText("No cases found", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Clear filters" }).click();
   await expect(page.getByRole("button", { name: "Export CSV" })).toHaveCount(0);
-  await page.getByRole("link", { name: /^Completed 5$/ }).click();
+  const portfolio = page.getByRole("region", { name: "Portfolio summary" });
+  const completed = portfolio.getByRole("link", { name: /^Completed/ });
+  await expect(completed.getByText("5", { exact: true })).toBeVisible();
+  await completed.click();
   await expect(page).toHaveURL(/verifications.*status=COMPLETED/);
   await expect(page.getByText("1–5 of 5 cases", { exact: true })).toBeVisible();
   expect(fixture.unexpected).toEqual([]);
@@ -95,40 +105,50 @@ for (const width of [390, 1024, 1440, 1672, 1920]) {
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
       true,
     );
-    const heading = page.getByRole("heading", { name: "Verification overview" });
+    const hero = page.getByRole("region", { name: "Welcome" });
+    await expect(hero).toBeVisible();
+    const heading = hero.getByRole("heading", { level: 1 });
+    await expect(heading).toHaveText(/^Good (morning|afternoon|evening), Client$/);
     expect(await heading.evaluate((el) => getComputedStyle(el).fontWeight)).toBe("700");
-    expect(await page.locator("body").evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(
-      "rgb(248, 250, 252)",
-    );
+    // The page paints its own (token) background; nothing shows through as transparent.
+    expect(
+      await page.locator("body").evaluate((el) => getComputedStyle(el).backgroundColor),
+    ).not.toBe("rgba(0, 0, 0, 0)");
+    const heroBox = await hero.boundingBox();
+    expect(heroBox!.x).toBeGreaterThanOrEqual(0);
+    expect(heroBox!.x + heroBox!.width).toBeLessThanOrEqual(width + 1);
     await page.screenshot({ path: `test-results/client-workspace-${width}.png`, fullPage: true });
     if (width < 1280) await page.getByRole("button", { name: "Open navigation" }).click();
-    await expect(
-      page
-        .getByRole("navigation", { name: "client-admin navigation" })
-        .filter({ visible: true })
-        .getByRole("button", { name: "Reports", exact: true }),
-    ).toBeVisible();
+    const nav = page
+      .getByRole("navigation", { name: "client-admin navigation" })
+      .filter({ visible: true });
+    await expect(nav.getByRole("link", { name: "Final reports", exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "All candidates", exact: true })).toBeVisible();
     expect(errors).toEqual([]);
     expect(fixture.unexpected).toEqual([]);
   });
 }
 
-test("six-row queue, expandable navigation, guide and learning controls work", async ({ page }) => {
+test("six-row queue, flat navigation, guide and learning controls work", async ({ page }) => {
   await clientWorkspaceFixture(page);
   await page.setViewportSize({ width: 1672, height: 1000 });
   await page.goto("/client-portal");
-  await expect(page.locator(".client-case-table tbody tr")).toHaveCount(6);
-  const stage = await page.getByRole("region", { name: "Verification flow" }).boundingBox();
+  const rows = page.getByRole("region", { name: "Verification cases table" }).locator("tbody tr");
+  await expect(rows).toHaveCount(6);
+  // The side column starts level with the case queue it sits beside.
+  const queue = await page.getByRole("region", { name: "Your verifications" }).boundingBox();
   const context = await page
     .getByRole("complementary", { name: "Client actions and support" })
     .boundingBox();
-  expect(Math.abs(stage!.y - context!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(queue!.y - context!.y)).toBeLessThanOrEqual(1);
+  expect(context!.x).toBeGreaterThan(queue!.x + queue!.width - 1);
   await page.getByRole("combobox", { name: "Rows per page" }).selectOption("12");
-  await expect(page.locator(".client-case-table tbody tr")).toHaveCount(12);
+  await expect(rows).toHaveCount(12);
   await expect(page.getByText("1–12 of 23 cases", { exact: true })).toBeVisible();
   const nav = page.getByRole("navigation", { name: "client-admin navigation" });
-  await nav.getByRole("button", { name: "Reports", exact: true }).click();
-  await expect(nav.getByRole("link", { name: "Published reports" })).toBeVisible();
+  // Flat menu: every row is a link, no expandable group buttons.
+  await expect(nav.getByRole("button")).toHaveCount(0);
+  await expect(nav.getByRole("link", { name: "Final reports", exact: true })).toBeVisible();
   const helpMenu = page.getByRole("button", { name: "Help menu" });
   await helpMenu.click();
   await page.getByRole("switch", { name: "Learning mode" }).click();
@@ -139,29 +159,68 @@ test("six-row queue, expandable navigation, guide and learning controls work", a
   await expect(page.getByRole("dialog")).toBeVisible();
 });
 
+test("pipeline board groups cases by stage and opens a case", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const fixture = await clientWorkspaceFixture(page);
+  await page.goto("/client-portal");
+  await page
+    .getByRole("navigation", { name: "client-admin navigation" })
+    .getByRole("link", { name: "Pipeline", exact: true })
+    .click();
+  await expect(page).toHaveURL(/\/client-portal\/pipeline$/);
+  await expect(page.getByRole("heading", { name: "Pipeline", level: 1 })).toBeVisible();
+  const board = page.getByRole("region", { name: "Pipeline board" });
+  await expect(board.getByRole("button", { name: /^Open case for / })).not.toHaveCount(0);
+  // Every page stays within the viewport; the board scrolls inside its own region.
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(
+    true,
+  );
+  await board.getByRole("button", { name: "Open case for Candidate 1", exact: true }).click();
+  const dialog = page.getByRole("dialog", { name: "Case detail" });
+  await expect(dialog).toBeVisible();
+  await expect(page).toHaveURL(/caseId=client-case-1/);
+  await expect(dialog.getByRole("heading", { name: "Candidate 1", exact: true })).toBeVisible();
+  await page.screenshot({ path: "test-results/client-pipeline.png" });
+  await page.keyboard.press("Escape");
+  await expect(dialog).toHaveCount(0);
+  await expect(page).not.toHaveURL(/caseId=/);
+  expect(fixture.unexpected).toEqual([]);
+});
+
 test("read-only client cannot see case creation controls", async ({ page }) => {
   await clientWorkspaceFixture(page, false);
   await page.goto("/client-portal");
   await expect(page.getByText("1–6 of 23 cases", { exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "New verification", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Import CSV", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Create a new verification" })).toHaveCount(0);
 });
 
 test("the company admin always sees its RM, with email and phone", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await clientWorkspaceFixture(page);
   await page.goto("/client-portal");
-  const card = page.getByRole("complementary", { name: "Client actions and support" });
-  await expect(card.getByText("Niku Sharma")).toBeVisible();
-  await expect(card.getByText("Contact not available yet")).toHaveCount(0);
-  await expect(card.getByRole("link", { name: "Email your RM" })).toHaveAttribute(
+  // The RM sits in the welcome card's bottom strip.
+  const card = page.getByRole("region", { name: "Welcome" });
+  await expect(card.getByText("Your relationship manager")).toBeVisible();
+  await expect(card.getByText("Niku Sharma", { exact: true })).toBeVisible();
+  await expect(card.getByText(/Being assigned/)).toHaveCount(0);
+  await expect(card.getByRole("link", { name: "niku@saplingglobal.example" })).toHaveAttribute(
     "href",
     "mailto:niku@saplingglobal.example",
   );
-  await expect(card.getByRole("link", { name: "+919876543210" })).toBeVisible();
-  // The RM lives in the dashboard card only, not in the page header.
+  await expect(card.getByRole("link", { name: "+919876543210" })).toHaveAttribute(
+    "href",
+    "tel:+919876543210",
+  );
+  // The RM lives in the welcome card only: not in the page header or the side column.
   await expect(page.getByRole("button", { name: /Your RM/ })).toHaveCount(0);
-  await card.getByText("Niku Sharma").scrollIntoViewIfNeeded();
+  await expect(
+    page
+      .getByRole("complementary", { name: "Client actions and support" })
+      .getByText("Niku Sharma"),
+  ).toHaveCount(0);
+  await card.getByText("Niku Sharma", { exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: "test-results/client-rm.png" });
 });
 

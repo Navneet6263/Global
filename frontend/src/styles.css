@@ -1,14 +1,13 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
+@import "./design/tokens.css";
 @import "./design/workspace-theme.css";
 @import "./design/client-portal-shell.css";
 @import "./design/client-portal-navigation.css";
 @import "./design/client-portal-header.css";
 @import "./design/client-portal-dashboard.css";
 @import "./design/client-portal-queue.css";
-@import "./design/client-portal-register.css";
-@import "./design/client-portal-pages.css";
 @import "./design/operations-workspace.css";
 @import "./design/operations-analytics.css";
 @import "./design/operations-legacy.css";

@@ -42,3 +42,27 @@ test("resolved clarifications are excluded, and filters do not alter the source"
   assert.deepEqual(items, []);
   assert.deepEqual(filterClientActions(items, "documents", "unknown"), []);
 });
+
+test("the client's own work comes first, late items ahead, team items last", async () => {
+  const { rankClientActions, ACTION_GUIDE } = await import(
+    `data:text/javascript;base64,${Buffer.from(code).toString("base64")}`
+  );
+  const now = new Date("2026-11-19T06:00:00Z");
+  const item = (id, kind, dueAt = null) => ({ id, kind, dueAt, caseId: id });
+  const ranked = rankClientActions(
+    [
+      item("review", "review"),
+      item("sla", "overdue", "2026-11-10T00:00:00Z"),
+      item("answer-later", "response", "2026-11-25T00:00:00Z"),
+      item("answer-late", "response", "2026-11-18T00:00:00Z"),
+      item("doc", "documents"),
+    ],
+    now,
+  );
+  assert.deepEqual(
+    ranked.map((entry) => entry.id),
+    ["answer-late", "doc", "answer-later", "sla", "review"],
+  );
+  assert.equal(ACTION_GUIDE.documents.tab, "documents");
+  assert.equal(ACTION_GUIDE.response.tab, "requests");
+});

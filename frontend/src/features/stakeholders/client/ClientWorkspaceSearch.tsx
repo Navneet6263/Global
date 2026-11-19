@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Search } from "lucide-react";
@@ -13,28 +13,35 @@ const clientDestinations: readonly WorkspaceDestination[] = [
     permission: "case:read",
   },
   {
-    label: "Your verifications",
-    detail: "Find and track a candidate case",
+    label: "All candidates",
+    detail: "Find, track and download every case",
     to: "/client-portal/verifications",
     terms: "candidate case track checks",
     permission: "case:read",
   },
   {
-    label: "Needs your action",
-    detail: "Document replacements and clarification requests",
+    label: "Your to-do",
+    detail: "Documents to replace and questions to answer",
     to: "/client-portal/actions",
-    terms: "pending rejected document upload consent",
+    terms: "pending rejected document upload consent action urgent",
     permission: "case:read",
   },
   {
-    label: "Published reports",
+    label: "Pipeline",
+    detail: "Every case by stage, and what is waiting",
+    to: "/client-portal/pipeline",
+    terms: "board kanban stuck stage waiting progress",
+    permission: "case:read",
+  },
+  {
+    label: "Final reports",
     detail: "Download released verification reports",
     to: "/client-portal/reports",
     terms: "report pdf download final",
     permission: "report:read",
   },
   {
-    label: "Customise export",
+    label: "Custom export",
     detail: "Choose data, filters and column order",
     to: "/client-portal/reports",
     view: "custom",
@@ -97,6 +104,21 @@ export function ClientWorkspaceSearch({
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const id = useId();
+  const box = useRef<HTMLInputElement>(null);
+  // Ctrl K (or Cmd K) jumps to search from anywhere, as in most SaaS tools.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+        const input = box.current;
+        if (!input || !input.offsetParent) return;
+        event.preventDefault();
+        input.focus();
+        setOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const navigate = useNavigate();
   const session = useQuery({ queryKey: ["session"], queryFn: getSession, staleTime: 60_000 });
   const allowed = (permission: string) =>
@@ -145,10 +167,17 @@ export function ClientWorkspaceSearch({
       }}
     >
       <Search
-        className="pointer-events-none absolute left-3 top-3 size-4 text-slate-400"
+        className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-dim"
         aria-hidden
       />
+      <kbd
+        aria-hidden
+        className="pointer-events-none absolute top-1/2 right-2.5 hidden -translate-y-1/2 rounded border border-line bg-surface px-1.5 py-0.5 font-mono text-[10px] leading-none text-dim lg:block"
+      >
+        Ctrl K
+      </kbd>
       <input
+        ref={box}
         role="combobox"
         aria-label="Search features or cases"
         aria-autocomplete="list"
@@ -159,7 +188,7 @@ export function ClientWorkspaceSearch({
         maxLength={120}
         value={term}
         placeholder={placeholder}
-        className="w-full border border-slate-200 py-2 pl-9 pr-3 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+        className="h-[38px] w-full rounded-[10px] border border-line bg-page pr-3 pl-9 lg:pr-16 text-[13.5px] text-ink outline-none placeholder:text-dim/80 focus:border-brand/60 focus:bg-surface focus:ring-3 focus:ring-brand/15"
         onFocus={() => setOpen(true)}
         onChange={(event) => {
           setTerm(event.target.value);
@@ -188,8 +217,8 @@ export function ClientWorkspaceSearch({
         }}
       />
       {open && (
-        <div className="absolute left-0 right-0 top-full z-40 mt-2 min-w-[230px] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
-          <p className="border-b border-slate-100 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+        <div className="absolute left-0 right-0 top-full z-40 mt-2 min-w-[230px] overflow-hidden rounded-xl border border-line bg-surface shadow-xl">
+          <p className="border-b border-line px-3 py-2 text-[10px] font-bold tracking-wider text-dim uppercase">
             Go to a feature or find a case
           </p>
           <div
@@ -207,19 +236,17 @@ export function ClientWorkspaceSearch({
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => select(index)}
-                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left hover:bg-blue-50 ${active === index ? "bg-blue-50" : ""}`}
+                className={`flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left hover:bg-brand-soft ${active === index ? "bg-brand-soft" : ""}`}
               >
                 <span className="min-w-0 flex-1">
-                  <strong className="block text-xs font-semibold text-slate-800">
-                    {option.label}
-                  </strong>
-                  <span className="mt-0.5 block text-[11px] text-slate-500">{option.detail}</span>
+                  <strong className="block text-xs font-semibold text-ink">{option.label}</strong>
+                  <span className="mt-0.5 block text-[11px] text-dim">{option.detail}</span>
                 </span>
-                <ArrowUpRight className="size-3.5 shrink-0 text-blue-600" />
+                <ArrowUpRight className="size-3.5 shrink-0 text-brand" />
               </button>
             ))}
             {!options.length && (
-              <p className="p-3 text-xs text-slate-500">No matching features available.</p>
+              <p className="p-3 text-xs text-dim">No matching features available.</p>
             )}
           </div>
         </div>

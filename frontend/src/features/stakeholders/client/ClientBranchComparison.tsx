@@ -1,6 +1,16 @@
 import { useState } from "react";
+import { Card, CardHeader, Meter, Row, Select, Table, Td, Th } from "@/kit";
 import type { ClientAnalyticsDashboard } from "@/lib/backend-api/dashboards";
 import { ClientEmpty, ClientPager, ClientPill, ClientSearch } from "./ClientPageParts";
+
+const COLUMNS = [
+  "Branch",
+  "Total / active",
+  "Completed",
+  "Overdue",
+  "Pending documents",
+  "Clarifications",
+];
 
 export function ClientBranchComparison({ rows }: { rows: ClientAnalyticsDashboard["branches"] }) {
   const [input, setInput] = useState("");
@@ -19,17 +29,12 @@ export function ClientBranchComparison({ rows }: { rows: ClientAnalyticsDashboar
   const pages = Math.max(1, Math.ceil(filtered.length / 8));
   const current = Math.min(page, pages);
   return (
-    <section className="client-register">
-      <div className="client-register-title">
-        <div>
-          <h2>Delivery branch comparison</h2>
-          <p>
-            Only your organisation's cases. Completion includes all cases; overdue includes active
-            work only.
-          </p>
-        </div>
-      </div>
-      <div className="client-register-toolbar">
+    <Card className="min-w-0">
+      <CardHeader
+        title="Delivery branch comparison"
+        description="Only your organisation's cases. Completion includes all cases; overdue includes active work only."
+      />
+      <div className="flex flex-wrap items-center gap-2 border-b border-line px-4 py-3">
         <ClientSearch
           label="Search delivery branches"
           placeholder="Branch or city"
@@ -40,9 +45,10 @@ export function ClientBranchComparison({ rows }: { rows: ClientAnalyticsDashboar
             setPage(1);
           }}
         />
-        <select
+        <Select
           aria-label="Sort branches"
           value={sort}
+          className="w-auto min-w-[160px]"
           onChange={(e) => {
             setSort(e.target.value);
             setPage(1);
@@ -51,53 +57,57 @@ export function ClientBranchComparison({ rows }: { rows: ClientAnalyticsDashboar
           <option value="total">Most cases</option>
           <option value="overdue">Most overdue</option>
           <option value="name">Branch name</option>
-        </select>
-        <span className="client-register-meta">{filtered.length} branches</span>
+        </Select>
+        <span className="ml-auto font-mono text-xs text-dim">{filtered.length} branches</span>
       </div>
-      <div className="client-register-scroll">
-        <table>
+      <div className="overflow-x-auto">
+        <Table>
           <thead>
             <tr>
-              {[
-                "Branch",
-                "Total / active",
-                "Completed",
-                "Overdue",
-                "Pending documents",
-                "Clarifications",
-              ].map((label) => (
-                <th scope="col" key={label}>
-                  {label}
-                </th>
+              {COLUMNS.map((label) => (
+                <Th key={label}>{label}</Th>
               ))}
             </tr>
           </thead>
           <tbody>
             {filtered.slice((current - 1) * 8, current * 8).map((row) => (
-              <tr key={row.id ?? "unassigned"}>
-                <td>
-                  <strong>{row.name}</strong>
-                  <small>{row.city ?? "Location not recorded"}</small>
-                </td>
-                <td>
-                  {row.total}
-                  <small>
+              <Row key={row.id ?? "unassigned"}>
+                <Td>
+                  <strong className="block font-semibold text-ink">{row.name}</strong>
+                  <small className="block text-xs text-dim">
+                    {row.city ?? "Location not recorded"}
+                  </small>
+                </Td>
+                <Td>
+                  <span className="block font-mono text-ink tabular-nums">{row.total}</span>
+                  <small className="block text-xs whitespace-nowrap text-dim">
                     {row.active} active · {row.cancelled} cancelled
                   </small>
-                </td>
-                <td>
-                  <strong>{row.completed}</strong>
-                  <small>{row.completionPercent}% of all cases</small>
-                </td>
-                <td>
+                </Td>
+                <Td>
+                  <strong className="block font-mono font-semibold text-ink tabular-nums">
+                    {row.completed}
+                  </strong>
+                  <div className="my-1 w-24">
+                    <Meter
+                      value={row.completionPercent}
+                      tone="good"
+                      label={`${row.name} completion`}
+                    />
+                  </div>
+                  <small className="block text-xs whitespace-nowrap text-dim">
+                    {row.completionPercent}% of all cases
+                  </small>
+                </Td>
+                <Td>
                   <ClientPill tone={row.overdue ? "red" : "green"}>{row.overdue}</ClientPill>
-                </td>
-                <td>{row.pendingDocuments}</td>
-                <td>{row.clarifications}</td>
-              </tr>
+                </Td>
+                <Td mono>{row.pendingDocuments}</Td>
+                <Td mono>{row.clarifications}</Td>
+              </Row>
             ))}
           </tbody>
-        </table>
+        </Table>
       </div>
       {!filtered.length && (
         <ClientEmpty title="No matching branch data">Try a different branch or city.</ClientEmpty>
@@ -110,6 +120,6 @@ export function ClientBranchComparison({ rows }: { rows: ClientAnalyticsDashboar
         onNext={() => setPage(current + 1)}
         detail="Grouped by assigned operating branch."
       />
-    </section>
+    </Card>
   );
 }

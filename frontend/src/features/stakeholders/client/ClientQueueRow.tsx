@@ -1,16 +1,19 @@
 import { Eye, CircleCheck, Clock3, CircleAlert, CircleX } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Avatar, Button, Chip, Meter, Td } from "@/kit";
+import { cn } from "@/lib/utils";
 import type { CaseListItem } from "@/lib/api/cases";
 import type { QueueColumn } from "./client-queue-columns";
 import { casePackageName } from "@/lib/backend-api/case-services";
 import { ClientReportDownloadButton } from "./ClientReportReady";
-import {
-  clientStatus,
-  formatDate,
-  statusTone,
-  tatText,
-  terminalCaseStatuses,
-} from "./client-portal-utils";
+import { clientStatus, formatDate, tatText, terminalCaseStatuses } from "./client-portal-utils";
+
+const ICON_TONE = {
+  good: "text-good",
+  bad: "text-bad",
+  warn: "text-warn",
+  note: "text-note",
+  brand: "text-brand",
+} as const;
 
 export function ClientQueueRow({
   item,
@@ -64,78 +67,92 @@ export function ClientQueueRow({
     } as Record<string, string>
   )[item.status];
   return (
-    <tr>
-      <td data-column="candidate">
-        <strong className="client-candidate-name">{item.subject.fullName}</strong>
-        <span className="client-case-number">{item.caseNumber}</span>
-      </td>
-      {columns.includes("status") && (
-        <td data-column="status">
-          <div className={`client-row-status ${shown.tone}`}>
-            <Icon aria-hidden />
-            <div>
-              <span>{shown.label}</span>
-              <small>{item.report ? "Report ready to download" : description}</small>
-            </div>
+    <tr
+      className="cursor-pointer last:[&>td]:border-b-0 hover:bg-subtle/50"
+      onClick={(event) => {
+        // The whole row opens the case (Task style); its own buttons and links still work.
+        if ((event.target as HTMLElement).closest("button, a") || disabled) return;
+        onOpen();
+      }}
+    >
+      <Td data-column="candidate">
+        <div className="flex min-w-[170px] items-center gap-2.5">
+          <Avatar name={item.subject.fullName} />
+          <div className="min-w-0">
+            <strong className="block truncate font-semibold text-ink">
+              {item.subject.fullName}
+            </strong>
+            <span className="font-mono text-xs text-dim">{item.caseNumber}</span>
           </div>
-        </td>
+        </div>
+      </Td>
+      {columns.includes("status") && (
+        <Td data-column="status">
+          <div className="flex min-w-[210px] flex-col items-start gap-1">
+            <Chip tone={shown.kind}>
+              <Icon className={cn("size-3.5", ICON_TONE[shown.kind])} aria-hidden />
+              {shown.label}
+            </Chip>
+            <small className="pl-1 text-xs text-dim">
+              {item.report ? "Report ready to download" : description}
+            </small>
+          </div>
+        </Td>
       )}
       {columns.includes("checks") && (
-        <td>
-          <div className="client-check-progress">
-            <span>
+        <Td>
+          <div className="flex w-28 flex-col gap-1">
+            <span className="font-mono text-xs text-ink">
               {completed}/{item.checks.length}
+              <span className="ml-1 font-sans text-dim">checks</span>
             </span>
-            <span className="client-check-track" aria-hidden>
-              <i
-                style={{
-                  width: `${item.checks.length ? (completed / item.checks.length) * 100 : 0}%`,
-                  background: completed === item.checks.length && completed ? "#15803d" : "#1d4ed8",
-                }}
-              />
-            </span>
+            <Meter
+              value={completed}
+              max={item.checks.length}
+              tone={completed === item.checks.length && completed ? "good" : "brand"}
+              label={`${completed} of ${item.checks.length} checks done`}
+            />
           </div>
-        </td>
+        </Td>
       )}
       {columns.includes("due") && (
-        <td>
+        <Td className="whitespace-nowrap">
           {item.tatWorkingDays ? (
             tatText(item.tatWorkingDays)
           ) : (
-            <span className="text-muted-foreground">Not set</span>
+            <span className="text-dim">Not set</span>
           )}
-        </td>
+        </Td>
       )}
-      {columns.includes("package") && <td>{casePackageName(item)}</td>}
-      {columns.includes("priority") && <td>{item.priority}</td>}
+      {columns.includes("package") && <Td>{casePackageName(item)}</Td>}
+      {columns.includes("priority") && <Td>{item.priority}</Td>}
       {columns.includes("updated") && (
-        <td>
+        <Td className="whitespace-nowrap">
           <time dateTime={item.updatedAt}>{formatDate(item.updatedAt)}</time>
-        </td>
+        </Td>
       )}
-      {columns.includes("branch") && <td>{item.branch?.name ?? "Not assigned"}</td>}
-      <td>
-        <span className="grid gap-1.5">
+      {columns.includes("branch") && <Td>{item.branch?.name ?? "Not assigned"}</Td>}
+      <Td align="right">
+        <span className="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">
           {item.report ? (
             <ClientReportDownloadButton
               report={item.report}
               caseNumber={item.caseNumber}
               candidateName={item.subject.fullName}
+              iconOnly
             />
           ) : null}
           <Button
             size="sm"
-            variant="outline"
             disabled={disabled}
             onClick={onOpen}
-            className="client-open-case"
             aria-label={`Open case for ${item.subject.fullName}`}
           >
             <Eye aria-hidden />
             {action}
           </Button>
         </span>
-      </td>
+      </Td>
     </tr>
   );
 }

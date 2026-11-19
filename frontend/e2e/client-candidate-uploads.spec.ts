@@ -65,7 +65,7 @@ test("the client sees what the candidate uploaded and that the case moved on", a
   await page.screenshot({ path: "test-results/client-candidate-uploaded.png" });
   await dialog.getByRole("button", { name: "View uploaded documents" }).click();
   await expect(dialog.getByText(/degree-and-marksheet\.pdf · 2\.5 MB · uploaded/)).toBeVisible();
-  await dialog.getByRole("tab", { name: "Timeline", exact: true }).click();
+  await dialog.getByRole("tab", { name: /^Timeline/ }).click();
   await expect(
     dialog
       .getByRole("region", { name: "Case activity log" })

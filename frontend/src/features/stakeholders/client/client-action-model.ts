@@ -57,3 +57,58 @@ export function filterClientActions(items: ClientActionItem[], kind: string, sea
       `${item.candidate} ${item.caseNumber} ${item.title}`.toLowerCase().includes(query),
   );
 }
+
+/** How each kind of item reads to the client, where it opens and how urgent it is. */
+export const ACTION_GUIDE = {
+  documents: {
+    rank: 0,
+    label: "Replace a document",
+    button: "Upload now",
+    tab: "documents",
+    yours: true,
+  },
+  response: {
+    rank: 1,
+    label: "Answer our question",
+    button: "Reply now",
+    tab: "requests",
+    yours: true,
+  },
+  overdue: {
+    rank: 2,
+    label: "Past the promised time",
+    button: "Track case",
+    tab: "overview",
+    yours: false,
+  },
+  review: {
+    rank: 3,
+    label: "Your reply is being checked",
+    button: "View",
+    tab: "requests",
+    yours: false,
+  },
+} as const;
+
+/**
+ * Most urgent first: the client's own work (documents, then questions), with anything
+ * already past its due date ahead of the rest; then items the Sapling team is handling.
+ */
+export function rankClientActions(items: ClientActionItem[], now = new Date()) {
+  const late = (item: ClientActionItem) =>
+    item.dueAt ? new Date(item.dueAt).getTime() < now.getTime() : false;
+  const due = (item: ClientActionItem) =>
+    item.dueAt ? new Date(item.dueAt).getTime() : Number.MAX_SAFE_INTEGER;
+  return [...items].sort((a, b) => {
+    const mine = Number(ACTION_GUIDE[b.kind].yours) - Number(ACTION_GUIDE[a.kind].yours);
+    if (mine) return mine;
+    const lateFirst = Number(late(b)) - Number(late(a));
+    if (lateFirst) return lateFirst;
+    const rank = ACTION_GUIDE[a.kind].rank - ACTION_GUIDE[b.kind].rank;
+    return rank || due(a) - due(b);
+  });
+}
+
+export function isLate(item: ClientActionItem, now = new Date()) {
+  return item.dueAt ? new Date(item.dueAt).getTime() < now.getTime() : false;
+}
